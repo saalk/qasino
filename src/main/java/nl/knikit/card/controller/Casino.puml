@@ -1,0 +1,42 @@
+@startuml src/main/resources/plantuml/GalacticCasinoController.png
+skinparam classAttributeIconSize 0
+package "nl.deknik.card" {
+package "controller" {
+class Casino {
+- State state
+- Trigger trigger
++ {static} main()
+
+..other methods..
+}
+Casino ..> State
+Trigger -right-..> Casino
+enum State {
+IS_SHUFFLED
+HAS_HUMAN
+..
+TURN_STARTED
+GAME_WON
+..
+NO_WINNER
+OFFER_FICHES
+}
+enum Trigger {
+POST_INIT
+PUT_TURN
+POST_INIT_HUMAN
+..
+TURN_STARTED
+SHOW_RESULTS
+TURN_ENDED
+..
+ROUNDS_ENDED
+PLAYER_WINS
+NO_CARDS_LEFT
+..
+GAME_FINISHED
+OFFER_ACCEPTED
+QUIT
+}
+
+@enduml

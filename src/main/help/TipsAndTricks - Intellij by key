@@ -1,0 +1,112 @@
+## Shortcuts listed in key order
+
+Alt + F7 / Ctrl + F7: Find usages / Find usages in fle
+Alt + F8: Evaluate expression
+
+Alt + Insert: Generate code... (Getters, Setters, Constructors, hashCode/equals, toString)
+Alt + Right/Left: Go to next/previous editor tab
+Alt + Shift + C: View recent changes
+Alt + Up/Down: Go to previous/next method # goes to xyz()
+
+Ctrl + /: Comment/uncomment with line comment
+Ctrl + ]/[: Move to code block end/start # goes to {}
+
+Ctrl + Alt + H: Call hierarchy
+Ctrl + Alt + I: Auto-indent line(s)
+
+Ctrl + Alt + L: Reformat code according to style guide
+Ctrl + Alt + M: Extract Method
+
+Ctrl + Alt + N: Inline
+Ctrl + Alt + O: Optimize imports
+Ctrl + Alt + P: Extract Parameter
+Ctrl + Alt + S: Open Settings dialog
+Ctrl + Alt + Shift + S: Open Project Structure dialog
+Ctrl + Alt + T: Surround with… (if..else, try..catch, for, synchronized, etc.)
+
+Ctrl + Alt + V: Extract Variable
+Ctrl + B , Ctrl + Click: Go to declaration
+
+Ctrl + Backspace: Delete to word start
+Ctrl + Delete: Delete to word end #!
+
+Ctrl + F: Find and use F3 or SHIFT F3 to go back and forth
+Ctrl + H: Type hierarchy
+Ctrl + I: enables you to create default methods for methods you have to Implement.
+Ctrl + J: Insert Live Template
+Ctrl + K: Commit project to VCS
+Ctrl + N: Go to class
+Ctrl + NumPad+/-: Expand/collapse code block
+Ctrl + O: enables you to create default methods for methods you have to Override.
+Ctrl + Q: Quick documentation lookup
+Ctrl + R: Replace
+
+Ctrl + Shift + /: Comment/uncomment with block comment
+Ctrl + Shift + ]/[: Select till code block end/start
+Ctrl + Shift + A: Find Action
+Ctrl + Shift + B:  Go to type declaration
+Ctrl + Shift + Enter: Complete statement #!
+Ctrl + Shift + F10: Run context confguration from editor
+Ctrl + Shift + F7: Highlight usages in fle
+Ctrl + Shift + F8: View breakpoints
+Ctrl + Shift + F8: View breakpoints
+Ctrl + Shift + F9: Compile selected fle, package or module
+Ctrl + Shift + F: Find in path
+Ctrl + Shift + H: Method hierarchy
+Ctrl + Shift + I: Open quick defnition lookup
+Ctrl + Shift + N: Go to YAML, TXT or other fle
+Ctrl + Shift + R: Replace in path
+Ctrl + Shift + Space: Smart code completion (filters the list of methods and variables by expected type)
+Ctrl + Shift + U: Toggle UPPER / LOWER case for word at caret or selected block
+Ctrl + Shift + W: Decrease current selection to previous state
+Ctrl + Shift + NumPad+-: Expand/Collapse all #!
+Ctrl + Space: Basic code completion (the name of any CLASS, METHOD or VARIABLE)
+Ctrl + T: Update project from VCS
+Ctrl + Tab: Switch between tabs and tool window # basic go to
+Ctrl + U: Go to super-method/super-class
+Ctrl + W: Select successively increasing code blocks
+
+Ctrl + mouse over code: Brief Info
+Ctrl +C+nothing selected : copies line at caret to clipboard
+Ctrl + Alt + Left/Right: Navigate back/forward in history # goes to previous
+Ctrl + D: Duplicate current line or selected block
+Ctrl + E: Recent fles popup
+Ctrl + Enter: Smart line split
+Ctrl + G: Go to line - show current line and colum number
+Ctrl + Shift + J: Smart line join
+Ctrl + Shift + V: Paste from recent buﬀers...
+Ctrl + Shift + Backspace: Navigate to last edit location # goes to last edit loc!
+Ctrl + X/C/V : clipboard actions
+Ctrl + Y: Delete line at caret
+Double Shift: Search everywhere
+
+Esc: Go to editor (from tool window)
+
+F11: Toggle bookmark
+F5: Copy
+F6: Move
+F7: Step into
+F8: Step over
+F9: Resume program
+
+inst: Check object type with instanceof and downcast it
+itco: Iterate elements of java.util.Collection
+iter: Iteration according to Java SDK 1.5 style
+itit: Iterate elements of java.util.Iterator
+itli: Iterate elements of java.util.List
+
+psf: public static final
+
+Shift + Enter: Start new line # make a new line
+Shift + Esc: Hide active or last active window
+Shift + F10: Run
+Shift + F11: Show bookmarks
+Shift + F6: Rename
+Shift + F7: Smart step into
+Shift + F7: Smart step into
+Shift + F8: Step out
+Shift + F8: Step out
+Shift + F9: Debug
+Tab / Shift + Tab: Indent/unindent selected lines
+thr: throw new
+Typing /** + Enter: above a method signature will create Javadoc stubs for you.

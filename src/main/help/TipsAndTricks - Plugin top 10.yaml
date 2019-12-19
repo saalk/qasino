@@ -1,0 +1,50 @@
+# Intellij editing tips and tricks
+
+## Shifter
+Detects type of selection, line or keyword at caret and shifts it “up” or “down” on keyboard
+shortcut. If there’s only one shiftable word in a line, it can be shifted without the caret
+touching it. Lowercase/uppercase or lower case with upper first character of shifted words is
+maintained.
+
+Default keyboard shortcuts:
+
+    Ctrl+Shift+Alt+Comma : Shift Down
+    Ctrl+Shift+Alt+Period : Shift Up
+    Ctrl+Shift+Alt+K : Shift Up More*
+    Ctrl+Shift+Alt+J : Shift Down More*
+
+# BrowseWordAtCaret
+Allows to easily browse next/previous word at caret and highlight other appearances of selected word.
+Usage Browse with CTRL-ALT-UP, CTRL-ALT-DOWN :
+(note: on default-keymap this shortcut is also for next/previous occurrence).
+
+# BashSupport
+Bash language support for IntelliJ.
+
+# Maven Helper
+Provides actions to run/debug the current test file. If maven-surefire-plugin is configured to skip
+or exclude the test, ‘verify’ goal will be used. It also provides actions to run/debug maven goals
+for a module that contains the current file and an easy way to find and exclude conflicting dependencies
+Usage:
+    Right click in Editor | Run Maven
+    Right click in Project View Toolbar | Run Maven
+    CTRL + ALT + R – “Quick Run Maven Goal” action
+    Customize goals: Settings | (Other Settings) | Maven Helper
+    Define shortcuts: Settings | Keymap | Plug-ins | Maven Helper
+Open pom file, click on ‘Dependency Analyzer’ tab, right click in the tree for context actions.
+
+# SQL Query Plugin
+A tool for executing SQL statements through a JDBC connection.
+
+# JRebel for IntelliJ
+JRebel is a productivity tool that allows developers to reload code changes instantly. It skips
+the rebuild, restart, and redeploy cycle common in Java development. JRebel enables developers to
+get more done in the same amount of time and stay in the flow while coding. JRebel supports a
+majority of real-world enterprise java stacks and is easy to install into existing development
+environments. The JRebel plugin for IntelliJ IDEA includes the JRebel agent and helps you to
+automatically generate the JRebel configuration. It enables JRebel for applications and servers
+with a single click and improves the debugging support in the IDE.
+
+# Lines sorter
+Add Sort Lines action in Edit menu to sort selected lines or whole file if selection is empty.
+Alt+Shift+L: sorts the lines selected
