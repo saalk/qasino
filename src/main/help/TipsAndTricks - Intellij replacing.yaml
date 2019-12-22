@@ -1,0 +1,64 @@
+# Intellij searching tips and tricks
+
+## Search/Replace
+Double Shift: Search everywhere
+Ctrl + F: Find and use F3 or SHIFT F3 to go back and forth
+Ctrl + R: Replace
+Ctrl + Shift + F: Find in path
+Ctrl + Shift + R: Replace in path
+
+## Usage Search
+Alt + F7 / Ctrl + F7: Find usages / Find usages in fle
+Ctrl + Shift + F7: Highlight usages in fle
+Ctrl + Alt + F7: Show usages
+
+## Compile and Run
+Ctrl + F9: Make project (compile modifed and dependent)
+Ctrl + Shift + F9: Compile selected fle, package or module
+Alt + Shift + F10: Select confguration and run
+Alt + Shift + F9: Select confguration and debug
+Shift + F10: Run
+Shift + F9: Debug
+Ctrl + Shift + F10: Run context confguration from editor
+
+## Debugging
+F8: Step over #!
+F7: Step into
+Shift + F7: Smart step into
+Shift + F8: Step out
+Alt + F9: Run to cursor #!
+Alt + F8: Evaluate expression
+F9: Resume program #1
+Ctrl + F8: Toggle breakpoint
+Ctrl + Shift + F8: View breakpoints
+
+## Refactoring
+F5: Copy
+F6: Move
+Alt + Delete: Safe Delete
+Shift + F6: Rename
+Ctrl + F6: Change Signature
+
+Ctrl + Alt + N: Inline
+Ctrl + Alt + M: Extract Method
+Ctrl + Alt + V: Extract Variable
+Ctrl + Alt + F: Extract Field
+Ctrl + Alt + C: Extract Constant
+Ctrl + Alt + P: Extract Parameter
+
+## VCS/Local History
+Ctrl + K: Commit project to VCS
+Ctrl + T: Update project from VCS
+Alt + Shift + C: View recent changes
+Alt + BackQuote (`): ‘VCS’ quick popup
+
+## Live Templates
+Ctrl + Alt + J: Surround with Live Template
+Ctrl + J: Insert Live Template
+iter: Iteration according to Java SDK 1.5 style
+inst: Check object type with instanceof and downcast it
+itco: Iterate elements of java.util.Collection
+itit: Iterate elements of java.util.Iterator
+itli: Iterate elements of java.util.List
+psf: public static fnal
+thr: throw new

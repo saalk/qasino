@@ -1,0 +1,127 @@
+# Intellij editing tips and tricks
+
+## View - organise the view on a current class
+Ctrl + Q: Quick documentation lookup
+Ctrl + mouse over code: Brief Info
+
+Ctrl + NumPad+/-: Expand/collapse code block
+Ctrl + Shift + NumPad+-: Expand/Collapse all #!
+
+## Select - selects a part of the code at curret
+Ctrl + W: Select successively increasing code blocks
+Ctrl + Shift + W: Decrease current selection to previous state
+Ctrl + Shift + ]/[: Select till code block end/start
+
+## Copy and paste -  refactors the code auickly
+Ctrl + X/C/V : clipboard actions
+Ctrl +C+nothing selected : copies line at caret to clipboard
+Ctrl + Shift + V: Paste from recent buﬀers...
+
+Ctrl + D: Duplicate current line or selected block
+Ctrl + Y: Delete line at caret
+
+Ctrl + Shift + J: Smart line join
+Ctrl + Enter: Smart line split
+Ctrl + Shift + U: Toggle UPPER / LOWER case for word at caret or selected block
+
+Ctrl + Delete: Delete to word end #!
+Ctrl + Backspace: Delete to word start
+
+## Organise code - make comments, organise lines
+Shift + Enter: Start new line # make a new line
+
+Typing /** + Enter: above a method signature will create Javadoc stubs for you.
+Ctrl + Shift + /: Comment/uncomment with block comment
+Ctrl + /: Comment/uncomment with line comment
+
+Ctrl + Alt + L: Reformat code according to style guide
+Ctrl + Alt + O: Optimize imports
+Ctrl + Alt + I: Auto-indent line(s)
+Tab / Shift + Tab: Indent/unindent selected lines
+
+## Code Complete - finish the code
+Ctrl + Space: Basic code completion (the name of any CLASS, METHOD or VARIABLE)
+Ctrl + Shift + Space: Smart code completion (filters the list of methods and variables by expected type)
+Ctrl + Shift + Enter: Complete statement #!
+Ctrl + Alt + T: Surround with… (if..else, try..catch, for, synchronized, etc.)
+
+Alt + Enter: Show intention actions and quick-fxes
+
+## Create code - make default classes, methods or fields
+Ctrl + I: enables you to create default methods for methods you have to Implement.
+Ctrl + O: enables you to create default methods for methods you have to Override.
+Alt + Insert: Generate code... (Getters, Setters, Constructors, hashCode/equals, toString)
+
+Ctrl+Alt+M: Extract a method out of some code #!
+Ctrl + Alt + N Inline
+Ctrl + Alt + M Extract Method
+Ctrl + Alt + V Extract Variable
+Ctrl + Alt + F Extract Field
+Ctrl + Alt + C Extract Constant
+Ctrl + Alt + P Extract Parameter
+
+# abbreviations
+sout: system out
+iter: Iteration according to Java SDK 1.5 style
+inst: Check object type with instanceof and downcast it
+itco: Iterate elements of java.util.Collection
+itit: Iterate elements of java.util.Iterator
+itli: Iterate elements of java.util.List
+psf: public static fnal
+thr: throw new
+
+
+## Search/Replace
+Double Shift: 	Search everywhere
+Ctrl + F:  		Find
+F3: 			Find next
+Shift + F3: 	Find previous
+Ctrl + R: 		Replace
+Ctrl + Shift + F: Find in path
+Ctrl + Shift + R: Replace in path
+Ctrl + Shift + S: Search structurally (Ultimate Edition only)
+Ctrl + Shift + M: Replace structurally (Ultimate Edition only) of available refactorings (Refactor This).	Ctrl+Shift+Alt+T
+
+## Usage Search
+Alt + F7 / Ctrl + F7 Find usages / Find usages in fle
+Ctrl + Shift + F7 Highlight usages in fle
+Ctrl + Alt + F7 Show usages
+Compile and Run
+Ctrl + F9 Make project (compile modifed and dependent)
+Ctrl + Shift + F9 Compile selected fle, package or module
+Alt + Shift + F10 Select confguration and run
+Alt + Shift + F9 Select confguration and debug
+Shift + F10 Run
+Shift + F9 Debug
+Ctrl + Shift + F10 Run context confguration from editor
+
+## Debugging
+F8: Step over
+F7: Step into
+Shift + F7: Smart step into
+Shift + F8: Step out
+Alt + F9: Run to cursor
+Alt + F8: Evaluate expression
+F9: Resume program
+Ctrl + F8: Toggle breakpoint
+Ctrl + Shift + F8: View breakpoints
+
+
+## Refactoring
+F5 Copy
+F6 Move
+Alt + Delete Safe Delete
+Shift + F6 Rename
+Ctrl + F6 Change Signature
+
+
+VCS/Local History
+Ctrl + K Commit project to VCS
+Ctrl + T Update project from VCS
+Alt + Shift + C View recent changes
+Alt + BackQuote (`) ‘VCS’ quick popup
+Live Templates
+Ctrl + Alt + J Surround with Live Template
+Ctrl + J Insert Live Template
+
+

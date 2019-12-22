@@ -1,0 +1,45 @@
+<configuration>
+  <!-- Logback delegates the task of writing a logging event to components called appenders. -->
+
+  <property name="LOG_HOME" value="logs" />
+  <property name="APP_NAME" value="CardGames" />
+
+  <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+    <encoder>
+      <charset>UTF-8</charset>
+      <pattern>%-5level %d{yyyy-MM-dd HH:mm:ss.SSS} %thread %logger{50} - %msg%n</pattern>
+      <!-- <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern> -->
+    </encoder>
+  </appender>
+
+  <appender name="FILE"  class="ch.qos.logback.core.rolling.RollingFileAppender">
+    <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+      <FileNamePattern>${LOG_HOME}/${APP_NAME}.log.%d{yyyy-MM-dd}.log</FileNamePattern>
+      <MaxHistory>30</MaxHistory>
+    </rollingPolicy>
+
+    <encoder>
+      <charset>UTF-8</charset>
+      <pattern>%-5level %d{yyyy-MM-dd HH:mm:ss.SSS} %thread %logger{50} - %msg%n</pattern>
+    </encoder>
+
+    <triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
+      <MaxFileSize>1MB</MaxFileSize>
+    </triggeringPolicy>
+  </appender>
+
+  <!-- Stop Spring taskscheduler message = extra configured at ing -->
+  <logger name="org.springframework.scheduling.annotation.ScheduledAnnotationBeanPostProcessor" level="info" additivity="false" >
+    <appender-ref ref="STDOUT"/>
+  </logger>
+
+  <!-- debug, error -->
+
+  <root level="INFO">
+    <appender-ref ref="STDOUT" />
+    <appender-ref ref="FILE" />
+  </root>
+
+  <logger name="org.springframework" level="INFO" appender-ref="FILE"/>
+
+</configuration>

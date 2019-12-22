@@ -1,0 +1,101 @@
+## dto is a concept
+# objects that collect data to be returned to the client
+
+advantage:
+batch up what would be multiple remote calls into a single call
+when a JPA entity is "too large" for the particular purpose
+
+fowler:
+dto - An object that carries data between processes in order to reduce the number of method calls.
+
+
+# old
+    GET /entity?filterparams for retrieving a list of entities
+    GET /entity/id for retrieving a specific entity identified by its id
+    POST /entity for creating a new one
+    PUT /entity/id for upddating an existing entity
+    DELETE /entity/id for deleting an existing entity
+
+    problem:
+	entity is directly serialized to the client
+	- recursion => parent - child - same parent
+	API creates a contract which you cannot break easily
+	- removal of parts in future
+	entities may not naturally match the UI
+	- UI is data-driven and not model-driven
+	maintainability on entities / model
+	- changing a property name might impact functioning client
+
+
+# new: map an order instance to a new OrderDto
+ModelMapper modelMapper = new ModelMapper();
+OrderDTO orderDTO = modelMapper.map(order, OrderDTO.class);
+
+> no need to set the dto by getting the entity field by field
+
+map uses matchine strategies:
+- standard - default, uses tokenizing to match fields
+- loose or strict
+
+matching process:
+- getPerson and setPerson > Property eligibility 'person'
+
+## overrule the matching process: property mapping
+For certain models where property and class names are very dissimilar,
+a PropertyMap can be created to define explicit mappings
+PropertyMap - override the configure method:
+public class PersonMap extends PropertyMap<Person, PersonDTO>() {
+  protected void configure() {
+    map().setName(source.getFirstName());
+    map(source.address, destination.streetAddress);
+    // deep mapping
+    map().setAge(source.getCustomer().getAge());
+    map().getCustomer().setName(source.person.getFirstName());
+    // getCustomer must also have a setCustomer of public field
+    // skipping
+    skip(source.name);
+  }
+};
+Using PorpertyMap:
+modelMapper.addMappings(new PersonMap());
+
+## adding custom conversion when mapping: converters
+Converter<String, String> toUppercase = new AbstractConverter<String, String>() {
+  protected String convert(String source) {
+    return source == null ? null : source.toUppercase();
+  }
+};
+Using Converters:
+using(toUppercase).map().setName(source.getName());
+Example 2:
+Converter<Person, String> toUppercase = new AbstractConverter<Person, String>() {
+  protected String convert(Person person) {
+    return person == null ? null : person.getFirstName();
+  }
+};
+using(personToNameConverter).map(source).setName(null);
+
+## adding custom destination prior to mappings
+Provider<Person> personProvider = new AbstractProvider<Person>() {
+  public Person get() {
+    return new Person();
+  }
+}
+Using Provider with converter:
+with(personProvider)
+    .using(personConverter)
+    .map().setPerson(source.getPerson());
+
+## Conditional mapping
+Condition notNull = new Condition() {
+  public boolean applies(MappingContext<?, ?> context) {
+    return context.getSource() != null;
+  }
+};
+Using Conditional mapping:
+when(notNull).map().setName(source.getName());
+
+## String Mapping
+map().getCustomer().address.setStreet(this.<String>source("customer.street_address"));
+or
+map(source("customer.street_address")).getCustomer().address.setStreet(null);

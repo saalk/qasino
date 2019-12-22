@@ -1,0 +1,76 @@
+# Hibernate: an object-relational mapping framework for Java; relates objects to reletional db
+# take a java class attributes and persist them to the database
+# High-Level architecture:
+
+1 Configuration: for hibernate.properties, hibernate.cfg.xml and connection
+2 SessionFactory: one per database; related configuration to context startup
+3 Session: get a physical connection, not thread safe, one per db interaction
+4 Transaction: a unit of work with the database
+5 Query: uses SQL or HQL string to retrieve and created db objects
+6 Criteria: used to created and execute oo queries to retrieve objects
+
+ad 1.
+sql-dialect (oracle/mysql/..), driver, url, username, password, pool-size, autocommit
+NB JNDI for context server context - JNDI name, class, property, url
+
+# Hibernate uses existing Java APIs for , like:
+ JDBC: the ability to communicate in SQL to a database
+ 1 - Load a database specific driver for the db supplier
+ 2 - Create a Connection object
+ 3 - Use the connection to process SQL on the database
+ NB driver can have native code as well as JDBC driver code
+ Java Transaction API(JTA): use transactions to keep data consistent
+ 1 - use @Transactional on methods and after return a commit or rollback is done
+ 2 - a @TransactionScoped bean marks a block of code as participating in a transaction
+JNDI:
+1 -
+
+# One-Many-One MApping
+A many-to-one association is the most common kind of association where an Object can
+be associated with multiple objects. For example, the same address object can be
+associated with multiple employee objects
+
+A one-to-one association is similar to many-to-one association with a difference that
+the column will be set as unique. For example, an address object can be associated with
+a single employee object
+
+HashSet
+A One-to-Many mapping can be implemented using a Set java collection that does not
+contain any duplicate element. We already have seen how to map Set collection in
+hibernate, so if you already learned Set mapping then you are all set to go with one-tomany mapping.
+
+A Many-to-Many mapping can be implemented using a Set java collection that does not
+contain any duplicate element. We already have seen how to map Set collection in
+hibernate, so if you already learned Set mapping, then you are all set to go with manyto-many mapping.
+A Set is mapped with a <set> element in the mapping table and initialized with
+java.util.HashSet. You can use Set collection in your class when there is no duplicate
+element required in the collection
+
+
+# Concurrency - Concurrency Strategies
+A concurrency strategy is a mediator, which is responsible for storing items of data in the
+cache and retrieving them from the cache. If you are going to enable a second-level cache,
+you will have to decide, for each persistent class and collection, which cache concurrency
+strategy to use.
+
+ Transactional: Use this strategy for read-mostly data where it is critical to prevent
+stale data in concurrent transactions, in the rare case of an update.
+ Read-write: Again use this strategy for read-mostly data where it is critical to
+prevent stale data in concurrent transactions, in the rare case of an update.
+ Nonstrict-read-write: This strategy makes no guarantee of consistency between
+the cache and the database. Use this strategy if data hardly ever changes and a
+small likelihood of stale data is not of critical concern.
+ Read-only: A concurrency strategy suitable for data, which never changes. Use it
+for reference data only
+
+# Hibernate label, no hard requirements
+- claases need default constructor
+- classes need ID mapped to key column
+- have getxxx and setxxx methods
+- persistent class non final or implementation of interface with public methods
+
+# Hibernate vs SQL
+String = varchar
+Byte = tinyint
+Short = smallint
+Long = bigint

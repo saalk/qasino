@@ -1,0 +1,25 @@
+## JAVA 8 glossary and further explanations
+
+further explanations: http://docs.oracle.com/javase/specs/jls/se8/html/index.html
+search for a string in the index: get explanation and examples
+
+# Optional
+This concept proves very helpful when modeling the fact that a method call can return an unknown value or a value that does not exist.
+default value: map.get(key) returns null wñhen the key is not present in the map.
+determine present?: map.containsKey(key);
+
+Optional.of(): gets an error when null
+Optional.ofNullable(): gets an empty optional when null
+
+# Example 1: handle an optional as a wrapper: isPresent() and get().
+Optional<Person> opt = ...;
+if (opt.isPresent()) {
+	int value = opt.get(); // there is a value
+} else {
+	// decide what to do
+}
+
+Optional<Person> opt = ...;
+Person result = opt.orElse(Person.DEFAULT_PERSON);
+
+

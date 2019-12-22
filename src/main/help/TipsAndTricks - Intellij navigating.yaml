@@ -1,0 +1,45 @@
+# Intellij navigating tips and tricks
+
+### General
+Alt + Shift + F: Add to Favorites
+Ctrl + Alt + S: Open Settings dialog
+Ctrl + Alt + Shift + S: Open Project Structure dialog
+Ctrl + Shift + A: Find Action
+Ctrl + Tab: Switch between tabs and tool window # basic go to
+
+## Navigation - go to class, method, file, field, line
+Ctrl + N: Go to class
+Ctrl + B , Ctrl + Click: Go to declaration
+Ctrl + Shift + N: Go to YAML, TXT or other fle
+Ctrl + U: Go to super-method/super-class
+
+## Navigation - go to window, history, hide/show windows
+Ctrl + Shift + Backspace: Navigate to last edit location # goes to last edit loc!
+Ctrl + Alt + Left/Right: Navigate back/forward in history # goes to previous
+
+Alt + Right/Left: Go to next/previous editor tab
+Esc: Go to editor (from tool window)
+Shift + Esc: Hide active or last active window
+Ctrl + E: Recent files popup
+Alt + Home: Show navigation bar
+
+Ctrl + H: Type hierarchy
+Ctrl + Shift + H: Method hierarchy
+Ctrl + Alt + H: Call hierarchy
+
+## Navigation - go to location in open file
+Alt + Up/Down: Go to previous/next method # goes to xyz()
+Ctrl + ]/[: Move to code block end/start # goes to {}
+Ctrl + G: Go to line - show current line and colum number
+Alt + F1: Moves focus to a list to a popup to IDE components
+Ctrl + F12: File structure popup
+
+Ctrl + Alt + B: Go to implementation(s)
+Ctrl + Shift + I: Open quick defnition lookup
+Ctrl + Shift + B:  Go to type declaration
+
+# Navigation bookmarks - make and go to bookmarks
+F11: Toggle bookmark
+Ctrl + F11: Toggle bookmark with mnemonic
+Ctrl + #[0-9]: Go to numbered bookmark
+Shift + F11: Show bookmarks

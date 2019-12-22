@@ -1,0 +1,108 @@
+## JAVA types and type casting
+
+## Primitive Types
+https://docs.oracle.com/javase/tutorial/java/nutsandbolts/datatypes.html
+
+# from down to up -> cast is needed !!
+Data Type and Default Value (for fields)
+byte: 	0
+short: 	0
+int: 	0 (0x123 is hex, 0b0110 is binary)
+long: 	0L
+
+float: 	0.0f
+double: 	0.0d (the d/D is optional!)
+
+char: 	'\u0000'
+String (or any object):   	null
+boolean: 	false
+
+# Local variables
+Local variables are slightly different; the compiler never assigns a default value to an uninitialized local variable. Accessing an uninitialized local variable will result in a compile-time error.
+
+# Literals
+As shown below, it's possible to assign a literal (fixed value) to a variable of a primitive type:
+- boolean result = true;
+- char capitalC = 'C';
+- byte b = 100;
+- short s = 10000;
+- int i = 100000;
+
+# hex or binary
+The prefix 0x indicates hexadecimal and 0b indicates binary:
+// The number 26, in decimal
+int decVal = 26;
+//  The number 26, in hexadecimal
+int hexVal = 0x1a;
+// The number 26, in binary
+int binVal = 0b11010;
+
+## Casting Primitive Data Types in java:
+Casting in java is used when assigning a value of type TypeA to a variable of type TypeB.
+There are two types of casting in java :
+- Implicit casting
+	char c = ‘a’;
+	int b = c;
+- Explicit casting - bigger to smaller or downcasting
+	int a = 100;
+	byte b = a; // compilation error, there is a change that the var is bigger than 127
+
+	int a = 100;
+	byte b = (byte) a; // casting meaning assignment
+
+	int a = 128;
+	byte b = (byte) a; // will result in -127
+
+# Rules: byte < short < (char)< int < long < float < double
+# (meaning < is left bag is smaller than right bag)
+The byte, long, float and double are signed. The char type is unsigned. We cannot assign a byte or a short to a char and vice versa.
+
+# Not allowed casts in JAVA
+int x = 20;
+boolean b = (boolean) x; //compiler error num to string/bool not allowed use parseInt/toString
+String s = (String) x; //compiler error num to string/bool not allowed use parseInt/parseString
+
+byte b = (byte) 124 - 20; // compilation error with this explicit casting !
+// The 124 is cast to a byte type and the 20 is promoted to int.
+// The whole expression in the right is of type int! We cannot assign an int to a byte without cast. The
+byte b = (byte) (124 - 20); // OK
+
+## Double or Float? Remember "float < double" so the bag of double is bigger!
+A floating-point literal is of type float if it ends with the letter F or f; otherwise its type is double and it can optionally end with the letter D or d.
+
+The floating point types (float and double) can also be expressed using E or e (for scientific notation), F or f (32-bit float literal) and D or d (64-bit double literal; this is the default and by convention is omitted).
+double d1 = 123.4;
+// same value as d1, but in scientific notation
+double d2 = 1.234e2;
+float f1  = 123.4f;
+
+## Special escape sequences
+The Java programming language also supports a few special escape sequences for char and String literals: \b (backspace),
+\t (tab), \n (line feed),
+\f (form feed),
+\r (carriage return),
+\" (double quote),
+\' (single quote), and
+\\ (backslash).
+
+## Using Underscore Characters in Numeric Literals for readability
+long creditCardNumber = 1234_5678_9012_3456L;
+long socialSecurityNumber = 999_99_9999L;
+float pi =  3.14_15F;
+not at biginning, end, decimal point, F, L suffix
+// OK (decimal literal)
+int x1 = 5_2;
+
+ # Type casting example in Java
+In this Example of type casting in Java, we have two classes, Base, and Derived.
+Derived class extends Base i.e. Base is a Super class and Derived is a Subclass.
+So their type hierarchy looks like the following tree.
+
+Base
+ |
+Derived
+
+Now look at following code :
+Base b = new Derived(); //reference variable of Base class points object of Derived class
+Derived d = b; //compile time error, requires casting
+Derived d = (Derived) b; // type casting Base to Derived
