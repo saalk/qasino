@@ -1,0 +1,13 @@
+@startuml src/main/resources/plantuml/Deck.png
+skinparam classAttributeIconSize 0
+package "nl.deknik.card" {
+package "entity" {
+class Deck {
+- ArrayList<Card> cards
+- int dealedTo[]
++ shuffle()
++ deal()
+}
+note top : Constructor creates 52 cards and \noptional n jokers
+Deck *- "52\n+jokers" Card : composition
+@enduml

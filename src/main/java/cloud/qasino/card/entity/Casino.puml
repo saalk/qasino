@@ -1,0 +1,120 @@
+@startuml src/main/resources/plantuml/Casino.png
+		skinparam classAttributeIconSize 0
+		package "nl.deknik.card" {
+		package "entity" {
+
+class Player {
+- playerId : int
+- created : String
+..
+- alias : String
+- human : boolean
+- cubits : int
+- playingOrder
+- securedLoan : int
+--
++ setHuman(in: boolean)
+}
+Player "1" -right- "0..n" Turn
+Player -up- AiLevel
+
+enum AiLevel {
+DUMB
+MEDIUM
+SMART
+..
+HUMAN
+NONE
+}
+class Turn {
++ casinoId : int
+- created : String
+..
+- sequence : int
+- bet : int
+}
+Turn "1" -right- "1..n" PlayedCard : plays
+
+class Round {
+- gameId : int
+- created : String
+..
+- sequence : int
+- currentTurn : int
+- currentPlayer : int
+--
++ increaseCurrentRound()
++ addShuffledDeckToRound(in: #jokers)
+}
+Round "1" -down- "1..n" Turn : has
+
+class PlayedCard {
+- handId : int
+- created : String
+..
+- roundSequence : int
+- turnSequence : int
+- cardOrder : int
+- cardLocation : CardLocation
+- cardAction : CardAction
+}
+PlayedCard "0..1" -right- "1" Card : played
+PlayedCard -down- CardAction
+PlayedCard -down- CardLocation
+
+class Card {
+- Rank rank
+- Suit suit
++ compareTo()
+}
+
+enum CardLocation {
+DECK
+DRAW_PILE
+HAND
+TABLE
+DISCARD_PILE
+}
+enum CardAction {
+DEAL
+HIGHER
+LOWER
+PASS
+NEXT
+}
+
+class DeckCard {
+- deckId : int
+- created : String
+..
+- cardOrder
+}
+DeckCard "1..0" -down- "1" Card : notPlayed
+
+class CardGame {
++ cardGameId : int
+- created : String
+..
+- state : int
+- ante : int
+- activeTurn : int
+}
+CardGame "1" -down- "0/1..n" Round : has
+CardGame "1" -down- "4x13" DeckCard : shuffled
+CardGame -left- Type
+CardGame "many" -right- "1" Variant
+
+enum Type {
+HIGHLOW
+BLACKJACK
+}
+
+enum Variant {
+	variantAnte;
+	variantBetting;
+	variantDeck;
+	variantInsurance;
+	variantRound;
+	variantTurns;
+}
+@enduml

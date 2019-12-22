@@ -1,0 +1,64 @@
+# @OneToMany(options)
+# @JoinColumn(PARENT_ID)
+# public List<Child> childs;
+always in Parent class (one parent has many childs):
+- you can do only the ManyToOne on the child and do not do the OneToMany....
+- but then you cannot navigate to list all childs for a specific parent!
+OneToMany options:
+- CascadeType.ALL           means delete child when parent is deleted
+- CascadeType.DETACH        means a special  state; not managed by entitymanager
+- mappedBy="parent"         pointing to the owning field name in the child
+- targetEntity=Child.class  ?
+JoinColumn options - needed here ?:
+- name="PARENT_ID"                          refer to the table column that holds the parent id
+- referencedColumnName="PARENT_ID"          idem
+- foreignKey = @ForeignKey(name = "PARENT_ID") xyz
+- insertable = false, updatable = false     xyz
+childs:
+- Set (HashSet - always ordered and duplicates are not added)
+  - for two collections eg. contacts and addresses for a person
+  - all elements should be unique
+- List (ArrayList - not ordered may contain dups, use add/remove/get/clear)
+  - for one collection per query eg. contacts for a person
+  - you can use @OrderBy("lastname ASC") with List
+  - allows duplicate elements
+- using new ArrayList<>() -> why ?
+# example:
+Parent()
+@OneToMany(cascade = CascadeType.ALL, mappedBy="parent")
+@JoinColumn(name="PARENT_ID", referencedColumnName="PARENT_ID )
+public List<Child> childs;
+
+# @ManyToOne(options1)
+# @JoinColumn(PARENT_ID)
+# public Parent parent
+Always in Child class, the 'many' part of the relationship:
+- ?
+options:
+- optional=false  - means each Child should always have a Parent immediately (default is true!)
+PARENT_ID - not really needed here ?:
+- name="PARENT_ID"                  refer to the table column that holds the parent id
+- referencedColumnName="PARENT_ID"  idem
+parent:
+# example:
+@ManyToOne
+@JoinColumn(name="PARENT_ID", referencedColumnName="PARENT_ID )
+public Parent parent
+
+# @ManyToMany to create a join table,
+inside game do, this the owner of the relation (eg. order owns product):
+@ManyToMany(fetch=FetchType.EAGER)
+@JoinTable(name="DECK",
+           joinColumns=
+           @JoinColumn(name="GAME_ID", referencedColumnName="GAME_ID"),
+     inverseJoinColumns=
+           @JoinColumn(name="CARD_ID", referencedColumnName="CARD_ID")
+)
+private List<Card> cardList;
+inside card do, (eg. product is owned by order, refer to order):
+@ManyToMany(mappedBy="cardList",fetch=FetchType.EAGER)
+private List<Game> gameList;
+
+# @Transient
+The property access requires you to annotate all utility methods
+(e.g. addChild/removeChild) as @Transient.

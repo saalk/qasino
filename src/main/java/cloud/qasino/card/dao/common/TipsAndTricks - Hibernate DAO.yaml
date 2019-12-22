@@ -1,0 +1,229 @@
+# Session object; instances have three states before, in and after in a give point in time
+# Introduction
+Transient (not in db, no id):
+new instance of a persistent class
+not yet associated with a session
+Persistent (in db, has id):
+associate a transient instance with a session to make it persistent
+Detached (after closing the session):
+no longer associated with a session
+
+# A - generic methods on a session and their response:
+# ###
+SessionFactory sessionFactory: getSessionFactory()
+
+# resuse sessions - extra configuration needed!
+set hibernate.current_session_context_class = thread
+Session session: = sessionFactory.getCurrentSession()
+# no reuse - no extra configuration needed
+Session session: = sessionFactory.openSession(); // create new session
+session.close(); // explicit explicitly flush and close session objects.
+
+Transaction tx: beginTransaction()
+void: clear()
+Transaction tx: commit()
+boolean: isConnected()
+boolean: isDirty() // ie. does session contain any changes
+boolean: isOpen()
+if (tx!=null) tx.rollback(); e.printStackTrace();
+Connection session: close() # usually in the finally
+Transaction tx: getTransaction()
+
+# B - create methods on a session and their response:
+# ###
+Criteria: createCriteria(Class persistentClass)
+Criteria: createCriteria(String entityName)
+
+SQLQuery: createSQLQuery(String queryString)
+Query: createFilter(Object collection, String queryString)
+void: cancelQuery()
+
+Serializable: getIdentifier(Object object)
+
+# C - batch crud methods on a session and their response:
+# ###
+Employee employee = : (Employee)session.get(String entityName, Serializable id)
+List employees = : session.createQuery(String queryString) // plus:
+for (Iterator iterator = employees.iterator(); iterator.hasNext(); ) {
+  Employee employee = (Employee) iterator.next();
+  // do something with employee
+}
+
+# D - delete methods on a session and their response:
+# ###
+void: session.delete(Object object)
+void: session.delete(String entityName, Object object)
+
+# E - save/update methods on a session and their response:
+# ###
+http://howtodoinjava.com/hibernate/save-and-saveorupdate-for-saving-hibernate-entities/
+Integer id: session.save(Object object) # Integer outcome
+Integer id: session.save(String entityName, Object object) # Integer outcome
+void: session.persist(String entityName, Object object) # Integer outcome
+SaveEntityAgainInAnotherSession:
+-- If you call save() on a already persistent entity (in another session)
+-- And make changes
+-- Then then this fails due to primary key check
+SaveEntityAgainInSameSession:
+-- If you call save() on a already persistent entity (in same session)
+-- And make changes
+-- Then then this updates the enitity
+NoSaveCallForPersistentEntity:
+-- If you do not call save() on a already persistent entity (in same session)
+-- And make changes and then commits
+-- Then then this updates the enitity
+
+void: saveOrUpdate(Object object) # the object is updated with id
+SaveOrUpdteEntityAgainInAnotherSession:
+-- If you call save() on a already persistent entity (in another session)
+-- And make changes and call saveOrUpdate()
+-- Then then this updates the enitity
+
+# ###
+ Ideally, what you would do is
+ -- pass vo object to DAO layer,
+ -- load the entity from the session and
+ -- update the entity with by copying vo data onto it.
+ This means that the updates take place on a persistent object,
+ and we don’t actually have to call Session.save() or Session.saveOrUpdate() at all.
+
+# E - save/update methods on a session and their response:
+# ###
+void: session.update(Object object)
+void: session.update(String entityName, Object object)
+
+void: refresh(Object object)
+
+# Collections Map, Set, SortedMap, SortedSet, List or array
+# #########################################################
+TreeSet set2 = : new TreeSet();
+set2.add(new Certificate("BCA"));
+set2.add(new Certificate("BA"));
+
+SortedSet cert;
+employee.setCertificates(cert);
+employeeID = (Integer) session.save(employee);
+
+# Manage add / list / update / delete
+# ###################################
+ManagePlayerEvents {
+Integer addEmployee() {
+	try / catch / finally:
+	employee.setXXX(..);
+	employeeID = (Integer) session.save(employee);
+	return employeeID;
+}
+List listEMployee() {
+	try / catch / finally:
+	List employees = session.createQuery("FROM Employee").list();
+	Iterator loops to do something;
+}
+updateEmployee(Integer EmployeeID, int salary) {
+	Employee employee = (Employee)session.get(Employee.class, EmployeeID);
+	employee.setSalary(salary);
+    session.update(employee);
+}
+deleteEmployee(Integer EmployeeID) {
+	Employee employee = (Employee)session.get(Employee.class, EmployeeID);
+	session.delete(employee);
+}
+
+# Manage basic setup
+# ##################
+try{
+	factory = new Configuration().configure().buildSessionFactory();
+} catch (Throwable ex) {
+	System.err.println("Failed to create sessionFactory object." + ex);
+	throw new ExceptionInInitializerError(ex);
+}
+# Manage basic setup
+# ##################
+Session session = factory.openSession();
+Transaction tx = null;
+try{
+	tx = session.beginTransaction();
+	// one of the above manage methods
+	tx.commit();
+} catch (HibernateException e) {
+	if (tx!=null) tx.rollback();
+	e.printStackTrace();
+} finally {
+	session.close();
+}
+
+# Annotations javax.persistence
+@Entity, @Table, @Id, @GeneratedValue, @Column
+
+# HQL - working with objects and their properties in a Clause
+String hql = "FROM Employee";
+Query query = session.createQuery(hql);
+List results = query.list();
+
+# Names parms
+String hql = "FROM Employee E WHERE E.id = :employee_id";
+Query query = session.createQuery(hql);
+query.setParameter("employee_id",10);
+List results = query.list();
+
+# Update some fields
+String hql = "UPDATE Employee set salary = :salary " +
+"WHERE id = :employee_id";
+Query query = session.createQuery(hql);
+query.setParameter("salary", 1000);
+query.setParameter("employee_id", 10);
+int result = query.executeUpdate();
+
+# Delete on a column
+String hql = "DELETE FROM Employee " +
+"WHERE id = :employee_id";
+Query query = session.createQuery(hql);
+query.setParameter("employee_id", 10);
+int result = query.executeUpdate();
+
+# Aggregate
+String hql = "SELECT count(distinct E.firstName) FROM Employee E";
+Query query = session.createQuery(hql);Hibernate
+169
+List results = query.list();
+
+#Criteria for eguals or greater then
+Criteria cr = session.createCriteria(Employee.class);
+cr.add(Restrictions.eq("salary", 2000));
+List results = cr.list();
+
+// To get records having fistName starting with zara
+cr.add(Restrictions.like("firstName", "zara%"));
+
+// To check if the given property is null
+cr.add(Restrictions.isNull("salary"));
+// To check if the given property is empty
+cr.add(Restrictions.isEmpty("salary"));
+
+Criteria cr = session.createCriteria(Employee.class);
+Criterion salary = Restrictions.gt("salary", 2000);
+Criterion name = Restrictions.ilike("firstNname","zara%");
+// To get records matching with AND condistions
+LogicalExpression andExp = Restrictions.and(salary, name);
+cr.add( andExp );
+List results = cr.list();
+
+// To sort records in ascending order
+crit.addOrder(Order.asc("salary"));
+List results = cr.list();
+
+# Projections
+used to get average, maximum, or minimum of the property values
+
+Criteria cr = session.createCriteria(Employee.class);
+// To get total row count.
+cr.setProjection(Projections.rowCount());
+// To get average of a property.
+cr.setProjection(Projections.avg("salary"));
+// To get distinct count of a property.
+cr.setProjection(Projections.countDistinct("firstName"));
+// To get maximum of a property.
+cr.setProjection(Projections.max("salary"));
+// To get minimum of a property.
+cr.setProjection(Projections.min("salary"));
+// To get sum of a property.
+cr.setProjection(Projections.sum("salary"))
