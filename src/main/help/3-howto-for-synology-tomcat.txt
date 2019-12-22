@@ -6,9 +6,17 @@
 # 1. install tomcat on synology
 # 2. add an admin user to tomcat (by default no admin is defined)
 #    - install winscp and make synology ssh enabled and ssh on port 32800
+#    - login as root : 
 #    - go to /volume1/@appstore/Tomcat7/src/conf/tomcat-users.xml
 #    - add 	<role rolename="manager-gui"/> <role rolename="admin-gui"/>
 #		<user roles="manager-gui" password="" username=""/>
+#    - add in /tomcat7/webapps/manager/WEB-INF/web.xml
+#	<multipart-config>
+#   	<!–- extend the 50MB max -–>
+#   	<max-file-size>92428800</max-file-size>
+#   	<max-request-size>92428800</max-request-size>
+#   <file-size-threshold>0</file-size-threshold>
+#</multipart-config>
 # 3. install war file
 #    - go to /var folder 
 #    - mkdir cardgamesapi (standaard met octal 0755 = alleen maker kan schrijven)

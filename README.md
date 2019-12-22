@@ -1,5 +1,8 @@
-# cards
-- using GraphQL in a Spring Boot application with the [Marvel API] (https://developer.marvel.com/docs) to fetch data 
+# Qasino backend
+- an Java 11 Spring Boot based application
+- serving only one endpoint using GraphQL
+- based upon EventSourcing architecture limiting tables MySQL database
+- hosted in the cloud with Strato and ...
 
 ### Running the application
 - 'mvn spring-boot:run`

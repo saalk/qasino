@@ -10,15 +10,15 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 
-	<groupId>nl.knikit.card</groupId>
-	<artifactId>game</artifactId>
+	<groupId>cloud.qasino.card</groupId>
+	<artifactId>games</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>cards</name>
+	<name>games</name>
 	<description>card games</description>
 
 	<properties>
 
-		<java.version>1.8</java.version>
+		<java.version>1.11</java.version>
 
 		<!-- extra project specific dependencies -->
 		<!-- =================================== -->
