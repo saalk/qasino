@@ -20,7 +20,7 @@
             </Policies>
             <DefaultRolloverStrategy>
                 <Delete basePath="${baseDir}" maxDepth="2">
-                    <IfFileName glob="target/log4j2/roll-by-time-and-size/cardgames.*.log.gz" />
+                    <IfFileName glob="target/log4j2/roll-by-time-and-size/qasino.*.log.gz" />
                     <IfLastModified age="14d" />
                 </Delete>
             </DefaultRolloverStrategy>
@@ -45,7 +45,7 @@
         </Root>
 
         <!-- LOG "nl.knikit*" at TRACE level for debugging purposes-->
-        <Logger name="nl.knikit" level="trace"></Logger>
+        <Logger name="cloud.qasino" level="trace"></Logger>
     </Loggers>
 
 </Configuration>

@@ -4,10 +4,9 @@ import cloud.qasino.card.entity.enums.GameType;
 import cloud.qasino.card.entity.enums.Rank;
 import cloud.qasino.card.entity.enums.Suit;
 import lombok.AccessLevel;
-import lombok.Getter;
+import lombok.Data;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
-import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -17,60 +16,36 @@ import java.util.List;
 import static org.apache.commons.lang3.StringUtils.left;
 import static org.apache.commons.lang3.StringUtils.right;
 
-/**
- * <H2>Description</H2> A playing card used for playing card gameDtos. A complete set of cards is
- * called a pack (UK English), deck (US English), or set (Universal), and the subset of cards held
- * at one time by a {@link Player player} during a {@link Game game} is commonly called a {@link
- * Hand Hand}. <H2>Relations</H2> Card is associated to {@link Rank enum Rank} and {@link Suit enum
- * Suit}. Because you must have both a Suit and a Rank for a valid Card, they are parameters for the
- * constructor. <p><img src="../../../../../../src/main/resources/plantuml/Card.png" alt="UML">
- *
- * @author Klaas van der Meulen
- * @version 1.0
- * @since v1 - console game
- */
-
 @Entity
-@Table(name = "CARD",
+@Table(name = "cards",
 		indexes = {
-			@Index(name = "CARD_INDEX", columnList = "CARD_ID")},
+			@Index(name = "cards_index", columnList = "cardId")},
 		uniqueConstraints = {
-		@UniqueConstraint(name="UC_RANK_SUIT", columnNames = {"RANK", "SUIT"})
+		@UniqueConstraint(name="uc_rank_list", columnNames = {"rank", "suit"})
 		}		)
-@DynamicUpdate
-@Getter
-@Setter
+@Data
 @Slf4j
-//@Relation(value = "card", collectionRelation = "cards")
-//@JsonIdentityInfo(generator=JSOGGenerator.class)
-// - this annotation adds @Id to prevent chain loop
-// - you could also use @JsonManagedReference and @JsonBackReference
-public class Card implements Serializable {
+public class Card {
 	
 	// 13 progressing ranks 2 to 10, jack, queen, king, ace.
-	//@JsonIgnore
 	@Id
-	@Column(name = "CARD_ID", length = 3)
-	//////@JsonProperty("cardId")
+	@Column(length = 3)
 	@Setter(AccessLevel.NONE)
 	private String cardId;
 	
 	@Enumerated(EnumType.STRING)
-	//@org.hibernate.annotations.Type(type = "nl.knikit.cardgames.model.enumlabel.LabeledEnumType")
-	@Column(name = "RANK", nullable = false, length = 50)
-	////@JsonProperty("rank")
+	@Column(nullable = false, length = 50)
 	private Rank rank;
 	
 	@Enumerated(EnumType.STRING)
-	//@org.hibernate.annotations.Type(type = "nl.knikit.cardgames.model.enumlabel.LabeledEnumType")
-	@Column(name = "SUIT", nullable = false, length = 50)
-	////@JsonProperty("suit")
+	@Column(nullable = false, length = 50)
 	private Suit suit;
 	
-	@Column(name = "VALUE")
-	////@JsonProperty("value")
 	private int value;
-	
+
+	@Column(length = 30)
+	private String thumbnailPath;
+
 	public Card() {
 	}
 	
@@ -83,7 +58,9 @@ public class Card implements Serializable {
 		
 		final StringBuilder builder = new StringBuilder();
 		this.cardId = builder.append(rank.getLabel()).append(suit.getLabel()).toString();
-		
+
+		// todo: set thumbnailPath
+
 		switch (rank) {
 			case JOKER:
 				value = 0;
@@ -186,14 +163,7 @@ public class Card implements Serializable {
 			}
 		}
 	}
-	
 
-	/*public void setCardId() {
-		final StringBuilder builder = new StringBuilder();
-		this.cardId = builder.append(rank.getLabel()).append(suit.getLabel()).toString();
-	
-	}*/
-	
 	public static List<Card> newDeck(int addJokers) {
 		//List<Card> newDeck = prototypeDeck; // #1 do not do this
 		
@@ -214,9 +184,7 @@ public class Card implements Serializable {
 		}
 		return newDeck;
 	}
-	
 
-	
 	//@JsonIgnore
 	public static boolean isValidCard(String input) {
 		
@@ -234,4 +202,14 @@ public class Card implements Serializable {
 		return jokerCard=="RJ";
 	}
 
+	@Override
+	public String toString() {
+		return "Card{" +
+				"cardId=" + cardId +
+				", rank='" + rank.name() + '\'' +
+				", suit='" + suit.name() + '\'' +
+				", value=" + value +
+				", thumbnailPath='" + thumbnailPath + '\'' +
+				'}';
+	}
 }

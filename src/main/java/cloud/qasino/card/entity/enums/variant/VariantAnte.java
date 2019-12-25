@@ -6,16 +6,6 @@ import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.Map;
 
-
-/**
- * <H1>GameVariant</H1> A selection of variants to a specific card gameDtos that can be selected to
- * play. <p> More variants will be added in future.
- *
- * @author Klaas van der Meulen
- * @version 1.0
- * @since v1 - console game
- */
-
 @Getter
 public enum VariantAnte {
     

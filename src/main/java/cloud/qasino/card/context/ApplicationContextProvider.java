@@ -14,7 +14,7 @@ import org.springframework.stereotype.Component;
  * However Field based injection ApplicationContext (@Autowired and Field injection) should be
  * avoided due to issues that may arise.
  * <p>
- * This means that if you want to use your class outside the context container, for example for
+ * This means that if you want to use your class outside the context container, for entity for
  * unit testing, you are forced to use a Spring container to instantiate your class as there is no
  * other possible way (but reflection) to set the autowired fields.
  * <p>

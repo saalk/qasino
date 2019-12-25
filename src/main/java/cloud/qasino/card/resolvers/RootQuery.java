@@ -2,7 +2,7 @@ package cloud.qasino.card.resolvers;
 
 import com.coxautodev.graphql.tools.GraphQLQueryResolver;
 import cloud.qasino.card.domain.Character;
-import cloud.qasino.card.service.marvel.MarvelService;
+import cloud.qasino.card.service.MarvelService;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;

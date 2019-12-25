@@ -1,6 +1,5 @@
 package cloud.qasino.card.entity.enums;
 
-import cloud.qasino.card.entity.enums.enumlabel.LabeledEnum;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -19,10 +18,6 @@ import java.util.Map;
  * - Suit.CLUBS.label or
  * - Suit.CLUBS.getLabel()
  * -> gets the "C"
- *
- * @author Klaas van der Meulen
- * @version 1.0
- * @since v1 - console game
  */
 @Getter
 @AllArgsConstructor
@@ -34,7 +29,7 @@ public enum Suit implements LabeledEnum {
      * Behind the enum is the code (int) or the name (String) of the enum.
      * Make a static lookup and use a private name int or String
      */
-    @Column(name = "SUIT", length = 10, nullable = false)
+    @Column(name = "suit", length = 10, nullable = false)
     CLUBS("C"),
     DIAMONDS("D"),
     HEARTS("H"),

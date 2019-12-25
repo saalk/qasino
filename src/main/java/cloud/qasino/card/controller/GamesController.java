@@ -1,69 +1,53 @@
 package cloud.qasino.card.controller;
 
-import cloud.qasino.card.entity.example.Parent;
-import cloud.qasino.card.event.springevent.CustomSpringEvent;
+import cloud.qasino.card.entity.Game;
+import cloud.qasino.card.entity.GameVariant;
+import cloud.qasino.card.entity.User;
+import cloud.qasino.card.entity.enums.GameType;
+import cloud.qasino.card.event.CustomSpringEvent;
+import cloud.qasino.card.repository.GameRepository;
+import cloud.qasino.card.repository.UserRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.List;
+import javax.validation.Valid;
 
 @RestController
-/**
- * @RestController is a convenience annotation for creating Restful controllers.
- * It is a specialization of @Component and is autodetected through classpath scanning.
- * It adds the @Controller and @ResponseBody annotations. It converts the response to JSON or XML.
- */
 public class GamesController {
 
-/*    @Autowired
-    @Lazy
-    StateMachine<States, Events> stateMachine;*/
+    GameRepository gameRepository;
 
-    private List<Parent> parentList = new ArrayList<>();
-    private Parent parent = new Parent();
+    UserRepository userRepository;
 
-//        @Autowired
-//        private GamesRepository gr;
+    @PostMapping(value="/playgame/{type}", params={"variant","ante"})
+    public String startGame(
+            @PathVariable("type") String gameType,
+            @RequestParam("variant") String variant,
+            @RequestParam("ante") int ante,
+            BindingResult result,
+            Model model) {
 
-    @GetMapping(value = "/games/all", params="type")
-    public String findAll(@RequestParam("type") String type) {
-        return "Get the list for type=" + type + "list= "+ parentList;
+        Game game = new Game(GameType.valueOf(gameType));
+        GameVariant gameVariant = new GameVariant(variant);
+
+        game.setGameVariant(gameVariant);
+        game.setAnte(ante);
+
+        gameRepository.save(game);
+        model.addAttribute("games", gameRepository.findAll());
+
+        if (result.hasErrors()) {
+            return "play-player";
+        }
+
+        return "add-player";
     }
 
-    @GetMapping("/games/{id}")
-    public String find(@PathVariable("id") String id) throws Exception {
 
-        String message = "Get a specific Parent with id=" + id;
-        CustomSpringEvent event = new CustomSpringEvent(message, message);
+    // additional CRUD methods
+    // - winning a game
 
-/*
-        stateMachine.start();
-        stateMachine.sendEvent(COIN);
-        stateMachine.stop();
-*/
-
-        return message;
-    }
-
-    @PostMapping(value = "/game")
-    public Parent addGame(Parent parent) {
-        parentList.add(parent);
-        return parent;
-    }
-
-    @RequestMapping(value = "*", method = { RequestMethod.GET, RequestMethod.POST})
-    public String getFallback() {
-        return "Fallback for GET Requests";
-    }
-
-//        @RequestMapping("/entity/findby/{id}")
-//        public Parent findById(@PathVariable Long id) {
-//            for (Parent parent : userList) {
-//                if (parent.getId().equals(id)) {
-//                    return Optional.of(parent).get();
-//                }
-//            }
-//            return Optional.<Parent>empty().get();
-//        }
 }
 

@@ -1,7 +1,6 @@
 package cloud.qasino.card.entity.enums;
 
 import lombok.Getter;
-import cloud.qasino.card.entity.enums.enumlabel.LabeledEnum;
 
 import javax.persistence.Column;
 import javax.persistence.Transient;
@@ -13,7 +12,7 @@ import java.util.Set;
 @Getter
 public enum CardAction implements LabeledEnum {
 	
-	@Column(name = "CARD_LOCATION", length = 25, nullable = false)
+	@Column(name = "cardAction", length = 25, nullable = false)
 	DEAL("Deal"), HIGHER("Higher"), LOWER("Lower"), PASS("Pass"), NEXT("Next");
 	
 	/**

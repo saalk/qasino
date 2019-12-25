@@ -93,7 +93,7 @@ not at biginning, end, decimal point, F, L suffix
 // OK (decimal literal)
 int x1 = 5_2;
 
- # Type casting example in Java
+ # Type casting entity in Java
 In this Example of type casting in Java, we have two classes, Base, and Derived.
 Derived class extends Base i.e. Base is a Super class and Derived is a Subclass.
 So their type hierarchy looks like the following tree.

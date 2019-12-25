@@ -1,7 +1,6 @@
 package cloud.qasino.card.entity.enums;
 
 import lombok.Getter;
-import cloud.qasino.card.entity.enums.enumlabel.LabeledEnum;
 
 import javax.persistence.Column;
 import java.util.EnumSet;
@@ -9,20 +8,11 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-/**
- * <H1>Avatar</H1> What species is applicable
- * <p> There are 4 species to choose from
- *
- * @author Klaas van der Meulen
- * @version 1.0
- * @since v1 - console game
- */
-
 // Getters, no setters needed
 @Getter
 public enum Avatar implements LabeledEnum {
 
-    @Column(name = "AVATAR", length = 25)
+    @Column(name = "avatar", length = 25)
     ELF("Elf"), MAGICIAN("Magician"), GOBLIN("Goblin"), ROMAN("Warrior");
     
     /**

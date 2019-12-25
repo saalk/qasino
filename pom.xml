@@ -2,27 +2,37 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-
-	<parent>
-		<groupId>org.springframework.boot</groupId>
-		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>2.2.1.RELEASE</version>
-		<relativePath/> <!-- lookup parent from repository -->
-	</parent>
-
 	<groupId>cloud.qasino.card</groupId>
 	<artifactId>games</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>games</name>
-	<description>card games</description>
+	<description>Spring Boot H2 app for playing card games</description>
+
+	<parent>
+		<groupId>org.springframework.boot</groupId>
+		<artifactId>spring-boot-starter-parent</artifactId>
+		<version>2.2.2.RELEASE</version>
+		<relativePath/> <!-- lookup parent from repository -->
+	</parent>
+
+	<distributionManagement>
+		<repository>
+			<id>releases</id>
+			<url>http://domain:port/content/repositories/releases</url>
+		</repository>
+		<snapshotRepository>
+			<id>snapshots</id>
+			<url>http://domain:port/content/repositories/snapshots</url>
+		</snapshotRepository>
+	</distributionManagement>
 
 	<properties>
 
-		<java.version>1.11</java.version>
+		<java.version>1.8</java.version>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
 		<!-- extra project specific dependencies -->
-		<!-- =================================== -->
-
 		<!-- 1: modelmapper.org - j. halterman - Simple, intelligent, object mapping -->
 		<!--    maps between persistence model and domain model (Data Transfer Objects) -->
 		<!-- todo https://www.baeldung.com/java-performance-mapping-frameworks -->
@@ -36,12 +46,14 @@
 		<!-- 4: GraphQL dependencies -->
 		<!--     -->
 		<graphql-java-tools.version>5.7.1</graphql-java-tools.version>
+		<graphql-spring-boot-starter.version>5.11.1</graphql-spring-boot-starter.version>
 		<graphiql-spring-boot-starter.version>5.11.1</graphiql-spring-boot-starter.version>
 
 		<!-- utility -->
 		<commons-lang3.version>3.9</commons-lang3.version>
 		<commons-collections4.version>4.4</commons-collections4.version>
-		<lombok.version>1.16.12</lombok.version>
+		<commons-text.version>1.8</commons-text.version>
+		<lombok.version>1.18.10</lombok.version>
 
 		<!-- logging -->
 		<org.slf4j.version>1.7.21</org.slf4j.version>
@@ -56,12 +68,14 @@
 		<log4j.version>1.2.17</log4j.version>
 
 		<!-- hibernate and in memory database -->
-		<h2.version>1.4.197</h2.version>
-		<!--<hibernate.version>5.4.9</hibernate.version>-->
+		<h2.version>1.4.200</h2.version>
+		<hibernate-core.version>5.4.2.Final</hibernate-core.version>
+		<hibernate-jpamodelgen.version>5.4.10.Final</hibernate-jpamodelgen.version>
 
 		<!-- plugins -->
 		<exec-maven-plugin.version>1.6.0</exec-maven-plugin.version>
-		<maven-compiler-plugin.version>3.7.0</maven-compiler-plugin.version>
+		<maven-compiler-plugin.version>3.8.1</maven-compiler-plugin.version>
+		<versions-maven-plugin.version>2.7</versions-maven-plugin.version>
 
 	</properties>
 
@@ -104,6 +118,11 @@
 			<artifactId>commons-collections4</artifactId>
 			<version>${commons-collections4.version}</version>
 		</dependency>
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-text</artifactId>
+			<version>${commons-text.version}</version>
+		</dependency>
 
 		<!-- logging -->
 		<dependency>
@@ -142,59 +161,67 @@
 
 		<!-- test -->
 		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-test</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-test-autoconfigure</artifactId>
+		</dependency>
+		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
 			<version>${junit.version}</version>
-			<scope>test</scope>
+			<!--<scope>test</scope>-->
 		</dependency>
 		<dependency>
 			<groupId>org.junit.jupiter</groupId>
 			<artifactId>junit-jupiter-engine</artifactId>
 			<version>${junit-jupiter.version}</version>
-			<scope>test</scope>
+			<!--<scope>test</scope>-->
 		</dependency>
 		<dependency>
 			<groupId>org.junit.jupiter</groupId>
 			<artifactId>junit-jupiter-params</artifactId>
 			<version>${junit-jupiter.version}</version>
-			<scope>test</scope>
+			<!--<scope>test</scope>-->
 		</dependency>
 		<dependency>
 			<groupId>org.junit.jupiter</groupId>
 			<artifactId>junit-jupiter-api</artifactId>
 			<version>${junit-jupiter.version}</version>
-			<scope>test</scope>
+			<!--<scope>test</scope>-->
 		</dependency>
 		<dependency>
 			<groupId>org.hamcrest</groupId>
 			<artifactId>hamcrest-core</artifactId>
 			<version>${org.hamcrest.version}</version>
-			<scope>test</scope>
+			<!--<scope>test</scope>-->
 		</dependency>
 		<dependency>
 			<groupId>org.hamcrest</groupId>
 			<artifactId>hamcrest-library</artifactId>
 			<version>${org.hamcrest.version}</version>
-			<scope>test</scope>
+			<!--<scope>test</scope>-->
 		</dependency>
 		<dependency>
 			<groupId>org.hamcrest</groupId>
 			<artifactId>hamcrest-all</artifactId>
 			<version>${org.hamcrest.version}</version>
-			<scope>test</scope>
+			<!--scope>test</scope>-->
 		</dependency>
 		<dependency>
 			<groupId>org.mockito</groupId>
 			<artifactId>mockito-core</artifactId>
 			<version>${mockito.version}</version>
-			<scope>test</scope>
+			<!--scope>test</scope>-->
 		</dependency>
 		<dependency>
 			<groupId>org.apache.maven.surefire</groupId>
 			<artifactId>surefire-logger-api</artifactId>
 			<version>${maven-surefire-plugin.version}</version>
 			<!-- to get around bug https://github.com/junit-team/junit5/issues/801 -->
-			<scope>test</scope>
+			<!--<scope>test</scope>-->
 			<optional>true</optional>
 		</dependency>
 
@@ -210,6 +237,10 @@
 					<artifactId>spring-boot-starter-logging</artifactId>
 				</exclusion>
 			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-thymeleaf</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -232,36 +263,31 @@
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-hateoas</artifactId>
+			<artifactId>spring-boot-starter-validation</artifactId>
 		</dependency>
 
 		<!-- hibernate and in memory database -->
-		<dependency>
+<!--		<dependency>
 			<groupId>org.hibernate</groupId>
 			<artifactId>hibernate-core</artifactId>
-			<version>5.4.2.Final</version>
-		</dependency>
+			<version>${hibernate-core.version}</version>
+		    </dependency>
 		<dependency>
 			<groupId>org.hibernate</groupId>
 			<artifactId>hibernate-jpamodelgen</artifactId>
-			<version>5.4.10.Final</version>
-		</dependency>
+			<version>${hibernate-jpamodelgen.version}</version>
+		</dependency>-->
 		<dependency>
 			<groupId>com.h2database</groupId>
 			<artifactId>h2</artifactId>
 			<version>${h2.version}</version>
 		</dependency>
+		<!-- integrate spring-boot with jpa -->
 		<dependency>
-			<groupId>org.hibernate</groupId>
-			<artifactId>hibernate-validator</artifactId>
-			<version>6.0.16.Final</version>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-data-jpa</artifactId>
 		</dependency>
-		<!-- integrate spring with hibernate -->
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-orm</artifactId>
-			<version>5.1.6.RELEASE</version>
-		</dependency>
+
 		<!-- use Tomcat JDBC Connection Pooling -->
 		<!-- so don't use DriverManagerDataSource from spring any more -->
 		<dependency>
@@ -279,18 +305,22 @@
 		<!-- GraphQL dependencies -->
 		<dependency>
 			<groupId>com.graphql-java-kickstart</groupId>
+			<!-- GraphQL core -->
 			<artifactId>graphql-spring-boot-starter</artifactId>
-			<version>${graphiql-spring-boot-starter.version}</version>
+			<version>${graphql-spring-boot-starter.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>com.graphql-java-kickstart</groupId>
-			<artifactId>graphql-java-tools</artifactId>
-			<version>${graphql-java-tools.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>com.graphql-java-kickstart</groupId>
+			<!-- to embed GraphiQL tool -->
 			<artifactId>graphiql-spring-boot-starter</artifactId>
 			<version>${graphiql-spring-boot-starter.version}</version>
+			<scope>runtime</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.graphql-java-kickstart</groupId>
+			<!-- use the GraphQL schema language to build your graphql-java schema -->
+			<artifactId>graphql-java-tools</artifactId>
+			<version>${graphql-java-tools.version}</version>
 		</dependency>
 
 		<!-- plugins -->
@@ -304,9 +334,28 @@
 
 	<build>
 		<plugins>
+			<!-- plugin for several goals to work with a Spring Boot application -->
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
+				<!-- used dev when spring-boot:run is executed -->
+				<configuration>
+					<profiles>
+						<profile>dev</profile>
+					</profiles>
+				</configuration>
+
+			</plugin>
+			<!-- The MojoHaus project is a collection of plugins for Apache Maven 2 & 3 -->
+			<plugin>
+				<!-- when you want to manage the versions of artifacts in a project's POM -->
+				<!-- mvn versions:display-plugin-updates -->
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>versions-maven-plugin</artifactId>
+				<version>${versions-maven-plugin.version}</version>
+				<configuration>
+					<generateBackupPoms>false</generateBackupPoms>
+				</configuration>
 			</plugin>
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
@@ -321,11 +370,38 @@
 				<artifactId>maven-compiler-plugin</artifactId>
 				<version>${maven-compiler-plugin.version}</version>
 				<configuration>
+					<compilerArgs>
+						<arg>-Xlint:unchecked</arg>
+					</compilerArgs>
 					<source>${java.version}</source>
 					<target>${java.version}</target>
 				</configuration>
 			</plugin>
 		</plugins>
 	</build>
+
+	<profiles>
+		<profile>
+			<id>dev</id>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+			</activation>
+			<properties>
+				<spring.profiles.active>dev</spring.profiles.active>
+			</properties>
+		</profile>
+		<profile>
+			<id>acc</id>
+			<properties>
+				<spring.profiles.active>acc</spring.profiles.active>
+			</properties>
+		</profile>
+		<profile>
+			<id>prod</id>
+			<properties>
+				<spring.profiles.active>prd</spring.profiles.active>
+			</properties>
+		</profile>
+	</profiles>
 
 </project>

@@ -1,7 +1,5 @@
 package cloud.qasino.card.entity.enums;
 
-import cloud.qasino.card.entity.Player;
-import cloud.qasino.card.entity.enums.enumlabel.LabeledEnum;
 import lombok.Getter;
 
 import javax.persistence.Column;
@@ -11,28 +9,10 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-/**
- * <H1>AIlevel</H1> Artificial Intelligence level for simulation human-like intelligence to
- * {@link Player}s that are bots. AiLevel is an enum
- * since the levels are a predefined list of values.
- * AIlevels that can be used are
- * <ul>
- * <li> {@link #SMART}
- * <li> {@link #MEDIUM}
- * <li> {@link #DUMB}
- * <li> {@link #HUMAN}
- * <li> {@link #NONE}
- * </ul>
- *
- * @author Klaas van der Meulen
- * @version 1.0
- * @since v1 - console game
- */
-
 @Getter
 public enum AiLevel implements LabeledEnum {
 
-    @Column(name = "AI_LEVEL", length = 10, nullable = false)
+    @Column(name = "aiLevel", length = 10, nullable = false)
     DUMB("Dumb"), MEDIUM("Medium"), SMART("Smart"), HUMAN("Human"), NONE("None");
     
     /**

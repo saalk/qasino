@@ -1,7 +1,6 @@
 package cloud.qasino.card.entity.enums;
 
 import lombok.Getter;
-import cloud.qasino.card.entity.enums.enumlabel.LabeledEnum;
 
 import javax.persistence.Column;
 import javax.persistence.Transient;
@@ -13,8 +12,9 @@ import java.util.Set;
 @Getter
 public enum CardLocation implements LabeledEnum {
 	
-	@Column(name = "CARD_LOCATION", length = 25, nullable = false)
-	STACK("Stock"), HAND("Hand"), DRAW_PILE("Draw pile"), TABLE("Center stock"), DISCARD_PILE("Discard pile");
+	@Column(name = "cardLocation", length = 25, nullable = false)
+	STACK("Stack"), HAND("Hand"), DRAW_PILE("Draw pile"), TABLE("Center stock"), DISCARD_PILE(
+			"Discard pile");
 	
 	/**
 	 * A list of all the Enums in the class. The list is created via Set implementation EnumSet.

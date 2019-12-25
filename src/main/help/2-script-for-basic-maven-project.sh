@@ -9,7 +9,7 @@
 # 1: Archetype is a Maven project templating toolkit - to create a new project based on an archetype 
 #    - use mvn archetype:generate
 #	 - use eg. -DarchetypeArtifactId=mamaven-archetype-webapp to generate a sample Maven Webapp project
-#    - example: mvn archetype:generate -DgroupId=nl.deknik -DartifactId=CardGamesAPI -DarchetypeArtifactId=maven-archetype-webapp -DinteractiveMode=false
+#    - entity: mvn archetype:generate -DgroupId=nl.deknik -DartifactId=CardGamesAPI -DarchetypeArtifactId=maven-archetype-webapp -DinteractiveMode=false
 #
 echo "1: make archetype for webapp"
 mvn archetype:generate -DgroupId=nl.deknik -DartifactId=CardGamesAPI -DarchetypeArtifactId=maven-archetype-webapp -DinteractiveMode=false
