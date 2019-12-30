@@ -71,6 +71,7 @@ public class Player {
     private List<PlayingCard> playingCards = new ArrayList<>();
 
     public Player(User user, Game game, Boolean human) {
+
         LocalDateTime localDateAndTime = LocalDateTime.now();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd-HH:mm-ssSSS-nnnnnnnnn");
         String result = localDateAndTime.format(formatter);
@@ -78,6 +79,7 @@ public class Player {
         this.user = user;
         this.game = game;
         this.human = human;
+        this.aiLevel = AiLevel.MEDIUM;
     }
 
     public Player(User user, Game game, Boolean human, String avatar, AiLevel aiLevel) {

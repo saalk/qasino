@@ -29,11 +29,11 @@ public class User {
 
     // Normal fields
 
-    @Column(name = "alias", length = 50, nullable = false)
+    @Column(name = "alias", length = 50, nullable = true)
     //@NotBlank(message = "Alias is mandatory")
     private String alias;
 
-    @Column(name = "email", length = 50)
+    @Column(name = "email", length = 50, nullable = true)
     //@NotBlank(message = "Email is mandatory")
     private String email;
 

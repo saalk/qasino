@@ -1,11 +1,11 @@
 import Auth from "@okta/okta-vue";
 import Vue from 'vue'
 import Router from 'vue-router'
-import Todos from './components/Todos'
+import Users from './components/Users'
 
 Vue.use(Auth, {
-  issuer: 'https://dev-533919.oktapreview.com/oauth2/default',
-  client_id: '0oahce83sj710O5vQ0h7',
+  issuer: 'https://dev-341668.okta.com/oauth2/default',
+  client_id: '0oa2cvcr95Wo6NTfK357',
   redirect_uri: 'http://localhost:8080/implicit/callback',
   scope: 'openid profile email'
 });
@@ -17,10 +17,10 @@ let router = new Router({
   routes: [
     {
       path: '/',
-      name: 'Todos',
-      component: Todos,
+      name: 'Users',
+      component: Users,
       meta: {
-        requiresAuth: true
+        requiresAuth: false // TODO test with true
       }
     },
     {

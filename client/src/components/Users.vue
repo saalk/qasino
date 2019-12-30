@@ -1,42 +1,42 @@
 <template>
     <div>
-        <h1 class="title">Todos</h1>
+        <h1 class="title">Users</h1>
         <h1 class="email">{{userEmail}}</h1>
-        <section class="todoapp">
+        <section class="userapp">
             <div v-if="loading">
                 <h1 class="loading">Loading...</h1>
             </div>
             <div v-else>
                 <header class="header">
-                    <input class="new-todo"
+                    <input class="new-user"
                            autofocus autocomplete="off"
                            :placeholder="this.inputPlaceholder"
-                           v-model="newTodo"
-                           @keyup.enter="addTodo">
+                           v-model="newUser"
+                           @keyup.enter="addUser">
                 </header>
-                <section class="main" v-show="todos.length" v-cloak>
+                <section class="main" v-show="users.length" v-cloak>
                     <input class="toggle-all" type="checkbox" v-model="allDone">
-                    <ul class="todo-list">
-                        <li v-for="todo in filteredTodos"
-                            class="todo"
-                            :key="todo.id"
-                            :class="{ completed: todo.completed, editing: todo == editedTodo }">
+                    <ul class="user-list">
+                        <li v-for="user in filteredUsers"
+                            class="user"
+                            :key="user.userId "
+                            :class="{ completed: user.fiches, editing: user == editedUser }">
                             <div class="view">
-                                <input class="toggle" type="checkbox" v-model="todo.completed" @change="completeTodo(todo)">
-                                <label @dblclick="editTodo(todo)">{{ todo.title }}</label>
-                                <button class="destroy" @click="removeTodo(todo)"></button>
+                                <input class="toggle" type="checkbox" v-model="user.fiches" @change="completeUser(user)">
+                                <label @dblclick="editUser(user)">{{ user.alias }}</label>
+                                <button class="destroy" @click="removeUser(user)"></button>
                             </div>
                             <input class="edit" type="text"
-                                   v-model="todo.title"
-                                   v-todo-focus="todo == editedTodo"
-                                   @blur="doneEdit(todo)"
-                                   @keyup.enter="doneEdit(todo)"
-                                   @keyup.esc="cancelEdit(todo)">
+                                   v-model="user.alias"
+                                   v-user-focus="user == editedUser"
+                                   @blur="doneEdit(user)"
+                                   @keyup.enter="doneEdit(user)"
+                                   @keyup.esc="cancelEdit(user)">
                         </li>
                     </ul>
                 </section>
-                <footer class="footer" v-show="todos.length" v-cloak>
-          <span class="todo-count">
+                <footer class="footer" v-show="users.length" v-cloak>
+          <span class="user-count">
             <strong>{{ remaining }}</strong> {{ remaining | pluralize }} left
           </span>
                     <ul class="filters">
@@ -44,7 +44,7 @@
                         <li><a href="#/active" @click="setVisibility('active')" :class="{ selected: visibility == 'active' }">Active</a></li>
                         <li><a href="#/completed" @click="setVisibility('completed')" :class="{ selected: visibility == 'completed' }">Completed</a></li>
                     </ul>
-                    <button class="clear-completed" @click="removeCompleted" v-show="todos.length > remaining">
+                    <button class="clear-completed" @click="removeCompleted" v-show="users.length > remaining">
                         Clear completed
                     </button>
                 </footer>
@@ -62,25 +62,25 @@
 
   // visibility filters
   let filters = {
-    all: function (todos) {
-      return todos
+    all: function (users) {
+      return users
     },
-    active: function (todos) {
-      return todos.filter(function (todo) {
-        return !todo.completed
+    active: function (users) {
+      return users.filter(function (user) {
+        return !user.fiches
       })
     },
-    completed: function (todos) {
-      return todos.filter(function (todo) {
-        return todo.completed
+    completed: function (users) {
+      return users.filter(function (user) {
+        return user.fiches
       })
     }
   }
 
   // app Vue instance
-  const Todos = {
+  const Users = {
 
-    name: 'Todos',
+    name: 'Users',
 
     props: {
       activeUser: Object
@@ -89,9 +89,9 @@
     // app initial state
     data: function() {
       return {
-        todos: [],
-        newTodo: '',
-        editedTodo: null,
+        users: [],
+        newUser: '',
+        editedUser: null,
         visibility: 'all',
         loading: true,
         error: null,
@@ -102,11 +102,11 @@
       api.getAll()
         .then(response => {
           this.$log.debug("Data loaded: ", response.data)
-          this.todos = response.data
+          this.users = response.data
         })
         .catch(error => {
           this.$log.debug(error)
-          this.error = "Failed to load todos"
+          this.error = "Failed to load users"
         })
         .finally(() => this.loading = false)
     },
@@ -114,19 +114,19 @@
     // computed properties
     // http://vuejs.org/guide/computed.html
     computed: {
-      filteredTodos: function () {
-        return filters[this.visibility](this.todos)
+      filteredUsers: function () {
+        return filters[this.visibility](this.users)
       },
       remaining: function () {
-        return filters.active(this.todos).length
+        return filters.active(this.users).length
       },
       allDone: {
         get: function () {
           return this.remaining === 0
         },
         set: function (value) {
-          this.todos.forEach(function (todo) {
-            todo.completed = value
+          this.users.forEach(function (user) {
+            user.fiches = value
           })
         }
       },
@@ -149,82 +149,82 @@
 
     methods: {
 
-      addTodo: function () {
-        var value = this.newTodo && this.newTodo.trim()
+      addUser: function () {
+        var value = this.newUser && this.newUser.trim()
         if (!value) {
           return
         }
 
         api.createNew(value, false).then( (response) => {
           this.$log.debug("New item created:", response);
-          this.todos.push({
-            id: response.data.id,
+          this.users.push({
+            id: response.data.userId ,
             title: value,
             completed: false
           })
         }).catch((error) => {
           this.$log.debug(error);
-          this.error = "Failed to add todo"
+          this.error = "Failed to add user"
         });
 
-        this.newTodo = ''
+        this.newUser = ''
       },
 
       setVisibility: function(vis) {
         this.visibility = vis
       },
 
-      completeTodo (todo) {
-        api.updateForId(todo.id, todo.title, todo.completed).then((response) => {
+      completeUser (user) {
+        api.updateForId(user.userId , user.alias, user.fiches).then((response) => {
           this.$log.info("Item updated:", response.data);
         }).catch((error) => {
           this.$log.debug(error)
-          todo.completed = !todo.completed
-          this.error = "Failed to update todo"
+          user.fiches = !user.fiches
+          this.error = "Failed to update user"
         });
       },
-      removeTodo: function (todo) { // notice NOT using "=>" syntax
-        api.removeForId(todo.id).then(() => { // notice AM using "=>" syntax
-          this.$log.debug("Item removed:", todo);
-          this.todos.splice(this.todos.indexOf(todo), 1)
+      removeUser: function (user) { // notice NOT using "=>" syntax
+        api.removeForId(user.userId ).then(() => { // notice AM using "=>" syntax
+          this.$log.debug("Item removed:", user);
+          this.users.splice(this.users.indexOf(user), 1)
         }).catch((error) => {
           this.$log.debug(error);
-          this.error = "Failed to remove todo"
+          this.error = "Failed to remove user"
         });
       },
 
-      editTodo: function (todo) {
-        this.beforeEditCache = todo.title
-        this.editedTodo = todo
+      editUser: function (user) {
+        this.beforeEditCache = user.alias
+        this.editedUser = user
       },
 
-      doneEdit: function (todo) {
-        if (!this.editedTodo) {
+      doneEdit: function (user) {
+        if (!this.editedUser) {
           return
         }
-        this.$log.info("Item updated:", todo);
-        api.updateForId(todo.id, todo.title.trim(), todo.completed).then((response) => {
+        this.$log.info("Item updated:", user);
+        api.updateForId(user.userId , user.alias.trim(), user.fiches).then((response) => {
           this.$log.info("Item updated:", response.data);
-          this.editedTodo = null
-          todo.title = todo.title.trim()
+          this.editedUser = null
+          user.alias = user.alias.trim()
         }).catch((error) => {
           this.$log.debug(error)
-          this.cancelEdit(todo)
-          this.error = "Failed to update todo"
+          this.cancelEdit(user)
+          this.error = "Failed to update user"
         });
 
-        if (!todo.title) {
-          this.removeTodo(todo)
+        if (!user.alias) {
+          this.removeUser(user)
         }
       },
 
-      cancelEdit: function (todo) {
-        this.editedTodo = null
-        todo.title = this.beforeEditCache
+      cancelEdit: function (user) {
+        this.editedUser = null
+        user.alias = this.beforeEditCache
       },
 
       removeCompleted: function () {
-        this.todos = filters.active(this.todos)
+        this.users = filters.active(this.users)
       },
 
       handleErrorClick: function () {
@@ -237,7 +237,7 @@
     // before focusing on the input field.
     // http://vuejs.org/guide/custom-directive.html
     directives: {
-      'todo-focus': function (el, binding) {
+      'user-focus': function (el, binding) {
         if (binding.value) {
           el.focus()
         }
@@ -245,7 +245,7 @@
     }
   }
 
-  export default Todos
+  export default Users
 
 </script>
 

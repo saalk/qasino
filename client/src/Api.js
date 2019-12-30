@@ -1,7 +1,7 @@
 import axios from 'axios'
 import Vue from 'vue'
 
-const SERVER_URL = 'http://localhost:9000';
+const SERVER_URL = 'http://localhost:9000/qasino/';
 
 const instance = axios.create({
   baseURL: SERVER_URL,
@@ -25,23 +25,23 @@ export default {
 
   // (C)reate
   createNew(text, completed) {
-    return this.execute('POST', 'todos', {title: text, completed: completed})
+    return this.execute('POST', 'users', {title: text, completed: completed})
   },
   // (R)ead
   getAll() {
-    return this.execute('GET','todos', null, {
+    return this.execute('GET','users', null, {
       transformResponse: [function (data) {
-        return data? JSON.parse(data)._embedded.todos : data;
+        return data? JSON.parse(data)._embedded.users : data;
       }]
     })
   },
   // (U)pdate
   updateForId(id, text, completed) {
-    return this.execute('PUT', 'todos/' + id, { title: text, completed: completed })
+    return this.execute('PUT', 'users/' + id, { title: text, completed: completed })
   },
 
   // (D)elete
   removeForId(id) {
-    return this.execute('DELETE', 'todos/'+id)
+    return this.execute('DELETE', 'users/'+id)
   }
 }

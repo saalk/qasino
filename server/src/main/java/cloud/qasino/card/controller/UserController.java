@@ -6,10 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
@@ -24,48 +21,59 @@ public class UserController {
         this.userRepository = userRepository;
     }
 
-    @GetMapping("/signup")
-    public String showSignUpForm(User user) {
-        return "add-user";
-    }
+    // normal CRUD
 
-    @PostMapping("/adduser")
-    public String addUser(@Valid User user, BindingResult result, Model model) {
+    @PostMapping(value = "/users/{alias}", params={"email"})
+    public String addUser(
+            @PathVariable("alias") String alias,
+            @RequestParam("email") String email,
+            BindingResult result,
+            Model model) {
 
         if (result.hasErrors()) {
-            return "add-user";
+            return "users";
         }
 
-        User localUser = new User(user.getAlias(), user.getEmail());
-        userRepository.save(localUser);
+        User user = new User(alias, email);
+        userRepository.save(user);
 
         model.addAttribute("users", userRepository.findAll());
         return "index";
     }
 
-    @GetMapping("/edit/{id}")
+    @GetMapping("/users/{id}")
     public String showUpdateForm(@PathVariable("id") int id, Model model) {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid user Id:" + id));
 
         model.addAttribute("user", user);
-        return "update-user";
+        return "users";
     }
 
-    @PostMapping("/update/{id}")
-    public String updateUser(@PathVariable("id") int id, @Valid User user,
-                             BindingResult result, Model model) {
+    @PostMapping(value = "/users/{id}", params={"alias", "email"})
+    public String updateUser(
+            @PathVariable("id") int id,
+            @RequestParam("alias") String alias,
+            @RequestParam("email") String email,
+            BindingResult result,
+            Model model) {
+
         if (result.hasErrors()) {
-            user.setUserId(id);
-            return "update-user";
+            return "users";
         }
+
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Invalid user Id:" + id));
+
+        user.setAlias(alias);
+        user.setEmail(email);
 
         userRepository.save(user);
         model.addAttribute("users", userRepository.findAll());
         return "index";
     }
 
-    @GetMapping("/delete/{id}")
+    @DeleteMapping("/users/{id}")
     public String deleteUser(@PathVariable("id") int id, Model model) {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid user Id:" + id));
