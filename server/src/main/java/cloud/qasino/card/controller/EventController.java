@@ -71,7 +71,7 @@ public class EventController {
             eventRepository.save(event);
         }
 
-        model.addAttribute("events", eventRepository.findAllForGameId(gameId));
+        model.addAttribute("events", eventRepository.findByGameId(gameId));
         if (result.hasErrors()) {
             return "events";
         }
@@ -79,8 +79,8 @@ public class EventController {
     }
 
     //PLAY,		 	// PLayers are playing the Game
-    @PostMapping(value = "/game/{gameid}/player/{playerid}/move/{move}", params = {"roundNumber",
-            "moveNumber", "bet"})
+    @PostMapping(value = "/game/{gameId}/player/{playerId}/move/{move}", params = {"cardId",
+            "roundNumber","moveNumber","bet"})
     public String startGame(
             @PathVariable("gameId") int gameId,
             @PathVariable("playerId") int playerId,
@@ -105,7 +105,7 @@ public class EventController {
         event.setBet(bet);
 
         eventRepository.save(event);
-        model.addAttribute("events", eventRepository.findAllForGameId(gameId));
+        model.addAttribute("events", eventRepository.findByGameId(gameId));
 
         if (result.hasErrors()) {
             return "events";

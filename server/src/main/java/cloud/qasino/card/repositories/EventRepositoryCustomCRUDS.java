@@ -9,14 +9,8 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 import java.util.stream.Stream;
 
-@Repository
-public interface EventRepository extends CrudRepository<Event, Integer>, EventRepositoryCustomCRUDS {
+public interface EventRepositoryCustomCRUDS {
 
     List<Event> findByGameId(int gameId);
-
-    @Query("select e from Event e where e.gameId = :gameId")
-    Stream<Event> findByGameIdReturnStream(@Param("gameId") int gameId);
-
-    // I have a complicated logic, no idea how to implement with @Query ...
 
 }
