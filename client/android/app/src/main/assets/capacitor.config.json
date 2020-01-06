@@ -1,0 +1,8 @@
+{
+  "appId": "cloud.qasino.card",
+  "appName": "Filmzoeker",
+  "bundledWebRuntime": false,
+  "npmClient": "yarn",
+  "webDir": "dist",
+  "cordova": {}
+}

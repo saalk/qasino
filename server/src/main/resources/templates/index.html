@@ -41,7 +41,7 @@
             <ul>
                 <li style="list-style-type:none" v-for="user in users">
                     <user-card
-                            v-bind:user="user" v-bind:key="user.id">
+                            v-bind:user="user" v-bind:key="user.userId">
                     </user-card>
                 </li>
             </ul>
@@ -86,8 +86,8 @@
         el: '#contents',
         data: {
             users: [
-                {id: "1", alias: "Lionel Messi", email: "Argentina's superstar"},
-                {id: "2", alias: "Christiano Ronaldo", email: "Portugal top-ranked user"}
+                {userId: "1", alias: "Lionel Messi", email: "Argentina's superstar"},
+                {userId: "2", alias: "Christiano Ronaldo", email: "Portugal top-ranked user"}
             ]
         }
     });

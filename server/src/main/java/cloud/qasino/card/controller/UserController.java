@@ -4,11 +4,12 @@ import cloud.qasino.card.entity.User;
 import cloud.qasino.card.repositories.UserRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import javax.validation.Valid;
+import java.net.URI;
+import java.util.Optional;
 
 @Slf4j
 @RestController
@@ -24,61 +25,83 @@ public class UserController {
     // normal CRUD
 
     @PostMapping(value = "/users/{alias}", params={"email"})
-    public String addUser(
+    public ResponseEntity<User> addUser(
             @PathVariable("alias") String alias,
-            @RequestParam("email") String email,
-            BindingResult result,
-            Model model) {
+            @RequestParam("email") String email
+            //,BindingResult result
+            //,Model model
+            ) {
 
-        if (result.hasErrors()) {
-            return "users";
+        // if (result.hasErrors()) {return "users"; }
+
+        User createdUser = userRepository.save(new User(alias, email));
+        if (createdUser == null) {
+            return ResponseEntity.notFound().build();
+        } else {
+            URI uri = ServletUriComponentsBuilder.fromCurrentRequest()
+                    .path("/{id}")
+                    .buildAndExpand(createdUser.getUserId())
+                    .toUri();
+
+            return ResponseEntity.created(uri).body(createdUser);
+
+            // model.addAttribute("users", userRepository.findAll());
+            // return "index";
         }
-
-        User user = new User(alias, email);
-        userRepository.save(user);
-
-        model.addAttribute("users", userRepository.findAll());
-        return "index";
     }
 
     @GetMapping("/users/{id}")
-    public String showUpdateForm(@PathVariable("id") int id, Model model) {
-        User user = userRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Invalid user Id:" + id));
+    public ResponseEntity<Optional<User>> getUser(
+            @PathVariable("id") int id
+            //, Model model
+            ) {
+        if (!userRepository.existsById(id)) {
+            return ResponseEntity.notFound().build();
+        } else {
+            Optional<User> foundUser = userRepository.findById(id);
+            return ResponseEntity.ok(foundUser);
+        }
 
-        model.addAttribute("user", user);
-        return "users";
+        // model.addAttribute("user", user);
+        // return "users";
     }
 
     @PostMapping(value = "/users/{id}", params={"alias", "email"})
-    public String updateUser(
+    public ResponseEntity<User> updateUser(
             @PathVariable("id") int id,
             @RequestParam("alias") String alias,
-            @RequestParam("email") String email,
-            BindingResult result,
-            Model model) {
+            @RequestParam("email") String email
+            //,BindingResult result
+            //,Model model
+            ) {
+        // if (result.hasErrors()) {return "users"; }
 
-        if (result.hasErrors()) {
-            return "users";
+        Optional<User> foundUser = userRepository.findById(id);
+
+        if (foundUser == null) {
+            return ResponseEntity.notFound().build();
+        } else {
+            User updateUser = foundUser.get();
+            updateUser.setAlias(alias);
+            updateUser.setEmail(email);
+            userRepository.save(updateUser);
+
+            return ResponseEntity.ok(updateUser);
         }
 
-        User user = userRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Invalid user Id:" + id));
-
-        user.setAlias(alias);
-        user.setEmail(email);
-
-        userRepository.save(user);
-        model.addAttribute("users", userRepository.findAll());
-        return "index";
+        // model.addAttribute("users", userRepository.findAll());
+        // return "index";
     }
 
     @DeleteMapping("/users/{id}")
-    public String deleteUser(@PathVariable("id") int id, Model model) {
-        User user = userRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Invalid user Id:" + id));
-        userRepository.delete(user);
-        model.addAttribute("users", userRepository.findAll());
-        return "index";
+    public ResponseEntity<User> deleteUser(
+            @PathVariable("id") int id
+            // ,Model model
+            ) {
+        userRepository.deleteById(id);
+
+        return ResponseEntity.noContent().build();
+        // model.addAttribute("users", userRepository.findAll());
+        //return "index";
     }
 }

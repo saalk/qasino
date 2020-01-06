@@ -1,30 +1,87 @@
 <template>
-  <div id="app">
-    <router-view :activeUser="activeUser"/>
-    <footer class="info">
-      <p v-if="activeUser" class="logout-link"><a @click="handleLogout" href="#">Logout</a></p>
-      <p>Based on a project written by <a href="http://evanyou.me">Evan You</a></p>
-      <p>Original Vue TodoApp project is <a href="https://vuejs.org/v2/examples/todomvc.html">here</a></p>
-      <p>Modified for this tutorial by Andrew Hughes</p>
-    </footer>
-  </div>
+<ion-app>
+    <v-app>
+
+      <TopToolbar></TopToolbar>
+      <BottomNav></BottomNav>
+
+      <v-toolbar app>
+
+        <v-toolbar-title class="headline text-uppercase">
+          <router-link
+          to='/'
+          tag='span'
+          style='cursor: pointer'>
+          Karina's Filmzoeker
+          </router-link>
+        </v-toolbar-title>
+
+        <v-spacer></v-spacer>
+
+        <v-flex xs12 sm6 md3>
+          <v-text-field
+            label='Movie Name'
+            v-model='searchString'
+            >
+          </v-text-field>
+          </v-flex>
+        <v-btn
+          flat
+          :disabled="!dataAvailable"
+          @click="searchMovie"
+        >
+
+         <span class="mr-2">Search</span>
+        </v-btn>
+      </v-toolbar>
+
+      <v-content>
+      <router-view/>
+      </v-content>
+
+    </v-app>
+    </ion-app>
 </template>
 
 <script>
 
-  // app Vue instance
-  const app = {
+export default {
+  name: 'App',
+  components: {
+  },
+  data () {
+    return {
+      searchString: ''
+    }
+  },
+  methods: {
+    searchMovie () {
+      this.$router.push('/search/' + this.searchString)
+      this.searchString = ''
+    }
+  },
+  computed: {
+    dataAvailable () {
+      return this.searchString !== null && this.searchString !== ''
+    }
+  }
+}
+</script>
 
-    name: 'app',
+<style>
 
-    // app initial state
-    data: () => {
-      return {
-        activeUser: null
-      }
-    },
+  [v-cloak] { display: none; }
 
-    async created () {
+</style>
+<!--
+          <footer class="info">
+            <p v-if="activeUser" class="logout-link"><a @click="handleLogout" href="#">Logout</a>
+            </p>
+            <p> &copy; 2020 Saalk@knikit.nl - trying to beat
+            <a href="https://medium.com/@uwehook/sturgeons-law-285c007406db">sturgeon's law</a></p>
+          </footer>
+-->
+<!--    async created () {
       await this.refreshActiveUser()
     },
 
@@ -44,15 +101,4 @@
         this.$router.go('/')
       }
     },
-
-  }
-
-  export default app
-
-</script>
-
-<style>
-
-  [v-cloak] { display: none; }
-
-</style>
+-->
