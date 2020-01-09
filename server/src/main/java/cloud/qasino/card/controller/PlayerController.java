@@ -43,7 +43,7 @@ public class PlayerController {
     @GetMapping(value = "/players/{gameId}}", params = {"human"})
     public ResponseEntity getPlayersByGame(
             @PathVariable("gameId") int gameId,
-            @RequestParam("max") boolean max
+            @RequestParam(name = "human", defaultValue = "true") Boolean human
     ) {
 
         Game game = gameRepository.findById(gameId)
@@ -59,9 +59,7 @@ public class PlayerController {
     public ResponseEntity<Player> addHuman(
             @PathVariable("gameId") int gameId,
             @PathVariable("userId") int userId,
-            @RequestParam("avatar") String avatar,
-            @RequestParam("sequence") int sequence
-    ) {
+            @RequestParam(name = "avatar", defaultValue = "ELF") String avatar) {
         Game foundGame = gameRepository.findById(gameId)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid game Id:" + gameId));
 
@@ -88,7 +86,7 @@ public class PlayerController {
     public ResponseEntity<Player> AddBot(
             @PathVariable("aiLevel") String aiLevel,
             @PathVariable("gameId") int gameId,
-            @RequestParam("avatar") String avatar
+            @RequestParam(name = "avatar", defaultValue = "ELF") String avatar
         ) {
 
         Game foundGame = gameRepository.findById(gameId)
@@ -127,8 +125,8 @@ public class PlayerController {
     @PostMapping(value = "/players/{id}", params={"avatar", "aiLevel"})
     public ResponseEntity<Player> updatePlayer(
             @PathVariable("id") int id,
-            @RequestParam("avatar") String avatar,
-            @RequestParam("aiLevel") String aiLevel
+            @RequestParam(name = "avatar", defaultValue = "ELF") String avatar,
+            @RequestParam(name = "aiLevel", defaultValue = "MEDIUM") String aiLevel
     ) {
 
         Optional<Player> foundPlayer = playerRepository.findById(id);

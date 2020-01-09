@@ -42,23 +42,29 @@ public class UserController {
     }
 
     // C special - default Game and Players (human and bot)
-    @PostMapping(value = "/users/{userId}/game/{type}", params = {"style", "ante"})
+    @PostMapping(value = "/user/{userId}/game/{type}", params = {"style", "ante"})
     public ResponseEntity<Game> setupGame(
             @PathVariable("userId") int userId,
             @PathVariable("type") String type,
-            @RequestParam("style") String style,
-            @RequestParam("ante") int ante
+            @RequestParam(name = "style", defaultValue = "") String style,
+            @RequestParam(name = "ante", defaultValue = "20") Integer ante
     ) {
+        Game startedGame = null;
 
         // check user
         if (!userRepository.existsById(userId)) {
-            return ResponseEntity.notFound().build();
+            URI uri = ServletUriComponentsBuilder.fromCurrentRequest()
+                    .path("/{userId}")
+                    .buildAndExpand(userId)
+                    .toUri();
+
+            return ResponseEntity.created(uri).body(startedGame);
         }
         User foundUser = userRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid user Id:" + userId));
 
         // create game
-        Game startedGame = gameRepository.save(new Game(Type.valueOf(type), style, ante));
+        startedGame = gameRepository.save(new Game(Type.valueOf(type), style, (int) ante));
         if (startedGame == null) {
             return ResponseEntity.notFound().build();
         }
@@ -89,12 +95,13 @@ public class UserController {
 
     // LP
     @GetMapping(value = "/users/all", params = {"max"})
+    @ResponseBody
     public ResponseEntity getAllUser(
-            @RequestParam("max") int max
+            @RequestParam(name = "max", defaultValue = "5") Integer max
     ) {
 
-        max = ((max < 0) || (max > 50)) ? 5 : max;
-        Pageable pageable = PageRequest.of(0, max, Sort.by(
+        int total = ((max < 0) || (max > 50)) ? 5 : max;
+        Pageable pageable = PageRequest.of(0, total, Sort.by(
                 Order.asc("alias"),
                 Order.desc("aliasSequence")));
 
@@ -103,10 +110,10 @@ public class UserController {
     }
 
     // C
-    @PostMapping(value = "/users/{alias}", params = {"email"})
-    public ResponseEntity<User> addUser(
+    @PostMapping(value = "/user/{alias}", params = {"email"})
+    public ResponseEntity addUser(
             @PathVariable("alias") String alias,
-            @RequestParam("email") String email
+            @RequestParam(name = "email", defaultValue = "") String email
     ) {
         int sequence = (int) (userRepository.countByAlias(alias) + 1);
         User createdUser = userRepository.save(new User(alias, sequence, email));
@@ -122,10 +129,9 @@ public class UserController {
     }
 
     // R
-    @GetMapping("/users/{id}")
+    @GetMapping("/user/{id}")
     public ResponseEntity<Optional<User>> getUser(
             @PathVariable("id") int id
-            //, Model model
     ) {
         if (!userRepository.existsById(id)) {
             return ResponseEntity.notFound().build();
@@ -136,11 +142,11 @@ public class UserController {
     }
 
     // U
-    @PostMapping(value = "/users/{id}", params = {"alias", "email"})
+    @PostMapping(value = "/user/{id}", params = {"alias", "email"})
     public ResponseEntity<User> updateUser(
             @PathVariable("id") int id,
-            @RequestParam("alias") String alias,
-            @RequestParam("email") String email
+            @RequestParam(name = "alias", defaultValue = "") String alias,
+            @RequestParam(name = "email", defaultValue = "") String email
     ) {
 
         Optional<User> foundUser = userRepository.findById(id);
@@ -160,10 +166,9 @@ public class UserController {
     }
 
     // D
-    @DeleteMapping("/users/{id}")
+    @DeleteMapping("/user/{id}")
     public ResponseEntity<User> deleteUser(
             @PathVariable("id") int id
-            // ,Model model
     ) {
         userRepository.deleteById(id);
         return ResponseEntity.noContent().build();

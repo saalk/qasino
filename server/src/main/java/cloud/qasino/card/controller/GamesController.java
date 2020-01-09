@@ -46,10 +46,10 @@ public class GamesController {
     @PostMapping(value = "/games/{type}", params = {"style", "ante"})
     public ResponseEntity<Game> startGame(
             @PathVariable("type") String type,
-            @RequestParam("style") String style,
-            @RequestParam("ante") int ante
+            @RequestParam(name = "style", defaultValue = "") String style,
+            @RequestParam(name = "ante", defaultValue = "20") Integer ante
     ) {
-        Game startedGame = gameRepository.save(new Game(Type.valueOf(type), style, ante));
+        Game startedGame = gameRepository.save(new Game(Type.valueOf(type), style, (int) ante));
 
         if (startedGame == null) {
             return ResponseEntity.notFound().build();
@@ -80,8 +80,8 @@ public class GamesController {
     @PostMapping(value = "/games/{id}", params = {"style", "ante"})
     public ResponseEntity<Game> updateGame(
             @PathVariable("id") int id,
-            @RequestParam("style") String style,
-            @RequestParam("ante") int ante
+            @RequestParam(name = "style",  defaultValue = "") String style,
+            @RequestParam(name = "ante",  defaultValue = "20") Integer ante
     ) {
         Optional<Game> foundGame = gameRepository.findById(id);
 
@@ -90,7 +90,7 @@ public class GamesController {
         } else {
             Game updateGame = foundGame.get();
             updateGame.setStyle(style);
-            updateGame.setAnte(ante);
+            updateGame.setAnte((int) ante);
             gameRepository.save(updateGame);
 
             return ResponseEntity.ok(updateGame);
@@ -101,7 +101,7 @@ public class GamesController {
     @PostMapping(value = "/games/{id}/State/{state}")
     public ResponseEntity<Game> updateGame(
             @PathVariable("id") int id,
-            @RequestParam("state") QasinoStateMachine.GameState state
+            @RequestParam(name = "state", defaultValue = "INITIALIZED") QasinoStateMachine.GameState state
     ) {
         Optional<Game> foundGame = gameRepository.findById(id);
 
