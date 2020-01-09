@@ -1,10 +1,8 @@
 package cloud.qasino.card.domain.qasino;
 
-import lombok.Data;
-import lombok.extern.slf4j.Slf4j;
+import lombok.Getter;
 
-@Data
-@Slf4j
+@Getter
 public class Style {
 
     //HILOW_DRINKING_WITH_OPPONENTS(CardGame.HIGHLOW, "Drinking with opponent(s)"),
@@ -39,6 +37,7 @@ public class Style {
     cloud.qasino.card.entity.enums.style.TurnsToWin turnsToWin;
 
     public Style() {
+
         fromStyle("");
     }
 

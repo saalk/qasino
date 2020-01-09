@@ -1,6 +1,7 @@
 package cloud.qasino.card.configuration;
 
 import cloud.qasino.card.entity.User;
+import cloud.qasino.card.repositories.PlayerRepository;
 import cloud.qasino.card.repositories.UserRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -51,14 +52,20 @@ public class GamesApplication {
     }
 
     @Bean
-    ApplicationRunner init(UserRepository repository) {
+    ApplicationRunner init(
+            UserRepository userRepository,
+            PlayerRepository playerRepository
+    ) {
         return args -> {
-            Stream.of("Alias1", "Alias2", "Alias3", "Alias4").forEach(alias -> {
+            Stream.of("Alias", "Alias", "Alias", "Alias").forEach(alias -> {
+                long count = userRepository.countByAlias(alias);
                 User user = new User();
                 user.setAlias(alias);
-                repository.save(user);
+                user.setAliasSequence((int) count);
+                userRepository.save(user);
             });
-            repository.findAll().forEach(System.out::println);
+            userRepository.findAll().forEach(System.out::println);
+
         };
     }
 

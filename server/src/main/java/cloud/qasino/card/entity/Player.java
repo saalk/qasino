@@ -1,9 +1,9 @@
 package cloud.qasino.card.entity;
 
 import cloud.qasino.card.entity.enums.AiLevel;
+import cloud.qasino.card.entity.enums.Avatar;
 import lombok.AccessLevel;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
@@ -14,7 +14,6 @@ import java.util.List;
 
 @Entity
 @Data
-@NoArgsConstructor
 @Table(name = "players", indexes = {@Index(name = "players_index", columnList = "player_id",
         unique = true)})
 public class Player {
@@ -31,15 +30,16 @@ public class Player {
     // Foreign keys
 
     // UsPl: a User can play many Games as a Player
+    // However ai players are no users!
     @ManyToOne(cascade = CascadeType.DETACH)
     @JoinColumn(name = "user_id", referencedColumnName = "user_id", foreignKey = @ForeignKey
-     (name = "fk_user_id"), nullable=false)
+            (name = "fk_user_id"), nullable = true)
     private User user;
 
     // PlGa: many Players can play the same Game
-    @ManyToOne (cascade = CascadeType.DETACH)
+    @ManyToOne(cascade = CascadeType.DETACH)
     @JoinColumn(name = "game_id", referencedColumnName = "game_id", foreignKey = @ForeignKey
-            (name = "fk_game_id"), nullable=false)
+            (name = "fk_game_id"), nullable = false)
     private Game plays;
 
 
@@ -49,9 +49,13 @@ public class Player {
     @Column(name = "is_human")
     private boolean human;
 
-    //@Enumerated(EnumType.STRING)
+    // current sequence of the player in the game
+    @Column(name = "sequence")
+    private int sequence;
+
+    @Enumerated(EnumType.STRING)
     @Column(name = "avatar", nullable = true, length = 50)
-    private String avatar;
+    private Avatar avatar;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "ai_level", nullable = true, length = 50)
@@ -61,31 +65,38 @@ public class Player {
     // References
 
     // GaWi: one Player is the Winner of the Game in the end
-    @OneToOne (mappedBy="winner", cascade = CascadeType.DETACH)
+    @OneToOne(mappedBy = "winner", cascade = CascadeType.DETACH)
     // just a reference the fk column is in game not here!
     private Game game = new Game();
 
     // HO: A Player holds one or more PlayingCard after dealing
-    @OneToMany (mappedBy="hand", cascade = CascadeType.DETACH)
+    @OneToMany(mappedBy = "hand", cascade = CascadeType.DETACH)
     // just a reference, the actual fk column is in game not here !
     private List<PlayingCard> playingCards = new ArrayList<>();
 
-    public Player(User user, Game game, Boolean human) {
-
+    public Player() {
         LocalDateTime localDateAndTime = LocalDateTime.now();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd-HH:mm-ssSSS-nnnnnnnnn");
         String result = localDateAndTime.format(formatter);
         this.created = result.substring(2, 20);
-        this.user = user;
-        this.game = game;
-        this.human = human;
-        this.aiLevel = AiLevel.MEDIUM;
+        this.sequence = 1;
     }
 
-    public Player(User user, Game game, Boolean human, String avatar, AiLevel aiLevel) {
-        this(user, game, human);
+    public Player(User user, Game game, int sequence) {
+        this();
+        this.user = user;
+        this.game = game;
+        this.human = true;
+        this.sequence = sequence;
+        this.aiLevel = AiLevel.HUMAN;
+    }
+
+    public Player(User user, Game game, int sequence, Avatar avatar, AiLevel aiLevel) {
+        this(user, game, sequence);
+
         this.avatar = avatar;
         this.aiLevel = aiLevel;
+        this.human = humanOrNot(aiLevel);
     }
 
     @Override
@@ -96,10 +107,16 @@ public class Player {
                 // fk
                 ", userId='" + user.getUserId() + '\'' +
                 ", gameId='" + game.getGameId() + '\'' + // todo fix
+
                 ", human=" + human +
+                ", sequence=" + sequence +
                 ", avatar='" + avatar + '\'' +
                 ", aiLevel='" + aiLevel + '\'' +
                 '}';
+    }
+
+    public boolean humanOrNot(AiLevel aiLevel) {
+        return AiLevel.HUMAN.equals(aiLevel);
     }
 }
 

@@ -4,14 +4,19 @@ import cloud.qasino.card.entity.Game;
 import cloud.qasino.card.entity.Player;
 import cloud.qasino.card.entity.User;
 import cloud.qasino.card.entity.enums.AiLevel;
+import cloud.qasino.card.entity.enums.Avatar;
 import cloud.qasino.card.repositories.GameRepository;
 import cloud.qasino.card.repositories.PlayerRepository;
 import cloud.qasino.card.repositories.UserRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+
+import java.net.URI;
+import java.util.ArrayList;
+import java.util.Optional;
 
 @Slf4j
 @RestController
@@ -34,69 +39,146 @@ public class PlayerController {
 
     // normal CRUD
 
-    @PostMapping(value = "/players/{human}", params={"userId","gameId"})
-    public String addPlayer(
-            @PathVariable("human") Boolean human,
-            @RequestParam("userId") int userId,
-            @RequestParam("gameId") int gameId,
-            BindingResult result,
-            Model model) {
-
-        if (result.hasErrors()) {
-            return "players";
-        }
-
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new IllegalArgumentException("Invalid user Id:" + userId));
+    // L
+    @GetMapping(value = "/players/{gameId}}", params = {"human"})
+    public ResponseEntity getPlayersByGame(
+            @PathVariable("gameId") int gameId,
+            @RequestParam("max") boolean max
+    ) {
 
         Game game = gameRepository.findById(gameId)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid game Id:" + gameId));
 
-        Player player = new Player(user, game, human);
-        playerRepository.save(player);
-
-        model.addAttribute("players", playerRepository.findAll());
-        return "index";
+        ArrayList players = (ArrayList) playerRepository.findByGameOrderBySequenceAsc(game);
+        // todo add human
+        return ResponseEntity.ok(players);
     }
 
+    // C special - add a Player based on a User (always a human) to Game
+    @PostMapping(value = "players/games/{gameId}/users{userId}", params = {"avatar"})
+    public ResponseEntity<Player> addHuman(
+            @PathVariable("gameId") int gameId,
+            @PathVariable("userId") int userId,
+            @RequestParam("avatar") String avatar,
+            @RequestParam("sequence") int sequence
+    ) {
+        Game foundGame = gameRepository.findById(gameId)
+                .orElseThrow(() -> new IllegalArgumentException("Invalid game Id:" + gameId));
+
+        User foundUser = userRepository.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("Invalid user Id:" + userId));
+
+        int sequenceCalculated = playerRepository.countByGame(foundGame) + 1;
+        Player createdPlayer = playerRepository.save(new Player(foundUser, foundGame, sequenceCalculated,
+                Avatar.fromLabel(avatar),AiLevel.HUMAN));
+        if (createdPlayer == null) {
+            return ResponseEntity.notFound().build();
+        } else {
+            URI uri = ServletUriComponentsBuilder.fromCurrentRequest()
+                    .path("/{id}")
+                    .buildAndExpand(createdPlayer.getPlayerId())
+                    .toUri();
+
+            return ResponseEntity.created(uri).body(createdPlayer);
+        }
+    }
+
+    // C special - add a PLayer not based on a User (always a bot) to Game
+    @PostMapping(value = "/players/{aiLevel}/games/{gameId}", params={"avatar"})
+    public ResponseEntity<Player> AddBot(
+            @PathVariable("aiLevel") String aiLevel,
+            @PathVariable("gameId") int gameId,
+            @RequestParam("avatar") String avatar
+        ) {
+
+        Game foundGame = gameRepository.findById(gameId)
+                .orElseThrow(() -> new IllegalArgumentException("Invalid game Id:" + gameId));
+
+        int sequenceCalculated = playerRepository.countByGame(foundGame) + 1;
+
+        Player createdPlayer = playerRepository.save(new Player(null, foundGame, sequenceCalculated,Avatar.fromLabel(avatar),
+                AiLevel.fromLabel(aiLevel)));
+        if (createdPlayer == null) {
+            return ResponseEntity.notFound().build();
+        } else {
+            URI uri = ServletUriComponentsBuilder.fromCurrentRequest()
+                    .path("/{id}")
+                    .buildAndExpand(createdPlayer.getPlayerId())
+                    .toUri();
+
+            return ResponseEntity.created(uri).body(createdPlayer);
+        }
+    }
+
+    // R
     @GetMapping("/players/{id}")
-    public String showUpdateForm(@PathVariable("id") int id, Model model) {
-        Player player = playerRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Invalid player Id:" + id));
-
-        model.addAttribute("player", player);
-        return "players";
+    public ResponseEntity<Optional<Player>> getPlayer(
+            @PathVariable("id") int id
+    ) {
+        if (!playerRepository.existsById(id)) {
+            return ResponseEntity.notFound().build();
+        } else {
+            Optional<Player> foundPlayer = playerRepository.findById(id);
+            return ResponseEntity.ok(foundPlayer);
+        }
     }
 
+    // U
     @PostMapping(value = "/players/{id}", params={"avatar", "aiLevel"})
-    public String updatePlayer(
+    public ResponseEntity<Player> updatePlayer(
             @PathVariable("id") int id,
             @RequestParam("avatar") String avatar,
-            @RequestParam("aiLevel") String aiLevel,
-            BindingResult result,
-            Model model) {
+            @RequestParam("aiLevel") String aiLevel
+    ) {
 
-        if (result.hasErrors()) {
-            return "players";
+        Optional<Player> foundPlayer = playerRepository.findById(id);
+
+        if (foundPlayer == null) {
+            return ResponseEntity.notFound().build();
+        } else {
+
+            Player updatePlayer = foundPlayer.get();
+            updatePlayer.setAvatar(Avatar.fromLabel(avatar));
+            updatePlayer.setAiLevel(AiLevel.fromLabel(aiLevel));
+            playerRepository.save(updatePlayer);
+
+            return ResponseEntity.ok(updatePlayer);
         }
-
-        Player player = playerRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Invalid player Id:" + id));
-
-        player.setAvatar(avatar);
-        player.setAiLevel(AiLevel.fromLabel(aiLevel));
-
-        playerRepository.save(player);
-        model.addAttribute("players", playerRepository.findAll());
-        return "index";
     }
 
+    // U special - move sequence up or down
+    @PostMapping(value = "/players/{id}/{sequence}")
+    public ResponseEntity<Player> updateSequence(
+            @PathVariable("id") int id,
+            @PathVariable("sequence") String sequence
+    ) {
+
+        Optional<Player> foundPlayer = playerRepository.findById(id);
+
+        if (foundPlayer == null) {
+            return ResponseEntity.notFound().build();
+        } else {
+
+            Player updatePlayer = foundPlayer.get();
+            // todo check actions and update others
+            if (sequence.startsWith("U")) {
+                updatePlayer.setSequence(updatePlayer.getSequence() - 1);
+            } else {
+                updatePlayer.setSequence(updatePlayer.getSequence() + 1);
+            }
+
+            playerRepository.save(updatePlayer);
+            return ResponseEntity.ok(updatePlayer);
+        }
+    }
+
+    // D
     @DeleteMapping("/players/{id}")
-    public String deletePlayer(@PathVariable("id") int id, Model model) {
-        Player player = playerRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Invalid player Id:" + id));
-        playerRepository.delete(player);
-        model.addAttribute("players", playerRepository.findAll());
-        return "index";
+    public ResponseEntity<Player> deletePlayer(
+            @PathVariable("id") int id
+            // ,Model model
+    ) {
+        playerRepository.deleteById(id);
+        return ResponseEntity.noContent().build();
     }
 }

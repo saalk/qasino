@@ -1,6 +1,7 @@
 package cloud.qasino.card.entity;
 
 import cloud.qasino.card.domain.qasino.Card;
+import cloud.qasino.card.domain.qasino.Style;
 import cloud.qasino.card.entity.enums.Move;
 import cloud.qasino.card.entity.enums.Type;
 import cloud.qasino.card.statemachine.QasinoStateMachine;
@@ -66,32 +67,44 @@ public class Game {
 	private List<Player> players = new ArrayList<>();
 
 	public Game() {
-	}
-
-	public Game(Type type) {
-		this();
 		LocalDateTime localDateAndTime = LocalDateTime.now();
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd-HH:mm-ssSSS-nnnnnnnnn");
 		String result = localDateAndTime.format(formatter);
 		this.created = result.substring(2, 20);
+
 		this.state = QasinoStateMachine.GameState.INITIALIZED;
+		this.type = Type.HIGHLOW;
+		this.style = new Style().getStyle();
+		this.ante = 20;
+	}
+
+	public Game(Type type) {
+		this();
+
 		this.type = type;
 	}
 
-	public void addShuffledPlayingCardToGame(Game game, int jokers) {
+	public Game(Type type, String style, int ante) {
+		this();
+
+		this.type = type;
+		this.style = style;
+		this.ante = ante;
+	}
+
+	public List<PlayingCard> shuffleGame(Game game, int jokers) {
 		
 		List<Card> cards = Card.newDeck(jokers);
 		Collections.shuffle(cards);
-		
+
+		List<PlayingCard> playingCards = new ArrayList<>();
 		int i = 1;
 		for (Card card : cards) {
-			PlayingCard playingCard = new PlayingCard();
-			playingCard.setGame(game);
-			playingCard.setHand(null);
-
-			playingCard.setSequence(i++);
+			PlayingCard playingCard = new PlayingCard(game, i++);
 			playingCard.setMove(Move.PILE_DRAW);
+			playingCards.add(playingCard);
 		}
+		return playingCards;
 	}
 
 	@Override

@@ -41,9 +41,11 @@ public class PlayingCard {
 
     // Normal fields
 
+    // current sequence of the card in the deck or hand
     @Column(name = "sequence")
     private int sequence;
 
+    // current move for the card
     @Enumerated(EnumType.STRING)
     @Column(name = "move", nullable = false)
     private Move move;
@@ -52,15 +54,17 @@ public class PlayingCard {
     // References
 
     public PlayingCard() {
-    }
-
-    public PlayingCard(Game game) {
-        this();
         LocalDateTime localDateAndTime = LocalDateTime.now();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd-HH:mm-ssSSS-nnnnnnnnn");
         String result = localDateAndTime.format(formatter);
         this.created = result.substring(2, 20);
+
+    }
+
+    public PlayingCard(Game game, int sequence) {
+        this();
         this.game = game;
+        this.sequence = sequence;
     }
 
     @Override

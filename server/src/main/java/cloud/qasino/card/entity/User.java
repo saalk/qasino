@@ -3,6 +3,7 @@ package cloud.qasino.card.entity;
 import lombok.Data;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -29,19 +30,21 @@ public class User {
 
     // Normal fields
 
-    @Column(name = "alias", length = 50, nullable = true)
-    //@NotBlank(message = "Alias is mandatory")
+    @Column(name = "alias", length = 50, nullable = false)
+    @NotBlank(message = "Alias is mandatory")
     private String alias;
 
+    @Column(name = "alias_seq")
+    private int aliasSequence;
+
     @Column(name = "email", length = 50, nullable = true)
-    //@NotBlank(message = "Email is mandatory")
     private String email;
 
-    @Column(name = "cubit")
+    @Column(name = "fiches")
     private int fiches;
 
     @Column(name = "secured_loan")
-    private int pawn;
+    private int securedLoan;
 
 
     // References
@@ -49,6 +52,7 @@ public class User {
     // PL: a User becomes a Player when playing a Game
     @OneToMany(mappedBy = "user",cascade = CascadeType.REMOVE)
     // just a reference, the actual fk column is in player not here!
+    // However ai players are no users!
     private List<Player> players;
 
     public User() {
@@ -56,11 +60,13 @@ public class User {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd-HH:mm-ssSSS-nnnnnnnnn");
         String result = localDateAndTime.format(formatter);
         this.created = result.substring(2, 20);
+        this.alias = "alias";
     }
 
-    public User(String alias, String email) {
+    public User(String alias, int aliasSequence, String email) {
         this();
         this.alias = alias;
+        this.aliasSequence = aliasSequence;
         this.email = email;
     }
 
@@ -70,17 +76,18 @@ public class User {
                 "userId=" + userId +
                 ", created='" + created + '\'' +
                 ", alias='" + alias + '\'' +
+                ", alias_sequence=" + aliasSequence +
                 ", email='" + email + '\'' +
                 ", fiches=" + fiches +
-                ", pawn=" + pawn +
+                ", securedLoan=" + securedLoan +
                 '}';
     }
 
     public boolean repayLoan(){
 
-        if (this.fiches >= this.pawn) {
-            this.fiches = --this.pawn;
-            this.pawn = 0;
+        if (this.fiches >= this.securedLoan) {
+            this.fiches = --this.securedLoan;
+            this.securedLoan = 0;
             return true;
         }
         return false;
@@ -88,11 +95,11 @@ public class User {
 
     public boolean pawnShip(int max) {
 
-        if (this.pawn == 0) {
+        if (this.securedLoan == 0) {
             int seed = max == 0 ? 1001 : max + 1;
             Random random = new Random();
-            this.pawn = random.nextInt(seed);
-            this.fiches = ++ this.pawn;
+            this.securedLoan = random.nextInt(seed);
+            this.fiches = ++ this.securedLoan;
             return true;
         }
         return false;
@@ -110,6 +117,8 @@ public class User {
 
         return "won/total: [" + won + "/"+ gamesPlayed.size()+"]";
     }
+
+
 }
 
 

@@ -64,8 +64,8 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/6.21.1/babel.min.js"></script>
 <script type="text/babel">
     // user-card is now a Vue component that generates a 'card' showing a user
-    // It can be used
-    // declaratively like <user-card v-bind:user="someuser">
+    // It can be used declaratively like <user-card v-bind:user="someuser">
+    //
     Vue.component('user-card', {
         props: ['user'],
         template: `<div class="card">
@@ -89,7 +89,12 @@
                 {userId: "1", alias: "Lionel Messi", email: "Argentina's superstar"},
                 {userId: "2", alias: "Christiano Ronaldo", email: "Portugal top-ranked user"}
             ]
-        }
+        },
+        mounted () {
+            axios
+                .get('http://localhost:9000/qasino/api')
+                .then(response => (this.info = response))
+  }
     });
 
 

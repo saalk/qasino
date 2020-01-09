@@ -40,7 +40,7 @@ public enum Avatar implements LabeledEnum {
     }
 
     public static Avatar fromLabel(String label) {
-        return lookup.get(label);
+        return (lookup.get(label) != null) ? lookup.get(label) : MAGICIAN;
     }
 
 }

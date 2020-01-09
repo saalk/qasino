@@ -45,6 +45,6 @@ public enum AiLevel implements LabeledEnum {
     }
     
     public static AiLevel fromLabel(String label) {
-        return lookup.get(label);
+        return (lookup.get(label) != null) ? lookup.get(label) : NONE;
     }
 }
