@@ -9,17 +9,20 @@ import cloud.qasino.card.repositories.GameRepository;
 import cloud.qasino.card.repositories.PlayerRepository;
 import cloud.qasino.card.repositories.UserRepository;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Order;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @Slf4j
@@ -41,24 +44,32 @@ public class UserController {
         this.playerRepository = playerRepository;
     }
 
-    // C special - default Game and Players (human and bot)
-    @PostMapping(value = "/user/{userId}/game/{type}", params = {"style", "ante"})
+    // C special - default Game and Players (human and one bot)
+    @PostMapping(value = "/users/{userId}/games/{type}/players/{aiLevel}",
+            params = {"style", "ante"})
     public ResponseEntity<Game> setupGame(
             @PathVariable("userId") int userId,
             @PathVariable("type") String type,
+            @PathVariable("aiLevel") String aiLevel,
             @RequestParam(name = "style", defaultValue = "") String style,
             @RequestParam(name = "ante", defaultValue = "20") Integer ante
     ) {
+
+        URI uri = ServletUriComponentsBuilder.fromCurrentRequest()
+                .path("/users/{userId}/games/{type}?style=&ante=")
+                .buildAndExpand(userId, type, style, ante)
+                .toUri();
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Mapping", "/users/{userId}/games/{type}?style=&ante=");
+
         Game startedGame = null;
 
         // check user
         if (!userRepository.existsById(userId)) {
-            URI uri = ServletUriComponentsBuilder.fromCurrentRequest()
-                    .path("/{userId}")
-                    .buildAndExpand(userId)
-                    .toUri();
-
-            return ResponseEntity.created(uri).body(startedGame);
+            return ResponseEntity.notFound()
+                    .location(uri)
+                    .build();
         }
         User foundUser = userRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid user Id:" + userId));
@@ -81,12 +92,9 @@ public class UserController {
         if (createdAi == null) {
             return ResponseEntity.notFound().build();
         } else {
-            URI uri = ServletUriComponentsBuilder.fromCurrentRequest()
-                    .path("/{id}")
-                    .buildAndExpand(createdPlayer.getPlayerId())
-                    .toUri();
-
-            return ResponseEntity.created(uri).body(startedGame);
+            return ResponseEntity.created(uri)
+                    .header("Custom-Header","/users/{userId}/games/{type}?style&ante")
+                    .body(startedGame);
         }
 
     }
@@ -94,23 +102,41 @@ public class UserController {
     // normal CRUD
 
     // LP
-    @GetMapping(value = "/users/all", params = {"max"})
-    @ResponseBody
+    @GetMapping(value = "/users")
     public ResponseEntity getAllUser(
-            @RequestParam(name = "max", defaultValue = "5") Integer max
+            @RequestParam(defaultValue = "0") String page,
+            @RequestParam(defaultValue = "4") String max
     ) {
 
-        int total = ((max < 0) || (max > 50)) ? 5 : max;
-        Pageable pageable = PageRequest.of(0, total, Sort.by(
-                Order.asc("alias"),
-                Order.desc("aliasSequence")));
+        // header in response
+        URI uri = ServletUriComponentsBuilder.fromCurrentRequest()
+                .path("")
+                .query("")
+                .buildAndExpand(page, max)
+                .toUri();
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("URI", String.valueOf(uri));
 
-        ArrayList users = (ArrayList) userRepository.findAllUsersWithPage(Pageable.unpaged());
-        return ResponseEntity.ok(users);
+        // validations
+        if (!StringUtils.isNumeric(page) || !StringUtils.isNumeric(max))
+            return ResponseEntity.badRequest().headers(headers).build();
+        int maximum = Integer.parseInt(max);
+        int pages = Integer.parseInt(page);
+
+        // logic
+        Pageable pageable = PageRequest.of(pages, maximum, Sort.by(
+                Order.asc("ALIAS"),
+                Order.desc("ALIAS_SEQ")));
+
+        ArrayList users = (ArrayList) userRepository.findAllUsersWithPage(pageable);
+
+        return ResponseEntity.ok()
+                .headers(headers)
+                .body(users);
     }
 
     // C
-    @PostMapping(value = "/user/{alias}", params = {"email"})
+    @PostMapping(value = "/users/{alias}", params = {"email"})
     public ResponseEntity addUser(
             @PathVariable("alias") String alias,
             @RequestParam(name = "email", defaultValue = "") String email
@@ -129,20 +155,20 @@ public class UserController {
     }
 
     // R
-    @GetMapping("/user/{id}")
+    @GetMapping("/users/{id}")
     public ResponseEntity<Optional<User>> getUser(
-            @PathVariable("id") int id
+            @PathVariable String id
     ) {
-        if (!userRepository.existsById(id)) {
+        if (!StringUtils.isNumeric(id) || !userRepository.existsById(Integer.parseInt(id))) {
             return ResponseEntity.notFound().build();
         } else {
-            Optional<User> foundUser = userRepository.findById(id);
+            Optional<User> foundUser = userRepository.findById(Integer.parseInt(id));
             return ResponseEntity.ok(foundUser);
         }
     }
 
     // U
-    @PostMapping(value = "/user/{id}", params = {"alias", "email"})
+    @PostMapping(value = "/users/{id}", params = {"alias", "email"})
     public ResponseEntity<User> updateUser(
             @PathVariable("id") int id,
             @RequestParam(name = "alias", defaultValue = "") String alias,
@@ -166,7 +192,7 @@ public class UserController {
     }
 
     // D
-    @DeleteMapping("/user/{id}")
+    @DeleteMapping("/users/{id}")
     public ResponseEntity<User> deleteUser(
             @PathVariable("id") int id
     ) {
