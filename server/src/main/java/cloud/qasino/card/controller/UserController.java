@@ -16,13 +16,13 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Order;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 
 @Slf4j
@@ -45,46 +45,54 @@ public class UserController {
     }
 
     // C special - default Game and Players (human and one bot)
-    @PostMapping(value = "/users/{userId}/games/{type}/players/{aiLevel}",
-            params = {"style", "ante"})
+    @PostMapping(value = "/users/{userId}/games/{type}/players/{aiLevel}")
     public ResponseEntity<Game> setupGame(
-            @PathVariable("userId") int userId,
+            @PathVariable("id") String id,
             @PathVariable("type") String type,
             @PathVariable("aiLevel") String aiLevel,
             @RequestParam(name = "style", defaultValue = "") String style,
-            @RequestParam(name = "ante", defaultValue = "20") Integer ante
+            @RequestParam(name = "ante", defaultValue = "20") String ante
     ) {
 
+        // header in response
         URI uri = ServletUriComponentsBuilder.fromCurrentRequest()
-                .path("/users/{userId}/games/{type}?style=&ante=")
-                .buildAndExpand(userId, type, style, ante)
+                .path("")
+                .query("")
+                .buildAndExpand(style, ante)
                 .toUri();
-
         HttpHeaders headers = new HttpHeaders();
-        headers.add("Mapping", "/users/{userId}/games/{type}?style=&ante=");
+        headers.add("URI", String.valueOf(uri));
 
-        Game startedGame = null;
-
-        // check user
-        if (!userRepository.existsById(userId)) {
-            return ResponseEntity.notFound()
-                    .location(uri)
-                    .build();
+        // validations
+        if (!StringUtils.isNumeric(id)
+                || !StringUtils.isNumeric(ante)
+                || (Type.fromLabel(type) == null)
+                || (AiLevel.fromLabel(aiLevel) == null)
+                || (AiLevel.fromLabel(aiLevel)) == AiLevel.NONE) {
+            // 400
+            return ResponseEntity.badRequest().headers(headers).build();
         }
-        User foundUser = userRepository.findById(userId)
-                .orElseThrow(() -> new IllegalArgumentException("Invalid user Id:" + userId));
+        int userId = Integer.parseInt(id);
+
+        Optional<User> foundUser = userRepository.findById(userId);
+        if (!foundUser.isPresent()) {
+            // 404
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).headers(headers).build();
+        }
 
         // create game
-        startedGame = gameRepository.save(new Game(Type.valueOf(type), style, (int) ante));
-        if (startedGame == null) {
-            return ResponseEntity.notFound().build();
+        Game startedGame = gameRepository.save(new Game(Type.valueOf(type), style, Integer.valueOf(ante)));
+        if (startedGame.getGameId() == 0) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).headers(headers).build();
         }
 
-        // create human player
-        Player createdPlayer = playerRepository.save(new Player(foundUser, startedGame, 1, null, AiLevel.HUMAN));
-        if (createdPlayer == null) {
-            return ResponseEntity.notFound().build();
-        }
+//        // create human player
+//        foundUser.ifPresent(User linkedUser = foundUser);
+//        Player createdPlayer = playerRepository.save(new Player(foundUser, startedGame, 1, null, AiLevel.HUMAN));
+//        }
+//        if (createdPlayer == null) {
+//            return ResponseEntity.notFound().build();
+//        }
 
         // create ai player
         Player createdAi = playerRepository.save(new Player(null, startedGame, 2, null,
@@ -93,7 +101,7 @@ public class UserController {
             return ResponseEntity.notFound().build();
         } else {
             return ResponseEntity.created(uri)
-                    .header("Custom-Header","/users/{userId}/games/{type}?style&ante")
+                    .header("Custom-Header", "/users/{userId}/games/{type}?style&ante")
                     .body(startedGame);
         }
 
@@ -101,7 +109,7 @@ public class UserController {
 
     // normal CRUD
 
-    // LP
+    // LP - tested
     @GetMapping(value = "/users")
     public ResponseEntity getAllUser(
             @RequestParam(defaultValue = "0") String page,
@@ -135,68 +143,131 @@ public class UserController {
                 .body(users);
     }
 
-    // C
-    @PostMapping(value = "/users/{alias}", params = {"email"})
+    // C - tested
+    @PostMapping(value = "/users/{alias}")
     public ResponseEntity addUser(
             @PathVariable("alias") String alias,
             @RequestParam(name = "email", defaultValue = "") String email
     ) {
+
+        // header in response
+        URI uri = ServletUriComponentsBuilder.fromCurrentRequest()
+                .path("")
+                .query("")
+                .buildAndExpand(email)
+                .toUri();
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("URI", String.valueOf(uri));
+
         int sequence = (int) (userRepository.countByAlias(alias) + 1);
         User createdUser = userRepository.save(new User(alias, sequence, email));
-        if (createdUser == null) {
-            return ResponseEntity.notFound().build();
-        } else {
-            URI uri = ServletUriComponentsBuilder.fromCurrentRequest()
-                    .path("/{id}")
-                    .buildAndExpand(createdUser.getUserId())
-                    .toUri();
-            return ResponseEntity.created(uri).body(createdUser);
+        if (createdUser.getUserId() == 0) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).headers(headers).build();
         }
+        return ResponseEntity.status(HttpStatus.CREATED).headers(headers).body(createdUser);
     }
 
-    // R
+    // R - tested
     @GetMapping("/users/{id}")
     public ResponseEntity<Optional<User>> getUser(
             @PathVariable String id
     ) {
-        if (!StringUtils.isNumeric(id) || !userRepository.existsById(Integer.parseInt(id))) {
-            return ResponseEntity.notFound().build();
-        } else {
-            Optional<User> foundUser = userRepository.findById(Integer.parseInt(id));
-            return ResponseEntity.ok(foundUser);
+
+        // header in response
+        URI uri = ServletUriComponentsBuilder.fromCurrentRequest()
+                .path("")
+                .buildAndExpand()
+                .toUri();
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("URI", String.valueOf(uri));
+
+        // validations
+        if (!StringUtils.isNumeric(id)) {
+            return ResponseEntity.badRequest().headers(headers).build();
         }
+
+        // logic
+        Optional<User> foundUser = userRepository.findById(Integer.parseInt(id));
+        if (foundUser.isPresent()) {
+            return ResponseEntity.ok().headers(headers).body(foundUser);
+        } else {
+            return ResponseEntity.notFound().headers(headers).build();
+        }
+
     }
 
-    // U
-    @PostMapping(value = "/users/{id}", params = {"alias", "email"})
+    // U - tested
+    @PutMapping(value = "/users/{id}")
     public ResponseEntity<User> updateUser(
-            @PathVariable("id") int id,
+            @PathVariable("id") String id,
             @RequestParam(name = "alias", defaultValue = "") String alias,
             @RequestParam(name = "email", defaultValue = "") String email
     ) {
 
-        Optional<User> foundUser = userRepository.findById(id);
+        // header in response
+        URI uri = ServletUriComponentsBuilder.fromCurrentRequest()
+                .path("")
+                .query("")
+                .buildAndExpand(alias, email)
+                .toUri();
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("URI", String.valueOf(uri));
 
-        int sequence = (int) (userRepository.countByAlias(alias) + 1);
-        if (foundUser == null) {
-            return ResponseEntity.notFound().build();
-        } else {
-            User updateUser = foundUser.get();
-            updateUser.setAlias(alias);
-            updateUser.setAliasSequence(sequence);
-            updateUser.setEmail(email);
-            userRepository.save(updateUser);
-
-            return ResponseEntity.ok(updateUser);
+        // validations
+        if (!StringUtils.isNumeric(id))
+            // 400
+            return ResponseEntity.badRequest().headers(headers).build();
+        int userId = Integer.parseInt(id);
+        Optional<User> foundUser = userRepository.findById(userId);
+        if (!foundUser.isPresent()) {
+            // 404
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).headers(headers).build();
         }
+
+        // logic
+        User updatedUser = foundUser.get();
+        if (!updatedUser.getAlias().equals(alias) & !StringUtils.isEmpty(alias)) {
+            int sequence = (int) (userRepository.countByAlias(alias) + 1);
+            updatedUser.setAlias(alias);
+            updatedUser.setAliasSequence(sequence);
+        }
+        if (!updatedUser.getEmail().equals(email) & !StringUtils.isEmpty(email)) {
+            updatedUser.setEmail(email);
+        }
+        updatedUser = userRepository.save(updatedUser);
+
+        // 200
+        return ResponseEntity.ok().headers(headers).body(updatedUser);
     }
 
-    // D
+    // D - tested
     @DeleteMapping("/users/{id}")
     public ResponseEntity<User> deleteUser(
-            @PathVariable("id") int id
+            @PathVariable("id") String id
     ) {
-        userRepository.deleteById(id);
-        return ResponseEntity.noContent().build();
+
+        // header in response
+        URI uri = ServletUriComponentsBuilder.fromCurrentRequest()
+                .path("")
+                .buildAndExpand()
+                .toUri();
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("URI", String.valueOf(uri));
+
+        // validations
+        if (!StringUtils.isNumeric(id))
+            // 400
+            return ResponseEntity.badRequest().headers(headers).build();
+        int userId = Integer.parseInt(id);
+        Optional<User> foundUser = userRepository.findById(userId);
+        if (!foundUser.isPresent()) {
+            // 404
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).headers(headers).build();
+        }
+
+        // logic
+        userRepository.deleteById(userId);
+        // delete 204
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).headers(headers).build();
     }
 }
