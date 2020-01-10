@@ -119,7 +119,7 @@ public class UserController {
 
         // validations
         if (!StringUtils.isNumeric(page) || !StringUtils.isNumeric(max))
-            return ResponseEntity.badRequest().headers(headers).build();
+            return ResponseEntity.badRequest()cd ...headers(headers).build();
         int maximum = Integer.parseInt(max);
         int pages = Integer.parseInt(page);
 
