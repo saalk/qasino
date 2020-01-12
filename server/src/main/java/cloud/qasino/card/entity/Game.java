@@ -6,6 +6,7 @@ import cloud.qasino.card.entity.enums.Move;
 import cloud.qasino.card.entity.enums.Type;
 import cloud.qasino.card.statemachine.QasinoStateMachine;
 import lombok.Data;
+import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -15,6 +16,7 @@ import java.util.Collections;
 import java.util.List;
 
 @Entity
+@DynamicUpdate
 //@Inheritance(strategy = InheritanceType.JOINED)
 @Data
 @Table(name = "games", indexes = {@Index(name = "games_index", columnList = "game_id", unique =

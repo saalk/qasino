@@ -2,6 +2,7 @@ package cloud.qasino.card.entity;
 
 import cloud.qasino.card.entity.enums.Move;
 import lombok.Data;
+import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -9,6 +10,7 @@ import java.time.format.DateTimeFormatter;
 
 @Entity
 @Data
+@DynamicUpdate
 @Table(name = "playingcards", indexes =
         { //@Index(name = "playingCards_game_index", columnList = "game_id", unique = false ),
           @Index(name = "playingcards_index", columnList = "playingcard_id", unique = true )})

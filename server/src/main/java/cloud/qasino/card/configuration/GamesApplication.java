@@ -45,6 +45,9 @@ public class GamesApplication {
 
     public static void main(String[] args) {
         SpringApplication.run(GamesApplication.class, args);
+        // test with: mvn clean spring-boot:run -Drun
+        // .jvmArguments="-agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=5005"
+
 
         // write to a log
         log.info("\n\n Application cloud.qasino.cards started: \n - environment [" + activeProfile +

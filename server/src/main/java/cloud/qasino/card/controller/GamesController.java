@@ -77,7 +77,7 @@ public class GamesController {
     }
 
     // U
-    @PostMapping(value = "/games/{id}", params = {"style", "ante"})
+    @PutMapping(value = "/games/{id}", params = {"style", "ante"})
     public ResponseEntity<Game> updateGame(
             @PathVariable("id") int id,
             @RequestParam(name = "style",  defaultValue = "") String style,
@@ -98,7 +98,7 @@ public class GamesController {
     }
 
     // U special - update only the State
-    @PostMapping(value = "/games/{id}/State/{state}")
+    @PutMapping(value = "/games/{id}/State/{state}")
     public ResponseEntity<Game> updateGame(
             @PathVariable("id") int id,
             @RequestParam(name = "state", defaultValue = "INITIALIZED") QasinoStateMachine.GameState state

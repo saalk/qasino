@@ -2,12 +2,14 @@ package cloud.qasino.card.entity;
 
 import cloud.qasino.card.entity.enums.Move;
 import lombok.Data;
+import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 @Entity
+@DynamicUpdate
 @Table(name = "events", indexes =
         { @Index(name = "events_game_index", columnList = "game_id", unique = false ),
           @Index(name = "events_index", columnList = "event_id", unique = true )}

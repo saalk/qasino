@@ -4,6 +4,7 @@ import cloud.qasino.card.entity.Game;
 import cloud.qasino.card.entity.Player;
 import cloud.qasino.card.entity.User;
 import cloud.qasino.card.entity.enums.AiLevel;
+import cloud.qasino.card.entity.enums.Avatar;
 import cloud.qasino.card.entity.enums.Type;
 import cloud.qasino.card.repositories.GameRepository;
 import cloud.qasino.card.repositories.PlayerRepository;
@@ -45,37 +46,37 @@ public class UserController {
     }
 
     // C special - default Game and Players (human and one bot)
-    @PostMapping(value = "/users/{userId}/games/{type}/players/{aiLevel}")
-    public ResponseEntity<Game> setupGame(
+    @PostMapping(value = "/users/{id}/games/{type}/players/{aiLevel}")
+    public ResponseEntity<User> setupGame(
             @PathVariable("id") String id,
             @PathVariable("type") String type,
             @PathVariable("aiLevel") String aiLevel,
             @RequestParam(name = "style", defaultValue = "") String style,
-            @RequestParam(name = "ante", defaultValue = "20") String ante
+            @RequestParam(name = "ante", defaultValue = "20") String ante,
+            @RequestParam(name = "avatar", defaultValue = "ELF") String avatar
     ) {
 
         // header in response
         URI uri = ServletUriComponentsBuilder.fromCurrentRequest()
                 .path("")
                 .query("")
-                .buildAndExpand(style, ante)
+                .buildAndExpand(id, type, aiLevel, style, ante, avatar)
                 .toUri();
         HttpHeaders headers = new HttpHeaders();
         headers.add("URI", String.valueOf(uri));
 
         // validations
-        if (!StringUtils.isNumeric(id)
-                || !StringUtils.isNumeric(ante)
-                || (Type.fromLabel(type) == null)
-                || (AiLevel.fromLabel(aiLevel) == null)
-                || (AiLevel.fromLabel(aiLevel)) == AiLevel.NONE) {
+        if (!StringUtils.isNumeric(ante) || !StringUtils.isNumeric(id) ){
             // 400
             return ResponseEntity.badRequest().headers(headers).build();
         }
         int userId = Integer.parseInt(id);
 
         Optional<User> foundUser = userRepository.findById(userId);
-        if (!foundUser.isPresent()) {
+        User linkedUser = null;
+        if (foundUser.isPresent()) {
+            linkedUser = foundUser.get();
+        } else {
             // 404
             return ResponseEntity.status(HttpStatus.NOT_FOUND).headers(headers).build();
         }
@@ -86,25 +87,18 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).headers(headers).build();
         }
 
-//        // create human player
-//        foundUser.ifPresent(User linkedUser = foundUser);
-//        Player createdPlayer = playerRepository.save(new Player(foundUser, startedGame, 1, null, AiLevel.HUMAN));
-//        }
-//        if (createdPlayer == null) {
-//            return ResponseEntity.notFound().build();
-//        }
+        Player createdAi = null;
 
-        // create ai player
-        Player createdAi = playerRepository.save(new Player(null, startedGame, 2, null,
-                AiLevel.MEDIUM));
-        if (createdAi == null) {
-            return ResponseEntity.notFound().build();
-        } else {
-            return ResponseEntity.created(uri)
-                    .header("Custom-Header", "/users/{userId}/games/{type}?style&ante")
-                    .body(startedGame);
+        // todo test
+        if (1==1) {
+            // create human and ai player
+            createdAi = playerRepository.save(new Player(linkedUser, startedGame, 2,
+                    Avatar.valueOf(avatar), AiLevel.fromLabel(aiLevel)));
+            if (createdAi.getPlayerId() == 0) {
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).headers(headers).build();
+            }
         }
-
+        return ResponseEntity.status(HttpStatus.CREATED).headers(headers).body(linkedUser);
     }
 
     // normal CRUD
@@ -127,7 +121,7 @@ public class UserController {
 
         // validations
         if (!StringUtils.isNumeric(page) || !StringUtils.isNumeric(max))
-            return ResponseEntity.badRequest()cd ...headers(headers).build();
+            return ResponseEntity.badRequest().headers(headers).build();
         int maximum = Integer.parseInt(max);
         int pages = Integer.parseInt(page);
 
@@ -226,12 +220,12 @@ public class UserController {
 
         // logic
         User updatedUser = foundUser.get();
-        if (!updatedUser.getAlias().equals(alias) & !StringUtils.isEmpty(alias)) {
+        if (!StringUtils.isEmpty(alias)) {
             int sequence = (int) (userRepository.countByAlias(alias) + 1);
             updatedUser.setAlias(alias);
             updatedUser.setAliasSequence(sequence);
         }
-        if (!updatedUser.getEmail().equals(email) & !StringUtils.isEmpty(email)) {
+        if (!StringUtils.isEmpty(email)) {
             updatedUser.setEmail(email);
         }
         updatedUser = userRepository.save(updatedUser);

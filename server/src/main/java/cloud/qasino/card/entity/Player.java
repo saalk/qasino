@@ -5,6 +5,7 @@ import cloud.qasino.card.entity.enums.Avatar;
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.Setter;
+import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -13,6 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
+//@DynamicUpdate
 @Data
 @Table(name = "players", indexes = {@Index(name = "players_index", columnList = "player_id",
         unique = true)})

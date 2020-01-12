@@ -1,6 +1,7 @@
 package cloud.qasino.card.entity;
 
 import lombok.Data;
+import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
@@ -10,6 +11,7 @@ import java.util.List;
 import java.util.Random;
 
 @Entity
+@DynamicUpdate
 // INSERT INTO USERS USERS VALUES(1, 'alias','created','email',123,123)
 @Data
 @Table(name = "users", indexes =

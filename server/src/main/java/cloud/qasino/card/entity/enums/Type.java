@@ -49,7 +49,9 @@ public enum Type implements LabeledEnum {
     }
 
     public static Type fromLabel(String label) {
-        return lookup.get(label);
+        Type type = null;
+        type = lookup.get(label);
+        return type;
     }
 
     public static Set<Type> cardGamesListType = EnumSet.of(HIGHLOW);
