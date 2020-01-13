@@ -19,11 +19,13 @@ import org.springframework.data.domain.Sort.Order;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @Slf4j
@@ -45,9 +47,9 @@ public class UserController {
         this.playerRepository = playerRepository;
     }
 
-    // C special - default Game and Players (human and one bot)
+    // C Game and Players - tested
     @PostMapping(value = "/users/{id}/games/{type}/players/{aiLevel}")
-    public ResponseEntity setupGame(
+    public ResponseEntity<Game> setupGame(
             @PathVariable("id") String id,
             @PathVariable("type") String type,
             @PathVariable("aiLevel") String aiLevel,
@@ -73,16 +75,16 @@ public class UserController {
         int userId = Integer.parseInt(id);
 
         Optional<User> foundUser = userRepository.findById(userId);
-        User linkedUser = null;
-        if (foundUser.isPresent()) {
-            linkedUser = foundUser.get();
-        } else {
+        User linkedUser;
+        if (!foundUser.isPresent()) {
             // 404
             return ResponseEntity.status(HttpStatus.NOT_FOUND).headers(headers).build();
+        } else {
         }
+        linkedUser = foundUser.get();
 
         // create game
-        Game startedGame = gameRepository.save(new Game(Type.valueOf(type), style, Integer.valueOf(ante)));
+        Game startedGame = gameRepository.save(new Game(Type.valueOf(type), style, Integer.parseInt(ante)));
         if (startedGame.getGameId() == 0) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).headers(headers).build();
         }
@@ -102,8 +104,13 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).headers(headers).build();
         }
 
-        Optional<Game> createdGame = gameRepository.findById(startedGame.getGameId());
-        return ResponseEntity.status(HttpStatus.CREATED).headers(headers).body(createdGame);
+        List<Player> newPlayers = new ArrayList<>();
+        newPlayers.add(createdHuman);
+        newPlayers.add(createdAi);
+        startedGame.setPlayers(newPlayers);
+
+        return ResponseEntity.status(HttpStatus.CREATED).headers(headers).body(startedGame);
+
     }
 
     // normal CRUD

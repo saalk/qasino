@@ -2,8 +2,11 @@ package cloud.qasino.card.entity;
 
 import cloud.qasino.card.entity.enums.AiLevel;
 import cloud.qasino.card.entity.enums.Avatar;
+import com.fasterxml.jackson.annotation.*;
+import com.voodoodyne.jackson.jsog.JSOGGenerator;
 import lombok.AccessLevel;
 import lombok.Data;
+import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.DynamicUpdate;
 
@@ -12,10 +15,14 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 @DynamicUpdate
-@Data
+@Getter
+@Setter
+@JsonIdentityInfo(generator= JSOGGenerator.class)
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 @Table(name = "players", indexes = {@Index(name = "players_index", columnList = "player_id",
         unique = true)})
 public class Player {
@@ -38,6 +45,7 @@ public class Player {
             (name = "fk_user_id"), nullable = true)
     private User user;
 
+    @JsonIgnore
     // PlGa: many Players can play the same Game
     @ManyToOne(cascade = CascadeType.DETACH)
     @JoinColumn(name = "game_id", referencedColumnName = "game_id", foreignKey = @ForeignKey
@@ -89,7 +97,7 @@ public class Player {
     public Player(User user, Game game, int sequence) {
         this();
         this.user = user;
- //       this.winner = game;
+        this.game = game;
         this.human = true;
         this.sequence = sequence;
         this.aiLevel = AiLevel.HUMAN;
@@ -106,6 +114,19 @@ public class Player {
 
     public boolean humanOrNot(AiLevel aiLevel) {
         return AiLevel.HUMAN.equals(aiLevel);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Player player = (Player) o;
+        return playerId == player.playerId;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(playerId);
     }
 
     @Override

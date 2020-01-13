@@ -1,6 +1,10 @@
 package cloud.qasino.card.entity;
 
+import com.fasterxml.jackson.annotation.*;
+import com.voodoodyne.jackson.jsog.JSOGGenerator;
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.*;
@@ -8,12 +12,15 @@ import javax.validation.constraints.NotBlank;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Objects;
 import java.util.Random;
 
 @Entity
 @DynamicUpdate
-// INSERT INTO USERS USERS VALUES(1, 'alias','created','email',123,123)
-@Data
+@Getter
+@Setter
+@JsonIdentityInfo(generator= JSOGGenerator.class)
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 @Table(name = "users", indexes =
         { @Index(name = "users_index", columnList = "user_id", unique = true),
           @Index(name = "alias_index", columnList = "alias", unique = false )
@@ -52,6 +59,7 @@ public class User {
     // References
 
     // PL: a User becomes a Player when playing a Game
+    @JsonIgnore
     @OneToMany(mappedBy = "user",cascade = CascadeType.REMOVE)
     // just a reference, the actual fk column is in player not here!
     // However ai players are no users!
@@ -107,6 +115,18 @@ public class User {
         return "won/total: [" + won + "/"+ playersPlayed.size()+"]";
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        User user = (User) o;
+        return userId == user.userId;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(userId);
+    }
 
     @Override
     public String toString() {

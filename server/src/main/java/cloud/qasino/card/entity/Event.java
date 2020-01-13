@@ -1,20 +1,31 @@
 package cloud.qasino.card.entity;
 
 import cloud.qasino.card.entity.enums.Move;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIdentityReference;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import com.voodoodyne.jackson.jsog.JSOGGenerator;
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Objects;
 
 @Entity
 @DynamicUpdate
+@Getter
+@Setter
+@JsonIdentityInfo(generator= JSOGGenerator.class)
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 @Table(name = "events", indexes =
         { @Index(name = "events_game_index", columnList = "game_id", unique = false ),
           @Index(name = "events_index", columnList = "event_id", unique = true )}
 )
-@Data
 public class Event {
 
     @Id
@@ -73,6 +84,19 @@ public class Event {
         this.gameId = game.getGameId();
         this.playerId = player.getPlayerId();
         this.cardId = cardId;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Event event = (Event) o;
+        return eventId == event.eventId;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(eventId);
     }
 
     @Override

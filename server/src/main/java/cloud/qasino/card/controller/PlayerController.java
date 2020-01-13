@@ -2,7 +2,6 @@ package cloud.qasino.card.controller;
 
 import cloud.qasino.card.entity.Game;
 import cloud.qasino.card.entity.Player;
-import cloud.qasino.card.entity.Player;
 import cloud.qasino.card.entity.User;
 import cloud.qasino.card.entity.enums.AiLevel;
 import cloud.qasino.card.entity.enums.Avatar;
@@ -69,7 +68,7 @@ public class PlayerController {
         Boolean isHuman = BooleanUtils.toBooleanObject(human);
         Optional<Game> foundGame = gameRepository.findById(Integer.valueOf(id));
         if (!foundGame.isPresent()) {
-           return ResponseEntity.notFound().headers(headers).build();
+            return ResponseEntity.notFound().headers(headers).build();
         }
 
         ArrayList players = (ArrayList) playerRepository.findByGameOrderBySequenceAsc(foundGame.get());
@@ -77,7 +76,7 @@ public class PlayerController {
         return ResponseEntity.ok().headers(headers).body(players);
     }
 
-    // todo C special - add a Player based on a User (always a human) to Game
+    // C ai only - todo
     @PostMapping(value = "players/games/{gameId}/users{userId}")
     public ResponseEntity<Player> addHuman(
             @PathVariable("gameId") int gameId,
@@ -91,7 +90,7 @@ public class PlayerController {
 
         int sequenceCalculated = playerRepository.countByGame(foundGame) + 1;
         Player createdPlayer = playerRepository.save(new Player(foundUser, foundGame, sequenceCalculated,
-                Avatar.fromLabel(avatar),AiLevel.HUMAN));
+                Avatar.fromLabel(avatar), AiLevel.HUMAN));
         if (createdPlayer == null) {
             return ResponseEntity.notFound().build();
         } else {
@@ -104,34 +103,7 @@ public class PlayerController {
         }
     }
 
-    // todo C special - add a PLayer not based on a User (always a bot) to Game
-    @PostMapping(value = "/players/{aiLevel}/games/{gameId}")
-    public ResponseEntity<Player> AddBot(
-            @PathVariable("aiLevel") String aiLevel,
-            @PathVariable("gameId") int gameId,
-            @RequestParam(name = "avatar", defaultValue = "ELF") String avatar
-        ) {
-
-        Game foundGame = gameRepository.findById(gameId)
-                .orElseThrow(() -> new IllegalArgumentException("Invalid game Id:" + gameId));
-
-        int sequenceCalculated = playerRepository.countByGame(foundGame) + 1;
-
-        Player createdPlayer = playerRepository.save(new Player(null, foundGame, sequenceCalculated,Avatar.fromLabel(avatar),
-                AiLevel.fromLabel(aiLevel)));
-        if (createdPlayer.getPlayerId() < 1) {
-            return ResponseEntity.notFound().build();
-        } else {
-            URI uri = ServletUriComponentsBuilder.fromCurrentRequest()
-                    .path("/{id}")
-                    .buildAndExpand(createdPlayer.getPlayerId())
-                    .toUri();
-
-            return ResponseEntity.created(uri).body(createdPlayer);
-        }
-    }
-
-    // C - can be tested
+     // C ai only - can be tested
     @PostMapping(value = "/players/games/{id}")
     public ResponseEntity addPlayerForGame(
             @PathVariable("id") String id,
@@ -148,7 +120,7 @@ public class PlayerController {
         headers.add("URI", String.valueOf(uri));
 
         // validations
-        if (!StringUtils.isNumeric(id) ){
+        if (!StringUtils.isNumeric(id)) {
             // 400
             return ResponseEntity.badRequest().headers(headers).build();
         }
@@ -164,7 +136,9 @@ public class PlayerController {
         }
 
         // logic
-        Player createdPlayer = new Player(null, linkedGame, 1);
+        int sequenceCalculated = playerRepository.countByGame(foundGame.get()) + 1;
+
+        Player createdPlayer = new Player(null, linkedGame, sequenceCalculated);
         if (!StringUtils.isEmpty(aiLevel)) {
             createdPlayer.setAiLevel(AiLevel.fromLabel(aiLevel));
         }
@@ -187,7 +161,7 @@ public class PlayerController {
         // header in response
         URI uri = ServletUriComponentsBuilder.fromCurrentRequest()
                 .path("")
-                .buildAndExpand()
+                .buildAndExpand(id)
                 .toUri();
         HttpHeaders headers = new HttpHeaders();
         headers.add("URI", String.valueOf(uri));
@@ -207,7 +181,7 @@ public class PlayerController {
     }
 
     // U - ok can be tested
-    @PutMapping(value = "/players/{id}", params={"avatar", "aiLevel"})
+    @PutMapping(value = "/players/{id}", params = {"avatar", "aiLevel"})
     public ResponseEntity<Player> updatePlayer(
             @PathVariable("id") String id,
             @RequestParam(name = "avatar", defaultValue = "ELF") String avatar,
@@ -218,7 +192,7 @@ public class PlayerController {
         URI uri = ServletUriComponentsBuilder.fromCurrentRequest()
                 .path("")
                 .query("")
-                .buildAndExpand(avatar, aiLevel)
+                .buildAndExpand(id, avatar, aiLevel)
                 .toUri();
         HttpHeaders headers = new HttpHeaders();
         headers.add("URI", String.valueOf(uri));
@@ -248,30 +222,42 @@ public class PlayerController {
         return ResponseEntity.ok().headers(headers).body(updatedPlayer);
     }
 
-    // todo U special - move sequence up or down
+    // U - can be tested
     @PutMapping(value = "/players/{id}/{sequence}")
-    public ResponseEntity<Player> updateSequence(
-            @PathVariable("id") int id,
+    public ResponseEntity<Game> updateSequence(
+            @PathVariable("id") String id,
             @PathVariable("sequence") String sequence
     ) {
 
-        Optional<Player> foundPlayer = playerRepository.findById(id);
+        // header in response
+        URI uri = ServletUriComponentsBuilder.fromCurrentRequest()
+                .path("")
+                .buildAndExpand(id, sequence)
+                .toUri();
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("URI", String.valueOf(uri));
+
+        // validations
+        if (!StringUtils.isNumeric(id))
+            // 400
+            return ResponseEntity.badRequest().headers(headers).build();
+        int playerId = Integer.parseInt(id);
+
+        // logic get player
+        Optional<Player> foundPlayer = playerRepository.findById(playerId);
 
         if (foundPlayer == null) {
-            return ResponseEntity.notFound().build();
-        } else {
-
-            Player updatePlayer = foundPlayer.get();
-            // todo check actions and update others
-            if (sequence.startsWith("U")) {
-                updatePlayer.setSequence(updatePlayer.getSequence() - 1);
-            } else {
-                updatePlayer.setSequence(updatePlayer.getSequence() + 1);
-            }
-
-            playerRepository.save(updatePlayer);
-            return ResponseEntity.ok(updatePlayer);
+            // 404
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).headers(headers).build();
         }
+
+        Optional<Game> updatedGame = gameRepository.findById(foundPlayer.get().getGame().getGameId());
+        if (sequence.equalsIgnoreCase("up")) {
+            updatedGame.get().switchPlayers(-1,-1);
+            gameRepository.save(updatedGame.get());
+            return ResponseEntity.ok(updatedGame.get());
+        }
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).headers(headers).build();
     }
 
     // D - ok can be tested
@@ -283,7 +269,7 @@ public class PlayerController {
         // header in response
         URI uri = ServletUriComponentsBuilder.fromCurrentRequest()
                 .path("")
-                .buildAndExpand()
+                .buildAndExpand(id)
                 .toUri();
         HttpHeaders headers = new HttpHeaders();
         headers.add("URI", String.valueOf(uri));
@@ -293,6 +279,7 @@ public class PlayerController {
             // 400
             return ResponseEntity.badRequest().headers(headers).build();
         int playerId = Integer.parseInt(id);
+
         Optional<Player> foundPlayer = playerRepository.findById(playerId);
         if (!foundPlayer.isPresent()) {
             // 404

@@ -121,7 +121,6 @@ public class GamesController {
     @DeleteMapping("/games/{id}")
     public ResponseEntity<Game> deleteGame(
             @PathVariable("id") int id
-            // ,Model model
     ) {
         gameRepository.deleteById(id);
         return ResponseEntity.noContent().build();
