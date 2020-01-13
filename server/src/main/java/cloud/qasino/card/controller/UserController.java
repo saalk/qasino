@@ -47,7 +47,7 @@ public class UserController {
 
     // C special - default Game and Players (human and one bot)
     @PostMapping(value = "/users/{id}/games/{type}/players/{aiLevel}")
-    public ResponseEntity<User> setupGame(
+    public ResponseEntity setupGame(
             @PathVariable("id") String id,
             @PathVariable("type") String type,
             @PathVariable("aiLevel") String aiLevel,
@@ -88,17 +88,22 @@ public class UserController {
         }
 
         Player createdAi = null;
+        Player createdHuman = null;
 
-        // todo test
-        if (1==1) {
-            // create human and ai player
-            createdAi = playerRepository.save(new Player(linkedUser, startedGame, 2,
-                    Avatar.valueOf(avatar), AiLevel.fromLabel(aiLevel)));
-            if (createdAi.getPlayerId() == 0) {
-                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).headers(headers).build();
-            }
+        // create human and ai player
+        createdHuman = playerRepository.save(new Player(linkedUser, startedGame, 1,
+                Avatar.valueOf(avatar), AiLevel.HUMAN));
+        if (createdHuman.getPlayerId() == 0) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).headers(headers).build();
         }
-        return ResponseEntity.status(HttpStatus.CREATED).headers(headers).body(linkedUser);
+        createdAi = playerRepository.save(new Player(linkedUser, startedGame, 2,
+                Avatar.valueOf(avatar), AiLevel.fromLabel(aiLevel)));
+        if (createdAi.getPlayerId() == 0) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).headers(headers).build();
+        }
+
+        Optional<Game> createdGame = gameRepository.findById(startedGame.getGameId());
+        return ResponseEntity.status(HttpStatus.CREATED).headers(headers).body(createdGame);
     }
 
     // normal CRUD

@@ -80,17 +80,14 @@ public class Event {
         return "Event{" +
                 "eventId=" + eventId +
                 ", created='" + created + '\'' +
-                // fk
                 ", gameId=" + gameId +
                 ", playerId=" + playerId +
                 ", cardId='" + cardId + '\'' +
-                // json
                 ", eventDetails='" + eventDetails + '\'' +
-                // fields in json
                 ", playerOrder=" + playerOrder +
                 ", roundNumber=" + roundNumber +
                 ", moveNumber=" + moveNumber +
-                ", move=" + move.getLabel() +
+                ", move=" + move +
                 ", bet=" + bet +
                 '}';
     }

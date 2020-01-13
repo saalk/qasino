@@ -67,7 +67,7 @@ public class GamesApplication {
                 user.setAliasSequence((int) count);
                 userRepository.save(user);
             });
-            userRepository.findAll().forEach(System.out::println);
+            //userRepository.findAll().forEach(System.out::println);
 
         };
     }

@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-//@DynamicUpdate
+@DynamicUpdate
 @Data
 @Table(name = "players", indexes = {@Index(name = "players_index", columnList = "player_id",
         unique = true)})
@@ -41,8 +41,8 @@ public class Player {
     // PlGa: many Players can play the same Game
     @ManyToOne(cascade = CascadeType.DETACH)
     @JoinColumn(name = "game_id", referencedColumnName = "game_id", foreignKey = @ForeignKey
-            (name = "fk_game_id"), nullable = false)
-    private Game plays;
+            (name = "fk_game_id"), nullable = true)
+    private Game game;
 
 
     // Normal fields
@@ -63,13 +63,15 @@ public class Player {
     @Column(name = "ai_level", nullable = true, length = 50)
     private AiLevel aiLevel;
 
-
+    @Setter(AccessLevel.NONE)
+    @Column(name = "is_winner")
+    private boolean winner;
     // References
 
-    // GaWi: one Player is the Winner of the Game in the end
+/*    // GaWi: one Player is the Winner of the Game in the end
     @OneToOne(mappedBy = "winner", cascade = CascadeType.DETACH)
     // just a reference the fk column is in game not here!
-    private Game game = new Game();
+    private Game winner = new Game();*/
 
     // HO: A Player holds one or more PlayingCard after dealing
     @OneToMany(mappedBy = "hand", cascade = CascadeType.DETACH)
@@ -87,7 +89,7 @@ public class Player {
     public Player(User user, Game game, int sequence) {
         this();
         this.user = user;
-        this.game = game;
+ //       this.winner = game;
         this.human = true;
         this.sequence = sequence;
         this.aiLevel = AiLevel.HUMAN;
@@ -99,6 +101,11 @@ public class Player {
         this.avatar = avatar;
         this.aiLevel = aiLevel;
         this.human = humanOrNot(aiLevel);
+        this.winner = false;
+    }
+
+    public boolean humanOrNot(AiLevel aiLevel) {
+        return AiLevel.HUMAN.equals(aiLevel);
     }
 
     @Override
@@ -106,19 +113,15 @@ public class Player {
         return "Player{" +
                 "playerId=" + playerId +
                 ", created='" + created + '\'' +
-                // fk
-                ", userId='" + user.getUserId() + '\'' +
-                ", gameId='" + game.getGameId() + '\'' + // todo fix
-
+                ", user=" + user +
+                ", game=" + game +
                 ", human=" + human +
                 ", sequence=" + sequence +
-                ", avatar='" + avatar + '\'' +
-                ", aiLevel='" + aiLevel + '\'' +
+                ", avatar=" + avatar +
+                ", aiLevel=" + aiLevel +
+                ", winner=" + winner +
+                ", playingCards=" + playingCards +
                 '}';
-    }
-
-    public boolean humanOrNot(AiLevel aiLevel) {
-        return AiLevel.HUMAN.equals(aiLevel);
     }
 }
 

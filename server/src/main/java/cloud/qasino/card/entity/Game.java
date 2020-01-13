@@ -35,10 +35,10 @@ public class Game {
 	// Foreign keys
 
 	// GaWi: a game has a winner in the end
-	@OneToOne (cascade = CascadeType.DETACH)
+/*	@OneToOne (cascade = CascadeType.DETACH)
 	@JoinColumn(name = "player_id", referencedColumnName = "player_id",foreignKey = @ForeignKey(name =
 			"fk_player_id"), nullable=true)
-	private Player winner;
+	private Player winner;*/
 
 
 	// Normal fields
@@ -65,7 +65,7 @@ public class Game {
 	private List<PlayingCard> playingCards = new ArrayList<>();
 
 	// PlGa: many Players can play the same Game
-	@OneToMany(mappedBy = "plays", cascade = CascadeType.DETACH)
+	@OneToMany(mappedBy = "game", cascade = CascadeType.DETACH)
 	private List<Player> players = new ArrayList<>();
 
 	public Game() {
@@ -109,18 +109,18 @@ public class Game {
 		return playingCards;
 	}
 
+
 	@Override
 	public String toString() {
 		return "Game{" +
 				"gameId=" + gameId +
 				", created='" + created + '\'' +
-				// fk
-				", winner=" + winner.getPlayerId() +
-				// fields
-				", state=" + state.name() +
-				", type=" + type.toString() +
-				", style=" + style +
+				", state=" + state +
+				", type=" + type +
+				", style='" + style + '\'' +
 				", ante=" + ante +
+				", playingCards=" + playingCards +
+				", players=" + players +
 				'}';
 	}
 }

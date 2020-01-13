@@ -74,12 +74,10 @@ public class PlayingCard {
         return "PlayingCard{" +
                 "playingCardId=" + playingCardId +
                 ", created='" + created + '\'' +
-                // fk
-                ", gameId=" + game.getGameId() +
-                ", hand=" + hand.getPlayerId() +
-                // fields
+                ", game=" + game +
+                ", hand=" + hand +
                 ", sequence=" + sequence +
-                ", move=" + move.getLabel() +
+                ", move=" + move +
                 '}';
     }
 }

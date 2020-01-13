@@ -72,19 +72,6 @@ public class User {
         this.email = email;
     }
 
-    @Override
-    public String toString() {
-        return "User{" +
-                "userId=" + userId +
-                ", created='" + created + '\'' +
-                ", alias='" + alias + '\'' +
-                ", alias_sequence=" + aliasSequence +
-                ", email='" + email + '\'' +
-                ", fiches=" + fiches +
-                ", securedLoan=" + securedLoan +
-                '}';
-    }
-
     public boolean repayLoan(){
 
         if (this.fiches >= this.securedLoan) {
@@ -107,20 +94,33 @@ public class User {
         return false;
     }
 
-    public String winCount(List<Game> gamesPlayed) {
+    public String winCount(List<Player> playersPlayed) {
 
         int won = 0;
 
-        for (Game game : gamesPlayed) {
-            if (game.getWinner().getPlayerId() == (this.getUserId())) {
+        for (Player player : playersPlayed) {
+            if (player.isWinner()) {
                 won++;
             }
         }
 
-        return "won/total: [" + won + "/"+ gamesPlayed.size()+"]";
+        return "won/total: [" + won + "/"+ playersPlayed.size()+"]";
     }
 
 
+    @Override
+    public String toString() {
+        return "User{" +
+                "userId=" + userId +
+                ", created='" + created + '\'' +
+                ", alias='" + alias + '\'' +
+                ", aliasSequence=" + aliasSequence +
+                ", email='" + email + '\'' +
+                ", fiches=" + fiches +
+                ", securedLoan=" + securedLoan +
+                ", players=" + players +
+                '}';
+    }
 }
 
 
