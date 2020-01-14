@@ -76,30 +76,56 @@ public class PlayerController {
         return ResponseEntity.ok().headers(headers).body(players);
     }
 
-    // C ai only - todo
+    // C human only - can be tested
     @PostMapping(value = "players/games/{gameId}/users{userId}")
     public ResponseEntity<Player> addHuman(
-            @PathVariable("gameId") int gameId,
-            @PathVariable("userId") int userId,
+            @PathVariable("gameId") String gId,
+            @PathVariable("userId") String uId,
             @RequestParam(name = "avatar", defaultValue = "ELF") String avatar) {
-        Game foundGame = gameRepository.findById(gameId)
-                .orElseThrow(() -> new IllegalArgumentException("Invalid game Id:" + gameId));
 
-        User foundUser = userRepository.findById(userId)
-                .orElseThrow(() -> new IllegalArgumentException("Invalid user Id:" + userId));
+        // header in response
+        URI uri = ServletUriComponentsBuilder.fromCurrentRequest()
+                .path("")
+                .query("")
+                .buildAndExpand(gId,uId, avatar)
+                .toUri();
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("URI", String.valueOf(uri));
 
-        int sequenceCalculated = playerRepository.countByGame(foundGame) + 1;
-        Player createdPlayer = playerRepository.save(new Player(foundUser, foundGame, sequenceCalculated,
+        // validations
+        if (!StringUtils.isNumeric(gId) || !StringUtils.isNumeric(uId)) {
+            // 400
+            return ResponseEntity.badRequest().headers(headers).build();
+        }
+
+        int gameId = Integer.parseInt(gId);
+        int userId = Integer.parseInt(uId);
+
+        Optional<Game> foundGame = gameRepository.findById(gameId);
+        Game linkedGame = null;
+        if (foundGame.isPresent()) {
+            linkedGame = foundGame.get();
+        } else {
+            // 404
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).headers(headers).build();
+        }
+
+        Optional<User> foundUser = userRepository.findById(userId);
+        User linkedUser = null;
+        if (foundUser.isPresent()) {
+            linkedUser = foundUser.get();
+        } else {
+            // 404
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).headers(headers).build();
+        }
+
+        int sequenceCalculated = playerRepository.countByGame(linkedGame) + 1;
+        Player createdPlayer = playerRepository.save(new Player(linkedUser, linkedGame, sequenceCalculated,
                 Avatar.fromLabel(avatar), AiLevel.HUMAN));
         if (createdPlayer == null) {
             return ResponseEntity.notFound().build();
         } else {
-            URI uri = ServletUriComponentsBuilder.fromCurrentRequest()
-                    .path("/{id}")
-                    .buildAndExpand(createdPlayer.getPlayerId())
-                    .toUri();
-
-            return ResponseEntity.created(uri).body(createdPlayer);
+            return ResponseEntity.ok().headers(headers).body(createdPlayer);
         }
     }
 
@@ -107,8 +133,8 @@ public class PlayerController {
     @PostMapping(value = "/players/games/{id}")
     public ResponseEntity addPlayerForGame(
             @PathVariable("id") String id,
-            @RequestParam(name = "aiLevel", defaultValue = "MEDIUM") String aiLevel
-    ) {
+            @RequestParam(name = "aiLevel", defaultValue = "MEDIUM") String aiLevel,
+             @RequestParam(name = "avatar", defaultValue = "ELF") String avatar) {
 
         // header in response
         URI uri = ServletUriComponentsBuilder.fromCurrentRequest()

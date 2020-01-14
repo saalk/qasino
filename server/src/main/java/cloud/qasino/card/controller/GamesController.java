@@ -2,6 +2,7 @@ package cloud.qasino.card.controller;
 
 import cloud.qasino.card.entity.Game;
 import cloud.qasino.card.entity.Player;
+import cloud.qasino.card.entity.PlayingCard;
 import cloud.qasino.card.entity.User;
 import cloud.qasino.card.entity.enums.AiLevel;
 import cloud.qasino.card.entity.enums.Avatar;
@@ -10,7 +11,10 @@ import cloud.qasino.card.repositories.GameRepository;
 import cloud.qasino.card.repositories.PlayerRepository;
 import cloud.qasino.card.repositories.UserRepository;
 import cloud.qasino.card.statemachine.QasinoStateMachine;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -40,90 +44,179 @@ public class GamesController {
 
     // special CRUD - endpoints for the following triggers
 
+
     // normal CRUD
 
-    // C
+    // C- can be tested
     @PostMapping(value = "/games/{type}", params = {"style", "ante"})
     public ResponseEntity<Game> startGame(
             @PathVariable("type") String type,
             @RequestParam(name = "style", defaultValue = "") String style,
-            @RequestParam(name = "ante", defaultValue = "20") Integer ante
+            @RequestParam(name = "ante", defaultValue = "20") String inputAnte
     ) {
-        Game startedGame = gameRepository.save(new Game(Type.valueOf(type), style, (int) ante));
 
-        if (startedGame == null) {
-            return ResponseEntity.notFound().build();
+        // header in response
+        URI uri = ServletUriComponentsBuilder.fromCurrentRequest()
+                .path("")
+                .query("")
+                .buildAndExpand(type, style, inputAnte)
+                .toUri();
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("URI", String.valueOf(uri));
+
+        // validations
+        if (!StringUtils.isNumeric(inputAnte))
+            // 400
+            return ResponseEntity.badRequest().headers(headers).build();
+        int ante = Integer.parseInt(inputAnte);
+
+        Game startedGame = gameRepository.save(new Game(Type.valueOf(type), style, ante));
+
+        if (startedGame.getGameId() == 0) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).headers(headers).build();
         } else {
-            URI uri = ServletUriComponentsBuilder.fromCurrentRequest()
-                    .path("/{id}")
-                    .buildAndExpand(startedGame.getGameId())
-                    .toUri();
-            return ResponseEntity.created(uri).body(startedGame);
+            return ResponseEntity.status(HttpStatus.CREATED).headers(headers).body(startedGame);
         }
     }
 
-    // R
+    // R - can be tested
     @GetMapping("/games/{id}")
     public ResponseEntity<Optional<Game>> getGame(
-            @PathVariable("id") int id
+            @PathVariable("id") String id
     ) {
-        if (!gameRepository.existsById(id)) {
-            return ResponseEntity.notFound().build();
+
+        // header in response
+        URI uri = ServletUriComponentsBuilder.fromCurrentRequest()
+                .path("")
+                .buildAndExpand()
+                .toUri();
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("URI", String.valueOf(uri));
+
+        // validations
+        if (!StringUtils.isNumeric(id)) {
+            return ResponseEntity.badRequest().headers(headers).build();
+        }
+
+        // logic
+        Optional<Game> foundGame = gameRepository.findById(Integer.parseInt(id));
+        if (foundGame.isPresent()) {
+            return ResponseEntity.ok().headers(headers).body(foundGame);
         } else {
-            Optional<Game> foundGame = gameRepository.findById(id);
-            return ResponseEntity.ok(foundGame);
+            return ResponseEntity.notFound().headers(headers).build();
         }
 
     }
 
-    // U
+    // U - can be tested
     @PutMapping(value = "/games/{id}", params = {"style", "ante"})
     public ResponseEntity<Game> updateGame(
-            @PathVariable("id") int id,
-            @RequestParam(name = "style",  defaultValue = "") String style,
-            @RequestParam(name = "ante",  defaultValue = "20") Integer ante
+            @PathVariable("id") String id,
+            @RequestParam(name = "style", defaultValue = "") String style,
+            @RequestParam(name = "ante", defaultValue = "") String ante
     ) {
-        Optional<Game> foundGame = gameRepository.findById(id);
 
-        if (foundGame == null) {
-            return ResponseEntity.notFound().build();
-        } else {
-            Game updateGame = foundGame.get();
-            updateGame.setStyle(style);
-            updateGame.setAnte((int) ante);
-            gameRepository.save(updateGame);
+        // header in response
+        URI uri = ServletUriComponentsBuilder.fromCurrentRequest()
+                .path("")
+                .query("")
+                .buildAndExpand(id, style, ante)
+                .toUri();
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("URI", String.valueOf(uri));
 
-            return ResponseEntity.ok(updateGame);
+        // validations
+        if (!StringUtils.isNumeric(id) || !StringUtils.isNumeric(ante))
+            // 400
+            return ResponseEntity.badRequest().headers(headers).build();
+        int gameId = Integer.parseInt(id);
+        Optional<Game> foundGame = gameRepository.findById(gameId);
+        if (!foundGame.isPresent()) {
+            // 404
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).headers(headers).build();
         }
+
+        // logic
+        Game updatedGame = foundGame.get();
+        if (!StringUtils.isEmpty(style)) {
+            updatedGame.setStyle(style);
+        }
+        if (!StringUtils.isEmpty(ante)) {
+            updatedGame.setAnte(Integer.valueOf(ante));
+        }
+        updatedGame = gameRepository.save(updatedGame);
+
+        // 200
+        return ResponseEntity.ok().headers(headers).body(updatedGame);
+
     }
 
-    // U special - update only the State
+    // U special - update only the State - can be tested
     @PutMapping(value = "/games/{id}/State/{state}")
     public ResponseEntity<Game> updateGame(
-            @PathVariable("id") int id,
+            @PathVariable("id") String id,
             @RequestParam(name = "state", defaultValue = "INITIALIZED") QasinoStateMachine.GameState state
     ) {
-        Optional<Game> foundGame = gameRepository.findById(id);
 
-        if (foundGame == null) {
-            return ResponseEntity.notFound().build();
-        } else {
-            Game updateGame = foundGame.get();
-            updateGame.setState(state);
-            gameRepository.save(updateGame);
+        // header in response
+        URI uri = ServletUriComponentsBuilder.fromCurrentRequest()
+                .path("")
+                .query("")
+                .buildAndExpand(id, state)
+                .toUri();
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("URI", String.valueOf(uri));
 
-            return ResponseEntity.ok(updateGame);
+        // validations
+        if (!StringUtils.isNumeric(id))
+            // 400
+            return ResponseEntity.badRequest().headers(headers).build();
+
+        int gameId = Integer.parseInt(id);
+        Optional<Game> foundGame = gameRepository.findById(gameId);
+        if (!foundGame.isPresent()) {
+            // 404
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).headers(headers).build();
         }
+
+        // logic
+        Game updateGame = foundGame.get();
+        updateGame.setState(state);
+        gameRepository.save(updateGame);
+
+        return ResponseEntity.ok().headers(headers).body(updateGame);
     }
 
-
-    // D
+    // D - can be tested
     @DeleteMapping("/games/{id}")
     public ResponseEntity<Game> deleteGame(
-            @PathVariable("id") int id
+            @PathVariable("id") String id
     ) {
-        gameRepository.deleteById(id);
-        return ResponseEntity.noContent().build();
+
+        // header in response
+        URI uri = ServletUriComponentsBuilder.fromCurrentRequest()
+                .path("")
+                .buildAndExpand()
+                .toUri();
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("URI", String.valueOf(uri));
+
+        // validations
+        if (!StringUtils.isNumeric(id))
+            // 400
+            return ResponseEntity.badRequest().headers(headers).build();
+
+        int gameId = Integer.parseInt(id);
+        Optional<Game> foundGame = gameRepository.findById(gameId);
+        if (!foundGame.isPresent()) {
+            // 404
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).headers(headers).build();
+        }
+
+        // logic
+        gameRepository.deleteById(gameId);
+        // delete 204
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).headers(headers).build();
     }
 }
 
