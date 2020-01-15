@@ -1,6 +1,7 @@
 package cloud.qasino.card.entity.enums;
 
 import lombok.Getter;
+import org.apache.commons.lang3.StringUtils;
 
 import javax.persistence.Column;
 import javax.persistence.Transient;
@@ -13,7 +14,7 @@ import java.util.Set;
 public enum AiLevel implements LabeledEnum {
 
     @Column(name = "aiLevel", length = 10, nullable = false)
-    DUMB("Dumb"), MEDIUM("Medium"), SMART("Smart"), HUMAN("Human"), NONE("None");
+    DUMB("dumb"), AVERAGE("average"), SMART("smart"), HUMAN("human"), ERROR("error");
     
     /**
      * A list of all the Enums in the class. The list is created via Set implementation EnumSet.
@@ -21,7 +22,7 @@ public enum AiLevel implements LabeledEnum {
      * factory methods for creating an instance like creating groups from enums.
      * Here it is used to group all enums.
      */
-    public static Set<AiLevel> aiLevels = EnumSet.of(DUMB, MEDIUM, SMART, HUMAN, NONE);
+    public static Set<AiLevel> aiLevels = EnumSet.of(DUMB, AVERAGE, SMART, HUMAN, ERROR);
     
     /**
      * A static HashMap lookup with key + value is created to use in a getter
@@ -37,14 +38,14 @@ public enum AiLevel implements LabeledEnum {
     private String label;
     
     AiLevel(){
-
     }
     AiLevel(String label) {
         this();
-        this.label = label;
+        this.label = AiLevel.fromLabel(label).getLabel();
     }
     
-    public static AiLevel fromLabel(String label) {
-        return (lookup.get(label) != null) ? lookup.get(label) : NONE;
+    public static AiLevel fromLabel(String inputLabel) {
+        String label = StringUtils.lowerCase(inputLabel);
+        return (lookup.get(label) != null) ? lookup.get(label) : ERROR;
     }
 }

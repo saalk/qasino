@@ -2,7 +2,7 @@ package cloud.qasino.card.entity;
 
 import cloud.qasino.card.domain.qasino.Card;
 import cloud.qasino.card.domain.qasino.Style;
-import cloud.qasino.card.entity.enums.Move;
+import cloud.qasino.card.entity.enums.Location;
 import cloud.qasino.card.entity.enums.Type;
 import cloud.qasino.card.statemachine.QasinoStateMachine;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
@@ -85,7 +85,7 @@ public class Game {
 
         this.state = QasinoStateMachine.GameState.INITIALIZED;
         this.type = Type.HIGHLOW;
-        this.style = new Style().getStyle();
+        this.style = new Style().getLabel();
         this.ante = 20;
     }
 
@@ -98,8 +98,7 @@ public class Game {
     public Game(Type type, String style, int ante) {
         this();
 
-        this.type = type;
-        this.style = style;
+        this.style = new Style(style).getLabel();
         this.ante = ante;
     }
 
@@ -112,7 +111,7 @@ public class Game {
         int i = 1;
         for (Card card : cards) {
             PlayingCard playingCard = new PlayingCard(game, i++);
-            playingCard.setMove(Move.PILE_DRAW);
+            playingCard.setLocation(Location.PILE);
             playingCards.add(playingCard);
         }
         return playingCards;

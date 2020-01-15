@@ -1,6 +1,7 @@
 package cloud.qasino.card.entity.enums;
 
 import lombok.Getter;
+import org.apache.commons.lang3.StringUtils;
 
 import javax.persistence.Column;
 import java.util.EnumSet;
@@ -29,7 +30,7 @@ public enum Type implements LabeledEnum {
      * style of HIGHLOW.
      */
     @Column(name = "type", length = 25)
-    HIGHLOW("Hi-Lo"), BLACKJACK("Blackjack");
+    HIGHLOW("highlow"), BLACKJACK("blackjack"), ERROR("error");
 
     /**
      * A static HashMap lookup with key + value is created to use in a getter
@@ -44,13 +45,22 @@ public enum Type implements LabeledEnum {
 
     private String label;
 
-    Type(String label) {
-        this.label = label;
+    Type() {
     }
 
-    public static Type fromLabel(String label) {
-        Type type = null;
-        type = lookup.get(label);
+    Type(String label) {
+        this();
+        this.label = Type.fromLabel(label).getLabel();
+    }
+
+    public static Type fromLabel(String inputLabel) {
+        String label = StringUtils.lowerCase(inputLabel);
+        Type type;
+        try {
+            type = lookup.get(label);
+        } catch (Exception e) {
+            throw new IllegalArgumentException(e);
+        }
         return type;
     }
 

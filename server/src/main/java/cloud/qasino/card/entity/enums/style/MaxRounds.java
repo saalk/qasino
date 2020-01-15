@@ -9,7 +9,7 @@ import java.util.Map;
 @Getter
 public enum MaxRounds {
     
-    NO_LIMIT("N"),
+    NO_LIMIT("h"),
     ONE_ROUND("1");
     
     /**
@@ -38,6 +38,9 @@ public enum MaxRounds {
             return MaxRounds.NO_LIMIT;
         }
     }
-    
-    
+
+    public static MaxRounds fromLabel(char character) {
+        return fromLabel(Character.toString(character));
+    }
+
 }

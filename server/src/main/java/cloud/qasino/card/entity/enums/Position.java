@@ -11,43 +11,44 @@ import java.util.Map;
 import java.util.Set;
 
 @Getter
-public enum Action implements LabeledEnum {
-	
-	@Column(name = "cardAction", length = 25, nullable = false)
-	DEAL("deal"), HIGHER("higher"), LOWER("lower"), PASS("pass"), NEXT("next"), ERROR("error");
-	
+public enum Position implements LabeledEnum {
+
+	@Column(name = "location", length = 25, nullable = false)
+	SHUFFLED("shuffled"), ORDERED("ordered"), MANUAL("manual"), ERROR("error");
+
 	/**
 	 * A list of all the Enums in the class. The list is created via Set implementation EnumSet.
 	 * <p>EnumSet is an abstract class so new() operator does not work. EnumSet has several static
 	 * factory methods for creating an instance like creating groups from enums.
 	 * Here it is used to group all enums.
 	 */
-	public static Set<Action> actions = EnumSet.of(DEAL, HIGHER, LOWER, PASS, NEXT, ERROR);
-	
+	public static Set<Position> locations = EnumSet.of(SHUFFLED, ORDERED, MANUAL,
+			ERROR);
+
 	/**
 	 * A static HashMap lookup with key + value is created to use in a getter
-	 * to fromLabel the Enum based on the name eg. key "Low" -> value Action.DUMB
+	 * to fromLabel the Enum based on the name eg. key "Low" -> value Location.DUMB
 	 */
-	private static final Map<String, Action> lookup
+	private static final Map<String, Position> lookup
 			= new HashMap<>();
-	
+
 	static {
-		for (Action action : EnumSet.allOf(Action.class))
-			lookup.put(action.getLabel(), action);
+		for (Position location : EnumSet.allOf(Position.class))
+			lookup.put(location.getLabel(), location);
 	}
-	
+
 	@Transient
 	private String label;
-	
-	Action() {
+
+	Position() {
 	}
 
-	Action(String label) {
+	Position(String label) {
 		this();
-		this.label = Action.fromLabel(label).getLabel();
+		this.label = Position.fromLabel(label).getLabel();
 	}
 
-	public static Action fromLabel(String inputLabel) {
+	public static Position fromLabel(String inputLabel) {
 		String label = StringUtils.lowerCase(inputLabel);
 		return (lookup.get(label) != null) ? lookup.get(label) : ERROR;
 	}

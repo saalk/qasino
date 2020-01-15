@@ -9,8 +9,8 @@ import java.util.Map;
 @Getter
 public enum MaxAnte {
     
-    NORMAL("N"),
-    HIGHEST_WINS("H");
+    NORMAL("n"),
+    HIGHEST_WINS("h");
     
     /**
      * A static HashMap lookup with key + value is created to use in a getter
@@ -38,6 +38,9 @@ public enum MaxAnte {
             return MaxAnte.NORMAL;
         }
     }
-    
+
+    public static MaxAnte fromLabel(char character) {
+        return fromLabel(Character.toString(character));
+    }
     
 }

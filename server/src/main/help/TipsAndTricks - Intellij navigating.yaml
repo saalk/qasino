@@ -14,7 +14,7 @@ Ctrl + Shift + N: Go to YAML, TXT or other fle
 Ctrl + U: Go to super-method/super-class
 
 ## Navigation - go to window, history, hide/show windows
-Ctrl + Shift + Backspace: Navigate to last edit move # goes to last edit loc!
+Ctrl + Shift + Backspace: Navigate to last edit location # goes to last edit loc!
 Ctrl + Alt + Left/Right: Navigate back/forward in history # goes to previous
 
 Alt + Right/Left: Go to next/previous editor tab
@@ -27,9 +27,9 @@ Ctrl + H: Type hierarchy
 Ctrl + Shift + H: Method hierarchy
 Ctrl + Alt + H: Call hierarchy
 
-## Navigation - go to move in open file
+## Navigation - go to location in open file
 Alt + Up/Down: Go to previous/next method # goes to xyz()
-Ctrl + ]/[: Move to code block end/start # goes to {}
+Ctrl + ]/[: Location to code block end/start # goes to {}
 Ctrl + G: Go to line - show current line and colum number
 Alt + F1: Moves focus to a list to a popup to IDE components
 Ctrl + F12: File structure popup

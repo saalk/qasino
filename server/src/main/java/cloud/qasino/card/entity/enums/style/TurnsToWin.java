@@ -9,7 +9,7 @@ import java.util.Map;
 @Getter
 public enum TurnsToWin {
     
-    NO_LIMIT("N"),
+    NO_LIMIT("n"),
     ONE_WINS("1"),
     TWO_IN_A_ROW_WINS("2"),
     THREE_IN_A_ROW_WINS("3");
@@ -40,6 +40,9 @@ public enum TurnsToWin {
             return TurnsToWin.NO_LIMIT;
         }
     }
-    
-    
+
+    public static TurnsToWin fromLabel(char character) {
+        return fromLabel(Character.toString(character));
+    }
+
 }

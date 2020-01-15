@@ -3,6 +3,7 @@ package cloud.qasino.card.entity.enums;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.apache.commons.lang3.StringUtils;
 
 import javax.persistence.Column;
 import javax.persistence.Transient;
@@ -20,8 +21,6 @@ import java.util.Map;
  * -> gets the "C"
  */
 @Getter
-@AllArgsConstructor
-@NoArgsConstructor
 public enum Suit implements LabeledEnum {
 
     /**
@@ -60,8 +59,23 @@ public enum Suit implements LabeledEnum {
     @Transient
     private String label;
 
-    public static Suit fromLabel(String label) {
-        return lookup.get(label);
+    Suit() {
+    }
+
+    Suit(String label) {
+        this();
+        this.label = Suit.fromLabel(label).getLabel();
+    }
+
+    public static Suit fromLabel(String inputLabel) {
+        String label = StringUtils.lowerCase(inputLabel);
+        Suit suit;
+        try {
+            suit = lookup.get(label);
+        } catch (Exception e) {
+            throw new IllegalArgumentException(e);
+        }
+        return suit;
     }
 
 }

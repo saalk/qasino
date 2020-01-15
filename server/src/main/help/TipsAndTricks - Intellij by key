@@ -9,7 +9,7 @@ Alt + Shift + C: View recent changes
 Alt + Up/Down: Go to previous/next method # goes to xyz()
 
 Ctrl + /: Comment/uncomment with line comment
-Ctrl + ]/[: Move to code block end/start # goes to {}
+Ctrl + ]/[: Location to code block end/start # goes to {}
 
 Ctrl + Alt + H: Call hierarchy
 Ctrl + Alt + I: Auto-indent line(s)
@@ -75,7 +75,7 @@ Ctrl + Enter: Smart line split
 Ctrl + G: Go to line - show current line and colum number
 Ctrl + Shift + J: Smart line join
 Ctrl + Shift + V: Paste from recent buﬀers...
-Ctrl + Shift + Backspace: Navigate to last edit move # goes to last edit loc!
+Ctrl + Shift + Backspace: Navigate to last edit location # goes to last edit loc!
 Ctrl + X/C/V : clipboard actions
 Ctrl + Y: Delete line at caret
 Double Shift: Search everywhere
@@ -84,7 +84,7 @@ Esc: Go to editor (from tool window)
 
 F11: Toggle bookmark
 F5: Copy
-F6: Move
+F6: Location
 F7: Step into
 F8: Step over
 F9: Resume program

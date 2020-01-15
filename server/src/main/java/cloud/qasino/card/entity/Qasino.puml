@@ -88,7 +88,7 @@ class PlayingCard {
 ..
 - value: int
 - order : int
-- move : Location
+- location : Location
 -- PREPARE --
 - calculateValue(in:Type)
 }

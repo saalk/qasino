@@ -51,8 +51,11 @@ public class UserController {
     @PostMapping(value = "/users/{id}/games/{type}/players/{aiLevel}")
     public ResponseEntity<Game> setupGame(
             @PathVariable("id") String id,
+            // todo type werkt niet No enum constant
             @PathVariable("type") String type,
+            // todo ailevel DUMB becomes NONE
             @PathVariable("aiLevel") String aiLevel,
+            // todo style werkt niet
             @RequestParam(name = "style", defaultValue = "") String style,
             @RequestParam(name = "ante", defaultValue = "20") String ante,
             @RequestParam(name = "avatar", defaultValue = "ELF") String avatar

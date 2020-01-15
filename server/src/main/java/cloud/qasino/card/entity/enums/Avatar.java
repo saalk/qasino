@@ -1,6 +1,7 @@
 package cloud.qasino.card.entity.enums;
 
 import lombok.Getter;
+import org.apache.commons.lang3.StringUtils;
 
 import javax.persistence.Column;
 import java.util.EnumSet;
@@ -13,7 +14,7 @@ import java.util.Set;
 public enum Avatar implements LabeledEnum {
 
     @Column(name = "avatar", length = 25)
-    ELF("Elf"), MAGICIAN("Magician"), GOBLIN("Goblin"), ROMAN("Warrior");
+    ELF("elf"), MAGICIAN("magician"), GOBLIN("goblin"), ROMAN("warrior"), ERROR("error");
     
     /**
      * A list of all the Enums in the class. The list is created via Set implementation EnumSet.
@@ -21,7 +22,7 @@ public enum Avatar implements LabeledEnum {
      * factory methods for creating an instance like creating groups from enums.
      * Here it is used to group all enums.
      */
-    public static Set<Avatar> avatars = EnumSet.of(ELF, MAGICIAN, GOBLIN, ROMAN);
+    public static Set<Avatar> avatars = EnumSet.of(ELF, MAGICIAN, GOBLIN, ROMAN, ERROR);
 
     /**
      * A static HashMap lookup with key + value is created to use in a getter
@@ -35,12 +36,15 @@ public enum Avatar implements LabeledEnum {
     }
     private String label;
 
+    Avatar() {}
+
     Avatar(String label) {
-        this.label = label;
+        this();
+        this.label = Avatar.fromLabel(label).getLabel();
     }
 
-    public static Avatar fromLabel(String label) {
-        return (lookup.get(label) != null) ? lookup.get(label) : MAGICIAN;
+    public static Avatar fromLabel(String inputLabel) {
+        String label = StringUtils.lowerCase(inputLabel);
+        return (lookup.get(label) != null) ? lookup.get(label) : ERROR;
     }
-
 }

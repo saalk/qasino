@@ -79,12 +79,12 @@ public class EventController {
     }
 
     //PLAY,		 	// PLayers are playing the Game
-    @PostMapping(value = "/game/{gameId}/player/{playerId}/move/{move}", params = {"cardId",
+    @PostMapping(value = "/game/{gameId}/player/{playerId}/location/{location}", params = {"cardId",
             "roundNumber","moveNumber","bet"})
     public String startGame(
             @PathVariable("gameId") int gameId,
             @PathVariable("playerId") int playerId,
-            @PathVariable("move") String move,
+            @PathVariable("location") String move,
 
             @RequestParam("cardId") String cardId,
             @RequestParam("roundNumber") int roundNumber,

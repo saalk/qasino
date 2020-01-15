@@ -7,38 +7,42 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Getter
-public enum InsureanceCost {
+public enum InsuranceCost {
     
-    NO("N"),
-    QUARTER_ANTE("Q"),
-    HALF_ANTE("H");
+    NO("n"),
+    QUARTER_ANTE("q"),
+    HALF_ANTE("h");
     
     /**
      * A static HashMap lookup with key + value is created to use in a getter
      * to fromLabel the Enum based on the name eg. key "Low" -> value AiLevel.DUMB
      */
-    private static final Map<String, InsureanceCost> lookup
+    private static final Map<String, InsuranceCost> lookup
             = new HashMap<>();
     static {
-        for(InsureanceCost insureanceCost : EnumSet.allOf(InsureanceCost.class))
-            lookup.put(insureanceCost.getLabel(), insureanceCost);
+        for(InsuranceCost insuranceCost : EnumSet.allOf(InsuranceCost.class))
+            lookup.put(insuranceCost.getLabel(), insuranceCost);
     }
     
     String label;
 
     // Constructor, each argument to the constructor shadows one of the object's
     // fields
-    InsureanceCost(String label) {
+    InsuranceCost(String label) {
         this.label = label;
     }
     
-    public static InsureanceCost fromLabel(String label) {
+    public static InsuranceCost fromLabel(String label) {
         try {
             return lookup.get(label.toUpperCase());
         } catch (Exception e){
-            return InsureanceCost.NO;
+            return InsuranceCost.NO;
         }
     }
-    
-    
+
+    public static InsuranceCost fromLabel(char character) {
+        return fromLabel(Character.toString(character));
+    }
+
+
 }

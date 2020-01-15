@@ -1,6 +1,8 @@
 package cloud.qasino.card.domain.qasino;
 
+import cloud.qasino.card.entity.enums.style.*;
 import lombok.Getter;
+import org.apache.commons.lang3.StringUtils;
 
 @Getter
 public class Style {
@@ -27,50 +29,83 @@ public class Style {
      * to fromLabel the Enum based on the name eg. key "Low" -> value AiLevel.DUMB
      */
 
-    String style;
+    String label;
 
-    cloud.qasino.card.entity.enums.style.MaxAnte maxAnte;
-    cloud.qasino.card.entity.enums.style.BettingStrategy bettingStrategy;
-    cloud.qasino.card.entity.enums.style.NumOfDecks numOfDecks;
-    cloud.qasino.card.entity.enums.style.InsureanceCost insureanceCost;
-    cloud.qasino.card.entity.enums.style.MaxRounds maxRounds;
-    cloud.qasino.card.entity.enums.style.TurnsToWin turnsToWin;
+    MaxAnte maxAnte;
+    BettingStrategy bettingStrategy;
+    NumOfDecks numOfDecks;
+    InsuranceCost insuranceCost;
+    MaxRounds maxRounds;
+    TurnsToWin turnsToWin;
+
 
     public Style() {
 
-        fromStyle("");
+        this.label = "hraqn3";
+
+        this.maxAnte = MaxAnte.HIGHEST_WINS;
+        this.bettingStrategy = BettingStrategy.REGULAR;
+        this.numOfDecks = NumOfDecks.ALL_CARDS;
+        this.insuranceCost = InsuranceCost.QUARTER_ANTE;
+        this.maxRounds = MaxRounds.NO_LIMIT;
+        this.turnsToWin = TurnsToWin.THREE_IN_A_ROW_WINS;
+
     }
 
-    public Style(String style) {
-        this.style = style;
-        fromStyle(style);
+    public Style(String label) {
+        this();
+
+        Style style = Style.fromLabel(label);
+
+        this.label = style.label;
+        this.maxAnte = style.maxAnte;
+        this.bettingStrategy = style.bettingStrategy;
+        this.numOfDecks = style.numOfDecks;
+        this.insuranceCost = style.insuranceCost;
+        this.maxRounds = style.maxRounds;
+        this.turnsToWin = style.turnsToWin;
     }
 
-    public void fromStyle(String style) {
+    static public Style fromLabel(String inputLabel) {
 
-        this.maxAnte = cloud.qasino.card.entity.enums.style.MaxAnte.HIGHEST_WINS;
-        this.bettingStrategy = cloud.qasino.card.entity.enums.style.BettingStrategy.REGULAR;
-        this.numOfDecks = cloud.qasino.card.entity.enums.style.NumOfDecks.ALL_CARDS;
-        this.insureanceCost = cloud.qasino.card.entity.enums.style.InsureanceCost.QUARTER_ANTE;
-        this.maxRounds = cloud.qasino.card.entity.enums.style.MaxRounds.NO_LIMIT;
-        this.turnsToWin = cloud.qasino.card.entity.enums.style.TurnsToWin.THREE_IN_A_ROW_WINS;
+        Style style = new Style();
+        String label = StringUtils.lowerCase(inputLabel);
 
-        int len = style.length();
-        if (len > 5) {
-            this.turnsToWin = cloud.qasino.card.entity.enums.style.TurnsToWin.fromLabel(String.valueOf(style.charAt(6)));
-        } else if (len > 4) {
-            this.maxRounds = cloud.qasino.card.entity.enums.style.MaxRounds.fromLabel(String.valueOf(style.charAt(5)));
-        } else if (len > 3) {
-            this.insureanceCost = cloud.qasino.card.entity.enums.style.InsureanceCost.fromLabel(String.valueOf(style.charAt(4)));
-        } else if (len > 2) {
-            this.numOfDecks = cloud.qasino.card.entity.enums.style.NumOfDecks.fromLabel(String.valueOf(style.charAt(3)));
+        StringBuilder newLabel = new StringBuilder("      ");
+        int len = label.length();
+
+        if (len > 0) {
+            char pos = label.charAt(1);
+            style.maxAnte = MaxAnte.fromLabel(pos);
+            char newPos = style.maxAnte.getLabel().charAt(1);
+            newLabel.setCharAt(1,newPos);
         } else if (len > 1) {
-            this.bettingStrategy = cloud.qasino.card.entity.enums.style.BettingStrategy.fromLabel(String.valueOf(style.charAt(2)));
-        } else if (len > 0) {
-            this.maxAnte = cloud.qasino.card.entity.enums.style.MaxAnte.fromLabel(String.valueOf(style.charAt(1)));
-        } else {
-            this.style = "HRAQN3";
+            char pos = label.charAt(2);
+            style.bettingStrategy = BettingStrategy.fromLabel(pos);
+            char newPos = style.maxAnte.getLabel().charAt(2);
+            newLabel.setCharAt(2,newPos);
+        } else if (len > 2) {
+            char pos = label.charAt(3);
+            style.numOfDecks = NumOfDecks.fromLabel(pos);
+            char newPos = style.numOfDecks.getLabel().charAt(3);
+            newLabel.setCharAt(3,newPos);
+        } else if (len > 3) {
+            char pos = label.charAt(4);
+            style.insuranceCost = InsuranceCost.fromLabel(pos);
+            char newPos = style.insuranceCost.getLabel().charAt(4);
+            newLabel.setCharAt(4,newPos);
+        } else if (len > 4) {
+            char pos = label.charAt(5);
+            style.maxRounds = MaxRounds.fromLabel(pos);
+            char newPos = style.maxRounds.getLabel().charAt(5);
+            newLabel.setCharAt(5,newPos);
+        } else if (len > 5) {
+            char pos = label.charAt(6);
+            style.turnsToWin = TurnsToWin.fromLabel(pos);
+            char newPos = style.turnsToWin.getLabel().charAt(6);
+            newLabel.setCharAt(6,newPos);
         }
+        style.label = String.valueOf(newLabel);
+        return style;
     }
-
 }

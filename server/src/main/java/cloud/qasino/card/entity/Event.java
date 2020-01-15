@@ -1,12 +1,9 @@
 package cloud.qasino.card.entity;
 
-import cloud.qasino.card.entity.enums.Move;
+import cloud.qasino.card.entity.enums.Location;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.JsonIdentityReference;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import com.voodoodyne.jackson.jsog.JSOGGenerator;
-import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.DynamicUpdate;
@@ -65,8 +62,8 @@ public class Event {
     private int moveNumber;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "move", nullable = false)
-    private Move move;
+    @Column(name = "location", nullable = false)
+    private Location location;
 
     @Column(name = "bet", nullable=false)
     private int bet;
@@ -111,7 +108,7 @@ public class Event {
                 ", playerOrder=" + playerOrder +
                 ", roundNumber=" + roundNumber +
                 ", moveNumber=" + moveNumber +
-                ", move=" + move +
+                ", location=" + location +
                 ", bet=" + bet +
                 '}';
     }

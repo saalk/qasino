@@ -9,12 +9,13 @@ import java.util.Map;
 @Getter
 public enum NumOfDecks {
     
-    ALL_CARDS("A"),
-    ONLY_HEARTS("H"),
-    ONLY_SPADES("S"),
-    ONLY_DIAMONDS("D"),
-    ONLY_CLUBS("C"),
-    RANDOM_SUIT("R");
+    ALL_CARDS("a"),
+    ALL_NO_JOKERS("n"),
+    ONLY_HEARTS("h"),
+    ONLY_SPADES("s"),
+    ONLY_DIAMONDS("d"),
+    ONLY_CLUBS("c"),
+    RANDOM_SUIT("r");
     /**
      * A static HashMap lookup with key + value is created to use in a getter
      * to fromLabel the Enum based on the name eg. key "Low" -> value AiLevel.DUMB
@@ -41,6 +42,9 @@ public enum NumOfDecks {
             return NumOfDecks.ALL_CARDS;
         }
     }
-    
-    
+    public static NumOfDecks fromLabel(char character) {
+        return fromLabel(Character.toString(character));
+    }
+
+
 }

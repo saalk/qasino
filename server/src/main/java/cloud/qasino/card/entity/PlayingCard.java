@@ -1,8 +1,7 @@
 package cloud.qasino.card.entity;
 
-import cloud.qasino.card.entity.enums.Move;
+import cloud.qasino.card.entity.enums.Location;
 import com.fasterxml.jackson.annotation.*;
-import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.DynamicUpdate;
@@ -58,10 +57,10 @@ public class PlayingCard {
     @Column(name = "sequence")
     private int sequence;
 
-    // current move for the card
+    // current location for the card
     @Enumerated(EnumType.STRING)
-    @Column(name = "move", nullable = false)
-    private Move move;
+    @Column(name = "location", nullable = false)
+    private Location location;
 
 
     // References
@@ -101,7 +100,7 @@ public class PlayingCard {
                 ", game=" + game +
                 ", hand=" + hand +
                 ", sequence=" + sequence +
-                ", move=" + move +
+                ", location=" + location +
                 '}';
     }
 }

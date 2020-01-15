@@ -1,6 +1,7 @@
 package cloud.qasino.card.entity.enums;
 
 import lombok.Getter;
+import org.apache.commons.lang3.StringUtils;
 
 import javax.persistence.Column;
 import javax.persistence.Transient;
@@ -53,16 +54,23 @@ public enum Rank implements LabeledEnum {
     @Transient
     private String label;
 
-    Rank(){}
+    Rank() {
+    }
 
     Rank(String label) {
         this();
-        this.label = label;
+        this.label = Rank.fromLabel(label).getLabel();
     }
 
-
-    public static Rank fromLabel(String label) {
-        return lookup.get(label);
+    public static Rank fromLabel(String inputLabel) {
+        String label = StringUtils.lowerCase(inputLabel);
+        Rank rank;
+        try {
+            rank = lookup.get(label);
+        } catch (Exception e) {
+            throw new IllegalArgumentException(e);
+        }
+        return rank;
     }
 
     /**

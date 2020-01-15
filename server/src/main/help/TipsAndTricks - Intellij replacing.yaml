@@ -34,7 +34,7 @@ Ctrl + Shift + F8: View breakpoints
 
 ## Refactoring
 F5: Copy
-F6: Move
+F6: Location
 Alt + Delete: Safe Delete
 Shift + F6: Rename
 Ctrl + F6: Change Signature

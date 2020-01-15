@@ -9,8 +9,8 @@ import java.util.Map;
 @Getter
 public enum BettingStrategy {
     
-    REGULAR("R"),
-    DOUBLE_OR_NOTHING("D");
+    REGULAR("r"),
+    DOUBLE_OR_NOTHING("d");
     
     /**
      * A static HashMap lookup with key + value is created to use in a getter
@@ -37,6 +37,10 @@ public enum BettingStrategy {
         } catch (Exception e){
             return BettingStrategy.REGULAR;
         }
+    }
+
+    public static BettingStrategy fromLabel(char character) {
+        return fromLabel(Character.toString(character));
     }
     
     
