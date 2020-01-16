@@ -21,6 +21,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @Slf4j
@@ -44,11 +45,11 @@ public class PlayerController {
 
     // normal CRUD
 
-    // LG - can be tested
-    @GetMapping(value = "/players/games/{id}}", params = {"human"})
+    // LG - tested ok
+    @GetMapping(value = "/players/games/{id}")
     public ResponseEntity getPlayersByGame(
             @PathVariable("id") String id,
-            @RequestParam(name = "human") String human
+            @RequestParam(name = "human", defaultValue = "") String human
     ) {
 
         // header in response
@@ -64,21 +65,23 @@ public class PlayerController {
         if (!StringUtils.isNumeric(id)) {
             return ResponseEntity.badRequest().headers(headers).build();
         }
-        int gameId = Integer.valueOf(id);
+        int gameId = Integer.parseInt(id);
         // logic
-        Boolean isHuman = BooleanUtils.toBooleanObject(human);
+        //todo add boolean logic
+        Boolean isHuman = (human.isEmpty() ? null : Boolean.parseBoolean(human));
+
         Optional<Game> foundGame = gameRepository.findById(gameId);
         if (!foundGame.isPresent()) {
             return ResponseEntity.notFound().headers(headers).build();
         }
 
-        ArrayList players = (ArrayList) playerRepository.findByGameOrderBySequenceAsc(foundGame.get());
-        // todo add human
+        List<Player> players = playerRepository.findByGameOrderBySequenceAsc(foundGame.get());
         return ResponseEntity.ok().headers(headers).body(players);
     }
 
-    // C human only - can be tested
-    @PostMapping(value = "players/games/{gameId}/users{userId}")
+    // C human only - todo can be tested gives error 404??
+    // todo check max
+    @PostMapping(value = "/players/games/{gameId}/users{userId}")
     public ResponseEntity<Player> addHuman(
             @PathVariable("gameId") String gId,
             @PathVariable("userId") String uId,
@@ -105,45 +108,41 @@ public class PlayerController {
         int userId = Integer.parseInt(uId);
 
         Optional<Game> foundGame = gameRepository.findById(gameId);
-        Game linkedGame = null;
-        if (foundGame.isPresent()) {
-            linkedGame = foundGame.get();
-        } else {
+        if (!foundGame.isPresent()) {
             // 404
             return ResponseEntity.status(HttpStatus.NOT_FOUND).headers(headers).build();
         }
+        Game linkedGame = foundGame.get();
 
         Optional<User> foundUser = userRepository.findById(userId);
-        User linkedUser = null;
-        if (foundUser.isPresent()) {
-            linkedUser = foundUser.get();
-        } else {
+        if (!foundUser.isPresent()) {
             // 404
             return ResponseEntity.status(HttpStatus.NOT_FOUND).headers(headers).build();
         }
+        User linkedUser = foundUser.get();
 
-        int sequenceCalculated = playerRepository.countByGame(linkedGame) + 1;
+        int sequenceCalculated = (playerRepository.countByGame(linkedGame)) + 1;
         Player createdPlayer = playerRepository.save(new Player(linkedUser, linkedGame, sequenceCalculated,
                 Avatar.fromLabelWithDefault(avatar), AiLevel.HUMAN));
-        if (createdPlayer == null) {
-            return ResponseEntity.notFound().build();
-        } else {
-            return ResponseEntity.ok().headers(headers).body(createdPlayer);
+        if (createdPlayer.getPlayerId() == 0) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).headers(headers).build();
         }
+        return ResponseEntity.ok().headers(headers).body(createdPlayer);
     }
 
-     // C ai only - can be tested
+     // C ai only - tested ok
+    // todo check max
     @PostMapping(value = "/players/games/{id}")
     public ResponseEntity addPlayerForGame(
             @PathVariable("id") String id,
-            @RequestParam(name = "aiLevel", defaultValue = "medium") String aiLevel,
+            @RequestParam(name = "aiLevel", defaultValue = "average") String aiLevel,
              @RequestParam(name = "avatar", defaultValue = "elf") String avatar) {
 
         // header in response
         URI uri = ServletUriComponentsBuilder.fromCurrentRequest()
                 .path("")
                 .query("")
-                .buildAndExpand(id, aiLevel)
+                .buildAndExpand(id, aiLevel, avatar)
                 .toUri();
         HttpHeaders headers = new HttpHeaders();
         headers.add("URI", String.valueOf(uri));
@@ -186,7 +185,7 @@ public class PlayerController {
 
     }
 
-    // R - ok can be tested
+    // R - tested ok
     @GetMapping("/players/{id}")
     public ResponseEntity<Optional<Player>> getPlayer(
             @PathVariable("id") String id
@@ -214,12 +213,12 @@ public class PlayerController {
         }
     }
 
-    // U - ok can be tested
-    @PutMapping(value = "/players/{id}", params = {"avatar", "aiLevel"})
+    // U - tested ok
+    @PutMapping(value = "/players/{id}")
     public ResponseEntity<Player> updatePlayer(
             @PathVariable("id") String id,
-            @RequestParam(name = "avatar", defaultValue = "elf") String avatar,
-            @RequestParam(name = "aiLevel", defaultValue = "medium") String aiLevel
+            @RequestParam(name = "avatar", defaultValue = "") String avatar,
+            @RequestParam(name = "aiLevel", defaultValue = "") String aiLevel
     ) {
 
         // header in response
@@ -260,7 +259,7 @@ public class PlayerController {
         return ResponseEntity.ok().headers(headers).body(updatedPlayer);
     }
 
-    // U - can be tested
+    // U - todo can be tested
     @PutMapping(value = "/players/{id}/{order}")
     public ResponseEntity<Game> updateSequence(
             @PathVariable("id") String id,
@@ -282,6 +281,7 @@ public class PlayerController {
             return ResponseEntity.badRequest().headers(headers).build();
         }
         int playerId = Integer.parseInt(id);
+        int orderValue = Integer.parseInt(order);
 
         // logic get player
         Optional<Player> foundPlayer = playerRepository.findById(playerId);
@@ -290,17 +290,21 @@ public class PlayerController {
             // 404
             return ResponseEntity.status(HttpStatus.NOT_FOUND).headers(headers).build();
         }
-
+        // todo logic this does not work
         Optional<Game> updatedGame = gameRepository.findById(foundPlayer.get().getGame().getGameId());
-        if (order.equalsIgnoreCase("1")) {
-            updatedGame.get().switchPlayers(-1,-1);
+        if (orderValue >0 ) { // 1 = up, -1 means down
+            updatedGame.get().switchPlayers(-1, -1);
+            gameRepository.save(updatedGame.get());
+            return ResponseEntity.ok(updatedGame.get());
+        } else {
+            updatedGame.get().switchPlayers(1, 1);
             gameRepository.save(updatedGame.get());
             return ResponseEntity.ok(updatedGame.get());
         }
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).headers(headers).build();
+        //return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).headers(headers).build();
     }
 
-    // D - ok can be tested
+    // D - tested ok
     @DeleteMapping("/players/{id}")
     public ResponseEntity<Player> deletePlayer(
             @PathVariable("id") String id

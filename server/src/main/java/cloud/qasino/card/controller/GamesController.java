@@ -48,8 +48,8 @@ public class GamesController {
 
     // normal CRUD
 
-    // C- can be tested
-    @PostMapping(value = "/games/{type}", params = {"style", "ante"})
+    // C- tested ok
+    @PostMapping(value = "/games/{type}")
     public ResponseEntity<Game> startGame(
             @PathVariable("type") String type,
             @RequestParam(name = "style", defaultValue = " ") String style,
@@ -82,7 +82,7 @@ public class GamesController {
         }
     }
 
-    // R - can be tested
+    // R - tested ok
     @GetMapping("/games/{id}")
     public ResponseEntity<Optional<Game>> getGame(
             @PathVariable("id") String id
@@ -111,8 +111,8 @@ public class GamesController {
 
     }
 
-    // U - can be tested
-    @PutMapping(value = "/games/{id}", params = {"style", "ante"})
+    // U - tested ok, no update of type here // todo test ante changes or empty
+    @PutMapping(value = "/games/{id}")
     public ResponseEntity<Game> updateGame(
             @PathVariable("id") String id,
             @RequestParam(name = "style", defaultValue = " ") String style,
@@ -130,12 +130,13 @@ public class GamesController {
 
         // validations
         if (!StringUtils.isNumeric(id)
-                || !StringUtils.isNumeric(inputAnte))
+                || (!inputAnte.isEmpty() & !StringUtils.isNumeric(inputAnte))
+        )
             // 400
             return ResponseEntity.badRequest().headers(headers).build();
 
         int gameId = Integer.parseInt(id);
-        int ante = Integer.parseInt(inputAnte);
+
         Optional<Game> foundGame = gameRepository.findById(gameId);
         if (!foundGame.isPresent()) {
             // 404
@@ -148,6 +149,7 @@ public class GamesController {
             updatedGame.setStyle(Style.fromLabelWithDefault(style).getLabel());
         }
         if (!StringUtils.isEmpty(inputAnte)) {
+            int ante = Integer.parseInt(inputAnte);
             updatedGame.setAnte(ante);
         }
         updatedGame = gameRepository.save(updatedGame);
@@ -157,11 +159,11 @@ public class GamesController {
 
     }
 
-    // U special - update only the State - can be tested
-    @PutMapping(value = "/games/{id}/State/{state}")
+    // U special - update only the State - can be tested todo work on error and default ?
+    @PutMapping(value = "/games/{id}/state/{state}")
     public ResponseEntity<Game> updateGame(
             @PathVariable("id") String id,
-            @RequestParam(name = "state", defaultValue = "INITIALIZED") QasinoStateMachine.GameState state
+            @PathVariable("state") QasinoStateMachine.GameState state
     ) {
         // todo make string and add fromLabelWithDefault
 
@@ -194,7 +196,7 @@ public class GamesController {
         return ResponseEntity.ok().headers(headers).body(updateGame);
     }
 
-    // D - can be tested
+    // D - tested ok not possible when players are related
     @DeleteMapping("/games/{id}")
     public ResponseEntity<Game> deleteGame(
             @PathVariable("id") String id

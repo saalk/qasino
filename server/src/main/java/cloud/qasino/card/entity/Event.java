@@ -17,11 +17,11 @@ import java.util.Objects;
 @DynamicUpdate
 @Getter
 @Setter
-@JsonIdentityInfo(generator= JSOGGenerator.class)
+@JsonIdentityInfo(generator = JSOGGenerator.class)
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 @Table(name = "events", indexes =
-        { @Index(name = "events_game_index", columnList = "game_id", unique = false ),
-          @Index(name = "events_index", columnList = "event_id", unique = true )}
+        {@Index(name = "events_game_index", columnList = "game_id", unique = false),
+                @Index(name = "events_index", columnList = "event_id", unique = true)}
 )
 public class Event {
 
@@ -36,48 +36,49 @@ public class Event {
 
     // Foreign keys
 
-    @Column(name = "game_id", nullable=false)
+    @Column(name = "game_id", nullable = false)
     private int gameId;
 
-    @Column(name = "player_id", nullable=true)
+    @Column(name = "player_id", nullable = true)
     private int playerId;
 
-    @Column(name = "card_id", nullable=true)
+    @Column(name = "card_id", nullable = true)
     private String cardId;
 
 
     // json
-    @Column(name = "event_details", nullable=false)
+    @Column(name = "event_details", nullable = false)
     private String eventDetails;
 
     // Normal fields
 
-    @Column(name = "player_order", nullable=false)
+    @Column(name = "player_order", nullable = false)
     private int playerOrder;
 
-    @Column(name = "round_number", nullable=false)
+    @Column(name = "round_number", nullable = false)
     private int roundNumber;
 
-    @Column(name = "move_number", nullable=false)
+    @Column(name = "move_number", nullable = false)
     private int moveNumber;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "location", nullable = false)
     private Location location;
 
-    @Column(name = "bet", nullable=false)
+    @Column(name = "bet", nullable = false)
     private int bet;
 
     // References
 
     public Event() {
-    }
-
-    public Event(Game game, Player player, String cardId) {
         LocalDateTime localDateAndTime = LocalDateTime.now();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd-HH:mm-ssSSS-nnnnnnnnn");
         String result = localDateAndTime.format(formatter);
         this.created = result.substring(2, 20);
+    }
+
+    public Event(Game game, Player player, String cardId) {
+        this();
         this.gameId = game.getGameId();
         this.playerId = player.getPlayerId();
         this.cardId = cardId;

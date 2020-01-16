@@ -3,6 +3,7 @@ package cloud.qasino.card.domain.qasino.style;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import javax.validation.constraints.Pattern;
 import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.Map;
@@ -23,7 +24,7 @@ public enum MaxAnte {
         for(MaxAnte maxAnte : EnumSet.allOf(MaxAnte.class))
             lookup.put(maxAnte.getLabel(), maxAnte);
     }
-    
+    @Pattern(regexp = "[a-z,0-9]")
     String label;
     String description;
 

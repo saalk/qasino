@@ -61,7 +61,7 @@ public class Style {
 
     static public Style fromLabelWithDefault(String inputLabel) {
 
-        if (inputLabel.equals(null) || inputLabel.isEmpty()) {
+        if (inputLabel == null || inputLabel.isEmpty()) {
             return new Style();
         }
         String label = StringUtils.lowerCase(inputLabel);
@@ -74,39 +74,41 @@ public class Style {
         TurnsToWin turnsToWin = TurnsToWin.THREE_IN_A_ROW_WINS;
 
         StringBuilder newLabel = new StringBuilder("hr3tn3");
+
         final int len = label.length();
         char pos;
         char newPos;
 
+        // todo change to char array with loop
         switch (len) {
             case 6:
                 pos = label.charAt(5);
                 turnsToWin = TurnsToWin.fromLabelWithDefault(pos);
-                newPos = turnsToWin.getLabel().charAt(5);
+                newPos = turnsToWin.getLabel().charAt(0);
                 newLabel.setCharAt(5, newPos);
 
             case 5:
                 pos = label.charAt(4);
                 roundsToWin = RoundsToWin.fromLabelWithDefault(pos);
-                newPos = roundsToWin.getLabel().charAt(4);
+                newPos = roundsToWin.getLabel().charAt(0);
                 newLabel.setCharAt(4, newPos);
 
             case 4:
                 pos = label.charAt(3);
                 insuranceCost = InsuranceCost.fromLabelWithDefault(pos);
-                newPos = insuranceCost.getLabel().charAt(3);
+                newPos = insuranceCost.getLabel().charAt(0);
                 newLabel.setCharAt(3, newPos);
 
             case 3:
-            pos = label.charAt(2);
-            deck = Deck.fromLabelWithDefault(pos);
-            newPos = deck.getLabel().charAt(2);
-            newLabel.setCharAt(2, newPos);
+                pos = label.charAt(2);
+                deck = Deck.fromLabelWithDefault(pos);
+                newPos = deck.getLabel().charAt(0);
+                newLabel.setCharAt(2, newPos);
 
             case 2:
                 pos = label.charAt(1);
                 bettingStrategy = BettingStrategy.fromLabelWithDefault(pos);
-                newPos = bettingStrategy.getLabel().charAt(1);
+                newPos = bettingStrategy.getLabel().charAt(0);
                 newLabel.setCharAt(1, newPos);
 
             case 1:
@@ -116,7 +118,7 @@ public class Style {
                 newLabel.setCharAt(0, newPos);
         }
         label = String.valueOf(newLabel);
-        return new Style(label,maxAnte,bettingStrategy, deck,insuranceCost, roundsToWin,turnsToWin);
+        return new Style(label, maxAnte, bettingStrategy, deck, insuranceCost, roundsToWin, turnsToWin);
     }
 
     @Override

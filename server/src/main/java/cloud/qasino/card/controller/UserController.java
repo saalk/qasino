@@ -102,7 +102,7 @@ public class UserController {
         if (createdHuman.getPlayerId() == 0) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).headers(headers).build();
         }
-        createdAi = playerRepository.save(new Player(linkedUser, startedGame, 2,
+        createdAi = playerRepository.save(new Player(null, startedGame, 2,
                 Avatar.fromLabelWithDefault(avatar), AiLevel.fromLabelWithDefault(aiLevel)));
         if (createdAi.getPlayerId() == 0) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).headers(headers).build();

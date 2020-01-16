@@ -2,6 +2,7 @@ package cloud.qasino.card.domain.qasino.style;
 
 import lombok.Getter;
 
+import javax.validation.constraints.Pattern;
 import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.Map;
@@ -27,6 +28,7 @@ public enum Deck {
             lookup.put(deck.getLabel(), deck);
     }
 
+    @Pattern(regexp = "[a-z,0-9]")
     String label;
     String description;
 

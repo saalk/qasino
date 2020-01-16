@@ -96,7 +96,7 @@ public class Game {
     }
 
     public Game(Type type, String style, int ante) {
-        this();
+        this(type);
 
         this.style = Style.fromLabelWithDefault(style).getLabel();
         this.ante = ante;

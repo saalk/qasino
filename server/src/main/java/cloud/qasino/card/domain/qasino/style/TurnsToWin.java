@@ -27,7 +27,7 @@ public enum TurnsToWin {
             lookup.put(turnsToWin.getLabel(), turnsToWin);
     }
 
-    @Pattern(regexp = "(.)")
+    @Pattern(regexp = "[a-z,0-9]")
     String label;
     String description;
 

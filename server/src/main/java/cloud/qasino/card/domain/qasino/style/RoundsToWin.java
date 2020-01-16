@@ -2,6 +2,7 @@ package cloud.qasino.card.domain.qasino.style;
 
 import lombok.Getter;
 
+import javax.validation.constraints.Pattern;
 import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.Map;
@@ -23,7 +24,7 @@ public enum RoundsToWin {
         for (RoundsToWin roundsToWin : EnumSet.allOf(RoundsToWin.class))
             lookup.put(roundsToWin.getLabel(), roundsToWin);
     }
-
+    @Pattern(regexp = "[a-z,0-9]")
     String label;
     String description;
 

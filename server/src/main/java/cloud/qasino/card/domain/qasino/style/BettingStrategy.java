@@ -24,7 +24,7 @@ public enum BettingStrategy {
             lookup.put(bettingStrategy.getLabel(), bettingStrategy);
     }
 
-    @Pattern(regexp = ".")
+    @Pattern(regexp = "[a-z,0-9]")
     String label;
     String description;
 

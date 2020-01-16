@@ -2,6 +2,7 @@ package cloud.qasino.card.domain.qasino.style;
 
 import lombok.Getter;
 
+import javax.validation.constraints.Pattern;
 import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.Map;
@@ -24,7 +25,8 @@ public enum InsuranceCost {
         for(InsuranceCost insuranceCost : EnumSet.allOf(InsuranceCost.class))
             lookup.put(insuranceCost.getLabel(), insuranceCost);
     }
-    
+
+    @Pattern(regexp = "[a-z,0-9]")
     String label;
     String description;
 
