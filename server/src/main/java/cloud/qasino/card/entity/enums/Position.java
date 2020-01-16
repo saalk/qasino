@@ -1,5 +1,6 @@
 package cloud.qasino.card.entity.enums;
 
+import cloud.qasino.card.domain.qasino.style.MaxAnte;
 import lombok.Getter;
 import org.apache.commons.lang3.StringUtils;
 
@@ -41,16 +42,30 @@ public enum Position implements LabeledEnum {
 	private String label;
 
 	Position() {
+		this.label = "error";
 	}
 
 	Position(String label) {
 		this();
-		this.label = Position.fromLabel(label).getLabel();
+		this.label = label;
 	}
 
 	public static Position fromLabel(String inputLabel) {
-		String label = StringUtils.lowerCase(inputLabel);
-		return (lookup.get(label) != null) ? lookup.get(label) : ERROR;
+		return lookup.get(inputLabel.toLowerCase());
+	}
+
+	public static Position fromLabel(char character) {
+		return fromLabel(Character.toString(character));
+	}
+
+	public static Position fromLabelWithDefault(String label) {
+		Position position = fromLabel(label);
+		if (position == null) return Position.ERROR;
+		return position;
+	}
+
+	public static Position fromLabelWithDefault(char character) {
+		return fromLabelWithDefault(Character.toString(character));
 	}
 
 }

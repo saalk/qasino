@@ -1,6 +1,6 @@
 package cloud.qasino.card.domain.qasino;
 
-import cloud.qasino.card.entity.enums.style.*;
+import cloud.qasino.card.domain.qasino.style.*;
 import lombok.Getter;
 import org.apache.commons.lang3.StringUtils;
 
@@ -33,79 +33,94 @@ public class Style {
 
     MaxAnte maxAnte;
     BettingStrategy bettingStrategy;
-    NumOfDecks numOfDecks;
+    Deck deck;
     InsuranceCost insuranceCost;
-    MaxRounds maxRounds;
+    RoundsToWin roundsToWin;
     TurnsToWin turnsToWin;
 
-
     public Style() {
-
-        this.label = "hraqn3";
-
+        this.label = "hr3tn3";
         this.maxAnte = MaxAnte.HIGHEST_WINS;
         this.bettingStrategy = BettingStrategy.REGULAR;
-        this.numOfDecks = NumOfDecks.ALL_CARDS;
-        this.insuranceCost = InsuranceCost.QUARTER_ANTE;
-        this.maxRounds = MaxRounds.NO_LIMIT;
+        this.deck = Deck.ALL_THREE_JOKER;
+        this.insuranceCost = InsuranceCost.TENTH_ANTE;
+        this.roundsToWin = RoundsToWin.NO_LIMIT;
         this.turnsToWin = TurnsToWin.THREE_IN_A_ROW_WINS;
 
     }
 
-    public Style(String label) {
-        this();
-
-        Style style = Style.fromLabel(label);
-
-        this.label = style.label;
-        this.maxAnte = style.maxAnte;
-        this.bettingStrategy = style.bettingStrategy;
-        this.numOfDecks = style.numOfDecks;
-        this.insuranceCost = style.insuranceCost;
-        this.maxRounds = style.maxRounds;
-        this.turnsToWin = style.turnsToWin;
+    public Style(String label, MaxAnte maxAnte, BettingStrategy bettingStrategy, Deck deck, InsuranceCost insuranceCost, RoundsToWin roundsToWin, TurnsToWin turnsToWin) {
+        this.label = label;
+        this.maxAnte = maxAnte;
+        this.bettingStrategy = bettingStrategy;
+        this.deck = deck;
+        this.insuranceCost = insuranceCost;
+        this.roundsToWin = roundsToWin;
+        this.turnsToWin = turnsToWin;
     }
 
-    static public Style fromLabel(String inputLabel) {
+    static public Style fromLabelWithDefault(String inputLabel) {
 
-        Style style = new Style();
+        if (inputLabel.equals(null) || inputLabel.isEmpty()) {
+            return new Style();
+        }
         String label = StringUtils.lowerCase(inputLabel);
 
-        StringBuilder newLabel = new StringBuilder("      ");
-        int len = label.length();
+        MaxAnte maxAnte = MaxAnte.HIGHEST_WINS;
+        BettingStrategy bettingStrategy = BettingStrategy.REGULAR;
+        Deck deck = Deck.ALL_THREE_JOKER;
+        InsuranceCost insuranceCost = InsuranceCost.TENTH_ANTE;
+        RoundsToWin roundsToWin = RoundsToWin.NO_LIMIT;
+        TurnsToWin turnsToWin = TurnsToWin.THREE_IN_A_ROW_WINS;
 
-        if (len > 0) {
-            char pos = label.charAt(1);
-            style.maxAnte = MaxAnte.fromLabel(pos);
-            char newPos = style.maxAnte.getLabel().charAt(1);
-            newLabel.setCharAt(1,newPos);
-        } else if (len > 1) {
-            char pos = label.charAt(2);
-            style.bettingStrategy = BettingStrategy.fromLabel(pos);
-            char newPos = style.maxAnte.getLabel().charAt(2);
-            newLabel.setCharAt(2,newPos);
-        } else if (len > 2) {
-            char pos = label.charAt(3);
-            style.numOfDecks = NumOfDecks.fromLabel(pos);
-            char newPos = style.numOfDecks.getLabel().charAt(3);
-            newLabel.setCharAt(3,newPos);
-        } else if (len > 3) {
-            char pos = label.charAt(4);
-            style.insuranceCost = InsuranceCost.fromLabel(pos);
-            char newPos = style.insuranceCost.getLabel().charAt(4);
-            newLabel.setCharAt(4,newPos);
-        } else if (len > 4) {
-            char pos = label.charAt(5);
-            style.maxRounds = MaxRounds.fromLabel(pos);
-            char newPos = style.maxRounds.getLabel().charAt(5);
-            newLabel.setCharAt(5,newPos);
-        } else if (len > 5) {
-            char pos = label.charAt(6);
-            style.turnsToWin = TurnsToWin.fromLabel(pos);
-            char newPos = style.turnsToWin.getLabel().charAt(6);
-            newLabel.setCharAt(6,newPos);
+        StringBuilder newLabel = new StringBuilder("hr3tn3");
+        final int len = label.length();
+        char pos;
+        char newPos;
+
+        switch (len) {
+            case 1:
+            pos = label.charAt(0);
+            maxAnte = MaxAnte.fromLabel(pos);
+            newPos = maxAnte.getLabel().charAt(0);
+            newLabel.setCharAt(0, newPos);
+
+            case 2:
+            pos = label.charAt(1);
+            bettingStrategy = BettingStrategy.fromLabel(pos);
+            newPos = maxAnte.getLabel().charAt(1);
+            newLabel.setCharAt(1, newPos);
+
+            case 3:
+            pos = label.charAt(2);
+            deck = Deck.fromLabel(pos);
+            newPos = deck.getLabel().charAt(2);
+            newLabel.setCharAt(2, newPos);
+
+            case 4:
+            pos = label.charAt(3);
+            insuranceCost = InsuranceCost.fromLabel(pos);
+            newPos = insuranceCost.getLabel().charAt(3);
+            newLabel.setCharAt(3, newPos);
+
+            case 5:
+            pos = label.charAt(4);
+            roundsToWin = RoundsToWin.fromLabel(pos);
+            newPos = roundsToWin.getLabel().charAt(4);
+            newLabel.setCharAt(4, newPos);
+
+            case 6:
+            pos = label.charAt(5);
+            turnsToWin = TurnsToWin.fromLabel(pos);
+            newPos = turnsToWin.getLabel().charAt(5);
+            newLabel.setCharAt(5, newPos);
         }
-        style.label = String.valueOf(newLabel);
-        return style;
+        label = String.valueOf(newLabel);
+        return new Style(label,maxAnte,bettingStrategy, deck,insuranceCost, roundsToWin,turnsToWin);
+    }
+
+    @Override
+    public String toString() {
+        return label;
     }
 }

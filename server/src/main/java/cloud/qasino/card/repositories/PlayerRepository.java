@@ -18,7 +18,7 @@ public interface PlayerRepository extends JpaRepository<Player, Integer> {
     List<Player> findByGameOrderBySequenceAsc(Game game);
 
     //@Query("SELECT * FROM PLAYERS p ORBER BY CREATED desc WHERE p.USER_ID = ?1")
-    //Player findTopByOrderByCreatedDescByGame_Id(int gameId);
+    List<Player> findTopByGameOrderByCreatedDesc(Game game);
 
 
     //@Query("SELECT count(p) FROM PLAYERS p WHERE p.GAME_ID = ?1")

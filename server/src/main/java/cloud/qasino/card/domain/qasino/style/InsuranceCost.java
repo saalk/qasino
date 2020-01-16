@@ -1,4 +1,4 @@
-package cloud.qasino.card.entity.enums.style;
+package cloud.qasino.card.domain.qasino.style;
 
 import lombok.Getter;
 
@@ -9,9 +9,10 @@ import java.util.Map;
 @Getter
 public enum InsuranceCost {
     
-    NO("n"),
-    QUARTER_ANTE("q"),
-    HALF_ANTE("h");
+    NO("n","No insurance"),
+    TENTH_ANTE("t","10% of the bet"),
+    QUARTER_ANTE("q","25% of the bet"),
+    HALF_ANTE("h","50% of the bet");
     
     /**
      * A static HashMap lookup with key + value is created to use in a getter
@@ -25,23 +26,31 @@ public enum InsuranceCost {
     }
     
     String label;
+    String description;
 
     // Constructor, each argument to the constructor shadows one of the object's
     // fields
-    InsuranceCost(String label) {
+    InsuranceCost(String label, String description) {
         this.label = label;
+        this.description = description;
     }
-    
-    public static InsuranceCost fromLabel(String label) {
-        try {
-            return lookup.get(label.toUpperCase());
-        } catch (Exception e){
-            return InsuranceCost.NO;
-        }
+
+    public static InsuranceCost fromLabel(String inputLabel) {
+        return lookup.get(inputLabel.toLowerCase());
     }
 
     public static InsuranceCost fromLabel(char character) {
         return fromLabel(Character.toString(character));
+    }
+
+    public static InsuranceCost fromLabelWithDefault(String label) {
+        InsuranceCost insuranceCost = fromLabel(label);
+        if (insuranceCost == null) return InsuranceCost.TENTH_ANTE;
+        return insuranceCost;
+    }
+
+    public static InsuranceCost fromLabelWithDefault(char character) {
+        return fromLabelWithDefault(Character.toString(character));
     }
 
 

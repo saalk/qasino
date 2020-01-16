@@ -73,10 +73,12 @@ public class PlayingCard {
 
     }
 
-    public PlayingCard(Game game, int sequence) {
+    public PlayingCard(Game game, Player player, int sequence, Location location) {
         this();
         this.game = game;
+        this.hand = player;
         this.sequence = sequence;
+        this.location = location;
     }
 
     @Override

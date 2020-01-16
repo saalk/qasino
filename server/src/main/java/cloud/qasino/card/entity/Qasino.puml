@@ -75,7 +75,7 @@ enum Style {
 	bettingStrategy : enum
 	numOfDeck : enum
 	insuranceCost : enum
-	maxRounds : enum
+	roundsToWin : enum
 	maxMoves : enum
 }
 

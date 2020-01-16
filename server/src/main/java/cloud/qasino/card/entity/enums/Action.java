@@ -1,5 +1,6 @@
 package cloud.qasino.card.entity.enums;
 
+import cloud.qasino.card.domain.qasino.style.MaxAnte;
 import lombok.Getter;
 import org.apache.commons.lang3.StringUtils;
 
@@ -40,6 +41,7 @@ public enum Action implements LabeledEnum {
 	private String label;
 	
 	Action() {
+		this.label = "error";
 	}
 
 	Action(String label) {
@@ -48,8 +50,21 @@ public enum Action implements LabeledEnum {
 	}
 
 	public static Action fromLabel(String inputLabel) {
-		String label = StringUtils.lowerCase(inputLabel);
-		return (lookup.get(label) != null) ? lookup.get(label) : ERROR;
+		return lookup.get(inputLabel.toLowerCase());
+	}
+
+	public static Action fromLabel(char character) {
+		return fromLabel(Character.toString(character));
+	}
+
+	public static Action fromLabelWithDefault(String label) {
+		Action action = fromLabel(label);
+		if (action == null) return Action.ERROR;
+		return action;
+	}
+
+	public static Action fromLabelWithDefault(char character) {
+		return fromLabelWithDefault(Character.toString(character));
 	}
 
 }

@@ -5,6 +5,7 @@ import cloud.qasino.card.entity.Player;
 import cloud.qasino.card.entity.User;
 import cloud.qasino.card.entity.enums.AiLevel;
 import cloud.qasino.card.entity.enums.Avatar;
+import cloud.qasino.card.entity.enums.Type;
 import cloud.qasino.card.repositories.GameRepository;
 import cloud.qasino.card.repositories.PlayerRepository;
 import cloud.qasino.card.repositories.UserRepository;
@@ -81,7 +82,7 @@ public class PlayerController {
     public ResponseEntity<Player> addHuman(
             @PathVariable("gameId") String gId,
             @PathVariable("userId") String uId,
-            @RequestParam(name = "avatar", defaultValue = "ELF") String avatar) {
+            @RequestParam(name = "avatar", defaultValue = "elf") String avatar) {
 
         // header in response
         URI uri = ServletUriComponentsBuilder.fromCurrentRequest()
@@ -93,7 +94,9 @@ public class PlayerController {
         headers.add("URI", String.valueOf(uri));
 
         // validations
-        if (!StringUtils.isNumeric(gId) || !StringUtils.isNumeric(uId)) {
+        if (!StringUtils.isNumeric(gId)
+                || !StringUtils.isNumeric(uId)
+                || Avatar.fromLabelWithDefault(avatar) == Avatar.ERROR) {
             // 400
             return ResponseEntity.badRequest().headers(headers).build();
         }
@@ -146,7 +149,9 @@ public class PlayerController {
         headers.add("URI", String.valueOf(uri));
 
         // validations
-        if (!StringUtils.isNumeric(id)) {
+        if (!StringUtils.isNumeric(id)
+                || AiLevel.fromLabelWithDefault(aiLevel) == AiLevel.ERROR
+                || Avatar.fromLabelWithDefault(avatar) == Avatar.ERROR) {
             // 400
             return ResponseEntity.badRequest().headers(headers).build();
         }
@@ -224,9 +229,13 @@ public class PlayerController {
         headers.add("URI", String.valueOf(uri));
 
         // validations
-        if (!StringUtils.isNumeric(id))
+        if (!StringUtils.isNumeric(id)
+                || AiLevel.fromLabelWithDefault(aiLevel) == AiLevel.ERROR
+                || Avatar.fromLabelWithDefault(avatar) == Avatar.ERROR) {
             // 400
             return ResponseEntity.badRequest().headers(headers).build();
+        }
+
         int playerId = Integer.parseInt(id);
         Optional<Player> foundPlayer = playerRepository.findById(playerId);
         if (!foundPlayer.isPresent()) {
@@ -249,24 +258,26 @@ public class PlayerController {
     }
 
     // U - can be tested
-    @PutMapping(value = "/players/{id}/{sequence}")
+    @PutMapping(value = "/players/{id}/{order}")
     public ResponseEntity<Game> updateSequence(
             @PathVariable("id") String id,
-            @PathVariable("sequence") String sequence
+            @PathVariable("order") String order
     ) {
 
         // header in response
         URI uri = ServletUriComponentsBuilder.fromCurrentRequest()
                 .path("")
-                .buildAndExpand(id, sequence)
+                .buildAndExpand(id, order)
                 .toUri();
         HttpHeaders headers = new HttpHeaders();
         headers.add("URI", String.valueOf(uri));
 
         // validations
-        if (!StringUtils.isNumeric(id))
+        if ((!StringUtils.isNumeric(id)
+         || (!StringUtils.isNumeric(order)))){
             // 400
             return ResponseEntity.badRequest().headers(headers).build();
+        }
         int playerId = Integer.parseInt(id);
 
         // logic get player
@@ -278,7 +289,7 @@ public class PlayerController {
         }
 
         Optional<Game> updatedGame = gameRepository.findById(foundPlayer.get().getGame().getGameId());
-        if (sequence.equalsIgnoreCase("up")) {
+        if (order.equalsIgnoreCase("1")) {
             updatedGame.get().switchPlayers(-1,-1);
             gameRepository.save(updatedGame.get());
             return ResponseEntity.ok(updatedGame.get());

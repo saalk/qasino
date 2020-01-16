@@ -1,5 +1,6 @@
 package cloud.qasino.card.entity.enums;
 
+import cloud.qasino.card.domain.qasino.style.MaxAnte;
 import lombok.Getter;
 import org.apache.commons.lang3.StringUtils;
 
@@ -41,16 +42,31 @@ public enum Face implements LabeledEnum {
 	private String label;
 
 	Face() {
+		this.label = "error";
+
 	}
 
 	Face(String label) {
 		this();
-		this.label = Face.fromLabel(label).getLabel();
+		this.label = label;
 	}
 
 	public static Face fromLabel(String inputLabel) {
-		String label = StringUtils.lowerCase(inputLabel);
-		return (lookup.get(label) != null) ? lookup.get(label) : ERROR;
+		return lookup.get(inputLabel.toLowerCase());
+	}
+
+	public static Face fromLabel(char character) {
+		return fromLabel(Character.toString(character));
+	}
+
+	public static Face fromLabelWithDefault(String label) {
+		Face face = fromLabel(label);
+		if (face == null) return Face.ERROR;
+		return face;
+	}
+
+	public static Face fromLabelWithDefault(char character) {
+		return fromLabelWithDefault(Character.toString(character));
 	}
 
 }

@@ -51,14 +51,11 @@ public class UserController {
     @PostMapping(value = "/users/{id}/games/{type}/players/{aiLevel}")
     public ResponseEntity<Game> setupGame(
             @PathVariable("id") String id,
-            // todo type werkt niet No enum constant
             @PathVariable("type") String type,
-            // todo ailevel DUMB becomes NONE
             @PathVariable("aiLevel") String aiLevel,
-            // todo style werkt niet
-            @RequestParam(name = "style", defaultValue = "") String style,
+            @RequestParam(name = "style", defaultValue = " ") String style,
             @RequestParam(name = "ante", defaultValue = "20") String ante,
-            @RequestParam(name = "avatar", defaultValue = "ELF") String avatar
+            @RequestParam(name = "avatar", defaultValue = "elf") String avatar
     ) {
 
         // header in response
@@ -71,7 +68,11 @@ public class UserController {
         headers.add("URI", String.valueOf(uri));
 
         // validations
-        if (!StringUtils.isNumeric(ante) || !StringUtils.isNumeric(id) ){
+        if (!StringUtils.isNumeric(ante)
+                || !StringUtils.isNumeric(id)
+                || Type.fromLabelWithDefault(type) == Type.ERROR
+                || AiLevel.fromLabelWithDefault(aiLevel) == AiLevel.ERROR
+                || Avatar.fromLabelWithDefault(avatar) == Avatar.ERROR ){
             // 400
             return ResponseEntity.badRequest().headers(headers).build();
         }

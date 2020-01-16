@@ -1,5 +1,6 @@
 package cloud.qasino.card.controller;
 
+import cloud.qasino.card.domain.qasino.Style;
 import cloud.qasino.card.entity.Game;
 import cloud.qasino.card.entity.Player;
 import cloud.qasino.card.entity.PlayingCard;
@@ -51,7 +52,7 @@ public class GamesController {
     @PostMapping(value = "/games/{type}", params = {"style", "ante"})
     public ResponseEntity<Game> startGame(
             @PathVariable("type") String type,
-            @RequestParam(name = "style", defaultValue = "") String style,
+            @RequestParam(name = "style", defaultValue = " ") String style,
             @RequestParam(name = "ante", defaultValue = "20") String inputAnte
     ) {
 
@@ -65,9 +66,11 @@ public class GamesController {
         headers.add("URI", String.valueOf(uri));
 
         // validations
-        if (!StringUtils.isNumeric(inputAnte))
+        if (!StringUtils.isNumeric(inputAnte)
+                || Type.fromLabelWithDefault(type) == Type.ERROR) {
             // 400
             return ResponseEntity.badRequest().headers(headers).build();
+        }
         int ante = Integer.parseInt(inputAnte);
 
         Game startedGame = gameRepository.save(new Game(Type.valueOf(type), style, ante));
@@ -112,7 +115,7 @@ public class GamesController {
     @PutMapping(value = "/games/{id}", params = {"style", "ante"})
     public ResponseEntity<Game> updateGame(
             @PathVariable("id") String id,
-            @RequestParam(name = "style", defaultValue = "") String style,
+            @RequestParam(name = "style", defaultValue = " ") String style,
             @RequestParam(name = "ante", defaultValue = "") String ante
     ) {
 
@@ -126,7 +129,8 @@ public class GamesController {
         headers.add("URI", String.valueOf(uri));
 
         // validations
-        if (!StringUtils.isNumeric(id) || !StringUtils.isNumeric(ante))
+        if (!StringUtils.isNumeric(id)
+                || !StringUtils.isNumeric(ante))
             // 400
             return ResponseEntity.badRequest().headers(headers).build();
         int gameId = Integer.parseInt(id);

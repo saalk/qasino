@@ -1,5 +1,6 @@
 package cloud.qasino.card.entity.enums;
 
+import cloud.qasino.card.domain.qasino.style.MaxAnte;
 import lombok.Getter;
 import org.apache.commons.lang3.StringUtils;
 
@@ -46,22 +47,30 @@ public enum Type implements LabeledEnum {
     private String label;
 
     Type() {
+        this.label = "error";
     }
 
     Type(String label) {
         this();
-        this.label = Type.fromLabel(label).getLabel();
+        this.label = label;
     }
 
     public static Type fromLabel(String inputLabel) {
-        String label = StringUtils.lowerCase(inputLabel);
-        Type type;
-        try {
-            type = lookup.get(label);
-        } catch (Exception e) {
-            throw new IllegalArgumentException(e);
-        }
+        return lookup.get(inputLabel.toLowerCase());
+    }
+
+    public static Type fromLabel(char character) {
+        return fromLabel(Character.toString(character));
+    }
+
+    public static Type fromLabelWithDefault(String label) {
+        Type type = fromLabel(label);
+        if (type == null) return Type.ERROR;
         return type;
+    }
+
+    public static Type fromLabelWithDefault(char character) {
+        return fromLabelWithDefault(Character.toString(character));
     }
 
     public static Set<Type> cardGamesListType = EnumSet.of(HIGHLOW);

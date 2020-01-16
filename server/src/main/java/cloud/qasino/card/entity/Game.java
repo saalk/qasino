@@ -98,7 +98,7 @@ public class Game {
     public Game(Type type, String style, int ante) {
         this();
 
-        this.style = new Style(style).getLabel();
+        this.style = Style.fromLabelWithDefault(style).getLabel();
         this.ante = ante;
     }
 
@@ -110,8 +110,7 @@ public class Game {
         List<PlayingCard> playingCards = new ArrayList<>();
         int i = 1;
         for (Card card : cards) {
-            PlayingCard playingCard = new PlayingCard(game, i++);
-            playingCard.setLocation(Location.PILE);
+            PlayingCard playingCard = new PlayingCard(game, null, i++, Location.PILE);
             playingCards.add(playingCard);
         }
         return playingCards;

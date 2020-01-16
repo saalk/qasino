@@ -64,7 +64,7 @@ public enum Suit implements LabeledEnum {
 
     Suit(String label) {
         this();
-        this.label = Suit.fromLabel(label).getLabel();
+        this.label = label;
     }
 
     public static Suit fromLabel(String inputLabel) {

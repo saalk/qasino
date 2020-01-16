@@ -1,4 +1,4 @@
-package cloud.qasino.card.entity.enums.style;
+package cloud.qasino.card.domain.qasino.style;
 
 import lombok.Getter;
 
@@ -9,8 +9,8 @@ import java.util.Map;
 @Getter
 public enum BettingStrategy {
     
-    REGULAR("r"),
-    DOUBLE_OR_NOTHING("d");
+    REGULAR("r", "Regular"),
+    DOUBLE_OR_NOTHING("d","Double or nothing");
     
     /**
      * A static HashMap lookup with key + value is created to use in a getter
@@ -24,24 +24,31 @@ public enum BettingStrategy {
     }
     
     String label;
+    String description;
 
     // Constructor, each argument to the constructor shadows one of the object's
     // fields
-    BettingStrategy(String label) {
+    BettingStrategy(String label, String description) {
         this.label = label;
+        this.description = description;
     }
     
     public static BettingStrategy fromLabel(String label) {
-        try {
-            return lookup.get(label.toUpperCase());
-        } catch (Exception e){
-            return BettingStrategy.REGULAR;
-        }
+            return lookup.get(label.toLowerCase());
     }
 
     public static BettingStrategy fromLabel(char character) {
         return fromLabel(Character.toString(character));
     }
-    
+
+    public static BettingStrategy fromLabelWithDefault(String label) {
+        BettingStrategy bettingStrategy = fromLabel(label);
+        if (bettingStrategy == null) return BettingStrategy.DOUBLE_OR_NOTHING;
+        return bettingStrategy;
+    }
+
+    public static BettingStrategy fromLabelWithDefault(char character) {
+        return fromLabelWithDefault(Character.toString(character));
+    }
     
 }

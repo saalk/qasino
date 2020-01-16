@@ -1,5 +1,6 @@
 package cloud.qasino.card.entity.enums;
 
+import cloud.qasino.card.domain.qasino.style.MaxAnte;
 import lombok.Getter;
 import org.apache.commons.lang3.StringUtils;
 
@@ -38,14 +39,28 @@ public enum AiLevel implements LabeledEnum {
     private String label;
     
     AiLevel(){
+        this.label = "error";
     }
     AiLevel(String label) {
         this();
-        this.label = AiLevel.fromLabel(label).getLabel();
+        this.label = label;
     }
-    
+
     public static AiLevel fromLabel(String inputLabel) {
-        String label = StringUtils.lowerCase(inputLabel);
-        return (lookup.get(label) != null) ? lookup.get(label) : ERROR;
+        return lookup.get(inputLabel.toLowerCase());
+    }
+
+    public static AiLevel fromLabel(char character) {
+        return fromLabel(Character.toString(character));
+    }
+
+    public static AiLevel fromLabelWithDefault(String label) {
+        AiLevel aiLevel = fromLabel(label);
+        if (aiLevel == null) return AiLevel.ERROR;
+        return aiLevel;
+    }
+
+    public static AiLevel fromLabelWithDefault(char character) {
+        return fromLabelWithDefault(Character.toString(character));
     }
 }

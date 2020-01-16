@@ -59,7 +59,7 @@ public enum Rank implements LabeledEnum {
 
     Rank(String label) {
         this();
-        this.label = Rank.fromLabel(label).getLabel();
+        this.label = label;
     }
 
     public static Rank fromLabel(String inputLabel) {

@@ -1,6 +1,7 @@
-package cloud.qasino.card.entity.enums.style;
+package cloud.qasino.card.domain.qasino.style;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.util.EnumSet;
 import java.util.HashMap;
@@ -8,9 +9,9 @@ import java.util.Map;
 
 @Getter
 public enum MaxAnte {
-    
-    NORMAL("n"),
-    HIGHEST_WINS("h");
+// todo determine what to do here : bet vs ante ration?
+    NORMAL("n", "Normal"),
+    HIGHEST_WINS("h", "Highest wins");
     
     /**
      * A static HashMap lookup with key + value is created to use in a getter
@@ -24,23 +25,31 @@ public enum MaxAnte {
     }
     
     String label;
+    String description;
 
     // Constructor, each argument to the constructor shadows one of the object's
     // fields
-    MaxAnte(String label) {
+    MaxAnte(String label, String description) {
         this.label = label;
+        this.description = description;
     }
-    
-    public static MaxAnte fromLabel(String label) {
-        try {
-            return lookup.get(label.toUpperCase());
-        } catch (Exception e){
-            return MaxAnte.NORMAL;
-        }
+
+    public static MaxAnte fromLabel(String inputLabel) {
+        return lookup.get(inputLabel.toLowerCase());
     }
 
     public static MaxAnte fromLabel(char character) {
         return fromLabel(Character.toString(character));
+    }
+
+    public static MaxAnte fromLabelWithDefault(String label) {
+        MaxAnte maxAnte = fromLabel(label);
+        if (maxAnte == null) return MaxAnte.HIGHEST_WINS;
+        return maxAnte;
+    }
+
+    public static MaxAnte fromLabelWithDefault(char character) {
+        return fromLabelWithDefault(Character.toString(character));
     }
     
 }

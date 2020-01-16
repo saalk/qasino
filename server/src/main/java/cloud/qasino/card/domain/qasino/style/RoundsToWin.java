@@ -1,0 +1,55 @@
+package cloud.qasino.card.domain.qasino.style;
+
+import lombok.Getter;
+
+import java.util.EnumSet;
+import java.util.HashMap;
+import java.util.Map;
+
+@Getter
+public enum RoundsToWin {
+
+    NO_LIMIT("h","No limit"),
+    ONE_ROUND("1","One round only");
+
+    /**
+     * A static HashMap lookup with key + value is created to use in a getter
+     * to fromLabel the Enum based on the name eg. key "Low" -> value AiLevel.DUMB
+     */
+    private static final Map<String, RoundsToWin> lookup
+            = new HashMap<>();
+
+    static {
+        for (RoundsToWin roundsToWin : EnumSet.allOf(RoundsToWin.class))
+            lookup.put(roundsToWin.getLabel(), roundsToWin);
+    }
+
+    String label;
+    String description;
+
+    // Constructor, each argument to the constructor shadows one of the object's
+    // fields
+    RoundsToWin(String label, String description) {
+        this.label = label;
+        this.description = description;
+    }
+
+    public static RoundsToWin fromLabel(String inputLabel) {
+        return lookup.get(inputLabel.toLowerCase());
+    }
+
+    public static RoundsToWin fromLabel(char character) {
+        return fromLabel(Character.toString(character));
+    }
+
+    public static RoundsToWin fromLabelWithDefault(String label) {
+        RoundsToWin roundsToWin = fromLabel(label);
+        if (roundsToWin == null) return RoundsToWin.NO_LIMIT;
+        return roundsToWin;
+    }
+
+    public static RoundsToWin fromLabelWithDefault(char character) {
+        return fromLabelWithDefault(Character.toString(character));
+    }
+
+}

@@ -1,5 +1,6 @@
 package cloud.qasino.card.entity.enums;
 
+import cloud.qasino.card.domain.qasino.style.MaxAnte;
 import lombok.Getter;
 import org.apache.commons.lang3.StringUtils;
 
@@ -36,15 +37,29 @@ public enum Avatar implements LabeledEnum {
     }
     private String label;
 
-    Avatar() {}
+    Avatar() {
+        this.label = "error";
+    }
 
     Avatar(String label) {
         this();
-        this.label = Avatar.fromLabel(label).getLabel();
+        this.label = label;
+    }
+    public static Avatar fromLabel(String inputLabel) {
+        return lookup.get(inputLabel.toLowerCase());
     }
 
-    public static Avatar fromLabel(String inputLabel) {
-        String label = StringUtils.lowerCase(inputLabel);
-        return (lookup.get(label) != null) ? lookup.get(label) : ERROR;
+    public static Avatar fromLabel(char character) {
+        return fromLabel(Character.toString(character));
+    }
+
+    public static Avatar fromLabelWithDefault(String label) {
+        Avatar avatar = fromLabel(label);
+        if (avatar == null) return Avatar.ERROR;
+        return avatar;
+    }
+
+    public static Avatar fromLabelWithDefault(char character) {
+        return fromLabelWithDefault(Character.toString(character));
     }
 }
