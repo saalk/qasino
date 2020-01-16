@@ -79,41 +79,41 @@ public class Style {
         char newPos;
 
         switch (len) {
-            case 1:
-            pos = label.charAt(0);
-            maxAnte = MaxAnte.fromLabel(pos);
-            newPos = maxAnte.getLabel().charAt(0);
-            newLabel.setCharAt(0, newPos);
+            case 6:
+                pos = label.charAt(5);
+                turnsToWin = TurnsToWin.fromLabelWithDefault(pos);
+                newPos = turnsToWin.getLabel().charAt(5);
+                newLabel.setCharAt(5, newPos);
 
-            case 2:
-            pos = label.charAt(1);
-            bettingStrategy = BettingStrategy.fromLabel(pos);
-            newPos = maxAnte.getLabel().charAt(1);
-            newLabel.setCharAt(1, newPos);
+            case 5:
+                pos = label.charAt(4);
+                roundsToWin = RoundsToWin.fromLabelWithDefault(pos);
+                newPos = roundsToWin.getLabel().charAt(4);
+                newLabel.setCharAt(4, newPos);
+
+            case 4:
+                pos = label.charAt(3);
+                insuranceCost = InsuranceCost.fromLabelWithDefault(pos);
+                newPos = insuranceCost.getLabel().charAt(3);
+                newLabel.setCharAt(3, newPos);
 
             case 3:
             pos = label.charAt(2);
-            deck = Deck.fromLabel(pos);
+            deck = Deck.fromLabelWithDefault(pos);
             newPos = deck.getLabel().charAt(2);
             newLabel.setCharAt(2, newPos);
 
-            case 4:
-            pos = label.charAt(3);
-            insuranceCost = InsuranceCost.fromLabel(pos);
-            newPos = insuranceCost.getLabel().charAt(3);
-            newLabel.setCharAt(3, newPos);
+            case 2:
+                pos = label.charAt(1);
+                bettingStrategy = BettingStrategy.fromLabelWithDefault(pos);
+                newPos = bettingStrategy.getLabel().charAt(1);
+                newLabel.setCharAt(1, newPos);
 
-            case 5:
-            pos = label.charAt(4);
-            roundsToWin = RoundsToWin.fromLabel(pos);
-            newPos = roundsToWin.getLabel().charAt(4);
-            newLabel.setCharAt(4, newPos);
-
-            case 6:
-            pos = label.charAt(5);
-            turnsToWin = TurnsToWin.fromLabel(pos);
-            newPos = turnsToWin.getLabel().charAt(5);
-            newLabel.setCharAt(5, newPos);
+            case 1:
+                pos = label.charAt(0);
+                maxAnte = MaxAnte.fromLabelWithDefault(pos);
+                newPos = maxAnte.getLabel().charAt(0);
+                newLabel.setCharAt(0, newPos);
         }
         label = String.valueOf(newLabel);
         return new Style(label,maxAnte,bettingStrategy, deck,insuranceCost, roundsToWin,turnsToWin);

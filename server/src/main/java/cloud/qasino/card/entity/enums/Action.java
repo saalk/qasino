@@ -46,7 +46,7 @@ public enum Action implements LabeledEnum {
 
 	Action(String label) {
 		this();
-		this.label = Action.fromLabel(label).getLabel();
+		this.label = label;
 	}
 
 	public static Action fromLabel(String inputLabel) {

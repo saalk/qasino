@@ -64,10 +64,10 @@ public class PlayerController {
         if (!StringUtils.isNumeric(id)) {
             return ResponseEntity.badRequest().headers(headers).build();
         }
-
+        int gameId = Integer.valueOf(id);
         // logic
         Boolean isHuman = BooleanUtils.toBooleanObject(human);
-        Optional<Game> foundGame = gameRepository.findById(Integer.valueOf(id));
+        Optional<Game> foundGame = gameRepository.findById(gameId);
         if (!foundGame.isPresent()) {
             return ResponseEntity.notFound().headers(headers).build();
         }
@@ -124,7 +124,7 @@ public class PlayerController {
 
         int sequenceCalculated = playerRepository.countByGame(linkedGame) + 1;
         Player createdPlayer = playerRepository.save(new Player(linkedUser, linkedGame, sequenceCalculated,
-                Avatar.fromLabel(avatar), AiLevel.HUMAN));
+                Avatar.fromLabelWithDefault(avatar), AiLevel.HUMAN));
         if (createdPlayer == null) {
             return ResponseEntity.notFound().build();
         } else {
@@ -136,8 +136,8 @@ public class PlayerController {
     @PostMapping(value = "/players/games/{id}")
     public ResponseEntity addPlayerForGame(
             @PathVariable("id") String id,
-            @RequestParam(name = "aiLevel", defaultValue = "MEDIUM") String aiLevel,
-             @RequestParam(name = "avatar", defaultValue = "ELF") String avatar) {
+            @RequestParam(name = "aiLevel", defaultValue = "medium") String aiLevel,
+             @RequestParam(name = "avatar", defaultValue = "elf") String avatar) {
 
         // header in response
         URI uri = ServletUriComponentsBuilder.fromCurrentRequest()
@@ -171,7 +171,10 @@ public class PlayerController {
 
         Player createdPlayer = new Player(null, linkedGame, sequenceCalculated);
         if (!StringUtils.isEmpty(aiLevel)) {
-            createdPlayer.setAiLevel(AiLevel.fromLabel(aiLevel));
+            createdPlayer.setAiLevel(AiLevel.fromLabelWithDefault(aiLevel));
+        }
+        if (!StringUtils.isEmpty(avatar)) {
+            createdPlayer.setAvatar(Avatar.fromLabelWithDefault(avatar));
         }
         createdPlayer = playerRepository.save(createdPlayer);
         if (createdPlayer.getPlayerId() == 0) {
@@ -215,8 +218,8 @@ public class PlayerController {
     @PutMapping(value = "/players/{id}", params = {"avatar", "aiLevel"})
     public ResponseEntity<Player> updatePlayer(
             @PathVariable("id") String id,
-            @RequestParam(name = "avatar", defaultValue = "ELF") String avatar,
-            @RequestParam(name = "aiLevel", defaultValue = "MEDIUM") String aiLevel
+            @RequestParam(name = "avatar", defaultValue = "elf") String avatar,
+            @RequestParam(name = "aiLevel", defaultValue = "medium") String aiLevel
     ) {
 
         // header in response
@@ -246,10 +249,10 @@ public class PlayerController {
         // logic
         Player updatedPlayer = foundPlayer.get();
         if (!StringUtils.isEmpty(avatar)) {
-            updatedPlayer.setAvatar(Avatar.fromLabel(avatar));
+            updatedPlayer.setAvatar(Avatar.fromLabelWithDefault(avatar));
         }
         if (!StringUtils.isEmpty(aiLevel)) {
-            updatedPlayer.setAiLevel(AiLevel.fromLabel(aiLevel));
+            updatedPlayer.setAiLevel(AiLevel.fromLabelWithDefault(aiLevel));
         }
         updatedPlayer = playerRepository.save(updatedPlayer);
 
@@ -283,7 +286,7 @@ public class PlayerController {
         // logic get player
         Optional<Player> foundPlayer = playerRepository.findById(playerId);
 
-        if (foundPlayer == null) {
+        if (!foundPlayer.isPresent()) {
             // 404
             return ResponseEntity.status(HttpStatus.NOT_FOUND).headers(headers).build();
         }

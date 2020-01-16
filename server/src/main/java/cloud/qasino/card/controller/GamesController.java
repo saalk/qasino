@@ -73,7 +73,7 @@ public class GamesController {
         }
         int ante = Integer.parseInt(inputAnte);
 
-        Game startedGame = gameRepository.save(new Game(Type.valueOf(type), style, ante));
+        Game startedGame = gameRepository.save(new Game(Type.fromLabelWithDefault(type), style, ante));
 
         if (startedGame.getGameId() == 0) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).headers(headers).build();
@@ -116,24 +116,26 @@ public class GamesController {
     public ResponseEntity<Game> updateGame(
             @PathVariable("id") String id,
             @RequestParam(name = "style", defaultValue = " ") String style,
-            @RequestParam(name = "ante", defaultValue = "") String ante
+            @RequestParam(name = "ante", defaultValue = "") String inputAnte
     ) {
 
         // header in response
         URI uri = ServletUriComponentsBuilder.fromCurrentRequest()
                 .path("")
                 .query("")
-                .buildAndExpand(id, style, ante)
+                .buildAndExpand(id, style, inputAnte)
                 .toUri();
         HttpHeaders headers = new HttpHeaders();
         headers.add("URI", String.valueOf(uri));
 
         // validations
         if (!StringUtils.isNumeric(id)
-                || !StringUtils.isNumeric(ante))
+                || !StringUtils.isNumeric(inputAnte))
             // 400
             return ResponseEntity.badRequest().headers(headers).build();
+
         int gameId = Integer.parseInt(id);
+        int ante = Integer.parseInt(inputAnte);
         Optional<Game> foundGame = gameRepository.findById(gameId);
         if (!foundGame.isPresent()) {
             // 404
@@ -143,10 +145,10 @@ public class GamesController {
         // logic
         Game updatedGame = foundGame.get();
         if (!StringUtils.isEmpty(style)) {
-            updatedGame.setStyle(style);
+            updatedGame.setStyle(Style.fromLabelWithDefault(style).getLabel());
         }
-        if (!StringUtils.isEmpty(ante)) {
-            updatedGame.setAnte(Integer.valueOf(ante));
+        if (!StringUtils.isEmpty(inputAnte)) {
+            updatedGame.setAnte(ante);
         }
         updatedGame = gameRepository.save(updatedGame);
 
@@ -161,6 +163,7 @@ public class GamesController {
             @PathVariable("id") String id,
             @RequestParam(name = "state", defaultValue = "INITIALIZED") QasinoStateMachine.GameState state
     ) {
+        // todo make string and add fromLabelWithDefault
 
         // header in response
         URI uri = ServletUriComponentsBuilder.fromCurrentRequest()

@@ -34,11 +34,11 @@ public class EventController {
     // endpoints for the following triggers
 
     // MAIN
-    //SHUFFLE,     	// The Game is shuffled according to the Type
-    //PLAY,		 	// PLayers are playing the Game
+    // SHUFFLE,     	// The Game is shuffled according to the Type
+    // PLAY,		 	// PLayers are playing the Game doing actions
 
     // FINISH
-    //ENDED,		 	// The Game is finished and the winner	is known
+    // ENDED,		 	// The Game is finished and the winner is known
 
     GameRepository gameRepository;
     PlayerRepository playerRepository;
@@ -114,7 +114,7 @@ public class EventController {
     public ResponseEntity startGame(
             @PathVariable("gId") String gId,
             @PathVariable("pId") String pId,
-            @PathVariable("location") String move,
+            @PathVariable("location") String inputLocation,
 
             @RequestParam("cardId") String cardId,
             @RequestParam("roundNumber") String inputRoundNumber,
@@ -125,7 +125,7 @@ public class EventController {
         URI uri = ServletUriComponentsBuilder.fromCurrentRequest()
                 .path("")
                 .query("")
-                .buildAndExpand(gId,pId,move,cardId, inputRoundNumber, inputMoveNumber, inputBet)
+                .buildAndExpand(gId,pId,inputLocation,cardId, inputRoundNumber, inputMoveNumber, inputBet)
                 .toUri();
         HttpHeaders headers = new HttpHeaders();
         headers.add("URI", String.valueOf(uri));
@@ -133,6 +133,7 @@ public class EventController {
         // validations
         if (!StringUtils.isNumeric(gId)
                 || !StringUtils.isNumeric(pId)
+                || (Location.fromLabelWithDefault(inputLocation) == Location.ERROR)
                 || !StringUtils.isNumeric(inputRoundNumber)
                 || !StringUtils.isNumeric(inputMoveNumber)
                 || !StringUtils.isNumeric(inputBet)
@@ -158,7 +159,7 @@ public class EventController {
         Event event = new Event(foundGame.get(), foundPlayer.get(), cardId);
         event.setRoundNumber(roundNumber);
         event.setMoveNumber(moveNumber);
-        event.setLocation(Location.fromLabelWithDefault(move));
+        event.setLocation(Location.fromLabelWithDefault(inputLocation));
         event.setBet(bet);
         // todo go with event to the game engine
 

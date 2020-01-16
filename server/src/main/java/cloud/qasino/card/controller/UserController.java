@@ -88,7 +88,7 @@ public class UserController {
         linkedUser = foundUser.get();
 
         // create game
-        Game startedGame = gameRepository.save(new Game(Type.valueOf(type), style, Integer.parseInt(ante)));
+        Game startedGame = gameRepository.save(new Game(Type.fromLabelWithDefault(type), style, Integer.parseInt(ante)));
         if (startedGame.getGameId() == 0) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).headers(headers).build();
         }
@@ -98,12 +98,12 @@ public class UserController {
 
         // create human and ai player
         createdHuman = playerRepository.save(new Player(linkedUser, startedGame, 1,
-                Avatar.valueOf(avatar), AiLevel.HUMAN));
+                Avatar.fromLabelWithDefault(avatar), AiLevel.HUMAN));
         if (createdHuman.getPlayerId() == 0) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).headers(headers).build();
         }
         createdAi = playerRepository.save(new Player(linkedUser, startedGame, 2,
-                Avatar.valueOf(avatar), AiLevel.fromLabel(aiLevel)));
+                Avatar.fromLabelWithDefault(avatar), AiLevel.fromLabelWithDefault(aiLevel)));
         if (createdAi.getPlayerId() == 0) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).headers(headers).build();
         }
