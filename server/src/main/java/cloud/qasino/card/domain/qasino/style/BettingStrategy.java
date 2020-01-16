@@ -2,6 +2,7 @@ package cloud.qasino.card.domain.qasino.style;
 
 import lombok.Getter;
 
+import javax.validation.constraints.Pattern;
 import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.Map;
@@ -22,7 +23,8 @@ public enum BettingStrategy {
         for(BettingStrategy bettingStrategy : EnumSet.allOf(BettingStrategy.class))
             lookup.put(bettingStrategy.getLabel(), bettingStrategy);
     }
-    
+
+    @Pattern(regexp = ".")
     String label;
     String description;
 
