@@ -52,18 +52,19 @@ public class PlayingCardController {
 
     // R image - can be tested
     @GetMapping(
-            value = "/playingcards/{id}/image",
+            value = "/playingcards/{card}/image",
             produces = MediaType.IMAGE_JPEG_VALUE
     )
+    // todo get image by cardid
     public @ResponseBody
-    byte[] getPlayingCardImageWithMediaType() throws IOException {
+    byte[] getPlayingCardImageWithMediaType(@PathVariable("card") String card) throws IOException {
         InputStream in = getClass()
                 .getResourceAsStream("/resources/images/playingcard/svg/diamonds-ten.svg");
         return IOUtils.toByteArray(in);
     }
 
     // C deck for game - can be tested
-    @PostMapping(value = "/playingCards/games/{id}/jokers/{jokers}")
+    @PostMapping(value = "/playingcards/games/{id}/jokers/{jokers}")
     public ResponseEntity setupGame(
             @PathVariable("id") String id,
             @PathVariable("jokers") String jokers
@@ -157,9 +158,9 @@ public class PlayingCardController {
     }
 
     // R - can be tested
-    @GetMapping(value = "/playingcards/{id}")
+    @GetMapping(value = "/playingcards/{card}")
     public ResponseEntity<Optional<PlayingCard>> getPlayingCard(
-            @PathVariable("id") String id
+            @PathVariable("card") String card
     ) {
 
         // header in response
@@ -171,12 +172,9 @@ public class PlayingCardController {
         headers.add("URI", String.valueOf(uri));
 
         // validations
-        if (!StringUtils.isNumeric(id)) {
-            return ResponseEntity.badRequest().headers(headers).build();
-        }
 
         // logic
-        Optional<PlayingCard> foundPlayingCard = playingCardRepository.findById(Integer.parseInt(id));
+        Optional<PlayingCard> foundPlayingCard = playingCardRepository.findByCard(card);
         if (foundPlayingCard.isPresent()) {
             return ResponseEntity.ok().headers(headers).body(foundPlayingCard);
         } else {
@@ -186,9 +184,9 @@ public class PlayingCardController {
     }
 
     // D - can be tested
-    @DeleteMapping("/playingCards/{id}")
+    @DeleteMapping("/playingcards/{card}")
     public ResponseEntity<PlayingCard> deletePlayingCard(
-            @PathVariable("id") String id
+            @PathVariable("card") String card
     ) {
 
         // header in response
@@ -200,19 +198,19 @@ public class PlayingCardController {
         headers.add("URI", String.valueOf(uri));
 
         // validations
-        if (!StringUtils.isNumeric(id))
+/*        if (!StringUtils.isNumeric(id))
             // 400
-            return ResponseEntity.badRequest().headers(headers).build();
+            return ResponseEntity.badRequest().headers(headers).build();*/
+        //int playingCardId = Integer.parseInt(id);
 
-        int playingCardId = Integer.parseInt(id);
-        Optional<PlayingCard> foundPlayingCard = playingCardRepository.findById(playingCardId);
+        Optional<PlayingCard> foundPlayingCard = playingCardRepository.findByCard(card);
         if (!foundPlayingCard.isPresent()) {
             // 404
             return ResponseEntity.status(HttpStatus.NOT_FOUND).headers(headers).build();
         }
 
         // logic
-        playingCardRepository.deleteById(playingCardId);
+        playingCardRepository.deleteById(foundPlayingCard.get().getPlayingCardId());
         // delete 204
         return ResponseEntity.status(HttpStatus.NO_CONTENT).headers(headers).build();
     }

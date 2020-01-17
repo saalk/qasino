@@ -110,7 +110,7 @@ public class Game {
         List<PlayingCard> playingCards = new ArrayList<>();
         int i = 1;
         for (Card card : cards) {
-            PlayingCard playingCard = new PlayingCard(game, null, i++, Location.PILE);
+            PlayingCard playingCard = new PlayingCard(card.getCardId(),game, null, i++, Location.PILE);
             playingCards.add(playingCard);
         }
         return playingCards;

@@ -98,9 +98,9 @@ public class EventController {
             eventRepository.save(event);
             // todo go with event to the game engine
             // todo for now create playing cards
-
+// todo add card !!!
             sequence++;
-            PlayingCard playingCard = new PlayingCard(foundGame.get(), null, sequence, Location.PILE);
+            PlayingCard playingCard = new PlayingCard(null,foundGame.get(), null, sequence, Location.PILE);
             playingCardRepository.save(playingCard);
         }
         List<Event> events = eventRepository.findByGameId(foundGame.get().getGameId());
