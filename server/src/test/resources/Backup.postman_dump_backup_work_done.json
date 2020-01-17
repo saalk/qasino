@@ -73,7 +73,7 @@
 				{
 					"id": "a17bf2b2-eeaf-4d55-8f8b-7e5ddf79683b",
 					"name": "Playingcard-C",
-					"url": "{{url}}/qasino/playingcards/highlow?style=hr2tX2&ante=30",
+					"url": "{{url}}/qasino/playingcards/games/5/jokers/4",
 					"description": "",
 					"data": null,
 					"dataOptions": null,
@@ -89,22 +89,7 @@
 					],
 					"method": "POST",
 					"pathVariableData": [],
-					"queryParams": [
-						{
-							"key": "style",
-							"value": "hr2tX2",
-							"equals": true,
-							"description": "",
-							"enabled": true
-						},
-						{
-							"key": "ante",
-							"value": "30",
-							"equals": true,
-							"description": "",
-							"enabled": true
-						}
-					],
+					"queryParams": [],
 					"auth": null,
 					"events": null,
 					"folder": null,
@@ -146,7 +131,7 @@
 				{
 					"id": "c34214d3-95ad-40f8-82d6-07573cd67afa",
 					"name": "Playingcard-U",
-					"url": "{{url}}/qasino/playingcard/5?style=hd3tnX&ante=100",
+					"url": "{{url}}/qasino/playingcards/5?style=hd3tnX&ante=100",
 					"description": "",
 					"data": null,
 					"dataOptions": null,
@@ -10374,7 +10359,7 @@
 			]
 		},
 		{
-			"id": "5102b045-8765-4119-8d4b-77132e34b424",
+			"id": "f1c3109f-15d3-437b-95e1-8dedbe08d971",
 			"name": "My Workspace - globals",
 			"values": []
 		}

@@ -102,18 +102,24 @@ public class Game {
         this.ante = ante;
     }
 
-    public List<PlayingCard> shuffleGame(Game game, int jokers) {
+    public void addDeck(int jokers) {
+
+        if (this.playingCards.size() > 0)
+                return this;
 
         List<Card> cards = Card.newDeck(jokers);
-        Collections.shuffle(cards);
-
-        List<PlayingCard> playingCards = new ArrayList<>();
         int i = 1;
         for (Card card : cards) {
-            PlayingCard playingCard = new PlayingCard(card.getCardId(),game, null, i++, Location.PILE);
-            playingCards.add(playingCard);
+            PlayingCard playingCard = new PlayingCard(card.getCardId(),this, null, i++, Location.PILE);
+            this.playingCards.add(playingCard);
         }
-        return playingCards;
+        //return this;
+    }
+
+    public Game shuffleGame(Game game) {
+
+        Collections.shuffle(game.playingCards);
+        return game;
     }
 
     public boolean switchPlayers (int sequence, int direction) {

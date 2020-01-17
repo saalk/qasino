@@ -63,8 +63,62 @@ public class PlayingCardController {
         return IOUtils.toByteArray(in);
     }
 
-    // C deck for game - can be tested
-    @PostMapping(value = "/playingcards/games/{id}/jokers/{jokers}")
+    // normal CRUD
+
+    // L for specific Game with paging - can be tested
+    @GetMapping(value = "/playingcards/games/{id}")
+    public ResponseEntity getAllPlayingCard(
+            @PathVariable("id") String id,
+            // todo why page this ?
+            @RequestParam(defaultValue = "0") String page,
+            @RequestParam(defaultValue = "4") String max
+    ) {
+
+        // header in response
+        URI uri = ServletUriComponentsBuilder.fromCurrentRequest()
+                .path("")
+                .query("")
+                .buildAndExpand(id, page, max)
+                .toUri();
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("URI", String.valueOf(uri));
+
+        // validations
+        if (!StringUtils.isNumeric(id)) {
+            // 400
+            return ResponseEntity.badRequest().headers(headers).build();
+        }
+        int gameId = Integer.parseInt(id);
+
+        Optional<Game> foundGame = gameRepository.findById(gameId);
+        if (!foundGame.isPresent()) {
+            // 404
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).headers(headers).build();
+        }
+        Game linkedGame = foundGame.get();
+
+        // validations
+        if (!StringUtils.isNumeric(page) || !StringUtils.isNumeric(max))
+            return ResponseEntity.badRequest().headers(headers).build();
+        int maximum = Integer.parseInt(max);
+        int pages = Integer.parseInt(page);
+
+        // logic
+        Pageable pageable = PageRequest.of(pages, maximum, Sort.by(
+                Order.asc("LOCATION"),
+                Order.asc("HAND"),
+                Order.asc("SEQUENCE")
+        ));
+
+        ArrayList playingCards = (ArrayList) playingCardRepository.findAllPlayingCardsByGameWithPage(pageable);
+
+        return ResponseEntity.ok()
+                .headers(headers)
+                .body(playingCards);
+    }
+
+    // U add deck to game - can be tested
+    @PutMapping(value = "/playingcards/games/{id}/jokers/{jokers}")
     public ResponseEntity setupGame(
             @PathVariable("id") String id,
             @PathVariable("jokers") String jokers
@@ -88,73 +142,20 @@ public class PlayingCardController {
         int jokersCount = Integer.parseInt(jokers);
 
         Optional<Game> foundGame = gameRepository.findById(gameId);
-        Game linkedGame;
         if (!foundGame.isPresent()) {
             // 404
             return ResponseEntity.status(HttpStatus.NOT_FOUND).headers(headers).build();
-        } else {
         }
-        linkedGame = foundGame.get();
+        Game updatedGame = foundGame.get();
 
         // logic
-        List<PlayingCard> createdPlayingCards = linkedGame.getPlayingCards();
+        updatedGame.addDeck(jokersCount);
 
-        for (PlayingCard createdPlayingCard : createdPlayingCards) {
+        for (PlayingCard createdPlayingCard : updatedGame.getPlayingCards()) {
             playingCardRepository.save(createdPlayingCard);
         }
-        return ResponseEntity.status(HttpStatus.CREATED).headers(headers).body(createdPlayingCards);
-    }
+        return ResponseEntity.ok().headers(headers).body(updatedGame);
 
-    // normal CRUD
-
-    // LP - can be tested
-    @GetMapping(value = "/playingcards/games/{id}")
-    public ResponseEntity getAllPlayingCard(
-            @PathVariable("id") String id,
-            @RequestParam(defaultValue = "0") String page,
-            @RequestParam(defaultValue = "4") String max
-    ) {
-
-        // header in response
-        URI uri = ServletUriComponentsBuilder.fromCurrentRequest()
-                .path("")
-                .buildAndExpand(id)
-                .toUri();
-        HttpHeaders headers = new HttpHeaders();
-        headers.add("URI", String.valueOf(uri));
-
-        // validations
-        if (!StringUtils.isNumeric(id)) {
-            // 400
-            return ResponseEntity.badRequest().headers(headers).build();
-        }
-        int gameId = Integer.parseInt(id);
-
-        Optional<Game> foundGame = gameRepository.findById(gameId);
-        Game linkedGame;
-        if (!foundGame.isPresent()) {
-            // 404
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).headers(headers).build();
-        } else {
-        }
-        linkedGame = foundGame.get();
-
-        // validations
-        if (!StringUtils.isNumeric(page) || !StringUtils.isNumeric(max))
-            return ResponseEntity.badRequest().headers(headers).build();
-        int maximum = Integer.parseInt(max);
-        int pages = Integer.parseInt(page);
-
-        // logic
-        Pageable pageable = PageRequest.of(pages, maximum, Sort.by(
-                Order.asc("ALIAS"),
-                Order.desc("ALIAS_SEQ")));
-
-        ArrayList playingCards = (ArrayList) playingCardRepository.findAllPlayingCardsByGameWithPage(pageable);
-
-        return ResponseEntity.ok()
-                .headers(headers)
-                .body(playingCards);
     }
 
     // R - can be tested
