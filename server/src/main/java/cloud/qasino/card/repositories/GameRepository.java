@@ -20,11 +20,11 @@ public interface GameRepository extends JpaRepository<Game, Integer> {
     public final static String FIND_BY_USER_ID_STATE =
             "SELECT * FROM GAMES a RIGHT JOIN a.PLAYERS b " +
                     "WHERE b.USER_ID = ?userId" +
-                    "AND a.STATE ?= state";
+                    "AND a.GAME_STATE = ?gameState";
     public final static String COUNT_BY_USER_ID_STATE =
             "SELECT count(*) FROM GAMES a RIGHT JOIN a.PLAYERS b " +
                     "WHERE b.USER_ID = ?userId" +
-                    "AND a.STATE ?= state";
+                    "AND a.GAME_STATE = ?gameState";
 
     Long countByLeague(League league);
 
@@ -35,8 +35,8 @@ public interface GameRepository extends JpaRepository<Game, Integer> {
 
     @Query(value = FIND_BY_USER_ID_STATE, countQuery = COUNT_BY_USER_ID_STATE, nativeQuery = true)
     public List<Game> findGamesByUserIdByStateWithPage(
-            @Param("userId") int id,
-            @Param("state") String state,
+            @Param("userId") int userId,
+            @Param("state") String gameState,
             Pageable pageable);
 
 

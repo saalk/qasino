@@ -76,7 +76,7 @@ public class GamesController {
 
     // /api/game/{id}/SHUFFLE -> POST add jokers and update state// PLAYING
 
-    // TODO HIGH test
+    // tested
     @PostMapping(value = "/games/init/{type}/users/{uId}")
     public ResponseEntity<Game> setupInitGameWithUser(
             @PathVariable("type") String type,
@@ -135,7 +135,7 @@ public class GamesController {
         return ResponseEntity.status(HttpStatus.CREATED).headers(headers).body(startedGame);
     }
 
-    // TODO HIGH test
+    // tested
     @PostMapping(value = "/games/init/{type}/users/{uId}/players/{aiLevel}")
     public ResponseEntity<Game> setupInitGameWithUserAndPlayer(
             @PathVariable("type") String type,
@@ -207,7 +207,7 @@ public class GamesController {
         return ResponseEntity.status(HttpStatus.CREATED).headers(headers).body(startedGame);
     }
 
-    // TODO HIGH test
+    // tested
     @PostMapping(value = "/games/init/{type}/league/{lId}/users/{uId}")
     public ResponseEntity<Game> setupInitGameInLeagueWithUser(
             @PathVariable("type") String type,
@@ -247,7 +247,7 @@ public class GamesController {
         User linkedUser = foundUser.get();
         League linkedLeague = foundLeague.get();
 
-        // create game no league
+        // create game with league
         Game startedGame = gameRepository.save(new Game(linkedLeague, type,
                 style, Integer.parseInt(ante)));
         if (startedGame.getGameId() == 0) {
@@ -271,7 +271,7 @@ public class GamesController {
         return ResponseEntity.status(HttpStatus.CREATED).headers(headers).body(startedGame);
     }
 
-    // TODO HIGH test
+    // tested
     @PostMapping(value = "/games/init/{type}/league/{lId}/users/{uId}/players/{aiLevel}")
     public ResponseEntity<Game> setupInitGameInLEagueWithUserAndPlayer(
             @PathVariable("type") String type,
@@ -316,7 +316,7 @@ public class GamesController {
         User linkedUser = foundUser.get();
         League linkedLeague = foundLeague.get();
 
-        // create game no league
+        // create game with league
         Game startedGame = gameRepository.save(new Game(linkedLeague, type,
                 style, Integer.parseInt(ante)));
         if (startedGame.getGameId() == 0) {
@@ -573,39 +573,7 @@ public class GamesController {
 
     }
 
-    // LG - tested ok TODO move to CRUD ???
-    @GetMapping(value = "/games/{id}/paging")
-    public ResponseEntity getPlayersByGame(
-            @PathVariable("id") String id,
-            @RequestParam(name = "human", defaultValue = "") String human
-    ) {
 
-        // header in response
-        URI uri = ServletUriComponentsBuilder.fromCurrentRequest()
-                .path("")
-                .query("")
-                .buildAndExpand(id, human)
-                .toUri();
-        HttpHeaders headers = new HttpHeaders();
-        headers.add("URI", String.valueOf(uri));
-
-        // validations
-        if (!StringUtils.isNumeric(id)) {
-            return ResponseEntity.badRequest().headers(headers).build();
-        }
-        int gameId = Integer.parseInt(id);
-        // logic
-        //todo add boolean logic
-        Boolean isHuman = (human.isEmpty() ? null : Boolean.parseBoolean(human));
-
-        Optional<Game> foundGame = gameRepository.findById(gameId);
-        if (!foundGame.isPresent()) {
-            return ResponseEntity.notFound().headers(headers).build();
-        }
-
-        List<Player> players = playerRepository.findByGameOrderBySequenceAsc(foundGame.get());
-        return ResponseEntity.ok().headers(headers).body(players);
-    }
 }
 
 
