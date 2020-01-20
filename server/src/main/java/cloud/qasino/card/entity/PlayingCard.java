@@ -34,6 +34,8 @@ public class PlayingCard {
     @Column(name = "created", length = 25)
     private String created;
 
+    @Column(name = "card", length = 2, nullable = false)
+    private String card;
 
     // Foreign keys
 
@@ -74,8 +76,7 @@ public class PlayingCard {
     @Column(name = "face", nullable = false)
     private Face face;
 
-
-    // ReferencesF
+    // References
 
     public PlayingCard() {
         LocalDateTime localDateAndTime = LocalDateTime.now();
@@ -85,8 +86,9 @@ public class PlayingCard {
 
     }
 
-    public PlayingCard(Game game, Player player, int sequence, Location location) {
+    public PlayingCard(String card, Game game, Player player, int sequence, Location location) {
         this();
+        this.card = card;
         this.game = game;
         this.hand = player;
         this.sequence = sequence;
@@ -108,4 +110,16 @@ public class PlayingCard {
         return Objects.hash(playingCardId);
     }
 
+    @Override
+    public String toString() {
+        return "PlayingCard{" +
+                "playingCardId=" + playingCardId +
+                ", created='" + created + '\'' +
+                ", cardId=" + card +
+                ", game=" + game +
+                ", hand=" + hand +
+                ", sequence=" + sequence +
+                ", location=" + location +
+                '}';
+    }
 }
