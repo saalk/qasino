@@ -7,7 +7,6 @@ import cloud.qasino.card.entity.enums.game.Type;
 import cloud.qasino.card.entity.enums.player.AiLevel;
 import cloud.qasino.card.entity.enums.player.Avatar;
 import cloud.qasino.card.entity.enums.playingcard.Location;
-import cloud.qasino.card.entity.enums.playingcard.Rank;
 import cloud.qasino.card.repositories.*;
 import cloud.qasino.card.statemachine.QasinoStateMachine;
 import org.apache.commons.lang3.StringUtils;
@@ -22,7 +21,6 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.Random;
 
 // basic path /qasino
 // basic header @RequestHeader(value "user", required = true) int userId" // else 400
@@ -37,79 +35,111 @@ import java.util.Random;
 @RestController
 public class GamesController {
 
-    private PlayingCardRepository playingCardRepository;
-    private PlayerRepository playerRepository;
-    private GameRepository gameRepository;
     private UserRepository userRepository;
+    private LeagueRepository leagueRepository;
+    private GameRepository gameRepository;
+    private PlayerRepository playerRepository;
+    private PlayingCardRepository playingCardRepository;
     private EventRepository eventRepository;
 
     @Autowired
     public GamesController(
-            PlayingCardRepository playingCardRepository,
-            PlayerRepository playerRepository,
-            GameRepository gameRepository,
             UserRepository userRepository,
+            LeagueRepository leagueRepository,
+            GameRepository gameRepository,
+            PlayerRepository playerRepository,
+            PlayingCardRepository playingCardRepository,
             EventRepository eventRepository) {
 
-        this.playingCardRepository = playingCardRepository;
-        this.playerRepository = playerRepository;
-        this.gameRepository = gameRepository;
         this.userRepository = userRepository;
+        this.leagueRepository = leagueRepository;
+        this.gameRepository = gameRepository;
+        this.playerRepository = playerRepository;
+        this.playingCardRepository = playingCardRepository;
         this.eventRepository = eventRepository;
     }
 
-    // GamesController - special POST and GET only for GAME - has state machine
-    // /api/games/{type}/INIT/league/{id}/user/{id} -> POST game+league+deck+user // INITIATED
-    // /api/games/{type}INIT/league/{id}/user/{id}/player/{aiLevel} -> POST +player // INITIATED
+    // GamesController - special POST and GET only for GAME - todo LOW has state machine
+    // /api/games/INIT/{type}/user/{id} -> POST game+deck+user no joker// INITIATED
+    // /api/games/INIT/{type}/user/{id}/player/{aiLevel} -> POST +player // INITIATED
+    // /api/games/INIT/{type}/league/{id}/user/{id} -> POST game+league+deck+user // INITIATED
+    // /api/games/INIT/{type}/league/{id}/user/{id}/player/{aiLevel} -> POST +player // INITIATED
 
     // /api/games/{id}/SETUP/classifications -> PUT game bet fiches + classifications // PREPARED
+
     // /api/games/{id}/INVITE/user/{id} -> POST players // PENDING_INVITATIONS
-    // /api/games/{id}/ACCEPT -> PUT player fiches // PREPARED
     // /api/games/{id}/INVITE/bot -> POST players // PREPARED
+    // todo HIGH make endpoints
+    // /api/games/{id}/ACCEPT -> PUT player fiches // PREPARED
     // /api/games/{id}/WITHDRAW/bot -> DELETE players // PREPARED
     // /api/games/{id}/WITHDRAW/user{id} -> DELETE players // PREPARED
-    // /api/game/{id}/SHUFFLE -> POST playingcards deal first card // PLAYING
 
-    // C- tested ok
-    @PostMapping(value = "/games/{type}")
-    public ResponseEntity<Game> startGame(
+    // /api/game/{id}/SHUFFLE -> POST add jokers and update state// PLAYING
+
+    // TODO HIGH test
+    @PostMapping(value = "/games/init/{type}/users/{uId}")
+    public ResponseEntity<Game> setupInitGameWithUser(
             @PathVariable("type") String type,
+            @PathVariable("uId") String uId,
             @RequestParam(name = "style", defaultValue = " ") String style,
-            @RequestParam(name = "ante", defaultValue = "20") String inputAnte
+            @RequestParam(name = "ante", defaultValue = "20") String ante,
+            @RequestParam(name = "avatar", defaultValue = "elf") String avatar
     ) {
 
         // header in response
         URI uri = ServletUriComponentsBuilder.fromCurrentRequest()
                 .path("")
                 .query("")
-                .buildAndExpand(type, style, inputAnte)
+                .buildAndExpand(type, uId, style, ante, avatar)
                 .toUri();
         HttpHeaders headers = new HttpHeaders();
         headers.add("URI", String.valueOf(uri));
 
         // validations
-        if (!StringUtils.isNumeric(inputAnte)
-                || Type.fromLabelWithDefault(type) == Type.ERROR) {
+        if (!StringUtils.isNumeric(ante)
+                || !StringUtils.isNumeric(uId)
+                || Type.fromLabelWithDefault(type) == Type.ERROR
+                || Avatar.fromLabelWithDefault(avatar) == Avatar.ERROR) {
             // 400
             return ResponseEntity.badRequest().headers(headers).build();
         }
-        int ante = Integer.parseInt(inputAnte);
 
+        int userId = Integer.parseInt(uId);
+        Optional<User> foundUser = userRepository.findById(userId);
+        if (!foundUser.isPresent())
+            // 404
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).headers(headers).build();
+        User linkedUser = foundUser.get();
+
+        // create game no league
         Game startedGame = gameRepository.save(new Game(null, type,
-                style, ante));
-
+                style, Integer.parseInt(ante)));
         if (startedGame.getGameId() == 0) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).headers(headers).build();
-        } else {
-            return ResponseEntity.status(HttpStatus.CREATED).headers(headers).body(startedGame);
         }
+
+        Player createdHuman = null;
+
+        // create human and ai player
+        createdHuman = playerRepository.save(new Player(linkedUser, startedGame,
+                linkedUser.getBalance(), 1,
+                Avatar.fromLabelWithDefault(avatar), AiLevel.HUMAN, true));
+        if (createdHuman.getPlayerId() == 0) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).headers(headers).build();
+        }
+
+        List<Player> newPlayers = new ArrayList<>();
+        newPlayers.add(createdHuman);
+        startedGame.setPlayers(newPlayers);
+
+        return ResponseEntity.status(HttpStatus.CREATED).headers(headers).body(startedGame);
     }
 
-    // C Game and Players - tested
-    @PostMapping(value = "/api/games/{type}/players/{aiLevel}")
-    public ResponseEntity<Game> setupGame(
-            @PathVariable("id") String id,
+    // TODO HIGH test
+    @PostMapping(value = "/games/init/{type}/users/{uId}/players/{aiLevel}")
+    public ResponseEntity<Game> setupInitGameWithUserAndPlayer(
             @PathVariable("type") String type,
+            @PathVariable("uId") String uId,
             @PathVariable("aiLevel") String aiLevel,
             @RequestParam(name = "style", defaultValue = " ") String style,
             @RequestParam(name = "ante", defaultValue = "20") String ante,
@@ -120,32 +150,33 @@ public class GamesController {
         URI uri = ServletUriComponentsBuilder.fromCurrentRequest()
                 .path("")
                 .query("")
-                .buildAndExpand(id, type, aiLevel, style, ante, avatar)
+                .buildAndExpand(type, uId, aiLevel, style, ante, avatar)
                 .toUri();
         HttpHeaders headers = new HttpHeaders();
         headers.add("URI", String.valueOf(uri));
 
         // validations
         if (!StringUtils.isNumeric(ante)
-                || !StringUtils.isNumeric(id)
+                || !StringUtils.isNumeric(uId)
                 || Type.fromLabelWithDefault(type) == Type.ERROR
                 || AiLevel.fromLabelWithDefault(aiLevel) == AiLevel.ERROR
-                || Avatar.fromLabelWithDefault(avatar) == Avatar.ERROR ){
+                || Avatar.fromLabelWithDefault(avatar) == Avatar.ERROR) {
             // 400
             return ResponseEntity.badRequest().headers(headers).build();
         }
-        int userId = Integer.parseInt(id);
 
+        // rules
+        if (AiLevel.fromLabelWithDefault(aiLevel) == AiLevel.HUMAN)
+            return ResponseEntity.status(HttpStatus.CONFLICT).headers(headers).build();
+
+        int userId = Integer.parseInt(uId);
         Optional<User> foundUser = userRepository.findById(userId);
-        User linkedUser;
-        if (!foundUser.isPresent()) {
+        if (!foundUser.isPresent())
             // 404
             return ResponseEntity.status(HttpStatus.NOT_FOUND).headers(headers).build();
-        } else {
-        }
-        linkedUser = foundUser.get();
+        User linkedUser = foundUser.get();
 
-        // create game
+        // create game no league
         Game startedGame = gameRepository.save(new Game(null, type,
                 style, Integer.parseInt(ante)));
         if (startedGame.getGameId() == 0) {
@@ -163,7 +194,7 @@ public class GamesController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).headers(headers).build();
         }
         createdAi = playerRepository.save(new Player(null, startedGame, linkedUser.getBalance(), 2,
-                Avatar.fromLabelWithDefault(avatar), AiLevel.fromLabelWithDefault(aiLevel),false));
+                Avatar.fromLabelWithDefault(avatar), AiLevel.fromLabelWithDefault(aiLevel), false));
         if (createdAi.getPlayerId() == 0) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).headers(headers).build();
         }
@@ -174,13 +205,204 @@ public class GamesController {
         startedGame.setPlayers(newPlayers);
 
         return ResponseEntity.status(HttpStatus.CREATED).headers(headers).body(startedGame);
+    }
+
+    // TODO HIGH test
+    @PostMapping(value = "/games/init/{type}/league/{lId}/users/{uId}")
+    public ResponseEntity<Game> setupInitGameInLeagueWithUser(
+            @PathVariable("type") String type,
+            @PathVariable("uId") String uId,
+            @PathVariable("lId") String lId,
+            @RequestParam(name = "style", defaultValue = " ") String style,
+            @RequestParam(name = "ante", defaultValue = "20") String ante,
+            @RequestParam(name = "avatar", defaultValue = "elf") String avatar
+    ) {
+
+        // header in response
+        URI uri = ServletUriComponentsBuilder.fromCurrentRequest()
+                .path("")
+                .query("")
+                .buildAndExpand(type, lId, uId, style, ante, avatar)
+                .toUri();
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("URI", String.valueOf(uri));
+
+        // validations
+        if (!StringUtils.isNumeric(ante)
+                || !StringUtils.isNumeric(uId)
+                || !StringUtils.isNumeric(lId)
+                || Type.fromLabelWithDefault(type) == Type.ERROR
+                || Avatar.fromLabelWithDefault(avatar) == Avatar.ERROR) {
+            // 400
+            return ResponseEntity.badRequest().headers(headers).build();
+        }
+
+        int userId = Integer.parseInt(uId);
+        int leagueId = Integer.parseInt(lId);
+        Optional<User> foundUser = userRepository.findById(userId);
+        Optional<League> foundLeague = leagueRepository.findById(leagueId);
+        if (!foundUser.isPresent() || !foundLeague.isPresent())
+            // 404
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).headers(headers).build();
+        User linkedUser = foundUser.get();
+        League linkedLeague = foundLeague.get();
+
+        // create game no league
+        Game startedGame = gameRepository.save(new Game(linkedLeague, type,
+                style, Integer.parseInt(ante)));
+        if (startedGame.getGameId() == 0) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).headers(headers).build();
+        }
+
+        Player createdHuman = null;
+
+        // create human player only
+        createdHuman = playerRepository.save(new Player(linkedUser, startedGame,
+                linkedUser.getBalance(), 1,
+                Avatar.fromLabelWithDefault(avatar), AiLevel.HUMAN, true));
+        if (createdHuman.getPlayerId() == 0) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).headers(headers).build();
+        }
+
+        List<Player> newPlayers = new ArrayList<>();
+        newPlayers.add(createdHuman);
+        startedGame.setPlayers(newPlayers);
+
+        return ResponseEntity.status(HttpStatus.CREATED).headers(headers).body(startedGame);
+    }
+
+    // TODO HIGH test
+    @PostMapping(value = "/games/init/{type}/league/{lId}/users/{uId}/players/{aiLevel}")
+    public ResponseEntity<Game> setupInitGameInLEagueWithUserAndPlayer(
+            @PathVariable("type") String type,
+            @PathVariable("uId") String uId,
+            @PathVariable("lId") String lId,
+            @PathVariable("aiLevel") String aiLevel,
+            @RequestParam(name = "style", defaultValue = " ") String style,
+            @RequestParam(name = "ante", defaultValue = "20") String ante,
+            @RequestParam(name = "avatar", defaultValue = "elf") String avatar
+    ) {
+
+        // header in response
+        URI uri = ServletUriComponentsBuilder.fromCurrentRequest()
+                .path("")
+                .query("")
+                .buildAndExpand(type, uId, aiLevel, style, ante, avatar)
+                .toUri();
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("URI", String.valueOf(uri));
+
+        // validations
+        if (!StringUtils.isNumeric(ante)
+                || !StringUtils.isNumeric(uId)
+                || !StringUtils.isNumeric(lId)
+                || Type.fromLabelWithDefault(type) == Type.ERROR
+                || Avatar.fromLabelWithDefault(avatar) == Avatar.ERROR) {
+            // 400
+            return ResponseEntity.badRequest().headers(headers).build();
+        }
+
+        // rules
+        if (AiLevel.fromLabelWithDefault(aiLevel) == AiLevel.HUMAN)
+            return ResponseEntity.status(HttpStatus.CONFLICT).headers(headers).build();
+
+        int userId = Integer.parseInt(uId);
+        int leagueId = Integer.parseInt(lId);
+        Optional<User> foundUser = userRepository.findById(userId);
+        Optional<League> foundLeague = leagueRepository.findById(leagueId);
+        if (!foundUser.isPresent() || !foundLeague.isPresent())
+            // 404
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).headers(headers).build();
+        User linkedUser = foundUser.get();
+        League linkedLeague = foundLeague.get();
+
+        // create game no league
+        Game startedGame = gameRepository.save(new Game(linkedLeague, type,
+                style, Integer.parseInt(ante)));
+        if (startedGame.getGameId() == 0) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).headers(headers).build();
+        }
+
+        Player createdAi = null;
+        Player createdHuman = null;
+
+        // create human and ai player
+        createdHuman = playerRepository.save(new Player(linkedUser, startedGame,
+                linkedUser.getBalance(), 1,
+                Avatar.fromLabelWithDefault(avatar), AiLevel.HUMAN, true));
+        if (createdHuman.getPlayerId() == 0) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).headers(headers).build();
+        }
+        createdAi = playerRepository.save(new Player(null, startedGame, linkedUser.getBalance(), 2,
+                Avatar.fromLabelWithDefault(avatar), AiLevel.fromLabelWithDefault(aiLevel), false));
+        if (createdAi.getPlayerId() == 0) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).headers(headers).build();
+        }
+
+        List<Player> newPlayers = new ArrayList<>();
+        newPlayers.add(createdHuman);
+        newPlayers.add(createdAi);
+        startedGame.setPlayers(newPlayers);
+
+        return ResponseEntity.status(HttpStatus.CREATED).headers(headers).body(startedGame);
+    }
+
+    // TODO HIGH test
+    @PutMapping(value = "/games/{id}/setup")
+    public ResponseEntity<Game> updateInitGameWithStyle(
+            @PathVariable("id") String id,
+            @RequestParam(name = "style", defaultValue = "") String style,
+            @RequestParam(name = "ante", defaultValue = "") String inputAnte
+    ) {
+
+        // header in response
+        URI uri = ServletUriComponentsBuilder.fromCurrentRequest()
+                .path("")
+                .query("")
+                .buildAndExpand(id, style, inputAnte)
+                .toUri();
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("URI", String.valueOf(uri));
+
+        // validations
+        if (!StringUtils.isNumeric(id)
+                || (!inputAnte.isEmpty() & !StringUtils.isNumeric(inputAnte))
+        )
+            // 400
+            return ResponseEntity.badRequest().headers(headers).build();
+
+        int gameId = Integer.parseInt(id);
+        int ante = Integer.parseInt(inputAnte);
+        Optional<Game> foundGame = gameRepository.findById(gameId);
+        if (!foundGame.isPresent()) {
+            // 404
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).headers(headers).build();
+        }
+        Game updatedGame = foundGame.get();
+
+        // rules
+        if (!   ((updatedGame.getState() == QasinoStateMachine.GameState.INITIALIZED ) ||
+                (updatedGame.getState() == QasinoStateMachine.GameState.PREPARED ))  ) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).headers(headers).build();
+        }
+
+        // logic
+        if (!StringUtils.isEmpty(style)) {
+            updatedGame.setStyle(Style.fromLabelWithDefault(style).getLabel());
+        }
+        if (!StringUtils.isEmpty(inputAnte) || (ante <= 0)) {
+            updatedGame.setAnte(ante);
+        }
+        updatedGame = gameRepository.save(updatedGame);
+
+        // 200
+        return ResponseEntity.ok().headers(headers).body(updatedGame);
 
     }
 
 
-    // C human only - todo can be tested gives error 404??
-    // todo check max
-    @PostMapping(value = "/players/games/{gameId}/users{userId}")
+    // other human only - todo can be tested gives error 404??
+    @PostMapping(value = "/games/{gameId}/invite/users{userId}")
     public ResponseEntity<Player> addHuman(
             @PathVariable("gameId") String gId,
             @PathVariable("userId") String uId,
@@ -190,7 +412,7 @@ public class GamesController {
         URI uri = ServletUriComponentsBuilder.fromCurrentRequest()
                 .path("")
                 .query("")
-                .buildAndExpand(gId,uId, avatar)
+                .buildAndExpand(gId, uId, avatar)
                 .toUri();
         HttpHeaders headers = new HttpHeaders();
         headers.add("URI", String.valueOf(uri));
@@ -223,16 +445,16 @@ public class GamesController {
         int sequenceCalculated = (playerRepository.countByGame(linkedGame)) + 1;
         Player createdPlayer = playerRepository.save(new Player(linkedUser, linkedGame,
                 sequenceCalculated, linkedUser.getBalance(),
-                Avatar.fromLabelWithDefault(avatar), AiLevel.HUMAN,true));
+                Avatar.fromLabelWithDefault(avatar), AiLevel.HUMAN, true));
         if (createdPlayer.getPlayerId() == 0) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).headers(headers).build();
         }
         return ResponseEntity.ok().headers(headers).body(createdPlayer);
     }
 
-    // C ai only - tested ok
+    // ai only - tested ok
     // todo check max
-    @PostMapping(value = "/players/games/{id}")
+    @PostMapping(value = "/games/{id}/invite/bot")
     public ResponseEntity addPlayerForGame(
             @PathVariable("id") String id,
             @RequestParam(name = "aiLevel", defaultValue = "average") String aiLevel,
@@ -291,17 +513,18 @@ public class GamesController {
         return ResponseEntity.ok().headers(headers).body(createdPlayer);
 
     }
-    //SHUFFLE,     	// The Game is shuffled according to the Type
+
+    // todo HIGH to be tested
     @PostMapping(value = "/game/{id}/shuffle", params = {"jokers"})
     public ResponseEntity shuffleGame(
             @PathVariable("id") String id,
-            @RequestParam("jokers") String jokers){
+            @RequestParam("jokers") String jokers) {
 
         // header in response
         URI uri = ServletUriComponentsBuilder.fromCurrentRequest()
                 .path("")
                 .query("")
-                .buildAndExpand(id,jokers)
+                .buildAndExpand(id, jokers)
                 .toUri();
         HttpHeaders headers = new HttpHeaders();
         headers.add("URI", String.valueOf(uri));
@@ -319,6 +542,13 @@ public class GamesController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).headers(headers).build();
         }
 
+        Game updatedGame = foundGame.get();
+        // rules
+        if (!   (updatedGame.getState() == QasinoStateMachine.GameState.PREPARED )  ) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).headers(headers).build();
+        }
+
+
         // logic
         List<Card> cards = new ArrayList<>();
         cards = Card.newDeck(jokersToAdd);
@@ -333,7 +563,7 @@ public class GamesController {
             // todo for now create playing cards
 
             sequence++;
-            PlayingCard playingCard = new PlayingCard(card.getCardId(),foundGame.get(), null,
+            PlayingCard playingCard = new PlayingCard(card.getCardId(), foundGame.get(), null,
                     sequence,
                     Location.PILE);
             playingCardRepository.save(playingCard);
@@ -342,8 +572,9 @@ public class GamesController {
         return ResponseEntity.status(HttpStatus.CREATED).headers(headers).body(events);
 
     }
-    // LG - tested ok
-    @GetMapping(value = "/players/games/{id}")
+
+    // LG - tested ok TODO move to CRUD ???
+    @GetMapping(value = "/games/{id}/paging")
     public ResponseEntity getPlayersByGame(
             @PathVariable("id") String id,
             @RequestParam(name = "human", defaultValue = "") String human

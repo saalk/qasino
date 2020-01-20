@@ -63,7 +63,7 @@ public class CRUDController {
         this.playerRepository = playerRepository;
     }
 
-    // GET, PUT, DELETE for all entities
+    // CREATE, GET, PUT, DELETE for single entities
     // /api/users/{id} - GET, DELETE, PUT alias, email only
     // /api/games/{id} - GET, DELETE, PUT type, style, ante - rules apply!
     // /api/players/{id} - GET, DELETE, PUT sequence, PUT avatar, ailevel - rules apply
@@ -177,6 +177,40 @@ public class CRUDController {
         return ResponseEntity.status(HttpStatus.NO_CONTENT).headers(headers).build();
     }
 
+    // tested ok
+    @PostMapping(value = "/games/{type}")
+    public ResponseEntity<Game> startGame(
+            @PathVariable("type") String type,
+            @RequestParam(name = "style", defaultValue = " ") String style,
+            @RequestParam(name = "ante", defaultValue = "20") String inputAnte
+    ) {
+
+        // header in response
+        URI uri = ServletUriComponentsBuilder.fromCurrentRequest()
+                .path("")
+                .query("")
+                .buildAndExpand(type, style, inputAnte)
+                .toUri();
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("URI", String.valueOf(uri));
+
+        // validations
+        if (!StringUtils.isNumeric(inputAnte)
+                || Type.fromLabelWithDefault(type) == Type.ERROR) {
+            // 400
+            return ResponseEntity.badRequest().headers(headers).build();
+        }
+        int ante = Integer.parseInt(inputAnte);
+
+        Game startedGame = gameRepository.save(new Game(null, type,
+                style, ante));
+
+        if (startedGame.getGameId() == 0) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).headers(headers).build();
+        } else {
+            return ResponseEntity.status(HttpStatus.CREATED).headers(headers).body(startedGame);
+        }
+    }
 
     // tested
     @GetMapping("/games/{id}")
@@ -204,54 +238,6 @@ public class CRUDController {
         } else {
             return ResponseEntity.notFound().headers(headers).build();
         }
-
-    }
-
-    // tested TODO LOW can be test ante changes or empty
-    @PutMapping(value = "/games/{id}")
-    public ResponseEntity<Game> updateGame(
-            @PathVariable("id") String id,
-            @RequestParam(name = "style", defaultValue = " ") String style,
-            @RequestParam(name = "ante", defaultValue = "") String inputAnte
-    ) {
-
-        // header in response
-        URI uri = ServletUriComponentsBuilder.fromCurrentRequest()
-                .path("")
-                .query("")
-                .buildAndExpand(id, style, inputAnte)
-                .toUri();
-        HttpHeaders headers = new HttpHeaders();
-        headers.add("URI", String.valueOf(uri));
-
-        // validations
-        if (!StringUtils.isNumeric(id)
-                || (!inputAnte.isEmpty() & !StringUtils.isNumeric(inputAnte))
-        )
-            // 400
-            return ResponseEntity.badRequest().headers(headers).build();
-
-        int gameId = Integer.parseInt(id);
-
-        Optional<Game> foundGame = gameRepository.findById(gameId);
-        if (!foundGame.isPresent()) {
-            // 404
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).headers(headers).build();
-        }
-
-        // logic
-        Game updatedGame = foundGame.get();
-        if (!StringUtils.isEmpty(style)) {
-            updatedGame.setStyle(Style.fromLabelWithDefault(style).getLabel());
-        }
-        if (!StringUtils.isEmpty(inputAnte)) {
-            int ante = Integer.parseInt(inputAnte);
-            updatedGame.setAnte(ante);
-        }
-        updatedGame = gameRepository.save(updatedGame);
-
-        // 200
-        return ResponseEntity.ok().headers(headers).body(updatedGame);
 
     }
 
