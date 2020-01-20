@@ -25,14 +25,21 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+// basic path /qasino
+// basic header @RequestHeader(value "user", required = true) int userId" // else 400
+//
+// 200 - ok
+// 201 - created
+// 400 - bad request - error/reason "url ... not available"
+// 404 - not found - error/message "invalid value x for y" + reason [missing]
+// 412 - precondition failed = error/message - "violation of rule z"
+// 500 - internal server error
+
 @Slf4j
 @RestController
 public class PlayingCardController {
 
-    private UserRepository userRepository;
     private GameRepository gameRepository;
-    private PlayerRepository playerRepository;
-    private EventRepository eventRepository;
     private PlayingCardRepository playingCardRepository;
 
     @Autowired
@@ -43,10 +50,7 @@ public class PlayingCardController {
             EventRepository eventRepository,
             PlayingCardRepository playingCardRepository) {
 
-        this.userRepository = userRepository;
         this.gameRepository = gameRepository;
-        this.playerRepository = playerRepository;
-        this.eventRepository = eventRepository;
         this.playingCardRepository = playingCardRepository;
     }
 
@@ -183,37 +187,5 @@ public class PlayingCardController {
             return ResponseEntity.notFound().headers(headers).build();
         }
 
-    }
-
-    // D - can be tested
-    @DeleteMapping("/playingCards/{id}")
-    public ResponseEntity<PlayingCard> deletePlayingCard(
-            @PathVariable("id") String id
-    ) {
-
-        // header in response
-        URI uri = ServletUriComponentsBuilder.fromCurrentRequest()
-                .path("")
-                .buildAndExpand()
-                .toUri();
-        HttpHeaders headers = new HttpHeaders();
-        headers.add("URI", String.valueOf(uri));
-
-        // validations
-        if (!StringUtils.isNumeric(id))
-            // 400
-            return ResponseEntity.badRequest().headers(headers).build();
-
-        int playingCardId = Integer.parseInt(id);
-        Optional<PlayingCard> foundPlayingCard = playingCardRepository.findById(playingCardId);
-        if (!foundPlayingCard.isPresent()) {
-            // 404
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).headers(headers).build();
-        }
-
-        // logic
-        playingCardRepository.deleteById(playingCardId);
-        // delete 204
-        return ResponseEntity.status(HttpStatus.NO_CONTENT).headers(headers).build();
     }
 }

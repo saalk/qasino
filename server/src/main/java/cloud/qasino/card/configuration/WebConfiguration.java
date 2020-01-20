@@ -9,9 +9,5 @@ import org.springframework.context.annotation.Configuration;
 @ComponentScan("cloud.qasino.*")
 public class WebConfiguration {
 
-    @Bean(name = "modelmapper")
-    public ModelMapper modelMapper() {
-        return new ModelMapper();
-    }
 }
 

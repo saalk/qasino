@@ -1,8 +1,8 @@
-package cloud.qasino.card.entity.enums;
+package cloud.qasino.card.entity.enums.game;
 
-import cloud.qasino.card.domain.qasino.style.MaxAnte;
+import cloud.qasino.card.entity.enums.LabeledEnum;
+import cloud.qasino.card.entity.enums.event.Action;
 import lombok.Getter;
-import org.apache.commons.lang3.StringUtils;
 
 import javax.persistence.Column;
 import java.util.EnumSet;
@@ -37,11 +37,18 @@ public enum Type implements LabeledEnum {
      * A static HashMap lookup with key + value is created to use in a getter
      * to fromLabel the Enum based on the name eg. key "Low" -> value AiLevel.DUMB
      */
-    private static final Map<String, Type> lookup
+    public static final Map<String, Type> lookup
             = new HashMap<>();
     static {
         for(Type type : EnumSet.allOf(Type.class))
             lookup.put(type.getLabel(), type);
+    }
+    public static final Map<String, Type> typeMapNoError
+            = new HashMap<>();
+    static {
+        for(Type type : EnumSet.allOf(Type.class))
+            if (!type.getLabel().toLowerCase().equals("error"))
+                typeMapNoError.put(type.getLabel(), type);
     }
 
     private String label;

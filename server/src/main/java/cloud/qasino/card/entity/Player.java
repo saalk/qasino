@@ -1,7 +1,7 @@
 package cloud.qasino.card.entity;
 
-import cloud.qasino.card.entity.enums.AiLevel;
-import cloud.qasino.card.entity.enums.Avatar;
+import cloud.qasino.card.entity.enums.player.AiLevel;
+import cloud.qasino.card.entity.enums.player.Avatar;
 import com.fasterxml.jackson.annotation.*;
 import com.voodoodyne.jackson.jsog.JSOGGenerator;
 import lombok.AccessLevel;
@@ -58,6 +58,13 @@ public class Player {
     @Column(name = "is_human")
     private boolean human;
 
+    @Setter(AccessLevel.NONE)
+    @Column(name = "is_initiator")
+    private boolean initiator;
+
+    @Column(name = "fiches")
+    private int fiches;
+
     // current sequence of the player in the game
     @Column(name = "sequence")
     private int sequence;
@@ -93,26 +100,47 @@ public class Player {
         this.sequence = 1;
     }
 
-    public Player(User user, Game game, int sequence) {
+    public Player(User user, Game game, int fiches, int sequence) {
         this();
         this.user = user;
         this.game = game;
         this.human = true;
+        this.initiator = true;
+        this.fiches = fiches;
         this.sequence = sequence;
         this.aiLevel = AiLevel.HUMAN;
     }
 
-    public Player(User user, Game game, int sequence, Avatar avatar, AiLevel aiLevel) {
-        this(user, game, sequence);
+    public Player(User user, Game game, int fiches, int sequence, Avatar avatar, AiLevel aiLevel,
+     boolean initiator) {
+        this(user, game, fiches, sequence);
 
         this.avatar = avatar;
         this.aiLevel = aiLevel;
-        this.human = humanOrNot(aiLevel);
+        if (aiLevel == AiLevel.HUMAN) {
+            this.human = true;
+            this.initiator = initiator;
+        } else {
+            this.human = false;
+            this.initiator = false;
+        }
         this.winner = false;
     }
 
+    // todo LOW make unittest
     public boolean humanOrNot(AiLevel aiLevel) {
         return AiLevel.HUMAN.equals(aiLevel);
+    }
+
+    public void setAiLevel(AiLevel aiLevel) {
+        this.aiLevel = aiLevel;
+        if (aiLevel == AiLevel.HUMAN) {
+            this.human = true;
+            this.initiator = true;
+        } else {
+            this.human = false;
+            this.initiator = false;
+        }
     }
 
     @Override
@@ -137,6 +165,7 @@ public class Player {
                 ", game=" + game +
                 ", human=" + human +
                 ", sequence=" + sequence +
+                ", fiches=" + fiches +
                 ", avatar=" + avatar +
                 ", aiLevel=" + aiLevel +
                 ", winner=" + winner +

@@ -1,6 +1,6 @@
 package cloud.qasino.card.entity;
 
-import cloud.qasino.card.entity.enums.Location;
+import cloud.qasino.card.entity.enums.playingcard.Location;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.voodoodyne.jackson.jsog.JSOGGenerator;

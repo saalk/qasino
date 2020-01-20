@@ -1,8 +1,8 @@
-package cloud.qasino.card.entity.enums;
+package cloud.qasino.card.entity.enums.playingcard;
 
-import cloud.qasino.card.domain.qasino.style.MaxAnte;
+import cloud.qasino.card.entity.enums.LabeledEnum;
+import cloud.qasino.card.entity.enums.event.Action;
 import lombok.Getter;
-import org.apache.commons.lang3.StringUtils;
 
 import javax.persistence.Column;
 import javax.persistence.Transient;
@@ -12,10 +12,10 @@ import java.util.Map;
 import java.util.Set;
 
 @Getter
-public enum Face implements LabeledEnum {
+public enum Position implements LabeledEnum {
 
 	@Column(name = "location", length = 25, nullable = false)
-	UP("up"), DOWN("down"), ERROR("error");
+	SHUFFLED("shuffled"), ORDERED("ordered"), MANUAL("manual"), ERROR("error");
 
 	/**
 	 * A list of all the Enums in the class. The list is created via Set implementation EnumSet.
@@ -23,49 +23,56 @@ public enum Face implements LabeledEnum {
 	 * factory methods for creating an instance like creating groups from enums.
 	 * Here it is used to group all enums.
 	 */
-	public static Set<Face> locations = EnumSet.of(UP, DOWN,
+	public static Set<Position> locations = EnumSet.of(SHUFFLED, ORDERED, MANUAL,
 			ERROR);
 
 	/**
 	 * A static HashMap lookup with key + value is created to use in a getter
 	 * to fromLabel the Enum based on the name eg. key "Low" -> value Location.DUMB
 	 */
-	private static final Map<String, Face> lookup
+	public static final Map<String, Position> lookup
 			= new HashMap<>();
 
 	static {
-		for (Face location : EnumSet.allOf(Face.class))
+		for (Position location : EnumSet.allOf(Position.class))
 			lookup.put(location.getLabel(), location);
+	}
+
+	public static final Map<String, Position> positionMapNoError
+			= new HashMap<>();
+	static {
+		for(Position position : EnumSet.allOf(Position.class))
+			if (!position.getLabel().toLowerCase().equals("error"))
+				positionMapNoError.put(position.getLabel(), position);
 	}
 
 	@Transient
 	private String label;
 
-	Face() {
+	Position() {
 		this.label = "error";
-
 	}
 
-	Face(String label) {
+	Position(String label) {
 		this();
 		this.label = label;
 	}
 
-	public static Face fromLabel(String inputLabel) {
+	public static Position fromLabel(String inputLabel) {
 		return lookup.get(inputLabel.toLowerCase());
 	}
 
-	public static Face fromLabel(char character) {
+	public static Position fromLabel(char character) {
 		return fromLabel(Character.toString(character));
 	}
 
-	public static Face fromLabelWithDefault(String label) {
-		Face face = fromLabel(label);
-		if (face == null) return Face.ERROR;
-		return face;
+	public static Position fromLabelWithDefault(String label) {
+		Position position = fromLabel(label);
+		if (position == null) return Position.ERROR;
+		return position;
 	}
 
-	public static Face fromLabelWithDefault(char character) {
+	public static Position fromLabelWithDefault(char character) {
 		return fromLabelWithDefault(Character.toString(character));
 	}
 

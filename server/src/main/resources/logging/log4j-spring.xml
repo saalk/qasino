@@ -20,7 +20,7 @@
             </Policies>
             <DefaultRolloverStrategy>
                 <Delete basePath="${baseDir}" maxDepth="2">
-                    <IfFileName glob="target/log4j2/roll-by-time-and-size/qasino.*.log.gz" />
+                    <IfFileName glob="target/log4j2/roll-by-time-and-size/Qasino.*.log.gz" />
                     <IfLastModified age="14d" />
                 </Delete>
             </DefaultRolloverStrategy>
@@ -44,8 +44,8 @@
             <AppenderRef ref="roll-by-time-and-size" />
         </Root>
 
-        <!-- LOG "cloud.qasino*" at TRACE level for debugging purposes-->
-        <Logger name="cloud.qasino.*" level="trace"></Logger>
+        <!-- LOG "cloud.Qasino*" at TRACE level for debugging purposes-->
+        <Logger name="cloud.Qasino.*" level="trace"></Logger>
     </Loggers>
 
 </Configuration>

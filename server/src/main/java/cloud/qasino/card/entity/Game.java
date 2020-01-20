@@ -2,19 +2,21 @@ package cloud.qasino.card.entity;
 
 import cloud.qasino.card.domain.qasino.Card;
 import cloud.qasino.card.domain.qasino.Style;
-import cloud.qasino.card.entity.enums.Location;
-import cloud.qasino.card.entity.enums.Type;
+import cloud.qasino.card.entity.enums.game.Type;
+import cloud.qasino.card.entity.enums.playingcard.Location;
 import cloud.qasino.card.statemachine.QasinoStateMachine;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.voodoodyne.jackson.jsog.JSOGGenerator;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.time.Month;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -48,6 +50,12 @@ public class Game {
 			"fk_player_id"), nullable=true)
 	private Player winner;*/
 
+    @JsonIgnore
+    // PlGa: many Games can be part of the same League
+    @ManyToOne(cascade = CascadeType.DETACH)
+    @JoinColumn(name = "league_id", referencedColumnName = "league_id", foreignKey = @ForeignKey
+            (name = "fk_league_id"), nullable = true)
+    private League league;
 
     // Normal fields
 
@@ -65,6 +73,21 @@ public class Game {
     @Column(name = "ante")
     private int ante;
 
+    @Setter(AccessLevel.NONE)
+    @Column(name = "year", length = 4)
+    private int year;
+
+    @Setter(AccessLevel.NONE)
+    @Column(name = "month", length = 20)
+    private Month month;
+
+    @Setter(AccessLevel.NONE)
+    @Column(name = "week", length = 3)
+    private String week;
+
+    @Setter(AccessLevel.NONE)
+    @Column(name = "day", length = 2)
+    private int day;
 
     // References
 
@@ -80,8 +103,13 @@ public class Game {
     public Game() {
         LocalDateTime localDateAndTime = LocalDateTime.now();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd-HH:mm-ssSSS-nnnnnnnnn");
+        DateTimeFormatter week = DateTimeFormatter.ofPattern("W");
         String result = localDateAndTime.format(formatter);
         this.created = result.substring(2, 20);
+        this.year = localDateAndTime.getYear();
+        this.month = localDateAndTime.getMonth();
+        this.week = localDateAndTime.format(week);
+        this.day = localDateAndTime.getDayOfMonth();
 
         this.state = QasinoStateMachine.GameState.INITIALIZED;
         this.type = Type.HIGHLOW;
@@ -89,34 +117,31 @@ public class Game {
         this.ante = 20;
     }
 
-    public Game(Type type) {
+    public Game(League league, String type) {
         this();
-
-        this.type = type;
+        this.league = league;
+        this.type = Type.fromLabelWithDefault(type);
     }
 
-    public Game(Type type, String style, int ante) {
-        this(type);
-
+    public Game(League league, String type, String style, int ante) {
+        this(league,type);
         this.style = Style.fromLabelWithDefault(style).getLabel();
         this.ante = ante;
     }
 
-    public List<PlayingCard> shuffleGame(Game game, int jokers) {
+    public void shuffleGame(int jokers) {
 
         List<Card> cards = Card.newDeck(jokers);
         Collections.shuffle(cards);
 
-        List<PlayingCard> playingCards = new ArrayList<>();
         int i = 1;
         for (Card card : cards) {
-            PlayingCard playingCard = new PlayingCard(game, null, i++, Location.PILE);
-            playingCards.add(playingCard);
+            PlayingCard playingCard = new PlayingCard(this, null, i++, Location.PILE);
+            this.playingCards.add(playingCard);
         }
-        return playingCards;
     }
 
-    public boolean switchPlayers (int sequence, int direction) {
+    public boolean switchPlayers(int sequence, int direction) {
 
         // check if playing order is up (-1) or down (+1)
         boolean playingOrderChanged = false;
@@ -174,18 +199,5 @@ public class Game {
         return Objects.hash(gameId);
     }
 
-    @Override
-    public String toString() {
-        return "Game{" +
-                "gameId=" + gameId +
-                ", created='" + created + '\'' +
-                ", state=" + state +
-                ", type=" + type +
-                ", style='" + style + '\'' +
-                ", ante=" + ante +
-                ", playingCards=" + playingCards +
-                ", players=" + players +
-                '}';
-    }
 }
 

@@ -1,8 +1,8 @@
-package cloud.qasino.card.entity.enums;
+package cloud.qasino.card.entity.enums.playingcard;
 
-import lombok.AllArgsConstructor;
+import cloud.qasino.card.entity.enums.LabeledEnum;
+import cloud.qasino.card.entity.enums.event.Action;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 
 import javax.persistence.Column;
@@ -56,6 +56,14 @@ public enum Suit implements LabeledEnum {
             lookup.put(suit.getLabel(), suit);
     }
 
+    public static final Map<String, Suit> suitMapNoError
+            = new HashMap<>();
+    static {
+        for(Suit suit : EnumSet.allOf(Suit.class))
+            if (!suit.getLabel().toLowerCase().equals("error"))
+                suitMapNoError.put(suit.getLabel(), suit);
+    }
+
     @Transient
     private String label;
 
@@ -68,14 +76,14 @@ public enum Suit implements LabeledEnum {
     }
 
     public static Suit fromLabel(String inputLabel) {
-        String label = StringUtils.lowerCase(inputLabel);
+        String label = StringUtils.upperCase(inputLabel);
         Suit suit;
         try {
-            suit = lookup.get(label);
+            Suit.lookup.get(label);
         } catch (Exception e) {
-            throw new IllegalArgumentException(e);
+            return null;
         }
-        return suit;
+        return Suit.lookup.get(label);
     }
 
 }

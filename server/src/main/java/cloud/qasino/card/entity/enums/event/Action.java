@@ -1,8 +1,8 @@
-package cloud.qasino.card.entity.enums;
+package cloud.qasino.card.entity.enums.event;
 
 import cloud.qasino.card.domain.qasino.style.MaxAnte;
+import cloud.qasino.card.entity.enums.LabeledEnum;
 import lombok.Getter;
-import org.apache.commons.lang3.StringUtils;
 
 import javax.persistence.Column;
 import javax.persistence.Transient;
@@ -29,14 +29,23 @@ public enum Action implements LabeledEnum {
 	 * A static HashMap lookup with key + value is created to use in a getter
 	 * to fromLabel the Enum based on the name eg. key "Low" -> value Action.DUMB
 	 */
-	private static final Map<String, Action> lookup
+	public static final Map<String, Action> lookup
 			= new HashMap<>();
 	
 	static {
 		for (Action action : EnumSet.allOf(Action.class))
 			lookup.put(action.getLabel(), action);
 	}
-	
+
+	public static final Map<String, Action> actionMapNoError
+			= new HashMap<>();
+	static {
+		for(Action action : EnumSet.allOf(Action.class))
+			if (!action.getLabel().toLowerCase().equals("error"))
+				actionMapNoError.put(action.getLabel(), action);
+	}
+
+
 	@Transient
 	private String label;
 	

@@ -1,6 +1,8 @@
 package cloud.qasino.card.entity;
 
-import cloud.qasino.card.entity.enums.Location;
+import cloud.qasino.card.entity.enums.playingcard.Face;
+import cloud.qasino.card.entity.enums.playingcard.Location;
+import cloud.qasino.card.entity.enums.playingcard.Position;
 import com.fasterxml.jackson.annotation.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -57,13 +59,23 @@ public class PlayingCard {
     @Column(name = "sequence")
     private int sequence;
 
-    // current location for the card
+    // current location for the card (can be hand or not)
     @Enumerated(EnumType.STRING)
     @Column(name = "location", nullable = false)
     private Location location;
 
+    // current Postion for the card in the location
+    @Enumerated(EnumType.STRING)
+    @Column(name = "position", nullable = false)
+    private Position position;
 
-    // References
+    // current Face for the card in the location (up or down)
+    @Enumerated(EnumType.STRING)
+    @Column(name = "face", nullable = false)
+    private Face face;
+
+
+    // ReferencesF
 
     public PlayingCard() {
         LocalDateTime localDateAndTime = LocalDateTime.now();
@@ -79,6 +91,8 @@ public class PlayingCard {
         this.hand = player;
         this.sequence = sequence;
         this.location = location;
+        this.position = Position.ORDERED;
+        this.face = Face.DOWN;
     }
 
     @Override
@@ -94,15 +108,4 @@ public class PlayingCard {
         return Objects.hash(playingCardId);
     }
 
-    @Override
-    public String toString() {
-        return "PlayingCard{" +
-                "playingCardId=" + playingCardId +
-                ", created='" + created + '\'' +
-                ", game=" + game +
-                ", hand=" + hand +
-                ", sequence=" + sequence +
-                ", location=" + location +
-                '}';
-    }
 }

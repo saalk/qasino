@@ -1,13 +1,18 @@
 package cloud.qasino.card.statemachine;
 
+import cloud.qasino.card.entity.enums.game.Type;
 import com.github.oxo42.stateless4j.StateMachine;
 import com.github.oxo42.stateless4j.StateMachineConfig;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
+import org.omg.CORBA.TIMEOUT;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
+import java.util.EnumSet;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Data
 @Component
@@ -17,19 +22,19 @@ public class QasinoStateMachine {
 
 	// @formatter:off
 	public enum GameState {
-		// PRE
-		INITIALIZED,	// The game has one Player and the Type and (default) Style is chosen
-		PREPARED,		// All is set for the game, all Bots and PLayers are added
+		// new
+		INITIALIZED,	// The game has: shuffled Deck, one Player, Type, Style
+		PENDING_INVITATIONS, // One or more other Users are added as PLayer, they have to accept
+		PREPARED,		// all Bots and/or other User and main Human are added
 
-		// MAIN
-		SHUFFLED,		// The Game has started and PlayingCards are added and (if needed) shuffled
+		// started
 		PLAYING,		// During playing the Events tables records the state of Playing
 
-		// FINISH
+		// finished
 		GAME_WON,		// A game is won by a player
 		NO_WINNER,		// The game has ended without a winner
 		
-		// MISC
+		// error
 		TIMEOUT,		// An timeout occurred for external reasons
 		ERROR			// An error occurred, a timeout that could not be repleated or a 500
 	}
@@ -50,7 +55,14 @@ public class QasinoStateMachine {
 		ABANDON      	// The main player has quit the game before finishing
 
 	}
-	
+
+	public static final Map<String, GameState> lookup
+			= new HashMap<>();
+	static {
+		for(GameState gameState : EnumSet.allOf(GameState.class))
+			lookup.put(gameState.toString(), gameState);
+	}
+
 	// @formatter:on
 	private StateMachine<GameState, GameTrigger> sm;
 	

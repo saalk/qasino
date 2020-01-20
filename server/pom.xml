@@ -2,7 +2,7 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>cloud.qasino.card</groupId>
+	<groupId>cloud.Qasino.card</groupId>
 	<artifactId>games</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>games</name>
@@ -36,7 +36,7 @@
 		<!-- 1: modelmapper.org - j. halterman - Simple, intelligent, object mapping -->
 		<!--    maps between persistence model and domain model (Data Transfer Objects) -->
 		<!-- todo https://www.baeldung.com/java-performance-mapping-frameworks -->
-		<modelmapper.version>2.3.0</modelmapper.version>
+		<modelmapper.version>2.3.6</modelmapper.version>
 		<!-- 2: stateless4j - j. Oxley -->
 		<!--    create state machines and state machine-based workflows -->
 		<stateless4j.version>2.5.0</stateless4j.version>

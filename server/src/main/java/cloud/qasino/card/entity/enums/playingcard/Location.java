@@ -1,10 +1,8 @@
-package cloud.qasino.card.entity.enums;
+package cloud.qasino.card.entity.enums.playingcard;
 
-import cloud.qasino.card.domain.qasino.style.MaxAnte;
-import lombok.AllArgsConstructor;
+import cloud.qasino.card.entity.enums.LabeledEnum;
+import cloud.qasino.card.entity.enums.event.Action;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
-import org.apache.commons.lang3.StringUtils;
 
 import javax.persistence.Column;
 import javax.persistence.Transient;
@@ -23,7 +21,7 @@ public enum Location implements LabeledEnum {
      * A static HashMap lookup with key + value is created to use in a getter
      * to fromLabel the Enum based on the name eg. key "Low" -> value Location.DUMB
      */
-    private static final Map<String, Location> lookup
+    public static final Map<String, Location> lookup
             = new HashMap<>();
     /**
      * A list of all the Enums in the class. The list is created via Set implementation EnumSet.
@@ -37,6 +35,14 @@ public enum Location implements LabeledEnum {
     static {
         for (Location location : EnumSet.allOf(Location.class))
             lookup.put(location.getLabel(), location);
+    }
+
+    public static final Map<String, Location> locationMapNoError
+            = new HashMap<>();
+    static {
+        for(Location location : EnumSet.allOf(Location.class))
+            if (!location.getLabel().toLowerCase().equals("error"))
+                locationMapNoError.put(location.getLabel(), location);
     }
 
     @Transient

@@ -49,8 +49,8 @@ public class User {
     @Column(name = "email", length = 50, nullable = true)
     private String email;
 
-    @Column(name = "fiches")
-    private int fiches;
+    @Column(name = "balance")
+    private int balance;
 
     @Column(name = "secured_loan")
     private int securedLoan;
@@ -64,6 +64,12 @@ public class User {
     // just a reference, the actual fk column is in player not here!
     // However ai players are no users!
     private List<Player> players;
+
+    // UsPl: a User can start many Leagues
+    // However bots cannot start a league
+    @OneToMany(mappedBy = "user", cascade = CascadeType.DETACH)
+    // just a reference, the actual fk column is in league not here!
+    private List<League> leagues;
 
     public User() {
         LocalDateTime localDateAndTime = LocalDateTime.now();
@@ -82,8 +88,8 @@ public class User {
 
     public boolean repayLoan(){
 
-        if (this.fiches >= this.securedLoan) {
-            this.fiches = --this.securedLoan;
+        if (this.balance >= this.securedLoan) {
+            this.balance = --this.securedLoan;
             this.securedLoan = 0;
             return true;
         }
@@ -96,7 +102,7 @@ public class User {
             int seed = max == 0 ? 1001 : max + 1;
             Random random = new Random();
             this.securedLoan = random.nextInt(seed);
-            this.fiches = ++ this.securedLoan;
+            this.balance = ++ this.securedLoan;
             return true;
         }
         return false;
@@ -128,19 +134,6 @@ public class User {
         return Objects.hash(userId);
     }
 
-    @Override
-    public String toString() {
-        return "User{" +
-                "userId=" + userId +
-                ", created='" + created + '\'' +
-                ", alias='" + alias + '\'' +
-                ", aliasSequence=" + aliasSequence +
-                ", email='" + email + '\'' +
-                ", fiches=" + fiches +
-                ", securedLoan=" + securedLoan +
-                ", players=" + players +
-                '}';
-    }
 }
 
 

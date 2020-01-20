@@ -30,5 +30,4 @@ public interface PlayerRepository extends JpaRepository<Player, Integer> {
             nativeQuery = true)
     Page<User> findAllPlayersWithPage(Pageable pageable);
 
-
 }

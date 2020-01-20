@@ -1,8 +1,7 @@
-package cloud.qasino.card.entity.enums;
+package cloud.qasino.card.entity.enums.player;
 
-import cloud.qasino.card.domain.qasino.style.MaxAnte;
+import cloud.qasino.card.entity.enums.LabeledEnum;
 import lombok.Getter;
-import org.apache.commons.lang3.StringUtils;
 
 import javax.persistence.Column;
 import java.util.EnumSet;
@@ -15,8 +14,21 @@ import java.util.Set;
 public enum Avatar implements LabeledEnum {
 
     @Column(name = "avatar", length = 25)
-    ELF("elf"), MAGICIAN("magician"), GOBLIN("goblin"), ROMAN("warrior"), ERROR("error");
-    
+
+    ELF("elf", "coin for no insurance"),
+    MAGICIAN("magician", "six wins the game"),
+    GOBLIN("goblin", "coin pays insurance as bonus"),
+    ROMAN("warrior", "clubs for free turn"),
+    ERROR("error", "no powers");
+
+    /**
+     * A static HashMap lookup with key + value is created to use in a getter
+     * to fromName the Enum based on the name eg. key "Elf" -> value Avatar.ELF
+     */
+    public static final Map<String, Avatar> lookup
+            = new HashMap<>();
+    public static final Map<String, Avatar> avatarMapNoError
+            = new HashMap<>();
     /**
      * A list of all the Enums in the class. The list is created via Set implementation EnumSet.
      * <p>EnumSet is an abstract class so new() operator does not work. EnumSet has several static
@@ -25,26 +37,30 @@ public enum Avatar implements LabeledEnum {
      */
     public static Set<Avatar> avatars = EnumSet.of(ELF, MAGICIAN, GOBLIN, ROMAN, ERROR);
 
-    /**
-     * A static HashMap lookup with key + value is created to use in a getter
-     * to fromName the Enum based on the name eg. key "Elf" -> value Avatar.ELF
-     */
-    private static final Map<String,Avatar> lookup
-            = new HashMap<>();
     static {
-        for(Avatar avatar : EnumSet.allOf(Avatar.class))
+        for (Avatar avatar : EnumSet.allOf(Avatar.class))
             lookup.put(avatar.getLabel(), avatar);
     }
+
+    static {
+        for (Avatar avatar : EnumSet.allOf(Avatar.class))
+            if (!avatar.getLabel().toLowerCase().equals("error"))
+                avatarMapNoError.put(avatar.getLabel(), avatar);
+    }
+
     private String label;
+    private String power;
 
     Avatar() {
         this.label = "error";
     }
 
-    Avatar(String label) {
+    Avatar(String label, String power) {
         this();
         this.label = label;
+        this.power = power;
     }
+
     public static Avatar fromLabel(String inputLabel) {
         return lookup.get(inputLabel.toLowerCase());
     }

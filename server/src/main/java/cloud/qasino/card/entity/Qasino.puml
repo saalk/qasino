@@ -1,6 +1,6 @@
 @startuml src/main/resources/plantuml/Casino.png
 		skinparam classAttributeIconSize 0
-		package "cloud.qasino.card" {
+		package "cloud.Qasino.card" {
 		package "entity" {
 
 class User {
@@ -9,7 +9,7 @@ class User {
 ..
 - alias : String
 - email : String
-- fiches : int
+- balance : int
 - pawn : int
 -- PREPARE --
 + pawnShip()

@@ -1,5 +1,8 @@
-package cloud.qasino.card.entity.enums;
+package cloud.qasino.card.entity.enums.playingcard;
 
+import cloud.qasino.card.entity.enums.LabeledEnum;
+import cloud.qasino.card.entity.enums.event.Action;
+import cloud.qasino.card.entity.enums.game.Type;
 import lombok.Getter;
 import org.apache.commons.lang3.StringUtils;
 
@@ -51,6 +54,14 @@ public enum Rank implements LabeledEnum {
             lookup.put(rank.getLabel(), rank);
     }
 
+    public static final Map<String, Rank> rankMapNoError
+            = new HashMap<>();
+    static {
+        for(Rank rank : EnumSet.allOf(Rank.class))
+            if (!rank.getLabel().toLowerCase().equals("error"))
+                rankMapNoError.put(rank.getLabel(), rank);
+    }
+
     @Transient
     private String label;
 
@@ -63,14 +74,13 @@ public enum Rank implements LabeledEnum {
     }
 
     public static Rank fromLabel(String inputLabel) {
-        String label = StringUtils.lowerCase(inputLabel);
-        Rank rank;
+        String label = StringUtils.upperCase(inputLabel);
         try {
-            rank = lookup.get(label);
+            Rank.lookup.get(label);
         } catch (Exception e) {
-            throw new IllegalArgumentException(e);
+            return  null;
         }
-        return rank;
+        return Rank.lookup.get(label);
     }
 
     /**
@@ -82,9 +92,11 @@ public enum Rank implements LabeledEnum {
      * 2. No jokers.
      * 3. Ace is worth 1
      */
-    public int getValue(Type inputType) {
+    public int overrideValue(Type inputType) {
         int value = 0;
         switch (inputType) {
+            default:
+                // no break so take the highlow values
             case HIGHLOW:
                 // name() return the enum name like ACE or KING
                 switch (fromLabel(this.label)) {
@@ -108,9 +120,6 @@ public enum Rank implements LabeledEnum {
                         value = Integer.parseInt(label.toString());
                         break;
                 }
-            default:
-                break;
-
         }
         return value;
     }

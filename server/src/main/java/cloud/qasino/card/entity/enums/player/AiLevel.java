@@ -1,8 +1,8 @@
-package cloud.qasino.card.entity.enums;
+package cloud.qasino.card.entity.enums.player;
 
-import cloud.qasino.card.domain.qasino.style.MaxAnte;
+import cloud.qasino.card.entity.enums.LabeledEnum;
+import cloud.qasino.card.entity.enums.event.Action;
 import lombok.Getter;
-import org.apache.commons.lang3.StringUtils;
 
 import javax.persistence.Column;
 import javax.persistence.Transient;
@@ -29,12 +29,20 @@ public enum AiLevel implements LabeledEnum {
      * A static HashMap lookup with key + value is created to use in a getter
      * to fromLabel the Enum based on the name eg. key "Low" -> value AiLevel.DUMB
      */
-    private static final Map<String,AiLevel> lookup
+    public static final Map<String,AiLevel> lookup
             = new HashMap<>();
     static {
         for(AiLevel aiLevel : EnumSet.allOf(AiLevel.class))
             lookup.put(aiLevel.getLabel(), aiLevel);
     }
+    public static final Map<String, AiLevel> aiLevelMapNoError
+            = new HashMap<>();
+    static {
+        for(AiLevel aiLevel : EnumSet.allOf(AiLevel.class))
+            if (!aiLevel.getLabel().toLowerCase().equals("error"))
+                aiLevelMapNoError.put(aiLevel.getLabel(), aiLevel);
+    }
+
     @Transient
     private String label;
     

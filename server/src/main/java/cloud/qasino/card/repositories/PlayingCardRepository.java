@@ -26,7 +26,4 @@ public interface PlayingCardRepository extends JpaRepository<PlayingCard, Intege
 
     List<PlayingCard> findByGameOrderBySequenceAsc(Game game);
 
-
-
-
 }
