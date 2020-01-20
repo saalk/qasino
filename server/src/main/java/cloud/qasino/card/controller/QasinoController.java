@@ -1,7 +1,7 @@
 package cloud.qasino.card.controller;
 
-import cloud.qasino.card.domain.qasino.Enums;
-import cloud.qasino.card.domain.qasino.Totals;
+import cloud.qasino.card.dto.Enums;
+import cloud.qasino.card.dto.Totals;
 import cloud.qasino.card.entity.User;
 import cloud.qasino.card.repositories.*;
 import org.springframework.beans.factory.annotation.Autowired;

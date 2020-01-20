@@ -1,6 +1,7 @@
 package cloud.qasino.card.controller;
 
 import cloud.qasino.card.domain.qasino.Style;
+import cloud.qasino.card.domain.qasino.statemachine.GameState;
 import cloud.qasino.card.entity.Game;
 import cloud.qasino.card.entity.Player;
 import cloud.qasino.card.entity.PlayingCard;
@@ -241,45 +242,12 @@ public class CRUDController {
 
     }
 
-    // LG - tested ok TODO move to CRUD ???
-    @GetMapping(value = "/games/{id}/paging")
-    public ResponseEntity getPlayersByGame(
-            @PathVariable("id") String id,
-            @RequestParam(name = "human", defaultValue = "") String human
-    ) {
-
-        // header in response
-        URI uri = ServletUriComponentsBuilder.fromCurrentRequest()
-                .path("")
-                .query("")
-                .buildAndExpand(id, human)
-                .toUri();
-        HttpHeaders headers = new HttpHeaders();
-        headers.add("URI", String.valueOf(uri));
-
-        // validations
-        if (!StringUtils.isNumeric(id)) {
-            return ResponseEntity.badRequest().headers(headers).build();
-        }
-        int gameId = Integer.parseInt(id);
-        // logic
-        //todo add boolean logic
-        Boolean isHuman = (human.isEmpty() ? null : Boolean.parseBoolean(human));
-
-        Optional<Game> foundGame = gameRepository.findById(gameId);
-        if (!foundGame.isPresent()) {
-            return ResponseEntity.notFound().headers(headers).build();
-        }
-
-        List<Player> players = playerRepository.findByGameOrderBySequenceAsc(foundGame.get());
-        return ResponseEntity.ok().headers(headers).body(players);
-    }
 
     // todo LOW can be tested work on error and default
     @PutMapping(value = "/games/{id}/state/{state}")
     public ResponseEntity<Game> updateGameState(
             @PathVariable("id") String id,
-            @PathVariable("state") QasinoStateMachine.GameState state
+            @PathVariable("state") GameState state
     ) {
         // todo make string and add fromLabelWithDefault
 

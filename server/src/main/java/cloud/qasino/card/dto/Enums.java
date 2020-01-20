@@ -1,9 +1,9 @@
-package cloud.qasino.card.domain.qasino;
+package cloud.qasino.card.dto;
 
-import cloud.qasino.card.domain.qasino.enumrefs.EventEnums;
-import cloud.qasino.card.domain.qasino.enumrefs.GameEnums;
-import cloud.qasino.card.domain.qasino.enumrefs.PlayerEnums;
-import cloud.qasino.card.domain.qasino.enumrefs.PlayingCardEnums;
+import cloud.qasino.card.dto.enumrefs.EventEnums;
+import cloud.qasino.card.dto.enumrefs.GameEnums;
+import cloud.qasino.card.dto.enumrefs.PlayerEnums;
+import cloud.qasino.card.dto.enumrefs.PlayingCardEnums;
 import lombok.Getter;
 import lombok.Setter;
 

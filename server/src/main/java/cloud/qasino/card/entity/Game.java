@@ -2,6 +2,7 @@ package cloud.qasino.card.entity;
 
 import cloud.qasino.card.domain.qasino.Card;
 import cloud.qasino.card.domain.qasino.Style;
+import cloud.qasino.card.domain.qasino.statemachine.GameState;
 import cloud.qasino.card.entity.enums.game.Type;
 import cloud.qasino.card.entity.enums.playingcard.Location;
 import cloud.qasino.card.statemachine.QasinoStateMachine;
@@ -38,6 +39,7 @@ public class Game {
     @Column(name = "game_id", nullable = false)
     private int gameId;
 
+    @JsonIgnore
     @Column(name = "created", length = 25, nullable = false)
     private String created;
 
@@ -61,7 +63,7 @@ public class Game {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "state", length = 50, nullable = false)
-    private QasinoStateMachine.GameState state;
+    private GameState state;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "type", length = 50, nullable = false)
@@ -103,15 +105,16 @@ public class Game {
     public Game() {
         LocalDateTime localDateAndTime = LocalDateTime.now();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd-HH:mm-ssSSS-nnnnnnnnn");
-        DateTimeFormatter week = DateTimeFormatter.ofPattern("W");
         String result = localDateAndTime.format(formatter);
         this.created = result.substring(2, 20);
+
         this.year = localDateAndTime.getYear();
         this.month = localDateAndTime.getMonth();
+        DateTimeFormatter week = DateTimeFormatter.ofPattern("W");
         this.week = localDateAndTime.format(week);
         this.day = localDateAndTime.getDayOfMonth();
 
-        this.state = QasinoStateMachine.GameState.INITIALIZED;
+        this.state = GameState.INITIALIZED;
         this.type = Type.HIGHLOW;
         this.style = new Style().getLabel();
         this.ante = 20;

@@ -1,10 +1,10 @@
-package cloud.qasino.card.statemachine.impl;
+package cloud.qasino.card.statemachine.example.impl;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import cloud.qasino.card.statemachine.AbstractStateTransitionsManager;
-import cloud.qasino.card.statemachine.ProcessData;
-import cloud.qasino.card.statemachine.ProcessException;
+import cloud.qasino.card.statemachine.example.AbstractStateTransitionsManager;
+import cloud.qasino.card.statemachine.example.ProcessData;
+import cloud.qasino.card.statemachine.example.ProcessException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Service;
 

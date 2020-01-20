@@ -6,9 +6,7 @@ import cloud.qasino.card.entity.User;
 import cloud.qasino.card.entity.enums.player.AiLevel;
 import cloud.qasino.card.entity.enums.player.Avatar;
 import cloud.qasino.card.entity.enums.game.Type;
-import cloud.qasino.card.repositories.GameRepository;
-import cloud.qasino.card.repositories.PlayerRepository;
-import cloud.qasino.card.repositories.UserRepository;
+import cloud.qasino.card.repositories.*;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,37 +37,40 @@ import java.util.Optional;
 
 @Slf4j
 @RestController
-public class UserController {
+public class ListController {
 
     private UserRepository userRepository;
+    private LeagueRepository leagueRepository;
     private GameRepository gameRepository;
     private PlayerRepository playerRepository;
+    private PlayingCardRepository playingCardRepository;
+    private EventRepository eventRepository;
+    private ResultsRepository resultsRepository;
 
     @Autowired
-    public UserController(
+    public ListController(
             UserRepository userRepository,
+            LeagueRepository leagueRepository,
             GameRepository gameRepository,
-            PlayerRepository playerRepository) {
+            PlayerRepository playerRepository,
+            PlayingCardRepository playingCardRepository,
+            EventRepository eventRepository,
+            ResultsRepository resultsRepository
+    ) {
 
         this.userRepository = userRepository;
+        this.leagueRepository = leagueRepository;
         this.gameRepository = gameRepository;
         this.playerRepository = playerRepository;
+        this.playingCardRepository = playingCardRepository;
+        this.eventRepository = eventRepository;
+        this.resultsRepository = resultsRepository;
     }
 
-    // UserController - special POST and GET only for USER
-
-    // GET /api/users -> all users sorted with paging sorted on alias
-    // GET /api/users/{id}/games/active -> active games sorted with paging sorted
-    // GET /api/users/{id}/games/invite -> invitation games sorted with paging sorted
-
-    // TODO MEDIUM continue on POST leagues and GET leagues and results
-    // /api/users/{id}/leagues -> POST name enddate with default - rules apply
-    // /api/users/{id}/leagues/active -> GET active leagues sorted with paging sorted
-    // /api/users/{id}/results -> GET results per league with paging sorted
-
+    // ListController - special POST and GET only for USER
 
     // tested
-    @GetMapping(value = "/users")
+    @GetMapping(value = "/users/all")
     public ResponseEntity listUsersWithPaging(
             @RequestParam(defaultValue = "0") String page,
             @RequestParam(defaultValue = "4") String max
@@ -140,9 +141,36 @@ public class UserController {
         if (!(foundGames.size() > 0)) {
             return ResponseEntity.notFound().headers(headers).build();
         }
-
         return ResponseEntity.ok().headers(headers).body(foundGames);
 
+    }
+
+    // todo HIGH test this
+    @GetMapping(value = "/games/{id}/players/all")
+    public ResponseEntity getPlayersByGame(
+            @PathVariable("id") String id) {
+
+        // header in response
+        URI uri = ServletUriComponentsBuilder.fromCurrentRequest()
+                .path("")
+                .buildAndExpand(id)
+                .toUri();
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("URI", String.valueOf(uri));
+
+        // validations
+        if (!StringUtils.isNumeric(id)) {
+            return ResponseEntity.badRequest().headers(headers).build();
+        }
+        int gameId = Integer.parseInt(id);
+
+        // logic
+        Optional<Game> foundGame = gameRepository.findById(gameId);
+        if (!foundGame.isPresent()) {
+            return ResponseEntity.notFound().headers(headers).build();
+        }
+        List<Player> players = playerRepository.findByGameOrderBySequenceAsc(foundGame.get());
+        return ResponseEntity.ok().headers(headers).body(players);
     }
 
 }

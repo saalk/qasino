@@ -2,6 +2,7 @@ package cloud.qasino.card.entity;
 
 import cloud.qasino.card.entity.enums.playingcard.Location;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.voodoodyne.jackson.jsog.JSOGGenerator;
 import lombok.Getter;
@@ -30,6 +31,7 @@ public class Event {
     @Column(name = "event_id")
     private int eventId;
 
+    @JsonIgnore
     @Column(name = "created", length = 25)
     private String created;
 

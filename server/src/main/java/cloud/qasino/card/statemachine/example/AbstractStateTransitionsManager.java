@@ -1,4 +1,4 @@
-package cloud.qasino.card.statemachine;
+package cloud.qasino.card.statemachine.example;
 
 //enforces initialization of the state where needed
 public abstract class AbstractStateTransitionsManager implements StateTransitionsManager {

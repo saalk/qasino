@@ -1,6 +1,6 @@
-package cloud.qasino.card.statemachine.impl;
+package cloud.qasino.card.statemachine.example.impl;
 
-import cloud.qasino.card.statemachine.ProcessException;
+import cloud.qasino.card.statemachine.example.ProcessException;
 
 public class OrderException extends ProcessException {
 

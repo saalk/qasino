@@ -1,4 +1,4 @@
-package cloud.qasino.card.statemachine;
+package cloud.qasino.card.statemachine.example;
 
 //
 public class ProcessException extends Exception {

@@ -1,8 +1,8 @@
-package cloud.qasino.card.statemachine.impl;
+package cloud.qasino.card.statemachine.example.impl;
 
 import lombok.*;
-import cloud.qasino.card.statemachine.ProcessData;
-import cloud.qasino.card.statemachine.ProcessEvent;
+import cloud.qasino.card.statemachine.example.ProcessData;
+import cloud.qasino.card.statemachine.example.ProcessEvent;
 
 import java.util.UUID;
 

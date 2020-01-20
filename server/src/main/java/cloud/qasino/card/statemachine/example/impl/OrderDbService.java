@@ -1,4 +1,4 @@
-package cloud.qasino.card.statemachine.impl;
+package cloud.qasino.card.statemachine.example.impl;
 
 import org.springframework.stereotype.Service;
 

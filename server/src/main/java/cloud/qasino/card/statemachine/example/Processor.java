@@ -1,4 +1,4 @@
-package cloud.qasino.card.statemachine;
+package cloud.qasino.card.statemachine.example;
 
 //executes the business rules
 //needed for this state transition step

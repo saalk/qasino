@@ -35,6 +35,7 @@ public class League {
     @Column(name = "league_id", nullable = false)
     private int leagueId;
 
+    @JsonIgnore
     @Column(name = "created", length = 25)
     private String created;
 
@@ -65,7 +66,6 @@ public class League {
     private String endDate;
 
     // References
-    @JsonIgnore
     // L: A League can have more Games over time
     @OneToMany(mappedBy = "league", cascade = CascadeType.DETACH)
     // just a reference, the actual fk column is in game not here !

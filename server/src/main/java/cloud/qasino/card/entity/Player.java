@@ -31,6 +31,7 @@ public class Player {
     @Column(name = "player_id", nullable = false)
     private int playerId;
 
+    @JsonIgnore
     @Column(name = "created", length = 25)
     private String created;
 
@@ -60,12 +61,12 @@ public class Player {
 
     @Setter(AccessLevel.NONE)
     @Column(name = "is_initiator")
-    private boolean initiator;
+    private boolean initiator; // todo must be enum INITIATOR, PENDING, ACCEPTED, BOT, DECLINED
 
     @Column(name = "fiches")
     private int fiches;
 
-    // current sequence of the player in the game
+    // current sequence of the player in the game, zero is a DECLINED USER
     @Column(name = "sequence")
     private int sequence;
 
@@ -154,23 +155,6 @@ public class Player {
     @Override
     public int hashCode() {
         return Objects.hash(playerId);
-    }
-
-    @Override
-    public String toString() {
-        return "Player{" +
-                "playerId=" + playerId +
-                ", created='" + created + '\'' +
-                ", user=" + user +
-                ", game=" + game +
-                ", human=" + human +
-                ", sequence=" + sequence +
-                ", fiches=" + fiches +
-                ", avatar=" + avatar +
-                ", aiLevel=" + aiLevel +
-                ", winner=" + winner +
-                ", playingCards=" + playingCards +
-                '}';
     }
 }
 

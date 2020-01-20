@@ -30,7 +30,8 @@ public class PlayingCard {
     @GeneratedValue
     @Column(name = "playingcard_id", nullable = false)
     private int playingCardId;
-    
+
+    @JsonIgnore
     @Column(name = "created", length = 25)
     private String created;
 
@@ -46,7 +47,7 @@ public class PlayingCard {
             "fk_game_id"), nullable=false)
     private Game game;
 
-
+    @JsonIgnore
     // HO: A Player sometimes holds a PlayingCard after dealing
     @OneToOne(optional=true, cascade = CascadeType.DETACH, fetch= FetchType.LAZY)
     @JoinColumn(name = "player_id", referencedColumnName = "player_id", foreignKey =

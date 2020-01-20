@@ -1,6 +1,6 @@
-package cloud.qasino.card.statemachine.impl;
+package cloud.qasino.card.statemachine.example.impl;
 
-import cloud.qasino.card.statemachine.ProcessState;
+import cloud.qasino.card.statemachine.example.ProcessState;
 
 /**
  * DEFAULT    -  submit -> orderProcessor()   -> orderCreated   -> PMTPENDING

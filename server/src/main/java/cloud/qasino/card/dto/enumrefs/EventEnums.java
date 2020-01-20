@@ -1,8 +1,6 @@
-package cloud.qasino.card.domain.qasino.enumrefs;
+package cloud.qasino.card.dto.enumrefs;
 
 import cloud.qasino.card.entity.enums.event.Action;
-import cloud.qasino.card.entity.enums.game.Type;
-import cloud.qasino.card.statemachine.QasinoStateMachine;
 import lombok.Getter;
 
 import java.util.Map;

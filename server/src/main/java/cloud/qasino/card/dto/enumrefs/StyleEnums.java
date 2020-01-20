@@ -1,8 +1,7 @@
-package cloud.qasino.card.domain.qasino.enumrefs;
+package cloud.qasino.card.dto.enumrefs;
 
 import cloud.qasino.card.domain.qasino.style.*;
 import lombok.Getter;
-import org.apache.commons.lang3.StringUtils;
 
 import java.util.Map;
 

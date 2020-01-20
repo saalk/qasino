@@ -1,7 +1,5 @@
-package cloud.qasino.card.domain.qasino.enumrefs;
+package cloud.qasino.card.dto.enumrefs;
 
-import cloud.qasino.card.entity.enums.player.AiLevel;
-import cloud.qasino.card.entity.enums.player.Avatar;
 import cloud.qasino.card.entity.enums.playingcard.Face;
 import cloud.qasino.card.entity.enums.playingcard.Location;
 import cloud.qasino.card.entity.enums.playingcard.Position;

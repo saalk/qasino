@@ -2,6 +2,7 @@ package cloud.qasino.card.controller;
 
 import cloud.qasino.card.domain.qasino.Card;
 import cloud.qasino.card.domain.qasino.Style;
+import cloud.qasino.card.domain.qasino.statemachine.GameState;
 import cloud.qasino.card.entity.*;
 import cloud.qasino.card.entity.enums.game.Type;
 import cloud.qasino.card.entity.enums.player.AiLevel;
@@ -77,7 +78,7 @@ public class GamesController {
     // /api/game/{id}/SHUFFLE -> POST add jokers and update state// PLAYING
 
     // tested
-    @PostMapping(value = "/games/init/{type}/users/{uId}")
+    @PostMapping(value = "/games/prepare/{type}/users/{uId}")
     public ResponseEntity<Game> setupInitGameWithUser(
             @PathVariable("type") String type,
             @PathVariable("uId") String uId,
@@ -136,7 +137,7 @@ public class GamesController {
     }
 
     // tested
-    @PostMapping(value = "/games/init/{type}/users/{uId}/players/{aiLevel}")
+    @PostMapping(value = "/games/prepare/{type}/users/{uId}/players/{aiLevel}")
     public ResponseEntity<Game> setupInitGameWithUserAndPlayer(
             @PathVariable("type") String type,
             @PathVariable("uId") String uId,
@@ -208,7 +209,7 @@ public class GamesController {
     }
 
     // tested
-    @PostMapping(value = "/games/init/{type}/league/{lId}/users/{uId}")
+    @PostMapping(value = "/games/prepare/{type}/league/{lId}/users/{uId}")
     public ResponseEntity<Game> setupInitGameInLeagueWithUser(
             @PathVariable("type") String type,
             @PathVariable("uId") String uId,
@@ -272,7 +273,7 @@ public class GamesController {
     }
 
     // tested
-    @PostMapping(value = "/games/init/{type}/league/{lId}/users/{uId}/players/{aiLevel}")
+    @PostMapping(value = "/games/prepare/{type}/league/{lId}/users/{uId}/players/{aiLevel}")
     public ResponseEntity<Game> setupInitGameInLEagueWithUserAndPlayer(
             @PathVariable("type") String type,
             @PathVariable("uId") String uId,
@@ -348,7 +349,7 @@ public class GamesController {
     }
 
     // TODO HIGH test
-    @PutMapping(value = "/games/{id}/setup")
+    @PutMapping(value = "/games/{id}/new")
     public ResponseEntity<Game> updateInitGameWithStyle(
             @PathVariable("id") String id,
             @RequestParam(name = "style", defaultValue = "") String style,
@@ -381,8 +382,8 @@ public class GamesController {
         Game updatedGame = foundGame.get();
 
         // rules
-        if (!   ((updatedGame.getState() == QasinoStateMachine.GameState.INITIALIZED ) ||
-                (updatedGame.getState() == QasinoStateMachine.GameState.PREPARED ))  ) {
+        if (!   ((updatedGame.getState() == GameState.INITIALIZED ) ||
+                (updatedGame.getState() == GameState.PREPARED ))  ) {
             return ResponseEntity.status(HttpStatus.CONFLICT).headers(headers).build();
         }
 
@@ -514,8 +515,8 @@ public class GamesController {
 
     }
 
-    // todo HIGH to be tested
-    @PostMapping(value = "/game/{id}/shuffle", params = {"jokers"})
+    // todo HIGH to be tested -> part of prepare with style
+    @PostMapping(value = "/game/{id}/play", params = {"jokers"})
     public ResponseEntity shuffleGame(
             @PathVariable("id") String id,
             @RequestParam("jokers") String jokers) {
@@ -544,10 +545,9 @@ public class GamesController {
 
         Game updatedGame = foundGame.get();
         // rules
-        if (!   (updatedGame.getState() == QasinoStateMachine.GameState.PREPARED )  ) {
+        if (!   (updatedGame.getState() == GameState.PREPARED )  ) {
             return ResponseEntity.status(HttpStatus.CONFLICT).headers(headers).build();
         }
-
 
         // logic
         List<Card> cards = new ArrayList<>();

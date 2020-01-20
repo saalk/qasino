@@ -59,10 +59,7 @@ public class EventController {
         this.eventRepository = eventRepository;
     }
 
-
-    //PLAY,		 	// PLayers are playing the Game
-    @PostMapping(value = "/game/{gId}/player/{pId}/location/{location}", params = {"cardId",
-            "roundNumber","moveNumber","bet"})
+    @PostMapping(value = "/game/{gId}/player/{pId}/location/{location}")
     public ResponseEntity startGame(
             @PathVariable("gId") String gId,
             @PathVariable("pId") String pId,

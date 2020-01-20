@@ -2,6 +2,7 @@ package cloud.qasino.card.entity;
 
 import cloud.qasino.card.entity.enums.game.Type;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.voodoodyne.jackson.jsog.JSOGGenerator;
 import lombok.AccessLevel;
@@ -32,6 +33,7 @@ public class Result {
     @Column(name = "result_id", nullable = false)
     private int resultId;
 
+    @JsonIgnore
     @Column(name = "created", length = 25)
     private String created;
 

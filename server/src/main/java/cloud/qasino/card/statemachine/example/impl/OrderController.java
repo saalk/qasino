@@ -1,7 +1,7 @@
-package cloud.qasino.card.statemachine.impl;
+package cloud.qasino.card.statemachine.example.impl;
 
 import lombok.RequiredArgsConstructor;
-import cloud.qasino.card.statemachine.ProcessException;
+import cloud.qasino.card.statemachine.example.ProcessException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
