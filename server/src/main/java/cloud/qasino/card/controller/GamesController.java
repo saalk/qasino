@@ -333,7 +333,9 @@ public class GamesController {
             // todo for now create playing cards
 
             sequence++;
-            PlayingCard playingCard = new PlayingCard(foundGame.get(), null, sequence, Location.PILE);
+            PlayingCard playingCard = new PlayingCard(card.getCardId(),foundGame.get(), null,
+                    sequence,
+                    Location.PILE);
             playingCardRepository.save(playingCard);
         }
         List<Event> events = eventRepository.findByGameId(foundGame.get().getGameId());

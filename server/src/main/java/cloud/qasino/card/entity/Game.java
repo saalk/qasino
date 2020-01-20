@@ -136,7 +136,7 @@ public class Game {
 
         int i = 1;
         for (Card card : cards) {
-            PlayingCard playingCard = new PlayingCard(this, null, i++, Location.PILE);
+            PlayingCard playingCard = new PlayingCard(card.getCardId(),this, null, i++, Location.PILE);
             this.playingCards.add(playingCard);
         }
     }
