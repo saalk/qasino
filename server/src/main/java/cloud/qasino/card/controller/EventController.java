@@ -37,9 +37,9 @@ import java.util.Optional;
 public class EventController {
 
     // EventController - special POST for GAME, PLAYINGCARD, EVENT and RESULT has state machine
+    // /api/event/game/{id}/DEAL first -> POST add jokers and update state // PLAYING
     // /api/event/game/{id}/HIGER|LOWER|PASS/power -> only for user self // PLAYING, FINSHED
     // /api/event/game/{id}/NEXT/player/{id} -> only for bot // PLAYING, FINISHED
-
 
     GameRepository gameRepository;
     PlayerRepository playerRepository;

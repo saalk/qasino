@@ -4,6 +4,7 @@ import cloud.qasino.card.domain.qasino.Card;
 import cloud.qasino.card.domain.qasino.Style;
 import cloud.qasino.card.domain.qasino.statemachine.GameState;
 import cloud.qasino.card.entity.*;
+import cloud.qasino.card.entity.enums.game.Role;
 import cloud.qasino.card.entity.enums.game.Type;
 import cloud.qasino.card.entity.enums.player.AiLevel;
 import cloud.qasino.card.entity.enums.player.Avatar;
@@ -60,22 +61,12 @@ public class GamesController {
         this.eventRepository = eventRepository;
     }
 
-    // GamesController - special POST and GET only for GAME - todo LOW has state machine
-    // /api/games/INIT/{type}/user/{id} -> POST game+deck+user no joker// INITIATED
-    // /api/games/INIT/{type}/user/{id}/player/{aiLevel} -> POST +player // INITIATED
-    // /api/games/INIT/{type}/league/{id}/user/{id} -> POST game+league+deck+user // INITIATED
-    // /api/games/INIT/{type}/league/{id}/user/{id}/player/{aiLevel} -> POST +player // INITIATED
+    // GamesController - special POST and GET only for GAME - todo
 
-    // /api/games/{id}/SETUP/classifications -> PUT game bet fiches + classifications // PREPARED
-
-    // /api/games/{id}/INVITE/user/{id} -> POST players // PENDING_INVITATIONS
-    // /api/games/{id}/INVITE/bot -> POST players // PREPARED
     // todo HIGH make endpoints
     // /api/games/{id}/ACCEPT -> PUT player fiches // PREPARED
     // /api/games/{id}/WITHDRAW/bot -> DELETE players // PREPARED
     // /api/games/{id}/WITHDRAW/user{id} -> DELETE players // PREPARED
-
-    // /api/game/{id}/SHUFFLE -> POST add jokers and update state// PLAYING
 
     // tested
     @PostMapping(value = "/games/prepare/{type}/users/{uId}")
@@ -119,12 +110,11 @@ public class GamesController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).headers(headers).build();
         }
 
-        Player createdHuman = null;
-
-        // create human and ai player
-        createdHuman = playerRepository.save(new Player(linkedUser, startedGame,
-                linkedUser.getBalance(), 1,
-                Avatar.fromLabelWithDefault(avatar), AiLevel.HUMAN, true));
+        // create initiator
+        Player createdHuman = new Player(
+                linkedUser, startedGame, Role.INITIATOR,linkedUser.getBalance(), 1,
+                Avatar.fromLabelWithDefault(avatar), AiLevel.HUMAN);
+        createdHuman = playerRepository.save(createdHuman);
         if (createdHuman.getPlayerId() == 0) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).headers(headers).build();
         }
@@ -184,18 +174,20 @@ public class GamesController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).headers(headers).build();
         }
 
-        Player createdAi = null;
-        Player createdHuman = null;
-
-        // create human and ai player
-        createdHuman = playerRepository.save(new Player(linkedUser, startedGame,
-                linkedUser.getBalance(), 1,
-                Avatar.fromLabelWithDefault(avatar), AiLevel.HUMAN, true));
+        // create initiator
+        Player createdHuman = new Player(
+                linkedUser, startedGame, Role.INITIATOR,linkedUser.getBalance(), 1,
+                Avatar.fromLabelWithDefault(avatar), AiLevel.HUMAN);
+        createdHuman = playerRepository.save(createdHuman);
         if (createdHuman.getPlayerId() == 0) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).headers(headers).build();
         }
-        createdAi = playerRepository.save(new Player(null, startedGame, linkedUser.getBalance(), 2,
-                Avatar.fromLabelWithDefault(avatar), AiLevel.fromLabelWithDefault(aiLevel), false));
+
+        // create bot // todo LOW generated its won fiches
+        Player createdAi = new Player(
+                null, startedGame, Role.BOT,linkedUser.getBalance(), 2,
+                Avatar.fromLabelWithDefault(avatar), AiLevel.fromLabelWithDefault(aiLevel));
+        createdAi = playerRepository.save(createdAi);
         if (createdAi.getPlayerId() == 0) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).headers(headers).build();
         }
@@ -255,12 +247,11 @@ public class GamesController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).headers(headers).build();
         }
 
-        Player createdHuman = null;
-
-        // create human player only
-        createdHuman = playerRepository.save(new Player(linkedUser, startedGame,
-                linkedUser.getBalance(), 1,
-                Avatar.fromLabelWithDefault(avatar), AiLevel.HUMAN, true));
+        // create initiator
+        Player createdHuman = new Player(
+                linkedUser, startedGame, Role.INITIATOR,linkedUser.getBalance(), 1,
+                Avatar.fromLabelWithDefault(avatar), AiLevel.HUMAN);
+        createdHuman = playerRepository.save(createdHuman);
         if (createdHuman.getPlayerId() == 0) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).headers(headers).build();
         }
@@ -324,18 +315,20 @@ public class GamesController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).headers(headers).build();
         }
 
-        Player createdAi = null;
-        Player createdHuman = null;
-
-        // create human and ai player
-        createdHuman = playerRepository.save(new Player(linkedUser, startedGame,
-                linkedUser.getBalance(), 1,
-                Avatar.fromLabelWithDefault(avatar), AiLevel.HUMAN, true));
+        // create initiator
+        Player createdHuman = new Player(
+                linkedUser, startedGame, Role.INITIATOR,linkedUser.getBalance(), 1,
+                Avatar.fromLabelWithDefault(avatar), AiLevel.HUMAN);
+        createdHuman = playerRepository.save(createdHuman);
         if (createdHuman.getPlayerId() == 0) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).headers(headers).build();
         }
-        createdAi = playerRepository.save(new Player(null, startedGame, linkedUser.getBalance(), 2,
-                Avatar.fromLabelWithDefault(avatar), AiLevel.fromLabelWithDefault(aiLevel), false));
+
+        // create bot // todo LOW generated its won fiches
+        Player createdAi = new Player(
+                null, startedGame, Role.BOT,linkedUser.getBalance(), 2,
+                Avatar.fromLabelWithDefault(avatar), AiLevel.fromLabelWithDefault(aiLevel));
+        createdAi = playerRepository.save(createdAi);
         if (createdAi.getPlayerId() == 0) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).headers(headers).build();
         }
@@ -349,9 +342,11 @@ public class GamesController {
     }
 
     // TODO HIGH test
-    @PutMapping(value = "/games/{id}/new")
+    @PutMapping(value = "/games/{gid}/prepare/{type}/league/{lid}")
     public ResponseEntity<Game> updateInitGameWithStyle(
-            @PathVariable("id") String id,
+            @PathVariable("gid") String gid,
+            @PathVariable("type") String type,
+            @PathVariable("lid") String lid,
             @RequestParam(name = "style", defaultValue = "") String style,
             @RequestParam(name = "ante", defaultValue = "") String inputAnte
     ) {
@@ -360,19 +355,19 @@ public class GamesController {
         URI uri = ServletUriComponentsBuilder.fromCurrentRequest()
                 .path("")
                 .query("")
-                .buildAndExpand(id, style, inputAnte)
+                .buildAndExpand(gid, style, inputAnte)
                 .toUri();
         HttpHeaders headers = new HttpHeaders();
         headers.add("URI", String.valueOf(uri));
 
         // validations
-        if (!StringUtils.isNumeric(id)
+        if (!StringUtils.isNumeric(gid)
                 || (!inputAnte.isEmpty() & !StringUtils.isNumeric(inputAnte))
         )
             // 400
             return ResponseEntity.badRequest().headers(headers).build();
 
-        int gameId = Integer.parseInt(id);
+        int gameId = Integer.parseInt(gid);
         int ante = Integer.parseInt(inputAnte);
         Optional<Game> foundGame = gameRepository.findById(gameId);
         if (!foundGame.isPresent()) {
@@ -444,13 +439,16 @@ public class GamesController {
         User linkedUser = foundUser.get();
 
         int sequenceCalculated = (playerRepository.countByGame(linkedGame)) + 1;
-        Player createdPlayer = playerRepository.save(new Player(linkedUser, linkedGame,
-                sequenceCalculated, linkedUser.getBalance(),
-                Avatar.fromLabelWithDefault(avatar), AiLevel.HUMAN, true));
-        if (createdPlayer.getPlayerId() == 0) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).headers(headers).build();
+        // create initiator
+        Player createdHuman = new Player(
+                linkedUser, linkedGame, Role.INVITED,0, sequenceCalculated,
+                Avatar.fromLabelWithDefault(avatar), AiLevel.HUMAN);
+        createdHuman = playerRepository.save(createdHuman);
+        if (createdHuman.getPlayerId() == 0) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).headers(headers).build();
         }
-        return ResponseEntity.ok().headers(headers).body(createdPlayer);
+
+        return ResponseEntity.ok().headers(headers).body(createdHuman);
     }
 
     // ai only - tested ok
@@ -498,6 +496,15 @@ public class GamesController {
         int sequenceCalculated = playerRepository.countByGame(foundGame.get()) + 1;
         int fiches = (int) (Math.random() * 1000 + 1);
 
+        // create bot // todo LOW generated its won fiches
+        Player createdAi = new Player(
+                null, linkedGame, Role.BOT,linkedUser.getBalance(), 2,
+                Avatar.fromLabelWithDefault(avatar), AiLevel.fromLabelWithDefault(aiLevel));
+        createdAi = playerRepository.save(createdAi);
+        if (createdAi.getPlayerId() == 0) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).headers(headers).build();
+        }
+
         Player createdPlayer = new Player(null, linkedGame, sequenceCalculated, fiches);
         if (!StringUtils.isEmpty(aiLevel)) {
             createdPlayer.setAiLevel(AiLevel.fromLabelWithDefault(aiLevel));
@@ -505,6 +512,7 @@ public class GamesController {
         if (!StringUtils.isEmpty(avatar)) {
             createdPlayer.setAvatar(Avatar.fromLabelWithDefault(avatar));
         }
+
         createdPlayer = playerRepository.save(createdPlayer);
         if (createdPlayer.getPlayerId() == 0) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).headers(headers).build();

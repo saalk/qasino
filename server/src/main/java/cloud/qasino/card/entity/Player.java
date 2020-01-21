@@ -1,10 +1,12 @@
 package cloud.qasino.card.entity;
 
+import cloud.qasino.card.entity.enums.game.Role;
 import cloud.qasino.card.entity.enums.player.AiLevel;
 import cloud.qasino.card.entity.enums.player.Avatar;
 import com.fasterxml.jackson.annotation.*;
 import com.voodoodyne.jackson.jsog.JSOGGenerator;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.DynamicUpdate;
@@ -59,9 +61,9 @@ public class Player {
     @Column(name = "is_human")
     private boolean human;
 
-    @Setter(AccessLevel.NONE)
-    @Column(name = "is_initiator")
-    private boolean initiator; // todo must be enum INITIATOR, PENDING, ACCEPTED, BOT, DECLINED
+    @Enumerated(EnumType.STRING)
+    @Column(name = "role", nullable = false, length = 20)
+    private Role role;
 
     @Column(name = "fiches")
     private int fiches;
@@ -98,32 +100,32 @@ public class Player {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd-HH:mm-ssSSS-nnnnnnnnn");
         String result = localDateAndTime.format(formatter);
         this.created = result.substring(2, 20);
+        this.role = Role.INITIATOR;
+        this.winner = false;
+        this.human = true;
         this.sequence = 1;
     }
 
-    public Player(User user, Game game, int fiches, int sequence) {
+    public Player(User user, Game game, Role role, int fiches, int sequence) {
         this();
         this.user = user;
+        this.role = role;
         this.game = game;
-        this.human = true;
-        this.initiator = true;
+        this.human = this.user != null;
         this.fiches = fiches;
         this.sequence = sequence;
         this.aiLevel = AiLevel.HUMAN;
     }
 
-    public Player(User user, Game game, int fiches, int sequence, Avatar avatar, AiLevel aiLevel,
-     boolean initiator) {
-        this(user, game, fiches, sequence);
+    public Player(User user, Game game, Role role, int fiches, int sequence, Avatar avatar, AiLevel aiLevel) {
+        this(user, game, role, fiches, sequence);
 
         this.avatar = avatar;
         this.aiLevel = aiLevel;
         if (aiLevel == AiLevel.HUMAN) {
             this.human = true;
-            this.initiator = initiator;
         } else {
             this.human = false;
-            this.initiator = false;
         }
         this.winner = false;
     }
@@ -137,10 +139,8 @@ public class Player {
         this.aiLevel = aiLevel;
         if (aiLevel == AiLevel.HUMAN) {
             this.human = true;
-            this.initiator = true;
         } else {
             this.human = false;
-            this.initiator = false;
         }
     }
 
