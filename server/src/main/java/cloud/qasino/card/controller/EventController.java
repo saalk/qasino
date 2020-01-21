@@ -1,9 +1,11 @@
 package cloud.qasino.card.controller;
 
 import cloud.qasino.card.domain.qasino.Card;
+import cloud.qasino.card.domain.qasino.statemachine.GameState;
 import cloud.qasino.card.entity.Event;
 import cloud.qasino.card.entity.Game;
 import cloud.qasino.card.entity.Player;
+import cloud.qasino.card.entity.PlayingCard;
 import cloud.qasino.card.entity.enums.playingcard.Location;
 import cloud.qasino.card.repositories.EventRepository;
 import cloud.qasino.card.repositories.GameRepository;
@@ -21,6 +23,8 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 // basic path /qasino
@@ -57,6 +61,64 @@ public class EventController {
         this.playerRepository = playerRepository;
         this.playingCardRepository = playingCardRepository;
         this.eventRepository = eventRepository;
+    }
+
+    // todo HIGH to be tested -> part of prepare with style
+    @PostMapping(value = "/game/{id}/deal", params = {"jokers"})
+    public ResponseEntity shuffleGame(
+            @PathVariable("id") String id,
+            @RequestParam("jokers") String jokers) {
+
+        // header in response
+        URI uri = ServletUriComponentsBuilder.fromCurrentRequest()
+                .path("")
+                .query("")
+                .buildAndExpand(id, jokers)
+                .toUri();
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("URI", String.valueOf(uri));
+
+        // validations
+        if (!StringUtils.isNumeric(id) || !StringUtils.isNumeric(jokers))
+            // 400
+            return ResponseEntity.badRequest().headers(headers).build();
+
+        int gameId = Integer.parseInt(id);
+        int jokersToAdd = Integer.parseInt(jokers);
+        Optional<Game> foundGame = gameRepository.findById(gameId);
+        if (!foundGame.isPresent()) {
+            // 404
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).headers(headers).build();
+        }
+
+        Game updatedGame = foundGame.get();
+        // rules
+        if (!   (updatedGame.getState() == GameState.PREPARED )  ) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).headers(headers).build();
+        }
+
+        // logic
+        List<Card> cards = new ArrayList<>();
+        cards = Card.newDeck(jokersToAdd);
+        int sequence = 0;
+        for (Card card : cards) {
+            Event event = new Event(foundGame.get(), null, card.getCardId());
+            event.setRoundNumber(0);
+            event.setMoveNumber(0);
+            event.setBet(0);
+            eventRepository.save(event);
+            // todo go with event to the game engine
+            // todo for now create playing cards
+
+            sequence++;
+            PlayingCard playingCard = new PlayingCard(card.getCardId(), foundGame.get(), null,
+                    sequence,
+                    Location.PILE);
+            playingCardRepository.save(playingCard);
+        }
+        List<Event> events = eventRepository.findByGameId(foundGame.get().getGameId());
+        return ResponseEntity.status(HttpStatus.CREATED).headers(headers).body(events);
+
     }
 
     @PostMapping(value = "/game/{gId}/player/{pId}/location/{location}")

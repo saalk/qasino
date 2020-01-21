@@ -1,16 +1,13 @@
 package cloud.qasino.card.controller;
 
-import cloud.qasino.card.domain.qasino.Card;
 import cloud.qasino.card.domain.qasino.Style;
 import cloud.qasino.card.domain.qasino.statemachine.GameState;
 import cloud.qasino.card.entity.*;
-import cloud.qasino.card.entity.enums.game.Role;
+import cloud.qasino.card.entity.enums.player.Role;
 import cloud.qasino.card.entity.enums.game.Type;
 import cloud.qasino.card.entity.enums.player.AiLevel;
 import cloud.qasino.card.entity.enums.player.Avatar;
-import cloud.qasino.card.entity.enums.playingcard.Location;
 import cloud.qasino.card.repositories.*;
-import cloud.qasino.card.statemachine.QasinoStateMachine;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -183,9 +180,10 @@ public class GamesController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).headers(headers).build();
         }
 
-        // create bot // todo LOW generated its won fiches
+        // create bot
+        int fiches = (int) (Math.random() * 1000 + 1);
         Player createdAi = new Player(
-                null, startedGame, Role.BOT,linkedUser.getBalance(), 2,
+                null, startedGame, Role.BOT,fiches, 2,
                 Avatar.fromLabelWithDefault(avatar), AiLevel.fromLabelWithDefault(aiLevel));
         createdAi = playerRepository.save(createdAi);
         if (createdAi.getPlayerId() == 0) {
@@ -341,9 +339,8 @@ public class GamesController {
         return ResponseEntity.status(HttpStatus.CREATED).headers(headers).body(startedGame);
     }
 
-    // TODO HIGH test
     @PutMapping(value = "/games/{gid}/prepare/{type}/league/{lid}")
-    public ResponseEntity<Game> updateInitGameWithStyle(
+    public ResponseEntity<Game> updateGameWithTypeLeagueStyleAnte(
             @PathVariable("gid") String gid,
             @PathVariable("type") String type,
             @PathVariable("lid") String lid,
@@ -396,10 +393,8 @@ public class GamesController {
 
     }
 
-
-    // other human only - todo can be tested gives error 404??
     @PostMapping(value = "/games/{gameId}/invite/users{userId}")
-    public ResponseEntity<Player> addHuman(
+    public ResponseEntity<Game> inviteHumanPLayerForGame(
             @PathVariable("gameId") String gId,
             @PathVariable("userId") String uId,
             @RequestParam(name = "avatar", defaultValue = "elf") String avatar) {
@@ -448,13 +443,13 @@ public class GamesController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).headers(headers).build();
         }
 
-        return ResponseEntity.ok().headers(headers).body(createdHuman);
+        // 200
+        linkedGame.getPlayers().add(createdHuman);
+        return ResponseEntity.ok().headers(headers).body(linkedGame);
     }
 
-    // ai only - tested ok
-    // todo check max
     @PostMapping(value = "/games/{id}/invite/bot")
-    public ResponseEntity addPlayerForGame(
+    public ResponseEntity<Game> inviteBotPLayerForGame(
             @PathVariable("id") String id,
             @RequestParam(name = "aiLevel", defaultValue = "average") String aiLevel,
             @RequestParam(name = "avatar", defaultValue = "elf") String avatar) {
@@ -484,103 +479,142 @@ public class GamesController {
 
         int gameId = Integer.parseInt(id);
         Optional<Game> foundGame = gameRepository.findById(gameId);
-        Game linkedGame = null;
-        if (foundGame.isPresent()) {
-            linkedGame = foundGame.get();
-        } else {
-            // 404
+        if (!foundGame.isPresent()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).headers(headers).build();
         }
+        Game linkedGame = foundGame.get();
 
         // logic
         int sequenceCalculated = playerRepository.countByGame(foundGame.get()) + 1;
         int fiches = (int) (Math.random() * 1000 + 1);
 
-        // create bot // todo LOW generated its won fiches
         Player createdAi = new Player(
-                null, linkedGame, Role.BOT,linkedUser.getBalance(), 2,
+                null, linkedGame, Role.BOT,fiches, 2,
                 Avatar.fromLabelWithDefault(avatar), AiLevel.fromLabelWithDefault(aiLevel));
         createdAi = playerRepository.save(createdAi);
         if (createdAi.getPlayerId() == 0) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).headers(headers).build();
         }
 
-        Player createdPlayer = new Player(null, linkedGame, sequenceCalculated, fiches);
-        if (!StringUtils.isEmpty(aiLevel)) {
-            createdPlayer.setAiLevel(AiLevel.fromLabelWithDefault(aiLevel));
-        }
-        if (!StringUtils.isEmpty(avatar)) {
-            createdPlayer.setAvatar(Avatar.fromLabelWithDefault(avatar));
-        }
-
-        createdPlayer = playerRepository.save(createdPlayer);
-        if (createdPlayer.getPlayerId() == 0) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).headers(headers).build();
-        }
-
         // 200
-        return ResponseEntity.ok().headers(headers).body(createdPlayer);
+        linkedGame.getPlayers().add(createdAi);
+        return ResponseEntity.ok().headers(headers).body(linkedGame);
 
     }
 
-    // todo HIGH to be tested -> part of prepare with style
-    @PostMapping(value = "/game/{id}/play", params = {"jokers"})
-    public ResponseEntity shuffleGame(
-            @PathVariable("id") String id,
-            @RequestParam("jokers") String jokers) {
+    @PostMapping(value = "/games/{gameId}/accept/players{playerId}")
+    public ResponseEntity<Game> acceptHumanPLayerForGame(
+            @PathVariable("gameId") String gid,
+            @PathVariable("playerId") String pid,
+            @RequestParam(name = "fiches", defaultValue = "0") String fichesInput) {
 
         // header in response
         URI uri = ServletUriComponentsBuilder.fromCurrentRequest()
                 .path("")
                 .query("")
-                .buildAndExpand(id, jokers)
+                .buildAndExpand(gid, pid, fichesInput)
                 .toUri();
         HttpHeaders headers = new HttpHeaders();
         headers.add("URI", String.valueOf(uri));
 
         // validations
-        if (!StringUtils.isNumeric(id) || !StringUtils.isNumeric(jokers))
+        if (!StringUtils.isNumeric(gid)
+                || !StringUtils.isNumeric(pid)
+                || !StringUtils.isNumeric(fichesInput)
+                || (Integer.parseInt(fichesInput) <=0 )){
             // 400
             return ResponseEntity.badRequest().headers(headers).build();
+        }
 
-        int gameId = Integer.parseInt(id);
-        int jokersToAdd = Integer.parseInt(jokers);
+        int gameId = Integer.parseInt(gid);
+        int playerId = Integer.parseInt(pid);
+        int fiches = Integer.parseInt(fichesInput);
+
         Optional<Game> foundGame = gameRepository.findById(gameId);
         if (!foundGame.isPresent()) {
             // 404
             return ResponseEntity.status(HttpStatus.NOT_FOUND).headers(headers).build();
         }
+        Game linkedGame = foundGame.get();
 
-        Game updatedGame = foundGame.get();
-        // rules
-        if (!   (updatedGame.getState() == GameState.PREPARED )  ) {
-            return ResponseEntity.status(HttpStatus.CONFLICT).headers(headers).build();
+        Optional<Player> foundPlayer = playerRepository.findById(playerId);
+        if (!foundPlayer.isPresent()) {
+            // 404
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).headers(headers).build();
+        }
+        Player linkedPlayer = foundPlayer.get();
+
+        // create initiator
+        Player updatedPlayer = linkedPlayer;
+        updatedPlayer.setRole(Role.ACCEPTED);
+        updatedPlayer.setFiches(fiches);
+        updatedPlayer = playerRepository.save(updatedPlayer);
+        if (updatedPlayer.getPlayerId() == 0) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).headers(headers).build();
         }
 
-        // logic
-        List<Card> cards = new ArrayList<>();
-        cards = Card.newDeck(jokersToAdd);
-        int sequence = 0;
-        for (Card card : cards) {
-            Event event = new Event(foundGame.get(), null, card.getCardId());
-            event.setRoundNumber(0);
-            event.setMoveNumber(0);
-            event.setBet(0);
-            eventRepository.save(event);
-            // todo go with event to the game engine
-            // todo for now create playing cards
+        int index = linkedGame.getPlayers().indexOf(updatedPlayer);
+        List<Player> updatedPlayers = linkedGame.getPlayers();
+        updatedPlayers.add(index,updatedPlayer);
 
-            sequence++;
-            PlayingCard playingCard = new PlayingCard(card.getCardId(), foundGame.get(), null,
-                    sequence,
-                    Location.PILE);
-            playingCardRepository.save(playingCard);
-        }
-        List<Event> events = eventRepository.findByGameId(foundGame.get().getGameId());
-        return ResponseEntity.status(HttpStatus.CREATED).headers(headers).body(events);
-
+        // 200
+        linkedGame.setPlayers(updatedPlayers);
+        return ResponseEntity.ok().headers(headers).body(linkedGame);
     }
 
+    @PostMapping(value = "/games/{gameId}/decline/players{playerId}")
+    public ResponseEntity<Game> declineHumanPLayerForGame(
+            @PathVariable("gameId") String gid,
+            @PathVariable("playerId") String pid){
+        // header in response
+        URI uri = ServletUriComponentsBuilder.fromCurrentRequest()
+                .path("")
+                .query("")
+                .buildAndExpand(gid, pid)
+                .toUri();
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("URI", String.valueOf(uri));
+
+        // validations
+        if (!StringUtils.isNumeric(gid)
+                || !StringUtils.isNumeric(pid)){
+            // 400
+            return ResponseEntity.badRequest().headers(headers).build();
+        }
+
+        int gameId = Integer.parseInt(gid);
+        int playerId = Integer.parseInt(pid);
+
+        Optional<Game> foundGame = gameRepository.findById(gameId);
+        if (!foundGame.isPresent()) {
+            // 404
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).headers(headers).build();
+        }
+        Game linkedGame = foundGame.get();
+
+        Optional<Player> foundPlayer = playerRepository.findById(playerId);
+        if (!foundPlayer.isPresent()) {
+            // 404
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).headers(headers).build();
+        }
+        Player linkedPlayer = foundPlayer.get();
+
+        // create initiator
+        Player updatedPlayer = linkedPlayer;
+        updatedPlayer.setRole(Role.REJECTED);
+        updatedPlayer = playerRepository.save(updatedPlayer);
+        if (updatedPlayer.getPlayerId() == 0) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).headers(headers).build();
+        }
+
+        int index = linkedGame.getPlayers().indexOf(updatedPlayer);
+        List<Player> updatedPlayers = linkedGame.getPlayers();
+        updatedPlayers.add(index,updatedPlayer);
+
+        // 200
+        linkedGame.setPlayers(updatedPlayers);
+        return ResponseEntity.ok().headers(headers).body(linkedGame);
+    }
 
 }
 

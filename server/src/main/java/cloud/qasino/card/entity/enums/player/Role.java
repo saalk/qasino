@@ -1,9 +1,7 @@
-package cloud.qasino.card.entity.enums.game;
+package cloud.qasino.card.entity.enums.player;
 
 import cloud.qasino.card.entity.enums.LabeledEnum;
-import lombok.AccessLevel;
 import lombok.Getter;
-import lombok.Setter;
 
 import javax.persistence.Column;
 import java.util.EnumSet;

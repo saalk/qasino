@@ -1,12 +1,11 @@
 package cloud.qasino.card.entity;
 
-import cloud.qasino.card.entity.enums.game.Role;
+import cloud.qasino.card.entity.enums.player.Role;
 import cloud.qasino.card.entity.enums.player.AiLevel;
 import cloud.qasino.card.entity.enums.player.Avatar;
 import com.fasterxml.jackson.annotation.*;
 import com.voodoodyne.jackson.jsog.JSOGGenerator;
 import lombok.AccessLevel;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.DynamicUpdate;

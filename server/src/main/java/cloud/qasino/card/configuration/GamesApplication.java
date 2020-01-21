@@ -4,6 +4,7 @@ import cloud.qasino.card.entity.*;
 import cloud.qasino.card.entity.enums.game.Type;
 import cloud.qasino.card.entity.enums.player.AiLevel;
 import cloud.qasino.card.entity.enums.player.Avatar;
+import cloud.qasino.card.entity.enums.player.Role;
 import cloud.qasino.card.repositories.GameRepository;
 import cloud.qasino.card.repositories.LeagueRepository;
 import cloud.qasino.card.repositories.PlayerRepository;
@@ -86,10 +87,10 @@ public class GamesApplication {
         game = gameRepository.save(game);
 
         List<Player> players = new ArrayList<>();
-        players.add(playerRepository.save(new Player(user, game,
-                user.getBalance(), 1,Avatar.ELF, AiLevel.HUMAN,true)));
-        players.add(playerRepository.save(new Player(null, game, user.getBalance(), 2,
-                Avatar.GOBLIN, AiLevel.AVERAGE, false)));
+        players.add(playerRepository.save(new Player(user, game, Role.INITIATOR,
+                user.getBalance(), 1,Avatar.ELF, AiLevel.HUMAN)));
+        players.add(playerRepository.save(new Player(null, game, Role.BOT, user.getBalance(), 2,
+                Avatar.GOBLIN, AiLevel.AVERAGE)));
         game.setPlayers(players);
 
         return null;
