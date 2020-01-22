@@ -1,0 +1,240 @@
+package cloud.qasino.card.resource;
+
+import cloud.qasino.card.controller.statemachine.GameState;
+import cloud.qasino.card.dto.Enums;
+import cloud.qasino.card.dto.Totals;
+import cloud.qasino.card.entity.User;
+import cloud.qasino.card.repositories.*;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+
+import java.net.URI;
+import java.util.*;
+
+import static cloud.qasino.card.configuration.Constants.DEFAULT_PAWN_SHIP_HUMAN;
+import static cloud.qasino.card.controller.statemachine.GameState.*;
+
+// basic path /qasino
+// basic header @RequestHeader(value "user", required = true) int userId" // else 400
+//
+// 200 - ok
+// 201 - created
+// 400 - bad request - error/reason "url ... not available"
+// 404 - not found - error/message "invalid value x for y" + reason [missing]
+// 412 - precondition failed = error/message - "violation of rule z"
+// 500 - internal server error
+
+@RestController
+public class QasinoResource {
+
+    GameRepository gameRepository;
+    UserRepository userRepository;
+    PlayerRepository playerRepository;
+    PlayingCardRepository playingCardRepository;
+    EventRepository eventRepository;
+    LeagueRepository leagueRepository;
+
+    @Autowired
+    public QasinoResource(
+            UserRepository userRepository,
+            GameRepository gameRepository,
+            PlayerRepository playerRepository,
+            PlayingCardRepository playingCardRepository,
+            LeagueRepository leagueRepository,
+            EventRepository eventRepository
+    ) {
+        this.gameRepository = gameRepository;
+        this.userRepository = userRepository;
+        this.playerRepository = playerRepository;
+        this.playingCardRepository = playingCardRepository;
+        this.leagueRepository = leagueRepository;
+        this.eventRepository = eventRepository;
+    }
+
+    // tested
+    @GetMapping(value = "/enums")
+    public ResponseEntity<Enums> enums(
+    ) {
+        // header in response
+        URI uri = ServletUriComponentsBuilder.fromCurrentRequest()
+                .path("")
+                .query("")
+                .buildAndExpand()
+                .toUri();
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("URI", String.valueOf(uri));
+
+        Enums enums = new Enums();
+        return ResponseEntity.ok().headers(headers).body(enums);
+    }
+
+    @GetMapping(value = "/logon/{alias}")
+    public ResponseEntity logon(
+            @PathVariable("alias") String alias
+    ) {
+
+        // todo
+        Map<String, String> pathAndRequestParams = new HashMap<>();
+        pathAndRequestParams.put("alias", alias);
+
+        // header in response
+        URI uri = ServletUriComponentsBuilder.fromCurrentRequest()
+                .path("")
+                .buildAndExpand(alias)
+                .toUri();
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("URI", String.valueOf(uri));
+
+        User foundUser = userRepository.findUserByAliasAndAliasSequence(alias, 1);
+        if (foundUser.getUserId() == 0) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).headers(headers).build();
+        }
+        return ResponseEntity.status(HttpStatus.CREATED).headers(headers).body(foundUser);
+    }
+
+    // tested
+    @PostMapping(value = "/signup/{alias}")
+    public ResponseEntity signup(
+            @PathVariable("alias") String alias,
+            @RequestParam(name = "email", defaultValue = "") String email
+    ) {
+
+        // header in response
+        URI uri = ServletUriComponentsBuilder.fromCurrentRequest()
+                .path("")
+                .query("")
+                .buildAndExpand(email)
+                .toUri();
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("URI", String.valueOf(uri));
+
+        int sequence = (int) (userRepository.countByAlias(alias) + 1);
+
+        // rules
+        if (sequence > 1)
+            // todo LOW split alias and number
+            return ResponseEntity.status(HttpStatus.CONFLICT).headers(headers).build();
+
+        User createdUser = userRepository.save(new User(alias, sequence, email));
+        if (createdUser.getUserId() == 0) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).headers(headers).build();
+        }
+        return ResponseEntity.status(HttpStatus.CREATED).headers(headers).body(createdUser);
+    }
+
+    // tested
+    @PutMapping(value = "/users/{id}/pawnship")
+    public ResponseEntity<User> pawnship(
+            @PathVariable("id") String id
+    ) {
+
+        // header in response
+        URI uri = ServletUriComponentsBuilder.fromCurrentRequest()
+                .path("")
+                .buildAndExpand()
+                .toUri();
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("URI", String.valueOf(uri));
+
+        // validations
+        if (!StringUtils.isNumeric(id))
+            // 400
+            return ResponseEntity.badRequest().headers(headers).build();
+        int userId = Integer.parseInt(id);
+        Optional<User> foundUser = userRepository.findById(userId);
+        if (!foundUser.isPresent()) {
+            // 404
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).headers(headers).build();
+        }
+        User updatedUser = foundUser.get();
+
+        // logic
+        if (!updatedUser.pawnShip(DEFAULT_PAWN_SHIP_HUMAN)) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).headers(headers).body(updatedUser);
+        }
+        updatedUser = userRepository.save(updatedUser);
+
+        // 200
+        return ResponseEntity.ok().headers(headers).body(updatedUser);
+    }
+
+    // tested
+    @PutMapping(value = "/users/{id}/repayloan")
+    public ResponseEntity<User> repayloan(
+            @PathVariable("id") String id
+    ) {
+
+        // header in response
+        URI uri = ServletUriComponentsBuilder.fromCurrentRequest()
+                .path("")
+                .buildAndExpand()
+                .toUri();
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("URI", String.valueOf(uri));
+
+        // validations
+        if (!StringUtils.isNumeric(id))
+            // 400
+            return ResponseEntity.badRequest().headers(headers).build();
+        int userId = Integer.parseInt(id);
+        Optional<User> foundUser = userRepository.findById(userId);
+        if (!foundUser.isPresent()) {
+            // 404
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).headers(headers).build();
+        }
+        User updatedUser = foundUser.get();
+
+        // logic
+        if (!updatedUser.repayLoan()) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).headers(headers).body(updatedUser);
+        }
+        updatedUser = userRepository.save(updatedUser);
+
+        // 200
+        return ResponseEntity.ok().headers(headers).body(updatedUser);
+    }
+
+    @GetMapping(value = "/halloffame")
+    public ResponseEntity<Totals> halloffame(
+    ) {
+        // header in response
+        URI uri = ServletUriComponentsBuilder.fromCurrentRequest()
+                .path("")
+                .query("")
+                .buildAndExpand()
+                .toUri();
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("URI", String.valueOf(uri));
+
+        Totals totals = new Totals();
+        totals.setLeagues((int) leagueRepository.count());
+
+        totals.setUsers((int) userRepository.count());
+
+        totals.setGames((int) gameRepository.count());
+
+        List<GameState> gameStates = new ArrayList<GameState>(cardGamesStarted);
+        int gameStatesSize = gameStates.size();
+        String[] started = gameStates.toArray(new String[gameStatesSize]);
+        totals.setActiveGames((int) gameRepository.countByStates(started));
+
+  /*      totals.setActiveGames((int) gameRepository.countByStates(new ArrayList<GameState>(cardGamesStarted)));
+        totals.setNewGames((int) gameRepository.countByStates(new ArrayList<GameState>(cardGamesNew)));
+        totals.setFinishedGames((int) gameRepository.countByStates(new ArrayList<GameState>(cardGamesEnded)));
+        totals.setErrorGames((int) gameRepository.countByStates(new ArrayList<GameState>(cardGamesError)));
+*/
+
+        totals.setPlayers((int) playerRepository.count());
+        totals.setPlayingCards((int) playingCardRepository.count());
+
+        return ResponseEntity.ok().headers(headers).body(totals);
+    }
+
+
+}
+

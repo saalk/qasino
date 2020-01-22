@@ -1,4 +1,4 @@
-package cloud.qasino.card.controller;
+package cloud.qasino.card.resource;
 
 import cloud.qasino.card.entity.Game;
 import cloud.qasino.card.entity.PlayingCard;
@@ -37,13 +37,13 @@ import java.util.Optional;
 
 @Slf4j
 @RestController
-public class PlayingCardController {
+public class PlayingCardResource {
 
     private GameRepository gameRepository;
     private PlayingCardRepository playingCardRepository;
 
     @Autowired
-    public PlayingCardController(
+    public PlayingCardResource(
             UserRepository userRepository,
             GameRepository gameRepository,
             PlayerRepository playerRepository,

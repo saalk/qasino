@@ -1,4 +1,4 @@
-package cloud.qasino.card.domain.qasino.statemachine;
+package cloud.qasino.card.controller.statemachine;
 
 import cloud.qasino.card.entity.enums.LabeledEnum;
 import lombok.AllArgsConstructor;
@@ -43,7 +43,7 @@ public enum GameState implements LabeledEnum {
      * A static HashMap lookup with key + value is created to use in a getter
      * to fromLabel the Enum based on the name eg. key "Low" -> value AiLevel.DUMB
      */
-    public static final Map<String, GameState> lookup
+    public static Map<String, GameState> lookup
             = new HashMap<>();
     static {
         for(GameState gameState : EnumSet.allOf(GameState.class))

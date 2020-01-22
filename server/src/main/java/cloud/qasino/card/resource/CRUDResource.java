@@ -1,7 +1,6 @@
-package cloud.qasino.card.controller;
+package cloud.qasino.card.resource;
 
-import cloud.qasino.card.domain.qasino.Style;
-import cloud.qasino.card.domain.qasino.statemachine.GameState;
+import cloud.qasino.card.controller.statemachine.GameState;
 import cloud.qasino.card.entity.Game;
 import cloud.qasino.card.entity.Player;
 import cloud.qasino.card.entity.PlayingCard;
@@ -13,14 +12,9 @@ import cloud.qasino.card.repositories.GameRepository;
 import cloud.qasino.card.repositories.PlayerRepository;
 import cloud.qasino.card.repositories.PlayingCardRepository;
 import cloud.qasino.card.repositories.UserRepository;
-import cloud.qasino.card.statemachine.QasinoStateMachine;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
-import org.springframework.data.domain.Sort.Order;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -28,8 +22,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 
 // basic path /qasino
@@ -45,7 +37,7 @@ import java.util.Optional;
 
 @Slf4j
 @RestController
-public class CRUDController {
+public class CRUDResource {
 
     private UserRepository userRepository;
     private GameRepository gameRepository;
@@ -53,7 +45,7 @@ public class CRUDController {
     private PlayingCardRepository playingCardRepository;
 
     @Autowired
-    public CRUDController(
+    public CRUDResource(
             UserRepository userRepository,
             GameRepository gameRepository,
             PlayingCardRepository playingCardRepository,
@@ -61,6 +53,7 @@ public class CRUDController {
 
         this.userRepository = userRepository;
         this.gameRepository = gameRepository;
+        this.playingCardRepository = playingCardRepository;
         this.playerRepository = playerRepository;
     }
 
@@ -176,41 +169,6 @@ public class CRUDController {
         userRepository.deleteById(userId);
         // delete 204
         return ResponseEntity.status(HttpStatus.NO_CONTENT).headers(headers).build();
-    }
-
-    // tested ok
-    @PostMapping(value = "/games/{type}")
-    public ResponseEntity<Game> startGame(
-            @PathVariable("type") String type,
-            @RequestParam(name = "style", defaultValue = " ") String style,
-            @RequestParam(name = "ante", defaultValue = "20") String inputAnte
-    ) {
-
-        // header in response
-        URI uri = ServletUriComponentsBuilder.fromCurrentRequest()
-                .path("")
-                .query("")
-                .buildAndExpand(type, style, inputAnte)
-                .toUri();
-        HttpHeaders headers = new HttpHeaders();
-        headers.add("URI", String.valueOf(uri));
-
-        // validations
-        if (!StringUtils.isNumeric(inputAnte)
-                || Type.fromLabelWithDefault(type) == Type.ERROR) {
-            // 400
-            return ResponseEntity.badRequest().headers(headers).build();
-        }
-        int ante = Integer.parseInt(inputAnte);
-
-        Game startedGame = gameRepository.save(new Game(null, type,
-                style, ante));
-
-        if (startedGame.getGameId() == 0) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).headers(headers).build();
-        } else {
-            return ResponseEntity.status(HttpStatus.CREATED).headers(headers).body(startedGame);
-        }
     }
 
     // tested

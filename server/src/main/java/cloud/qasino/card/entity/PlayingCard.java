@@ -35,7 +35,7 @@ public class PlayingCard {
     @Column(name = "created", length = 25)
     private String created;
 
-    @Column(name = "card", length = 2, nullable = false)
+    @Column(name = "card", length = 3, nullable = false)
     private String card;
 
     // Foreign keys

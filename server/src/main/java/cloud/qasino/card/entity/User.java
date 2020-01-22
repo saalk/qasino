@@ -114,8 +114,10 @@ public class User {
 
     public boolean repayLoan(){
 
-        if (this.balance >= this.securedLoan) {
-            this.balance = --this.securedLoan;
+        if (this.balance >= this.securedLoan &
+                this.securedLoan > 0) {
+            int loan = this.securedLoan;
+            this.balance = -- loan;
             this.securedLoan = 0;
             return true;
         }
@@ -125,10 +127,11 @@ public class User {
     public boolean pawnShip(int max) {
 
         if (this.securedLoan == 0) {
-            int seed = max == 0 ? 1001 : max + 1;
+            int seed = max <= 0 ? 1001 : max + 1;
             Random random = new Random();
-            this.securedLoan = random.nextInt(seed);
-            this.balance = ++ this.securedLoan;
+            int newSecuredLoan = random.nextInt(seed);
+            this.balance = ++ newSecuredLoan;
+            this.securedLoan = ++ newSecuredLoan;
             return true;
         }
         return false;

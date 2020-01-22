@@ -1,7 +1,7 @@
-package cloud.qasino.card.controller;
+package cloud.qasino.card.resource;
 
 import cloud.qasino.card.domain.qasino.Style;
-import cloud.qasino.card.domain.qasino.statemachine.GameState;
+import cloud.qasino.card.controller.statemachine.GameState;
 import cloud.qasino.card.entity.*;
 import cloud.qasino.card.entity.enums.player.Role;
 import cloud.qasino.card.entity.enums.game.Type;
@@ -21,6 +21,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import static cloud.qasino.card.configuration.Constants.DEFAULT_PAWN_SHIP_BOT;
+import static cloud.qasino.card.configuration.Constants.isNullOrEmpty;
+
 // basic path /qasino
 // basic header @RequestHeader(value "user", required = true) int userId" // else 400
 //
@@ -32,7 +35,7 @@ import java.util.Optional;
 // 500 - internal server error
 
 @RestController
-public class GamesController {
+public class GamesResource {
 
     private UserRepository userRepository;
     private LeagueRepository leagueRepository;
@@ -42,7 +45,7 @@ public class GamesController {
     private EventRepository eventRepository;
 
     @Autowired
-    public GamesController(
+    public GamesResource(
             UserRepository userRepository,
             LeagueRepository leagueRepository,
             GameRepository gameRepository,
@@ -58,12 +61,48 @@ public class GamesController {
         this.eventRepository = eventRepository;
     }
 
-    // GamesController - special POST and GET only for GAME - todo
+    // GamesResource - special POST and GET only for GAME - todo
 
     // todo HIGH make endpoints
     // /api/games/{id}/ACCEPT -> PUT player fiches // PREPARED
     // /api/games/{id}/WITHDRAW/bot -> DELETE players // PREPARED
     // /api/games/{id}/WITHDRAW/user{id} -> DELETE players // PREPARED
+
+
+    // tested ok
+    @PostMapping(value = "/games/new/{type}")
+    public ResponseEntity<Game> startGame(
+            @PathVariable("type") String type,
+            @RequestParam(name = "style", defaultValue = " ") String style,
+            @RequestParam(name = "ante", defaultValue = "20") String inputAnte
+    ) {
+
+        // header in response
+        URI uri = ServletUriComponentsBuilder.fromCurrentRequest()
+                .path("")
+                .query("")
+                .buildAndExpand(type, style, inputAnte)
+                .toUri();
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("URI", String.valueOf(uri));
+
+        // validations
+        if (!StringUtils.isNumeric(inputAnte)
+                || Type.fromLabelWithDefault(type) == Type.ERROR) {
+            // 400
+            return ResponseEntity.badRequest().headers(headers).build();
+        }
+        int ante = Integer.parseInt(inputAnte);
+
+        Game startedGame = gameRepository.save(new Game(null, type,
+                style, ante));
+
+        if (startedGame.getGameId() == 0) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).headers(headers).build();
+        } else {
+            return ResponseEntity.status(HttpStatus.CREATED).headers(headers).body(startedGame);
+        }
+    }
 
     // tested
     @PostMapping(value = "/games/prepare/{type}/users/{uId}")
@@ -181,7 +220,7 @@ public class GamesController {
         }
 
         // create bot
-        int fiches = (int) (Math.random() * 1000 + 1);
+        int fiches = (int) (Math.random() * DEFAULT_PAWN_SHIP_BOT + 1);
         Player createdAi = new Player(
                 null, startedGame, Role.BOT,fiches, 2,
                 Avatar.fromLabelWithDefault(avatar), AiLevel.fromLabelWithDefault(aiLevel));
@@ -309,7 +348,10 @@ public class GamesController {
         // create game with league
         Game startedGame = gameRepository.save(new Game(linkedLeague, type,
                 style, Integer.parseInt(ante)));
-        if (startedGame.getGameId() == 0) {
+        startedGame.shuffleGame(0);
+        List<PlayingCard> playingCards =
+                playingCardRepository.saveAll(startedGame.getPlayingCards());
+        if (startedGame.getGameId() == 0 || isNullOrEmpty(playingCards)) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).headers(headers).build();
         }
 

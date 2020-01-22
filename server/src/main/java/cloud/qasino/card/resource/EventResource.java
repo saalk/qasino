@@ -1,7 +1,7 @@
-package cloud.qasino.card.controller;
+package cloud.qasino.card.resource;
 
 import cloud.qasino.card.domain.qasino.Card;
-import cloud.qasino.card.domain.qasino.statemachine.GameState;
+import cloud.qasino.card.controller.statemachine.GameState;
 import cloud.qasino.card.entity.Event;
 import cloud.qasino.card.entity.Game;
 import cloud.qasino.card.entity.Player;
@@ -38,9 +38,9 @@ import java.util.Optional;
 // 500 - internal server error
 
 @RestController
-public class EventController {
+public class EventResource {
 
-    // EventController - special POST for GAME, PLAYINGCARD, EVENT and RESULT has state machine
+    // EventResource - special POST for GAME, PLAYINGCARD, EVENT and RESULT has state machine
     // /api/event/game/{id}/DEAL first -> POST add jokers and update state // PLAYING
     // /api/event/game/{id}/HIGER|LOWER|PASS/power -> only for user self // PLAYING, FINSHED
     // /api/event/game/{id}/NEXT/player/{id} -> only for bot // PLAYING, FINISHED
@@ -51,7 +51,7 @@ public class EventController {
     EventRepository eventRepository;
 
     @Autowired
-    public EventController(
+    public EventResource(
             GameRepository gameRepository,
             PlayerRepository playerRepository,
             PlayingCardRepository playingCardRepository,

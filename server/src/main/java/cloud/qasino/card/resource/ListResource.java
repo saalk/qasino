@@ -1,4 +1,4 @@
-package cloud.qasino.card.controller;
+package cloud.qasino.card.resource;
 
 import cloud.qasino.card.entity.Game;
 import cloud.qasino.card.entity.Player;
@@ -37,7 +37,7 @@ import java.util.Optional;
 
 @Slf4j
 @RestController
-public class ListController {
+public class ListResource {
 
     private UserRepository userRepository;
     private LeagueRepository leagueRepository;
@@ -48,7 +48,7 @@ public class ListController {
     private ResultsRepository resultsRepository;
 
     @Autowired
-    public ListController(
+    public ListResource(
             UserRepository userRepository,
             LeagueRepository leagueRepository,
             GameRepository gameRepository,
@@ -67,7 +67,7 @@ public class ListController {
         this.resultsRepository = resultsRepository;
     }
 
-    // ListController - special POST and GET only for USER
+    // ListResource - special POST and GET only for USER
 
     // tested
     @GetMapping(value = "/users/all")
@@ -145,8 +145,8 @@ public class ListController {
 
     }
 
-    // todo HIGH test this
-    @GetMapping(value = "/games/{id}/players/all")
+    // tested - get only the list of players for a game
+    @GetMapping(value = "/players/all/games/{id}")
     public ResponseEntity getPlayersByGame(
             @PathVariable("id") String id) {
 

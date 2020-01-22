@@ -5,10 +5,7 @@ import cloud.qasino.card.entity.enums.game.Type;
 import cloud.qasino.card.entity.enums.player.AiLevel;
 import cloud.qasino.card.entity.enums.player.Avatar;
 import cloud.qasino.card.entity.enums.player.Role;
-import cloud.qasino.card.repositories.GameRepository;
-import cloud.qasino.card.repositories.LeagueRepository;
-import cloud.qasino.card.repositories.PlayerRepository;
-import cloud.qasino.card.repositories.UserRepository;
+import cloud.qasino.card.repositories.*;
 import h._grid;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
@@ -72,7 +69,8 @@ public class GamesApplication {
             UserRepository userRepository,
             LeagueRepository leagueRepository,
             GameRepository gameRepository,
-            PlayerRepository playerRepository
+            PlayerRepository playerRepository,
+            PlayingCardRepository playingCardRepository
     ) {
         User user = new User("aliasName",1,"a@b.c");
         user.pawnShip(0);
@@ -85,6 +83,7 @@ public class GamesApplication {
         Game game = new Game(league, "highlow", "", 100);
         game.shuffleGame(0);
         game = gameRepository.save(game);
+        playingCardRepository.saveAll(game.getPlayingCards());
 
         List<Player> players = new ArrayList<>();
         players.add(playerRepository.save(new Player(user, game, Role.INITIATOR,

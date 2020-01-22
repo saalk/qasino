@@ -1,11 +1,11 @@
-package cloud.qasino.card.domain.qasino.statemachine;
+package cloud.qasino.card.controller.statemachine;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 
 import java.util.EnumSet;
 import java.util.Set;
+
+import static java.util.EnumSet.*;
 
 /**
  * <H1>CardGame</H1> A selection of card gameDtos that can be selected to play. <p> More gameDtos will be
@@ -24,7 +24,7 @@ public enum GameTrigger {
     ACCEPT,
     PREPARE,
 
-    // started - EventController calls StateMachine
+    // started - EventResource calls StateMachine
     DEAL, HIGHER, LOWER, PASS,
 
     // ended
@@ -35,9 +35,9 @@ public enum GameTrigger {
     ABANDON, // - internally by batch job
     CRASH;   // - internally by StateMachine
 
-    public static Set<GameTrigger> cardGamesTriggerNew = EnumSet.of(NEW, INVITE, ACCEPT, PREPARE);
-    public static Set<GameTrigger> cardGamesTriggerPlaying = EnumSet.of(DEAL, HIGHER, LOWER, PASS);
-    public static Set<GameTrigger> cardGamesTriggerEnding = EnumSet.of(WINNER, LEAVE);
-    public static Set<GameTrigger> cardGamesTriggerError = EnumSet.of(ABANDON, CRASH);
+    public static Set<GameTrigger> cardGamesTriggerNew = of(NEW, INVITE, ACCEPT, PREPARE);
+    public static Set<GameTrigger> cardGamesTriggerPlaying = of(DEAL, HIGHER, LOWER, PASS);
+    public static Set<GameTrigger> cardGamesTriggerEnding = of(WINNER, LEAVE);
+    public static Set<GameTrigger> cardGamesTriggerError = of(ABANDON, CRASH);
 
 }
