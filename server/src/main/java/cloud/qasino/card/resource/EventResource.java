@@ -6,6 +6,7 @@ import cloud.qasino.card.entity.Event;
 import cloud.qasino.card.entity.Game;
 import cloud.qasino.card.entity.Player;
 import cloud.qasino.card.entity.PlayingCard;
+import cloud.qasino.card.entity.enums.event.Action;
 import cloud.qasino.card.entity.enums.playingcard.Location;
 import cloud.qasino.card.repositories.EventRepository;
 import cloud.qasino.card.repositories.GameRepository;
@@ -63,80 +64,24 @@ public class EventResource {
         this.eventRepository = eventRepository;
     }
 
-    // todo HIGH to be tested -> part of prepare with style
-    @PostMapping(value = "/game/{id}/deal", params = {"jokers"})
-    public ResponseEntity shuffleGame(
-            @PathVariable("id") String id,
-            @RequestParam("jokers") String jokers) {
-
-        // header in response
-        URI uri = ServletUriComponentsBuilder.fromCurrentRequest()
-                .path("")
-                .query("")
-                .buildAndExpand(id, jokers)
-                .toUri();
-        HttpHeaders headers = new HttpHeaders();
-        headers.add("URI", String.valueOf(uri));
-
-        // validations
-        if (!StringUtils.isNumeric(id) || !StringUtils.isNumeric(jokers))
-            // 400
-            return ResponseEntity.badRequest().headers(headers).build();
-
-        int gameId = Integer.parseInt(id);
-        int jokersToAdd = Integer.parseInt(jokers);
-        Optional<Game> foundGame = gameRepository.findById(gameId);
-        if (!foundGame.isPresent()) {
-            // 404
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).headers(headers).build();
-        }
-
-        Game updatedGame = foundGame.get();
-        // rules
-        if (!   (updatedGame.getState() == GameState.PREPARED )  ) {
-            return ResponseEntity.status(HttpStatus.CONFLICT).headers(headers).build();
-        }
-
-        // logic
-        List<Card> cards = new ArrayList<>();
-        cards = Card.newDeck(jokersToAdd);
-        int sequence = 0;
-        for (Card card : cards) {
-            Event event = new Event(foundGame.get(), null, card.getCardId());
-            event.setRoundNumber(0);
-            event.setMoveNumber(0);
-            event.setBet(0);
-            eventRepository.save(event);
-            // todo go with event to the game engine
-            // todo for now create playing cards
-
-            sequence++;
-            PlayingCard playingCard = new PlayingCard(card.getCardId(), foundGame.get(), null,
-                    sequence,
-                    Location.PILE);
-            playingCardRepository.save(playingCard);
-        }
-        List<Event> events = eventRepository.findByGameId(foundGame.get().getGameId());
-        return ResponseEntity.status(HttpStatus.CREATED).headers(headers).body(events);
-
-    }
-
-    @PostMapping(value = "/game/{gId}/player/{pId}/location/{location}")
+    @PostMapping(value = "event/{action}/games/{gId}/players/{pId}/location/{location}")
     public ResponseEntity startGame(
+            @PathVariable("action") String inputAction,
             @PathVariable("gId") String gId,
             @PathVariable("pId") String pId,
             @PathVariable("location") String inputLocation,
 
-            @RequestParam("cardId") String cardId,
-            @RequestParam("roundNumber") String inputRoundNumber,
-            @RequestParam("moveNumber") String inputMoveNumber,
-            @RequestParam("bet") String inputBet){
+            @RequestParam(value = "cardId", required = false) String cardId,
+            @RequestParam(value = "roundNumber", required = false) String inputRoundNumber,
+            @RequestParam(value = "moveNumber", required = false) String inputMoveNumber,
+            @RequestParam(value = "bet", required = false) String inputBet){
 
         // header in response
         URI uri = ServletUriComponentsBuilder.fromCurrentRequest()
                 .path("")
                 .query("")
-                .buildAndExpand(gId,pId,inputLocation,cardId, inputRoundNumber, inputMoveNumber, inputBet)
+                .buildAndExpand(inputAction, gId,pId,inputLocation,cardId, inputRoundNumber,
+                        inputMoveNumber, inputBet)
                 .toUri();
         HttpHeaders headers = new HttpHeaders();
         headers.add("URI", String.valueOf(uri));
@@ -145,43 +90,48 @@ public class EventResource {
         if (!StringUtils.isNumeric(gId)
                 || !StringUtils.isNumeric(pId)
                 || (Location.fromLabelWithDefault(inputLocation) == Location.ERROR)
-                || !StringUtils.isNumeric(inputRoundNumber)
-                || !StringUtils.isNumeric(inputMoveNumber)
-                || !StringUtils.isNumeric(inputBet)
+                || (Action.fromLabelWithDefault(inputAction) == Action.ERROR)
+        //        || !StringUtils.isNumeric(inputRoundNumber)
+        //        || !StringUtils.isNumeric(inputMoveNumber)
+        //        || !StringUtils.isNumeric(inputBet)
                 )
             // 400
             return ResponseEntity.badRequest().headers(headers).build();
 
         int gameId = Integer.parseInt(gId);
         int playerId = Integer.parseInt(pId);
-        int roundNumber = Integer.parseInt(inputRoundNumber);
-        int moveNumber = Integer.parseInt(inputMoveNumber);
-        int bet = Integer.parseInt(inputBet);
+        Action action = Action.fromLabelWithDefault(inputAction);
+        Location location = Location.fromLabelWithDefault(inputLocation);
+        //int roundNumber = Integer.parseInt(inputRoundNumber);
+        //int moveNumber = Integer.parseInt(inputMoveNumber);
+        //int bet = Integer.parseInt(inputBet);
 
         Optional<Game> foundGame = gameRepository.findById(gameId);
         Optional<Player> foundPlayer = playerRepository.findById(playerId);
-        if (!foundGame.isPresent() || !foundPlayer.isPresent() || !Card.isValidCardId(cardId)) {
+        if (!foundGame.isPresent() || !foundPlayer.isPresent()
+        //        || !Card.isValidCardId(cardId)
+        ) {
             // 404
             return ResponseEntity.status(HttpStatus.NOT_FOUND).headers(headers).build();
         }
 
+        // rules
+        if (!   (foundGame.get().getState() == GameState.PLAYING )  ) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).headers(headers).build();
+        }
+
         // logic
 
-        Event event = new Event(foundGame.get(), foundPlayer.get(), cardId);
-        event.setRoundNumber(roundNumber);
-        event.setMoveNumber(moveNumber);
+        Event event = new Event(foundGame.get(), foundPlayer.get(), action, location);
+        //event.setRoundNumber(roundNumber);
+        //event.setMoveNumber(moveNumber);
         event.setLocation(Location.fromLabelWithDefault(inputLocation));
-        event.setBet(bet);
+        //event.setBet(bet);
         // todo go with event to the game engine
 
         eventRepository.save(event);
         return ResponseEntity.status(HttpStatus.CREATED).headers(headers).body(event);
 
     }
-
-
-    // additional CRUD methods
-    // - winning a game
-
 }
 

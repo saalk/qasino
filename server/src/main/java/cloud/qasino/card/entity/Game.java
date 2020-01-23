@@ -93,11 +93,11 @@ public class Game {
     // References
 
     @JsonIgnore
-    // SF: a shuffled PlayingCard is added to a Game at the start
+    // SF: a shuffled PlayingCard is added to a GameSubTotals at the start
     @OneToMany(mappedBy = "game", cascade = CascadeType.DETACH)
     private List<PlayingCard> playingCards = new ArrayList<>();
 
-    // PlGa: many Players can play the same Game
+    // PlGa: many Players can play the same GameSubTotals
     @OneToMany(mappedBy = "game", cascade = CascadeType.DETACH)
     private List<Player> players = new ArrayList<>();
 
@@ -113,7 +113,7 @@ public class Game {
         this.week = localDateAndTime.format(week);
         this.day = localDateAndTime.getDayOfMonth();
 
-        this.state = GameState.INITIALIZED;
+        this.state = GameState.NEW;
         this.type = Type.HIGHLOW;
         this.style = new Style().getLabel();
         this.ante = 20;
@@ -143,6 +143,7 @@ public class Game {
         }
     }
 
+    // todo LOW make this work with up / down and playerId
     public boolean switchPlayers(int sequence, int direction) {
 
         // check if playing order is up (-1) or down (+1)

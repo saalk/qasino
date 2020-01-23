@@ -1,8 +1,7 @@
 package cloud.qasino.card.resource;
 
-import cloud.qasino.card.controller.statemachine.GameState;
 import cloud.qasino.card.dto.Enums;
-import cloud.qasino.card.dto.Totals;
+import cloud.qasino.card.dto.Counters;
 import cloud.qasino.card.entity.User;
 import cloud.qasino.card.repositories.*;
 import org.apache.commons.lang3.StringUtils;
@@ -151,10 +150,11 @@ public class QasinoResource {
             // 404
             return ResponseEntity.status(HttpStatus.NOT_FOUND).headers(headers).build();
         }
-        User updatedUser = foundUser.get();
 
         // logic
-        if (!updatedUser.pawnShip(DEFAULT_PAWN_SHIP_HUMAN)) {
+        User updatedUser = foundUser.get();
+        int pawn = User.pawnShipValue(DEFAULT_PAWN_SHIP_HUMAN);
+        if (!updatedUser.pawnShip(pawn)) {
             return ResponseEntity.status(HttpStatus.CONFLICT).headers(headers).body(updatedUser);
         }
         updatedUser = userRepository.save(updatedUser);
@@ -200,7 +200,7 @@ public class QasinoResource {
     }
 
     @GetMapping(value = "/halloffame")
-    public ResponseEntity<Totals> halloffame(
+    public ResponseEntity halloffame(
     ) {
         // header in response
         URI uri = ServletUriComponentsBuilder.fromCurrentRequest()
@@ -211,26 +211,21 @@ public class QasinoResource {
         HttpHeaders headers = new HttpHeaders();
         headers.add("URI", String.valueOf(uri));
 
-        Totals totals = new Totals();
+        Counters counters = new Counters();
+        Counters.Totals totals = new Counters.Totals();
+
         totals.setLeagues((int) leagueRepository.count());
-
         totals.setUsers((int) userRepository.count());
-
         totals.setGames((int) gameRepository.count());
-
-        List<GameState> gameStates = new ArrayList<GameState>(cardGamesStarted);
-        int gameStatesSize = gameStates.size();
-        String[] started = gameStates.toArray(new String[gameStatesSize]);
-        totals.setActiveGames((int) gameRepository.countByStates(started));
-
-  /*      totals.setActiveGames((int) gameRepository.countByStates(new ArrayList<GameState>(cardGamesStarted)));
-        totals.setNewGames((int) gameRepository.countByStates(new ArrayList<GameState>(cardGamesNew)));
-        totals.setFinishedGames((int) gameRepository.countByStates(new ArrayList<GameState>(cardGamesEnded)));
-        totals.setErrorGames((int) gameRepository.countByStates(new ArrayList<GameState>(cardGamesError)));
-*/
-
         totals.setPlayers((int) playerRepository.count());
         totals.setPlayingCards((int) playingCardRepository.count());
+
+        Counters.GameSubTotals gameSubTotals = new Counters.GameSubTotals();
+        gameSubTotals.setNewGames((int) gameRepository.countByStates(cardGamesNewValues));
+        gameSubTotals.setStartedGames((int) gameRepository.countByStates(cardGamesStartedValues));
+        gameSubTotals.setFinishedGames((int) gameRepository.countByStates(cardGamesStartedValues));
+        gameSubTotals.setErrorGames((int) gameRepository.countByStates(cardGamesStartedValues));
+        totals.setSubTotalsGames(gameSubTotals);
 
         return ResponseEntity.ok().headers(headers).body(totals);
     }

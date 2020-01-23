@@ -32,9 +32,9 @@ public class QasinoController extends AbstractController<Game> {
     static {
         // @formatter:off
         // start on player page
-        config.configure(GameState.INITIALIZED)
+        config.configure(GameState.NEW)
                 // continue on players page
-                .permitReentry(GameTrigger.PREPARE)
+                .permitReentry(GameTrigger.PLAY)
                 .permitReentry(GameTrigger.NEW)
                 .permitReentry(GameTrigger.INVITE)
                 .permitReentry(GameTrigger.ACCEPT)
@@ -136,7 +136,7 @@ public class QasinoController extends AbstractController<Game> {
 
                 // reinstate get the card game and adds it as context to flowDTO
                 List<GameState> possibleGameStates = new ArrayList<>();
-                possibleGameStates.add(GameState.INITIALIZED);
+                possibleGameStates.add(GameState.NEW);
                 possibleGameStates.add(GameState.PENDING_INVITATIONS);
                 try {
                     stateMachine.checkAll(possibleGameStates);
@@ -174,7 +174,7 @@ public class QasinoController extends AbstractController<Game> {
                         .build();
 
                 List<GameState> possiblePOST_SETUPStates = new ArrayList<>();
-                possiblePOST_SETUPStates.add(GameState.INITIALIZED);
+                possiblePOST_SETUPStates.add(GameState.NEW);
                 possiblePOST_SETUPStates.add(GameState.PENDING_INVITATIONS);
                 try {
                     stateMachine.checkAll(possiblePOST_SETUPStates);

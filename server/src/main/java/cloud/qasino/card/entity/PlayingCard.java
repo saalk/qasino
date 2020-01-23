@@ -41,7 +41,7 @@ public class PlayingCard {
     // Foreign keys
 
     @JsonIgnore
-    // SF: a shuffled PlayingCard is added to a Game at the start
+    // SF: a shuffled PlayingCard is added to a GameSubTotals at the start
     @ManyToOne(cascade = CascadeType.DETACH)
     @JoinColumn(name = "game_id", referencedColumnName = "game_id", foreignKey = @ForeignKey(name =
             "fk_game_id"), nullable=false)

@@ -1,15 +1,15 @@
 package cloud.qasino.card.entity;
 
-import com.fasterxml.jackson.annotation.*;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.voodoodyne.jackson.jsog.JSOGGenerator;
 import lombok.AccessLevel;
-import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotBlank;
 import java.time.LocalDateTime;
 import java.time.Month;
 import java.time.format.DateTimeFormatter;
@@ -21,11 +21,11 @@ import java.util.Random;
 @DynamicUpdate
 @Getter
 @Setter
-@JsonIdentityInfo(generator= JSOGGenerator.class)
+@JsonIdentityInfo(generator = JSOGGenerator.class)
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 @Table(name = "users", indexes =
-        { @Index(name = "users_index", columnList = "user_id", unique = true),
-          @Index(name = "alias_index", columnList = "alias", unique = false )
+        {@Index(name = "users_index", columnList = "user_id", unique = true),
+                @Index(name = "alias_index", columnList = "alias", unique = false)
         })
 public class User {
 
@@ -76,9 +76,9 @@ public class User {
 
     // References
 
-    // PL: a User becomes a Player when playing a Game
+    // PL: a User becomes a Player when playing a GameSubTotals
     @JsonIgnore
-    @OneToMany(mappedBy = "user",cascade = CascadeType.REMOVE)
+    @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
     // just a reference, the actual fk column is in player not here!
     // However ai players are no users!
     private List<Player> players;
@@ -112,29 +112,30 @@ public class User {
         this.email = email;
     }
 
-    public boolean repayLoan(){
+    public boolean repayLoan() {
 
         if (this.balance >= this.securedLoan &
                 this.securedLoan > 0) {
             int loan = this.securedLoan;
-            this.balance = -- loan;
+            this.balance = --loan;
             this.securedLoan = 0;
             return true;
         }
         return false;
     }
 
-    public boolean pawnShip(int max) {
 
-        if (this.securedLoan == 0) {
-            int seed = max <= 0 ? 1001 : max + 1;
-            Random random = new Random();
-            int newSecuredLoan = random.nextInt(seed);
-            this.balance = ++ newSecuredLoan;
-            this.securedLoan = ++ newSecuredLoan;
-            return true;
-        }
-        return false;
+    public boolean pawnShip(int pawnShipValue) {
+        if (this.securedLoan > 0) return false; // repay first
+        this.balance = this.balance + pawnShipValue;
+        this.securedLoan = this.securedLoan + pawnShipValue;
+        return true;
+    }
+
+    public static int pawnShipValue(int max) {
+        int seed = max <= 0 ? 1001 : max + 1;
+        Random random = new Random();
+        return random.nextInt(seed);
     }
 
     public String winCount(List<Player> playersPlayed) {
@@ -147,7 +148,7 @@ public class User {
             }
         }
 
-        return "won/total: [" + won + "/"+ playersPlayed.size()+"]";
+        return "won/total: [" + won + "/" + playersPlayed.size() + "]";
     }
 
     @Override

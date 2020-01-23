@@ -68,7 +68,6 @@ public class GamesResource {
     // /api/games/{id}/WITHDRAW/bot -> DELETE players // PREPARED
     // /api/games/{id}/WITHDRAW/user{id} -> DELETE players // PREPARED
 
-
     // tested ok
     @PostMapping(value = "/games/new/{type}")
     public ResponseEntity<Game> startGame(
@@ -105,7 +104,7 @@ public class GamesResource {
     }
 
     // tested
-    @PostMapping(value = "/games/prepare/{type}/users/{uId}")
+    @PostMapping(value = "/games/new/{type}/users/{uId}")
     public ResponseEntity<Game> setupInitGameWithUser(
             @PathVariable("type") String type,
             @PathVariable("uId") String uId,
@@ -163,7 +162,7 @@ public class GamesResource {
     }
 
     // tested
-    @PostMapping(value = "/games/prepare/{type}/users/{uId}/players/{aiLevel}")
+    @PostMapping(value = "/games/new/{type}/users/{uId}/players/{aiLevel}")
     public ResponseEntity<Game> setupInitGameWithUserAndPlayer(
             @PathVariable("type") String type,
             @PathVariable("uId") String uId,
@@ -238,7 +237,7 @@ public class GamesResource {
     }
 
     // tested
-    @PostMapping(value = "/games/prepare/{type}/league/{lId}/users/{uId}")
+    @PostMapping(value = "/games/new/{type}/league/{lId}/users/{uId}")
     public ResponseEntity<Game> setupInitGameInLeagueWithUser(
             @PathVariable("type") String type,
             @PathVariable("uId") String uId,
@@ -301,7 +300,7 @@ public class GamesResource {
     }
 
     // tested
-    @PostMapping(value = "/games/prepare/{type}/league/{lId}/users/{uId}/players/{aiLevel}")
+    @PostMapping(value = "/games/new/{type}/league/{lId}/users/{uId}/players/{aiLevel}")
     public ResponseEntity<Game> setupInitGameInLEagueWithUserAndPlayer(
             @PathVariable("type") String type,
             @PathVariable("uId") String uId,
@@ -416,7 +415,7 @@ public class GamesResource {
         Game updatedGame = foundGame.get();
 
         // rules
-        if (!   ((updatedGame.getState() == GameState.INITIALIZED ) ||
+        if (!   ((updatedGame.getState() == GameState.NEW) ||
                 (updatedGame.getState() == GameState.PREPARED ))  ) {
             return ResponseEntity.status(HttpStatus.CONFLICT).headers(headers).build();
         }
@@ -531,7 +530,7 @@ public class GamesResource {
         int fiches = (int) (Math.random() * 1000 + 1);
 
         Player createdAi = new Player(
-                null, linkedGame, Role.BOT,fiches, 2,
+                null, linkedGame, Role.BOT,fiches, sequenceCalculated,
                 Avatar.fromLabelWithDefault(avatar), AiLevel.fromLabelWithDefault(aiLevel));
         createdAi = playerRepository.save(createdAi);
         if (createdAi.getPlayerId() == 0) {
@@ -658,6 +657,41 @@ public class GamesResource {
         return ResponseEntity.ok().headers(headers).body(linkedGame);
     }
 
+    @PutMapping(value = "/games/{id}/play")
+    public ResponseEntity<Game> updateGameState(
+            @PathVariable("id") String id
+    ) {
+
+        // header in response
+        URI uri = ServletUriComponentsBuilder.fromCurrentRequest()
+                .path("")
+                .query("")
+                .buildAndExpand(id)
+                .toUri();
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("URI", String.valueOf(uri));
+
+        // validations
+        if (!StringUtils.isNumeric(id)) {
+            // 400
+            return ResponseEntity.badRequest().headers(headers).build();}
+
+        int gameId = Integer.parseInt(id);
+        Optional<Game> foundGame = gameRepository.findById(gameId);
+        if (!foundGame.isPresent()) {
+            // 404
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).headers(headers).build();
+        }
+
+        // todo HIGH make rules and validate
+
+        // logic
+        Game updateGame = foundGame.get();
+        updateGame.setState(GameState.PLAYING);
+        gameRepository.save(updateGame);
+
+        return ResponseEntity.ok().headers(headers).body(updateGame);
+    }
 }
 
 

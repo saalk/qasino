@@ -11,7 +11,6 @@ import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 import java.util.List;
 
 @Repository
@@ -33,15 +32,17 @@ public interface GameRepository extends JpaRepository<Game, Integer> {
             "SELECT count(*) FROM GAMES g " +
                     "WHERE g.YEAR = :year " +
                     "AND g.MONTH = :month ";
-    // todo LOW use => b.user.userId =
-    public final static String FIND_BY_USER_ID_STATE =
-            "SELECT * FROM GAMES a RIGHT JOIN a.PLAYERS b " +
-                    "WHERE b.USER.USER_ID = :userId " +
-                    "AND a.STATE = :gameState ";
-    public final static String COUNT_BY_USER_ID_STATE =
-            "SELECT count(*) FROM GAMES a RIGHT JOIN a.PLAYERS b " +
-                    "WHERE b.USER.USER_ID = :userId " +
-                    "AND a.STATE = :gameState ";
+
+    public final static String FIND_NEWGAMES_BY_USER_ID =
+            "SELECT * FROM GAMES a JOIN PLAYERS b " +
+                    "WHERE a.GAME_ID = b.GAME_ID " +
+                    "AND b.USER_ID = :userId " +
+                     "AND a.STATE IN ('NEW','PENDING_INVITATIONS','PREPARED') ";
+    public final static String COUNT_NEWGAMES_BY_USER_ID =
+            "SELECT count(*) FROM GAMES a JOIN PLAYERS b " +
+                    "WHERE a.GAME_ID = b.GAME_ID " +
+                    "AND b.USER_ID = :userId " +
+                    "AND a.STATE IN ('NEW','PENDING_INVITATIONS','PREPARED') ";
 
     // counts
     Integer countByLeague(League league);
@@ -58,20 +59,21 @@ public interface GameRepository extends JpaRepository<Game, Integer> {
     @Query(value = COUNT_MONTH, nativeQuery = true)
     Integer countByThisMonth(String year, String month);
 
+
     // special finds
     List<Game> findGamesByLeague(League league);
 
     @Query(value = "SELECT * FROM GAMES g WHERE g.STATE IN :states", nativeQuery = true)
     List<Game> findActiveGameNodeStates(@Param(value = "states") List<GameState> states);
 
+
     // list with paging
     @Query(value = FIND_ALL, countQuery = COUNT_ALL, nativeQuery = true)
     List<Game> findAllGamesWithPage(Pageable pageable);
 
-    @Query(value = FIND_BY_USER_ID_STATE, countQuery = COUNT_BY_USER_ID_STATE, nativeQuery = true)
-    public List<Game> findGamesByUserIdByStateWithPage(
+    @Query(value = FIND_NEWGAMES_BY_USER_ID, countQuery = COUNT_NEWGAMES_BY_USER_ID, nativeQuery = true)
+    public List<Game> findAllNewGamesForUserWithPage(
             @Param("userId") int userId,
-            @Param("gameState") String gameState,
             Pageable pageable);
 
     default String getYear() {

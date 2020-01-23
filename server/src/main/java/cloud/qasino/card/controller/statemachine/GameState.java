@@ -5,10 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.util.EnumSet;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * <H1>CardGame</H1> A selection of card gameDtos that can be selected to play. <p> More gameDtos will be
@@ -24,9 +21,9 @@ import java.util.Set;
 public enum GameState implements LabeledEnum {
 
     // new
-    INITIALIZED ("new","Game has shuffled PlayingCards but no Player(s)"),
-    PENDING_INVITATIONS("invite", "Game has a pending invitation to a User"),
-    PREPARED ("accept","Game has Player being initiator and no pending invitations"),
+    NEW("new","New games may not have PlayingCards, Leagues, Players"),
+    PENDING_INVITATIONS("invite", "Game has Player with pending invitation"),
+    PREPARED ("accept","Game is valid for playing"),
 
     // started
     PLAYING ("play","Game is being played and has Events"),
@@ -36,8 +33,8 @@ public enum GameState implements LabeledEnum {
     QUIT ("quit","Game is stopped by a Player and has no Result or Winner"),
 
     // error
-    OLD("old","Game is abandoned without Results or Winner"),
-    ERROR ("error","Game has an unforseen 500 and needs a fix");
+    ERROR ("error","Game has an unforseen 500 and needs a fix"),
+    OLD("old","Game is abandoned without Results or Winner");
 
     /**
      * A static HashMap lookup with key + value is created to use in a getter
@@ -77,9 +74,18 @@ public enum GameState implements LabeledEnum {
         return fromLabelWithDefault(Character.toString(character));
     }
 
-    public static Set<GameState> cardGamesNew = EnumSet.of(INITIALIZED, PENDING_INVITATIONS, PREPARED);
+    public static Set<GameState> cardGamesNew = EnumSet.of(NEW, PENDING_INVITATIONS, PREPARED);
+    public static String[] cardGamesNewValues = new String[]{NEW.name(),
+            PENDING_INVITATIONS.name(), PREPARED.name()};
+
     public static Set<GameState> cardGamesStarted = EnumSet.of(PLAYING);
+    public static String[] cardGamesStartedValues = new String[]{PLAYING.name()};
+
     public static Set<GameState> cardGamesEnded = EnumSet.of(FINISHED, QUIT);
+    public static String[] cardGamesEndedValues = new String[]{FINISHED.name(), QUIT.name()};
+
     public static Set<GameState> cardGamesError = EnumSet.of(OLD, ERROR);
+    public static String[] cardGamesErrorValues = new String[]{OLD.name(), ERROR.name()};
+
 
 }

@@ -23,7 +23,7 @@ public class QasinoStateMachine {
     }
 
     public void initialize(final StateMachineConfig<GameState, GameTrigger> config) {
-        this.initialize(config, GameState.INITIALIZED);
+        this.initialize(config, GameState.NEW);
     }
 
     public void check(final GameState state) {

@@ -10,7 +10,7 @@ import java.util.Map;
 @Getter
 public enum TurnsToWin {
 
-    NO_LIMIT("n", "No limit"),
+    NA("n", "Not applicable"),
     ONE_WINS("1", "One turn wins"),
     TWO_IN_A_ROW_WINS("2", "Two in a row wins"),
     THREE_IN_A_ROW_WINS("3", "Three in a row wins");

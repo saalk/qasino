@@ -8,7 +8,7 @@ import java.util.Map;
 @Getter
 public class StyleEnums {
 
-    Map<String, MaxAnte> maxAnte = MaxAnte.lookup;
+    Map<String, AnteToWin> maxAnte = AnteToWin.lookup;
     Map<String, BettingStrategy> bettingStrategy = BettingStrategy.lookup;
     Map<String, Deck> deck = Deck.lookup;
     Map<String, InsuranceCost> insuranceCost = InsuranceCost.lookup;

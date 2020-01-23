@@ -40,7 +40,7 @@ public class Result {
 
     // Foreign keys
 
-    // UsPl: a Result has one PLayer that wins the Game
+    // UsPl: a Result has one PLayer that wins the GameSubTotals
     @OneToOne(cascade = CascadeType.DETACH)
     @JoinColumn(name = "player_id", referencedColumnName = "player_id", foreignKey = @ForeignKey
             (name = "fk_player_id"), nullable = false)

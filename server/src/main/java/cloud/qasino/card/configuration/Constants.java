@@ -73,7 +73,7 @@ public interface Constants {
                 EnumUtils.isValidEnum(BettingStrategy.class, e) ||
                 EnumUtils.isValidEnum(Deck.class, e) ||
                 EnumUtils.isValidEnum(InsuranceCost.class, e) ||
-                EnumUtils.isValidEnum(MaxAnte.class, e) ||
+                EnumUtils.isValidEnum(AnteToWin.class, e) ||
                 EnumUtils.isValidEnum(RoundsToWin.class, e) ||
                 EnumUtils.isValidEnum(TurnsToWin.class, e) ||
                 EnumUtils.isValidEnum(Action.class, e) ||

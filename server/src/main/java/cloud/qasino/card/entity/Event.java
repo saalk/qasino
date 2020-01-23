@@ -1,5 +1,6 @@
 package cloud.qasino.card.entity;
 
+import cloud.qasino.card.entity.enums.event.Action;
 import cloud.qasino.card.entity.enums.playingcard.Location;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -37,37 +38,40 @@ public class Event {
 
 
     // Foreign keys
-
     @Column(name = "game_id", nullable = false)
     private int gameId;
 
     @Column(name = "player_id", nullable = true)
     private int playerId;
 
-    @Column(name = "card_id", nullable = true)
-    private String cardId;
-
-
-    // json
-    @Column(name = "event_details", nullable = false)
-    private String eventDetails;
-
-    // Normal fields
-
-    @Column(name = "player_order", nullable = false)
-    private int playerOrder;
-
-    @Column(name = "round_number", nullable = false)
-    private int roundNumber;
-
-    @Column(name = "move_number", nullable = false)
-    private int moveNumber;
+    // event basics, what does the player want
+    @Enumerated(EnumType.STRING)
+    @Column(name = "action", nullable = false)
+    private Action action;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "location", nullable = false)
     private Location location;
 
-    @Column(name = "bet", nullable = false)
+    @Column(name = "card_id", nullable = true)
+    private String cardId;
+
+    // json
+    @Column(name = "event_details", nullable = true)
+    private String eventDetails;
+
+    // json fields, filled in by engine
+
+    @Column(name = "player_order", nullable = true)
+    private int playerOrder;
+
+    @Column(name = "round_number", nullable = true)
+    private int roundNumber;
+
+    @Column(name = "move_number", nullable = true)
+    private int moveNumber;
+
+    @Column(name = "bet", nullable = true)
     private int bet;
 
     // References
@@ -79,11 +83,12 @@ public class Event {
         this.created = result.substring(2, 20);
     }
 
-    public Event(Game game, Player player, String cardId) {
+    public Event(Game game, Player player, Action action, Location location) {
         this();
         this.gameId = game.getGameId();
         this.playerId = player.getPlayerId();
-        this.cardId = cardId;
+        this.action = action;
+        this.location = location;
     }
 
     @Override
@@ -99,20 +104,4 @@ public class Event {
         return Objects.hash(eventId);
     }
 
-    @Override
-    public String toString() {
-        return "Event{" +
-                "eventId=" + eventId +
-                ", created='" + created + '\'' +
-                ", gameId=" + gameId +
-                ", playerId=" + playerId +
-                ", cardId='" + cardId + '\'' +
-                ", eventDetails='" + eventDetails + '\'' +
-                ", playerOrder=" + playerOrder +
-                ", roundNumber=" + roundNumber +
-                ", moveNumber=" + moveNumber +
-                ", location=" + location +
-                ", bet=" + bet +
-                '}';
-    }
 }

@@ -1,6 +1,5 @@
 package cloud.qasino.card.entity.enums.event;
 
-import cloud.qasino.card.domain.qasino.style.MaxAnte;
 import cloud.qasino.card.entity.enums.LabeledEnum;
 import lombok.Getter;
 

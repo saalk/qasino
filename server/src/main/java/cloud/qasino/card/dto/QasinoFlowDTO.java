@@ -1,6 +1,8 @@
 package cloud.qasino.card.dto;
 
 import cloud.qasino.card.controller.statemachine.GameTrigger;
+import cloud.qasino.card.domain.qasino.Card;
+import cloud.qasino.card.domain.qasino.Style;
 import cloud.qasino.card.dto.event.AbstractFlowDTO;
 import cloud.qasino.card.entity.*;
 import cloud.qasino.card.entity.enums.event.Action;
@@ -9,7 +11,7 @@ import cloud.qasino.card.entity.enums.player.AiLevel;
 import cloud.qasino.card.entity.enums.player.Avatar;
 import cloud.qasino.card.entity.enums.playingcard.Location;
 import lombok.AccessLevel;
-import lombok.Getter;
+import lombok.Data;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 
@@ -17,8 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-@Getter
-@Setter
+@Data
 @Slf4j
 public class QasinoFlowDTO extends AbstractFlowDTO
 /*        implements
@@ -42,12 +43,39 @@ public class QasinoFlowDTO extends AbstractFlowDTO
     @Setter(AccessLevel.NONE)
     private String applicationId = "001";
 
+    // navigation user
+    private boolean hasUser;
+    private String userAlias;
+    private Avatar userAvatar;
+    private int userSecuredLoan;
+    private int userBalance;
+    private int userFiches;
+    private int currentBet;
+
+    // navigation player
+    private boolean hasPlayers;
+    private int invitations;
+    private int accepted;
+    private int bot;
+
+    // navigation active game
+    private boolean hasGame;
+    private Type gameType;
+    private int gameAnte;
+
+    // navigation league
+    private boolean hasLeague;
+    private String leagueName;
+    private String endDate;
+
     // frontend path ids
+    private String suppliedUserId;
+    private String suppliedLeagueId;
     private String suppliedGameId;
     private String suppliedPlayerId;
-    private String suppliedEventId;
     private String suppliedPlayingCardId;
-    private String suppliedUserId;
+    private String suppliedEventId;
+    private String suppliedResultId;
     private String suppliedCardId;
 
     private String suppliedResource;
@@ -55,25 +83,19 @@ public class QasinoFlowDTO extends AbstractFlowDTO
     private String suppliedExtraResource;
 
     // frontend query params
-    private String suppliedHumanOrAi;
     private Type suppliedType;
-    private String suppliedGameVariant;
+    private Style suppliedStyle;
     private String suppliedAnte;
     private String suppliedAlias;
     private Avatar suppliedAvatar;
-    private String suppliedSecuredLoan;
     private AiLevel suppliedAiLevel;
     private String suppliedJokers;
-    private String suppliedTest;
-    private String suppliedPlayingOrder;
-
     private Action suppliedAction;
-    private String suppliedTotal;
     private Location suppliedLocation;
 
     // in game changes
-    private int newBet;
-    private int newCubits;
+    private int newAnte;
+    private int fichesWon;
     private int newCurrentRound;
     private int newCurrentTurn;
     private int newActiveEvent;
@@ -83,26 +105,36 @@ public class QasinoFlowDTO extends AbstractFlowDTO
 
     // process all frontend data to the fields above
     // processing related
+    private User currentUser;
+    private League currentLeague;
     private Game currentGame;
     private Player currentPlayer;
     private PlayingCard currentPlayingCard;
-    private League currentLeague;
-    private User currentUser;
+    private Card currentCard;
     private Event currentEvent;
+    private Result currentResult;
+
     // lists of all the 6 entities, no setter?: that is done in the EventDTO's
+    private List<User> currentUsers;
     private List<Game> games;
+    private List<League> leagues;
     private List<Player> currentPlayers;
     private List<PlayingCard> currentPlayingCards;
-    private List<League> currentLeagues;
-    private List<User> currentUsers;
+    private List<Card> currentCards;
     private List<Event> currentEvents;
+    private List<Result> currentResults;
+
     // business rules related
-    private List<Game> abandonedGames;
+    private List<Game> pendingInvitations;
+
+    private Map<Location, PlayingCard> locationPlayingCardMap;
+    private Map<Player, PlayingCard> playerPlayingCardMap;
+
     // return fields
     private Integer rulesCode;
 
     public void processPathAndQueryParamsAndTrigger(Map<String, String> pathAndQueryData,
-													GameTrigger trigger) {
+                                                    GameTrigger trigger) {
         if (pathAndQueryData != null || !pathAndQueryData.isEmpty()) {
 
             String message = String.format("CardGameFlowDTO processPatuserQueryParamsAndTrigger is: %s", pathAndQueryData);
@@ -119,9 +151,9 @@ public class QasinoFlowDTO extends AbstractFlowDTO
                 this.suppliedEventId = pathAndQueryData.get("eventId");
             }
 
-            if (pathAndQueryData.containsKey("humanOrAi")) {
+/*            if (pathAndQueryData.containsKey("humanOrAi")) {
                 this.suppliedHumanOrAi = pathAndQueryData.get("humanOrAi");
-            }
+            }*/
 
             // pass queryParam's to the Flow
             if (pathAndQueryData.containsKey("type")) {
@@ -147,10 +179,6 @@ public class QasinoFlowDTO extends AbstractFlowDTO
 //				message = String.format("CardGameFlowDTO gameVariant from Label is: %s", gv.getVariant());
 //				log.info(message);
 
-                this.suppliedGameVariant = pathAndQueryData.get("gameVariant");
-
-                message = String.format("CardGameFlowDTO gameVariant stored is: %s", this.suppliedGameVariant);
-                log.info(message);
             }
             if (pathAndQueryData.containsKey("ante")) {
                 this.suppliedAnte = pathAndQueryData.get("ante");
@@ -164,27 +192,15 @@ public class QasinoFlowDTO extends AbstractFlowDTO
             if (pathAndQueryData.containsKey("aiLevel")) {
                 this.suppliedAiLevel = AiLevel.fromLabel(pathAndQueryData.get("aiLevel"));
             }
-            if (pathAndQueryData.containsKey("securedLoan")) {
-                this.suppliedSecuredLoan = pathAndQueryData.get("securedLoan");
-            }
 
             if (pathAndQueryData.containsKey("jokers")) {
                 this.suppliedJokers = pathAndQueryData.get("jokers");
-            }
-            if (pathAndQueryData.containsKey("test")) {
-                this.suppliedTest = pathAndQueryData.get("test");
-            }
-            if (pathAndQueryData.containsKey("playingOrder")) {
-                this.suppliedPlayingOrder = pathAndQueryData.get("playingOrder");
             }
             if (pathAndQueryData.containsKey("action")) {
                 this.suppliedAction = Action.fromLabel(pathAndQueryData.get("action"));
             }
             if (pathAndQueryData.containsKey("location")) {
                 this.suppliedLocation = Location.fromLabel(pathAndQueryData.get("location"));
-            }
-            if (pathAndQueryData.containsKey("total")) {
-                this.suppliedTotal = pathAndQueryData.get("total");
             }
             if (pathAndQueryData.containsKey("resource")) {
                 this.suppliedResource = pathAndQueryData.get("resource");

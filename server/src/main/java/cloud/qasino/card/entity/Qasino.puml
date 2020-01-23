@@ -71,7 +71,7 @@ BLACKJACK
 }
 
 enum Style {
-	maxAnte: enum
+	anteToWin: enum
 	bettingStrategy : enum
 	numOfDeck : enum
 	insuranceCost : enum

@@ -7,31 +7,9 @@ import org.apache.commons.lang3.StringUtils;
 @Getter
 public class Style {
 
-    //HILOW_DRINKING_WITH_OPPONENTS(CardGame.HIGHLOW, "Drinking with opponent(s)"),
-    // If wrong, s/he drinks once, twice or three times
-    // After taking at least three cards, the player may choose to continue or
-    // pass, BUT ONLY after having taken at least three cards. If the player
-    // pass, the next player starts where the previous left off.
-    // extra: The next player has to take a drink for each card the first player
-    // won.
+     String label;
 
-    //HILOW_LINEOFNINE(CardGame.HIGHLOW, "Line of Nine"),
-    //HILOW_JACK(CardGame.HIGHLOW, "Teams of 2");
-    // High Low Jack, also known as Hi Low Jack and Pitch, is played with a
-    // standard 52-card playingCard. Partnership, the most commonly played version of
-    // the game, places players in teams of two that score points collectively.
-    // Varieties include Cutthroat, in which each player scores points
-    // individually, and Nine Card, which deals three extra cards and awards
-    // points for both the trump five and highest spade in play.
-
-    /**
-     * A static HashMap lookup with key + value is created to use in a getter
-     * to fromLabel the Enum based on the name eg. key "Low" -> value AiLevel.DUMB
-     */
-
-    String label;
-
-    MaxAnte maxAnte;
+    AnteToWin anteToWin;
     BettingStrategy bettingStrategy;
     Deck deck;
     InsuranceCost insuranceCost;
@@ -39,19 +17,19 @@ public class Style {
     TurnsToWin turnsToWin;
 
     public Style() {
-        this.label = "hr3tn3";
-        this.maxAnte = MaxAnte.HIGHEST_WINS;
+        this.label = "nr3tnn";
+        this.anteToWin = AnteToWin.NA;
         this.bettingStrategy = BettingStrategy.REGULAR;
         this.deck = Deck.ALL_THREE_JOKER;
         this.insuranceCost = InsuranceCost.TENTH_ANTE;
-        this.roundsToWin = RoundsToWin.NO_LIMIT;
-        this.turnsToWin = TurnsToWin.THREE_IN_A_ROW_WINS;
+        this.roundsToWin = RoundsToWin.NA;
+        this.turnsToWin = TurnsToWin.NA;
 
     }
 
-    public Style(String label, MaxAnte maxAnte, BettingStrategy bettingStrategy, Deck deck, InsuranceCost insuranceCost, RoundsToWin roundsToWin, TurnsToWin turnsToWin) {
+    public Style(String label, AnteToWin anteToWin, BettingStrategy bettingStrategy, Deck deck, InsuranceCost insuranceCost, RoundsToWin roundsToWin, TurnsToWin turnsToWin) {
         this.label = label;
-        this.maxAnte = maxAnte;
+        this.anteToWin = anteToWin;
         this.bettingStrategy = bettingStrategy;
         this.deck = deck;
         this.insuranceCost = insuranceCost;
@@ -66,12 +44,12 @@ public class Style {
         }
         String label = StringUtils.lowerCase(inputLabel);
 
-        MaxAnte maxAnte = MaxAnte.HIGHEST_WINS;
+        AnteToWin anteToWin = AnteToWin.NA;
         BettingStrategy bettingStrategy = BettingStrategy.REGULAR;
         Deck deck = Deck.ALL_THREE_JOKER;
         InsuranceCost insuranceCost = InsuranceCost.TENTH_ANTE;
-        RoundsToWin roundsToWin = RoundsToWin.NO_LIMIT;
-        TurnsToWin turnsToWin = TurnsToWin.THREE_IN_A_ROW_WINS;
+        RoundsToWin roundsToWin = RoundsToWin.NA;
+        TurnsToWin turnsToWin = TurnsToWin.NA;
 
         StringBuilder newLabel = new StringBuilder("hr3tn3");
 
@@ -113,12 +91,12 @@ public class Style {
 
             case 1:
                 pos = label.charAt(0);
-                maxAnte = MaxAnte.fromLabelWithDefault(pos);
-                newPos = maxAnte.getLabel().charAt(0);
+                anteToWin = AnteToWin.fromLabelWithDefault(pos);
+                newPos = anteToWin.getLabel().charAt(0);
                 newLabel.setCharAt(0, newPos);
         }
         label = String.valueOf(newLabel);
-        return new Style(label, maxAnte, bettingStrategy, deck, insuranceCost, roundsToWin, turnsToWin);
+        return new Style(label, anteToWin, bettingStrategy, deck, insuranceCost, roundsToWin, turnsToWin);
     }
 
     @Override

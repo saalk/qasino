@@ -47,7 +47,7 @@ public class Player {
     private User user;
 
     @JsonIgnore
-    // PlGa: many Players can play the same Game
+    // PlGa: many Players can play the same GameSubTotals
     @ManyToOne(cascade = CascadeType.DETACH)
     @JoinColumn(name = "game_id", referencedColumnName = "game_id", foreignKey = @ForeignKey
             (name = "fk_game_id"), nullable = true)
@@ -84,10 +84,10 @@ public class Player {
     private boolean winner;
     // References
 
-/*    // GaWi: one Player is the Winner of the Game in the end
+/*    // GaWi: one Player is the Winner of the GameSubTotals in the end
     @OneToOne(mappedBy = "winner", cascade = CascadeType.DETACH)
     // just a reference the fk column is in game not here!
-    private Game winner = new Game();*/
+    private GameSubTotals winner = new GameSubTotals();*/
 
     // HO: A Player holds one or more PlayingCard after dealing
     @OneToMany(mappedBy = "hand", cascade = CascadeType.DETACH)

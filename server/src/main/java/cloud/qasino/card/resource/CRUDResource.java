@@ -22,6 +22,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 
 // basic path /qasino
@@ -200,12 +202,11 @@ public class CRUDResource {
 
     }
 
-
-    // todo LOW can be tested work on error and default
+    // todo LOW work on all sqls, works for new
     @PutMapping(value = "/games/{id}/state/{state}")
     public ResponseEntity<Game> updateGameState(
             @PathVariable("id") String id,
-            @PathVariable("state") GameState state
+            @PathVariable("state") String state
     ) {
         // todo make string and add fromLabelWithDefault
 
@@ -219,9 +220,10 @@ public class CRUDResource {
         headers.add("URI", String.valueOf(uri));
 
         // validations
-        if (!StringUtils.isNumeric(id))
+        if (!StringUtils.isNumeric(id)
+        || (GameState.fromLabelWithDefault(state) == GameState.ERROR)) {
             // 400
-            return ResponseEntity.badRequest().headers(headers).build();
+            return ResponseEntity.badRequest().headers(headers).build();}
 
         int gameId = Integer.parseInt(id);
         Optional<Game> foundGame = gameRepository.findById(gameId);
@@ -232,13 +234,13 @@ public class CRUDResource {
 
         // logic
         Game updateGame = foundGame.get();
-        updateGame.setState(state);
+        updateGame.setState(GameState.fromLabelWithDefault(state));
         gameRepository.save(updateGame);
 
         return ResponseEntity.ok().headers(headers).body(updateGame);
     }
 
-    // tested
+    // tested todo LOW work on constraint of players delete first
     @DeleteMapping("/games/{id}")
     public ResponseEntity<Game> deleteGame(
             @PathVariable("id") String id
@@ -269,7 +271,6 @@ public class CRUDResource {
         // delete 204
         return ResponseEntity.status(HttpStatus.NO_CONTENT).headers(headers).build();
     }
-
 
     // tested
     @GetMapping("/players/{id}")
@@ -345,7 +346,7 @@ public class CRUDResource {
         return ResponseEntity.ok().headers(headers).body(updatedPlayer);
     }
 
-    // todo MEDIUM can be tested
+    // todo LOW does not work
     @PutMapping(value = "/players/{id}/{order}")
     public ResponseEntity<Game> updateSequence(
             @PathVariable("id") String id,
@@ -361,8 +362,11 @@ public class CRUDResource {
         headers.add("URI", String.valueOf(uri));
 
         // validations
-        if ((!StringUtils.isNumeric(id)
-                || (!StringUtils.isNumeric(order)))){
+        String[] orders = new String[]{"up", "down"};
+        if (!StringUtils.isNumeric(id)
+                || !StringUtils.isNumeric(id)
+                || !Arrays.asList(orders).contains(order))
+        {
             // 400
             return ResponseEntity.badRequest().headers(headers).build();
         }
@@ -376,9 +380,9 @@ public class CRUDResource {
             // 404
             return ResponseEntity.status(HttpStatus.NOT_FOUND).headers(headers).build();
         }
-        // todo logic this does not work
         Optional<Game> updatedGame = gameRepository.findById(foundPlayer.get().getGame().getGameId());
-        if (orderValue >0 ) { // 1 = up, -1 means down
+        if (order == "up" ) {
+            // todo LOW ordering does not work
             updatedGame.get().switchPlayers(-1, -1);
             gameRepository.save(updatedGame.get());
             return ResponseEntity.ok(updatedGame.get());
@@ -423,9 +427,71 @@ public class CRUDResource {
 
     }
 
-    // tested
-    @DeleteMapping("/playingCards/{id}")
-    public ResponseEntity<PlayingCard> deletePlayingCard(
+    // R - can be tested
+    @GetMapping(value = "/playingcards/card/{card}")
+    public ResponseEntity getPlayingCardByCard(
+            @PathVariable("card") String card
+    ) {
+
+        // header in response
+        URI uri = ServletUriComponentsBuilder.fromCurrentRequest()
+                .path("")
+                .buildAndExpand()
+                .toUri();
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("URI", String.valueOf(uri));
+
+        // validations
+
+        // logic
+        List<PlayingCard> foundPlayingCards = playingCardRepository.findByCard(card);
+        return ResponseEntity.ok().headers(headers).body(foundPlayingCards);
+
+    }
+
+    // D - can be tested
+    @DeleteMapping("/playingcards/games/{id}/card/{card}")
+    public ResponseEntity deletePlayingCardByCard(
+            @PathVariable("id") String id,
+            @PathVariable("card") String card
+    ) {
+
+        // header in response
+        URI uri = ServletUriComponentsBuilder.fromCurrentRequest()
+                .path("")
+                .buildAndExpand()
+                .toUri();
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("URI", String.valueOf(uri));
+
+        // validations
+        if (!StringUtils.isNumeric(id))
+            // 400
+            return ResponseEntity.badRequest().headers(headers).build();
+
+        int gameId = Integer.parseInt(id);
+        Optional<Game> foundGame = gameRepository.findById(gameId);
+        if (!foundGame.isPresent()) {
+            // 404
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).headers(headers).build();
+        }
+
+        // todo LOW this is not unique
+        List<PlayingCard> foundPlayingCard = playingCardRepository.findByCard(card);
+        if (false) {
+            // 404
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).headers(headers).build();
+        }
+
+        // logic
+        //playingCardRepository.deleteById(foundPlayingCard.get().getPlayingCardId());
+        // delete 204
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).headers(headers).build();
+    }
+
+    // todo test
+    @DeleteMapping("/playingcards/{id}")
+    public ResponseEntity<PlayingCard> deletePlayingCardById(
             @PathVariable("id") String id
     ) {
 

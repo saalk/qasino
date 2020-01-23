@@ -73,7 +73,8 @@ public class GamesApplication {
             PlayingCardRepository playingCardRepository
     ) {
         User user = new User("aliasName",1,"a@b.c");
-        user.pawnShip(0);
+        int pawn = User.pawnShipValue(0);
+        user.pawnShip(pawn);
         user = userRepository.save(user);
 
         League league = new League(user,"leagueName",1);
@@ -94,23 +95,5 @@ public class GamesApplication {
 
         return null;
     }
-
-    @Bean
-    public ModelMapper modelMapper() {
-        return new ModelMapper();
-    }
- /*   @Bean
-    public FilterRegistrationBean simpleCorsFilter() {
-        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        CorsConfiguration config = new CorsConfiguration();
-        config.setAllowCredentials(true);
-        config.setAllowedOrigins(Collections.singletonList("*"));
-        config.setAllowedMethods(Collections.singletonList("*"));
-        config.setAllowedHeaders(Collections.singletonList("*"));
-        source.registerCorsConfiguration("/**", config);
-        FilterRegistrationBean bean = new FilterRegistrationBean<>(new CorsFilter(source));
-        bean.setOrder(Ordered.HIGHEST_PRECEDENCE);
-        return bean;
-    }*/
 
 }

@@ -10,8 +10,10 @@ import java.util.Map;
 @Getter
 public enum RoundsToWin {
 
-    NO_LIMIT("h","No limit"),
-    ONE_ROUND("1","One round only");
+    NA ("n","Not applicable"),
+    ONE_ROUND("1","One round only"),
+    TWO_ROUNDS("2","Two rounds"),
+    THREE_ROUNDS("3","Three rounds");
 
     /**
      * A static HashMap lookup with key + value is created to use in a getter
@@ -45,7 +47,7 @@ public enum RoundsToWin {
 
     public static RoundsToWin fromLabelWithDefault(String label) {
         RoundsToWin roundsToWin = fromLabel(label);
-        if (roundsToWin == null) return RoundsToWin.NO_LIMIT;
+        if (roundsToWin == null) return RoundsToWin.NA ;
         return roundsToWin;
     }
 
