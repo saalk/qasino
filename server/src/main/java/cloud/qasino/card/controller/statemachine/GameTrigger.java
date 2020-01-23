@@ -6,14 +6,6 @@ import java.util.Set;
 
 import static java.util.EnumSet.*;
 
-/**
- * <H1>CardGame</H1> A selection of card gameDtos that can be selected to play. <p> More gameDtos will be
- * added in future.
- *
- * @author Klaas van der Meulen
- * @version 1.0
- * @since v1 - console game
- */
 @Getter
 public enum GameTrigger {
 
