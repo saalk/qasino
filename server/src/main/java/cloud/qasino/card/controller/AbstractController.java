@@ -42,15 +42,15 @@ public abstract class AbstractController<T extends Game> implements Controller<T
         this.context = context;
 
         stateMachine.initialize(getStateMachineConfiguration());
-        log.info(String.format("AbstractController init sets state: %s", stateMachine.getCurrentStateEnum()));
 
         context.setState(stateMachine.getCurrentStateEnum());
+        log.info(String.format("AbstractController.init sets state to: %s", stateMachine.getCurrentStateEnum()));
 
-        // init a new default game has gameType HIGHLOW and gameVariant HRANNN with the initial state set in the state machine
+ /*       // init a new default game has gameType HIGHLOW and gameVariant HRANNN with the initial state set in the state machine
         context.setType(Type.HIGHLOW);
         context.setStyle(Style.fromLabelWithDefault("").getLabel());
         this.setContext((T) gameRepository.save(this.getContext()));
-
+*/
         return this.context;
     }
 
@@ -63,7 +63,7 @@ public abstract class AbstractController<T extends Game> implements Controller<T
 
         stateMachine.initialize(config, currentState);
         this.context.setState(stateMachine.getCurrentStateEnum());
-        log.info(String.format("AbstractController init new state: %s", stateMachine.getCurrentStateEnum()));
+        log.info(String.format("AbstractController.init new state is: %s", stateMachine.getCurrentStateEnum()));
 
         return this.context;
     }
@@ -71,11 +71,11 @@ public abstract class AbstractController<T extends Game> implements Controller<T
     @Override
     public T reinstate(final int gameId) {
 
-        this.setContext((T) gameRepository.findById(gameId).get());
+        this.setContext((T) gameRepository.findById(gameId).get()); // todo set from flowdto
         if (this.context == null) {
             throw new IllegalStateException("A resinstate was fired, but no game could be found to match it");
         }
-        log.info(String.format("AbstractController reinstate current state: %s", this.context.getState()));
+        log.info(String.format("AbstractController.reinstate current state: %s", this.context.getState()));
 
         return init(this.context, this.context.getState());
     }
@@ -114,23 +114,23 @@ public abstract class AbstractController<T extends Game> implements Controller<T
      * @param state - State to move to
      */
     public T updateState(final String state) {
-        log.info(String.format("AbstractController updateState before update: %s", state));
+        log.info(String.format("AbstractController.updateState before update: %s", state));
 
         this.getContext().setState(GameState.valueOf(state));
 
         // update the game with the new state
         this.setContext((T) gameRepository.save(this.getContext()));
-        log.info(String.format("AbstractController updateState after update: %s", this.context.getState()));
+        log.info(String.format("AbstractController.updateState after update: %s", this.context.getState()));
 
         return this.context;
 
     }
 
     public void transition(final GameTrigger trigger) {
-        log.info(String.format("AbstractController transition trigger is: %s", trigger));
+        log.info(String.format("AbstractController.transition trigger is: %s", trigger));
 
         String nextState = this.stateMachine.transition(trigger);
-        log.info(String.format("AbstractController transition next state: %s", nextState));
+        log.info(String.format("AbstractController.transition next state: %s", nextState));
         this.updateState(nextState);
 
     }

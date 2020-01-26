@@ -10,15 +10,15 @@ public class ControllerResponse {
 	private Reason reason;
 	private String data;
 	private Object payload;
-	
+
+
 	public enum Reason {
-		SUCCESS, FAILURE
+		SUCCESS, FAILURE;
 	}
-	
 	public static ControllerResponse success() {
 		return new ControllerResponse(Reason.SUCCESS);
 	}
-	
+
 	public static ControllerResponse failure() {
 		return new ControllerResponse(Reason.FAILURE);
 	}
@@ -49,5 +49,5 @@ public class ControllerResponse {
 	public boolean isFailure() {
 		return Reason.FAILURE.equals(reason);
 	}
-	
+
 }
