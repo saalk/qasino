@@ -1,7 +1,7 @@
 package cloud.qasino.card.entity;
 
-import cloud.qasino.card.domain.qasino.Card;
-import cloud.qasino.card.domain.qasino.Style;
+import cloud.qasino.card.entity.enums.playingcard.Card;
+import cloud.qasino.card.entity.enums.Style;
 import cloud.qasino.card.controller.statemachine.GameState;
 import cloud.qasino.card.entity.enums.game.Type;
 import cloud.qasino.card.entity.enums.playingcard.Location;

@@ -1,9 +1,8 @@
 package cloud.qasino.card.domain.qasino;
 
-import cloud.qasino.card.entity.enums.playingcard.Rank;
-import cloud.qasino.card.entity.enums.playingcard.Suit;
-import jdk.nashorn.internal.ir.annotations.Ignore;
-import org.checkerframework.checker.units.qual.C;
+import cloud.qasino.card.entity.enums.playingcard.Card;
+import cloud.qasino.card.entity.enums.playingcard.card.Rank;
+import cloud.qasino.card.entity.enums.playingcard.card.Suit;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;

@@ -2,7 +2,9 @@ package cloud.qasino.card.configuration;
 
 import cloud.qasino.card.controller.statemachine.GameState;
 import cloud.qasino.card.controller.statemachine.GameTrigger;
-import cloud.qasino.card.domain.qasino.style.*;
+import cloud.qasino.card.entity.enums.playingcard.card.Rank;
+import cloud.qasino.card.entity.enums.playingcard.card.Suit;
+import cloud.qasino.card.entity.enums.style.*;
 import cloud.qasino.card.entity.enums.event.Action;
 import cloud.qasino.card.entity.enums.game.Type;
 import cloud.qasino.card.entity.enums.player.AiLevel;

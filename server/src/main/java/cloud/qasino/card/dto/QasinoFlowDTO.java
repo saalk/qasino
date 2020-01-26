@@ -1,8 +1,8 @@
 package cloud.qasino.card.dto;
 
 import cloud.qasino.card.controller.statemachine.GameTrigger;
-import cloud.qasino.card.domain.qasino.Card;
-import cloud.qasino.card.domain.qasino.Style;
+import cloud.qasino.card.entity.enums.playingcard.Card;
+import cloud.qasino.card.entity.enums.Style;
 import cloud.qasino.card.dto.event.AbstractFlowDTO;
 import cloud.qasino.card.entity.*;
 import cloud.qasino.card.entity.enums.event.Action;
@@ -43,7 +43,7 @@ public class QasinoFlowDTO extends AbstractFlowDTO
     @Setter(AccessLevel.NONE)
     private String applicationId = "001";
 
-    // navigation user
+    // navigation game user
     private boolean hasUser;
     private String userAlias;
     private Avatar userAvatar;
@@ -52,15 +52,17 @@ public class QasinoFlowDTO extends AbstractFlowDTO
     private int userFiches;
     private int currentBet;
 
-    // navigation player
+    // navigation game players
     private boolean hasPlayers;
+    private boolean initiator;
     private int invitations;
     private int accepted;
-    private int bot;
+    private int bots;
 
     // navigation active game
     private boolean hasGame;
     private Type gameType;
+    private Style gameStyle;
     private int gameAnte;
 
     // navigation league

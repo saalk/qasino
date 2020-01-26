@@ -14,7 +14,12 @@ import java.util.Set;
 public enum Action implements LabeledEnum {
 	
 	@Column(name = "cardAction", length = 25, nullable = false)
-	DEAL("deal"), HIGHER("higher"), LOWER("lower"), PASS("pass"), NEXT("next"), ERROR("error");
+	DEAL("deal"),
+	HIGHER("higher"),
+	LOWER("lower"),
+	PASS("pass"),
+	NEXT("next"),
+	ERROR("error");
 	
 	/**
 	 * A list of all the Enums in the class. The list is created via Set implementation EnumSet.

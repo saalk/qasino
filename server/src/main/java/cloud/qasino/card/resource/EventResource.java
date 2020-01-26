@@ -1,11 +1,9 @@
 package cloud.qasino.card.resource;
 
-import cloud.qasino.card.domain.qasino.Card;
 import cloud.qasino.card.controller.statemachine.GameState;
 import cloud.qasino.card.entity.Event;
 import cloud.qasino.card.entity.Game;
 import cloud.qasino.card.entity.Player;
-import cloud.qasino.card.entity.PlayingCard;
 import cloud.qasino.card.entity.enums.event.Action;
 import cloud.qasino.card.entity.enums.playingcard.Location;
 import cloud.qasino.card.repositories.EventRepository;
@@ -24,8 +22,6 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 
 // basic path /qasino

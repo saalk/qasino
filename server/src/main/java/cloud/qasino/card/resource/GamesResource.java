@@ -1,6 +1,6 @@
 package cloud.qasino.card.resource;
 
-import cloud.qasino.card.domain.qasino.Style;
+import cloud.qasino.card.entity.enums.Style;
 import cloud.qasino.card.controller.statemachine.GameState;
 import cloud.qasino.card.entity.*;
 import cloud.qasino.card.entity.enums.player.Role;

@@ -17,10 +17,13 @@ public class QasinoResponse {
     private Reason reason;
     @Getter(AccessLevel.NONE)
     @Setter(AccessLevel.NONE)
+
     private String errorCode;
+
     @Getter(AccessLevel.NONE)
     @Setter(AccessLevel.NONE)
     private String errorMessage;
+
     @Getter(AccessLevel.NONE)
     @Setter(AccessLevel.NONE)
     private String solution;

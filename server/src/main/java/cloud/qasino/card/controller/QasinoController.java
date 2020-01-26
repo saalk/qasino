@@ -1,7 +1,7 @@
 package cloud.qasino.card.controller;
 
-import cloud.qasino.card.controller.statemachine.GameState;
-import cloud.qasino.card.controller.statemachine.GameTrigger;
+import cloud.qasino.card.controller.statemachine.EventState;
+import cloud.qasino.card.controller.statemachine.EventTrigger;
 import cloud.qasino.card.dto.QasinoFlowDTO;
 import cloud.qasino.card.dto.event.FlowDTOBuilder;
 import cloud.qasino.card.entity.Game;
@@ -27,41 +27,35 @@ import java.util.Map;
 public class QasinoController extends AbstractController<Game> {
 
     // 1 - configure the state machine in the AbstractController
-    private static StateMachineConfig<GameState, GameTrigger> config = new StateMachineConfig<>();
+    private static StateMachineConfig<EventState, EventTrigger> config = new StateMachineConfig<>();
 
     static {
         // @formatter:off
         // start on player page
-        config.configure(GameState.NEW)
-                // continue on players page
-                .permitReentry(GameTrigger.PLAY)
-                .permitReentry(GameTrigger.NEW)
-                .permitReentry(GameTrigger.INVITE)
-                .permitReentry(GameTrigger.ACCEPT)
-                // continue on game page
-                .permit(GameTrigger.ACCEPT, GameState.PENDING_INVITATIONS)
-                .permit(GameTrigger.CRASH, GameState.ERROR);
 
-        config.configure(GameState.PENDING_INVITATIONS)
-                .permitReentry(GameTrigger.CRASH)
-                .permitReentry(GameTrigger.INVITE)
-                .permitReentry(GameTrigger.ACCEPT)
-                // continue on casino page
-                .permit(GameTrigger.CRASH, GameState.ERROR);
+        config.configure(EventState.NEW)
+                .permit(EventTrigger.START, EventState.NEW)
 
-        config.configure(GameState.PLAYING)
-                .permitReentry(GameTrigger.DEAL)
+                .permit(EventTrigger.STOP, EventState.HIGHER)
+                .permit(EventTrigger.STOP, EventState.LOWER);
 
-                // continue on results page
-                .permit(GameTrigger.WINNER, GameState.FINISHED)
-                .permit(GameTrigger.CRASH, GameState.ERROR);
+        config.configure(EventState.DEALT)
+                .permit(EventTrigger.HIGHER, EventState.HIGHER)
+                .permit(EventTrigger.LOWER, EventState.LOWER);
 
-        config.configure(GameState.FINISHED)
-                .permit(GameTrigger.DEAL, GameState.PLAYING); // allows continue other players!
+        config.configure(EventState.DEALT)
+                .permitReentry(EventTrigger.CRASH)
+                .permitReentry(EventTrigger.INVITE)
+                .permitReentry(EventTrigger.ACCEPT)
+                .permit(EventTrigger.CRASH, EventState.ERROR);
 
-        config.configure(GameState.QUIT)
-                .permitReentry(GameTrigger.LEAVE)
-                .permit(GameTrigger.CRASH, GameState.ERROR);
+        config.configure(EventState.HIGHER)
+                .permitReentry(EventTrigger.DEAL)
+                .permit(EventTrigger.WINNER, EventState.FINISHED)
+                .permit(EventTrigger.CRASH, EventState.ERROR);
+
+        config.configure(EventState.LOWER)
+                .permit(EventTrigger.DEAL, EventState.PLAYING); // allows continue other players!
 
         // @formatter:on
     }
@@ -73,7 +67,7 @@ public class QasinoController extends AbstractController<Game> {
     @Resource
     private ApplicationContext applicationContext;
 
-    protected StateMachineConfig<GameState, GameTrigger> getStateMachineConfiguration() {
+    protected StateMachineConfig<EventState, EventTrigger> getStateMachineConfiguration() {
         return config;
     }
 
@@ -86,20 +80,20 @@ public class QasinoController extends AbstractController<Game> {
         log.info(message);
     }
 
-    // 3 - Play a the CardGame based on the GameTrigger and a list of input data
+    // 3 - Play a the CardGame based on the EventTrigger and a list of input data
 /*	@Autowired
 	private CardGameMapperUtil mapUtil;*/
 
-    public QasinoResponse play(GameTrigger gameTrigger, Map<String, String> pathAndQueryData) throws Exception {
+    public QasinoResponse play(EventTrigger EventTrigger, Map<String, String> pathAndQueryData) throws Exception {
 
         QasinoFlowDTO flowDTO = new QasinoFlowDTO();
         final QasinoResponse.QasinoResponseBuilder responseBuilder;
 
 
-        String message = String.format("CardGameController GameTrigger to execute is: %s and data %s", gameTrigger, pathAndQueryData);
+        String message = String.format("CardGameController EventTrigger to execute is: %s and data %s", EventTrigger, pathAndQueryData);
         log.info(message);
 
-        switch (gameTrigger) {
+        switch (EventTrigger) {
 
             case NEW:
 
@@ -113,7 +107,7 @@ public class QasinoController extends AbstractController<Game> {
 						          .addEvent(UpdateCardGameDetailsEvent.class)
 						          .addEvent(CreateCasinoForGameAndPlayerEvent.class)*/
                         .build();
-                flowDTO.processPathAndQueryParamsAndTrigger(pathAndQueryData, gameTrigger);
+                flowDTO.processPathAndQueryParamsAndTrigger(pathAndQueryData, EventTrigger);
                 flowDTO.setGameByContext();
                 flowDTO.start();
 
@@ -135,11 +129,11 @@ public class QasinoController extends AbstractController<Game> {
                         .build();
 
                 // reinstate get the card game and adds it as context to flowDTO
-                List<GameState> possibleGameStates = new ArrayList<>();
-                possibleGameStates.add(GameState.NEW);
-                possibleGameStates.add(GameState.PENDING_INVITATIONS);
+                List<EventState> possibleEventStates = new ArrayList<>();
+                possibleEventStates.add(EventState.NEW);
+                possibleEventStates.add(EventState.PENDING_INVITATIONS);
                 try {
-                    stateMachine.checkAll(possibleGameStates);
+                    stateMachine.checkAll(possibleEventStates);
                 } catch (Exception e) {
                     // make error response
                     responseBuilder = QasinoResponse.builder();
@@ -151,7 +145,7 @@ public class QasinoController extends AbstractController<Game> {
                     return responseBuilder.build();
                 }
 
-                flowDTO.processPathAndQueryParamsAndTrigger(pathAndQueryData, gameTrigger);
+                flowDTO.processPathAndQueryParamsAndTrigger(pathAndQueryData, EventTrigger);
                 flowDTO.start();
                 // state INITIALIZED or PENDING_INVITATIONS
                 break;
@@ -173,9 +167,9 @@ public class QasinoController extends AbstractController<Game> {
                         .addStateMachine(this.stateMachine)
                         .build();
 
-                List<GameState> possiblePOST_SETUPStates = new ArrayList<>();
-                possiblePOST_SETUPStates.add(GameState.NEW);
-                possiblePOST_SETUPStates.add(GameState.PENDING_INVITATIONS);
+                List<EventState> possiblePOST_SETUPStates = new ArrayList<>();
+                possiblePOST_SETUPStates.add(EventState.NEW);
+                possiblePOST_SETUPStates.add(EventState.PENDING_INVITATIONS);
                 try {
                     stateMachine.checkAll(possiblePOST_SETUPStates);
                 } catch (Exception e) {
@@ -189,7 +183,7 @@ public class QasinoController extends AbstractController<Game> {
                     return responseBuilder.build();
                 }
 
-                flowDTO.processPathAndQueryParamsAndTrigger(pathAndQueryData, gameTrigger);
+                flowDTO.processPathAndQueryParamsAndTrigger(pathAndQueryData, EventTrigger);
                 flowDTO.start();
                 // state PENDING_INVITATIONS
                 break;
@@ -214,10 +208,10 @@ public class QasinoController extends AbstractController<Game> {
                         .addStateMachine(this.stateMachine)
                         .build();
 
-				possibleGameStates = new ArrayList<>();
-                possibleGameStates.add(GameState.FINISHED);
+				possibleEventStates = new ArrayList<>();
+                possibleEventStates.add(EventState.FINISHED);
                 try {
-                    stateMachine.checkAll(possibleGameStates);
+                    stateMachine.checkAll(possibleEventStates);
                 } catch (Exception e) {
                     // make error response
                     responseBuilder = QasinoResponse.builder();
@@ -229,7 +223,7 @@ public class QasinoController extends AbstractController<Game> {
                     return responseBuilder.build();
                 }
 
-                flowDTO.processPathAndQueryParamsAndTrigger(pathAndQueryData, gameTrigger);
+                flowDTO.processPathAndQueryParamsAndTrigger(pathAndQueryData, EventTrigger);
                 flowDTO.start();
                 // state PLAYING or still in IS_SHUFFLED
                 // TODO determine event for state GameWon, NoMoreCards or RoundsEnded
@@ -253,8 +247,8 @@ public class QasinoController extends AbstractController<Game> {
                         .addStateMachine(this.stateMachine)
                         .build();
 
-                List<GameState> possiblePUT__PASS_TURNStates = new ArrayList<>();
-                possiblePUT__PASS_TURNStates.add(GameState.PLAYING);
+                List<EventState> possiblePUT__PASS_TURNStates = new ArrayList<>();
+                possiblePUT__PASS_TURNStates.add(EventState.PLAYING);
                 try {
                     stateMachine.checkAll(possiblePUT__PASS_TURNStates);
                 } catch (Exception e) {
@@ -268,7 +262,7 @@ public class QasinoController extends AbstractController<Game> {
                     return responseBuilder.build();
                 }
 
-                flowDTO.processPathAndQueryParamsAndTrigger(pathAndQueryData, gameTrigger);
+                flowDTO.processPathAndQueryParamsAndTrigger(pathAndQueryData, EventTrigger);
                 flowDTO.start();
                 // state PLAYING or still in IS_SHUFFLED
                 // TODO determine event for state GameWon, NoMoreCards or RoundsEnded
@@ -276,7 +270,7 @@ public class QasinoController extends AbstractController<Game> {
 
             case LEAVE:
 
-                // GameTrigger is OK
+                // EventTrigger is OK
 
                 //DELETE    api/cardgames/1                           // deletes the hands, decks, players, casinos and finally the game
                 //DELETE    api/cardgames/1/players                   // deletes all players as resource
@@ -291,7 +285,7 @@ public class QasinoController extends AbstractController<Game> {
 /*						          .addEvent(DeleteCardGameEvent.class)*/
                         .addStateMachine(this.stateMachine)
                         .build();
-                flowDTO.processPathAndQueryParamsAndTrigger(pathAndQueryData, gameTrigger);
+                flowDTO.processPathAndQueryParamsAndTrigger(pathAndQueryData, EventTrigger);
                 try {
                     flowDTO.start();
                 } catch (Exception e) {
@@ -309,7 +303,7 @@ public class QasinoController extends AbstractController<Game> {
 
             default:
 
-                // GameTrigger is GET
+                // EventTrigger is GET
 
                 //GET    api/cardgames/1
                 //GET    api/cardgames/1/player                    // gives active casino (resource=player)
@@ -323,7 +317,7 @@ public class QasinoController extends AbstractController<Game> {
 /*						          .addEvent(GetCardGameDetailsEvent.class)*/
                         .addStateMachine(this.stateMachine)
                         .build();
-                flowDTO.processPathAndQueryParamsAndTrigger(pathAndQueryData, gameTrigger);
+                flowDTO.processPathAndQueryParamsAndTrigger(pathAndQueryData, EventTrigger);
 
                 try {
                     flowDTO.start();
@@ -345,13 +339,13 @@ public class QasinoController extends AbstractController<Game> {
 
 
         // generic tasks
-        message = String.format("CardGameController GameTrigger without transition (is done in event) is: %s", gameTrigger);
+        message = String.format("CardGameController EventTrigger without transition (is done in event) is: %s", EventTrigger);
         log.info(message);
 
 
         // make response
         responseBuilder = QasinoResponse.builder();
-        if (gameTrigger != GameTrigger.CRASH) {
+        if (EventTrigger != EventTrigger.CRASH) {
             message = String.format("CardGameController convertFromGameEntity is: %s", flowDTO.getCurrentGame());
             log.info(message);
             //responseBuilder.cardGame(mapUtil.convertFromGameEntity(flowDTO.getCurrentGame()));
