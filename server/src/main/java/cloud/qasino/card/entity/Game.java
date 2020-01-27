@@ -65,6 +65,10 @@ public class Game {
     private GameState state;
 
     @Enumerated(EnumType.STRING)
+    @Column(name = "previous_state", length = 50, nullable = true)
+    private GameState previousState;
+
+    @Enumerated(EnumType.STRING)
     @Column(name = "type", length = 50, nullable = false)
     private Type type;
 

@@ -26,6 +26,7 @@ public enum GameState implements LabeledEnum {
 
     // error
     ERROR ("error","Game has an unforseen 500 and needs a fix"),
+    TIMEOUT ("error","Game has an unforseen timeout and needs a fix"),
     OLD("old","Game is abandoned without Results or Winner");
 
     /**

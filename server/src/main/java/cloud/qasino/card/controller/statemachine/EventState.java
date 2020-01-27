@@ -30,7 +30,8 @@ public enum EventState implements LabeledEnum {
     HIGHER ("higher","Player decided higher"),
     LOWER ("lower","Player decided lower"),
 
-    ERROR ("lower","Player decided lower");
+    ERROR ("lower","Player decided lower"),
+    INIT ("lower","Game has not events yes");
 
     /**
      * A static HashMap lookup with key + value is created to use in a getter
@@ -70,12 +71,12 @@ public enum EventState implements LabeledEnum {
         return fromLabelWithDefault(Character.toString(character));
     }
 
-    public static Set<EventState> cardGameHighLow = EnumSet.of(NEW, HIGHER, LOWER);
-    public static String[] cardGamesHighLowValues = new String[]{NEW.name(),
+    public static Set<EventState> cardGameHighLow = EnumSet.of(INIT, NEW, HIGHER, LOWER);
+    public static String[] cardGamesHighLowValues = new String[]{INIT.name(), NEW.name(),
             HIGHER.name(), LOWER.name()};
 
-    public static Set<EventState> cardGamesBlackJack = EnumSet.of(NEW, DEALT);
-    public static String[] cardGamesBlackJackValues = new String[]{NEW.name(), DEALT.name()};
+    public static Set<EventState> cardGamesBlackJack = EnumSet.of(INIT, NEW, DEALT);
+    public static String[] cardGamesBlackJackValues = new String[]{INIT.name(), NEW.name(), DEALT.name()};
 
     public static Set<EventState> cardGamesError = EnumSet.of(ERROR);
     public static String[] cardGamesErrorValues = new String[]{ERROR.name()};
