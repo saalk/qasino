@@ -1,8 +1,6 @@
 package cloud.qasino.card.controller.statemachine.configuration;
 
-import applyextra.commons.controllers.AsyncEventHandlerService;
-import applyextra.commons.event.AbstractFlowDTO;
-import applyextra.commons.orchestration.Event;
+import cloud.qasino.card.controller.AsyncEventHandlerService;
 import cloud.qasino.card.dto.event.AbstractFlowDTO;
 import cloud.qasino.card.orchestration.Event;
 import lombok.extern.slf4j.Slf4j;
@@ -31,7 +29,6 @@ public class QasinoAsyncConfiguration implements AsyncConfigurer {
 
     @Value("${param.async.queueCapacity:5000}")
     private static String queueCapacity; // dev = default
-
 
     @Bean(name = ASYNC_EXECUTOR_THREAD_NAME) // name = Thread.getName()
     @Override

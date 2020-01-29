@@ -5,7 +5,7 @@ import applyextra.commons.action.GatherChangeProcessDataAction;
 import applyextra.commons.activity.ActivityException;
 import applyextra.commons.event.EventOutput;
 import applyextra.commons.model.database.entity.ChangeProcessEntity;
-import applyextra.commons.model.database.entity.CreditCardRequestEntity;
+import applyextra.commons.model.database.entity.Game;
 import applyextra.commons.orchestration.Action;
 import applyextra.commons.util.AccountUtils;
 import applyextra.configuration.Constants;
@@ -134,7 +134,7 @@ public class ApplyExtraCardBusinessRulesAction implements Action<ApplyExtraCardB
 
         CreditCardAccount getCreditCardAccount();
 
-        List<CreditCardRequestEntity> getLastRequests();
+        List<Game> getLastRequests();
 
         String getProcessSpecificValue(String key);
 

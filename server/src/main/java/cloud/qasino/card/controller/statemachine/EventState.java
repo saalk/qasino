@@ -10,28 +10,21 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-/**
- * <H1>CardGame</H1> A selection of card gameDtos that can be selected to play. <p> More gameDtos will be
- * added in future.
- *
- * @author Klaas van der Meulen
- * @version 1.0
- * @since v1 - console game
- */
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
 public enum EventState implements LabeledEnum {
 
     // new
-    NEW("new","New Turn started"),
-    DEALT ("dealt","Card dealt to player"),
+    NEW("new", "New Turn started"),
+    DEALT("dealt", "Card dealt to player"),
 
-    HIGHER ("higher","Player decided higher"),
-    LOWER ("lower","Player decided lower"),
+    HIGHER("higher", "Player decided higher"),
+    LOWER("lower", "Player decided lower"),
 
-    ERROR ("lower","Player decided lower"),
-    INIT ("lower","Game has not events yes");
+    ERROR("lower", "Player decided lower"),
+    FINISHED("finished", "Game finished"),
+    INIT("lower", "Game has not events yes");
 
     /**
      * A static HashMap lookup with key + value is created to use in a getter
@@ -39,14 +32,17 @@ public enum EventState implements LabeledEnum {
      */
     public static Map<String, EventState> lookup
             = new HashMap<>();
+
     static {
-        for(EventState gameState : EnumSet.allOf(EventState.class))
+        for (EventState gameState : EnumSet.allOf(EventState.class))
             lookup.put(gameState.getLabel(), gameState);
     }
+
     public static final Map<String, EventState> gameStates
             = new HashMap<>();
+
     static {
-        for(EventState gameState : EnumSet.allOf(EventState.class))
+        for (EventState gameState : EnumSet.allOf(EventState.class))
             gameStates.put(gameState.getLabel(), gameState);
     }
 

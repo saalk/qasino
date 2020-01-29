@@ -1,14 +1,15 @@
 package cloud.qasino.card.orchestration;
 
+import cloud.qasino.card.controller.statemachine.GameState;
+import cloud.qasino.card.dto.event.AbstractFlowDTO;
 import lombok.extern.slf4j.Slf4j;
-import applyextra.commons.event.AbstractFlowDTO;
-import applyextra.commons.state.CreditCardsStateMachine.State;
 import org.springframework.context.ApplicationContext;
 
 import java.util.Collection;
 import java.util.List;
 
 import static applyextra.commons.orchestration.EventEnum.ENTER_STATE;
+import static cloud.qasino.card.orchestration.EventEnum.ENTER_STATE;
 
 @Slf4j
 public class CreditCardsEventHandler {
@@ -71,7 +72,7 @@ public class CreditCardsEventHandler {
         return flowDTO;
     }
 
-    private State getCurrentState(AbstractFlowDTO dto) {
+    private GameState getCurrentState(AbstractFlowDTO dto) {
         return dto.getCurrentState();
     }
 
@@ -79,8 +80,8 @@ public class CreditCardsEventHandler {
         if (event == ENTER_STATE) {
             return;
         }
-        List<State> states = orchestrationConfig.getStatesPermittingEvent(event);
-        State currentState = getCurrentState(flowDto);
+        List<GameState> states = orchestrationConfig.getStatesPermittingEvent(event);
+        GameState currentState = getCurrentState(flowDto);
         if (states.contains(currentState)) {
             return;
         }
@@ -118,7 +119,7 @@ public class CreditCardsEventHandler {
     }
 
     private <T extends AbstractFlowDTO> ActionResult performAction(final T flowDTO, final
-        OrchestrationConfig.ActionConfig actionConfig) {
+    OrchestrationConfig.ActionConfig actionConfig) {
 
         Action action = applicationContext.getBean(actionConfig.getAction());
         if (action == null) {
@@ -151,9 +152,9 @@ public class CreditCardsEventHandler {
 
     private <T extends AbstractFlowDTO> boolean transitionPerformed(final T flowDTO, final OrchestrationConfig.ActionConfig actionConfig, final OrchestrationConfig.Transition transition) {
         if (transition != null) {
-            State oldState = getCurrentState(flowDTO);
+            GameState oldState = getCurrentState(flowDTO);
             performTransition(transition, flowDTO);
-            State newState = getCurrentState(flowDTO);
+            GameState newState = getCurrentState(flowDTO);
             log.debug("performed transition " + oldState + "->" + newState + " after action " + actionConfig.getAction().getSimpleName());
             handleAfterEventActions(flowDTO);
             if (transition.getNextEvent() != null) {

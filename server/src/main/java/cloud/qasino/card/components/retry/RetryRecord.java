@@ -6,9 +6,6 @@ import lombok.Setter;
 
 import java.util.Date;
 
-/**
- * Created by CL94WQ on 13-07-16.
- */
 @Getter
 @Setter
 public class RetryRecord<RETRY_INPUT> {

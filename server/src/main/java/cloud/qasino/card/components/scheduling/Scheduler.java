@@ -9,9 +9,6 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
-/**
- * Created by CL94WQ on 15-06-16.
- */
 @Slf4j
 public class Scheduler {
 
@@ -73,6 +70,4 @@ public class Scheduler {
         }, interval, timeUnit);
         return taskDescription;
     }
-
-
 }

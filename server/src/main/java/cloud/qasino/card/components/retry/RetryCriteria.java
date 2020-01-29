@@ -1,9 +1,9 @@
 package cloud.qasino.card.components.retry;
 
+import cloud.qasino.card.controller.statemachine.GameState;
+import cloud.qasino.card.entity.enums.game.Type;
 import lombok.Getter;
 import lombok.Setter;
-import applyextra.commons.configuration.RequestType;
-import applyextra.commons.state.CreditCardsStateMachine.State;
 
 import java.util.LinkedHashSet;
 import java.util.Set;
@@ -15,9 +15,9 @@ import java.util.Set;
 public class RetryCriteria {
 
     @Setter
-    private RequestType requestTypeCriteria;
+    private Type typeCriteria;
 
-    private final Set<State> pendingRequestStateCriteria = new LinkedHashSet<>();
+    private final Set<GameState> pendingRequestStateCriteria = new LinkedHashSet<>();
 
-    private final Set<State> errorAndPreviousStateCriteria = new LinkedHashSet<>();
+    private final Set<GameState> errorAndPreviousStateCriteria = new LinkedHashSet<>();
 }

@@ -1,8 +1,8 @@
 package cloud.qasino.card.dto.event;
 
 import cloud.qasino.card.controller.statemachine.GameTrigger;
-import cloud.qasino.card.entity.Game;
 import cloud.qasino.card.controller.statemachine.QasinoStateMachine;
+import cloud.qasino.card.entity.Game;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;

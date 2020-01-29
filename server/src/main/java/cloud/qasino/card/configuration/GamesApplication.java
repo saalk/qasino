@@ -1,14 +1,14 @@
 package cloud.qasino.card.configuration;
 
-import cloud.qasino.card.entity.*;
-import cloud.qasino.card.entity.enums.game.Type;
+import cloud.qasino.card.entity.Game;
+import cloud.qasino.card.entity.League;
+import cloud.qasino.card.entity.Player;
+import cloud.qasino.card.entity.User;
 import cloud.qasino.card.entity.enums.player.AiLevel;
 import cloud.qasino.card.entity.enums.player.Avatar;
 import cloud.qasino.card.entity.enums.player.Role;
 import cloud.qasino.card.repositories.*;
-import h._grid;
 import lombok.extern.slf4j.Slf4j;
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.SpringApplication;
@@ -18,13 +18,10 @@ import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.context.annotation.Bean;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Stream;
 
 //import org.springframework.security.oauth2.config.annotation.web.configuration
 // .EnableResourceServer;
@@ -72,12 +69,12 @@ public class GamesApplication {
             PlayerRepository playerRepository,
             PlayingCardRepository playingCardRepository
     ) {
-        User user = new User("aliasName",1,"a@b.c");
+        User user = new User("aliasName", 1, "a@b.c");
         int pawn = User.pawnShipValue(0);
         user.pawnShip(pawn);
         user = userRepository.save(user);
 
-        League league = new League(user,"leagueName",1);
+        League league = new League(user, "leagueName", 1);
         league.endLeagueThisMonth();
         leagueRepository.save(league);
 
@@ -88,7 +85,7 @@ public class GamesApplication {
 
         List<Player> players = new ArrayList<>();
         players.add(playerRepository.save(new Player(user, game, Role.INITIATOR,
-                user.getBalance(), 1,Avatar.ELF, AiLevel.HUMAN)));
+                user.getBalance(), 1, Avatar.ELF, AiLevel.HUMAN)));
         players.add(playerRepository.save(new Player(null, game, Role.BOT, user.getBalance(), 2,
                 Avatar.GOBLIN, AiLevel.AVERAGE)));
         game.setPlayers(players);

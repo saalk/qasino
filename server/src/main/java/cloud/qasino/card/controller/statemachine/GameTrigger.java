@@ -4,25 +4,28 @@ import lombok.Getter;
 
 import java.util.Set;
 
-import static java.util.EnumSet.*;
+import static java.util.EnumSet.of;
 
 @Getter
 public enum GameTrigger {
 
-    // new - GameController
-    NEW, // may not have initial bets
+    // new - initiated by user
+    NEW,        // may not have initial bets
     INVITE,
-    ACCEPT, // with initial bet above game minimal ante
-    PREPARE, // do some updates and validate if playable
-    PLAY, // validate that initial bets are stated
-
+    ACCEPT,     // with initial bet above game minimal ante
+    PREPARE,    // do some updates and validate if playable
+    PLAY,       // validate that initial bets are stated
     // ended
-    WINNER,    // - internally by StateMachine
-    LEAVE,   // User left - via GameController
+    LEAVE,      // User left - via GameController
+
+    // ended - initiated by system
+    OK,         // result ok
+    NOT_OK,     // result nok
+    WINNER,     // we have a winner
 
     // error
-    ABANDON, // - internally by batch job
-    CRASH;   // - internally by StateMachine
+    ABANDON,    // game is abandonned
+    CRASH;      // error 500
 
     public static Set<GameTrigger> cardGamesTriggerNew = of(NEW, INVITE, ACCEPT, PLAY);
     public static Set<GameTrigger> cardGamesTriggerPlaying = of(PLAY);

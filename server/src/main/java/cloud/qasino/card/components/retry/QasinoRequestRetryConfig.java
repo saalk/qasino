@@ -7,7 +7,6 @@ import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
-import javax.annotation.Resource;
 
 @Component
 @Lazy
@@ -44,8 +43,9 @@ public class QasinoRequestRetryConfig {
         retryIntervalSeconds = jndiUtil.getJndiValueWithDefault(PARAM_RETRY_INTERVAL,900);
         maxRetrials = jndiUtil.getJndiValueWithDefault(PARAM_MAX_RETRIES,10);
         schedulerIntervalSeconds = jndiUtil.getJndiValueWithDefault(PARAM_SCHEDULER_INTERVAL,30);
- */       log.debug("Retry properties, retryIntervalSeconds: {}, maxNrRetrials: {}, schedulerIntervalSeconds: {}",
-                retryIntervalSeconds,maxRetrials,schedulerIntervalSeconds);
+ */
+        log.debug("Retry properties, retryIntervalSeconds: {}, maxNrRetrials: {}, schedulerIntervalSeconds: {}",
+                retryIntervalSeconds, maxRetrials, schedulerIntervalSeconds);
     }
 
 }

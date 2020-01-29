@@ -1,14 +1,16 @@
 package cloud.qasino.card.controller.statemachine;
 
+import cloud.qasino.card.action.CancelOpenRequestsAction;
 import cloud.qasino.card.controller.statemachine.configuration.QasinoAsyncConfiguration;
 import cloud.qasino.card.dto.event.AbstractFlowDTO;
+import cloud.qasino.card.entity.enums.game.Type;
 import cloud.qasino.card.orchestration.OrchestrationConfig;
 import org.springframework.context.ApplicationContext;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 
-import static cloud.qasino.card.controller.statemachine.EventState.ERROR;
+import static cloud.qasino.card.controller.statemachine.GameState.ERROR;
 
 public class QasinoStateMachine implements QasinoAsyncConfiguration.ASyncEventHandler {
 
@@ -17,52 +19,20 @@ public class QasinoStateMachine implements QasinoAsyncConfiguration.ASyncEventHa
 
     public static final OrchestrationConfig config = new OrchestrationConfig();
 
-static {
+    static {
+
         // @formatter:off
-        // start on player page
-        config.configure(EventState.INIT) // no events yes
-        .permit(EventTrigger.START, EventState.NEW)
-        ;
-
-
-        config.configure(EventState.NEW) // new/first turn started
-        .permit(EventTrigger.START, EventState.NEW)
-
-        .permit(EventTrigger.STOP, EventState.HIGHER)
-        .permit(EventTrigger.STOP, EventState.LOWER);
-
-        config.configure(EventState.DEALT)
-        .permit(EventTrigger.HIGHER, EventState.HIGHER)
-        .permit(EventTrigger.HIGHER, EventState.LOWER)
-        .permit(EventTrigger.LOWER, EventState.HIGHER)
-        .permit(EventTrigger.LOWER, EventState.LOWER);
-
-        config.configure(EventState.HIGHER)
-        .permitReentry(EventTrigger.HIGHER)
-        .permitReentry(EventTrigger.LOWER)
-        .permitReentry(EventTrigger.STOP)
-        .permit(EventTrigger.CRASH, EventState.ERROR);
-
-        config.configure(EventState.HIGHER)
-        .permitReentry(EventTrigger.DEAL)
-        .permit(EventTrigger.WINNER, EventState.FINISHED)
-        .permit(EventTrigger.CRASH, EventState.ERROR);
-
-        config.configure(EventState.LOWER)
-        .permit(EventTrigger.DEAL, EventState.PLAYING); // allows continue other players!
-
-        // @formatter:on
-        }
-        /*
-        qasinoConfiguration
+        // always do this
+        config
                 .beforeEventPerform(LoadQasinoRequestContextAction.class)
                 .afterEventPerform(PersistQasinoRequestAction.class)
-                .retryRequest(RequestType.APPLY_EXTRA_CARD)
+                .retryRequest(Type.HIGHLOW)
                 .onResult(Exception.class, ERROR)
-                .rethrowExceptions();
-                .retryRequest(RequestType.APPLY_EXTRA_CARD);
+                .rethrowExceptions()
+                .retryRequest(Type.HIGHLOW);
 
-        qasinoConfiguration
+        // start on player page
+        config
                 .onState(INITIATED)
                 .onEvent(LIST)
                 .perform(RetrieveListQasinoAccountsAction.class)
@@ -77,7 +47,7 @@ static {
                 .perform(StoreQasinoRequestContextAction.class)
                 .perform(CancelOpenRequestsAction.class)
                 .onResult(SUCCESS, LISTED);
-
+/*
 
         qasinoConfiguration // Actions need to be the same as for state Checked and Declined so retry is possible.
                 .onState(LISTED)
@@ -257,6 +227,7 @@ static {
 
     }
 */
+}
 
 
     private QasinoEventHandler eventHandler;

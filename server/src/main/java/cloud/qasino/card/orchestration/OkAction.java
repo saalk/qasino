@@ -1,6 +1,6 @@
 package cloud.qasino.card.orchestration;
 
-import applyextra.commons.event.AbstractFlowDTO;
+import cloud.qasino.card.dto.event.AbstractFlowDTO;
 import org.springframework.stereotype.Component;
 
 @SuppressWarnings("rawtypes")

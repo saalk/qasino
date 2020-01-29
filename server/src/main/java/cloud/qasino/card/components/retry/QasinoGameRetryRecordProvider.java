@@ -13,7 +13,7 @@ import static cloud.qasino.card.controller.statemachine.GameState.TIMEOUT;
 
 @Component
 @Lazy
-public class CreditCardRequestRetryRecordProvider implements RetryRecordProvider<Game> {
+public class QasinoGameRetryRecordProvider implements RetryRecordProvider<Game> {
 
     @Lazy
     @Resource
@@ -35,7 +35,7 @@ public class CreditCardRequestRetryRecordProvider implements RetryRecordProvider
     public List<RetryRecord<Game>> getRetryRecords() {
         final List<RetryRecord<Game>> result = new ArrayList<>();
         for (RetryCriteria criteria : retryController.getRetryCriteria()) {
-            if (criteria.getRequestTypeCriteria() == null) {
+            if (criteria.getTypeCriteria() == null) {
                 continue;
             }
             result.addAll(toRetryRecords(loadPendingRequests(criteria)));

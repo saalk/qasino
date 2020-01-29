@@ -1,16 +1,15 @@
 package cloud.qasino.card.orchestration;
 
+import cloud.qasino.card.components.retry.RetryCriteria;
 import cloud.qasino.card.controller.statemachine.GameState;
+import cloud.qasino.card.entity.enums.game.Type;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
-import applyextra.commons.components.retry.RetryCriteria;
-import applyextra.commons.configuration.RequestType;
-import applyextra.commons.state.CreditCardsStateMachine.State;
 
 import java.util.*;
 
-import static applyextra.commons.event.EventOutput.Result.SUCCESS;
-import static applyextra.commons.orchestration.EventEnum.ENTER_STATE;
+import static cloud.qasino.card.dto.event.EventOutput.Result.SUCCESS;
+import static cloud.qasino.card.orchestration.EventEnum.ENTER_STATE;
 
 /**
  * Contains states, events handled by certain states, actions to be carried out and transitions.
@@ -55,21 +54,19 @@ public class OrchestrationConfig {
     }
 
     /**
-     *
      * @param event
      * @return List<State>
      */
-    List<State> getStatesPermittingEvent(Event event) {
-        return statesPermittingEvent.containsKey(event) ? statesPermittingEvent.get(event) : new ArrayList<State>();
+    List<GameState> getStatesPermittingEvent(Event event) {
+        return statesPermittingEvent.containsKey(event) ? statesPermittingEvent.get(event) : new ArrayList<GameState>();
     }
 
     /**
-     *
      * @param event
      * @param state
      */
-    private void addStatePermittingEvent(Event event, State state) {
-        List<State> states = statesPermittingEvent.get(event);
+    private void addStatePermittingEvent(Event event, GameState state) {
+        List<GameState> states = statesPermittingEvent.get(event);
         if (states == null) {
             states = new ArrayList<>();
             statesPermittingEvent.put(event, states);
@@ -92,21 +89,19 @@ public class OrchestrationConfig {
     }
 
     /**
-     *
      * @param state
      * @return StateConfig
      */
-    StateConfig getStateConfig(State state) {
+    StateConfig getStateConfig(GameState state) {
         return stateConfigMap.get(state);
     }
 
     /**
-     *
      * @param state
      * @param event
      * @return list of actions to be carried out in order
      */
-    Collection<ActionConfig> getActionsForEvent(final State state, final Event event) {
+    Collection<ActionConfig> getActionsForEvent(final GameState state, final Event event) {
 
         StateConfig stateConfig = stateConfigMap.get(state);
         if (stateConfig == null) {
@@ -119,7 +114,7 @@ public class OrchestrationConfig {
         return eventConfig.getActionConfigs();
     }
 
-    EventConfig getEventConfig(final State state, final Event event) {
+    EventConfig getEventConfig(final GameState state, final Event event) {
         return stateConfigMap.get(state).eventConfigMap.get(event);
     }
 
@@ -146,7 +141,6 @@ public class OrchestrationConfig {
     }
 
     /**
-     *
      * @return Collection<ActionConfig>
      */
     Collection<ActionConfig> getBeforeEventActions() {
@@ -158,7 +152,6 @@ public class OrchestrationConfig {
     }
 
     /**
-     *
      * @return List<ActionConfig>
      */
     public List<ActionConfig> getAfterEventActions() {
@@ -172,7 +165,7 @@ public class OrchestrationConfig {
     /**
      * Configures a transition to a next state if a certain exception type (or supertype) is caught while performing an action
      */
-    public OrchestrationConfig onResult(final Class<? extends Exception> exceptionClass, final State nextState) {
+    public OrchestrationConfig onResult(final Class<? extends Exception> exceptionClass, final GameState nextState) {
         return onResult(exceptionClass, nextState, null);
     }
 
@@ -185,7 +178,7 @@ public class OrchestrationConfig {
      * @param response
      * @return
      */
-    public OrchestrationConfig onResult(final Class<? extends Exception> exceptionClass, final State nextState,
+    public OrchestrationConfig onResult(final Class<? extends Exception> exceptionClass, final GameState nextState,
                                         EventHandlingResponse response) {
         //make sure state exists
         onState(nextState);
@@ -193,23 +186,24 @@ public class OrchestrationConfig {
         return this;
     }
 
-    public OrchestrationConfig retryRequest(RequestType requestType){
-        this.retryCriteria.setRequestTypeCriteria(requestType);
+    public OrchestrationConfig retryRequest(Type requestType) {
+        this.retryCriteria.setTypeCriteria(requestType);
         return this;
     }
 
-    public OrchestrationConfig onErrorRetryFrom(List<State> states){
+    public OrchestrationConfig onErrorRetryFrom(List<GameState> states) {
         this.retryCriteria.getErrorAndPreviousStateCriteria().addAll(states);
         return this;
     }
 
-    public OrchestrationConfig onErrorRetryFrom(State... states){
+    public OrchestrationConfig onErrorRetryFrom(GameState... states) {
         onErrorRetryFrom(Arrays.asList(states));
         return this;
     }
 
     /**
      * Configures Exceptions on actions to be rethrown instead of resulting in transitions
+     *
      * @return
      */
     public OrchestrationConfig rethrowExceptions() {
@@ -222,7 +216,6 @@ public class OrchestrationConfig {
     }
 
     /**
-     *
      * @param exception
      * @return Transition
      */
@@ -232,6 +225,7 @@ public class OrchestrationConfig {
 
     /**
      * Configures a default response to be set on DTO in case flow does not result in other specific response
+     *
      * @param defaultResponse
      * @return
      */
@@ -241,12 +235,11 @@ public class OrchestrationConfig {
     }
 
     /**
-     *
      * @param state
      * @param event
      * @return true if state is configured to handle event
      */
-    public boolean statePermitsEvent(final State state, final EventEnum event) {
+    public boolean statePermitsEvent(final GameState state, final EventEnum event) {
         return getEventConfig(state, event) != null;
     }
 
@@ -255,19 +248,17 @@ public class OrchestrationConfig {
      */
     public class StateConfig {
 
-        private State state;
+        private GameState state;
         private Map<Event, EventConfig> eventConfigMap = new HashMap<>();
 
         /**
-         *
          * @param state
          */
-        StateConfig(State state) {
+        StateConfig(GameState state) {
             this.state = state;
         }
 
         /**
-         *
          * @param event
          * @return EventConfig
          */
@@ -290,7 +281,6 @@ public class OrchestrationConfig {
         }
 
         /**
-         *
          * @return EventConfig
          */
         EventConfig getEntryEvent() {
@@ -298,15 +288,13 @@ public class OrchestrationConfig {
         }
 
         /**
-         *
          * @return State
          */
-        State getState() {
+        GameState getState() {
             return state;
         }
 
         /**
-         *
          * @return Collection<EventConfig>
          */
         Collection<EventConfig> getEventConfigs() {
@@ -328,7 +316,6 @@ public class OrchestrationConfig {
         }
 
         /**
-         *
          * @param event
          * @return EventConfig
          */
@@ -342,7 +329,7 @@ public class OrchestrationConfig {
          *
          * @see CreditCardsEventHandler
          */
-        public StateConfig retryIfPending(){
+        public StateConfig retryIfPending() {
             retryCriteria.getPendingRequestStateCriteria().add(this.state);
             return this;
         }
@@ -352,7 +339,7 @@ public class OrchestrationConfig {
          *
          * @see CreditCardsEventHandler
          */
-        public StateConfig retryIfError(){
+        public StateConfig retryIfError() {
             retryCriteria.getErrorAndPreviousStateCriteria().add(this.state);
             return this;
         }
@@ -367,7 +354,6 @@ public class OrchestrationConfig {
         private EventHandlingResponse defaultEventResponse;
 
         /**
-         *
          * @param state
          * @param event
          */
@@ -403,7 +389,6 @@ public class OrchestrationConfig {
 
 
         /**
-         *
          * @return Collection<ActionConfig>
          */
         Collection<ActionConfig> getActionConfigs() {
@@ -411,7 +396,6 @@ public class OrchestrationConfig {
         }
 
         /**
-         *
          * @return Event
          */
         Event getEvent() {
@@ -428,18 +412,17 @@ public class OrchestrationConfig {
          * @param nextState
          * @return EventConfig
          */
-        public EventConfig transition(State nextState) {
+        public EventConfig transition(GameState nextState) {
             onState(nextState);
-            perform(OkAction.class).onResult(SUCCESS, nextState);
+            perform((Class<? extends Action>) OkAction.class).onResult(SUCCESS, nextState);
             return this;
         }
 
-        public void transition(final State nextState, final Event nextEvent) {
-            perform(OkAction.class).onResult(SUCCESS, nextState, nextEvent);
+        public void transition(final GameState nextState, final Event nextEvent) {
+            perform((Class<? extends Action>) OkAction.class).onResult(SUCCESS, nextState, nextEvent);
         }
 
         /**
-         *
          * @return Collection<ActionConfig>
          */
         Collection<ActionConfig> getAfterEventActions() {
@@ -465,7 +448,7 @@ public class OrchestrationConfig {
      * Is used to facilitate gradual refactoring of Trigger-based controller configuration.
      */
     static class Transition {
-        private State nextState;
+        private GameState nextState;
         private EventHandlingResponse response;
         private Event nextEvent;
 
@@ -474,17 +457,16 @@ public class OrchestrationConfig {
          *
          * @param nextState
          */
-        Transition(final State nextState, final EventHandlingResponse response, Event nextEvent) {
+        Transition(final GameState nextState, final EventHandlingResponse response, Event nextEvent) {
             this.nextState = nextState;
             this.response = response;
             this.nextEvent = nextEvent;
         }
 
         /**
-         *
-         * @return State
+         * @return GameState
          */
-        State getNextState() {
+        GameState getNextState() {
             return nextState;
         }
 
@@ -514,7 +496,6 @@ public class OrchestrationConfig {
         private int actionId = actionIdCount++;
 
         /**
-         *
          * @param event
          * @param action
          */
@@ -538,7 +519,6 @@ public class OrchestrationConfig {
         }
 
         /**
-         *
          * @return Class<? extends Action>
          */
         Class<? extends Action> getAction() {
@@ -546,10 +526,9 @@ public class OrchestrationConfig {
         }
 
         /**
-         *
          * @return State
          */
-        State getCorrespondingState() {
+        GameState getCorrespondingState() {
             return event.state.state;
         }
 
@@ -561,38 +540,36 @@ public class OrchestrationConfig {
          * @param nextState
          * @return ActionConfig
          */
-        public ActionConfig onResult(final Object expectedResult, final State nextState) {
+        public ActionConfig onResult(final Object expectedResult, final GameState nextState) {
             return onResult(expectedResult, nextState, event.defaultEventResponse);
         }
 
         /**
-         *
          * @param expectedResult
          * @param nextState
-         * @param nextEvent to be fired immidiately after transition
+         * @param nextEvent      to be fired immidiately after transition
          * @return
          */
-        public ActionConfig onResult(final Object expectedResult, final State nextState, final Event nextEvent) {
+        public ActionConfig onResult(final Object expectedResult, final GameState nextState, final Event nextEvent) {
             return onResult(expectedResult, nextState, null, nextEvent);
         }
 
         /**
          * @param response to be set on DTO
          */
-        public ActionConfig onResult(final Object expectedResult, final State nextState, final EventHandlingResponse
+        public ActionConfig onResult(final Object expectedResult, final GameState nextState, final EventHandlingResponse
                 response) {
             return onResult(expectedResult, nextState, response, null);
         }
 
         /**
-         *
          * @param expectedResult
          * @param nextState
-         * @param response to be set on DTO
-         * @param nextEvent to be fired immidiately after transition
+         * @param response       to be set on DTO
+         * @param nextEvent      to be fired immidiately after transition
          * @return
          */
-        public ActionConfig onResult(final Object expectedResult, final State nextState, final EventHandlingResponse
+        public ActionConfig onResult(final Object expectedResult, final GameState nextState, final EventHandlingResponse
                 response, final Event nextEvent) {
             assertResultType(expectedResult);
             resultType = expectedResult instanceof Expression ? null : expectedResult.getClass();
@@ -609,7 +586,7 @@ public class OrchestrationConfig {
          * @param nextState
          * @return ActionConfig
          */
-        public ActionConfig onResult(final Class<? extends Exception> expectedExceptionClass, final State nextState) {
+        public ActionConfig onResult(final Class<? extends Exception> expectedExceptionClass, final GameState nextState) {
             onState(nextState);
             this.exceptionToTransitionMap.put(expectedExceptionClass, new Transition(nextState, null, null));
             return this;
@@ -624,7 +601,7 @@ public class OrchestrationConfig {
          * @param nextEvent
          * @return
          */
-        public ActionConfig onResult(final Class<? extends Exception> expectedExceptionClass, final State nextState, final Event
+        public ActionConfig onResult(final Class<? extends Exception> expectedExceptionClass, final GameState nextState, final Event
                 nextEvent) {
             onState(nextState);
             this.exceptionToTransitionMap.put(expectedExceptionClass, new Transition(nextState, null, nextEvent));
@@ -632,7 +609,6 @@ public class OrchestrationConfig {
         }
 
         /**
-         *
          * @param expectedResult
          */
         private void assertResultType(final Object expectedResult) {
@@ -650,7 +626,6 @@ public class OrchestrationConfig {
         }
 
         /**
-         *
          * @param exception
          * @return Transition
          */
@@ -660,7 +635,6 @@ public class OrchestrationConfig {
 
 
         /**
-         *
          * @param result
          * @return Transition
          */
@@ -675,14 +649,15 @@ public class OrchestrationConfig {
 
         /**
          * Perform a transaction for a certain trigger if no other transition can be found for a result.
-         * @deprecated
+         *
          * @param nextState
+         * @deprecated
          */
-        public void byDefault(final State nextState) {
+        public void byDefault(final GameState nextState) {
             defaultTransition = new Transition(nextState, null, null);
         }
 
-        public void byDefault(final State nextState, final EventHandlingResponse response) {
+        public void byDefault(final GameState nextState, final EventHandlingResponse response) {
             defaultTransition = new Transition(nextState, response, null);
         }
 

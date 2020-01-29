@@ -5,9 +5,6 @@ import lombok.extern.slf4j.Slf4j;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
-/**
- * Created by CL94WQ on 13-07-16.
- */
 @Slf4j
 public class SimpleRetrySchedule implements RetrySchedule {
 

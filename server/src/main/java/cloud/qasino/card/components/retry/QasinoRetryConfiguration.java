@@ -6,6 +6,6 @@ import org.springframework.context.annotation.Lazy;
 
 @Configuration
 @Lazy
-@ComponentScan("applyextra.commons.components.retry")
-public class CreditCardRetryConfiguration {
+@ComponentScan("cloud.qasino.card.components.retry")
+public class QasinoRetryConfiguration {
 }

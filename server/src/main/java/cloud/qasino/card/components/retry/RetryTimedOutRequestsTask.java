@@ -1,14 +1,11 @@
 package cloud.qasino.card.components.retry;
 
+import cloud.qasino.card.components.scheduling.Task;
 import lombok.extern.slf4j.Slf4j;
-import applyextra.commons.components.scheduling.Task;
 
 import java.util.Date;
 import java.util.List;
 
-/**
- * Created by CL94WQ on 13-07-16.
- */
 @Slf4j
 public class RetryTimedOutRequestsTask implements Task {
 
@@ -30,7 +27,7 @@ public class RetryTimedOutRequestsTask implements Task {
         int count = 0;
         // get requests that are stuck on a certain state
         List<RetryRecord> retryRecords = retryRecordProvider.getRetryRecords();
-        log.info("retry scheduler processing {} records",retryRecords.size());
+        log.info("retry scheduler processing {} records", retryRecords.size());
         for (RetryRecord retryRecord : retryRecords) {
             if (retrySchedule.mustRetryNow(retryRecord)) {
                 log.info("retrying input={}", retryRecord.getRetryInput());
@@ -57,7 +54,7 @@ public class RetryTimedOutRequestsTask implements Task {
             } else {
                 retryTask.giveUp(retryRecord.getRetryInput());
                 retryRecordProvider.removeRetryRecord(retryRecord.getRetryInput());
-                log.warn("Not retrying now input={}",retryRecord.getRetryInput());
+                log.warn("Not retrying now input={}", retryRecord.getRetryInput());
             }
         }
         return "" + count + " records retried";
