@@ -1,5 +1,6 @@
 package cloud.qasino.card.entity.enums.game;
 
+import cloud.qasino.card.configuration.ContextType;
 import cloud.qasino.card.entity.enums.LabeledEnum;
 import cloud.qasino.card.entity.enums.event.Action;
 import lombok.Getter;
@@ -19,7 +20,7 @@ import java.util.Set;
  * @since v1 - console game
  */
 @Getter
-public enum Type implements LabeledEnum {
+public enum Type implements LabeledEnum, ContextType {
 
     /**
      * HIGHLOW cardgame is a simple higher or lower guessing game. The dealer places one card
@@ -60,6 +61,11 @@ public enum Type implements LabeledEnum {
     Type(String label) {
         this();
         this.label = label;
+    }
+
+    @Override
+    public String getId() {
+        return toString();
     }
 
     public static Type fromLabel(String inputLabel) {

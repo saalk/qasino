@@ -1,4 +1,4 @@
-package cloud.qasino.card.context;
+package cloud.qasino.card.core.context;
 
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;

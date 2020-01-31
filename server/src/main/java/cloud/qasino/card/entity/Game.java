@@ -1,5 +1,6 @@
 package cloud.qasino.card.entity;
 
+import cloud.qasino.card.core.enumeration.ChannelType;
 import cloud.qasino.card.entity.enums.playingcard.Card;
 import cloud.qasino.card.entity.enums.Style;
 import cloud.qasino.card.controller.statemachine.GameState;
@@ -65,6 +66,10 @@ public class Game {
     private GameState state;
 
     @Enumerated(EnumType.STRING)
+    @Column(name = "previous_state", length = 50, nullable = true)
+    private GameState previousState;
+
+    @Enumerated(EnumType.STRING)
     @Column(name = "type", length = 50, nullable = false)
     private Type type;
 
@@ -90,6 +95,9 @@ public class Game {
     @Column(name = "day", length = 2)
     private int day;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "channel_type", length = 2)
+    private ChannelType channelType;
     // References
 
     @JsonIgnore

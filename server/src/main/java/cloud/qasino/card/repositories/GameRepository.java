@@ -3,6 +3,7 @@ package cloud.qasino.card.repositories;
 import cloud.qasino.card.controller.statemachine.GameState;
 import cloud.qasino.card.entity.Game;
 import cloud.qasino.card.entity.League;
+import cloud.qasino.card.entity.enums.game.Type;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -92,4 +93,10 @@ public interface GameRepository extends JpaRepository<Game, Integer> {
         DateTimeFormatter week = DateTimeFormatter.ofPattern("W");
         return String.valueOf(LocalDate.now().format(week));
     }
+
+    // todo implement
+    List<Game> getCurrentGamesForUserByState(Game currentGame, List<Type> typesToCancel, List<GameState> pendingStates);
+
+    // todo implement
+    Game getLastTypeGameByUser(Type contextType, int userId);
 }
