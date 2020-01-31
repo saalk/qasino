@@ -101,7 +101,6 @@ public class User {
         DateTimeFormatter week = DateTimeFormatter.ofPattern("W");
         this.week = localDateAndTime.format(week);
         this.day = localDateAndTime.getDayOfMonth();
-
         this.alias = "alias";
     }
 
@@ -113,22 +112,23 @@ public class User {
     }
 
     public boolean repayLoan() {
-
-        if (this.balance >= this.securedLoan &
-                this.securedLoan > 0) {
-            int loan = this.securedLoan;
-            this.balance = --loan;
+        int loan = this.securedLoan;
+        int pay = this.balance;
+        if (pay >= loan &
+                loan > 0) {
+            this.balance = pay - loan;
             this.securedLoan = 0;
             return true;
         }
         return false;
     }
 
-
     public boolean pawnShip(int pawnShipValue) {
-        if (this.securedLoan > 0) return false; // repay first
-        this.balance = this.balance + pawnShipValue;
-        this.securedLoan = this.securedLoan + pawnShipValue;
+        int loan = this.securedLoan;
+        int pay = this.balance;
+        if (loan > 0) return false; // repay first
+        this.balance = pay + pawnShipValue;
+        this.securedLoan = loan + pawnShipValue;
         return true;
     }
 
@@ -139,15 +139,12 @@ public class User {
     }
 
     public String winCount(List<Player> playersPlayed) {
-
         int won = 0;
-
         for (Player player : playersPlayed) {
             if (player.isWinner()) {
                 won++;
             }
         }
-
         return "won/total: [" + won + "/" + playersPlayed.size() + "]";
     }
 

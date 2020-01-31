@@ -1,3 +1,4 @@
+/*
 package cloud.qasino.card.controller;
 
 import cloud.qasino.card.controller.statemachine.EventState;
@@ -81,8 +82,10 @@ public class QasinoController extends AbstractController<Game> {
     }
 
     // 3 - Play a the CardGame based on the EventTrigger and a list of input data
+*/
 /*	@Autowired
-	private CardGameMapperUtil mapUtil;*/
+	private CardGameMapperUtil mapUtil;*//*
+
 
     public QasinoResponse play(EventTrigger EventTrigger, Map<String, String> pathAndQueryData) throws Exception {
 
@@ -102,10 +105,12 @@ public class QasinoController extends AbstractController<Game> {
                 flowDTO = builder
                         .addContext(super.init(new Game()))
                         .addStateMachine(this.stateMachine)
+*/
 /*						          .addEvent(SetupFlowDTOForEveryEvent.class)
 						          .addEvent(CreatePlayerEvent.class)
 						          .addEvent(UpdateCardGameDetailsEvent.class)
-						          .addEvent(CreateCasinoForGameAndPlayerEvent.class)*/
+						          .addEvent(CreateCasinoForGameAndPlayerEvent.class)*//*
+
                         .build();
                 flowDTO.processPathAndQueryParamsAndTrigger(pathAndQueryData, EventTrigger);
                 flowDTO.setGameByContext();
@@ -124,8 +129,10 @@ public class QasinoController extends AbstractController<Game> {
                 flowDTO = builder
                         .addContext(super.reinstate(Integer.parseInt(pathAndQueryData.get("gameId"))))
                         .addStateMachine(this.stateMachine)
+*/
 /*						          .addEvent(SetupFlowDTOForEveryEvent.class)
-						          .addEvent(UpdateCardGameDetailsEvent.class)*/
+						          .addEvent(UpdateCardGameDetailsEvent.class)*//*
+
                         .build();
 
                 // reinstate get the card game and adds it as context to flowDTO
@@ -159,11 +166,13 @@ public class QasinoController extends AbstractController<Game> {
                 // reinstate get the card game and adds it as context to flowDTO
                 flowDTO = builder
                         .addContext(super.reinstate(Integer.parseInt(pathAndQueryData.get("gameId"))))
+*/
 /*
 						          .addEvent(SetupFlowDTOForEveryEvent.class)
 						          .addEvent(CreatePlayerEvent.class)
 						          .addEvent(CreateCasinoForGameAndPlayerEvent.class)
-*/
+*//*
+
                         .addStateMachine(this.stateMachine)
                         .build();
 
@@ -197,6 +206,7 @@ public class QasinoController extends AbstractController<Game> {
                 // reinstate get the card game and adds it as context to flowDTO
                 flowDTO = builder
                         .addContext(super.reinstate(Integer.parseInt(pathAndQueryData.get("gameId"))))
+*/
 /*
 						          .addEvent(SetupFlowDTOForEveryEvent.class)
 						          .addEvent(UpdateDeckForGameAndCasinoEvent.class) // DEAL
@@ -204,7 +214,8 @@ public class QasinoController extends AbstractController<Game> {
 						          .addEvent(DetermineTurnResultsEvent.class) // TURN, ROUND
 						          .addEvent(UpdateCardGameDetailsEvent.class) //Set ROUND + 1
 						          .addEvent(UpdateCasinoForTurnAndBetEvent.class) // set TURN = 1
-*/
+*//*
+
                         .addStateMachine(this.stateMachine)
                         .build();
 
@@ -238,11 +249,13 @@ public class QasinoController extends AbstractController<Game> {
                 // TODO
                 flowDTO = builder
                         .addContext(super.reinstate(Integer.parseInt(pathAndQueryData.get("gameId"))))
+*/
 /*						          .addEvent(SetupFlowDTOForEveryEvent.class)
 						          .addEvent(DetermineTurnResultsEvent.class) // BET, ACTIVE CASINO
 						          .addEvent(UpdatePlayerCubitsAndSecuredLoanEvent.class) // CUBITS
 						          .addEvent(UpdateCardGameDetailsEvent.class) // NEXT ACTIVE CASINO
-						          .addEvent(UpdateCasinoForTurnAndBetEvent.class) // BET*/
+						          .addEvent(UpdateCasinoForTurnAndBetEvent.class) // BET*//*
+
 
                         .addStateMachine(this.stateMachine)
                         .build();
@@ -282,7 +295,9 @@ public class QasinoController extends AbstractController<Game> {
                 // reinstate get the card game and adds it as context to flowDTO
                 flowDTO = builder
                         .addContext(super.reinstate(Integer.parseInt(pathAndQueryData.get("gameId"))))
-/*						          .addEvent(DeleteCardGameEvent.class)*/
+*/
+/*						          .addEvent(DeleteCardGameEvent.class)*//*
+
                         .addStateMachine(this.stateMachine)
                         .build();
                 flowDTO.processPathAndQueryParamsAndTrigger(pathAndQueryData, EventTrigger);
@@ -314,7 +329,9 @@ public class QasinoController extends AbstractController<Game> {
 
                 // reinstate get the card game and adds it as context to flowDTO
                 flowDTO = builder
-/*						          .addEvent(GetCardGameDetailsEvent.class)*/
+*/
+/*						          .addEvent(GetCardGameDetailsEvent.class)*//*
+
                         .addStateMachine(this.stateMachine)
                         .build();
                 flowDTO.processPathAndQueryParamsAndTrigger(pathAndQueryData, EventTrigger);
@@ -372,3 +389,4 @@ public class QasinoController extends AbstractController<Game> {
     }
 }
 
+*/

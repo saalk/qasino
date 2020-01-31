@@ -109,7 +109,7 @@
 			<version>${plantuml.version}</version>
 		</dependency>
 		<dependency>
-			<groupId>com.github.oxo42</groupId>
+			<groupId>com.github.stateless4j</groupId>
 			<artifactId>stateless4j</artifactId>
 			<version>${stateless4j.version}</version>
 			<exclusions>

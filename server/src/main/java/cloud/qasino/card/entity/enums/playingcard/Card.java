@@ -15,7 +15,7 @@ public class Card {
 
     // static fields and methods to easily make playingCards and add jokers -> not synchronized so make them final?
     protected static final Card joker = new Card(Rank.JOKER, Suit.JOKERS);
-    protected static final List<Card> prototypeDeck = new ArrayList<>();
+    public static final List<Card> prototypeDeck = new ArrayList<>();
     static {
         for (Suit suit : Suit.values()) {
             if (suit != Suit.JOKERS) {
