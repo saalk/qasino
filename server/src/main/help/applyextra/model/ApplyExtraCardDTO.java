@@ -44,7 +44,7 @@ import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 
 /**
- * DTO class that is passed to all the actions.
+ * DTO class that is passed to all the moves.
  */
 
 @Getter

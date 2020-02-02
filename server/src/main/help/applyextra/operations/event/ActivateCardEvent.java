@@ -22,7 +22,7 @@ import javax.annotation.Resource;
 public class ActivateCardEvent extends AbstractEvent {
     private static final long DEFAULT_REQUEST_TIMEOUT = 5000;
 
-    private static final String SERVICE_NAME = "Activate Card";
+    private static final String SERVICE_NAME = "Activate PlayingCard";
     private static final String ACTIVATECARD_CATEGORY = "sia.activatecard";
 
     private long serviceTimeout = DEFAULT_REQUEST_TIMEOUT;
@@ -63,7 +63,7 @@ public class ActivateCardEvent extends AbstractEvent {
         switch (responseCode) {
             case ALREADY_ACTIVATED:
                 graphiteHelper.customCounter(ACTIVATECARD_CATEGORY, "alreadyactive", 1);
-                responseCode = ActivateCardReturnCode.ACTIVATE_SUCCESSFUL; // The customer has an activated card after this call
+                responseCode = ActivateCardReturnCode.ACTIVATE_SUCCESSFUL; // The customer has an activated playingcard after this call
                 break;
             case CARD_NOT_FOUND:
                 graphiteHelper.customCounter(ACTIVATECARD_CATEGORY, "cardnotfound", 1);
@@ -80,7 +80,7 @@ public class ActivateCardEvent extends AbstractEvent {
                     .append(businessRequest.getCardNumber())
                     .append(", Return Code: ").append(businessResponse.getReturnCode())
                     .toString());
-            throw new ActivityException(SERVICE_NAME, "Call to activate card failed.");
+            throw new ActivityException(SERVICE_NAME, "Call to activate playingcard failed.");
         }
 
         return EventOutput.success();

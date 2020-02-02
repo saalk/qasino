@@ -13,7 +13,7 @@ Ctrl + Shift + W: Decrease current selection to previous state
 Ctrl + Shift + ]/[: Select till code block end/start
 
 ## Copy and paste -  refactors the code auickly
-Ctrl + X/C/V : clipboard actions
+Ctrl + X/C/V : clipboard moves
 Ctrl +C+nothing selected : copies line at caret to clipboard
 Ctrl + Shift + V: Paste from recent buﬀers...
 
@@ -45,7 +45,7 @@ Ctrl + Shift + Space: Smart code completion (filters the list of methods and var
 Ctrl + Shift + Enter: Complete statement #!
 Ctrl + Alt + T: Surround with… (if..else, try..catch, for, synchronized, etc.)
 
-Alt + Enter: Show intention actions and quick-fxes
+Alt + Enter: Show intention moves and quick-fxes
 
 ## Create code - make default classes, methods or fields
 Ctrl + I: enables you to create default methods for methods you have to Implement.

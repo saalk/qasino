@@ -13,7 +13,7 @@ public interface RetryController {
     /**
      * This method will be called by the scheduler at every retry.
      *
-     * The implementing class should trigger the retry event from this method. It should look like this:
+     * The implementing class should trigger the retry move from this method. It should look like this:
      *
      * public void handleRetry(CreditCardRequestEntity request){
      *     ChangeRepaymentOnDTO input = new ChangeRepaymentOnDTO();

@@ -46,7 +46,7 @@ public class GetArrangementsByPartyAction implements Action<GetArrangementsByPar
         }
         if (businessResponse != null) {
             log.debug("looking for cc arrangements retrieved from gArragements : {} with messageId "+flowDTO.getMessageId(), businessResponse.getCreditCardArrangements().size(), businessResponse.getCreditCardArrangements());
-            auditDelegateHelper.logMessage(ConstantsUtil.SERVICE_NAME_G_ARRANGEMENTS, "Action successful for the messageId", flowDTO.getMessageId());
+            auditDelegateHelper.logMessage(ConstantsUtil.SERVICE_NAME_G_ARRANGEMENTS, "Move successful for the messageId", flowDTO.getMessageId());
             flowDTO.getCreditcardArrangements().addAll(businessResponse.getCreditCardArrangements());
             graphiteHelper.customCounter(ConstantsUtil.G_ARRANGEMENTS_COUNTER, ConstantsUtil.SUCCESS_REQUESTS_COUNTER, 1 );
             return true;

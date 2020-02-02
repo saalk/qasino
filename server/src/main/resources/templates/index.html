@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Qasino.cloud - a High-low card game</title>
+    <title>Qasino.cloud - a High-low playingCard game</title>
     <link rel="icon" type="image" href="favicon.ico">
 
     <!-- Include Bootstrap -->
@@ -40,9 +40,9 @@
             -->
             <ul>
                 <li style="list-style-type:none" v-for="user in users">
-                    <user-card
+                    <user-playingCard
                             v-bind:user="user" v-bind:key="user.userId">
-                    </user-card>
+                    </user-playingCard>
                 </li>
             </ul>
         </div>
@@ -63,17 +63,17 @@
 <script src="https://cdn.jsdelivr.net/npm/vue@2.5.16/dist/vue.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/6.21.1/babel.min.js"></script>
 <script type="text/babel">
-    // user-card is now a Vue component that generates a 'card' showing a user
-    // It can be used declaratively like <user-card v-bind:user="someuser">
+    // user-playingCard is now a Vue component that generates a 'playingCard' showing a user
+    // It can be used declaratively like <user-playingCard v-bind:user="someuser">
     //
-    Vue.component('user-card', {
+    Vue.component('user-playingCard', {
         props: ['user'],
-        template: `<div class="card">
-                    <div class="card-body">
-                        <h6 class="card-title">
+        template: `<div class="playingCard">
+                    <div class="playingCard-body">
+                        <h6 class="playingCard-title">
                             {{ user.alias }}
                         </h6>
-                        <p class="card-text">
+                        <p class="playingCard-text">
                             <div>
                             {{ user.email }}
                             </div>

@@ -68,8 +68,8 @@ public class Player {
     private int fiches;
 
     // current sequence of the player in the game, zero is a DECLINED USER
-    @Column(name = "sequence")
-    private int sequence;
+    @Column(name = "seat")
+    private int seat;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "avatar", nullable = true, length = 50)
@@ -82,17 +82,18 @@ public class Player {
     @Setter(AccessLevel.NONE)
     @Column(name = "is_winner")
     private boolean winner;
+
     // References
 
-/*    // GaWi: one Player is the Winner of the GameSubTotals in the end
-    @OneToOne(mappedBy = "winner", cascade = CascadeType.DETACH)
+    // GaWi: one Player is the Winner of the GameSubTotals in the end
+    @OneToOne(mappedBy = "player", cascade = CascadeType.DETACH)
     // just a reference the fk column is in game not here!
-    private GameSubTotals winner = new GameSubTotals();*/
+    private Result result;// = new Result();
 
-    // HO: A Player holds one or more PlayingCard after dealing
+    // HO: A Player holds one or more Card after dealing
     @OneToMany(mappedBy = "hand", cascade = CascadeType.DETACH)
     // just a reference, the actual fk column is in game not here !
-    private List<PlayingCard> playingCards = new ArrayList<>();
+    private List<Card> cards = new ArrayList<>();
 
     public Player() {
         LocalDateTime localDateAndTime = LocalDateTime.now();
@@ -102,22 +103,22 @@ public class Player {
         this.role = Role.INITIATOR;
         this.winner = false;
         this.human = true;
-        this.sequence = 1;
+        this.seat = 1;
     }
 
-    public Player(User user, Game game, Role role, int fiches, int sequence) {
+    public Player(User user, Game game, Role role, int fiches, int seat) {
         this();
         this.user = user;
         this.role = role;
         this.game = game;
         this.human = this.user != null;
         this.fiches = fiches;
-        this.sequence = sequence;
+        this.seat = seat;
         this.aiLevel = AiLevel.HUMAN;
     }
 
-    public Player(User user, Game game, Role role, int fiches, int sequence, Avatar avatar, AiLevel aiLevel) {
-        this(user, game, role, fiches, sequence);
+    public Player(User user, Game game, Role role, int fiches, int seat, Avatar avatar, AiLevel aiLevel) {
+        this(user, game, role, fiches, seat);
 
         this.avatar = avatar;
         this.aiLevel = aiLevel;

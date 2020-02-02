@@ -58,7 +58,7 @@ public class InquireAccountResponseUtil {
             case "SP" :
                 return CreditCardStatus.STOLEN;
             default:
-                throw new IllegalArgumentException("Invalid credit card status: " + creditCardStatus);
+                throw new IllegalArgumentException("Invalid credit playingcard status: " + creditCardStatus);
         }
     }
 

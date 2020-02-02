@@ -1,6 +1,6 @@
 @startuml src/main/resources/plantuml/Casino.png
 		skinparam classAttributeIconSize 0
-		package "cloud.Qasino.card" {
+		package "cloud.qasino.card" {
 		package "entity" {
 
 class User {
@@ -57,11 +57,11 @@ class Game {
 + setPlayingOrder(in: boolean humanFirst)
 + shuffleDeck(in: #jokers, out: deck)
 -- MAIN --
-+ layoutOnTable(out: cards on table)
-+ getAllHands(out: cards per hand)
++ layoutOnTable(out: playingCards on table)
++ getAllHands(out: playingCards per hand)
 }
 
-Game -left- Type : card
+Game -left- Type : playingCard
 Game -down- Style : style
 Game "1" -right- "n" PlayingCard : deck
 
@@ -126,7 +126,7 @@ class CardEvent {
 - playerOrder : int
 - roundNumber : int
 - moveNumber : int
-- action : Move
+- move : Move
 - bet : int
 -- PREPARE --
 - validateAction(in: CardEvent)
@@ -138,7 +138,7 @@ class CardEvent {
 + determineNextAction
 (out: Player, Moves, GameState)
 }
-CardEvent -up- Move : action
+CardEvent -up- Move : move
 
 enum Move {
 .. Generic

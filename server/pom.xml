@@ -2,17 +2,17 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>cloud.Qasino.card</groupId>
+	<groupId>cloud.Qasino.playingCard</groupId>
 	<artifactId>games</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>games</name>
-	<description>Spring Boot H2 app for playing card games</description>
+	<description>Spring Boot H2 app for playing playingCard games</description>
 
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
 		<version>2.2.2.RELEASE</version>
-		<relativePath/> <!-- lookup parent from repositories -->
+		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 
 	<distributionManagement>

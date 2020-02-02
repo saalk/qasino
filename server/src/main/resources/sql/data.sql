@@ -1,9 +1,9 @@
 --
--- Table structure for table cards
+-- Table structure for table playingCards
 --
-DROP TABLE IF EXISTS cards;
+DROP TABLE IF EXISTS playingCards;
 
-CREATE TABLE cards (
+CREATE TABLE playingCards (
   cardId varchar(3) NOT NULL,
   rank varchar(255) DEFAULT NULL,
   suit varchar(255) DEFAULT NULL,

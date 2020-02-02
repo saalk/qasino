@@ -33,7 +33,7 @@ public class MaintainFullAccountEvent extends AbstractEvent {
     private static final String SERVICE_NAME = "Maintain Full Account";
     private static final String RETURN_SUCCESS = "00000";
     private static final String REQUEST_ID = "RequestId";
-    private static final String SIA_ACTION = "SIA action";
+    private static final String SIA_ACTION = "SIA suppliedMove";
     private static final String ACCOUNT_NUMBER = "AccountNumber";
     private static final String PORTFOLIO_CODE = "PortfolioCode";
 

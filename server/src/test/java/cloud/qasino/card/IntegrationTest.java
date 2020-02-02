@@ -1,7 +1,7 @@
-//package cloud.qasino.card;
+//package cloud.qasino.playingcard;
 //
-//import cloud.qasino.card.entity.User;
-//import cloud.qasino.card.repositories.UserRepository;
+//import cloud.qasino.playingcard.entity.User;
+//import cloud.qasino.playingcard.repository.UserRepository;
 //import org.junit.Ignore;
 //import org.junit.Test;
 //import org.springframework.beans.factory.annotation.Autowired;

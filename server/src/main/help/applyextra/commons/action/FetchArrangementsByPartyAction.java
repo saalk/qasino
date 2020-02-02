@@ -44,7 +44,7 @@ public class FetchArrangementsByPartyAction implements Action<FetchArrangementsB
         void setInTransferArrangements(List<Arrangement> inTransferArrangements);
         void setStudentOverdraftArrangements(List<Arrangement> studentOverdraftArrangements);
 
-        @Override // Codes required for this action.
+        @Override // Codes required for this suppliedMove.
         default void addRequestCodesToRequest(PartyArrangementBusinessRequest request) {
             request.getCategoryCodes().add(CREDITCARDS_CATEGORY_CODE);
             request.getCategoryCodes().add(PAYMENTS_CATEGORY_CODE);

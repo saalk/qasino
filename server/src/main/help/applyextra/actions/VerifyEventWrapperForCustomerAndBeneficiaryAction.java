@@ -40,7 +40,7 @@ public class VerifyEventWrapperForCustomerAndBeneficiaryAction implements Action
                 dto.getCustomerId());
         final EventOutput.Result resultVerifyCustomer = verifyEvent.fireEvent(dtoForCustomer).getResult();
         if (!EventOutput.Result.SUCCESS.equals(resultVerifyCustomer)) {
-            log.warn("Verify Event Failed for requestId: " + dto.getRequestId() +" while checking for the customer, " +
+            log.warn("Verify Turn Failed for requestId: " + dto.getRequestId() +" while checking for the customer, " +
                     "Result = " + resultVerifyCustomer);
             return EventOutput.Result.FAILURE;
         }
@@ -50,7 +50,7 @@ public class VerifyEventWrapperForCustomerAndBeneficiaryAction implements Action
                 dto.getBeneficiaryId());
         final EventOutput.Result resultVerifyBeneficiary = verifyEvent.fireEvent(dtoForBeneficiary).getResult();
         if (!EventOutput.Result.SUCCESS.equals(resultVerifyBeneficiary)) {
-            log.warn("Verify Event Failed for requestId: " + dto.getRequestId() + " while checking for the beneficiary, " +
+            log.warn("Verify Turn Failed for requestId: " + dto.getRequestId() + " while checking for the beneficiary, " +
                     "Result = " + resultVerifyBeneficiary);
             return EventOutput.Result.FAILURE;
         }

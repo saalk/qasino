@@ -52,7 +52,7 @@ public class InquireAccountAction implements Action<InquireAccountAction.Inquire
                 graphiteHelper.customCounter(ConstantsUtil.INQUIREACCOUNT_COUNTER, ConstantsUtil.FAILURE_REQUESTS_COUNTER, 1);
                 throw new Exception("No known response  or error response received from InquireAccount for messageId "+flowDto.getMessageId());
             } else {
-                auditDelegateHelper.logMessage(ConstantsUtil.SERVICE_NAME_INQUIRE_ACCOUNT, "Action successful for the messageId",flowDto.getMessageId());
+                auditDelegateHelper.logMessage(ConstantsUtil.SERVICE_NAME_INQUIRE_ACCOUNT, "Move successful for the messageId",flowDto.getMessageId());
                 graphiteHelper.customCounter(ConstantsUtil.INQUIREACCOUNT_COUNTER, ConstantsUtil.SUCCESS_REQUESTS_COUNTER, 1);
                 return tmpResponse;
             }

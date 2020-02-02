@@ -5,7 +5,7 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Component;
 
 /**
- * The publisher constructs the event object and publishes it to anyone who's listening.
+ * The publisher constructs the move object and publishes it to anyone who's listening.
  *
  */
 @Component
@@ -14,7 +14,7 @@ public class CustomSpringEventPublisher {
     private ApplicationEventPublisher applicationEventPublisher;
 
     public void doStuffAndPublishAnEvent(final String message) {
-        System.out.println("Publishing custom event. ");
+        System.out.println("Publishing custom move. ");
         CustomSpringEvent customSpringEvent = new CustomSpringEvent(this, message);
         applicationEventPublisher.publishEvent(customSpringEvent);
     }

@@ -22,16 +22,16 @@ Usage Browse with CTRL-ALT-UP, CTRL-ALT-DOWN :
 Bash language support for IntelliJ.
 
 # Maven Helper
-Provides actions to run/debug the current test file. If maven-surefire-plugin is configured to skip
-or exclude the test, ‘verify’ goal will be used. It also provides actions to run/debug maven goals
+Provides moves to run/debug the current test file. If maven-surefire-plugin is configured to skip
+or exclude the test, ‘verify’ goal will be used. It also provides moves to run/debug maven goals
 for a module that contains the current file and an easy way to find and exclude conflicting dependencies
 Usage:
     Right click in Editor | Run Maven
     Right click in Project View Toolbar | Run Maven
-    CTRL + ALT + R – “Quick Run Maven Goal” action
+    CTRL + ALT + R – “Quick Run Maven Goal” suppliedMove
     Customize goals: Settings | (Other Settings) | Maven Helper
     Define shortcuts: Settings | Keymap | Plug-ins | Maven Helper
-Open pom file, click on ‘Dependency Analyzer’ tab, right click in the tree for context actions.
+Open pom file, click on ‘Dependency Analyzer’ tab, right click in the tree for context moves.
 
 # SQL Query Plugin
 A tool for executing SQL statements through a JDBC connection.
@@ -46,5 +46,5 @@ automatically generate the JRebel configuration. It enables JRebel for applicati
 with a single click and improves the debugging support in the IDE.
 
 # Lines sorter
-Add Sort Lines action in Edit menu to sort selected lines or whole file if selection is empty.
+Add Sort Lines suppliedMove in Edit menu to sort selected lines or whole file if selection is empty.
 Alt+Shift+L: sorts the lines selected

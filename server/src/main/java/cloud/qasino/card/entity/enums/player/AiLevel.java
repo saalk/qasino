@@ -1,7 +1,6 @@
 package cloud.qasino.card.entity.enums.player;
 
 import cloud.qasino.card.entity.enums.LabeledEnum;
-import cloud.qasino.card.entity.enums.event.Action;
 import lombok.Getter;
 
 import javax.persistence.Column;

@@ -68,7 +68,7 @@ public class ArrangementPartySearchAction implements Action<ArrangementPartySear
 
 
     public interface ArrangementPartySearchActionDTO {
-        //Need to pass P/M in case of a credit card.
+        //Need to pass P/M in case of a credit playingcard.
         String getArrangementIdForPartySearch();
 
         default String getArrangementTypeForPartySearch(){

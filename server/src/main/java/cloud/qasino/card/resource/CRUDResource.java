@@ -1,17 +1,16 @@
 package cloud.qasino.card.resource;
 
-import cloud.qasino.card.controller.statemachine.GameState;
+import cloud.qasino.card.statemachine.GameState;
+import cloud.qasino.card.entity.Card;
 import cloud.qasino.card.entity.Game;
 import cloud.qasino.card.entity.Player;
-import cloud.qasino.card.entity.PlayingCard;
 import cloud.qasino.card.entity.User;
-import cloud.qasino.card.entity.enums.game.Type;
 import cloud.qasino.card.entity.enums.player.AiLevel;
 import cloud.qasino.card.entity.enums.player.Avatar;
-import cloud.qasino.card.repositories.GameRepository;
-import cloud.qasino.card.repositories.PlayerRepository;
-import cloud.qasino.card.repositories.PlayingCardRepository;
-import cloud.qasino.card.repositories.UserRepository;
+import cloud.qasino.card.repository.GameRepository;
+import cloud.qasino.card.repository.PlayerRepository;
+import cloud.qasino.card.repository.CardRepository;
+import cloud.qasino.card.repository.UserRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,18 +43,18 @@ public class CRUDResource {
     private UserRepository userRepository;
     private GameRepository gameRepository;
     private PlayerRepository playerRepository;
-    private PlayingCardRepository playingCardRepository;
+    private CardRepository cardRepository;
 
     @Autowired
     public CRUDResource(
             UserRepository userRepository,
             GameRepository gameRepository,
-            PlayingCardRepository playingCardRepository,
+            CardRepository cardRepository,
             PlayerRepository playerRepository) {
 
         this.userRepository = userRepository;
         this.gameRepository = gameRepository;
-        this.playingCardRepository = playingCardRepository;
+        this.cardRepository = cardRepository;
         this.playerRepository = playerRepository;
     }
 
@@ -428,9 +427,9 @@ public class CRUDResource {
     }
 
     // R - can be tested
-    @GetMapping(value = "/playingcards/card/{card}")
+    @GetMapping(value = "/playingcards/playingcard/{playingcard}")
     public ResponseEntity getPlayingCardByCard(
-            @PathVariable("card") String card
+            @PathVariable("playingcard") String card
     ) {
 
         // header in response
@@ -444,16 +443,16 @@ public class CRUDResource {
         // validations
 
         // logic
-        List<PlayingCard> foundPlayingCards = playingCardRepository.findByCard(card);
-        return ResponseEntity.ok().headers(headers).body(foundPlayingCards);
+        List<Card> foundCards = cardRepository.findByCard(card);
+        return ResponseEntity.ok().headers(headers).body(foundCards);
 
     }
 
     // D - can be tested
-    @DeleteMapping("/playingcards/games/{id}/card/{card}")
+    @DeleteMapping("/playingcards/games/{id}/playingcard/{playingcard}")
     public ResponseEntity deletePlayingCardByCard(
             @PathVariable("id") String id,
-            @PathVariable("card") String card
+            @PathVariable("playingcard") String card
     ) {
 
         // header in response
@@ -477,21 +476,21 @@ public class CRUDResource {
         }
 
         // todo LOW this is not unique
-        List<PlayingCard> foundPlayingCard = playingCardRepository.findByCard(card);
+        List<Card> foundCard = cardRepository.findByCard(card);
         if (false) {
             // 404
             return ResponseEntity.status(HttpStatus.NOT_FOUND).headers(headers).build();
         }
 
         // logic
-        //playingCardRepository.deleteById(foundPlayingCard.get().getPlayingCardId());
+        //cardRepository.deleteById(foundCard.get().getPlayingCardId());
         // delete 204
         return ResponseEntity.status(HttpStatus.NO_CONTENT).headers(headers).build();
     }
 
     // todo test
     @DeleteMapping("/playingcards/{id}")
-    public ResponseEntity<PlayingCard> deletePlayingCardById(
+    public ResponseEntity<Card> deletePlayingCardById(
             @PathVariable("id") String id
     ) {
 
@@ -509,14 +508,14 @@ public class CRUDResource {
             return ResponseEntity.badRequest().headers(headers).build();
 
         int playingCardId = Integer.parseInt(id);
-        Optional<PlayingCard> foundPlayingCard = playingCardRepository.findById(playingCardId);
+        Optional<Card> foundPlayingCard = cardRepository.findById(playingCardId);
         if (!foundPlayingCard.isPresent()) {
             // 404
             return ResponseEntity.status(HttpStatus.NOT_FOUND).headers(headers).build();
         }
 
         // logic
-        playingCardRepository.deleteById(playingCardId);
+        cardRepository.deleteById(playingCardId);
         // delete 204
         return ResponseEntity.status(HttpStatus.NO_CONTENT).headers(headers).build();
     }

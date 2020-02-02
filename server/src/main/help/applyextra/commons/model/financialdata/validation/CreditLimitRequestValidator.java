@@ -24,7 +24,7 @@ public class CreditLimitRequestValidator {
     ///////////////////////////////////////////////////////
 
     /**
-     * In case of a Revolving card, finance is expected.
+     * In case of a Revolving playingcard, finance is expected.
      * 
      * @return boolean
      */
@@ -42,7 +42,7 @@ public class CreditLimitRequestValidator {
 
     /**
      * In case of a temporary source of income it should be indicated by the requestor that the given monthly net income
-     * has been received during the past 12 months (both in case of a Charge and Revolving card). Note that when the
+     * has been received during the past 12 months (both in case of a Charge and Revolving playingcard). Note that when the
      * incomeFullLastYear is false, then REJECT
      * 
      * @return boolean
@@ -95,7 +95,7 @@ public class CreditLimitRequestValidator {
     ///////////////////////////////////////////////////////
 
     /**
-     * In case of a Revolving card, some expense fields are required: housing cost type, monthly housing cost and the
+     * In case of a Revolving playingcard, some expense fields are required: housing cost type, monthly housing cost and the
      * children present indicator.
      */
     @AssertTrue(message = "{revolving.expenses.missing}")
@@ -120,7 +120,7 @@ public class CreditLimitRequestValidator {
     ///////////////////////////////////////////////////////
 
     /**
-     * In case of a Charge card, extra loans are not expected
+     * In case of a Charge playingcard, extra loans are not expected
      */
     @AssertTrue(message = "{charge.extraLoans.abundant}")
     public boolean isExtraLoansNotGivenForCharge() {
@@ -140,7 +140,7 @@ public class CreditLimitRequestValidator {
     ///////////////////////////////////////////////////////
 
     /**
-     * In case of a Charge card the marital status is not expected
+     * In case of a Charge playingcard the marital status is not expected
      * 
      * @return boolean
      */
@@ -158,7 +158,7 @@ public class CreditLimitRequestValidator {
     }
 
     /**
-     * In case of a Revolving card the marital status is required
+     * In case of a Revolving playingcard the marital status is required
      * 
      * @return boolean
      */

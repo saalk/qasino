@@ -18,7 +18,7 @@ public enum Avatar implements LabeledEnum {
     ELF("elf", "coin for no insurance"),
     MAGICIAN("magician", "six wins the game"),
     GOBLIN("goblin", "coin pays insurance as bonus"),
-    ROMAN("warrior", "clubs for free turn"),
+    ROMAN("warrior", "clubs for free move"),
     ERROR("error", "no powers");
 
     /**

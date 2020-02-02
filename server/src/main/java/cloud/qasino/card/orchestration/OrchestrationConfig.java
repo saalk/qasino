@@ -1,15 +1,17 @@
 package cloud.qasino.card.orchestration;
 
-import cloud.qasino.card.components.retry.RetryCriteria;
-import cloud.qasino.card.controller.statemachine.GameState;
-import cloud.qasino.card.entity.enums.game.Type;
-import lombok.Getter;
+import cloud.qasino.card.action.interfaces.Action;
+import cloud.qasino.card.orchestration.interfaces.EventHandlingResponse;
+import cloud.qasino.card.orchestration.interfaces.Expression;
+import cloud.qasino.card.statemachine.GameState;
+import cloud.qasino.card.event.EventEnum;
+import cloud.qasino.card.event.interfaces.Event;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.*;
 
-import static cloud.qasino.card.dto.event.EventOutput.Result.SUCCESS;
-import static cloud.qasino.card.orchestration.EventEnum.ENTER_STATE;
+import static cloud.qasino.card.event.EventEnum.ENTER_STATE;
+import static cloud.qasino.card.event.EventOutput.Result.SUCCESS;
 
 /**
  * Contains states, events handled by certain states, actions to be carried out and transitions.
@@ -19,20 +21,28 @@ import static cloud.qasino.card.orchestration.EventEnum.ENTER_STATE;
 @Slf4j
 public class OrchestrationConfig {
 
+    private static int actionIdCount = 0;
+    //@Getter
+    //private final RetryCriteria retryCriteria = new RetryCriteria();
     private Map<GameState, StateConfig> stateConfigMap = new LinkedHashMap<GameState, StateConfig>();
-
     private Map<Event, List<GameState>> statesPermittingEvent = new HashMap<>();
-
     private List<Class<? extends Action>> actionsBeforeEvent = new ArrayList<>();
     private List<Class<? extends Action>> actionsAfterEvent = new ArrayList<>();
     private Map<Class<? extends Exception>, Transition> exceptionToTransitionMap = new LinkedHashMap<>();
-
     private boolean rethrowExceptions = false;
     private EventHandlingResponse defaultResponse;
+    //private List<Class<? extends Action>> actionsBeforeRetryEvent = new ArrayList<>();
 
-    private List<Class<? extends Action>> actionsBeforeRetryEvent = new ArrayList<>();
-    @Getter
-    private final RetryCriteria retryCriteria = new RetryCriteria();
+    private static Transition getTransitionForException(Exception exception, Map<Class<? extends Exception>, Transition>
+            exceptionToTransitionMap) {
+        Class<? extends Exception> exceptionClass = exception.getClass();
+        for (Class<? extends Exception> expectedExceptionClass : exceptionToTransitionMap.keySet()) {
+            if (expectedExceptionClass.isAssignableFrom(exceptionClass)) {
+                return exceptionToTransitionMap.get(expectedExceptionClass);
+            }
+        }
+        return null;
+    }
 
     /**
      * Adds a state.
@@ -55,7 +65,7 @@ public class OrchestrationConfig {
 
     /**
      * @param event
-     * @return List<State>
+     * @return List<GameState>
      */
     List<GameState> getStatesPermittingEvent(Event event) {
         return statesPermittingEvent.containsKey(event) ? statesPermittingEvent.get(event) : new ArrayList<GameState>();
@@ -75,17 +85,6 @@ public class OrchestrationConfig {
             throw new IllegalStateException("event " + event + " cannot be handled twice by for state " + state);
         }
         states.add(state);
-    }
-
-    private static Transition getTransitionForException(Exception exception, Map<Class<? extends Exception>, Transition>
-            exceptionToTransitionMap) {
-        Class<? extends Exception> exceptionClass = exception.getClass();
-        for (Class<? extends Exception> expectedExceptionClass : exceptionToTransitionMap.keySet()) {
-            if (expectedExceptionClass.isAssignableFrom(exceptionClass)) {
-                return exceptionToTransitionMap.get(expectedExceptionClass);
-            }
-        }
-        return null;
     }
 
     /**
@@ -186,6 +185,7 @@ public class OrchestrationConfig {
         return this;
     }
 
+/*
     public OrchestrationConfig retryRequest(Type requestType) {
         this.retryCriteria.setTypeCriteria(requestType);
         return this;
@@ -200,6 +200,7 @@ public class OrchestrationConfig {
         onErrorRetryFrom(Arrays.asList(states));
         return this;
     }
+*/
 
     /**
      * Configures Exceptions on actions to be rethrown instead of resulting in transitions
@@ -241,6 +242,42 @@ public class OrchestrationConfig {
      */
     public boolean statePermitsEvent(final GameState state, final EventEnum event) {
         return getEventConfig(state, event) != null;
+    }
+
+    /**
+     * Contains both old-style Trigger and configured next GameState.
+     * Is used to facilitate gradual refactoring of Trigger-based controller configuration.
+     */
+    static class Transition {
+        private GameState nextState;
+        private EventHandlingResponse response;
+        private Event nextEvent;
+
+        /**
+         * One of the parameters may be null, depending on how transitions are configured.
+         *
+         * @param nextState
+         */
+        Transition(final GameState nextState, final EventHandlingResponse response, Event nextEvent) {
+            this.nextState = nextState;
+            this.response = response;
+            this.nextEvent = nextEvent;
+        }
+
+        /**
+         * @return GameState
+         */
+        GameState getNextState() {
+            return nextState;
+        }
+
+        EventHandlingResponse getResponse() {
+            return response;
+        }
+
+        public Event getNextEvent() {
+            return nextEvent;
+        }
     }
 
     /**
@@ -288,7 +325,7 @@ public class OrchestrationConfig {
         }
 
         /**
-         * @return State
+         * @return GameState
          */
         GameState getState() {
             return state;
@@ -327,22 +364,22 @@ public class OrchestrationConfig {
         /**
          * Records in this state will be retried automatically when pending in current state.
          *
-         * @see CreditCardsEventHandler
+         * @see QasinoEventHandler
          */
-        public StateConfig retryIfPending() {
+/*        public StateConfig retryIfPending() {
             retryCriteria.getPendingRequestStateCriteria().add(this.state);
             return this;
-        }
+        }*/
 
         /**
          * Records in this state will be retried automatically when pending in current state.
          *
-         * @see CreditCardsEventHandler
+         * @see QasinoEventHandler
          */
-        public StateConfig retryIfError() {
+/*        public StateConfig retryIfError() {
             retryCriteria.getErrorAndPreviousStateCriteria().add(this.state);
             return this;
-        }
+        }*/
 
     }
 
@@ -444,45 +481,6 @@ public class OrchestrationConfig {
     }
 
     /**
-     * Contains both old-style Trigger and configured next State.
-     * Is used to facilitate gradual refactoring of Trigger-based controller configuration.
-     */
-    static class Transition {
-        private GameState nextState;
-        private EventHandlingResponse response;
-        private Event nextEvent;
-
-        /**
-         * One of the parameters may be null, depending on how transitions are configured.
-         *
-         * @param nextState
-         */
-        Transition(final GameState nextState, final EventHandlingResponse response, Event nextEvent) {
-            this.nextState = nextState;
-            this.response = response;
-            this.nextEvent = nextEvent;
-        }
-
-        /**
-         * @return GameState
-         */
-        GameState getNextState() {
-            return nextState;
-        }
-
-        EventHandlingResponse getResponse() {
-            return response;
-        }
-
-        public Event getNextEvent() {
-            return nextEvent;
-        }
-    }
-
-    private static int actionIdCount = 0;
-
-
-    /**
      * Contains configuration of actions to be performed during event handling.
      */
     public class ActionConfig {
@@ -526,7 +524,7 @@ public class OrchestrationConfig {
         }
 
         /**
-         * @return State
+         * @return GameState
          */
         GameState getCorrespondingState() {
             return event.state.state;

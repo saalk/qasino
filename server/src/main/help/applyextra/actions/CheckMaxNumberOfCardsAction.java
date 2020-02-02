@@ -35,7 +35,7 @@ public class CheckMaxNumberOfCardsAction implements Action<CheckMaxNumberOfCards
 
     @Override
     public EventOutput perform(ApplyExtraCardBusinessRulesDTO dto) {
-        log.info("########## Start of event Perform CheckMaxNumberOfCardsAction: " + LocalTime.now());
+        log.info("########## Start of move Perform CheckMaxNumberOfCardsAction: " + LocalTime.now());
         dto.setCreditCardAccount(dto.getCreditCardAccount());
         EventOutput result = creditCardListAction.perform(dto);
         if(result.isFailure()) {
@@ -46,7 +46,7 @@ public class CheckMaxNumberOfCardsAction implements Action<CheckMaxNumberOfCards
         applicableBusinessRules.put(maxNumberOfExtraCardsRule, dto.getCreditCardAccount().getCreditCardMemberAccountList());
         applicableBusinessRules.put(accountIsNotStudentRule, dto.getRoleWithArrangements());
 
-        log.info("########## End of event Perform CheckMaxNumberOfCardsAction: " + LocalTime.now());
+        log.info("########## End of move Perform CheckMaxNumberOfCardsAction: " + LocalTime.now());
         return EventOutput.success();
     }
 

@@ -44,7 +44,7 @@ public class Result {
     @OneToOne(cascade = CascadeType.DETACH)
     @JoinColumn(name = "player_id", referencedColumnName = "player_id", foreignKey = @ForeignKey
             (name = "fk_player_id"), nullable = false)
-    private Player winner;
+    private Player player;
 
     // UsPl: a User can win the Games as a Player
     @ManyToOne(cascade = CascadeType.DETACH)
@@ -52,14 +52,14 @@ public class Result {
             (name = "fk_user_id"), nullable = true)
     private User user;
 
-    // UsPl: a User can win many Games as a User
-    @ManyToOne(cascade = CascadeType.DETACH)
-    @JoinColumn(name = "league_id", referencedColumnName = "league_id", foreignKey = @ForeignKey
-            (name = "fk_league_id"), nullable = true)
-    private League league;
+    // the game for which the result is achieved
+    @OneToOne (cascade = CascadeType.DETACH)
+    @JoinColumn(name = "game_id", referencedColumnName = "game_id",foreignKey = @ForeignKey(name =
+            "fk_game_id"), nullable=false)
+    private Game game;
+
 
     // Normal fields
-
     @Enumerated(EnumType.STRING)
     @Column(name = "type", length = 50, nullable = false)
     private Type type;
@@ -94,11 +94,12 @@ public class Result {
         this.day = localDateAndTime.getDayOfMonth();
     }
 
-    public Result(Player winner, User user, League league, Type type, int fichesWon) {
+    public Result(Player player, User user, Game game, Type type, int fichesWon) {
         this();
-        this.winner = winner;
+        this.player = player;
         this.user = user;
-        this.league = league;
+        this.game = game;
+
         this.type = type;
         this.fichesWon = fichesWon;
     }

@@ -33,7 +33,7 @@ public class ApplyRepricingEvent extends AbstractEvent {
     public static final long DEFAULT_REQUEST_TIMEOUT = 5000;
     private static final String SERVICE_NAME = "Apply Repricing";
     private static final String RETURN_SUCCESS = "00000";
-    private static final String SIA_ACTION = "SIA action";
+    private static final String SIA_ACTION = "SIA suppliedMove";
     private static final String REQUEST_ID = "RequestId";
     private static final String RETURN_CODE = "ReturnCode";
     private static final String RETURN_MESSAGE = "ReturnMessage";

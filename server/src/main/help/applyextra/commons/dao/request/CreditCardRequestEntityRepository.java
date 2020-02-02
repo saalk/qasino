@@ -24,14 +24,14 @@ public interface CreditCardRequestEntityRepository extends JpaRepository<CreditC
     public List<CreditCardRequestEntity> findRequestsByRequestTypeInAndCurrentStateInAndCustomerIdIsAndCreationTimeIsNotNullAndCreationTimeAfter(List<RequestType> requestType, List<CreditCardsStateMachine.State> currentState, String customerId, Date startDate);
     
     /**
-     * gets all the requests on the card in the cc_request table of a particular request type and states
+     * gets all the requests on the playingcard in the cc_request table of a particular request type and states
      * @return list of requests in selected states
      */
     List<CreditCardRequestEntity> findCreditCardRequestByRequestorIdAndRequestTypeInAndCurrentStateIn(
             final String requestorId, final List<RequestType> requestTypesToCancel, final List<State> states);
 
     /**
-     * gets all the requests on the card in the cc_request table of a particular request type and states
+     * gets all the requests on the playingcard in the cc_request table of a particular request type and states
      * @return list of requests in selected states
      */
     List<CreditCardRequestEntity> findCreditCardRequestByCustomerIdAndRequestTypeInAndCurrentStateIn(

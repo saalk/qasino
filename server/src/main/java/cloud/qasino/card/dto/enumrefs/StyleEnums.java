@@ -1,6 +1,6 @@
 package cloud.qasino.card.dto.enumrefs;
 
-import cloud.qasino.card.entity.enums.style.*;
+import cloud.qasino.card.entity.enums.game.style.*;
 import lombok.Getter;
 
 import java.util.Map;

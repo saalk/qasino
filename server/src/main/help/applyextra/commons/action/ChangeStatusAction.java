@@ -31,7 +31,7 @@ public class ChangeStatusAction implements Action<ChangeStatusAction.ChangeStatu
     private static final String SERVICE_NAME = "ChangeStatus2";
     private static final String CHANGESTATUS_CATEGORY = "sia.changestatus2";
 
-    private static final String SIA_ACTION = "SIA action";
+    private static final String SIA_ACTION = "SIA suppliedMove";
     private static final String REQUEST_ID = "RequestId";
     private static final String RETURN_CODE = "ReturnCode";
     private static final String RETURN_MESSAGE = "ReturnMessage";

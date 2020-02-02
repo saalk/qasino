@@ -14,7 +14,7 @@ public interface GraphiteHelper {
     long startTiming();
 
     /**
-     * Stop the timing of a certain action, calculate the number of milliseconds and report it to Graphite with the provided
+     * Stop the timing of a certain suppliedMove, calculate the number of milliseconds and report it to Graphite with the provided
      * category and name.
      *
      * @param category the category part of the Graphite metrics key

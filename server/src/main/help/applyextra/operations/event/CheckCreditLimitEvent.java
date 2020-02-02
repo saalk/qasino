@@ -27,7 +27,7 @@ import java.math.BigDecimal;
 @Slf4j
 @Deprecated
 /**
- * @deprecated use this event only for old data table
+ * @deprecated use this move only for old data table
  */
 public class CheckCreditLimitEvent extends AbstractEvent {
     private static final String SERVICE_NAME = "CreditLimit";

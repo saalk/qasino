@@ -14,8 +14,8 @@ import java.util.List;
 
 
 /**
- * Event for input and output of API calls.
- * This event will hold data like: path, {@link WhichWay}, body and sometimes the header.
+ * Turn for input and output of API calls.
+ * This move will hold data like: path, {@link WhichWay}, body and sometimes the header.
  */
 @Slf4j
 @EqualsAndHashCode(callSuper = false)
@@ -27,7 +27,7 @@ public class CardsExchangeApiEvent extends AbstractAuditEvent {
     private final WhichWay whichWay;
 
     /**
-     * Constructor of the audit event
+     * Constructor of the audit move
      *
      * @param context RIAF context used to retrieve different properties of the request
      * @param path The path to be used
@@ -46,7 +46,7 @@ public class CardsExchangeApiEvent extends AbstractAuditEvent {
     }
 
     /**
-     * Constructor of the audit event
+     * Constructor of the audit move
      *
      * @param context RIAF context used to retrieve different properties of the request
      * @param path The path to be used
@@ -74,7 +74,7 @@ public class CardsExchangeApiEvent extends AbstractAuditEvent {
 
         fields.add(new EventField("path", path));
 
-        //some api exchange actions are only a GET without any other input than the customer id
+        //some api exchange moves are only a GET without any other input than the customer id
         if (StringUtils.hasText(body)) {
 
             final ObjectMapper mapper = new ObjectMapper();

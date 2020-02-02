@@ -23,6 +23,6 @@ public class CustomerRequest{
         SCRDGB02,  // Change repayment
         SCRDSP001, //
         SCRDSR001, //
-        SCRDCC04;  // Close card
+        SCRDCC04;  // Close playingcard
     }
 }

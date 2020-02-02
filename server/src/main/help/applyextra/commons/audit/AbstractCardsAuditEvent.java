@@ -9,9 +9,9 @@ import java.util.Properties;
 import java.util.Set;
 
 /**
- * Abstract event class for sending events to the audit logging
+ * Abstract move class for sending events to the audit logging
  * <p/>
- * The severity must be set for this event.
+ * The severity must be set for this move.
  */
 public abstract class AbstractCardsAuditEvent {
 
@@ -92,7 +92,7 @@ public abstract class AbstractCardsAuditEvent {
 	}
 
 	/**
-	 * Fill a map of event specific fields. These are added to the other required fields.
+	 * Fill a map of move specific fields. These are added to the other required fields.
 	 * Note: The whichWay and headers will already be added
 	 *
 	 * @param fields list to receive the fields

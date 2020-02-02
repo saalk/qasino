@@ -15,7 +15,7 @@ import java.util.Date;
 import java.util.List;
 
 /**
- * This action is meant to load all the requests that a customer has done in the current year.
+ * This suppliedMove is meant to load all the requests that a customer has done in the current year.
  *
  */
 @Component
@@ -76,7 +76,7 @@ public class LoadHistoricalRequestsAction implements Action<LoadHistoricalReques
 
         /**
          * List where the historical requests will be added.
-         * Should be initialized as empty list before calling the action.
+         * Should be initialized as empty list before calling the suppliedMove.
          * @return List of historical requests
          */
         List<CreditCardRequestEntity> getHistoricalFulfilledRequests();

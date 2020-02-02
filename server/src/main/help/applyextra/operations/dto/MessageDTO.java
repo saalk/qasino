@@ -23,7 +23,7 @@ public class MessageDTO {
 	// creditLimitAmount will be used later
 	private Boolean indLimitOverdraft; // limit increase or decrease indicator
 	private String accountType; // charge or revolving
-	private String productName; // type of card - creditcard or platinumcard
+	private String productName; // type of playingcard - creditcard or platinumcard
 	private Integer packageArrangementType; // Oranje, Royaal, Betaal or Basis
 	// Pakket from OMSParty
 	private Double creditLimitAmount; // credit limit amount value

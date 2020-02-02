@@ -37,7 +37,7 @@ public class InformRRBWrapperAction<T extends ApplyExtraCardDTO> implements Acti
     public EventOutput.Result perform(T flowDTO) {
 
         try {
-            // TODO: Check what happens when an Extra card is closed, and another is reopened on the same account.
+            // TODO: Check what happens when an Extra playingcard is closed, and another is reopened on the same account.
             // Pricing code should be set, and is currently done by RRB. what info do they use to determine what pricingcode to set.
             applyExtraCardRRBEvent.perform((AbstractFlowDTO) flowDTO);
         } catch (Exception e) {

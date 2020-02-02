@@ -1,18 +1,18 @@
 package cloud.qasino.card.configuration;
 
-import cloud.qasino.card.controller.statemachine.GameState;
-import cloud.qasino.card.controller.statemachine.GameTrigger;
-import cloud.qasino.card.entity.enums.event.Action;
+import cloud.qasino.card.statemachine.GameState;
+import cloud.qasino.card.statemachine.GameTrigger;
+import cloud.qasino.card.entity.enums.move.Move;
 import cloud.qasino.card.entity.enums.game.Type;
 import cloud.qasino.card.entity.enums.player.AiLevel;
 import cloud.qasino.card.entity.enums.player.Avatar;
 import cloud.qasino.card.entity.enums.player.Role;
-import cloud.qasino.card.entity.enums.playingcard.Face;
-import cloud.qasino.card.entity.enums.playingcard.Location;
-import cloud.qasino.card.entity.enums.playingcard.Position;
-import cloud.qasino.card.entity.enums.playingcard.card.Rank;
-import cloud.qasino.card.entity.enums.playingcard.card.Suit;
-import cloud.qasino.card.entity.enums.style.*;
+import cloud.qasino.card.entity.enums.card.Face;
+import cloud.qasino.card.entity.enums.card.Location;
+import cloud.qasino.card.entity.enums.card.Position;
+import cloud.qasino.card.entity.enums.card.playingcard.Rank;
+import cloud.qasino.card.entity.enums.card.playingcard.Suit;
+import cloud.qasino.card.entity.enums.game.style.*;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.EnumUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -86,8 +86,8 @@ public interface Constants {
                         EnumUtils.isValidEnum(AnteToWin.class, e) ||
                         EnumUtils.isValidEnum(RoundsToWin.class, e) ||
                         EnumUtils.isValidEnum(TurnsToWin.class, e) ||
-                        EnumUtils.isValidEnum(Action.class, e) ||
-                        Action.fromLabelWithDefault(e) != Action.ERROR ||
+                        EnumUtils.isValidEnum(Move.class, e) ||
+                        Move.fromLabelWithDefault(e) != Move.ERROR ||
                         EnumUtils.isValidEnum(Type.class, e) ||
                         Type.fromLabelWithDefault(e) != Type.ERROR ||
                         EnumUtils.isValidEnum(AiLevel.class, e) ||

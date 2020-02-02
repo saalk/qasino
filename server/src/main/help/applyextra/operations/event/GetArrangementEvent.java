@@ -21,11 +21,11 @@ import java.util.List;
 /**
  * Get arrangement information from MDM
  *
- * This event supports 2 EventDTO's:
+ * This move supports 2 EventDTO's:
  * - GetCreditCardArrangementEventDTO: Retrieve the arrangement based on creditcard number
  * - GetArrangementEventDTO: Retrieve the arrangement based on a list of arrangement keys
  *
- * Beware: This event might return null for arrangement
+ * Beware: This move might return null for arrangement
  *
  */
 @Component

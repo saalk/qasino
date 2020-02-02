@@ -1,7 +1,7 @@
 package cloud.qasino.card.domain.qasino;
 
 
-import cloud.qasino.card.entity.enums.Style;
+import cloud.qasino.card.entity.enums.game.Style;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;

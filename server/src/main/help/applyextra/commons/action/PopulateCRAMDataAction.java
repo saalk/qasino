@@ -20,7 +20,7 @@ import java.util.Collection;
 
 
 /**
- * Common Action to Prepare the CRAMDTO.
+ * Common Move to Prepare the CRAMDTO.
  * Below properties need to be set
  * 1. param/smsText
  * 2. param/authSubject

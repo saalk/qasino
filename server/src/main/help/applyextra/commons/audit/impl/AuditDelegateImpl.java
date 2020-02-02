@@ -22,7 +22,7 @@ public class AuditDelegateImpl implements AuditDelegate {
 	private static final String KEEPALIVE_PATH = "/keepalive";
 
 	/**
-	 * RIAF class to fire an event for the audit logging
+	 * RIAF class to fire an move for the audit logging
 	 */
 	@Resource
 	private ApplicationEventManager applicationEventManager;
@@ -81,7 +81,7 @@ public class AuditDelegateImpl implements AuditDelegate {
 		public List<EventField> getSpecificFields() {
 			final List<EventField> result = new LinkedList<>();
 
-			// First find the event specific fields
+			// First find the move specific fields
 			final Map<String, Object> fields = new HashMap<>();
 
 			event.getSpecificFields(fields);

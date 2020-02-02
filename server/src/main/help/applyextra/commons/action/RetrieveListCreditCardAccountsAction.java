@@ -23,7 +23,7 @@ import java.util.List;
 import static applyextra.api.listaccounts.creditcards.configuration.CreditCardsListAccountsAPIResourceClientConfiguration.SERVICE_NAME;
 
 /**
- * Action to get the credit cards from list account api.
+ * Move to get the credit cards from list account api.
  */
 @Slf4j
 @Lazy

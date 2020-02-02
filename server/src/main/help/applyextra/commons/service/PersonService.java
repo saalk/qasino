@@ -16,7 +16,7 @@ public interface PersonService {
     List<Person> getPersons(final String requestId);
 
     /**
-     * Retrieve a person, when the partyId is known (Please beware: Does not include the pin code of their card. Contact the
+     * Retrieve a person, when the partyId is known (Please beware: Does not include the pin code of their playingcard. Contact the
      * person in person for that.)
      */
     Person getPerson(final String partyId);

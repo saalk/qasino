@@ -2,7 +2,7 @@ package applyextra.commons.audit.impl;
 
 /**
  * Define whether the {@link CardsSecurityEvent} is an input or output
- * event.
+ * move.
  */
 public enum WhichWay {
 

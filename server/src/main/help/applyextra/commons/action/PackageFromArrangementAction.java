@@ -59,7 +59,7 @@ public class PackageFromArrangementAction implements Action<PackageFromArrangeme
         String getIban();
         void setPackageRefType(PackageType packageRefType);
 
-        @Override // Codes required for this action.
+        @Override // Codes required for this suppliedMove.
         default void addRequestCodesToRequest(PartyArrangementBusinessRequest request) {
             request.getCategoryCodes().add(CATEGORY_CODE_PACKAGES);
             request.getStatusCodes().add(ACTIVE_STATUS_CODE);

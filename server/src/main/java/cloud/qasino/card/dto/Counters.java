@@ -16,7 +16,7 @@ public class Counters {
         private GameSubTotals subTotalsGames = new GameSubTotals();
         private int players;
         private int leagues;
-        private int playingCards;
+        private int cards;
     }
 
     @Data

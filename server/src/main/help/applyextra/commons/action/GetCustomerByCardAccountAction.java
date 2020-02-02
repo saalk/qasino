@@ -64,7 +64,7 @@ public class GetCustomerByCardAccountAction implements Action<GetCustomerByCardA
         getCustomerByCardAccountBusinessResponse = getCustomerByCardAccountServiceClient.invoke(accountNumber, serviceTimeout);
         if(getCustomerByCardAccountBusinessResponse != null){
             if("00001".equalsIgnoreCase(getCustomerByCardAccountBusinessResponse.getReturnCode()) && getCustomerByCardAccountBusinessResponse.getCustomerId() != null){
-                auditDelegateHelper.logMessage(ConstantsUtil.GET_CUSTOMER_BY_CARD_SERVICE, "Action successful for the messageId", messageId);
+                auditDelegateHelper.logMessage(ConstantsUtil.GET_CUSTOMER_BY_CARD_SERVICE, "Move successful for the messageId", messageId);
                 graphiteHelper.customCounter(ConstantsUtil.GETCUSTOMER_BY_CARD_COUNTER, ConstantsUtil.SUCCESS_REQUESTS_COUNTER, 1);
                 return getCustomerByCardAccountBusinessResponse.getCustomerId().toString();
             } else {
