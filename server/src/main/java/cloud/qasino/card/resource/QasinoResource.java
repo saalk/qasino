@@ -2,8 +2,9 @@ package cloud.qasino.card.resource;
 
 import cloud.qasino.card.dto.Enums;
 import cloud.qasino.card.dto.Counters;
+import cloud.qasino.card.dto.QasinoFlowDTO;
 import cloud.qasino.card.entity.User;
-import cloud.qasino.card.repositories.*;
+import cloud.qasino.card.repository.*;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -16,7 +17,7 @@ import java.net.URI;
 import java.util.*;
 
 import static cloud.qasino.card.configuration.Constants.DEFAULT_PAWN_SHIP_HUMAN;
-import static cloud.qasino.card.controller.statemachine.GameState.*;
+import static cloud.qasino.card.statemachine.GameState.*;
 
 // basic path /qasino
 // basic header @RequestHeader(value "user", required = true) int userId" // else 400
@@ -34,8 +35,8 @@ public class QasinoResource {
     GameRepository gameRepository;
     UserRepository userRepository;
     PlayerRepository playerRepository;
-    PlayingCardRepository playingCardRepository;
-    EventRepository eventRepository;
+    CardRepository cardRepository;
+    TurnRepository turnRepository;
     LeagueRepository leagueRepository;
 
     @Autowired
@@ -43,16 +44,16 @@ public class QasinoResource {
             UserRepository userRepository,
             GameRepository gameRepository,
             PlayerRepository playerRepository,
-            PlayingCardRepository playingCardRepository,
+            CardRepository cardRepository,
             LeagueRepository leagueRepository,
-            EventRepository eventRepository
+            TurnRepository turnRepository
     ) {
         this.gameRepository = gameRepository;
         this.userRepository = userRepository;
         this.playerRepository = playerRepository;
-        this.playingCardRepository = playingCardRepository;
+        this.cardRepository = cardRepository;
         this.leagueRepository = leagueRepository;
-        this.eventRepository = eventRepository;
+        this.turnRepository = turnRepository;
     }
 
     // tested
@@ -74,22 +75,30 @@ public class QasinoResource {
 
     @GetMapping(value = "/logon/{alias}")
     public ResponseEntity logon(
-            @PathVariable("alias") String alias
+            @RequestHeader Map<String, String> headerData,
+            @PathVariable Map<String, String> pathData,
+            @RequestParam Map<String, String> paramData
     ) {
-
-        // todo
-        Map<String, String> pathAndRequestParams = new HashMap<>();
-        pathAndRequestParams.put("alias", alias);
 
         // header in response
         URI uri = ServletUriComponentsBuilder.fromCurrentRequest()
                 .path("")
-                .buildAndExpand(alias)
+                .buildAndExpand(pathData, paramData)
                 .toUri();
         HttpHeaders headers = new HttpHeaders();
         headers.add("URI", String.valueOf(uri));
 
-        User foundUser = userRepository.findUserByAliasAndAliasSequence(alias, 1);
+        // validations
+        QasinoFlowDTO flowDTO = new QasinoFlowDTO();
+        boolean processOk = flowDTO.processInput(headerData, pathData, paramData,null);
+        if (!processOk) {
+            headers.add(flowDTO.getErrorKey(),flowDTO.getErrorValue());
+            headers.add("message",flowDTO.getErrorMessage());
+            return ResponseEntity.status(HttpStatus.valueOf(flowDTO.getHttpStatus())).headers(headers).build();
+        }
+
+        // logic
+        User foundUser = userRepository.findUserByAliasAndAliasSequence(flowDTO.getSuppliedAlias(), 1);
         if (foundUser.getUserId() == 0) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).headers(headers).build();
         }
@@ -218,7 +227,7 @@ public class QasinoResource {
         totals.setUsers((int) userRepository.count());
         totals.setGames((int) gameRepository.count());
         totals.setPlayers((int) playerRepository.count());
-        totals.setPlayingCards((int) playingCardRepository.count());
+        totals.setCards((int) cardRepository.count());
 
         Counters.GameSubTotals gameSubTotals = new Counters.GameSubTotals();
         gameSubTotals.setNewGames((int) gameRepository.countByStates(cardGamesNewValues));

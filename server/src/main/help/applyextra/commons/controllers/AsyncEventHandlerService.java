@@ -20,12 +20,12 @@ public class AsyncEventHandlerService {
      * Uses {@link CreditCardAsyncConfiguration} to enable the Async call. If not imported, it will execute synchronously.
      *
      * @param ASyncHandler implementation of {@link CreditCardAsyncConfiguration.ASyncEventHandler}. Allows inversion of control
-     * @param targetEnum Should be the event you wish to trigger for the next state transition in your api.
+     * @param targetEnum Should be the move you wish to trigger for the next state transition in your api.
      * @param dto Should be your DTO.
      */
     @Async(ASYNC_EXECUTOR_THREAD_NAME)
     public void scheduleEvent(CreditCardAsyncConfiguration.ASyncEventHandler ASyncHandler, EventEnum targetEnum, AbstractFlowDTO dto) {
-        log.info("Scheduled Event for RequestId: " + dto.getRequestId());
+        log.info("Scheduled Turn for RequestId: " + dto.getRequestId());
         // Exception will be taken care off by the AsyncUncaughtExceptionHandler in the config.
         ASyncHandler.handleEvent(targetEnum, dto);
     }

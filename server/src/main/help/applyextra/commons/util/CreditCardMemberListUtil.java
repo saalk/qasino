@@ -13,7 +13,7 @@ import java.util.stream.Collectors;
  */
 public class CreditCardMemberListUtil {
 
-    //Method to check if credit card account contains member acount list
+    //Method to check if credit playingcard account contains member acount list
     public static boolean isMemberListPresent(CreditCardAccount creditCardAccount) {
         return CreditCardAccountType.POSITION.equals(creditCardAccount.getCreditCardAccountType());
     }

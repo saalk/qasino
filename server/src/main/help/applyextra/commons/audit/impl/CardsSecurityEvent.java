@@ -9,7 +9,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 /**
- * Event in case a security violation has been occurred.
+ * Turn in case a security violation has been occurred.
  */
 @EqualsAndHashCode(callSuper = false)
 public class CardsSecurityEvent extends AbstractAuditEvent {
@@ -17,7 +17,7 @@ public class CardsSecurityEvent extends AbstractAuditEvent {
     private final String details;
 
     /**
-     * Constructor of the audit event
+     * Constructor of the audit move
      *
      * @param context RIAF context used to retrieve different properties of the request
      * @param details The details to be used

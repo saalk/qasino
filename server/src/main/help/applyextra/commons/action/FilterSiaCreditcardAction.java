@@ -14,8 +14,8 @@ import java.util.Optional;
 
 
 /**
- * This action finds a creditcard in the @{@link applyextra.operations.dto.SiaOrchestrationDTO}
- * based on the card number.
+ * This suppliedMove finds a creditcard in the @{@link applyextra.operations.dto.SiaOrchestrationDTO}
+ * based on the playingcard number.
  * It is necessary to query SIA with the InquireAccountEvent because we need to get the activation flag from the CC.
  */
 @Lazy
@@ -27,7 +27,7 @@ public class FilterSiaCreditcardAction implements Action<FilterSiaCreditcardActi
 
     @Override
     public EventOutput.Result perform(FilterSiaCreditcardsDTO flowDTO) {
-        // sia dto is populated by inquire account event
+        // sia dto is populated by inquire account move
         final List<SIAAccountInformation> accountList = flowDTO.getSiaOrchestrationDTO().getAccounts();
         final String cardId = flowDTO.getCreditCardId();
 

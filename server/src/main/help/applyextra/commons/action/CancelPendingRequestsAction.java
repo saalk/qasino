@@ -40,13 +40,13 @@ public class CancelPendingRequestsAction
                 .getCreditCard()
                 .getCreditCardNumber();
 
-        log.debug("pending requests for credit card selected: requestorId..." + customerId + "creditCardNumber..."
+        log.debug("pending requests for credit playingcard selected: requestorId..." + customerId + "creditCardNumber..."
                 + creditCardNumber + "requestType..." + flowDto.getCreditcardRequest().getRequestType());
 
         List<CreditCardRequestEntity> requestToUpdate = updatePendingRequestList(customerId, creditCardNumber, flowDto.requestTypesToCancel(), flowDto.getPendingStates());
 
         if (!requestToUpdate.isEmpty()) {
-            log.debug("list of requests pending for selected card: " + requestToUpdate.toString());
+            log.debug("list of requests pending for selected playingcard: " + requestToUpdate.toString());
             ccRequestService.updateCreditCardRequestList(requestToUpdate, State.CANCELLED);
         }
         return EventOutput.success();
@@ -58,7 +58,7 @@ public class CancelPendingRequestsAction
 
         List<CreditCardRequestEntity> currentRequestsForRequestorByState = ccRequestService
                 .getCurrentRequestsForRequestorByState(requestorId, requestTypesToCancel, states);
-        log.debug("all the requests pending for selected card: " + currentRequestsForRequestorByState);
+        log.debug("all the requests pending for selected playingcard: " + currentRequestsForRequestorByState);
 
         for (CreditCardRequestEntity cardsRequests : currentRequestsForRequestorByState) {
             if (cardsRequests.getAccount()

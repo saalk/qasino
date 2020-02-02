@@ -13,7 +13,7 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 
 /**
- * This action uses ListArrangements to find package types
+ * This suppliedMove uses ListArrangements to find package types
  */
 @Lazy
 @Component

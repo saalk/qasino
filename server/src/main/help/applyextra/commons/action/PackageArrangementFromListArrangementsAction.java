@@ -26,7 +26,7 @@ import java.util.List;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 /**
- * This action uses ListArrangements to find package types
+ * This suppliedMove uses ListArrangements to find package types
  */
 @Lazy
 @Component

@@ -1,13 +1,13 @@
 package cloud.qasino.card.resource;
 
-import cloud.qasino.card.entity.enums.Style;
-import cloud.qasino.card.controller.statemachine.GameState;
+import cloud.qasino.card.entity.enums.game.Style;
+import cloud.qasino.card.statemachine.GameState;
 import cloud.qasino.card.entity.*;
 import cloud.qasino.card.entity.enums.player.Role;
 import cloud.qasino.card.entity.enums.game.Type;
 import cloud.qasino.card.entity.enums.player.AiLevel;
 import cloud.qasino.card.entity.enums.player.Avatar;
-import cloud.qasino.card.repositories.*;
+import cloud.qasino.card.repository.*;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -41,8 +41,8 @@ public class GamesResource {
     private LeagueRepository leagueRepository;
     private GameRepository gameRepository;
     private PlayerRepository playerRepository;
-    private PlayingCardRepository playingCardRepository;
-    private EventRepository eventRepository;
+    private CardRepository cardRepository;
+    private TurnRepository turnRepository;
 
     @Autowired
     public GamesResource(
@@ -50,15 +50,15 @@ public class GamesResource {
             LeagueRepository leagueRepository,
             GameRepository gameRepository,
             PlayerRepository playerRepository,
-            PlayingCardRepository playingCardRepository,
-            EventRepository eventRepository) {
+            CardRepository cardRepository,
+            TurnRepository turnRepository) {
 
         this.userRepository = userRepository;
         this.leagueRepository = leagueRepository;
         this.gameRepository = gameRepository;
         this.playerRepository = playerRepository;
-        this.playingCardRepository = playingCardRepository;
-        this.eventRepository = eventRepository;
+        this.cardRepository = cardRepository;
+        this.turnRepository = turnRepository;
     }
 
     // GamesResource - special POST and GET only for GAME - todo
@@ -93,7 +93,7 @@ public class GamesResource {
         }
         int ante = Integer.parseInt(inputAnte);
 
-        Game startedGame = gameRepository.save(new Game(null, type,
+        Game startedGame = gameRepository.save(new Game(null, type, 0,
                 style, ante));
 
         if (startedGame.getGameId() == 0) {
@@ -140,7 +140,7 @@ public class GamesResource {
 
         // create game no league
         Game startedGame = gameRepository.save(new Game(null, type,
-                style, Integer.parseInt(ante)));
+                linkedUser.getUserId(), style, Integer.parseInt(ante)));
         if (startedGame.getGameId() == 0) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).headers(headers).build();
         }
@@ -204,7 +204,7 @@ public class GamesResource {
 
         // create game no league
         Game startedGame = gameRepository.save(new Game(null, type,
-                style, Integer.parseInt(ante)));
+                linkedUser.getUserId(), style, Integer.parseInt(ante)));
         if (startedGame.getGameId() == 0) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).headers(headers).build();
         }
@@ -278,7 +278,7 @@ public class GamesResource {
 
         // create game with league
         Game startedGame = gameRepository.save(new Game(linkedLeague, type,
-                style, Integer.parseInt(ante)));
+                linkedUser.getUserId(), style, Integer.parseInt(ante)));
         if (startedGame.getGameId() == 0) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).headers(headers).build();
         }
@@ -345,12 +345,12 @@ public class GamesResource {
         League linkedLeague = foundLeague.get();
 
         // create game with league
-        Game startedGame = gameRepository.save(new Game(linkedLeague, type,
+        Game startedGame = gameRepository.save(new Game(linkedLeague, type, linkedUser.getUserId(),
                 style, Integer.parseInt(ante)));
         startedGame.shuffleGame(0);
-        List<PlayingCard> playingCards =
-                playingCardRepository.saveAll(startedGame.getPlayingCards());
-        if (startedGame.getGameId() == 0 || isNullOrEmpty(playingCards)) {
+        List<Card> cards =
+                cardRepository.saveAll(startedGame.getCards());
+        if (startedGame.getGameId() == 0 || isNullOrEmpty(cards)) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).headers(headers).build();
         }
 

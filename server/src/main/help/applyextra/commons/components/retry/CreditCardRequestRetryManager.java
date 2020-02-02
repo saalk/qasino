@@ -40,7 +40,7 @@ public class CreditCardRequestRetryManager {
         final Scheduler.ScheduledTask task = scheduler
                 .scheduleTask(new RetryTimedOutRequestsTask(
                         recordProvider,
-                        retryTask, // This will trigger the event handler
+                        retryTask, // This will trigger the move handler
                         new SimpleRetrySchedule(
                                 config.getMaxRetrials(),
                                 config.getRetryIntervalSeconds(),

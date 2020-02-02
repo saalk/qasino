@@ -2,7 +2,7 @@ package cloud.qasino.card.resource;
 
 import cloud.qasino.card.entity.Game;
 import cloud.qasino.card.entity.Player;
-import cloud.qasino.card.repositories.*;
+import cloud.qasino.card.repository.*;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,8 +43,8 @@ public class ListResource {
     private LeagueRepository leagueRepository;
     private GameRepository gameRepository;
     private PlayerRepository playerRepository;
-    private PlayingCardRepository playingCardRepository;
-    private EventRepository eventRepository;
+    private CardRepository cardRepository;
+    private TurnRepository turnRepository;
     private ResultsRepository resultsRepository;
 
     @Autowired
@@ -53,8 +53,8 @@ public class ListResource {
             LeagueRepository leagueRepository,
             GameRepository gameRepository,
             PlayerRepository playerRepository,
-            PlayingCardRepository playingCardRepository,
-            EventRepository eventRepository,
+            CardRepository cardRepository,
+            TurnRepository turnRepository,
             ResultsRepository resultsRepository
     ) {
 
@@ -62,8 +62,8 @@ public class ListResource {
         this.leagueRepository = leagueRepository;
         this.gameRepository = gameRepository;
         this.playerRepository = playerRepository;
-        this.playingCardRepository = playingCardRepository;
-        this.eventRepository = eventRepository;
+        this.cardRepository = cardRepository;
+        this.turnRepository = turnRepository;
         this.resultsRepository = resultsRepository;
     }
 
@@ -186,7 +186,7 @@ public class ListResource {
         if (!foundGame.isPresent()) {
             return ResponseEntity.notFound().headers(headers).build();
         }
-        List<Player> players = playerRepository.findByGameOrderBySequenceAsc(foundGame.get());
+        List<Player> players = playerRepository.findByGameOrderBySeatAsc(foundGame.get());
         return ResponseEntity.ok().headers(headers).body(players);
     }
 
@@ -233,7 +233,7 @@ public class ListResource {
                 Order.asc("SEQUENCE")));
 
         ArrayList playingCards =
-                (ArrayList) playingCardRepository.findAllPlayingCardsByGameWithPage(linkedGame.getGameId(),
+                (ArrayList) cardRepository.findAllCardsByGameWithPage(linkedGame.getGameId(),
                         pageable);
 
         return ResponseEntity.ok()
@@ -268,7 +268,7 @@ public class ListResource {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).headers(headers).build();
         }
 
-        ArrayList playingCards = (ArrayList) eventRepository.findByGameId(gameId);
+        ArrayList playingCards = (ArrayList) turnRepository.findByGame(foundGame.get());
 
         return ResponseEntity.ok()
                 .headers(headers)

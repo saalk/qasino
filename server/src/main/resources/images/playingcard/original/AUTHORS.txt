@@ -3,7 +3,7 @@ VERSION 2.0 - RELEASED 5-17-15
 
 Chris Aguilar 
 conjurenation@gmail.com         
-http://sourceforge.net/projects/vector-cards/
+http://sourceforge.net/projects/vector-playingCards/
 
 Alternate Joker by John Merrill
 john@delirus.net

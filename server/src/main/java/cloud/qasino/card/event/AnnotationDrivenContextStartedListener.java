@@ -15,6 +15,6 @@ public class AnnotationDrivenContextStartedListener {
     //@Async
     @EventListener
     public void handleContextStart(ContextStartedEvent cse) {
-        System.out.println("Handling context started event.");
+        System.out.println("Handling context started move.");
     }
 }

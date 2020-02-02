@@ -1,7 +1,8 @@
+/*
 package cloud.qasino.card.game;
 
 import cloud.qasino.card.core.context.ChannelContext;
-import cloud.qasino.card.event.AbstractQasinoFlowDTO;
+import cloud.qasino.card.move.AbstractQasinoFlowDTO;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -25,3 +26,4 @@ public class BaseQasinoFrontendRequest<T extends AbstractQasinoFlowDTO> implemen
         dto.setChannelContext(channelContext);
     }
 }
+*/

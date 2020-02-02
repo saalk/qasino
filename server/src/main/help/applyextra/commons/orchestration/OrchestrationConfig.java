@@ -12,7 +12,7 @@ import static applyextra.commons.event.EventOutput.Result.SUCCESS;
 import static applyextra.commons.orchestration.EventEnum.ENTER_STATE;
 
 /**
- * Contains states, events handled by certain states, actions to be carried out and transitions.
+ * Contains states, events handled by certain states, moves to be carried out and transitions.
  * Is able to build a StatemachineConfig in order to facilitate gradual refactoring of currently deployed processes.
  * Is therefore also capable of storing configuration based on Triggers.
  */
@@ -74,7 +74,7 @@ public class OrchestrationConfig {
             statesPermittingEvent.put(event, states);
         }
         if (states.contains(state)) {
-            throw new IllegalStateException("event " + event + " cannot be handled twice by for state " + state);
+            throw new IllegalStateException("move " + event + " cannot be handled twice by for state " + state);
         }
         states.add(state);
     }
@@ -103,13 +103,13 @@ public class OrchestrationConfig {
      *
      * @param state
      * @param event
-     * @return list of actions to be carried out in order
+     * @return list of moves to be carried out in order
      */
     Collection<ActionConfig> getActionsForEvent(final State state, final Event event) {
 
         StateConfig stateConfig = stateConfigMap.get(state);
         if (stateConfig == null) {
-            throw new IllegalStateException("State " + state + " not configured while looking for actions for event " + event);
+            throw new IllegalStateException("State " + state + " not configured while looking for moves for move " + event);
         }
         EventConfig eventConfig = getEventConfig(state, event);
         if (eventConfig == null) {
@@ -123,7 +123,7 @@ public class OrchestrationConfig {
     }
 
     /**
-     * Adds an action to be performed before any other actions.
+     * Adds an suppliedMove to be performed before any other moves.
      *
      * @param action
      * @return OrchestrationConfig
@@ -134,7 +134,7 @@ public class OrchestrationConfig {
     }
 
     /**
-     * Adds an action to be performed after the event has been handled.
+     * Adds an suppliedMove to be performed after the move has been handled.
      *
      * @param action
      * @return OrchestrationConfig
@@ -169,14 +169,14 @@ public class OrchestrationConfig {
     }
 
     /**
-     * Configures a transition to a next state if a certain exception type (or supertype) is caught while performing an action
+     * Configures a transition to a next state if a certain exception type (or supertype) is caught while performing an suppliedMove
      */
     public OrchestrationConfig onResult(final Class<? extends Exception> exceptionClass, final State nextState) {
         return onResult(exceptionClass, nextState, null);
     }
 
     /**
-     * Configures a transition to a next state if a certain exception type (or supertype) is caught while performing an action
+     * Configures a transition to a next state if a certain exception type (or supertype) is caught while performing an suppliedMove
      * Sets (frontend) response on DTO
      *
      * @param exceptionClass
@@ -208,7 +208,7 @@ public class OrchestrationConfig {
     }
 
     /**
-     * Configures Exceptions on actions to be rethrown instead of resulting in transitions
+     * Configures Exceptions on moves to be rethrown instead of resulting in transitions
      * @return
      */
     public OrchestrationConfig rethrowExceptions() {
@@ -243,7 +243,7 @@ public class OrchestrationConfig {
      *
      * @param state
      * @param event
-     * @return true if state is configured to handle event
+     * @return true if state is configured to handle move
      */
     public boolean statePermitsEvent(final State state, final EventEnum event) {
         return getEventConfig(state, event) != null;
@@ -275,7 +275,7 @@ public class OrchestrationConfig {
         }
 
         /**
-         * Adds an event that can be handled by this state.
+         * Adds an move that can be handled by this state.
          *
          * @param event
          * @return EventConfig
@@ -313,7 +313,7 @@ public class OrchestrationConfig {
         }
 
         /**
-         * Performs an action after a transition to this particular state has been performed.
+         * Performs an suppliedMove after a transition to this particular state has been performed.
          *
          * @param action
          * @return ActionConfig
@@ -335,49 +335,14 @@ public class OrchestrationConfig {
             return eventConfigMap.get(event);
         }
 
-
-        /**
-         * Records in this state will be retried automatically when pending in current state.
-         *
-         * @see CreditCardsEventHandler
-         */
-        public StateConfig retryIfPending(){
-            retryCriteria.getPendingRequestStateCriteria().add(this.state);
-            return this;
-        }
-
-        /**
-         * Records in this state will be retried automatically when pending in current state.
-         *
-         * @see CreditCardsEventHandler
-         */
-        public StateConfig retryIfError(){
-            retryCriteria.getErrorAndPreviousStateCriteria().add(this.state);
-            return this;
-        }
-
-    }
-
-    public class EventConfig {
-        private Event event;
-        private List<ActionConfig> actions = new ArrayList<>();
-        private StateConfig state;
-        private boolean eventRethrowsExceptions = false;
-        private EventHandlingResponse defaultEventResponse;
-
-        /**
-         *
-         * @param state
-         * @param event
-         */
         EventConfig(StateConfig state, Event event) {
             this.event = event;
             this.state = state;
             this.defaultEventResponse = defaultResponse;
-        }
+            }
 
         /**
-         * Adds an action to be carried out during event handling.
+         * Adds an suppliedMove to be carried out during move handling.
          *
          * @param action
          * @return ActionConfig
@@ -386,15 +351,48 @@ public class OrchestrationConfig {
             ActionConfig actionConfig = new ActionConfig(this, action);
             actions.add(actionConfig);
             return actionConfig;
-        }
+            }
 
         public EventConfig rethrowExceptions() {
             eventRethrowsExceptions = true;
             return this;
-        }
+            }
 
         boolean rethrowsExceptions() {
             if (!eventRethrowsExceptions) {
+
+                /**
+                 * Records in this state will be retried automatically when pending in current state.
+                 *
+                 * @see CreditCardsEventHandler
+                 */
+                public StateConfig retryIfPending(){
+                    retryCriteria.getPendingRequestStateCriteria().add(this.state);
+                    return this;
+                }
+
+                /**
+                 * Records in this state will be retried automatically when pending in current state.
+                 *
+                 * @see CreditCardsEventHandler
+                 */
+                public StateConfig retryIfError(){
+                    retryCriteria.getErrorAndPreviousStateCriteria().add(this.state);
+                    return this;
+                }
+
+            }
+
+            public class EventConfig {
+                private Event event;
+                private List<ActionConfig> actions = new ArrayList<>();
+                private StateConfig state;
+                private boolean eventRethrowsExceptions = false;
+                private EventHandlingResponse defaultEventResponse;
+
+                /**
+                 *
+                 * @param state
                 return rethrowExceptions;
             }
             return true;
@@ -411,7 +409,7 @@ public class OrchestrationConfig {
 
         /**
          *
-         * @return Event
+         * @return Turn
          */
         Event getEvent() {
             return event;
@@ -422,7 +420,7 @@ public class OrchestrationConfig {
         }
 
         /**
-         * Performs a transition to nextState regardless of the outcome of an action.
+         * Performs a transition to nextState regardless of the outcome of an suppliedMove.
          *
          * @param nextState
          * @return EventConfig
@@ -500,7 +498,7 @@ public class OrchestrationConfig {
 
 
     /**
-     * Contains configuration of actions to be performed during event handling.
+     * Contains configuration of moves to be performed during move handling.
      */
     public class ActionConfig {
 
@@ -527,7 +525,7 @@ public class OrchestrationConfig {
         }
 
         /**
-         * Adds an action to be performed during event handling
+         * Adds an suppliedMove to be performed during move handling
          *
          * @param action
          * @return ActionConfig
@@ -538,7 +536,7 @@ public class OrchestrationConfig {
 
         /**
          *
-         * @return Class<? extends Action>
+         * @return Class<? extends Move>
          */
         Class<? extends Action> getAction() {
             return action;
@@ -554,7 +552,7 @@ public class OrchestrationConfig {
 
 
         /**
-         * Ties the action to a transition that is to be performed if the action produces a certain result.
+         * Ties the suppliedMove to a transition that is to be performed if the suppliedMove produces a certain result.
          *
          * @param expectedResult
          * @param nextState
@@ -601,7 +599,7 @@ public class OrchestrationConfig {
         }
 
         /**
-         * Ties the action to a transition that is to be performed if the action encounters a specific exception.
+         * Ties the suppliedMove to a transition that is to be performed if the suppliedMove encounters a specific exception.
          * The configured transition takes precedence over behaviour defined at a higher level.
          *
          * @param expectedExceptionClass
@@ -616,7 +614,7 @@ public class OrchestrationConfig {
 
 
         /**
-         * Specifies that event must be fired right after transition.
+         * Specifies that move must be fired right after transition.
          *
          * @param expectedExceptionClass
          * @param nextState
@@ -638,7 +636,7 @@ public class OrchestrationConfig {
             if (resultType != null) {
                 if (!expectedResult.getClass().isAssignableFrom(resultType) || !resultType.isAssignableFrom(expectedResult
                         .getClass())) {
-                    String errorMessage = "Result with type " + expectedResult.getClass().getSimpleName() + " for action " + action.getSimpleName()
+                    String errorMessage = "Result with type " + expectedResult.getClass().getSimpleName() + " for suppliedMove " + action.getSimpleName()
                             + " in " +
                             "state " + event.state.state + " does not correspond with configured type " +
                             resultType.getSimpleName();

@@ -17,7 +17,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 /**
- * Action that load the customers Historical Requests for the Given request types.
+ * Move that load the customers Historical Requests for the Given request types.
  * This will filter out the current request the customer is doing.
  */
 @Lazy

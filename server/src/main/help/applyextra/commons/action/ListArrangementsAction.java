@@ -19,7 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * New action to make a tailored call to list arrangements.
+ * New suppliedMove to make a tailored call to list arrangements.
  * The arrangements can be searched by category codes, arrangement status. If there is a next,
  * then the next can also be searched.
  * Please check the comments for the default methods below

@@ -22,14 +22,11 @@ import static applyextra.commons.event.EventOutput.Result.SUCCESS;
 import static applyextra.commons.orchestration.EventEnum.*;
 import static applyextra.commons.state.CreditCardsStateMachine.State.*;
 
-/**
- * State machine with the below flow
- */
-@Component
+
 public class ApplyExtraCardStateMachine implements CreditCardAsyncConfiguration.ASyncEventHandler {
 
     @Resource
-    private ApplicationContext applicationContext;
+    private ApplicationContext applicationContext;+
 
     public static final OrchestrationConfig applyExtraCardConfiguration = new OrchestrationConfig();
 
@@ -46,7 +43,7 @@ public class ApplyExtraCardStateMachine implements CreditCardAsyncConfiguration.
                 .onState(INITIATED)
                 .onEvent(LIST)
                 .perform(RetrieveListCreditCardAccountsAction.class)
-                .onResult(FAILURE, ERROR)   //Action catches RunTime Exceptions. So we need this.
+                .onResult(FAILURE, ERROR)   //Move catches RunTime Exceptions. So we need this.
                 .perform(ListArrangementsAction.class)   // TODO: replace with gArrangementsAPI once packagetype is in MDM
                 .perform(DeterminePackageFromListArrangementsResponse.class)
                 .perform(CheckMaxNumberOfCardsAction.class)
@@ -156,7 +153,7 @@ public class ApplyExtraCardStateMachine implements CreditCardAsyncConfiguration.
                 .retryIfError()
                 .onEvent(CHECK)
                 .perform(RetrieveListCreditCardAccountsAction.class)
-                .onResult(FAILURE, ERROR)   //Action catches RunTime Exceptions. So we need this.
+                .onResult(FAILURE, ERROR)   //Move catches RunTime Exceptions. So we need this.
                 .perform(ListArrangementsAction.class)   // TODO: replace with gArrangementsAPI once packagetype is in MDM
                 .perform(DeterminePackageFromListArrangementsResponse.class)
                 .perform(ApplyExtraCardBusinessRulesAction.class)

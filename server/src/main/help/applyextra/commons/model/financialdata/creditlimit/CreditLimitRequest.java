@@ -16,7 +16,7 @@ import java.math.BigDecimal;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class CreditLimitRequest {
 
-    /** type of card: Charge or Revolving */
+    /** type of playingcard: Charge or Revolving */
     @NotNull
     private PortfolioCode portfolioCode;
 

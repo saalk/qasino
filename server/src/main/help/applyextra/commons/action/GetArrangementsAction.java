@@ -16,7 +16,7 @@ import javax.ws.rs.WebApplicationException;
 
 
 /**
- * Dont use this action directly in the state machine configuration. It does not return the correct result for the eventhandler.
+ * Dont use this suppliedMove directly in the state machine configuration. It does not return the correct result for the eventhandler.
  */
 @Lazy
 @Slf4j

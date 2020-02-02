@@ -28,13 +28,13 @@ public class SelectCardEvent extends AbstractEvent {
         SelectCardEventDTO flowDTO = (SelectCardEventDTO) eventInput[0];
 
         listCardsEvent.execution(flowDTO);      // collects cards related data
-        flowDTO.setContextByCreditCard();       // fills the request context with credit card data
+        flowDTO.setContextByCreditCard();       // fills the request context with credit playingcard data
 
         getPartyInfoEvent.execution(flowDTO);   // collects party related data
         flowDTO.setContextByAgreement();        // fills the request context with agreement data
 
         if (!flowDTO.isListCardResult()) {
-            auditDelegate.fireSecurityEvent("Card id not part of user portfolio.");
+            auditDelegate.fireSecurityEvent("PlayingCard id not part of user portfolio.");
             throw new WebApplicationException(Response.Status.BAD_REQUEST);
         }
 

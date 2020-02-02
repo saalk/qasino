@@ -13,7 +13,7 @@ import javax.annotation.Resource;
 import java.util.List;
 
 /**
- * Action to get the partyId. This action connects to the ListPartiesByIbanAndDobEvent.
+ * Move to get the partyId. This suppliedMove connects to the ListPartiesByIbanAndDobEvent.
  *
  */
 @Lazy

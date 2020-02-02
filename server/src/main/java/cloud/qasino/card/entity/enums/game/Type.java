@@ -2,7 +2,6 @@ package cloud.qasino.card.entity.enums.game;
 
 import cloud.qasino.card.configuration.ContextType;
 import cloud.qasino.card.entity.enums.LabeledEnum;
-import cloud.qasino.card.entity.enums.event.Action;
 import lombok.Getter;
 
 import javax.persistence.Column;
@@ -12,7 +11,7 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * <H1>CardGame</H1> A selection of card gameDtos that can be selected to play. <p> More gameDtos will be
+ * <H1>CardGame</H1> A selection of playingcard gameDtos that can be selected to play. <p> More gameDtos will be
  * added in future.
  *
  * @author Klaas van der Meulen
@@ -23,9 +22,9 @@ import java.util.Set;
 public enum Type implements LabeledEnum, ContextType {
 
     /**
-     * HIGHLOW cardgame is a simple higher or lower guessing game. The dealer places one card
-     * face-down in front of the player, then another card face-up for the players Hand. The player
-     * guesses whether the value of the face-down card is higher or lower. <p> The player places his
+     * HIGHLOW cardgame is a simple higher or lower guessing game. The dealer places one playingcard
+     * face-down in front of the player, then another playingcard face-up for the players Hand. The player
+     * guesses whether the value of the face-down playingcard is higher or lower. <p> The player places his
      * initial balance. The house matches that balance into the pot. When the player guesses, he wins or
      * loses the pot depending on the outcome of his guess. After that round, the player can pass
      * the balance to another player, or go double or nothing on the next balance depending on the specific

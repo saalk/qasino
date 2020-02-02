@@ -16,7 +16,7 @@ public enum OrderEvent implements ProcessEvent {
             return OrderProcessor.class;
         }
         /**
-         * This event has no effect on state so return current state
+         * This move has no effect on state so return current state
          */
         @Override
         public ProcessState nextState(ProcessEvent event) {
@@ -25,7 +25,7 @@ public enum OrderEvent implements ProcessEvent {
     },
     orderCreated {
         /**
-         * This event does not trigger any process
+         * This move does not trigger any process
          * So return null
          */
         @Override
@@ -43,7 +43,7 @@ public enum OrderEvent implements ProcessEvent {
             return PaymentProcessor.class;
         }
         /**
-         * This event has no effect on state so return current state
+         * This move has no effect on state so return current state
          */
         @Override
         public ProcessState nextState(ProcessEvent event) {
@@ -52,7 +52,7 @@ public enum OrderEvent implements ProcessEvent {
     },
     paymentSuccess {
         /**
-         * This event does not trigger any process
+         * This move does not trigger any process
          * So return null
          */
         @Override
@@ -66,7 +66,7 @@ public enum OrderEvent implements ProcessEvent {
     },
     paymentError {
         /**
-         * This event does not trigger any process
+         * This move does not trigger any process
          * So return null
          */
         @Override

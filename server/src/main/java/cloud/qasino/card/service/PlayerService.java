@@ -1,6 +1,6 @@
 package cloud.qasino.card.service;
 
-import cloud.qasino.card.repositories.PlayerRepository;
+import cloud.qasino.card.repository.PlayerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

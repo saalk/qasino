@@ -42,7 +42,7 @@ public class  StoreApplyExtraCardRequestContextAction implements Action<StoreApp
 
     @Override
     public EventOutput.Result perform(StoreRequestContextDTO flowDTO) {
-        log.info("########## Start of event Perform StoreApplyExtraCardRequestContextAction: " + LocalTime.now());
+        log.info("########## Start of move Perform StoreApplyExtraCardRequestContextAction: " + LocalTime.now());
 
         final CreditCardRequestEntity request = flowDTO.getCreditcardRequest();
         final CreditCardAccount account = flowDTO.getCreditCardAccount();
@@ -75,7 +75,7 @@ public class  StoreApplyExtraCardRequestContextAction implements Action<StoreApp
                     flowDTO.getSelectedCreditCardId()
             );
         }
-        log.info("########## End of event Perform StoreApplyExtraCardRequestContextAction: " + LocalTime.now());
+        log.info("########## End of move Perform StoreApplyExtraCardRequestContextAction: " + LocalTime.now());
         return EventOutput.Result.SUCCESS;
     }
 

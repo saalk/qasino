@@ -23,7 +23,7 @@ public class CalculatePositiveBalanceAction implements Action<CalculatePositiveB
     @Override
     public EventOutput perform(CalculatePositiveBalanceActionDTO dto) {
         if(!responseUtil.isSelectedCardPrimaryCard(dto.getCreditCardAccount(), dto.getSelectedCreditCardId())){
-            log.info("The Selected Card is not primary, no positive balance calculation for " + dto.getRequestId());
+            log.info("The Selected PlayingCard is not primary, no positive balance calculation for " + dto.getRequestId());
             return EventOutput.success();
         }
         log.debug("Calculating POSITIVE balance");

@@ -36,8 +36,8 @@ public class League {
     private int leagueId;
 
     @JsonIgnore
-    @Column(name = "created", length = 25)
-    private String created;
+    @Column(columnDefinition = "DATE")
+    private LocalDate created;
 
 
     // Foreign keys
@@ -48,6 +48,7 @@ public class League {
     @JoinColumn(name = "user_id", referencedColumnName = "user_id", foreignKey = @ForeignKey
             (name = "fk_user_id"), nullable = false)
     private User user;
+
 
     // Normal fields
 
@@ -62,20 +63,19 @@ public class League {
     @Column(name = "is_active")
     private boolean active;
 
-    @Column(name = "enddate", length = 25)
-    private String endDate;
+    @Column(columnDefinition = "DATE")
+    private LocalDate ended;
+
 
     // References
+
     // L: A League can have more Games over time
     @OneToMany(mappedBy = "league", cascade = CascadeType.DETACH)
     // just a reference, the actual fk column is in game not here !
     private List<Game> games = new ArrayList<>();
 
     public League() {
-        LocalDateTime localDateAndTime = LocalDateTime.now();
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd-HH:mm-ssSSS-nnnnnnnnn");
-        String result = localDateAndTime.format(formatter);
-        this.created = result.substring(2, 20);
+        this.created = LocalDate.now();
         this.active = true;
 
     }
@@ -90,58 +90,34 @@ public class League {
     }
 
     public boolean endLeagueDaysFromNow(int days) {
-
         if (!this.isActive()) return false;
-
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-        LocalDate endDate = LocalDate.now()
-                .plus(Period.ofDays(days));
-        this.endDate = endDate.format(formatter);
-
+        this.ended = LocalDate.now().plus(Period.ofDays(days));
         return true;
     }
 
-    public boolean endLeagueNextMonday(int days) {
-
+    public boolean endLeagueNextMonday() {
         if (!this.isActive()) return false;
-
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-        LocalDate enddate = LocalDate.now();
-        LocalDate nextMonday = enddate.with(next(DayOfWeek.MONDAY));
-        this.endDate = nextMonday.format(formatter);
+        this.ended = LocalDate.now().with(next(DayOfWeek.MONDAY));
         return true;
     }
 
     public boolean endLeagueThisMonth() {
-
         if (!this.isActive()) return false;
-
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-        LocalDate enddate = LocalDate.now();
-        LocalDate lastDayOfMonth = enddate.with(lastDayOfMonth());
-        this.endDate = lastDayOfMonth.format(formatter);
+        this.ended = LocalDate.now().with(lastDayOfMonth());
         return true;
-
     }
 
     public boolean isActive() {
         if (!this.active) return false; // user can set to inactive before enddate
-        if (this.endDate == null) return true;
-
+        if (this.ended == null) return true;
         // check if ended has passed
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-        LocalDate enddate = LocalDate.parse(this.endDate, formatter);
         LocalDate yesterday = LocalDate.now().plusDays(-1);
-
-        int days = Period.between(yesterday, enddate).getDays();
+        int days = Period.between(yesterday, this.ended).getDays();
         return days <= 0; // todo test this
     }
 
     public void closeLeaguePerYesterday() {
-        LocalDate localDate = LocalDate.now().plusDays(-1); // yesterday
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-        String result = localDate.format(formatter);
-        this.endDate = result;
+        this.ended = LocalDate.now().plusDays(-1); // yesterday;
         this.active = false;
     }
 

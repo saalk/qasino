@@ -7,7 +7,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 /**
- * Process Event DTO class for Event listener
+ * Process Turn DTO class for Turn listener
  * @author kq62io
  *
  */

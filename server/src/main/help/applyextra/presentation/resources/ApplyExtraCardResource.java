@@ -30,7 +30,7 @@ import javax.ws.rs.core.Response;
 @Component
 @Path("/")
 @Slf4j
-@Api("/api/consumer-credit-cards/requests/apply-extra-card")
+@Api("/api/consumer-credit-cards/requests/apply-extra-playingcard")
 public class ApplyExtraCardResource extends AbstractResource {
 
     @Resource

@@ -1,13 +1,13 @@
 package cloud.qasino.card.configuration;
 
-import cloud.qasino.card.entity.Game;
-import cloud.qasino.card.entity.League;
-import cloud.qasino.card.entity.Player;
-import cloud.qasino.card.entity.User;
+import cloud.qasino.card.entity.*;
+import cloud.qasino.card.entity.enums.card.Location;
+import cloud.qasino.card.entity.enums.move.Move;
 import cloud.qasino.card.entity.enums.player.AiLevel;
 import cloud.qasino.card.entity.enums.player.Avatar;
 import cloud.qasino.card.entity.enums.player.Role;
-import cloud.qasino.card.repositories.*;
+import cloud.qasino.card.repository.*;
+import cloud.qasino.card.statemachine.GameState;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.ApplicationRunner;
@@ -67,7 +67,9 @@ public class GamesApplication {
             LeagueRepository leagueRepository,
             GameRepository gameRepository,
             PlayerRepository playerRepository,
-            PlayingCardRepository playingCardRepository
+            CardRepository cardRepository,
+            TurnRepository turnRepository,
+            CardMoveRepository cardMoveRepository
     ) {
         User user = new User("aliasName", 1, "a@b.c");
         int pawn = User.pawnShipValue(0);
@@ -78,10 +80,11 @@ public class GamesApplication {
         league.endLeagueThisMonth();
         leagueRepository.save(league);
 
-        Game game = new Game(league, "highlow", "", 100);
+        Game game = new Game(league, "highlow", user.getUserId()," " ,100);
         game.shuffleGame(0);
+        game.setState(GameState.PLAYING);
         game = gameRepository.save(game);
-        playingCardRepository.saveAll(game.getPlayingCards());
+        cardRepository.saveAll(game.getCards());
 
         List<Player> players = new ArrayList<>();
         players.add(playerRepository.save(new Player(user, game, Role.INITIATOR,
@@ -89,6 +92,12 @@ public class GamesApplication {
         players.add(playerRepository.save(new Player(null, game, Role.BOT, user.getBalance(), 2,
                 Avatar.GOBLIN, AiLevel.AVERAGE)));
         game.setPlayers(players);
+
+        Turn turn = new Turn( game, players.get(0).getPlayerId());
+        turnRepository.save(turn);
+        CardMove cardMove = new CardMove(turn, players.get(0), null, Move.DEAL,
+                Location.HAND);
+        cardMoveRepository.save(cardMove);
 
         return null;
     }

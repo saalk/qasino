@@ -23,7 +23,7 @@ public class ErrorResponse {
         if (!domain.isEmpty()) {
             switch (domain) {
                 case "state":
-                    options += "init, setup, shuffle, turn]";
+                    options += "init, setup, shuffle, move]";
                     break;
                 case "init":
                     options += "gametType, ante]";

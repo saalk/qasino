@@ -68,7 +68,7 @@ public class CreditcardServiceClientToCreditcardModelConverter {
     /**
      * @param creditcardNumber
      *            The cc no.
-     * @return True if it matches the mask for credit card numbers.
+     * @return True if it matches the mask for credit playingcard numbers.
      */
     public boolean isValidCreditcardNumber(final String creditcardNumber) {
         if (creditcardNumber != null) {

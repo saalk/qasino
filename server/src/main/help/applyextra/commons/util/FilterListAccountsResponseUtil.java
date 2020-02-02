@@ -122,7 +122,7 @@ public class FilterListAccountsResponseUtil {
                             .anyMatch(c -> getCardId(selectedCardId).equals(getCardId(c.getCreditCardNumber()))))
                     .findFirst()
                     .orElseThrow(() -> new ActivityException(LIST_ACCOUNT_FILTER_NAME,
-                            "Did not find a matching card to get account Status for cardID: " + getCardId(selectedCardId)))
+                            "Did not find a matching playingcard to get account Status for cardID: " + getCardId(selectedCardId)))
                     .getCreditCardMemberStatus();
         } else {
             return account.getCreditCardAccountStatus();

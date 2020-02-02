@@ -13,7 +13,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * This class manages various state transitions
- * based on the event
+ * based on the move
  * The superclass AbstractStateTransitionsManager
  * calls the two methods initializeState and
  * processStateTransition in that order
@@ -28,14 +28,14 @@ public class OrderStateTransitionsManager extends AbstractStateTransitionsManage
     protected ProcessData processStateTransition(ProcessData sdata) throws ProcessException {
         OrderData data = (OrderData) sdata;
         try {
-            log.info("Pre-event: " + data.getEvent().toString());
+            log.info("Pre-move: " + data.getEvent().toString());
             data = (OrderData) this.context.getBean(data.getEvent().nextStepProcessor(data.getEvent())).process(data);
-            log.info("Post-event: " + data.getEvent().toString());
+            log.info("Post-move: " + data.getEvent().toString());
             dbService.getStates().put(data.getOrderId(), (OrderState)data.getEvent().nextState(data.getEvent()));
             log.info("Final state: " + dbService.getStates().get(data.getOrderId()).name());
             log.info("??*************************************");
         } catch (OrderException e) {
-            log.info("Post-event: " + ((OrderEvent) data.getEvent()).name());
+            log.info("Post-move: " + ((OrderEvent) data.getEvent()).name());
             dbService.getStates().put(data.getOrderId(), (OrderState)data.getEvent().nextState(data.getEvent()));
             log.info("Final state: " + dbService.getStates().get(data.getOrderId()).name());
             log.info("??*************************************");

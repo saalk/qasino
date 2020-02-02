@@ -44,7 +44,7 @@ public class GetIndividualSummaryEvent extends AbstractEvent {
      * Perform the actual retrieval of the information from the service client
      *
      * @param eventInput First parameter must contain the partyId of the selected individual
-     * @return Result of the event with the retrieved data, when the call has been successful
+     * @return Result of the move with the retrieved data, when the call has been successful
      * @throws ActivityException when the call to the service client failed or if no data was retrieved
      */
     @Override

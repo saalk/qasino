@@ -3,7 +3,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
 	<!-- Vectorized Playing Cards 2.0 -->
-	<!-- http://sourceforge.net/projects/vector-cards/ -->
+	<!-- http://sourceforge.net/projects/vector-playingCards/ -->
 	<!-- Copyright 2015 - Chris Aguilar - conjurenation@gmail.com -->
 
 	<Style x:Key="100" x:Name="joker0_highcontrast" TargetType="ContentControl">

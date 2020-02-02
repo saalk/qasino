@@ -1,11 +1,10 @@
 package cloud.qasino.card.entity;
 
-import cloud.qasino.card.core.enumeration.ChannelType;
-import cloud.qasino.card.entity.enums.playingcard.Card;
-import cloud.qasino.card.entity.enums.Style;
-import cloud.qasino.card.controller.statemachine.GameState;
+import cloud.qasino.card.statemachine.GameState;
+import cloud.qasino.card.entity.enums.game.Style;
 import cloud.qasino.card.entity.enums.game.Type;
-import cloud.qasino.card.entity.enums.playingcard.Location;
+import cloud.qasino.card.entity.enums.card.PlayingCard;
+import cloud.qasino.card.entity.enums.card.Location;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -40,17 +39,11 @@ public class Game {
     private int gameId;
 
     @JsonIgnore
-    @Column(name = "created", length = 25, nullable = false)
-    private String created;
+    @Column(name = "updated", length = 25, nullable = false)
+    private String updated;
 
 
     // Foreign keys
-
-    // GaWi: a game has a winner in the end
-/*	@OneToOne (cascade = CascadeType.DETACH)
-	@JoinColumn(name = "player_id", referencedColumnName = "player_id",foreignKey = @ForeignKey(name =
-			"fk_player_id"), nullable=true)
-	private Player winner;*/
 
     @JsonIgnore
     // PlGa: many Games can be part of the same League
@@ -58,6 +51,10 @@ public class Game {
     @JoinColumn(name = "league_id", referencedColumnName = "league_id", foreignKey = @ForeignKey
             (name = "fk_league_id"), nullable = true)
     private League league;
+
+    @Column(name = "initiator")
+    private int initiator; // userId
+
 
     // Normal fields
 
@@ -76,8 +73,12 @@ public class Game {
     @Column(name = "style", length = 10, nullable = true)
     private String style;
 
+    // A mandatory stake made before the game begins
     @Column(name = "ante")
     private int ante;
+
+
+    // Derived fields
 
     @Setter(AccessLevel.NONE)
     @Column(name = "year", length = 4)
@@ -95,59 +96,72 @@ public class Game {
     @Column(name = "day", length = 2)
     private int day;
 
-    @Enumerated(EnumType.STRING)
-    @Column(name = "channel_type", length = 2)
-    private ChannelType channelType;
+
     // References
 
     @JsonIgnore
-    // SF: a shuffled PlayingCard is added to a GameSubTotals at the start
+    // SF: a shuffled Card is added to a GameSubTotals at the start
     @OneToMany(mappedBy = "game", cascade = CascadeType.DETACH)
-    private List<PlayingCard> playingCards = new ArrayList<>();
+    private List<Card> cards = new ArrayList<>();
 
     // PlGa: many Players can play the same GameSubTotals
     @OneToMany(mappedBy = "game", cascade = CascadeType.DETACH)
     private List<Player> players = new ArrayList<>();
 
+    @JsonIgnore
+    // AcTu: a Turn is kept do indicate the active player's move only
+    @OneToOne(mappedBy = "game", cascade = CascadeType.DETACH)
+    private Turn turn; // = new Turn();
+
+    @JsonIgnore
+    // AcTu:
+    // a Turn is kept do indicate the active player's move only
+    @OneToOne(mappedBy = "game", cascade = CascadeType.DETACH)
+    private Result result; // = new Result();
+
     public Game() {
-        LocalDateTime localDateAndTime = LocalDateTime.now();
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd-HH:mm-ssSSS-nnnnnnnnn");
-        String result = localDateAndTime.format(formatter);
-        this.created = result.substring(2, 20);
-
-        this.year = localDateAndTime.getYear();
-        this.month = localDateAndTime.getMonth();
-        DateTimeFormatter week = DateTimeFormatter.ofPattern("W");
-        this.week = localDateAndTime.format(week);
-        this.day = localDateAndTime.getDayOfMonth();
-
+        setUpdated();
         this.state = GameState.NEW;
         this.type = Type.HIGHLOW;
         this.style = new Style().getLabel();
         this.ante = 20;
     }
 
-    public Game(League league, String type) {
+    public Game(League league, String type, int initiator ) {
         this();
         this.league = league;
         this.type = Type.fromLabelWithDefault(type);
+        this.initiator = initiator;
     }
 
-    public Game(League league, String type, String style, int ante) {
-        this(league,type);
+    public Game(League league, String type, int initiator, String style, int ante) {
+        this(league, type, initiator);
         this.style = Style.fromLabelWithDefault(style).getLabel();
         this.ante = ante;
     }
 
+    public void setUpdated() {
+        LocalDateTime localDateAndTime = LocalDateTime.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd-HH:mm-ssSSS-nnnnnnnnn");
+        String result = localDateAndTime.format(formatter);
+        this.updated = result.substring(2, 20);
+
+        this.year = localDateAndTime.getYear();
+        this.month = localDateAndTime.getMonth();
+        DateTimeFormatter week = DateTimeFormatter.ofPattern("W");
+        this.week = localDateAndTime.format(week);
+        this.day = localDateAndTime.getDayOfMonth();
+    }
+
     public void shuffleGame(int jokers) {
 
-        List<Card> cards = Card.newDeck(jokers);
-        Collections.shuffle(cards);
+        List<PlayingCard> playingCards = PlayingCard.newDeck(jokers);
+        Collections.shuffle(playingCards);
 
         int i = 1;
-        for (Card card : cards) {
-            PlayingCard playingCard = new PlayingCard(card.getCardId(),this, null, i++, Location.PILE);
-            this.playingCards.add(playingCard);
+        for (PlayingCard playingCard : playingCards) {
+            Card card = new Card(playingCard.getCardId(), this, null, i++, Location.STOCK );
+            this.cards.add(card);
         }
     }
 
@@ -177,21 +191,21 @@ public class Game {
         Player cycledPlayer;
 
         // see if the change can be done
-        if ((cyclePlayer.getSequence() == 1) && (playingOrderChanged) && (moveTowardsFirst)) {
+        if ((cyclePlayer.getSeat() == 1) && (playingOrderChanged) && (moveTowardsFirst)) {
             playingOrderChanged = false;
-        } else if ((cyclePlayer.getSequence() == players.size()) && (playingOrderChanged) && (moveTowardsLast)) {
+        } else if ((cyclePlayer.getSeat() == players.size()) && (playingOrderChanged) && (moveTowardsLast)) {
             playingOrderChanged = false;
         }
 
         if (playingOrderChanged) {
             // do the switch
-            Integer oldPlayingOrder = cyclePlayer.getSequence();
+            int oldPlayingOrder = cyclePlayer.getSeat();
             // update the current
-            Integer newPlayingOrder = moveTowardsFirst ? (cyclePlayer.getSequence() - 1) :
-                    (cyclePlayer.getSequence() + 1);
+            int newPlayingOrder = moveTowardsFirst ? (cyclePlayer.getSeat() - 1) :
+                    (cyclePlayer.getSeat() + 1);
             // find the other that is currently on the newPlayingOrder
             cycledPlayer = this.players.get(newPlayingOrder);
-            cycledPlayer.setSequence(oldPlayingOrder);
+            cycledPlayer.setSeat(oldPlayingOrder);
         }
         return playingOrderChanged;
 

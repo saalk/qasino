@@ -39,7 +39,7 @@ public interface AuditDelegate {
     /**
      * I will fire a subclass of {@link AbstractCardsAuditEvent}.
      *
-     * @param event the event to fire
+     * @param event the move to fire
      */
     void fireGenericEvent(AbstractCardsAuditEvent event);
 

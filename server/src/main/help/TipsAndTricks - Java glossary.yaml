@@ -91,7 +91,7 @@ Example 3: an object is declared via “MyClass myObject”, instantiated via �
 Example: the keyword new instantiates the object below. An instantiation is always followed by a constructor call that initializes the object.
       MyClass myObject = new MyClass(/*parameters*/);
 
-# Method – a collection of code found within a class. If the data members of a class are nouns, the methods are the verbs (the action).
+# Method – a collection of code found within a class. If the data members of a class are nouns, the methods are the verbs (the suppliedMove).
 
 Example 1: a method, myMethod is defined within class myClass that does NOT return a value.
 public class myClass{

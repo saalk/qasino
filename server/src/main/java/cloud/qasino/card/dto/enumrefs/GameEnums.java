@@ -1,6 +1,6 @@
 package cloud.qasino.card.dto.enumrefs;
 
-import cloud.qasino.card.controller.statemachine.GameState;
+import cloud.qasino.card.statemachine.GameState;
 import cloud.qasino.card.entity.enums.game.Type;
 import lombok.Getter;
 

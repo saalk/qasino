@@ -27,7 +27,7 @@ public class CreateCreditCardAccountLegacyAction implements Action<CreateCreditC
     private CreateStudentCreditCardAccountLegacyAction studentAction;
 
     public Boolean perform(CreateCreditCardAccountLegacyDTO flowDto) {
-        // student card is handle by other service operation
+        // student playingcard is handle by other service operation
         if (CardType.Studentencard.equals(flowDto.getCardType())) {
             return studentAction.perform(flowDto);
         }

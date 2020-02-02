@@ -87,7 +87,7 @@ public class ApplyExtraCardBusinessRulesAction implements Action<ApplyExtraCardB
         rules.put(maxNumberOfExtraCardsRule, creditCardMemberAccountList); // This Check is also in initialize.
 
         // TODO: remove isBusinessRuleActive() if it is working.
-        //Checks to see if secondary card is present and if so, the rule checked that the extracard is not allowed twice
+        //Checks to see if secondary playingcard is present and if so, the rule checked that the extracard is not allowed twice
         if (isBusinessRuleActive() && retrieveSecondaryCardAction.perform(flowDto)) {
             String secondaryAccountNumber = flowDto.getProcessSpecificValue(Constants.SECONDARY_ACCOUNT_NUMBER);
             if (StringUtils.isNotEmpty(secondaryAccountNumber)) {

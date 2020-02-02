@@ -43,7 +43,7 @@ Ctrl + R: Replace
 
 Ctrl + Shift + /: Comment/uncomment with block comment
 Ctrl + Shift + ]/[: Select till code block end/start
-Ctrl + Shift + A: Find Action
+Ctrl + Shift + A: Find Move
 Ctrl + Shift + B:  Go to type declaration
 Ctrl + Shift + Enter: Complete statement #!
 Ctrl + Shift + F10: Run context confguration from editor
@@ -76,7 +76,7 @@ Ctrl + G: Go to line - show current line and colum number
 Ctrl + Shift + J: Smart line join
 Ctrl + Shift + V: Paste from recent buﬀers...
 Ctrl + Shift + Backspace: Navigate to last edit location # goes to last edit loc!
-Ctrl + X/C/V : clipboard actions
+Ctrl + X/C/V : clipboard moves
 Ctrl + Y: Delete line at caret
 Double Shift: Search everywhere
 

@@ -41,7 +41,7 @@ public class ListLinkedArrangementsAction implements Action<ListLinkedArrangemen
         if (response.getResult().isOk()) {
             log.debug("looking for listLinkedArrangements response size "+response.getResponse().getArrangementRelationList().size()+" for the messageId=\""+flowDTO.getMessageId()+"\"");
             flowDTO.getLinkedArrangementRelationList().addAll(response.getResponse().getArrangementRelationList());
-            auditDelegateHelper.logMessage(ConstantsUtil.LIST_LINKED_ARRANGEMENTS_SERVICE, "Action successful for the messageId=\""+flowDTO.getMessageId()+"\"", flowDTO.getMessageId());
+            auditDelegateHelper.logMessage(ConstantsUtil.LIST_LINKED_ARRANGEMENTS_SERVICE, "Move successful for the messageId=\""+flowDTO.getMessageId()+"\"", flowDTO.getMessageId());
             graphiteHelper.customCounter(ConstantsUtil.LIST_LINKED_ARRANGEMENTS_COUNTER, ConstantsUtil.SUCCESS_REQUESTS_COUNTER, 1 );
         } else if (response.getResponse() != null && !(response.getResponse()).getArrangementRelationList().isEmpty()) {
             graphiteHelper.customCounter(ConstantsUtil.LIST_LINKED_ARRANGEMENTS_COUNTER, ConstantsUtil.FAILURE_REQUESTS_COUNTER, 1 );

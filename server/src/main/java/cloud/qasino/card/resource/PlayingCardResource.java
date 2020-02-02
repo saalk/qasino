@@ -1,16 +1,12 @@
 package cloud.qasino.card.resource;
 
+import cloud.qasino.card.entity.Card;
 import cloud.qasino.card.entity.Game;
-import cloud.qasino.card.entity.PlayingCard;
-import cloud.qasino.card.repositories.*;
+import cloud.qasino.card.repository.*;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
-import org.springframework.data.domain.Sort.Order;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -21,7 +17,6 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -40,35 +35,35 @@ import java.util.Optional;
 public class PlayingCardResource {
 
     private GameRepository gameRepository;
-    private PlayingCardRepository playingCardRepository;
+    private CardRepository cardRepository;
 
     @Autowired
     public PlayingCardResource(
             UserRepository userRepository,
             GameRepository gameRepository,
             PlayerRepository playerRepository,
-            EventRepository eventRepository,
-            PlayingCardRepository playingCardRepository) {
+            TurnRepository turnRepository,
+            CardRepository cardRepository) {
 
         this.gameRepository = gameRepository;
-        this.playingCardRepository = playingCardRepository;
+        this.cardRepository = cardRepository;
     }
 
     // R image - can be tested
     @GetMapping(
-            value = "/playingcards/{card}/image",
+            value = "/playingcards/{playingcard}/image",
             produces = MediaType.IMAGE_JPEG_VALUE
     )
     // todo get image by cardid
     public @ResponseBody
-    byte[] getPlayingCardImageWithMediaType(@PathVariable("card") String card) throws IOException {
+    byte[] getPlayingCardImageWithMediaType(@PathVariable("playingcard") String card) throws IOException {
         InputStream in = getClass()
                 .getResourceAsStream("/resources/images/playingcard/svg/diamonds-ten.svg");
         return IOUtils.toByteArray(in);
     }
 
     // C deck for game - can be tested
-    @PostMapping(value = "/playingCards/games/{id}/jokers/{jokers}")
+    @PostMapping(value = "/cards/games/{id}/jokers/{jokers}")
     public ResponseEntity setupGame(
             @PathVariable("id") String id,
             @PathVariable("jokers") String jokers
@@ -101,12 +96,12 @@ public class PlayingCardResource {
         linkedGame = foundGame.get();
 
         // logic
-        List<PlayingCard> createdPlayingCards = linkedGame.getPlayingCards();
+        List<Card> createdCards = linkedGame.getCards();
 
-        for (PlayingCard createdPlayingCard : createdPlayingCards) {
-            playingCardRepository.save(createdPlayingCard);
+        for (Card createdCard : createdCards) {
+            cardRepository.save(createdCard);
         }
-        return ResponseEntity.status(HttpStatus.CREATED).headers(headers).body(createdPlayingCards);
+        return ResponseEntity.status(HttpStatus.CREATED).headers(headers).body(createdCards);
     }
 
     // normal CRUD

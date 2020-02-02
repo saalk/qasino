@@ -1,10 +1,9 @@
 package cloud.qasino.card.orchestration;
 
+import cloud.qasino.card.orchestration.interfaces.Expression;
+
 import java.util.Objects;
 
-/**
- * Created by CL94WQ on 21-8-2017.
- */
 public class Not implements Expression {
 
     private Object input;

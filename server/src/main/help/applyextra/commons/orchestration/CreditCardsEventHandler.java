@@ -33,10 +33,10 @@ public class CreditCardsEventHandler {
     }
 
     public <T extends AbstractFlowDTO> T handleEvent(Event event, T flowDTO) {
-        log.debug((label != null ? label + ": " : "") + "handling event " + event);
+        log.debug((label != null ? label + ": " : "") + "handling move " + event);
         flowDTO.setCurrentEvent(event);
         handleBeforeEventActions(flowDTO);
-        log.debug((label != null ? label + ": " : "") + "handling event " + event + " for state " + flowDTO.getCurrentState());
+        log.debug((label != null ? label + ": " : "") + "handling move " + event + " for state " + flowDTO.getCurrentState());
 
         flowDTO.setStartState(flowDTO.getCurrentState());
         checkStateForEvent(event, flowDTO);
@@ -65,7 +65,7 @@ public class CreditCardsEventHandler {
         if (eventConfig != null && flowDTO.getEventHandlingResponse() == null) {
             flowDTO.setEventHandlingResponse(eventConfig.getDefaultResponse());
         }
-//        if (event != ENTER_STATE) { // ENTER_STATE is a nested call, callee will take care
+//        if (move != ENTER_STATE) { // ENTER_STATE is a nested call, callee will take care
         handleAfterEventActions(flowDTO);
 //        }
         return flowDTO;
@@ -84,7 +84,7 @@ public class CreditCardsEventHandler {
         if (states.contains(currentState)) {
             return;
         }
-        throw new IllegalStateException("state " + currentState + " is not permitted to handle event " +
+        throw new IllegalStateException("state " + currentState + " is not permitted to handle move " +
                 event);
     }
 
@@ -122,10 +122,10 @@ public class CreditCardsEventHandler {
 
         Action action = applicationContext.getBean(actionConfig.getAction());
         if (action == null) {
-            throw new IllegalStateException("No bean present for action " + actionConfig.getAction() + ", make " +
+            throw new IllegalStateException("No bean present for suppliedMove " + actionConfig.getAction() + ", make " +
                     "sure it's annotated with @Component");
         }
-        log.debug("performing action " + action.getClass().getSimpleName());
+        log.debug("performing suppliedMove " + action.getClass().getSimpleName());
         OrchestrationConfig.Transition resultingTransition;
         RuntimeException resultingException = null;
         try {
@@ -133,11 +133,11 @@ public class CreditCardsEventHandler {
             if (output instanceof ActionOutput) {
                 output = ((ActionOutput) output).getResult();
             }
-            log.debug("output of action " + action.getClass().getSimpleName() + " is " + output);
+            log.debug("output of suppliedMove " + action.getClass().getSimpleName() + " is " + output);
             resultingTransition = actionConfig.getTransitionForResult(output);
         } catch (RuntimeException e) {
             resultingException = e;
-            log.error("Action " + action.getClass().getSimpleName() + " resulted in exception ", e);
+            log.error("Move " + action.getClass().getSimpleName() + " resulted in exception ", e);
             resultingTransition = actionConfig.getTransitionForException(e);
             if (resultingTransition == null) {
                 resultingTransition = orchestrationConfig.getTransitionForException(e);
@@ -154,7 +154,7 @@ public class CreditCardsEventHandler {
             State oldState = getCurrentState(flowDTO);
             performTransition(transition, flowDTO);
             State newState = getCurrentState(flowDTO);
-            log.debug("performed transition " + oldState + "->" + newState + " after action " + actionConfig.getAction().getSimpleName());
+            log.debug("performed transition " + oldState + "->" + newState + " after suppliedMove " + actionConfig.getAction().getSimpleName());
             handleAfterEventActions(flowDTO);
             if (transition.getNextEvent() != null) {
                 handleEvent(transition.getNextEvent(), flowDTO);

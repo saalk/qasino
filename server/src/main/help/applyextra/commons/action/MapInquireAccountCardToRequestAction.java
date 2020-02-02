@@ -20,7 +20,7 @@ public class MapInquireAccountCardToRequestAction implements Action<MapInquireAc
 
     @Override
     public EventOutput.Result perform(MapInquireAccountCardToRequestActionDTO dto) {
-        log.info("########## Start of event Perform MapInquireAccountCardToRequestAction: " + LocalTime.now());
+        log.info("########## Start of move Perform MapInquireAccountCardToRequestAction: " + LocalTime.now());
 
         final List<SIAAccountInformation> accounts = dto.getSiaOrchestrationDTO().getAccounts();
         final String selectedCardId = dto.getSelectedCardId();
@@ -32,13 +32,13 @@ public class MapInquireAccountCardToRequestAction implements Action<MapInquireAc
                 .collect(toList());
 
         if (listCard.isEmpty() || listCard.size() > 1) {
-            throw new ActivityException(dto.getApplicationName(), "Could not determine the Correct Creditcard for card number: "
+            throw new ActivityException(dto.getApplicationName(), "Could not determine the Correct Creditcard for playingcard number: "
                     + selectedCardId);
         }
 
         final SIACreditCard creditCard = listCard.get(0);
         dto.getCreditcardRequest().getAccount().getCreditCard().setCreditCardNumber(creditCard.getCardNumber());
-        log.info("########## End of event Perform MapInquireAccountCardToRequestAction: " + LocalTime.now());
+        log.info("########## End of move Perform MapInquireAccountCardToRequestAction: " + LocalTime.now());
         return EventOutput.Result.SUCCESS;
     }
 
