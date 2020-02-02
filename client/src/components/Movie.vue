@@ -14,12 +14,12 @@
   <v-container v-else>
     <v-layout wrap>
       <v-flex xs12 mr-1 ml-1>
-        <v-card>
+        <v-playingCard>
           <v-img
             :src="singleMovie.Poster"
             aspect-ratio="2"
           ></v-img>
-          <v-card-title primary-title>
+          <v-playingCard-title primary-title>
             <div>
               <h2 class="headline mb-0">{{singleMovie.Title}}-{{singleMovie.Year}}</h2>
               <p>{{ singleMovie.Plot}} </p>
@@ -27,11 +27,11 @@
                <h4>Awards:</h4> {{singleMovie.Awards}}
                <p>Genre: {{singleMovie.Genre}}</p>
             </div>
-          </v-card-title>
-          <v-card-actions>
+          </v-playingCard-title>
+          <v-playingCard-actions>
             <v-btn flat color="green" @click="back">back</v-btn>
-          </v-card-actions>
-        </v-card>
+          </v-playingCard-actions>
+        </v-playingCard>
       </v-flex>
     </v-layout>
 
@@ -47,14 +47,14 @@
             dark>
             View Ratings
           </v-btn>
-          <v-card>
-            <v-card-title
+          <v-playingCard>
+            <v-playingCard-title
               class="headline grey lighten-2"
               primary-title
             >
               Ratings
-            </v-card-title>
-            <v-card-text>
+            </v-playingCard-title>
+            <v-playingCard-text>
               <table style="width:100%" border="1" >
                 <tr>
                   <th>Source</th>
@@ -65,9 +65,9 @@
                   <td align="center"><v-rating :half-increments="true" :value="ratings[index].Value"></v-rating></td>
                 </tr>
               </table>
-            </v-card-text>
+            </v-playingCard-text>
             <v-divider></v-divider>
-            <v-card-actions>
+            <v-playingCard-actions>
               <v-spacer></v-spacer>
               <v-btn
                 color="primary"
@@ -76,8 +76,8 @@
               >
                 OK
               </v-btn>
-            </v-card-actions>
-          </v-card>
+            </v-playingCard-actions>
+          </v-playingCard>
         </v-dialog>
       </div>
       </v-flex>

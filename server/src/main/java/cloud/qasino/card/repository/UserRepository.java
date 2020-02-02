@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface UserRepository extends JpaRepository<User, Integer> {
@@ -14,7 +15,7 @@ public interface UserRepository extends JpaRepository<User, Integer> {
     //@Query("SELECT count(u) FROM USERS u where u.ALIAS = ?1")
     Long countByAlias(String alias);
 
-    User findUserByAliasAndAliasSequence(String alias, int aliasSequence);
+    Optional<User> findUserByAliasAndAliasSequence(String alias, int aliasSequence);
 
 
     @Query(

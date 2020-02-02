@@ -87,9 +87,11 @@ public class QasinoResource {
                 .toUri();
         HttpHeaders headers = new HttpHeaders();
         headers.add("URI", String.valueOf(uri));
+        System.out.println(pathData);
 
         // validations
         QasinoFlowDTO flowDTO = new QasinoFlowDTO();
+        System.out.println(flowDTO);
         boolean processOk = flowDTO.processInput(headerData, pathData, paramData,null);
         if (!processOk) {
             headers.add(flowDTO.getErrorKey(),flowDTO.getErrorValue());
@@ -98,11 +100,11 @@ public class QasinoResource {
         }
 
         // logic
-        User foundUser = userRepository.findUserByAliasAndAliasSequence(flowDTO.getSuppliedAlias(), 1);
-        if (foundUser.getUserId() == 0) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).headers(headers).build();
+        Optional<User> foundUser = userRepository.findUserByAliasAndAliasSequence(flowDTO.getSuppliedAlias(), 1);
+        if (!foundUser.isPresent()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).headers(headers).build();
         }
-        return ResponseEntity.status(HttpStatus.CREATED).headers(headers).body(foundUser);
+        return ResponseEntity.ok().headers(headers).body(foundUser.get());
     }
 
     // tested
