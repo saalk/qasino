@@ -1,6 +1,6 @@
 <template>
 
-  <v-bottom-navigation
+  <v-bottom-qasino
     app
     fixed
     grow
@@ -21,7 +21,7 @@
       <span>Favorites</span>
       <v-icon>favorite</v-icon>
     </v-btn>
-  </v-bottom-navigation>
+  </v-bottom-qasino>
 
 </template>
 
