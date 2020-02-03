@@ -1,10 +1,5 @@
-package cloud.qasino.card.dto;
+package cloud.qasino.card.dto.enums;
 
-import cloud.qasino.card.dto.enumrefs.TurnEnums;
-import cloud.qasino.card.dto.enumrefs.GameEnums;
-import cloud.qasino.card.dto.enumrefs.PlayerEnums;
-import cloud.qasino.card.dto.enumrefs.CardEnums;
-import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 import lombok.Setter;

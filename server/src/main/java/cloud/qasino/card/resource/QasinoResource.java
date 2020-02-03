@@ -1,8 +1,10 @@
 package cloud.qasino.card.resource;
 
-import cloud.qasino.card.dto.Enums;
-import cloud.qasino.card.dto.Counters;
+import cloud.qasino.card.dto.enums.Enums;
 import cloud.qasino.card.dto.QasinoFlowDTO;
+import cloud.qasino.card.dto.statistics.Counter;
+import cloud.qasino.card.dto.statistics.SubTotalsGame;
+import cloud.qasino.card.dto.statistics.Total;
 import cloud.qasino.card.entity.User;
 import cloud.qasino.card.repository.*;
 import org.apache.commons.lang3.StringUtils;
@@ -14,10 +16,13 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
-import java.util.*;
+import java.util.Collections;
+import java.util.Map;
+import java.util.Optional;
 
 import static cloud.qasino.card.configuration.Constants.DEFAULT_PAWN_SHIP_HUMAN;
-import static cloud.qasino.card.statemachine.GameState.*;
+import static cloud.qasino.card.statemachine.GameState.cardGamesNewValues;
+import static cloud.qasino.card.statemachine.GameState.cardGamesStartedValues;
 
 // basic path /qasino
 // basic header @RequestHeader(value "user", required = true) int userId" // else 400
@@ -80,31 +85,19 @@ public class QasinoResource {
             @RequestParam Map<String, String> paramData
     ) {
 
-        // header in response
-        URI uri = ServletUriComponentsBuilder.fromCurrentRequest()
-                .path("")
-                .buildAndExpand(pathData, paramData)
-                .toUri();
-        HttpHeaders headers = new HttpHeaders();
-        headers.add("URI", String.valueOf(uri));
-        System.out.println(pathData);
-
         // validations
         QasinoFlowDTO flowDTO = new QasinoFlowDTO();
-        System.out.println(flowDTO);
-        boolean processOk = flowDTO.processInput(headerData, pathData, paramData,null);
+        boolean processOk = flowDTO.validateInput(headerData, pathData, paramData, null);
         if (!processOk) {
-            headers.add(flowDTO.getErrorKey(),flowDTO.getErrorValue());
-            headers.add("message",flowDTO.getErrorMessage());
-            return ResponseEntity.status(HttpStatus.valueOf(flowDTO.getHttpStatus())).headers(headers).build();
+            return ResponseEntity.status(HttpStatus.valueOf(flowDTO.getHttpStatus())).headers(flowDTO.getHeaders()).build();
         }
 
         // logic
         Optional<User> foundUser = userRepository.findUserByAliasAndAliasSequence(flowDTO.getSuppliedAlias(), 1);
         if (!foundUser.isPresent()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).headers(headers).build();
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).headers(flowDTO.getHeaders()).build();
         }
-        return ResponseEntity.ok().headers(headers).body(foundUser.get());
+        return ResponseEntity.ok().headers(flowDTO.getHeaders()).body(foundUser.get());
     }
 
     // tested
@@ -222,24 +215,26 @@ public class QasinoResource {
         HttpHeaders headers = new HttpHeaders();
         headers.add("URI", String.valueOf(uri));
 
-        Counters counters = new Counters();
-        Counters.Totals totals = new Counters.Totals();
+        SubTotalsGame subTotalsGame = new SubTotalsGame();
+        subTotalsGame.totalNewGames = gameRepository.countByStates(cardGamesNewValues);
+        subTotalsGame.totalStartedGames = gameRepository.countByStates(cardGamesStartedValues);
+        // todo LOW finalize counters
+        subTotalsGame.totalsFinishedGames = gameRepository.countByStates(cardGamesStartedValues);
+        subTotalsGame.totalErrorGames = gameRepository.countByStates(cardGamesStartedValues);
 
-        totals.setLeagues((int) leagueRepository.count());
-        totals.setUsers((int) userRepository.count());
-        totals.setGames((int) gameRepository.count());
-        totals.setPlayers((int) playerRepository.count());
-        totals.setCards((int) cardRepository.count());
+        Total totals = new Total();
+        totals.setSubTotalsGames(subTotalsGame);
+        totals.totalLeagues = ((int) leagueRepository.count());
+        totals.totalUsers = ((int) userRepository.count());
+        totals.totalGames = ((int) gameRepository.count());
+        totals.totalPlayers = ((int) playerRepository.count());
+        totals.totalCards = ((int) cardRepository.count());
 
-        Counters.GameSubTotals gameSubTotals = new Counters.GameSubTotals();
-        gameSubTotals.setNewGames((int) gameRepository.countByStates(cardGamesNewValues));
-        gameSubTotals.setStartedGames((int) gameRepository.countByStates(cardGamesStartedValues));
-        gameSubTotals.setFinishedGames((int) gameRepository.countByStates(cardGamesStartedValues));
-        gameSubTotals.setErrorGames((int) gameRepository.countByStates(cardGamesStartedValues));
-        totals.setSubTotalsGames(gameSubTotals);
+        Counter counters = new Counter();
+        counters.setTotals(Collections.singletonList(totals));
 
-        return ResponseEntity.ok().headers(headers).body(totals);
-    }
+        return ResponseEntity.ok().headers(headers).body(counters);
+}
 
 
 }

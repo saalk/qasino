@@ -1,4 +1,4 @@
-package cloud.qasino.card.dto.enumrefs;
+package cloud.qasino.card.dto.enums;
 
 import cloud.qasino.card.entity.enums.game.style.*;
 import lombok.Getter;

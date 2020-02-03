@@ -12,25 +12,16 @@ import static org.assertj.core.api.Assertions.assertThat;
 class QasinoFlowDTOTest {
 
     @Test
-    void processInput() {
-    }
-
-    @Test
-    void processHeader() {
-    }
-
-    @Test
-    void processPathData() {
+    void callOrocessPathDataOK() {
         Map<String, String> tester = new HashMap<>();
-        tester.put("alias", "aliasName");
+        String ALIASNAME = "aliasName";
+        tester.put("alias", ALIASNAME);
 
         QasinoFlowDTO flow = new QasinoFlowDTO();
         boolean result = flow.processPathData(tester);
 
         assertThat(result);
+        assertThat(flow.getSuppliedAlias() == ALIASNAME );
     }
 
-    @Test
-    void processParamData() {
-    }
 }

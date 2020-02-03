@@ -1,9 +1,8 @@
-package cloud.qasino.card.dto.enumrefs;
+package cloud.qasino.card.dto.enums;
 
 import cloud.qasino.card.entity.enums.card.Face;
 import cloud.qasino.card.entity.enums.card.Location;
 import cloud.qasino.card.entity.enums.card.Position;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 
 import java.util.Map;

@@ -1,5 +1,6 @@
 package cloud.qasino.card.dto;
 
+import cloud.qasino.card.action.FindAllEntitiesForInputAction;
 import cloud.qasino.card.entity.*;
 import cloud.qasino.card.statemachine.GameTrigger;
 import cloud.qasino.card.entity.enums.card.Face;
@@ -15,30 +16,19 @@ import lombok.Data;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.http.HttpHeaders;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import java.net.URI;
 import java.util.List;
 import java.util.Map;
 
 @Data
 @Slf4j
-public class QasinoFlowDTO // extends AbstractFlowDTO
-/*        implements
-        CreateCasinoForGameAndPlayerEvent.CreateCasinoForGameAndPlayerEventDTO,
-        CreatePlayingCardForGameEvent.CreatePlayingCardForGameEventDTO,
-        CreateUserForCasinoForGameAndPlayerEvent.CreateUserForCasinoForGameAndPlayerEventDTO,
-        CreatePlayerEvent.CreatePlayerEventDTO,
-        DeleteCardGameEvent.DeleteCardGameEventDTO,
-        DeleteCasinoForGameAndPlayerEvent.DeleteCasinoForGameAndPlayerEventDTO,
-        DetermineTurnResultsEvent.DetermineTurnResultsEventDTO,
-        GetCardGameDetailsEvent.GetCardGameDetailsEventDTO,
-        SetupFlowDTOForEveryEvent.SetupFlowDTOForEveryEventDTO,
-        UpdateCardGameDetailsEvent.UpdateCardGameDetailsEventDTO,
-        UpdateCasinoForPlayingOrderEvent.UpdateCasinoForPlayingOrderEventDTO,
-        UpdateCasinoForTurnAndBetEvent.UpdateCasinoForTurnAndBetEventDTO,
-        UpdatePlayingCardForGameAndCasinoEvent.UpdatePlayingCardForGameAndCasinoEventDTO,
-        UpdatePlayerCubitsAndSecuredLoanEvent.UpdatePlayerCubitsAndSecuredLoanEventDTO,
-        UpdatePlayerForCasinoDetailsEvent.UpdatePlayerForCasinoDetailsEventDTO,
-        VerifyTurnStateEvent.VerifyTurnStateEventDTO */ {
+public class QasinoFlowDTO //extends AbstractFlowDTO
+        implements
+        FindAllEntitiesForInputAction.FindAllEntitiesForInputActionDTO
+{
     // suppress lombok setter for these fixed values
     @Setter(AccessLevel.NONE)
     private String applicationName = "qasino";
@@ -55,7 +45,7 @@ public class QasinoFlowDTO // extends AbstractFlowDTO
     private int suppliedLeagueId;
     private int invitedPlayerId;
     private int acceptedPlayerId;
-    // triggers
+    // enums
     private GameTrigger suppliedTrigger;
     private Move suppliedMove;
     private List<Card> suppliedCards;   // todo
@@ -87,13 +77,16 @@ public class QasinoFlowDTO // extends AbstractFlowDTO
     private int suppliedBet;
 
     // ACTION DATA
-    // in game changes
+    // in game data
     private User gameUser;
-    private Player gamePlayer;
+    private Player invitedPlayer;
+    private Player acceptedPlayer;
+    private Player turnPlayer;
+    private Game qasinoGame;
+    private League gameLeague;
 
     private List<Game> initiatedGames;
 
-    private Game qasinoGame;
     private List<Player> qasinoPlayers;
     private Turn qasinoTurn;
     private List<Card> qasinoCards;
@@ -116,17 +109,30 @@ public class QasinoFlowDTO // extends AbstractFlowDTO
     private String errorKey;
     private String errorValue;
     private String errorMessage;
+    private HttpHeaders headers;
 
     // PROCESS AND VALIDATE INPUT
-    public boolean processInput(
+    public boolean validateInput(
             Map<String, String> headerData,
             Map<String, String> pathData,
             Map<String, String> paramData,
             Object payloadData) {
 
-        if (!processHeader(headerData)) return false;
-        if (!processPathData(pathData)) return false;
-        if (!processParamData(paramData)) return false;
+        // header in response
+        URI uri = ServletUriComponentsBuilder.fromCurrentRequest()
+                .path("")
+                .buildAndExpand(pathData, paramData)
+                .toUri();
+        this.headers = new HttpHeaders();
+        headers.add("URI", String.valueOf(uri));
+
+        if (!processHeader(headerData)
+            | !processPathData(pathData)
+            | !processParamData(paramData)) {
+            headers.add(this.getErrorKey(), this.getErrorValue());
+            headers.add("Error", this.getErrorMessage());
+            return false;
+        }
         return true;
     }
     boolean processHeader(Map<String, String> headerData) {
@@ -137,7 +143,7 @@ public class QasinoFlowDTO // extends AbstractFlowDTO
 
         key = "gameId";
         if (headerData.containsKey(key)) {
-            if (isValueForIntKeyValid(headerData.get(key), dataName, headerDataString)) {
+            if (isValueForIntKeyValid(key, headerData.get(key), dataName, headerDataString)) {
                 this.suppliedGameId = Integer.parseInt(headerData.get(key));
             } else {
                 return false;
@@ -145,7 +151,7 @@ public class QasinoFlowDTO // extends AbstractFlowDTO
         }
         key = "userId";
         if (headerData.containsKey(key)) {
-            if (isValueForIntKeyValid(headerData.get(key), dataName, headerDataString)) {
+            if (isValueForIntKeyValid(key, headerData.get(key), dataName, headerDataString)) {
                 this.suppliedUserId = Integer.parseInt(headerData.get(key));
             } else {
                 return false;
@@ -161,7 +167,7 @@ public class QasinoFlowDTO // extends AbstractFlowDTO
 
         key = "leagueId";
         if (pathData.containsKey(key)) {
-            if (isValueForIntKeyValid(pathData.get(key), dataName, pathDataString)) {
+            if (isValueForIntKeyValid(key, pathData.get(key), dataName, pathDataString)) {
                 this.suppliedLeagueId = Integer.parseInt(pathData.get(key));
             } else {
                 return false;
@@ -169,7 +175,7 @@ public class QasinoFlowDTO // extends AbstractFlowDTO
         }
         key = "invitedPlayerId";
         if (pathData.containsKey(key)) {
-            if (isValueForIntKeyValid(pathData.get(key), dataName, pathDataString)) {
+            if (isValueForIntKeyValid(key, pathData.get(key), dataName, pathDataString)) {
                 this.invitedPlayerId = Integer.parseInt(pathData.get(key));
             } else {
                 return false;
@@ -177,7 +183,7 @@ public class QasinoFlowDTO // extends AbstractFlowDTO
         }
         key = "acceptedPlayerId";
         if (pathData.containsKey(key)) {
-            if (isValueForIntKeyValid(pathData.get(key), dataName, pathDataString)) {
+            if (isValueForIntKeyValid(key, pathData.get(key), dataName, pathDataString)) {
                 this.suppliedLeagueId = Integer.parseInt(pathData.get(key));
             } else {
                 return false;
@@ -185,7 +191,7 @@ public class QasinoFlowDTO // extends AbstractFlowDTO
         }
         key = "turnPlayerId";
         if (pathData.containsKey(key)) {
-            if (isValueForIntKeyValid(pathData.get(key), dataName, pathDataString)) {
+            if (isValueForIntKeyValid(key, pathData.get(key), dataName, pathDataString)) {
                 this.suppliedTurnPlayerId = Integer.parseInt(pathData.get(key));
             } else {
                 return false;
@@ -203,8 +209,14 @@ public class QasinoFlowDTO // extends AbstractFlowDTO
         String paramDataString = StringUtils.join(paramData);
         log.info(this.getClass().getName() + ": " + dataName + " is " + paramDataString);
         // user
-        this.suppliedAlias = (paramData.get("alias"));
-        this.suppliedEmail = (paramData.get("email"));
+        key = "alias";
+        if (paramData.containsKey(key)) {
+            this.suppliedAlias = (paramData.get("alias"));
+        }
+        key = "email";
+        if (paramData.containsKey(key)) {
+            this.suppliedEmail = (paramData.get("email"));
+        }
         // player
         key = "role";
         if (paramData.containsKey(key)) {
@@ -218,7 +230,7 @@ public class QasinoFlowDTO // extends AbstractFlowDTO
         }
         key = "fiches";
         if (paramData.containsKey(key)) {
-            if (isValueForIntKeyValid(paramData.get(key), dataName, paramDataString)) {
+            if (isValueForIntKeyValid(key, paramData.get(key), dataName, paramDataString)) {
                 this.suppliedFiches = Integer.parseInt(paramData.get(key));
             } else {
                 return false;
@@ -265,10 +277,13 @@ public class QasinoFlowDTO // extends AbstractFlowDTO
                 return false;
             }
         }
-        this.suppliedStyle = (paramData.get("style"));
+        key = "style";
+        if (paramData.containsKey(key)) {
+            this.suppliedStyle = (paramData.get("style"));
+        }
         key = "ante";
         if (paramData.containsKey(key)) {
-            if (isValueForIntKeyValid(paramData.get(key), dataName, paramDataString)) {
+            if (isValueForIntKeyValid(key, paramData.get(key), dataName, paramDataString)) {
                 this.suppliedAnte = Integer.parseInt(paramData.get(key));
             } else {
                 return false;
@@ -276,14 +291,17 @@ public class QasinoFlowDTO // extends AbstractFlowDTO
         }
         key = "jokers";
         if (paramData.containsKey(key)) {
-            if (isValueForIntKeyValid(paramData.get(key), dataName, paramDataString)) {
+            if (isValueForIntKeyValid(key, paramData.get(key), dataName, paramDataString)) {
                 this.suppliedJokers = Integer.parseInt(paramData.get(key));
             } else {
                 return false;
             }
         }
         // league
-        this.suppliedLeagueName = (paramData.get("leagueName"));
+        key = "leagueName";
+        if (paramData.containsKey(key)) {
+            this.suppliedLeagueName = (paramData.get("leagueName"));
+        }
         // cardmove
         key = "move";
         if (paramData.containsKey(key)) {
@@ -307,7 +325,7 @@ public class QasinoFlowDTO // extends AbstractFlowDTO
         }
         key = "bet";
         if (paramData.containsKey(key)) {
-            if (isValueForIntKeyValid(paramData.get(key), dataName, paramDataString)) {
+            if (isValueForIntKeyValid(key, paramData.get(key), dataName, paramDataString)) {
                 this.suppliedBet = Integer.parseInt(paramData.get(key));
             } else {
                 return false;
@@ -315,12 +333,13 @@ public class QasinoFlowDTO // extends AbstractFlowDTO
         }
         return true;
     }
-    boolean isValueForIntKeyValid(String value, String dataName, String dataToValidate) {
+    boolean isValueForIntKeyValid(String key, String value, String dataName, String dataToValidate) {
         if (!StringUtils.isNumeric(value)) {
             // 400 - bad request
             this.setHttpStatus(400);
-            this.setErrorKey(dataName);
-            this.setErrorValue(dataToValidate);
+            this.setErrorKey(key);
+            this.setErrorValue(value);
+            this.setErrorMessage("Invalid int value for" + key);
             return false;
         }
         return true;
@@ -379,8 +398,10 @@ public class QasinoFlowDTO // extends AbstractFlowDTO
 
         // 400 - bad request
         this.setHttpStatus(400);
-        this.setErrorKey(dataName);
-        this.setErrorValue(dataToValidate);
+        this.setErrorKey(key);
+        this.setErrorValue("in error");
+        this.setErrorMessage("Invalid enum value for" + key);
+
         return false;
     }
 }
