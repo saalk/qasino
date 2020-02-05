@@ -1,5 +1,9 @@
 package cloud.qasino.card.resource;
 
+import cloud.qasino.card.action.CalculateHallOfFameAction;
+import cloud.qasino.card.action.FindAllEntitiesForInputAction;
+import cloud.qasino.card.action.MapQasinoResponseFromRetrievedDataAction;
+import cloud.qasino.card.action.SetStatusIndicatorsBaseOnRetrievedDataAction;
 import cloud.qasino.card.dto.enums.Enums;
 import cloud.qasino.card.dto.QasinoFlowDTO;
 import cloud.qasino.card.dto.statistics.Counter;
@@ -7,6 +11,8 @@ import cloud.qasino.card.dto.statistics.SubTotalsGame;
 import cloud.qasino.card.dto.statistics.Total;
 import cloud.qasino.card.entity.User;
 import cloud.qasino.card.repository.*;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -21,8 +27,7 @@ import java.util.Map;
 import java.util.Optional;
 
 import static cloud.qasino.card.configuration.Constants.DEFAULT_PAWN_SHIP_HUMAN;
-import static cloud.qasino.card.statemachine.GameState.cardGamesNewValues;
-import static cloud.qasino.card.statemachine.GameState.cardGamesStartedValues;
+import static cloud.qasino.card.statemachine.GameState.*;
 
 // basic path /qasino
 // basic header @RequestHeader(value "user", required = true) int userId" // else 400
@@ -43,6 +48,15 @@ public class QasinoResource {
     CardRepository cardRepository;
     TurnRepository turnRepository;
     LeagueRepository leagueRepository;
+
+    @Autowired
+    FindAllEntitiesForInputAction findAllEntitiesForInputAction;
+    @Autowired
+    SetStatusIndicatorsBaseOnRetrievedDataAction setStatusIndicatorsBaseOnRetrievedDataAction;
+    @Autowired
+    CalculateHallOfFameAction calculateHallOfFameAction;
+    @Autowired
+    MapQasinoResponseFromRetrievedDataAction mapQasinoResponseFromRetrievedDataAction;
 
     @Autowired
     public QasinoResource(
@@ -87,7 +101,11 @@ public class QasinoResource {
 
         // validations
         QasinoFlowDTO flowDTO = new QasinoFlowDTO();
-        boolean processOk = flowDTO.validateInput(headerData, pathData, paramData, null);
+        flowDTO.setHeaderData(headerData);
+        flowDTO.setPathData(pathData);
+        flowDTO.setParamData(paramData);
+        flowDTO.setPayloadData(null);
+        boolean processOk = flowDTO.validateInput();
         if (!processOk) {
             return ResponseEntity.status(HttpStatus.valueOf(flowDTO.getHttpStatus())).headers(flowDTO.getHeaders()).build();
         }
@@ -205,8 +223,33 @@ public class QasinoResource {
 
     @GetMapping(value = "/halloffame")
     public ResponseEntity halloffame(
-    ) {
-        // header in response
+    ) throws JsonProcessingException {
+
+        QasinoFlowDTO flowDTO = new QasinoFlowDTO();
+        flowDTO.setHeaderData(null);
+        flowDTO.setPathData(null);
+        flowDTO.setParamData(null);
+        flowDTO.setPayloadData(null);
+
+
+        boolean processOk = flowDTO.validateInput();
+        if (!processOk) {
+            return ResponseEntity.status(HttpStatus.valueOf(flowDTO.getHttpStatus())).headers(flowDTO.getHeaders()).build();
+        }
+
+        ObjectMapper mapper = new ObjectMapper();
+        System.out.println("FLOW " + mapper.writeValueAsString(flowDTO));
+
+        findAllEntitiesForInputAction.perform(flowDTO);
+        setStatusIndicatorsBaseOnRetrievedDataAction.perform(flowDTO);
+        calculateHallOfFameAction.perform(flowDTO);
+        mapQasinoResponseFromRetrievedDataAction.perform(flowDTO);
+
+        System.out.println("FLOW " + mapper.writeValueAsString(flowDTO));
+
+        return ResponseEntity.ok().headers(flowDTO.getHeaders()).body(flowDTO.getQasino());
+
+/*        // header in response
         URI uri = ServletUriComponentsBuilder.fromCurrentRequest()
                 .path("")
                 .query("")
@@ -218,9 +261,7 @@ public class QasinoResource {
         SubTotalsGame subTotalsGame = new SubTotalsGame();
         subTotalsGame.totalNewGames = gameRepository.countByStates(cardGamesNewValues);
         subTotalsGame.totalStartedGames = gameRepository.countByStates(cardGamesStartedValues);
-        // todo LOW finalize counters
-        subTotalsGame.totalsFinishedGames = gameRepository.countByStates(cardGamesStartedValues);
-        subTotalsGame.totalErrorGames = gameRepository.countByStates(cardGamesStartedValues);
+        subTotalsGame.totalsFinishedGames = gameRepository.countByStates(cardGamesFinishedValues);
 
         Total totals = new Total();
         totals.setSubTotalsGames(subTotalsGame);
@@ -233,9 +274,7 @@ public class QasinoResource {
         Counter counters = new Counter();
         counters.setTotals(Collections.singletonList(totals));
 
-        return ResponseEntity.ok().headers(headers).body(counters);
-}
-
-
+        return ResponseEntity.ok().headers(headers).body(counters);*/
+    }
 }
 

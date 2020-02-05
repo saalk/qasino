@@ -13,12 +13,12 @@ import java.util.List;
 @Setter
 @JsonIdentityInfo(generator = JSOGGenerator.class)
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
-public class NavigationBarItems {
+public class NavigationBarItem {
 
     private boolean isVisible;
     private String itemName;
     private String itemStats;
-    private boolean actionNeeded;
+    private boolean actionNeeded; // todo
 
 }
 

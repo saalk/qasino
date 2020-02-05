@@ -1,14 +1,24 @@
 package cloud.qasino.card.dto;
 
+import cloud.qasino.card.dto.enums.Enums;
 import cloud.qasino.card.dto.navigation.*;
+import cloud.qasino.card.dto.statistics.Counter;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.List;
 
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class Qasino {
 
     @JsonProperty("NavBarItems")
-    private List<NavigationBarItems> navBarItems;
+    private List<NavigationBarItem> navBarItems;
 
     @JsonProperty("UserData")
     private NavigationUser userData;
@@ -23,5 +33,12 @@ public class Qasino {
 
     @JsonProperty("Table")
     private Table table;
+
+    // extra
+    @JsonProperty("Enums")
+    Enums enums = new Enums();
+    @JsonProperty("Counters")
+    Counter counter =new Counter();
+
 
 }

@@ -12,5 +12,4 @@ public class SubTotalsGame {
     public int totalNewGames;
     public int totalStartedGames;
     public int totalsFinishedGames;
-    public int totalErrorGames;
 }

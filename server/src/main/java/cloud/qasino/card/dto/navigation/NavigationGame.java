@@ -5,9 +5,17 @@ import cloud.qasino.card.entity.League;
 import cloud.qasino.card.entity.User;
 import cloud.qasino.card.entity.enums.game.style.*;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.List;
 
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class NavigationGame {
 
     private boolean hasBalance;      // icon is cards -> select/start game to enable nav-game
@@ -17,7 +25,7 @@ public class NavigationGame {
     private Game game; // including a list of players + intiator
 
     @JsonProperty("Friends")
-    private List<User> friends;
+    private List<User> friends; // todo friends
 
     @JsonProperty("Leagues")
     private List<League> leagues;

@@ -44,10 +44,31 @@ public interface GameRepository extends JpaRepository<Game, Integer> {
                     "AND b.USER_ID = :userId " +
                     "AND a.STATE IN ('NEW','PENDING_INVITATIONS','PREPARED') ";
 
+    public final static String FIND_STARTEDGAMES_BY_USER_ID =
+            "SELECT * FROM GAMES a JOIN PLAYERS b " +
+                    "WHERE a.GAME_ID = b.GAME_ID " +
+                    "AND b.USER_ID = :userId " +
+                    "AND a.STATE IN ('PLAYING') ";
+    public final static String COUNT_STARTEDGAMES_BY_USER_ID =
+            "SELECT count(*) FROM GAMES a JOIN PLAYERS b " +
+                    "WHERE a.GAME_ID = b.GAME_ID " +
+                    "AND b.USER_ID = :userId " +
+                    "AND a.STATE IN ('PLAYING') ";
+
+    public final static String FIND_FINISHEDGAMES_BY_USER_ID =
+            "SELECT * FROM GAMES a JOIN PLAYERS b " +
+                    "WHERE a.GAME_ID = b.GAME_ID " +
+                    "AND b.USER_ID = :userId " +
+                    "AND a.STATE IN ('PLAYING') ";
+    public final static String COUNT_FINISHEDGAMES_BY_USER_ID =
+            "SELECT count(*) FROM GAMES a JOIN PLAYERS b " +
+                    "WHERE a.GAME_ID = b.GAME_ID " +
+                    "AND b.USER_ID = :userId " +
+                    "AND a.STATE IN ('PLAYING') ";
     // counts
     Integer countByLeague(League league);
 
-    @Query(value = "SELECT count(*) FROM GAMES g WHERE g.STATE IN :states", nativeQuery = true)
+    @Query(value = "SELECT count(*) FROM GAMES g WHERE g.STATE IN (:states)", nativeQuery = true)
     Integer countByStates(@Param(value = "states") String[] states);
 
     @Query(value = COUNT_TODAY, nativeQuery = true)
@@ -73,6 +94,16 @@ public interface GameRepository extends JpaRepository<Game, Integer> {
 
     @Query(value = FIND_NEWGAMES_BY_USER_ID, countQuery = COUNT_NEWGAMES_BY_USER_ID, nativeQuery = true)
     public List<Game> findAllNewGamesForUserWithPage(
+            @Param("userId") int userId,
+            Pageable pageable);
+
+    @Query(value = FIND_STARTEDGAMES_BY_USER_ID, countQuery = COUNT_STARTEDGAMES_BY_USER_ID, nativeQuery = true)
+    public List<Game> findAllStartedGamesForUserWithPage(
+            @Param("userId") int userId,
+            Pageable pageable);
+
+    @Query(value = FIND_FINISHEDGAMES_BY_USER_ID, countQuery = COUNT_FINISHEDGAMES_BY_USER_ID, nativeQuery = true)
+    public List<Game> findAllFinishedGamesForUserWithPage(
             @Param("userId") int userId,
             Pageable pageable);
 

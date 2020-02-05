@@ -1,7 +1,12 @@
 package cloud.qasino.card.dto;
 
+import cloud.qasino.card.action.CalculateHallOfFameAction;
 import cloud.qasino.card.action.FindAllEntitiesForInputAction;
+import cloud.qasino.card.action.MapQasinoResponseFromRetrievedDataAction;
+import cloud.qasino.card.action.SetStatusIndicatorsBaseOnRetrievedDataAction;
+import cloud.qasino.card.dto.statistics.Counter;
 import cloud.qasino.card.entity.*;
+import cloud.qasino.card.statemachine.GameStateGroup;
 import cloud.qasino.card.statemachine.GameTrigger;
 import cloud.qasino.card.entity.enums.card.Face;
 import cloud.qasino.card.entity.enums.card.Location;
@@ -13,6 +18,7 @@ import cloud.qasino.card.entity.enums.player.Avatar;
 import cloud.qasino.card.entity.enums.player.Role;
 import lombok.AccessLevel;
 import lombok.Data;
+import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -23,11 +29,17 @@ import java.net.URI;
 import java.util.List;
 import java.util.Map;
 
-@Data
+//@Data
+@Getter
+@Setter
 @Slf4j
 public class QasinoFlowDTO //extends AbstractFlowDTO
         implements
-        FindAllEntitiesForInputAction.FindAllEntitiesForInputActionDTO
+        FindAllEntitiesForInputAction.FindAllEntitiesForInputActionDTO,
+        CalculateHallOfFameAction.CalculateHallOfFameActionDTO,
+        SetStatusIndicatorsBaseOnRetrievedDataAction.SetStatusIndicatorsBaseOnRetrievedDataDTO,
+        MapQasinoResponseFromRetrievedDataAction.MapQasinoResponseFromRetrievedDataDTO
+
 {
     // suppress lombok setter for these fixed values
     @Setter(AccessLevel.NONE)
@@ -35,9 +47,9 @@ public class QasinoFlowDTO //extends AbstractFlowDTO
 
     // gui
     private Qasino qasino;
+    private Counter counter;
 
-
-    // FRONTEND DATA
+    // FRONTEND ID DATA
     // frontend header
     private int suppliedUserId;
     private int suppliedGameId;
@@ -45,15 +57,22 @@ public class QasinoFlowDTO //extends AbstractFlowDTO
     private int suppliedLeagueId;
     private int invitedPlayerId;
     private int acceptedPlayerId;
-    // enums
-    private GameTrigger suppliedTrigger;
-    private Move suppliedMove;
-    private List<Card> suppliedCards;   // todo
+    private int suppliedTurnPlayerId;
     // generic frontend path ids
     private String suppliedEntity;      // todo
     private int suppliedEntityId;       // todo
     private String suppliedPathParam;   // todo
+
+    // FRONTEND PATH/PARAM DATA
+    // enums
+    private GameTrigger suppliedTrigger;
+    private GameStateGroup suppliedGameStateGroup;
+    private Move suppliedMove;
+    private List<Card> suppliedCards;   // todo
     // frontend query params
+    // paging
+    private int suppliedPages;
+    private int suppliedMaxPerPage;
     // user
     private String suppliedAlias;
     private String suppliedEmail;
@@ -73,36 +92,39 @@ public class QasinoFlowDTO //extends AbstractFlowDTO
     private int suppliedJokers;
     // cardMove
     private Location suppliedLocation;
-    private int suppliedTurnPlayerId;
     private int suppliedBet;
 
-    // ACTION DATA
+    // RETRIEVED DATA BASED ON FRONTEND ID's
     // in game data
     private User gameUser;
     private Player invitedPlayer;
     private Player acceptedPlayer;
     private Player turnPlayer;
+
+    private List<Game> newGamesForUser;
+    private List<Game> startedGamesForUser;
+    private List<Game> finishedGamesForUser;
+
     private Game qasinoGame;
-    private League gameLeague;
+    private List<Player> qasinoGamePlayers;
+    private Turn qasinoGameTurn;
+    private List<Card> qasinoGameCards;
+    private List<CardMove> qasinoGameCardMoves;
 
-    private List<Game> initiatedGames;
-
-    private List<Player> qasinoPlayers;
-    private Turn qasinoTurn;
-    private List<Card> qasinoCards;
-    private List<CardMove> qasinoCardMoves;
-
+    private League qasinoGameLeague;
     private List<League> leaguesForUser;
+    private Result gameResult;
     private List<Result> resultsForLeague;
-
+    // todo
     private List<User> friends;
 
+    // STATS based on RETRIEVED DATA
     // stats
-    private boolean hasLoggedOn = false;     // icon is spaceShip -> logon to enable nav-user
-    private boolean hasBalance = false;      // icon is cards -> select/start game to enable nav-game
-    private boolean isPlayable = false;      // icon is fiches -> playable game to enable nav-qasino
-    private boolean hasLeague = false;       // icon is hallOfFame -> position in league or no league
-    private boolean hasFriends = false;      // icon is chat -> chats and relations
+    public boolean loggedOn;     // icon is spaceShip -> logon to enable nav-user
+    public boolean balanceNotZero;      // icon is cards -> select/start game to enable nav-game
+    public boolean gamePlayable;      // icon is fiches -> playable game to enable nav-qasino
+    public boolean leaguePresent;       // icon is hallOfFame -> position in league or no league
+    public boolean friendsPresent;      // icon is chat -> chats and relations
 
     // ERROR DATA
     private int httpStatus;
@@ -111,28 +133,50 @@ public class QasinoFlowDTO //extends AbstractFlowDTO
     private String errorMessage;
     private HttpHeaders headers;
 
-    // PROCESS AND VALIDATE INPUT
-    public boolean validateInput(
-            Map<String, String> headerData,
-            Map<String, String> pathData,
-            Map<String, String> paramData,
-            Object payloadData) {
+    private Map<String, String> headerData;
+    private Map<String, String> pathData;
+    private Map<String, String> paramData;
+    private Object payloadData;
+    private URI uri;
 
-        // header in response
-        URI uri = ServletUriComponentsBuilder.fromCurrentRequest()
+    public void setUriAndHeaders() {
+        this.uri = ServletUriComponentsBuilder.fromCurrentRequest()
                 .path("")
-                .buildAndExpand(pathData, paramData)
+                .buildAndExpand(this.pathData, this.paramData)
                 .toUri();
         this.headers = new HttpHeaders();
         headers.add("URI", String.valueOf(uri));
 
-        if (!processHeader(headerData)
-            | !processPathData(pathData)
-            | !processParamData(paramData)) {
+        if (!StringUtils.isEmpty(this.getErrorKey())) {
             headers.add(this.getErrorKey(), this.getErrorValue());
             headers.add("Error", this.getErrorMessage());
+        }
+    }
+
+    // PROCESS AND VALIDATE INPUT
+    public boolean validateInput() {
+
+        // header in response
+/*
+        uri = ServletUriComponentsBuilder.fromCurrentRequest()
+                .path("")
+                .buildAndExpand(this.pathData, this.paramData)
+                .toUri();
+        this.headers = new HttpHeaders();
+        headers.add("URI", String.valueOf(uri));
+*/
+
+        if (!processHeader(this.headerData)
+            | !processPathData(this.pathData)
+            | !processParamData(this.paramData)) {
+/*
+            headers.add(this.getErrorKey(), this.getErrorValue());
+            headers.add("Error", this.getErrorMessage());
+*/
+            setUriAndHeaders();
             return false;
         }
+        setUriAndHeaders();
         return true;
     }
     boolean processHeader(Map<String, String> headerData) {
@@ -140,6 +184,8 @@ public class QasinoFlowDTO //extends AbstractFlowDTO
         String dataName = "headerData";
         String headerDataString = StringUtils.join(headerData);
         log.info(this.getClass().getName() + ": " + dataName + " is " + headerDataString);
+
+        if (headerData==null) return true;
 
         key = "gameId";
         if (headerData.containsKey(key)) {
@@ -164,6 +210,8 @@ public class QasinoFlowDTO //extends AbstractFlowDTO
         String dataName = "pathData";
         String pathDataString = StringUtils.join(pathData);
         log.info(this.getClass().getName() + ": " + dataName + " is " + pathDataString);
+
+        if (pathData==null) return true;
 
         key = "leagueId";
         if (pathData.containsKey(key)) {
@@ -208,6 +256,26 @@ public class QasinoFlowDTO //extends AbstractFlowDTO
         String dataName = "paramData";
         String paramDataString = StringUtils.join(paramData);
         log.info(this.getClass().getName() + ": " + dataName + " is " + paramDataString);
+
+        if (paramData==null) return true;
+
+        // paging
+        key = "pages";
+        if (paramData.containsKey(key)) {
+            if (isValueForIntKeyValid(key, paramData.get(key), dataName, paramDataString)) {
+                this.suppliedPages = Integer.parseInt(paramData.get(key));
+            } else {
+                return false;
+            }
+        }
+        key = "maxPerPage";
+        if (paramData.containsKey(key)) {
+            if (isValueForIntKeyValid(key, paramData.get(key), dataName, paramDataString)) {
+                this.suppliedMaxPerPage = Integer.parseInt(paramData.get(key));
+            } else {
+                return false;
+            }
+        }
         // user
         key = "alias";
         if (paramData.containsKey(key)) {
@@ -263,6 +331,16 @@ public class QasinoFlowDTO //extends AbstractFlowDTO
                     key), dataName,
                     paramDataString)) {
                 this.suppliedTrigger = GameTrigger.valueOf(paramData.get(key));
+            } else {
+                return false;
+            }
+        }
+        key = "gameStateGroup";
+        if (paramData.containsKey(key)) {
+            if (isValueForEnumKeyValid(key, paramData.get(
+                    key), dataName,
+                    paramDataString)) {
+                this.suppliedGameStateGroup = GameStateGroup.valueOf(paramData.get(key));
             } else {
                 return false;
             }
@@ -364,8 +442,14 @@ public class QasinoFlowDTO //extends AbstractFlowDTO
                     return true;
                 }
                 break;
-            case "suppliedTrigger":
+            case "trigger":
                 if (!(GameTrigger.fromLabelWithDefault(key) == GameTrigger.ERROR)) {
+                    return true;
+                }
+                break;
+            case "gameStateGroup":
+                if (!(GameStateGroup.fromLabelWithDefault(key) == GameStateGroup.ERROR)) {
+                    // todo ERROR can be a valid state but for now is bad request coming from client
                     return true;
                 }
                 break;

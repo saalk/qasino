@@ -27,16 +27,19 @@ public class Seat {
     private AiLevel aiLevel;
 
     private boolean isInitiator;
+    private int currentBet;
+
+    // when user
     private int userId;
     private String alias;
-
     private int balance;
     private int fiches;
-    private int currentBet;
 
     private int activeTurnNumber;
     private boolean isWinner;
 
     private List<Card> cardsInHand = new ArrayList<>();
+    private String stringCardsInHand;
+
 }
 

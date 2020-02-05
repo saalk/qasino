@@ -3,9 +3,17 @@ package cloud.qasino.card.dto.navigation;
 import cloud.qasino.card.entity.Game;
 import cloud.qasino.card.entity.User;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.List;
 
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class NavigationUser {
 
     private boolean hasLoggedOn;     // icon is spaceship -> logon to enable nav-user
@@ -18,8 +26,8 @@ public class NavigationUser {
     // + boolean isSelected
     // + boolean isSelectable
     // + num/total of pending invites
-    @JsonProperty("InitiatedGames")
-    private List<Game> initiatedGames;
+    @JsonProperty("NewGames")
+    private List<Game> newGames;
 
     // list of playable accepted games
     // + boolean isSelected
@@ -32,5 +40,9 @@ public class NavigationUser {
     // + num/total of pending invites
     @JsonProperty("PendingInvitations")
     private List<Game> pendingInvitation;
+    // list of pending invitations
+    // + num/total of pending invites
+    @JsonProperty("StartedGames")
+    private List<Game> startedGames;
 }
 

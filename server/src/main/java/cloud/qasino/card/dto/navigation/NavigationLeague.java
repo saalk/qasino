@@ -3,9 +3,17 @@ package cloud.qasino.card.dto.navigation;
 import cloud.qasino.card.entity.League;
 import cloud.qasino.card.entity.User;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.List;
 
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class NavigationLeague {
 
     private boolean hasLeague;      // icon is 1/2/3 -> position in league or no league
@@ -23,8 +31,8 @@ public class NavigationLeague {
     // + int percentageBotWins
     // + int percentageUserWins
 
-    @JsonProperty("NewLEague")
+    @JsonProperty("NewLeague")
     // creating is always possible
-    private League league;
+    private League newLeague;
 }
 

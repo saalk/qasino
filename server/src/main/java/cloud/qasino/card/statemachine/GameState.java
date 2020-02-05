@@ -16,22 +16,22 @@ import java.util.Set;
 public enum GameState implements LabeledEnum {
 
     // new
-    NEW("new", "New games may not have PlayingCards, Leagues, Players"),
-    PENDING_INVITATIONS("invite", "Game has Player with pending invitation"),
-    PREPARED("accept", "Game is valid for playing"),
+    NEW("new", "New games may not have PlayingCards, Leagues, Players","NEW"),
+    PENDING_INVITATIONS("invite", "Game has Player with pending invitation","NEW"),
+    PREPARED("accept", "Game is valid for playing","NEW"),
 
     // started
-    PLAYING("play", "Game is being played and has Events"),
+    PLAYING("play", "Game is being played and has Events","STARTED"),
 
     // ended
-    FINISHED("finish", "Game has a Result and if possible a Winner"),
-    QUIT("quit", "Game is stopped by a Player and has no Result or Winner"),
+    FINISHED("finish", "Game has a Result and if possible a Winner","FINISHED"),
+    QUIT("quit", "Game is stopped by a Player and has no Result or Winner","FINISHED"),
+    CANCELLED("cancelled", "Game is cancelled by the system","FINISHED"),
+    OLD("old", "Game is abandoned without Results or Winner","FINISHED"),
 
-    // error
-    CANCELLED("cancelled", "Game is cancelled by the system"),
-    ERROR("error", "Game has an unforseen 500 and needs a fix"),
-    TIMEOUT("error", "Game has an unforseen timeout and needs a fix"),
-    OLD("old", "Game is abandoned without Results or Winner");
+    // error,
+    ERROR("error", "Game has an unforseen 500 and needs a fix","ERROR"),
+    TIMEOUT("timeout", "Game has an unforseen timeout and needs a fix","ERROR");
 
     /**
      * A static HashMap lookup with key + value is created to use in a getter
@@ -55,10 +55,12 @@ public enum GameState implements LabeledEnum {
 
     private String label;
     private String description;
+    private String group;
 
     public static GameState fromLabel(String inputLabel) {
         return lookup.get(inputLabel.toLowerCase());
     }
+
 
     public static GameState fromLabel(char character) {
         return fromLabel(Character.toString(character));
@@ -81,11 +83,13 @@ public enum GameState implements LabeledEnum {
     public static Set<GameState> cardGamesStarted = EnumSet.of(PLAYING);
     public static String[] cardGamesStartedValues = new String[]{PLAYING.name()};
 
-    public static Set<GameState> cardGamesEnded = EnumSet.of(FINISHED, QUIT);
-    public static String[] cardGamesEndedValues = new String[]{FINISHED.name(), QUIT.name()};
+    public static Set<GameState> cardGamesFinished = EnumSet.of(FINISHED, QUIT, CANCELLED, OLD);
+    public static String[] cardGamesFinishedValues = new String[]{FINISHED.name(), QUIT.name(),
+            CANCELLED.name(), OLD.name()};
 
-    public static Set<GameState> cardGamesError = EnumSet.of(OLD, ERROR, CANCELLED);
-    public static String[] cardGamesErrorValues = new String[]{OLD.name(), ERROR.name(), CANCELLED.name()};
+    public static Set<GameState> cardGamesError = EnumSet.of(TIMEOUT, ERROR);
+    public static String[] cardGamesErrorValues = new String[]{TIMEOUT.name(), ERROR.name(),
+            CANCELLED.name()};
 
 
 }

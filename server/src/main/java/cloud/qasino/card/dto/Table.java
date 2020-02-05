@@ -9,9 +9,17 @@ import cloud.qasino.card.entity.enums.game.Type;
 import cloud.qasino.card.entity.enums.move.Move;
 import cloud.qasino.card.entity.enums.player.Avatar;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.List;
 
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class Table {
 
     @JsonProperty("SelectedGame")
@@ -19,14 +27,14 @@ public class Table {
     @JsonProperty("LastTurn")
     private Turn lastTurn;
     @JsonProperty("PossibleMoves")
-    private Move possibleMoves;
+    private List<Move> possibleMoves;
     @JsonProperty("Stock")
-    private List<Card> stock;
+    private List<Card> stockNotInHand;
     @JsonProperty("Stats")
     private String totalVsStockCards;
+    @JsonProperty("cardLeft")
+    private int cardsLeft;
     @JsonProperty("Seats")
     private List<Seat> seats;
-
-
 
 }
