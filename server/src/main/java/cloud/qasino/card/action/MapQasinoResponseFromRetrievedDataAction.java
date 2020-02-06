@@ -43,7 +43,7 @@ public class MapQasinoResponseFromRetrievedDataAction implements Action<MapQasin
         navigationBarItem.setVisible(actionDto.isLoggedOn());
         if (actionDto.isLoggedOn()) {
             navigationBarItem.setItemName(actionDto.getGameUser().getAlias());
-            navigationBarItem.setItemStats(String.valueOf(actionDto.getGameUser().getBalance()));
+            navigationBarItem.setItemStats("Balance " + actionDto.getGameUser().getBalance());
             navigationUser.setHasLoggedOn(actionDto.isLoggedOn());
             navigationUser.setUser(actionDto.getGameUser());
             navigationUser.setNewGames(actionDto.getNewGamesForUser());
@@ -61,7 +61,7 @@ public class MapQasinoResponseFromRetrievedDataAction implements Action<MapQasin
         navigationBarItem.setVisible(actionDto.isBalanceNotZero());
         if (actionDto.isBalanceNotZero()) {
             if (!(actionDto.getQasinoGame() == null)) {
-                navigationBarItem.setItemName(
+                navigationBarItem.setItemName("Type " +
                         actionDto.getQasinoGame().getType().getLabel());
                 navigationGame.setTotalBots(
                         (int) actionDto.getQasinoGamePlayers().stream().filter(c -> !c.isHuman()).count());
@@ -118,15 +118,15 @@ public class MapQasinoResponseFromRetrievedDataAction implements Action<MapQasin
         navigationBarItem.setVisible(actionDto.isLeaguePresent());
         if (actionDto.isLeaguePresent()) {
             if (!(actionDto.getLeaguesForUser() == null)) {
-                navigationBarItem.setItemName(
+                navigationBarItem.setItemName( "League " +
                         actionDto.getQasinoGameLeague().getName());
                 navigationBarItem.setItemStats(actionDto.getQasinoGameLeague().getEnded() + " enddate");
 
                 navigationLeague.setLeagues(actionDto.getLeaguesForUser());
             }
         } else {
-            navigationBarItem.setItemName("-");
-            navigationBarItem.setItemStats("0:0 move:round");
+            navigationBarItem.setItemName("League - ");
+            navigationBarItem.setItemStats("- enddate");
         }
         navigationBarItems.add(navigationBarItem);
 
