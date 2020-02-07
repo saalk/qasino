@@ -1,18 +1,11 @@
 package cloud.qasino.card.resource;
 
-import cloud.qasino.card.action.CalculateHallOfFameAction;
-import cloud.qasino.card.action.FindAllEntitiesForInputAction;
-import cloud.qasino.card.action.MapQasinoResponseFromRetrievedDataAction;
-import cloud.qasino.card.action.SetStatusIndicatorsBaseOnRetrievedDataAction;
-import cloud.qasino.card.dto.enums.Enums;
+import cloud.qasino.card.action.*;
 import cloud.qasino.card.dto.QasinoFlowDTO;
-import cloud.qasino.card.dto.statistics.Counter;
-import cloud.qasino.card.dto.statistics.SubTotalsGame;
-import cloud.qasino.card.dto.statistics.Total;
+import cloud.qasino.card.dto.enums.Enums;
 import cloud.qasino.card.entity.User;
+import cloud.qasino.card.event.EventOutput;
 import cloud.qasino.card.repository.*;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -22,12 +15,10 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
-import java.util.Collections;
 import java.util.Map;
 import java.util.Optional;
 
 import static cloud.qasino.card.configuration.Constants.DEFAULT_PAWN_SHIP_HUMAN;
-import static cloud.qasino.card.statemachine.GameState.*;
 
 // basic path /qasino
 // basic header @RequestHeader(value "user", required = true) int userId" // else 400
@@ -42,55 +33,22 @@ import static cloud.qasino.card.statemachine.GameState.*;
 @RestController
 public class QasinoResource {
 
-    GameRepository gameRepository;
-    UserRepository userRepository;
-    PlayerRepository playerRepository;
-    CardRepository cardRepository;
-    TurnRepository turnRepository;
-    LeagueRepository leagueRepository;
+    EventOutput.Result output;
 
     @Autowired
     FindAllEntitiesForInputAction findAllEntitiesForInputAction;
+    @Autowired
+    FindUserIdByAliasAction findUserIdByAliasAction;
+    @Autowired
+    SignUpNewUserAction signUpNewUserAction;
+    @Autowired
+    HandleSecuredLoanAction handleSecuredLoanAction;
     @Autowired
     SetStatusIndicatorsBaseOnRetrievedDataAction setStatusIndicatorsBaseOnRetrievedDataAction;
     @Autowired
     CalculateHallOfFameAction calculateHallOfFameAction;
     @Autowired
     MapQasinoResponseFromRetrievedDataAction mapQasinoResponseFromRetrievedDataAction;
-
-    @Autowired
-    public QasinoResource(
-            UserRepository userRepository,
-            GameRepository gameRepository,
-            PlayerRepository playerRepository,
-            CardRepository cardRepository,
-            LeagueRepository leagueRepository,
-            TurnRepository turnRepository
-    ) {
-        this.gameRepository = gameRepository;
-        this.userRepository = userRepository;
-        this.playerRepository = playerRepository;
-        this.cardRepository = cardRepository;
-        this.leagueRepository = leagueRepository;
-        this.turnRepository = turnRepository;
-    }
-
-    // tested
-    @GetMapping(value = "/enums")
-    public ResponseEntity<Enums> enums(
-    ) {
-        // header in response
-        URI uri = ServletUriComponentsBuilder.fromCurrentRequest()
-                .path("")
-                .query("")
-                .buildAndExpand()
-                .toUri();
-        HttpHeaders headers = new HttpHeaders();
-        headers.add("URI", String.valueOf(uri));
-
-        Enums enums = new Enums();
-        return ResponseEntity.ok().headers(headers).body(enums);
-    }
 
     @GetMapping(value = "/logon/{alias}")
     public ResponseEntity logon(
@@ -109,172 +67,146 @@ public class QasinoResource {
         if (!processOk) {
             return ResponseEntity.status(HttpStatus.valueOf(flowDTO.getHttpStatus())).headers(flowDTO.getHeaders()).build();
         }
-
         // logic
-        Optional<User> foundUser = userRepository.findUserByAliasAndAliasSequence(flowDTO.getSuppliedAlias(), 1);
-        if (!foundUser.isPresent()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).headers(flowDTO.getHeaders()).build();
+        output = findUserIdByAliasAction.perform(flowDTO);
+        if (output == EventOutput.Result.FAILURE) {
+            return ResponseEntity.status(HttpStatus.valueOf(flowDTO.getHttpStatus())).headers(flowDTO.getHeaders()).build();
         }
-        return ResponseEntity.ok().headers(flowDTO.getHeaders()).body(foundUser.get());
+        output = findAllEntitiesForInputAction.perform(flowDTO);
+        if (output == EventOutput.Result.FAILURE) {
+            return ResponseEntity.status(HttpStatus.valueOf(flowDTO.getHttpStatus())).headers(flowDTO.getHeaders()).build();
+        }
+        // build response
+        setStatusIndicatorsBaseOnRetrievedDataAction.perform(flowDTO);
+        calculateHallOfFameAction.perform(flowDTO);
+        mapQasinoResponseFromRetrievedDataAction.perform(flowDTO);
+        return ResponseEntity.ok().headers(flowDTO.getHeaders()).body(flowDTO.getQasino());
     }
 
     // tested
     @PostMapping(value = "/signup/{alias}")
     public ResponseEntity signup(
-            @PathVariable("alias") String alias,
-            @RequestParam(name = "email", defaultValue = "") String email
+            @RequestHeader Map<String, String> headerData,
+            @PathVariable Map<String, String> pathData,
+            @RequestParam Map<String, String> paramData
     ) {
-
-        // header in response
-        URI uri = ServletUriComponentsBuilder.fromCurrentRequest()
-                .path("")
-                .query("")
-                .buildAndExpand(email)
-                .toUri();
-        HttpHeaders headers = new HttpHeaders();
-        headers.add("URI", String.valueOf(uri));
-
-        int sequence = (int) (userRepository.countByAlias(alias) + 1);
-
-        // rules
-        if (sequence > 1)
-            // todo LOW split alias and number
-            return ResponseEntity.status(HttpStatus.CONFLICT).headers(headers).build();
-
-        User createdUser = userRepository.save(new User(alias, sequence, email));
-        if (createdUser.getUserId() == 0) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).headers(headers).build();
-        }
-        return ResponseEntity.status(HttpStatus.CREATED).headers(headers).body(createdUser);
-    }
-
-    // tested
-    @PutMapping(value = "/users/{id}/pawnship")
-    public ResponseEntity<User> pawnship(
-            @PathVariable("id") String id
-    ) {
-
-        // header in response
-        URI uri = ServletUriComponentsBuilder.fromCurrentRequest()
-                .path("")
-                .buildAndExpand()
-                .toUri();
-        HttpHeaders headers = new HttpHeaders();
-        headers.add("URI", String.valueOf(uri));
 
         // validations
-        if (!StringUtils.isNumeric(id))
-            // 400
-            return ResponseEntity.badRequest().headers(headers).build();
-        int userId = Integer.parseInt(id);
-        Optional<User> foundUser = userRepository.findById(userId);
-        if (!foundUser.isPresent()) {
-            // 404
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).headers(headers).build();
-        }
-
-        // logic
-        User updatedUser = foundUser.get();
-        int pawn = User.pawnShipValue(DEFAULT_PAWN_SHIP_HUMAN);
-        if (!updatedUser.pawnShip(pawn)) {
-            return ResponseEntity.status(HttpStatus.CONFLICT).headers(headers).body(updatedUser);
-        }
-        updatedUser = userRepository.save(updatedUser);
-
-        // 200
-        return ResponseEntity.ok().headers(headers).body(updatedUser);
-    }
-
-    // tested
-    @PutMapping(value = "/users/{id}/repayloan")
-    public ResponseEntity<User> repayloan(
-            @PathVariable("id") String id
-    ) {
-
-        // header in response
-        URI uri = ServletUriComponentsBuilder.fromCurrentRequest()
-                .path("")
-                .buildAndExpand()
-                .toUri();
-        HttpHeaders headers = new HttpHeaders();
-        headers.add("URI", String.valueOf(uri));
-
-        // validations
-        if (!StringUtils.isNumeric(id))
-            // 400
-            return ResponseEntity.badRequest().headers(headers).build();
-        int userId = Integer.parseInt(id);
-        Optional<User> foundUser = userRepository.findById(userId);
-        if (!foundUser.isPresent()) {
-            // 404
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).headers(headers).build();
-        }
-        User updatedUser = foundUser.get();
-
-        // logic
-        if (!updatedUser.repayLoan()) {
-            return ResponseEntity.status(HttpStatus.CONFLICT).headers(headers).body(updatedUser);
-        }
-        updatedUser = userRepository.save(updatedUser);
-
-        // 200
-        return ResponseEntity.ok().headers(headers).body(updatedUser);
-    }
-
-    @GetMapping(value = "/halloffame")
-    public ResponseEntity halloffame(
-    ) throws JsonProcessingException {
-
         QasinoFlowDTO flowDTO = new QasinoFlowDTO();
-        flowDTO.setHeaderData(null);
-        flowDTO.setPathData(null);
-        flowDTO.setParamData(null);
+        flowDTO.setHeaderData(headerData);
+        flowDTO.setPathData(pathData);
+        flowDTO.setParamData(paramData);
         flowDTO.setPayloadData(null);
-
-
         boolean processOk = flowDTO.validateInput();
         if (!processOk) {
             return ResponseEntity.status(HttpStatus.valueOf(flowDTO.getHttpStatus())).headers(flowDTO.getHeaders()).build();
         }
 
-        ObjectMapper mapper = new ObjectMapper();
-        System.out.println("FLOW " + mapper.writeValueAsString(flowDTO));
-
-        findAllEntitiesForInputAction.perform(flowDTO);
+        // logic
+        output = signUpNewUserAction.perform(flowDTO);
+        if (output == EventOutput.Result.FAILURE) {
+            return ResponseEntity.status(HttpStatus.valueOf(flowDTO.getHttpStatus())).headers(flowDTO.getHeaders()).build();
+        }
+        output = findAllEntitiesForInputAction.perform(flowDTO);
+        if (output == EventOutput.Result.FAILURE) {
+            return ResponseEntity.status(HttpStatus.valueOf(flowDTO.getHttpStatus())).headers(flowDTO.getHeaders()).build();
+        }
+        // build response
         setStatusIndicatorsBaseOnRetrievedDataAction.perform(flowDTO);
         calculateHallOfFameAction.perform(flowDTO);
         mapQasinoResponseFromRetrievedDataAction.perform(flowDTO);
+        return ResponseEntity.created(flowDTO.getUri()).headers(flowDTO.getHeaders()).body(flowDTO.getQasino());
+        }
 
-        System.out.println("FLOW " + mapper.writeValueAsString(flowDTO));
-
+    // tested
+    @PutMapping(value = "/users/pawnship")
+    public ResponseEntity pawnship(
+            @RequestHeader Map<String, String> headerData,
+            @PathVariable Map<String, String> pathData,
+            @RequestParam Map<String, String> paramData
+    ) {
+        // validate
+        pathData.put("offeringShipForPawn", "true");
+        QasinoFlowDTO flowDTO = new QasinoFlowDTO();
+        flowDTO.setHeaderData(headerData);
+        flowDTO.setPathData(pathData);
+        flowDTO.setParamData(paramData);
+        flowDTO.setPayloadData(null);
+        boolean processOk = flowDTO.validateInput();
+        if (!processOk) {
+            return ResponseEntity.status(HttpStatus.valueOf(flowDTO.getHttpStatus())).headers(flowDTO.getHeaders()).build();
+        }
+        // logic
+        output = findAllEntitiesForInputAction.perform(flowDTO);
+        if (output == EventOutput.Result.FAILURE) {
+            return ResponseEntity.status(HttpStatus.valueOf(flowDTO.getHttpStatus())).headers(flowDTO.getHeaders()).build();
+        }
+        output = handleSecuredLoanAction.perform(flowDTO);
+        if (output == EventOutput.Result.FAILURE) {
+            return ResponseEntity.status(HttpStatus.valueOf(flowDTO.getHttpStatus())).headers(flowDTO.getHeaders()).build();
+        }
+        // build response
+        setStatusIndicatorsBaseOnRetrievedDataAction.perform(flowDTO);
+        calculateHallOfFameAction.perform(flowDTO);
+        mapQasinoResponseFromRetrievedDataAction.perform(flowDTO);
         return ResponseEntity.ok().headers(flowDTO.getHeaders()).body(flowDTO.getQasino());
+    }
 
-/*        // header in response
-        URI uri = ServletUriComponentsBuilder.fromCurrentRequest()
-                .path("")
-                .query("")
-                .buildAndExpand()
-                .toUri();
-        HttpHeaders headers = new HttpHeaders();
-        headers.add("URI", String.valueOf(uri));
+    // tested
+    @PutMapping(value = "/users/repayloan")
+    public ResponseEntity repayloan(
+            @RequestHeader Map<String, String> headerData,
+            @PathVariable Map<String, String> pathData,
+            @RequestParam Map<String, String> paramData
+    ) {
+        // validate
+        pathData.put("requestingToRepay", "true");
+        QasinoFlowDTO flowDTO = new QasinoFlowDTO();
+        flowDTO.setHeaderData(headerData);
+        flowDTO.setPathData(pathData);
+        flowDTO.setParamData(paramData);
+        flowDTO.setPayloadData(null);
+        boolean processOk = flowDTO.validateInput();
+        if (!processOk) {
+            return ResponseEntity.status(HttpStatus.valueOf(flowDTO.getHttpStatus())).headers(flowDTO.getHeaders()).build();
+        }
+        // logic
+        output = findAllEntitiesForInputAction.perform(flowDTO);
+        if (output == EventOutput.Result.FAILURE) {
+            return ResponseEntity.status(HttpStatus.valueOf(flowDTO.getHttpStatus())).headers(flowDTO.getHeaders()).build();
+        }
+        output = handleSecuredLoanAction.perform(flowDTO);
+        if (output == EventOutput.Result.FAILURE) {
+            return ResponseEntity.status(HttpStatus.valueOf(flowDTO.getHttpStatus())).headers(flowDTO.getHeaders()).build();
+        }
+        // build response
+        setStatusIndicatorsBaseOnRetrievedDataAction.perform(flowDTO);
+        calculateHallOfFameAction.perform(flowDTO);
+        mapQasinoResponseFromRetrievedDataAction.perform(flowDTO);
+        return ResponseEntity.ok().headers(flowDTO.getHeaders()).body(flowDTO.getQasino());
+    }
 
-        SubTotalsGame subTotalsGame = new SubTotalsGame();
-        subTotalsGame.totalNewGames = gameRepository.countByStates(cardGamesNewValues);
-        subTotalsGame.totalStartedGames = gameRepository.countByStates(cardGamesStartedValues);
-        subTotalsGame.totalsFinishedGames = gameRepository.countByStates(cardGamesFinishedValues);
-
-        Total totals = new Total();
-        totals.setSubTotalsGames(subTotalsGame);
-        totals.totalLeagues = ((int) leagueRepository.count());
-        totals.totalUsers = ((int) userRepository.count());
-        totals.totalGames = ((int) gameRepository.count());
-        totals.totalPlayers = ((int) playerRepository.count());
-        totals.totalCards = ((int) cardRepository.count());
-
-        Counter counters = new Counter();
-        counters.setTotals(Collections.singletonList(totals));
-
-        return ResponseEntity.ok().headers(headers).body(counters);*/
+    @GetMapping(value = "/home")
+    public ResponseEntity home() {
+        // validate
+        QasinoFlowDTO flowDTO = new QasinoFlowDTO();
+        flowDTO.setHeaderData(null);
+        flowDTO.setPathData(null);
+        flowDTO.setParamData(null);
+        flowDTO.setPayloadData(null);
+        boolean processOk = flowDTO.validateInput();
+        if (!processOk) {
+            return ResponseEntity.status(HttpStatus.valueOf(flowDTO.getHttpStatus())).headers(flowDTO.getHeaders()).build();
+        }
+        // logic
+        output = findAllEntitiesForInputAction.perform(flowDTO);
+        if (output == EventOutput.Result.FAILURE) {
+            return ResponseEntity.status(HttpStatus.valueOf(flowDTO.getHttpStatus())).headers(flowDTO.getHeaders()).build();
+        }
+        // build response
+        setStatusIndicatorsBaseOnRetrievedDataAction.perform(flowDTO);
+        calculateHallOfFameAction.perform(flowDTO);
+        mapQasinoResponseFromRetrievedDataAction.perform(flowDTO);
+        return ResponseEntity.ok().headers(flowDTO.getHeaders()).body(flowDTO.getQasino());
     }
 }
-

@@ -47,7 +47,7 @@ public class SetStatusIndicatorsBaseOnRetrievedDataAction implements Action<SetS
         return EventOutput.Result.SUCCESS;
     }
 
-    private void setErrorMessageNotFound(SetStatusIndicatorsBaseOnRetrievedDataDTO actionDto, String id,
+    private void setErrorMessageCrash(SetStatusIndicatorsBaseOnRetrievedDataDTO actionDto, String id,
                                          String value) {
         actionDto.setHttpStatus(500);
         actionDto.setErrorKey(id);

@@ -127,10 +127,10 @@ public class FindAllEntitiesForInputAction implements Action<FindAllEntitiesForI
 
     private void setErrorMessageNotFound(FindAllEntitiesForInputActionDTO actionDto, String id,
                                          String value) {
-        actionDto.setHttpStatus(400);
+        actionDto.setHttpStatus(404);
         actionDto.setErrorKey(id);
         actionDto.setErrorValue(value);
-        actionDto.setErrorMessage("Entity not found for key" + id);
+        actionDto.setErrorMessage("Entity not found for key" + value);
         actionDto.setUriAndHeaders();
     }
 

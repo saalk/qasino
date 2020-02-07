@@ -1,9 +1,6 @@
 package cloud.qasino.card.dto;
 
-import cloud.qasino.card.action.CalculateHallOfFameAction;
-import cloud.qasino.card.action.FindAllEntitiesForInputAction;
-import cloud.qasino.card.action.MapQasinoResponseFromRetrievedDataAction;
-import cloud.qasino.card.action.SetStatusIndicatorsBaseOnRetrievedDataAction;
+import cloud.qasino.card.action.*;
 import cloud.qasino.card.dto.statistics.Counter;
 import cloud.qasino.card.entity.*;
 import cloud.qasino.card.statemachine.GameStateGroup;
@@ -35,8 +32,11 @@ import java.util.Map;
 @Slf4j
 public class QasinoFlowDTO //extends AbstractFlowDTO
         implements
+        FindUserIdByAliasAction.FindUserIdByAliasActionDTO,
+        SignUpNewUserAction.SignUpNewUserActionDTO,
         FindAllEntitiesForInputAction.FindAllEntitiesForInputActionDTO,
         CalculateHallOfFameAction.CalculateHallOfFameActionDTO,
+        HandleSecuredLoanAction.HandleSecuredLoanActionDTO,
         SetStatusIndicatorsBaseOnRetrievedDataAction.SetStatusIndicatorsBaseOnRetrievedDataDTO,
         MapQasinoResponseFromRetrievedDataAction.MapQasinoResponseFromRetrievedDataDTO
 
@@ -94,6 +94,10 @@ public class QasinoFlowDTO //extends AbstractFlowDTO
     private Location suppliedLocation;
     private int suppliedBet;
 
+    // pawn or repay
+    private boolean requestingToRepay;
+    private boolean offeringShipForPawn;
+
     // RETRIEVED DATA BASED ON FRONTEND ID's
     // in game data
     private User gameUser;
@@ -138,6 +142,7 @@ public class QasinoFlowDTO //extends AbstractFlowDTO
     private Map<String, String> paramData;
     private Object payloadData;
     private URI uri;
+
 
     public void setUriAndHeaders() {
         this.uri = ServletUriComponentsBuilder.fromCurrentRequest()

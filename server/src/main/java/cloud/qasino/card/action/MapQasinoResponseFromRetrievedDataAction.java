@@ -221,7 +221,7 @@ public class MapQasinoResponseFromRetrievedDataAction implements Action<MapQasin
         return seats;
     }
 
-    private void setErrorMessageNotFound(MapQasinoResponseFromRetrievedDataDTO actionDto, String id,
+    private void setErrorMessageCrash(MapQasinoResponseFromRetrievedDataDTO actionDto, String id,
                                          String value) {
         actionDto.setHttpStatus(500);
         actionDto.setErrorKey(id);
