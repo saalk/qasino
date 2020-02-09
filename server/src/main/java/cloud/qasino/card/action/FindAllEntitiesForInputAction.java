@@ -5,6 +5,7 @@ import cloud.qasino.card.entity.*;
 import cloud.qasino.card.event.EventOutput;
 import cloud.qasino.card.repository.*;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -38,6 +39,7 @@ public class FindAllEntitiesForInputAction implements Action<FindAllEntitiesForI
 
         log.debug("Action: FindAllEntitiesForInputAction");
         int id;
+        Pageable pageable = PageRequest.of(actionDto.getSuppliedPages(), actionDto.getSuppliedMaxPerPage());
 
         id = actionDto.getSuppliedUserId();
         if (!(id == 0)) {
@@ -48,19 +50,24 @@ public class FindAllEntitiesForInputAction implements Action<FindAllEntitiesForI
                 setErrorMessageNotFound(actionDto, "userId", String.valueOf(id));
                 return EventOutput.Result.FAILURE;
             }
-            Pageable pageable = PageRequest.of(actionDto.getSuppliedPages(), actionDto.getSuppliedMaxPerPage(),
+            pageable = PageRequest.of(actionDto.getSuppliedPages(), actionDto.getSuppliedMaxPerPage(),
                     Sort.by(
                     Sort.Order.asc("TYPE"),
-                    Sort.Order.desc("CREATED")));
+                    Sort.Order.desc("UPDATED")));
             actionDto.setNewGamesForUser(gameRepository.findAllNewGamesForUserWithPage(id,
                     pageable));
             actionDto.setStartedGamesForUser(gameRepository.findAllStartedGamesForUserWithPage(id,
                     pageable));
+            // todo LOW select if one Game is active
             actionDto.setFinishedGamesForUser(gameRepository.findAllFinishedGamesForUserWithPage(id,
                     pageable));
+            pageable = PageRequest.of(actionDto.getSuppliedPages(), actionDto.getSuppliedMaxPerPage(),
+                    Sort.by(
+                            Sort.Order.asc("NAME"),
+                            Sort.Order.desc("CREATED")));
             actionDto.setLeaguesForUser(leagueRepository.findAllActiveLeaguesForUserWithPage(id, pageable));
+            // todo LOW select if one league is active
         }
-
         id = actionDto.getSuppliedGameId();
         if (!(id == 0)) {
             Optional<Game> foundGame = gameRepository.findById(Integer.parseInt(String.valueOf(id)));
@@ -111,10 +118,8 @@ public class FindAllEntitiesForInputAction implements Action<FindAllEntitiesForI
                     leagueRepository.findById(Integer.parseInt(String.valueOf(id)));
             if (foundLeague.isPresent()) {
                 actionDto.setQasinoGameLeague(foundLeague.get());
-                Pageable pageable = PageRequest.of(actionDto.getSuppliedPages(), actionDto.getSuppliedMaxPerPage(),
-                        Sort.by(
-                                Sort.Order.asc("TYPE"),
-                                Sort.Order.desc("CREATED")));
+                pageable = PageRequest.of(actionDto.getSuppliedPages(), actionDto.getSuppliedMaxPerPage(),
+                        Sort.by(Sort.Order.desc("CREATED")));
                 actionDto.setResultsForLeague(resultsRepository.findAllResultsForLeagueWithPage(id,
                         pageable));
             } else {
@@ -127,10 +132,10 @@ public class FindAllEntitiesForInputAction implements Action<FindAllEntitiesForI
 
     private void setErrorMessageNotFound(FindAllEntitiesForInputActionDTO actionDto, String id,
                                          String value) {
-        actionDto.setHttpStatus(400);
+        actionDto.setHttpStatus(404);
         actionDto.setErrorKey(id);
         actionDto.setErrorValue(value);
-        actionDto.setErrorMessage("Entity not found for key" + id);
+        actionDto.setErrorMessage("Entity not found for key" + value);
         actionDto.setUriAndHeaders();
     }
 
@@ -146,6 +151,8 @@ public class FindAllEntitiesForInputAction implements Action<FindAllEntitiesForI
         int getInvitedPlayerId();
         int getAcceptedPlayerId();
         int getSuppliedTurnPlayerId();
+
+        List<League> getLeaguesForUser();
 
         // Setter
         void setGameUser(User user);

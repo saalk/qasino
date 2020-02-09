@@ -1,9 +1,6 @@
 package cloud.qasino.card.dto;
 
-import cloud.qasino.card.action.CalculateHallOfFameAction;
-import cloud.qasino.card.action.FindAllEntitiesForInputAction;
-import cloud.qasino.card.action.MapQasinoResponseFromRetrievedDataAction;
-import cloud.qasino.card.action.SetStatusIndicatorsBaseOnRetrievedDataAction;
+import cloud.qasino.card.action.*;
 import cloud.qasino.card.dto.statistics.Counter;
 import cloud.qasino.card.entity.*;
 import cloud.qasino.card.statemachine.GameStateGroup;
@@ -16,6 +13,7 @@ import cloud.qasino.card.entity.enums.move.Move;
 import cloud.qasino.card.entity.enums.player.AiLevel;
 import cloud.qasino.card.entity.enums.player.Avatar;
 import cloud.qasino.card.entity.enums.player.Role;
+import cloud.qasino.card.util.Systemout;
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.Getter;
@@ -35,8 +33,11 @@ import java.util.Map;
 @Slf4j
 public class QasinoFlowDTO //extends AbstractFlowDTO
         implements
+        FindUserIdByAliasAction.FindUserIdByAliasActionDTO,
+        SignUpNewUserAction.SignUpNewUserActionDTO,
         FindAllEntitiesForInputAction.FindAllEntitiesForInputActionDTO,
         CalculateHallOfFameAction.CalculateHallOfFameActionDTO,
+        HandleSecuredLoanAction.HandleSecuredLoanActionDTO,
         SetStatusIndicatorsBaseOnRetrievedDataAction.SetStatusIndicatorsBaseOnRetrievedDataDTO,
         MapQasinoResponseFromRetrievedDataAction.MapQasinoResponseFromRetrievedDataDTO
 
@@ -71,8 +72,8 @@ public class QasinoFlowDTO //extends AbstractFlowDTO
     private List<Card> suppliedCards;   // todo
     // frontend query params
     // paging
-    private int suppliedPages;
-    private int suppliedMaxPerPage;
+    private int suppliedPages = 0;
+    private int suppliedMaxPerPage = 4;
     // user
     private String suppliedAlias;
     private String suppliedEmail;
@@ -93,6 +94,10 @@ public class QasinoFlowDTO //extends AbstractFlowDTO
     // cardMove
     private Location suppliedLocation;
     private int suppliedBet;
+
+    // pawn or repay
+    private boolean requestingToRepay = false;
+    private boolean offeringShipForPawn = false;
 
     // RETRIEVED DATA BASED ON FRONTEND ID's
     // in game data
@@ -139,13 +144,14 @@ public class QasinoFlowDTO //extends AbstractFlowDTO
     private Object payloadData;
     private URI uri;
 
+
     public void setUriAndHeaders() {
         this.uri = ServletUriComponentsBuilder.fromCurrentRequest()
                 .path("")
                 .buildAndExpand(this.pathData, this.paramData)
                 .toUri();
         this.headers = new HttpHeaders();
-        headers.add("URI", String.valueOf(uri));
+        headers.add("URI", String.valueOf(this.getUri()));
 
         if (!StringUtils.isEmpty(this.getErrorKey())) {
             headers.add(this.getErrorKey(), this.getErrorValue());
@@ -187,7 +193,7 @@ public class QasinoFlowDTO //extends AbstractFlowDTO
 
         if (headerData==null) return true;
 
-        key = "gameId";
+        key = "gameid"; // todo why is this lower if passed is upper
         if (headerData.containsKey(key)) {
             if (isValueForIntKeyValid(key, headerData.get(key), dataName, headerDataString)) {
                 this.suppliedGameId = Integer.parseInt(headerData.get(key));
@@ -195,7 +201,8 @@ public class QasinoFlowDTO //extends AbstractFlowDTO
                 return false;
             }
         }
-        key = "userId";
+
+        key = "userid";
         if (headerData.containsKey(key)) {
             if (isValueForIntKeyValid(key, headerData.get(key), dataName, headerDataString)) {
                 this.suppliedUserId = Integer.parseInt(headerData.get(key));
@@ -203,6 +210,7 @@ public class QasinoFlowDTO //extends AbstractFlowDTO
                 return false;
             }
         }
+
         return true;
     }
     boolean processPathData(Map<String, String> pathData) {
@@ -212,6 +220,16 @@ public class QasinoFlowDTO //extends AbstractFlowDTO
         log.info(this.getClass().getName() + ": " + dataName + " is " + pathDataString);
 
         if (pathData==null) return true;
+
+        // user repay or pawn
+        key = "pawnship";
+        if (pathData.containsKey(key)) {
+            this.offeringShipForPawn = true;
+        }
+        key = "repayloan";
+        if (pathData.containsKey(key)) {
+            this.requestingToRepay = true;
+        }
 
         key = "leagueId";
         if (pathData.containsKey(key)) {

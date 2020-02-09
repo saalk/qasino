@@ -47,9 +47,9 @@ public class MapQasinoResponseFromRetrievedDataAction implements Action<MapQasin
             navigationUser.setHasLoggedOn(actionDto.isLoggedOn());
             navigationUser.setUser(actionDto.getGameUser());
             navigationUser.setNewGames(actionDto.getNewGamesForUser());
-            navigationUser.setPendingInvitation(null); //todo
-            navigationUser.setAcceptedGames(null); // todo
-            navigationUser.setStartedGames(actionDto.getStartedGamesForUser()); // todo
+            navigationUser.setPendingInvitation(null); //todo LOW pending invitations
+            navigationUser.setAcceptedGames(null); // todo LOW accepted games
+            navigationUser.setStartedGames(actionDto.getStartedGamesForUser());
         } else {
             navigationBarItem.setItemName("You");
             navigationBarItem.setItemStats("0");
@@ -82,7 +82,7 @@ public class MapQasinoResponseFromRetrievedDataAction implements Action<MapQasin
                 navigationGame.setTurnsToWin(style.getTurnsToWin());
             }
         } else {
-            navigationBarItem.setItemName("-");
+            navigationBarItem.setItemName("Type -");
             navigationBarItem.setItemStats("0/- bots");
         }
         navigationBarItems.add(navigationBarItem);
@@ -92,9 +92,8 @@ public class MapQasinoResponseFromRetrievedDataAction implements Action<MapQasin
         navigationBarItem.setVisible(actionDto.isGamePlayable());
         if (actionDto.isGamePlayable()) {
             if (!(actionDto.getQasinoGame() == null)) {
-                navigationBarItem.setItemName(
-                        actionDto.getQasinoGame().getType().getLabel() + "#" +
-                                actionDto.getQasinoGame().getGameId());
+                navigationBarItem.setItemName("Qasinogame#" +
+                        Integer.toHexString( actionDto.getQasinoGame().getGameId()) );
                 navigationQasino.setCurrentRound(
                         (int) actionDto.getQasinoGameTurn().getCurrentRoundNumber());
                 navigationQasino.setCurrentMove(
@@ -108,7 +107,7 @@ public class MapQasinoResponseFromRetrievedDataAction implements Action<MapQasin
 
             }
         } else {
-            navigationBarItem.setItemName("-");
+            navigationBarItem.setItemName("Qasinogame #-");
             navigationBarItem.setItemStats("0:0 move:round");
         }
         navigationBarItems.add(navigationBarItem);
@@ -221,7 +220,7 @@ public class MapQasinoResponseFromRetrievedDataAction implements Action<MapQasin
         return seats;
     }
 
-    private void setErrorMessageNotFound(MapQasinoResponseFromRetrievedDataDTO actionDto, String id,
+    private void setErrorMessageCrash(MapQasinoResponseFromRetrievedDataDTO actionDto, String id,
                                          String value) {
         actionDto.setHttpStatus(500);
         actionDto.setErrorKey(id);
