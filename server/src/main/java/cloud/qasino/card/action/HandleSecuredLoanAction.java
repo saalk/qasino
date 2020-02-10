@@ -6,6 +6,7 @@ import cloud.qasino.card.event.EventOutput;
 import cloud.qasino.card.repository.UserRepository;
 import cloud.qasino.card.util.Systemout;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
@@ -24,30 +25,32 @@ public class HandleSecuredLoanAction implements Action<HandleSecuredLoanAction.H
         log.debug("Action: HandleSecuredLoanAction");
 
         EventOutput.Result result = EventOutput.Result.FAILURE;
+        User updateUser = actionDto.getGameUser();
+
         if (actionDto.isRequestingToRepay()) {
             Systemout.handleSecuredLoanActionFlow(actionDto); //todo delete
-            actionDto.getGameUser().repayLoan();
-            if (!actionDto.getGameUser().repayLoan()) {
+            if (!updateUser.repayLoan()) {
                 Systemout.handleSecuredLoanActionFlow(actionDto); //todo delete
 
                 setErrorMessagConflict(actionDto, "isRequestingToRepay", "true");
                 return EventOutput.Result.FAILURE;
             }
-            actionDto.setGameUser(userRepository.save(actionDto.getGameUser()));
+            actionDto.setGameUser(userRepository.save(updateUser));
             Systemout.handleSecuredLoanActionFlow(actionDto); //todo delete
 
             result = EventOutput.Result.SUCCESS;
         }
+
         if (actionDto.isOfferingShipForPawn()) {
             Random random = new Random();
             int randomNumber = random.nextInt(1001);
             Systemout.handleSecuredLoanActionFlow(actionDto); //todo delete
-            if (!actionDto.getGameUser().pawnShip(randomNumber)) {
+            if (!updateUser.pawnShip(randomNumber)) {
                 Systemout.handleSecuredLoanActionFlow(actionDto); //todo delete
                 setErrorMessagConflict(actionDto,"isOfferingShipForPawn", "true");
                 return EventOutput.Result.FAILURE;
             }
-            actionDto.setGameUser(userRepository.save(actionDto.getGameUser()));
+            actionDto.setGameUser(userRepository.save(updateUser));
             Systemout.handleSecuredLoanActionFlow(actionDto); //todo delete
 
             result = EventOutput.Result.SUCCESS;

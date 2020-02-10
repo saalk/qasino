@@ -1,5 +1,6 @@
 package cloud.qasino.card.entity;
 
+import cloud.qasino.card.util.Systemout;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -121,14 +122,18 @@ public class User {
             return true;
         }
         return false;
+
     }
 
     public boolean pawnShip(int pawnShipValue) {
         int loan = this.securedLoan;
         int pay = this.balance;
-        if (loan > 0) return false; // repay first
+        if (loan > 0) {
+            return false; // repay first
+        }
         this.balance = pay + pawnShipValue;
         this.securedLoan = loan + pawnShipValue;
+
         return true;
     }
 

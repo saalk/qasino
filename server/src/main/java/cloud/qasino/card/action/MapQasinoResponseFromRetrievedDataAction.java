@@ -169,8 +169,9 @@ public class MapQasinoResponseFromRetrievedDataAction implements Action<MapQasin
 
             table.setSelectedGame(actionDto.getQasinoGame());
             table.setLastTurn(actionDto.getQasinoGameTurn());
-            //todo HIGH new action for calc all possible moves
-            table.setPossibleMoves(new ArrayList(Move.moveMapNoError.keySet()));
+            // todo HIGH new action for calc all possible moves
+            // the statement below gives an error
+            // table.setPossibleMoves(new ArrayList(Move.moveMapNoError.keySet()));
             List<Card> stockNotInHand =
                     actionDto.getQasinoGameCards()
                             .stream()
