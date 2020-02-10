@@ -67,7 +67,7 @@ public class MapQasinoResponseFromRetrievedDataAction implements Action<MapQasin
                         (int) actionDto.getQasinoGamePlayers().stream().filter(c -> !c.isHuman()).count());
                 long all = actionDto.getQasinoGamePlayers().size();
                 navigationGame.setTotalUsers((int) (all - navigationGame.getTotalBots()));
-                navigationBarItem.setItemStats(navigationGame.getTotalBots() + "/" + all + " bots");
+                navigationBarItem.setItemStats(navigationGame.getTotalBots() + "/" + all + " bots/total");
 
                 navigationGame.setHasBalance(actionDto.isBalanceNotZero());
                 navigationGame.setGame(actionDto.getQasinoGame());
@@ -98,8 +98,8 @@ public class MapQasinoResponseFromRetrievedDataAction implements Action<MapQasin
                         (int) actionDto.getQasinoGameTurn().getCurrentRoundNumber());
                 navigationQasino.setCurrentMove(
                         (int) actionDto.getQasinoGameTurn().getCurrentMoveNumber());
-                navigationBarItem.setItemStats(navigationQasino.getCurrentMove() + ":" +
-                        navigationQasino.getCurrentRound() + " move:round");
+                navigationBarItem.setItemStats(navigationQasino.getCurrentMove() + "/" +
+                        navigationQasino.getCurrentRound() + " move/round");
 
                 navigationQasino.setPlayable(actionDto.isGamePlayable());
                 navigationQasino.setSelectedGame(actionDto.getQasinoGame());
@@ -179,7 +179,7 @@ public class MapQasinoResponseFromRetrievedDataAction implements Action<MapQasin
                             .collect(Collectors.toList());
             table.setStockNotInHand(stockNotInHand);
             table.setTotalVsStockCards(stockNotInHand.size() + "/" + actionDto.getQasinoGameCards().size() +
-                    "stock/total");
+                    " stock/total");
             table.setCardsLeft(stockNotInHand.size());
             table.setSeats(setSeats(actionDto));
         }
