@@ -1,46 +1,56 @@
-// for web
-   import Vue from 'vue'
-// for mobile and native scripts
-   // import Vue from 'nativescript-vue'
-import './plugins/vuetify'
-import App from './App'
-import { store } from './store'
-import router from './router'
-import axios from 'axios'
-import 'material-design-icons-iconfont/dist/material-design-icons.css'
+// === DEFAULT / CUSTOM STYLE ===
+// WARNING! always comment out ONE of the two require() calls below.
+// 1. use next line to activate CUSTOM STYLE (./src/themes)
+require(`./themes/app.${__THEME}.styl`)
+// 2. or, use next line to activate DEFAULT QUASAR STYLE
+// require(`quasar/dist/quasar.${__THEME}.css`)
+// ==============================
 
-Vue.config.ignoredElements = [/^ion-/]
-Vue.config.productionTip = false
-axios.defaults.baseURL = 'http://www.omdbapi.com/?apikey=b76b385c&page=1&type=movie&Content-Type=application/json'
+import Vue from 'vue'
+import Quasar from 'quasar'
+import Vuelidate from 'vuelidate'
 
-import VueLogger from 'vuejs-logger';
+import axios from 'configs/axios'
+import router from 'configs/router'
+import store from './configs/store'
 
-const options = {
-  isEnabled: true,
-  logLevel : 'debug',
-  stringifyArguments : false,
-  showLogLevel : true,
-  showMethodName : false,
-  separator: '|',
-  showConsoleColors: true
-};
+import VueRouter from 'vue-router'
+import firebase from 'firebase'
 
-Vue.use(VueLogger, options);
+import {
+  config
+} from './helpers/firebaseConfig'
 
-new Vue({
-  render: h => h(App),
-  // render: h => h('frame', [h(App)]),
-  store,
-  router
-   }).$mount('#app')
- // }).$start()
+import 'font-awesome/css/font-awesome.css'
+import 'highlight/lib/vendor/highlight.js/styles/default.css'
+import 'dragula/dist/dragula.css'
 
-/* eslint-disable no-new + older:
-new Vue({
-  el: '#app',
-  router,  // <-- add this line
-  template: '<App/>',
-  components: { App }
+Vue.use(Vuelidate)
+Vue.use(Quasar) // Install Quasar Framework
+Vue.use(axios)
+Vue.use(VueRouter)
+
+Quasar.start(() => {
+  /* eslint-disable no-new */
+  new Vue({
+    el: '#q-app',
+    created () {
+      firebase.initializeApp(config)
+      firebase.auth().onAuthStateChanged((user) => {
+        if (user) {
+          this.$store.state.user = this.$firebase.auth().currentUser
+          this.$router.push('/success')
+        }
+        else {
+          this.$store.state.user = null
+          if (this.$route.path !== '/auth') {
+            this.$router.push('/auth')
+          }
+        }
+      })
+    },
+    router,
+    store,
+    render: h => h(require('./App'))
+  })
 })
-*/
-
