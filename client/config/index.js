@@ -48,7 +48,7 @@ module.exports = {
     // https://github.com/chimurai/http-proxy-middleware
     proxyTable: {}
   }
-}
+};
 
 /*
  * proxyTable example:
