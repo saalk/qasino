@@ -14,7 +14,7 @@ import javax.annotation.Resource;
 public class ConfigUtilImpl extends AbstractJndiUtil implements JNDIUtil {
     /**
      * The application must supply config spring bean.
-     * This can be as simple as 'ConfigFactory.load()', that parses the 'application.conf'
+     * This can be as simple as 'ConfigFactory.safeload()', that parses the 'application.conf'
      * file on the classpath.
      */
     @Resource

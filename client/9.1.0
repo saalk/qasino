@@ -1,0 +1,15 @@
+
+> uglifyjs-webpack-plugin@0.4.6 postinstall D:\Work\Projects\workspace\qasino\client\node_modules\uglifyjs-webpack-plugin
+> node lib/post_install.js
+
++ eslint-plugin-import@2.20.1
++ eslint-plugin-node@11.0.0
++ @babel/core@7.0.0
++ webpack@3.1.0
+added 114 packages from 149 contributors, removed 95 packages, updated 4 packages and audited 7797 packages in 25.365s
+
+30 packages are looking for funding
+  run `npm fund` for details
+
+found 634 vulnerabilities (248 low, 2 moderate, 383 high, 1 critical)
+  run `npm audit fix` to fix them, or `npm audit` for details
