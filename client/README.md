@@ -9,8 +9,8 @@
 
 ## Demo (Android or IOS Style)
 
-![https://quasar-admin.firebaseapp.com/android/#/](public\images\other\icon-ios.png)
-![https://quasar-admin.firebaseapp.com/ios/#/](public\images\other\icon-android.png)
+![https://](public\images\other\icon-ios.png)
+![https://](public\images\other\icon-android.png)
 
 ## Infos
 
@@ -42,6 +42,7 @@ npm install -g @quasar/cli
 ```bash
 npm install // install package.json and all dependencies
 npm shrinkwrap
+```
 
 ### Start the app in development mode (hot-code reloading, error reporting, etc.)
 ```bash

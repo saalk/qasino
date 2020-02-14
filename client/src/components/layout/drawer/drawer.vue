@@ -2,7 +2,7 @@
   <q-drawer ref="leftDrawer" v-show="getLayoutNeeded">
     <div id="profile">
       <img :src="photo" style='height: 80px' class="inline-block">
-      <!--img src="../img/avatar-1.svg" id="avatar" class="inline-block"--> 
+      <!--img src="../img/avatar-1.svg" id="avatar" class="inline-block"-->
       <div id="user-name">
         <span class="text-white"> {{ name }} </span>
         <hr>
@@ -29,8 +29,7 @@
   import { mapGetters } from 'vuex'
   import menuOne from './menuOne.vue'
   import menuTwo from './menuTwo.vue'
-  import firebase from 'firebase'
-  
+
   export default {
     data () {
       return {
@@ -64,23 +63,6 @@
             show: false
           }
         }
-      }
-    },
-    created () {
-      var vm = this
-      firebase.auth().onAuthStateChanged(function (user) {
-        if (user) {
-          vm.user = user
-          vm.name = vm.user.displayName
-          vm.email = vm.user.email
-          vm.photo = vm.user.photoURL
-          vm.userId = vm.user.uid
-        }
-      })
-    },
-    methods: {
-      logOut () {
-        firebase.auth().signOut()
       }
     },
     computed: {

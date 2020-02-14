@@ -14,11 +14,8 @@ import Vuelidate from 'vuelidate'
 import routes from './routes'
 // import axios from 'configs/axios' -> now in boot/axios.js
 // import store from './configs/store'; -> now in store/index.js
-import firebase from 'firebase'
+// import firebase from 'firebase'
 
-import {
-  config
-} from 'helpers/firebaseConfig';
 
 import 'font-awesome/css/font-awesome.css';
 import 'highlight/lib/vendor/highlight.js/styles/default.css';
@@ -43,21 +40,6 @@ Quasar.start(() => {
   /* eslint-disable no-new */
   new Vue({
     el: '#q-app',
-    created () {
-      firebase.initializeApp(config)
-      firebase.auth().onAuthStateChanged((user) => {
-        if (user) {
-          this.$store.state.user = this.$firebase.auth().currentUser;
-          this.$router.push('/success');
-        }
-        else {
-          this.$store.state.user = null
-          if (this.$route.path !== '/auth') {
-            this.$router.push('/auth');
-          }
-        }
-      });
-    },
     router,
     store
   });
