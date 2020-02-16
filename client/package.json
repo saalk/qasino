@@ -20,11 +20,29 @@
     ]
   },
   "scripts": {
-    "dev": "quasar dev",
     "build": "quasar build",
     "build:pwa": "quasar build -m pwa",
+    "dev": "quasar dev",
     "lint": "eslint --ext .js,.vue src",
     "test": "echo \"No test specified\" && exit 0"
+  },
+  "browserslist": [
+    "> 1%",
+    "last 2 versions"
+  ],
+  "eslintConfig": {
+    "env": {
+      "node": true
+    },
+    "parserOptions": {
+      "parser": "babel-eslint"
+    },
+    "extends": [
+      "plugin:vue/essential",
+      "eslint:recommended"
+    ],
+    "rules": {},
+    "root": true
   },
   "dependencies": {
     "@babel/core": "^7.0.0",
@@ -39,15 +57,15 @@
     "electron-builder": "^22.3.2",
     "eslint-plugin-import": "^2.20.1",
     "eslint-plugin-node": "^11.0.0",
+    "firebase": "^7.8.2",
     "quasar": "^1.0.0",
-    "vue-i18n": "^8.0.0",
-    "firebase": "^7.8.2"
+    "vue-i18n": "^8.0.0"
   },
   "devDependencies": {
+    "@quasar/app": "^1.0.0",
     "@vue/cli-plugin-babel": "~4.2.0",
     "@vue/cli-plugin-eslint": "~4.2.0",
     "@vue/cli-service": "~4.2.0",
-    "@quasar/app": "^1.0.0",
     "@vue/devtools": "^5.3.3",
     "author": "^1.0.0",
     "autoprefixer": "^9.7.4",
@@ -127,24 +145,6 @@
     "webpack-hot-middleware": "^2.25.0",
     "webpack-merge": "^4.2.2"
   },
-  "eslintConfig": {
-    "root": true,
-    "env": {
-      "node": true
-    },
-    "extends": [
-      "plugin:vue/essential",
-      "eslint:recommended"
-    ],
-    "parserOptions": {
-      "parser": "babel-eslint"
-    },
-    "rules": {}
-  },
-  "browserslist": [
-    "> 1%",
-    "last 2 versions"
-  ],
   "engines": {
     "node": ">= 10.18.1",
     "npm": ">= 6.13.4",
