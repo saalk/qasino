@@ -42,12 +42,12 @@
     },
     methods: {
       setParentVisibilityBasedOnRoute (parent) {
-        parent.routes.forEach(item => {
-          if (this.$route.path === item.route) {
+        // parent.routes.forEach(item => {
+        //   if (this.$route.path === item.route) {
             parent.show = true
             return
-          }
-        })
+        //   }
+        // })
       },
       replaceUnderlineToSpace (text) {
         while (text.indexOf('_') !== -1) {

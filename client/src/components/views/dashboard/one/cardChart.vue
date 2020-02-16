@@ -3,7 +3,7 @@
     <div class="card-title bg-teal text-white">
       {{cardTitle}}
       <div class=" float-right">
-        <q-fab icon="keyboard_arrow_left" direction="left"  classNames="primary">
+        <q-fab icon="keyboard_arrow_left" direction="left"  class="primary">
           <q-small-fab class="teal" @click.native="type = 'bar'" icon=""><i>equalizer</i></q-small-fab>
           <q-small-fab class="teal" @click.native="type = 'horizontalBar'" icon=""><i class="rotate-90">equalizer</i></q-small-fab>
           <q-small-fab class="teal" @click.native="type = 'pie'" icon=""><i>pie_chart_outlined</i></q-small-fab>

@@ -44,7 +44,7 @@
 
 <script>
   import Dragula from 'dragula/dragula'
-  import CountUp from 'countup.js'
+  import { CountUp } from 'countup.js'
   export default {
     mounted () {
       let vm = this

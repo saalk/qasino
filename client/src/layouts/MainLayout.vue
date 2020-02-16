@@ -1,3 +1,4 @@
+<!-- /src/layouts/MainLayout.vue -->
 <template>
   <q-layout view="lHh Lpr lFf">
     <q-header elevated>
@@ -12,7 +13,7 @@
         />
 
         <q-toolbar-title>
-          Quasar App
+          Qasino Card Games
         </q-toolbar-title>
 
         <div>Quasar v{{ $q.version }}</div>
@@ -34,7 +35,7 @@
         />
       </q-list>
     </q-drawer>
-
+    <!-- this is where the Pages are injected in layout Main -->
     <q-page-container>
       <router-view />
     </q-page-container>

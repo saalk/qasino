@@ -17,7 +17,7 @@
 </template>
 
 <script type="text/javascript">
-  import CountUp from 'countup.js'
+  import { CountUp } from 'countup.js'
   export default {
     props: ['title', 'total', 'backgroundColor', 'iconName'],
     mounted () {

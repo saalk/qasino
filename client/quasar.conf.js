@@ -2,7 +2,14 @@
 // https://quasar.dev/quasar-cli/quasar-conf-js
 
 module.exports = function (ctx) {
+
   return {
+
+    // https://quasar.dev/quasar-cli/quasar-conf-js#Property%3A-htmlVariables
+    htmlVariables: { 
+      title: 'Qasino Card games',
+      description: 'Card games app' },
+
     // app boot file (/src/boot)
     // --> boot files are part of "main.js"
     // https://quasar.dev/quasar-cli/cli-documentation/boot-files
@@ -47,7 +54,7 @@ module.exports = function (ctx) {
       components: [],
       directives: [],
       // Quasar plugins
-      plugins: ['Notify','Utils'],
+      plugins: ['Notify'],
       config: {notify: { /* Notify defaults */ }
       }
     },
@@ -72,7 +79,7 @@ module.exports = function (ctx) {
           enforce: 'pre',
           test: /\.(js|vue)$/,
           loader: 'eslint-loader',
-          exclude: /node_modules/,
+          exclude: /(node_modules|quasar)/,
           options: {
             formatter: require('eslint').CLIEngine.getFormatter('stylish')
           }
@@ -82,16 +89,20 @@ module.exports = function (ctx) {
 
     // Full list of options: https://quasar.dev/quasar-cli/quasar-conf-js#Property%3A-devServer
     devServer: {
+      //htmlFilename: 'index.template.html',
+      //vueDevtools: true,
       https: false,
       port: 8080,
-      open: 'google-chrome' // opens browser window automatically
+      open: 'chrome' // opens browser window automatically, use 'google-chrome;  on mac
     },
 
     // animations: 'all', // --- includes all animations
     // https://quasar.dev/options/animations
-    animations: [],
+    animations: ['fadeIn', 'fadeOut'],
 
     // https://quasar.dev/quasar-cli/developing-ssr/configuring-ssr
+    // server-rendering Quasar app not a traditional SPA
+    // progressive web app = web app with app-like experience to users
     ssr: {
       pwa: false
     },
@@ -101,36 +112,36 @@ module.exports = function (ctx) {
       workboxPluginMode: 'GenerateSW', // 'GenerateSW' or 'InjectManifest'
       workboxOptions: {}, // only for GenerateSW
       manifest: {
-        name: 'Quasar App',
-        short_name: 'Quasar App',
-        description: 'A Quasar Framework app',
+        // name: 'Quasar App',
+        // short_name: 'Quasar App',
+        // description: 'A Quasar Framework app',
         display: 'standalone',
         orientation: 'portrait',
         background_color: '#ffffff',
         theme_color: '#027be3',
         icons: [
           {
-            'src': 'statics/icons/icon-128x128.png',
+            'src': 'statics/icons/app_icons/png/128.png',
             'sizes': '128x128',
             'type': 'image/png'
           },
           {
-            'src': 'statics/icons/icon-192x192.png',
+            'src': 'statics/icons/app_icons/png/192.png',
             'sizes': '192x192',
             'type': 'image/png'
           },
           {
-            'src': 'statics/icons/icon-256x256.png',
+            'src': 'statics/icons/app_icons/png/256.png',
             'sizes': '256x256',
             'type': 'image/png'
           },
           {
-            'src': 'statics/icons/icon-384x384.png',
+            'src': 'statics/icons/app_icons/png/384.png',
             'sizes': '384x384',
             'type': 'image/png'
           },
           {
-            'src': 'statics/icons/icon-512x512.png',
+            'src': 'statics/icons/app_icons/png/512.png',
             'sizes': '512x512',
             'type': 'image/png'
           }
@@ -170,7 +181,7 @@ module.exports = function (ctx) {
       builder: {
         // https://www.electron.build/configuration/configuration
 
-        appId: 'qasino2'
+        appId: 'qasino-app'
       },
 
       // More info: https://quasar.dev/quasar-cli/developing-electron-apps/node-integration

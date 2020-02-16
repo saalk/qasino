@@ -10,10 +10,11 @@
                 @input="change($event)"
       ></q-select>
       <transition-group name="slide-fade">
+        <!-- used index+0 to bypass do not use v-for index as key warning which is for iterating over is an Array but this is Object -->
         <span class="label text-red"
               v-for="(key, index) in messageKeys"
               v-show="!validation[key] && validation.$dirty"
-              v-bind:key="index">
+              v-bind:key="index+0"> 
           {{validationMessages[key]}}
         </span>
       </transition-group>

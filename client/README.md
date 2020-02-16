@@ -29,22 +29,24 @@
 * [Vuelidate.js](https://monterail.github.io/vuelidate/) for form validations
 * [Dragula.js](https://github.com/bevacqua/dragula) for drag and drop
 
-## Project
+## Project Setup
 
 ### quasar
 
 ```bash
 npm install -g @quasar/cli
+quasar create <folder_name>
 ```
 
-### setup
+### build setup
 
 ```bash
 npm install // install package.json and all dependencies
 npm shrinkwrap
 ```
 
-### Start the app in development mode (hot-code reloading, error reporting, etc.)
+### serve with hot reload at localhost:8080
+
 ```bash
 quasar dev
 ```
@@ -52,10 +54,10 @@ quasar dev
 ### Lint the files
 
 ```bash
-npm run lint
+quasar lint
 ```
 
-### Build the app for production
+### build for production with minification
 
 ```bash
 quasar build

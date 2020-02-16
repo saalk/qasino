@@ -33,7 +33,7 @@
   </div>
 </template>
 <script type="text/javascript">
-  import { Utils } from 'quasar'
+  import filter from 'quasar'
   import userForm from './userForm.vue'
   import modalAdress from './modalAdress.vue'
   export default {
@@ -67,7 +67,7 @@
     methods: {
       search (terms, done) {
         setTimeout(() => {
-          done(Utils.filter(terms, {field: 'value', list: this.usersParsed}))
+          done(filter(terms, {field: 'value', list: this.usersParsed}))
         }, 500)
       },
       getUsers () {

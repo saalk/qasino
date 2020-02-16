@@ -9,7 +9,8 @@
     <button class="hide-on-drawer-visible" @click="leftDrawer.open()" v-else >
       <i>menu</i>
     </button>
-    <q-toolbar-title :padding="1">
+    <!-- <q-toolbar-title :padding="1"> --> 
+    <q-toolbar-title>
       Quasar Admin App
     </q-toolbar-title>
     <div class="right-itens">

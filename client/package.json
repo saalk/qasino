@@ -20,14 +20,11 @@
     ]
   },
   "scripts": {
+    "dev": "quasar dev",
+    "build": "quasar build",
+    "build:pwa": "quasar build -m pwa",
     "lint": "eslint --ext .js,.vue src",
     "test": "echo \"No test specified\" && exit 0"
-  },
-  "browserslist": [
-    "last 1 version, not dead, ie >= 11"
-  ],
-  "resolutions": {
-    "@babel/parser": "7.7.5"
   },
   "dependencies": {
     "@babel/core": "^7.0.0",
@@ -43,10 +40,15 @@
     "eslint-plugin-import": "^2.20.1",
     "eslint-plugin-node": "^11.0.0",
     "quasar": "^1.0.0",
-    "vue-i18n": "^8.0.0"
+    "vue-i18n": "^8.0.0",
+    "firebase": "^7.8.2"
   },
   "devDependencies": {
+    "@vue/cli-plugin-babel": "~4.2.0",
+    "@vue/cli-plugin-eslint": "~4.2.0",
+    "@vue/cli-service": "~4.2.0",
     "@quasar/app": "^1.0.0",
+    "@vue/devtools": "^5.3.3",
     "author": "^1.0.0",
     "autoprefixer": "^9.7.4",
     "babel-core": "^6.26.3",
@@ -74,6 +76,7 @@
     "eslint-loader": "^3.0.3",
     "eslint-plugin-html": "^6.0.0",
     "eslint-plugin-promise": "^4.2.1",
+    "eslint-plugin-quasar": "^1.0.0-alpha.18",
     "eslint-plugin-standard": "^4.0.1",
     "eslint-plugin-vue": "^6.1.2",
     "eventsource-polyfill": "^0.9.6",
@@ -124,6 +127,24 @@
     "webpack-hot-middleware": "^2.25.0",
     "webpack-merge": "^4.2.2"
   },
+  "eslintConfig": {
+    "root": true,
+    "env": {
+      "node": true
+    },
+    "extends": [
+      "plugin:vue/essential",
+      "eslint:recommended"
+    ],
+    "parserOptions": {
+      "parser": "babel-eslint"
+    },
+    "rules": {}
+  },
+  "browserslist": [
+    "> 1%",
+    "last 2 versions"
+  ],
   "engines": {
     "node": ">= 10.18.1",
     "npm": ">= 6.13.4",
@@ -131,5 +152,5 @@
   },
   "capacitorId": "",
   "cordovaId": "org.cordova.quasar.app",
-  "productName": "Quasar App"
+  "productName": "Qasino Card Game App"
 }

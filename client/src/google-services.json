@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "98507201126",
+    "firebase_url": "https://cloudqasino.firebaseio.com",
+    "project_id": "cloudqasino",
+    "storage_bucket": "cloudqasino.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:98507201126:android:cf8eded796d273d9282ba7",
+        "android_client_info": {
+          "package_name": "cloud.qasino.cardgames"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "98507201126-qlkd16brkjhmu7p8enc82jnb9f8v5gv8.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCcEHtA_cP4B0_jAaLLCzKl4WP-CWggZKY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "98507201126-qlkd16brkjhmu7p8enc82jnb9f8v5gv8.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
