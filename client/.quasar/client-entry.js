@@ -40,7 +40,7 @@ import createApp from './app.js'
 
 
 
-import qboot_Booti18n from 'boot/i18n'
+import qboot_Bootfirebase from 'boot/firebase'
 
 import qboot_Bootaxios from 'boot/axios'
 
@@ -62,7 +62,7 @@ console.info('[Quasar] Running SPA.')
 
 
 async function start () {
-  const { app, router } = await createApp()
+  const { app, store, router } = await createApp()
 
   
 
@@ -74,7 +74,7 @@ async function start () {
   }
 
   const urlPath = window.location.href.replace(window.location.origin, '')
-  const bootFiles = [qboot_Booti18n,qboot_Bootaxios]
+  const bootFiles = [qboot_Bootfirebase,qboot_Bootaxios]
 
   for (let i = 0; routeUnchanged === true && i < bootFiles.length; i++) {
     if (typeof bootFiles[i] !== 'function') {
@@ -85,7 +85,7 @@ async function start () {
       await bootFiles[i]({
         app,
         router,
-        
+        store,
         Vue,
         ssrContext: null,
         redirect,

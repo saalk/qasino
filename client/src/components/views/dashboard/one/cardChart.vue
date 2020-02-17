@@ -4,10 +4,10 @@
       {{cardTitle}}
       <div class=" float-right">
         <q-fab icon="keyboard_arrow_left" direction="left"  class="primary">
-          <q-small-fab class="teal" @click.native="type = 'bar'" icon=""><i>equalizer</i></q-small-fab>
-          <q-small-fab class="teal" @click.native="type = 'horizontalBar'" icon=""><i class="rotate-90">equalizer</i></q-small-fab>
-          <q-small-fab class="teal" @click.native="type = 'pie'" icon=""><i>pie_chart_outlined</i></q-small-fab>
-          <q-small-fab class="teal" @click.native="type = 'doughnut'" icon=""><i>donut_large</i></q-small-fab>
+          <q-fab-action class="teal" @click.native="type = 'bar'" icon=""><i>equalizer</i></q-fab-action>
+          <q-fab-action class="teal" @click.native="type = 'horizontalBar'" icon=""><i class="rotate-90">equalizer</i></q-fab-action>
+          <q-fab-action class="teal" @click.native="type = 'pie'" icon=""><i>pie_chart_outlined</i></q-fab-action>
+          <q-fab-action class="teal" @click.native="type = 'doughnut'" icon=""><i>donut_large</i></q-fab-action>
         </q-fab>
         <button class="primary circular raised gt-sm inline" @click="toImage()">
           <i>portrait</i>

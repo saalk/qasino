@@ -2,7 +2,7 @@
   <div>
     <div class="flex wrap">
       <div class="auto">
-        <tag-knob :value="currentIncome"
+        <tag-knob v-model="currentIncome"
                   :min="0"
                   :max="doubleRangeMinMax.max"
                   title="Current Income"
@@ -14,7 +14,7 @@
         ></tag-knob>
       </div>
       <div class="auto">
-        <tag-knob :value="currentExpenses"
+        <tag-knob v-model="currentExpenses"
                   :min="0"
                   :max="maxExpenses"
                   title="Current Expenses"
@@ -29,7 +29,7 @@
     <div class="flex wrap small-gutter">
       <div class="auto">
         <q-range
-          v-model="currentIncome"
+          v-model="income"
           :min="minIncome"
           :max="doubleRangeMinMax.max"
           label-always
@@ -41,7 +41,7 @@
       <div class="auto">
         <q-range
           class="red"
-          v-model="currentExpenses"
+          v-model="expenses"
           :min="minExpenses"
           :max="maxExpenses"
           label-always
@@ -51,14 +51,14 @@
     </div>
     <div class="flex small-gutter">
       <div class="auto">
-        <q-double-range
+        <q-range 
           class="teal"
           v-model="doubleRangeMinMax"
           :min="0"
           :max="maxIncome"
           label drag-range
           label-always
-        ></q-double-range>
+        ></q-range>
       </div>
     </div>
   </div>
@@ -78,6 +78,14 @@
         doubleRangeMinMax: {
           min: 0,
           max: 5000
+        },
+        income: {
+          min: 0,
+          max: 0
+        },
+        expenses: {
+          min: 0,
+          max: 0
         }
       }
     },

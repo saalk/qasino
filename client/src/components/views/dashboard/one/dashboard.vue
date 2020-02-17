@@ -60,9 +60,9 @@
     mounted () {
       // Axios.all not working
       Promise.all([
-        this.$http.jsonplaceholder.get('posts'),
-        this.$http.jsonplaceholder.get('comments'),
-        this.$http.jsonplaceholder.get('todos')
+        this.$axios.get('https://jsonplaceholder.typicode.com/posts'),
+        this.$axios.get('https://jsonplaceholder.typicode.com/comments'),
+        this.$axios.get('https://jsonplaceholder.typicode.com/todos'),
       ])
         .then(response => {
           this.setPosts(response[0].data)

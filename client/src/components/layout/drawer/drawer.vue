@@ -20,8 +20,8 @@
 
     <div class="fixed-bottom text-center light text-italic">
       Powered by
-      <a href="https://vuejs.org/"><img src="../img/vue-logo.png" alt=""></a>
-      <a href="http://quasar-framework.org/"><img src="../img/quasar-logo.png" alt=""></a>
+      <a href="https://vuejs.org/"><img src="./assets/logo/vue-logo.png" alt=""></a>
+      <a href="http://quasar-framework.org/"><img src=".assets/logo/quasar-logo.png" alt=""></a>
     </div>
   </q-drawer>
 </template>
@@ -29,6 +29,7 @@
   import { mapGetters } from 'vuex'
   import menuOne from './menuOne.vue'
   import menuTwo from './menuTwo.vue'
+  import firebase from 'firebase'
 
   export default {
     data () {
@@ -63,6 +64,23 @@
             show: false
           }
         }
+      }
+    },
+    created () {
+      var vm = this
+      firebase.auth().onAuthStateChanged(function (user) {
+        if (user) {
+          vm.user = user
+          vm.name = vm.user.displayName
+          vm.email = vm.user.email
+          vm.photo = vm.user.photoURL
+          vm.userId = vm.user.uid
+        }
+      })
+    },
+    methods: {
+      logOut () {
+        firebase.auth().signOut()
       }
     },
     computed: {

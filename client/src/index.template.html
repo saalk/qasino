@@ -1,12 +1,12 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
   <head>
+    <title><%= htmlWebpackPlugin.options.title %></title>
     <meta charset="utf-8">
     <meta name="description" content="<%= htmlWebpackPlugin.options.description %>">
     <meta name="format-detection" content="telephone=no">
     <meta name="msapplication-tap-highlight" content="no">
     <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width<% if (htmlWebpackPlugin.options.ctx.mode.cordova || htmlWebpackPlugin.options.ctx.mode.capacitor) { %>, viewport-fit=cover<% } %>">
-    <title><%= htmlWebpackPlugin.options.title %></title>
 
     <link rel="shortcut icon" type="image/x-icon" href="static/icons/favicon/favicon.ico">
     <link rel="icon" type="image/png" sizes="192x192"  href="static/icons/favicon/android-icon-192x192.png">
@@ -14,6 +14,9 @@
     <link rel="icon" type="image/png" sizes="96x96" href="static/icons/favicon/favicon-96x96.png">
     <link rel="icon" type="image/png" sizes="16x16" href="static/icons/favicon/favicon-16x16.png">
     <link rel="icon" type="image/ico" href="static/icons/favicon/favicon.ico">
+    <script src="https://cdn.firebase.com/libs/firebaseui/3.5.2/firebaseui.js"></script>
+    <link type="text/css" rel="stylesheet" href="https://cdn.firebase.com/libs/firebaseui/3.5.2/firebaseui.css" />
+      
   </head>
   <body>
     <% if (!htmlWebpackPlugin.options.ctx.mode.electron) { %>
