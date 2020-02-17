@@ -58,7 +58,11 @@
     "eslint-plugin-import": "^2.20.1",
     "eslint-plugin-node": "^11.0.0",
     "firebase": "^7.8.2",
+<<<<<<< HEAD
     "quasar": "^1.9.2",
+=======
+    "quasar": "^1.0.0",
+>>>>>>> 3e4efb39e32b16732c6325f1d2c13e374e142d72
     "vue-i18n": "^8.0.0",
     "vue-simple-spinner": "^1.2.10"
   },
