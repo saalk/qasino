@@ -9,7 +9,6 @@
  * If switching back to default "hash" mode, don't forget to set the
  * build publicPath back to '' so Cordova builds work again.
  */
-
 import VueRouter from 'vue-router'
 
 Vue.use(VueRouter)

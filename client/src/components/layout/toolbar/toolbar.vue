@@ -11,14 +11,14 @@
     </button>
     <!-- <q-toolbar-title :padding="1"> --> 
     <q-toolbar-title>
-      Quasar Admin App
+      Qasino Admin App
     </q-toolbar-title>
     <div class="right-itens">
       <message-popover></message-popover>
       <a @click="setMobileMode(true)" class="text-white gt-sm inline">
         <i class="fa fa-3x fa-mobile"></i>
       </a>
-      <a href="https://github.com/odranoelBR/vue-quasar-admin-example" class="text-white">
+      <a href="https://github.com/saalk/qaino" class="text-white">
         <i class="fa fa-2x fa-github"></i>
       </a>
     </div>

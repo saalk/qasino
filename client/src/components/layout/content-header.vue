@@ -1,10 +1,10 @@
 <template>
   <div class="content-header" v-if="!getIsLoginPage">
     <span id="content-header-title" class="vertical-bottom">{{routerTitle}}</span>
-    <button class="bg-blue-grey-8 text-white " id="configurations">
+    <button class="bg-blue-grey-8 text-white" id="configurations">
       <i>settings</i>
-      <q-popover ref="popover" anchor="top left" self="top right" class="bg-blue-grey-8 text-white">
-        <div class="list highlight " >
+      <q-menu ref="popover" anchor="top left" self="top right" class="bg-blue-grey-8 text-white">
+        <div class="list highlight">
           <div class="item">
             <div class="item-content has-secondary">Layout</div>
             <div class="item-secondary">
@@ -26,50 +26,50 @@
             </div>
           </div>
         </div>
-      </q-popover>
+      </q-menu>
     </button>
-    <hr>
+    <hr />
   </div>
 </template>
 <script type="text/javascript">
-  import { mapMutations, mapGetters } from 'vuex'
-  export default {
-    computed: {
-      ...mapGetters(['getLayoutNeeded', 'getIsLoginPage', 'getMenuCollapse']),
-      routerTitle () {
-        return this.$route.meta.name
-      }
-    },
-    methods: {
-      ...mapMutations(['setLayoutNeeded', 'setMenuCollapse'])
+import { mapMutations, mapGetters } from "vuex";
+export default {
+  computed: {
+    ...mapGetters(["getLayoutNeeded", "getIsLoginPage", "getMenuCollapse"]),
+    routerTitle() {
+      return this.$route.meta.name;
     }
+  },
+  methods: {
+    ...mapMutations(["setMobileMode", "setMenuCollapse", "setLayoutNeeded"])
   }
+};
 </script>
 <style scoped>
-  .list {
-    min-height: 120px;
+.list {
+  min-height: 120px;
+}
+#configurations {
+  position: absolute;
+  right: 65px;
+  top: 7px;
+}
+.content-header {
+  position: relative;
+  padding: 1em 4em 0em 4em;
+}
+@media screen and (max-width: 600px) {
+  .content-header {
+    padding: 1.5em 0.5em;
   }
   #configurations {
     position: absolute;
-    right: 65px;
-    top: 7px;
+    right: 8px;
+    top: 12px;
   }
-  .content-header {
-    position: relative;
-    padding: 1em 4em 0em 4em;
-  }
-  @media screen and (max-width: 600px){
-    .content-header {
-      padding: 1.5em .5em;
-    }
-    #configurations {
-      position: absolute;
-      right: 8px;
-      top: 12px;
-    }
-  }
-  #content-header-title {
-    font-size: 22px;
-    font-weight: 300;
-  }
+}
+#content-header-title {
+  font-size: 22px;
+  font-weight: 300;
+}
 </style>

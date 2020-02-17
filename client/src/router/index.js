@@ -8,12 +8,16 @@ function load(component) {
     return () => import(`components/${component}.vue`)
 }
 
+// function loadOld(component) {
+//     // replace all the - import Login from '../components/Login'
+//     return () => import(`pages/old/${component}.vue`)
+// }
 const router = new Router({
     //mode: 'history',
     routes: [
-        { path: '/login', component: load('Login'), meta: { name: 'Login' } },
-        { path: '/register', component: load('Register'), meta: { name: 'Register' } },
-        { path: '/dashboard', component: load('Dashboard'), meta: { name: 'Dashboard' } },
+        // { path: '/login', component: loadOld('Login'), meta: { name: 'Login' } },
+        // { path: '/register', component: loadOld('Register'), meta: { name: 'Register' } },
+        // { path: '/dashboard', component: loadOld('Dashboard'), meta: { name: 'Dashboard' } },
         
         { path: '/', component: load('views/dashboard/one/dashboard'), meta: { name: 'Dashboard One' } },
         { path: '/auth', component: load('Auth'), meta: { name: 'Form Login' } },

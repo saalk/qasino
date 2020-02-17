@@ -4,10 +4,12 @@
       <div v-for="(parent, index) in links" v-bind:key="index">
         <div class="list-label">{{replaceUnderlineToSpace(index)}}</div>
         <template> 
-          <div v-for="child in parent.routes" v-bind:key="child">
-            <q-drawer-link :icon="child.materialIcon" :to="{path: child.route, exact: true}">
+          <div v-for="child in parent.routes" v-bind:key="child.route">
+            <!-- <q-side-link -->
+            <q-item :icon="child.materialIcon" :to="{path: child.route, exact: true}">
               {{child.name}}
-            </q-drawer-link>
+            </q-item>
+            <!-- </q-side-link> -->
           </div>
         </template>
         <hr>

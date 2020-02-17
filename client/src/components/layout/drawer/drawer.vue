@@ -20,8 +20,8 @@
 
     <div class="fixed-bottom text-center light text-italic">
       Powered by
-      <a href="https://vuejs.org/"><img src="./assets/logo/vue-logo.png" alt=""></a>
-      <a href="http://quasar-framework.org/"><img src=".assets/logo/quasar-logo.png" alt=""></a>
+      <a href="https://vuejs.org/"><img src="~assets/logo/vue-logo.png" alt=""></a>
+      <a href="http://quasar-framework.org/"><img src="~assets/logo/quasar-logo.png" alt=""></a>
     </div>
   </q-drawer>
 </template>

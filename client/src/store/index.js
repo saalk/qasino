@@ -53,13 +53,14 @@ export default new Vuex.Store({
     },
     // make changes to the state
     mutations: {
-        SET_LOGGED_IN(state, value) {
-            state.user.loggedIn = value;
-        },
-        SET_USER(state, data) {
-            state.user.data = data;
-        }
-        ,
+        // SET_LOGGED_IN(state, value) {
+        //     state.user.loggedIn = value;
+        // },
+        // SET_USER(state, data) {
+        //     state.user.data = data;
+        // }
+        // ,
+      
         setLayoutNeeded(state, value) {
             state.layoutNeeded = value
         },

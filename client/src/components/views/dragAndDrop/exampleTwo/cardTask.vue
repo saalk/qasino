@@ -5,7 +5,7 @@
       <input type="text" v-model="title">
       <div class="float-right">
         <i>keyboard_arrow_down</i>
-        <q-popover ref="popover">
+        <q-menu ref="popover">
           <div class="list item-delimiter highlight">
             <div
               class="item item-link no-margin"
@@ -15,7 +15,7 @@
               v-bind:key="color">
             </div>
           </div>
-        </q-popover>
+        </q-menu>
       </div>
     </div>
     <div class="card-content bg-white">

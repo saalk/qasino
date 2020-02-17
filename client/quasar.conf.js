@@ -71,7 +71,7 @@ module.exports = function (ctx) {
       //            (not treeshaking Quasar; biggest bundle size; convenient)
       all: true,
 
-      components: ['QRange','QKnob','QFab'],
+      components: ['QRange','QKnob','QFab','QMenu','QItem','QDrawer','QToggle'],
       directives: ['Ripple'],
       // Quasar plugins
       plugins: ['Notify'],
