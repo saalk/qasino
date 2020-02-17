@@ -1,21 +1,41 @@
 // Configuration for your app
 // https://quasar.dev/quasar-cli/quasar-conf-js
+var path = require('path');
 
 module.exports = function (ctx) {
 
   return {
 
+    // Webpack aliases
+    aliases: {
+      quasar: path.resolve(__dirname, '../node_modules/quasar-framework/'),
+      src: path.resolve(__dirname, '../src'),
+      assets: path.resolve(__dirname, '../src/assets'),
+      components: path.resolve(__dirname, '../src/components')
+    },
+
+    // Progress Bar Webpack plugin format
+    // https://github.com/clessg/progress-bar-webpack-plugin#options
+    progressFormat: ' [:bar] ' + ':percent'.bold + ' (:msg)',
+
+    // Default theme to build with ('ios' or 'mat')
+    defaultTheme: 'mat',
+
+
     // https://quasar.dev/quasar-cli/quasar-conf-js#Property%3A-htmlVariables
-    htmlVariables: { 
+    htmlVariables: {
       title: 'Qasino Card games',
-      description: 'Card games app' },
+      description: 'Card games app'
+    },
 
     // app boot file (/src/boot)
-    // --> boot files are part of "main.js"
+    // - all boot files together are the "main.js"
+    // - needed to run code before the App’s Vue root component is instantiated
     // https://quasar.dev/quasar-cli/cli-documentation/boot-files
     boot: [
-      'i18n',
+      'firebase',
       'axios'
+      // 'i18n',
     ],
 
     // https://quasar.dev/quasar-cli/quasar-conf-js#Property%3A-css
@@ -51,11 +71,12 @@ module.exports = function (ctx) {
       //            (not treeshaking Quasar; biggest bundle size; convenient)
       all: true,
 
-      components: [],
-      directives: [],
+      components: ['QRange','QKnob','QFab'],
+      directives: ['Ripple'],
       // Quasar plugins
       plugins: ['Notify'],
-      config: {notify: { /* Notify defaults */ }
+      config: {
+        notify: { /* Notify defaults */ }
       }
     },
 
@@ -66,6 +87,9 @@ module.exports = function (ctx) {
     build: {
       scopeHoisting: true,
       vueRouterMode: 'hash', // available values: 'hash', 'history'
+      index: path.resolve(__dirname, '../dist/index.html'),
+      publicPath: '',
+      productionSourceMap: false,
       showProgress: true,
       gzip: false,
       analyze: false,
@@ -74,7 +98,7 @@ module.exports = function (ctx) {
       // extractCSS: false,
 
       // https://quasar.dev/quasar-cli/cli-documentation/handling-webpack
-      extendWebpack (cfg) {
+      extendWebpack(cfg) {
         cfg.module.rules.push({
           enforce: 'pre',
           test: /\.(js|vue)$/,
@@ -89,10 +113,14 @@ module.exports = function (ctx) {
 
     // Full list of options: https://quasar.dev/quasar-cli/quasar-conf-js#Property%3A-devServer
     devServer: {
-      //htmlFilename: 'index.template.html',
       //vueDevtools: true,
+      contentBase: path.join(__dirname, 'dist'),
+      compress: true,
       https: false,
+      host: '0.0.0.0',
       port: 8080,
+      publicPath: '/',
+      clientLogLevel: 'info', // silent, trace, debug, info, warn , error
       open: 'chrome' // opens browser window automatically, use 'google-chrome;  on mac
     },
 
@@ -187,7 +215,7 @@ module.exports = function (ctx) {
       // More info: https://quasar.dev/quasar-cli/developing-electron-apps/node-integration
       nodeIntegration: true,
 
-      extendWebpack (cfg) {
+      extendWebpack(cfg) {
         // do something with Electron main process Webpack cfg
         // chainWebpack also available besides this extendWebpack
       }

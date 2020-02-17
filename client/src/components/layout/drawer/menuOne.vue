@@ -4,7 +4,7 @@
       <div v-for="(parent, index) in links" v-bind:key="index">
         <div class="list-label cursor-pointer underline" @click="parent.show = !parent.show">{{replaceUnderlineToSpace(index)}}</div>
         <template> 
-          <div v-for="child in parent.routes" v-bind:key="child">
+          <div v-for="child in parent.routes" v-bind:key="child.route">
             <transition name="menu">
               <div v-show="parent.show">
                 <router-link :to="child.route" exact tag="div" class="item item-link drawer-closer cursor-pointer" >
@@ -42,12 +42,12 @@
     },
     methods: {
       setParentVisibilityBasedOnRoute (parent) {
-        // parent.routes.forEach(item => {
-        //   if (this.$route.path === item.route) {
+        parent.routes.forEach(item => {
+          if (this.$route.path === item.route) {
             parent.show = true
             return
-        //   }
-        // })
+          }
+        })
       },
       replaceUnderlineToSpace (text) {
         while (text.indexOf('_') !== -1) {

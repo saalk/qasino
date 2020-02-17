@@ -17,6 +17,8 @@ import './import-quasar.js'
 import App from 'app/src/App.vue'
 
 
+import createStore from 'app/src/store/index'
+
 import createRouter from 'app/src/router/index'
 
 
@@ -26,9 +28,16 @@ import createRouter from 'app/src/router/index'
 export default async function () {
   // create store and router instances
   
+  const store = typeof createStore === 'function'
+    ? await createStore({Vue})
+    : createStore
+  
   const router = typeof createRouter === 'function'
-    ? await createRouter({Vue})
+    ? await createRouter({Vue, store})
     : createRouter
+  
+  // make router instance available in store
+  store.$router = router
   
 
   // Create the app instantiation Object.
@@ -37,7 +46,7 @@ export default async function () {
   const app = {
     el: '#q-app',
     router,
-    
+    store,
     render: h => h(App)
   }
 
@@ -48,7 +57,7 @@ export default async function () {
   // different depending on whether we are in a browser or on the server.
   return {
     app,
-    
+    store,
     router
   }
 }

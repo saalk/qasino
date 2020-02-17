@@ -29,6 +29,7 @@
   import { mapGetters } from 'vuex'
   import menuOne from './menuOne.vue'
   import menuTwo from './menuTwo.vue'
+  import firebase from 'firebase'
 
   export default {
     data () {
@@ -63,6 +64,23 @@
             show: false
           }
         }
+      }
+    },
+    created () {
+      var vm = this
+      firebase.auth().onAuthStateChanged(function (user) {
+        if (user) {
+          vm.user = user
+          vm.name = vm.user.displayName
+          vm.email = vm.user.email
+          vm.photo = vm.user.photoURL
+          vm.userId = vm.user.uid
+        }
+      })
+    },
+    methods: {
+      logOut () {
+        firebase.auth().signOut()
       }
     },
     computed: {
