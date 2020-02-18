@@ -11,7 +11,7 @@
                   tag-classes="bg-blue"
                   size="120px"
                   placeholder-before="$"
-        ></tag-knob>
+        />
       </div>
       <div class="auto">
         <tag-knob v-model="currentExpenses"
@@ -23,7 +23,7 @@
                   tag-classes="bg-red"
                   size="120px"
                   placeholder-before="$ -"
-        ></tag-knob>
+        />
       </div>
     </div>
     <div class="flex wrap small-gutter">
@@ -34,38 +34,37 @@
           :max="doubleRangeMinMax.max"
           label-always
           snap
-        ></q-range>
+        />
       </div>
     </div>
     <div class="flex wrap small-gutter">
       <div class="auto">
         <q-range
-          class="red"
           v-model="expenses"
+          class="red"
           :min="minExpenses"
           :max="maxExpenses"
           label-always
           snap
-        ></q-range>
+        />
       </div>
     </div>
     <div class="flex small-gutter">
       <div class="auto">
-        <q-range 
-          class="teal"
+        <q-range
           v-model="doubleRangeMinMax"
+          class="teal"
           :min="0"
           :max="maxIncome"
           label drag-range
           label-always
-        ></q-range>
+        />
       </div>
     </div>
   </div>
-
 </template>
 <script type="text/javascript">
-  /* eslint-disable */
+/* eslint-disable */
   import tagKnob from './tagKnob.vue'
   export default {
     data () {

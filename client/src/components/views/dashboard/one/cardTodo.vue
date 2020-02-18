@@ -1,34 +1,36 @@
 <template>
   <div class="card bg-white">
     <div class="card-title bg-teal text-white">
-      {{cardTitle}}
-      <div class="float-right"></div>
+      {{ cardTitle }}
+      <div class="float-right" />
     </div>
     <div class="card-content">
       <div class="flex">
         <div class="list item-inset-delimiter auto">
           <q-infinite-scroll :handler="loadMore" :offset="7">
             <!-- Content, in this case some <p> tags -->
-            <div class="item" v-for="(todo, index) in showingData" v-bind:key="index">
-              <div class="item-primary">{{index + 1}}</div>
+            <div v-for="(todo, index) in showingData" :key="index" class="item">
+              <div class="item-primary">
+                {{ index + 1 }}
+              </div>
               <div class="item-content has-secondary">
-                <span v-show="todo.completed" class="completed-line">{{todo.title}}</span>
+                <span v-show="todo.completed" class="completed-line">{{ todo.title }}</span>
                 <input
                   v-show="!todo.completed"
                   v-model.lazy="todo.title"
                   class="fit"
                   @change="changeTitle(todo)"
-                />
+                >
               </div>
               <q-toggle
+                v-model="todo.completed"
                 class="item-secondary"
                 icon="done"
                 @input="completeTodo(todo)"
-                v-model="todo.completed"
-              ></q-toggle>
+              />
             </div>
             <div class="row justify-center">
-              <spinner name="dots" slot="message" :size="40"></spinner>
+              <spinner slot="message" name="dots" :size="40" />
             </div>
           </q-infinite-scroll>
         </div>

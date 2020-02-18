@@ -1,6 +1,5 @@
 <template>
   <q-page class="flex flex-center">
-
     <q-card
       class="card-sign-in q-pa-md"
       inline
@@ -9,7 +8,7 @@
       <q-card-section
         class="q-pa-md"
       >
-        <img src="" />
+        <img src="">
       </q-card-section>
 
       <q-card-section
@@ -26,8 +25,8 @@
             class="q-mt-md"
           >
             <q-input
-              placeholder="Email Address"
               v-model="form.email"
+              placeholder="Email Address"
               type="email"
               autocomplete="username"
             />
@@ -39,8 +38,8 @@
             class="q-mt-lg"
           >
             <q-input
-              placeholder="Password"
               v-model="form.password"
+              placeholder="Password"
               type="password"
               autocomplete="current-password"
             />
@@ -59,41 +58,39 @@
           />
         </q-card-actions>
       </form>
-
     </q-card>
-
   </q-page>
 </template>
 
 <script>
 export default {
   name: 'PageSignIn',
-  data () {
+  data() {
     return {
       form: {
         email: '',
-        password: ''
-      }
-    }
+        password: '',
+      },
+    };
   },
   methods: {
-    signIn () {
-      let credentials = {
+    signIn() {
+      const credentials = {
         email: this.form.email,
-        password: this.form.password
-      }
+        password: this.form.password,
+      };
 
       this.$store.dispatch('auth/signIn', credentials)
         .then(user => {
-          this.$router.replace({ name: 'dashboard' }).catch(() => {})
+          this.$router.replace({ name: 'dashboard' }).catch(() => {});
         })
         .catch(error => {
-          this.$q.notify('Invalid Login!')
-          console.error(`Not signed in: ${error.message}`)
-        })
-    }
-  }
-}
+          this.$q.notify('Invalid Login!');
+          console.error(`Not signed in: ${error.message}`);
+        });
+    },
+  },
+};
 </script>
 
 <style lang="stylus" scoped>

@@ -6,23 +6,19 @@
           id="android-iframe"
           frameborder="0"
           src="https://quasar-admin.firebaseapp.com/android/#/"
-        ></iframe>
+        />
       </div>
       <div id="ios-preview" class="platform-ios ios-only">
-        <iframe id="ios-iframe" frameborder="0" src="https://quasar-admin.firebaseapp.com/ios/#/"></iframe>
+        <iframe id="ios-iframe" frameborder="0" src="https://quasar-admin.firebaseapp.com/ios/#/" />
       </div>
     </div>
-    <q-layout :style="{ backgroundColor: backgroundColor}" v-else>
-      <toolbar slot="header"></toolbar>
-      <drawer></drawer>
+    <q-layout v-else :style="{ backgroundColor: backgroundColor}">
+      <toolbar slot="header" />
+      <drawer />
       <div class="layout-view">
-        <content-header></content-header>
-        <!--
-        <navbar></navbar>
-        <router-view></router-view>
-        -->
+        <content-header />
         <transition name="fade" mode="out-in">
-          <router-view></router-view>
+          <router-view />
         </transition>
       </div>
     </q-layout>
@@ -30,29 +26,26 @@
 </template>
 
 <script type="text/javascript">
-// register all components here
-import toolbar from "./components/layout/toolbar/toolbar.vue";
-import drawer from "./components/layout/drawer/drawer.vue";
-//import navbar from "./pages/old/Navbar";
-import contentHeader from "./components/layout/content-header.vue";
-import { mapMutations, mapGetters } from "vuex";
+// import { mapMutations, mapGetters } from 'vuex';
+import { mapGetters } from 'vuex';
+import toolbar from './components/layout/toolbar/toolbar.vue';
+import drawer from './components/layout/drawer/drawer.vue';
+import contentHeader from './components/layout/content-header.vue';
 
 export default {
-  name: "app",
-  data() {
-    return {
-      backgroundColor: "whitesmoke"
-    };
-  },
+  name: 'App',
   components: {
-    // register the navbar as component
     toolbar,
     drawer,
-    //navbar,
-    contentHeader
+    contentHeader,
+  },
+  data() {
+    return {
+      backgroundColor: 'whitesmoke',
+    };
   },
   computed: {
-    ...mapGetters(["getLayoutNeeded", "getMobileMode"])
+    ...mapGetters(['getLayoutNeeded', 'getMobileMode']),
   },
   // methods: {
   //   ...mapMutations(["setMobileMode", "setMenuCollapse", "setLayoutNeeded"])

@@ -5,7 +5,9 @@
         src="~assets/bkg/chips.jpg"
       >
     </p>
-    <p class="text-faded">Sorry, nothing here...<strong>(404)</strong></p>
+    <p class="text-faded">
+      Sorry, nothing here...<strong>(404)</strong>
+    </p>
     <q-btn
       color="secondary"
       style="width:200px;"
@@ -17,6 +19,6 @@
 
 <script>
 export default {
-  name: 'Error404'
-}
+  name: 'Error404',
+};
 </script>

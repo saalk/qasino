@@ -2,14 +2,14 @@
   <button class="primary">
     <i>image</i>
     <q-tooltip>
-      <img :src="url" alt="" >
+      <img :src="url" alt="">
     </q-tooltip>
   </button>
 </template>
 <script>
 export default {
-  props: ['url']
-}
+  props: ['url'],
+};
 </script>
 <style scoped>
   img {

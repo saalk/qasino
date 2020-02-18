@@ -6,7 +6,9 @@
     <div>
       <div class="error-card card bg-white column items-center justify-center">
         <i class="text-grey-5">error_outline</i>
-        <p class="caption text-center">Oops. Nothing here...</p>
+        <p class="caption text-center">
+          Oops. Nothing here...
+        </p>
         <p class="text-center group">
           <button v-if="canGoBack" class="grey push small" @click="goBack">
             <i class="on-left">keyboard_arrow_left</i>
@@ -26,17 +28,17 @@
 
 <script type="text/javascript">
 export default {
-  data () {
+  data() {
     return {
-      canGoBack: window.history.length > 1
-    }
+      canGoBack: window.history.length > 1,
+    };
   },
   methods: {
-    goBack () {
-      window.history.go(-1)
-    }
-  }
-}
+    goBack() {
+      window.history.go(-1);
+    },
+  },
+};
 </script>
 
 <style lang="stylus">

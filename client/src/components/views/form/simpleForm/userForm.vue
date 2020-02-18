@@ -3,13 +3,13 @@
     <div class="flex wrap gutter">
       <div class="width-1of3 sm-width-1of1">
         <div class="floating-label">
-          <input required class="full-width" v-model="user.username">
+          <input v-model="user.username" required class="full-width">
           <label>Username</label>
         </div>
       </div>
       <div class="width-1of3 sm-width-1of1">
         <div class="floating-label">
-          <input required class="full-width" v-model="user.phone">
+          <input v-model="user.phone" required class="full-width">
           <label>Phone</label>
         </div>
       </div>
@@ -17,13 +17,13 @@
     <div class="flex wrap gutter">
       <div class="width-1of3 sm-width-1of1">
         <div class="floating-label">
-          <input required class="full-width" v-model="user.website">
+          <input v-model="user.website" required class="full-width">
           <label>Website</label>
         </div>
       </div>
       <div class="width-1of3 sm-width-1of1">
         <div class="floating-label">
-          <input required class="full-width" v-model="user.email">
+          <input v-model="user.email" required class="full-width">
           <label>Email</label>
         </div>
       </div>
@@ -32,12 +32,12 @@
 </template>
 
 <script type="text/javascript">
-  export default {
-    data () {
-      return {}
-    },
-    props: ['user']
-  }
+export default {
+  props: ['user'],
+  data() {
+    return {};
+  },
+};
 </script>
 <style scoped>
   .flex {

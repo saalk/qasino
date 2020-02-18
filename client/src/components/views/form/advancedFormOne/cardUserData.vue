@@ -1,16 +1,18 @@
 <template>
-  <div class="card" v-if="userData.name">
+  <div v-if="userData.name" class="card">
     <div class="card-content">
-      <h6>{{userData.name}}</h6>
-      {{userData.email}}
-      <p class="caption">Choose one of the user Albums</p>
+      <h6>{{ userData.name }}</h6>
+      {{ userData.email }}
+      <p class="caption">
+        Choose one of the user Albums
+      </p>
       <div class="list">
-        <label class="item two-lines" v-for="album in filteredAlbums" v-bind:key="album">
+        <label v-for="album in filteredAlbums" :key="album" class="item two-lines">
           <div class="item-primary">
-            <q-radio @input="change(album)" v-model="selectedAlbum" :val="album.id"></q-radio>
+            <q-radio v-model="selectedAlbum" :val="album.id" @input="change(album)" />
           </div>
           <div class="item-content post-data">
-            <div class="ellipsis">{{album.title}}</div>
+            <div class="ellipsis">{{ album.title }}</div>
           </div>
         </label>
       </div>
@@ -22,33 +24,33 @@ export default {
   props: {
     userData: {
       type: Object,
-      required: true
-    }
+      required: true,
+    },
   },
-  data () {
+  data() {
     return {
       userAlbums: [],
-      selectedAlbum: ''
-    }
+      selectedAlbum: '',
+    };
   },
   computed: {
-    filteredAlbums () {
-      return this.userAlbums.slice(0, 3)
-    }
-  },
-  methods: {
-    change (album) {
-      this.$emit('input', album)
-    }
+    filteredAlbums() {
+      return this.userAlbums.slice(0, 3);
+    },
   },
   watch: {
-    userData () {
+    userData() {
       this.$http.jsonplaceholder
         .get(`albums?userId=${this.userData.id}`)
-        .then(response => { this.userAlbums = response.data })
-    }
-  }
-}
+        .then(response => { this.userAlbums = response.data; });
+    },
+  },
+  methods: {
+    change(album) {
+      this.$emit('input', album);
+    },
+  },
+};
 </script>
 <style scoped>
   @media screen and (min-width: 600px) {

@@ -1,19 +1,22 @@
 <template>
   <button class="relative-position animate-bounce">
-    <i class="fa fa-2x fa-envelope-o"></i>
+    <i class="fa fa-2x fa-envelope-o" />
     <span class="floating label bg-dark">5</span>
-    <q-menu self="top right" >
+    <q-menu self="top right">
       <div class="list striped">
-        <p class="caption no-margin text-center text-white bg-teal">Messages from people</p>
-        <div class="item item-link two-lines item-delimiter no-margin"
-             v-for="post in filteredPosts" v-bind:key="post">
+        <p class="caption no-margin text-center text-white bg-teal">
+          Messages from people
+        </p>
+        <div v-for="post in filteredPosts"
+             :key="post" class="item item-link two-lines item-delimiter no-margin"
+        >
           <img class="item-primary" :src="randomAvatarUrl()">
           <div class="item-content has-secondary">
-            <div>{{post.title}}</div>
-            <div>{{randomDate()}}</div>
+            <div>{{ post.title }}</div>
+            <div>{{ randomDate() }}</div>
           </div>
           <span class="label bg-red text-white item-secondary no-margin">
-            <i class="left-detail"></i> New
+            <i class="left-detail" /> New
           </span>
         </div>
       </div>
@@ -21,49 +24,50 @@
   </button>
 </template>
 <script>
-  import { mapGetters, mapMutations } from 'vuex'
-  export default {
-    mounted () {
-      if (this.getPosts.length < 1) {
-        this.requestPosts()
-      }
+import { mapGetters, mapMutations } from 'vuex';
+
+export default {
+  computed: {
+    ...mapGetters(['getPosts']),
+    filteredPosts() {
+      return this.getPosts.slice(0, 5);
     },
-    computed: {
-      ...mapGetters(['getPosts']),
-      filteredPosts () {
-        return this.getPosts.slice(0, 5)
-      }
-    },
-    methods: {
-      ...mapMutations(['setPosts']),
-      randomDate () {
-        return new Date((new Date()) - Math.floor(Math.random() * 10000000000))
-      },
-      randomAvatarUrl () {
-        return `https://api.adorable.io/avatars/face/${this.randomEye()}/${this.randomNose()}/${this.randomMouth()}/${this.randomHexColor()}`
-      },
-      randomHexColor () {
-        return Math.random().toString(16).slice(2, 8)
-      },
-      randomEye () {
-        return this.randomArrayElement(['eyes1', 'eyes10', 'eyes2', 'eyes3', 'eyes4', 'eyes5', 'eyes6', 'eyes7', 'eyes9'])
-      },
-      randomNose () {
-        return this.randomArrayElement(['nose2', 'nose3', 'nose4', 'nose5', 'nose6', 'nose7', 'nose8', 'nose9'])
-      },
-      randomMouth () {
-        return this.randomArrayElement(['mouth1', 'mouth10', 'mouth11', 'mouth3', 'mouth5', 'mouth6', 'mouth7', 'mouth9'])
-      },
-      randomArrayElement (array) {
-        return array[Math.floor((Math.random() * array.length))]
-      },
-      requestPosts () {
-        this.$http.jsonplaceholder
-          .get('posts')
-          .then(response => { this.setPosts(response.data) })
-      }
+  },
+  mounted() {
+    if (this.getPosts.length < 1) {
+      this.requestPosts();
     }
-  }
+  },
+  methods: {
+    ...mapMutations(['setPosts']),
+    randomDate() {
+      return new Date((new Date()) - Math.floor(Math.random() * 10000000000));
+    },
+    randomAvatarUrl() {
+      return `https://api.adorable.io/avatars/face/${this.randomEye()}/${this.randomNose()}/${this.randomMouth()}/${this.randomHexColor()}`;
+    },
+    randomHexColor() {
+      return Math.random().toString(16).slice(2, 8);
+    },
+    randomEye() {
+      return this.randomArrayElement(['eyes1', 'eyes10', 'eyes2', 'eyes3', 'eyes4', 'eyes5', 'eyes6', 'eyes7', 'eyes9']);
+    },
+    randomNose() {
+      return this.randomArrayElement(['nose2', 'nose3', 'nose4', 'nose5', 'nose6', 'nose7', 'nose8', 'nose9']);
+    },
+    randomMouth() {
+      return this.randomArrayElement(['mouth1', 'mouth10', 'mouth11', 'mouth3', 'mouth5', 'mouth6', 'mouth7', 'mouth9']);
+    },
+    randomArrayElement(array) {
+      return array[Math.floor((Math.random() * array.length))];
+    },
+    requestPosts() {
+      this.$http.jsonplaceholder
+        .get('posts')
+        .then(response => { this.setPosts(response.data); });
+    },
+  },
+};
 </script>
 <style scoped>
   .list{

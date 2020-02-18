@@ -1,22 +1,20 @@
 <template>
-  <div class="card " >
+  <div class="card ">
     <div class="card-title bg-blue-grey-2">
       <h5>Done</h5>
     </div>
-    <div class="card-content bg-blue-grey-1" ref="done">
-
-    </div>
+    <div ref="done" class="card-content bg-blue-grey-1" />
   </div>
 </template>
 
 <script>
 export default {
-  data () {
+  data() {
     return {
-      doneTasks: []
-    }
-  }
-}
+      doneTasks: [],
+    };
+  },
+};
 </script>
 
 <style scoped>

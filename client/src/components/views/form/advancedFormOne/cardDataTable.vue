@@ -1,7 +1,7 @@
 <template>
   <q-data-table
-    ref="dataTable"
     v-if="commentsOfPost.length > 0"
+    ref="dataTable"
     :data="commentsOfPost"
     :columns="columns"
     :config="configs"
@@ -18,61 +18,61 @@
 </template>
 
 <script>
-  export default {
-    props: {
-      selectedAlbum: {
-        required: true
-      }
+export default {
+  props: {
+    selectedAlbum: {
+      required: true,
     },
-    watch: {
-      selectedAlbum () {
-        this.$http.jsonplaceholder
-          .get(`photos?albumId=${this.selectedAlbum.id}`)
-          .then(response => { this.commentsOfPost = response.data })
-      }
+  },
+  data() {
+    return {
+      commentsOfPost: [],
+      columns: [
+        {
+          label: 'Title',
+          field: 'title',
+          width: '130px',
+          filter: true,
+          sort: true,
+        },
+        {
+          label: 'Photo',
+          field: 'photo',
+          width: '100px',
+        },
+      ],
+    };
+  },
+  computed: {
+    selectedRows() {
+      return this.$refs.dataTable.selectedRows;
     },
-    computed: {
-      selectedRows () {
-        return this.$refs.dataTable.selectedRows
-      },
-      configs () {
-        return {
-          title: `Photos of the album : ${this.selectedAlbum.title}`,
-          columnPicker: true,
-          rowHeight: '171px',
-          selection: 'multiple',
-          pagination: {
-            rowsPerPage: 3,
-            options: [3, 6]
-          }
-        }
-      }
-    },
-    data () {
+    configs() {
       return {
-        commentsOfPost: [],
-        columns: [
-          {
-            label: 'Title',
-            field: 'title',
-            width: '130px',
-            filter: true,
-            sort: true
-          },
-          {
-            label: 'Photo',
-            field: 'photo',
-            width: '100px'
-          }
-        ]
-      }
+        title: `Photos of the album : ${this.selectedAlbum.title}`,
+        columnPicker: true,
+        rowHeight: '171px',
+        selection: 'multiple',
+        pagination: {
+          rowsPerPage: 3,
+          options: [3, 6],
+        },
+      };
     },
-    methods: {
-      addPrint (rows) {
-        this.$emit('selectedRows', rows)
-      }
-    }
-  }
+  },
+  watch: {
+    selectedAlbum() {
+      this.$http.jsonplaceholder
+        .get(`photos?albumId=${this.selectedAlbum.id}`)
+        .then(response => { this.commentsOfPost = response.data; });
+    },
+  },
+  methods: {
+    addPrint(rows) {
+      this.$emit('selectedRows', rows);
+    },
+  },
+};
 </script>
 
 <style>

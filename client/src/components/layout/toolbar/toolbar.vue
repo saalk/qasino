@@ -1,46 +1,47 @@
 <template>
-  <div class="toolbar" v-show="getLayoutNeeded">
-    <q-ajax-bar color="#80cbc4"></q-ajax-bar>
-    <router-link :to="'/'" v-if="$router.currentRoute.meta.backButton">
+  <div v-show="getLayoutNeeded" class="toolbar">
+    <q-ajax-bar color="#80cbc4" />
+    <router-link v-if="$router.currentRoute.meta.backButton" :to="'/'">
       <button>
         <i>arrow_back</i>
       </button>
     </router-link>
-    <button class="hide-on-drawer-visible" @click="leftDrawer.open()" v-else >
+    <button v-else class="hide-on-drawer-visible" @click="leftDrawer.open()">
       <i>menu</i>
     </button>
-    <!-- <q-toolbar-title :padding="1"> --> 
+    <!-- <q-toolbar-title :padding="1"> -->
     <q-toolbar-title>
       Qasino Admin App
     </q-toolbar-title>
     <div class="right-itens">
-      <message-popover></message-popover>
-      <a @click="setMobileMode(true)" class="text-white gt-sm inline">
-        <i class="fa fa-3x fa-mobile"></i>
+      <message-popover />
+      <a class="text-white gt-sm inline" @click="setMobileMode(true)">
+        <i class="fa fa-3x fa-mobile" />
       </a>
       <a href="https://github.com/saalk/qaino" class="text-white">
-        <i class="fa fa-2x fa-github"></i>
+        <i class="fa fa-2x fa-github" />
       </a>
     </div>
   </div>
 </template>
-<script type="text/javascript">
-  import { mapMutations, mapGetters } from 'vuex'
-  import messagePopover from './messagePopover.vue'
-  export default {
-    computed: {
-      ...mapGetters(['getLayoutNeeded']),
-      leftDrawer () {
-        return this.$parent.$children[1].$refs.leftDrawer
-      }
+<script>
+import { mapMutations, mapGetters } from 'vuex';
+import messagePopover from './messagePopover.vue';
+
+export default {
+  components: {
+    messagePopover,
+  },
+  computed: {
+    ...mapGetters(['getLayoutNeeded']),
+    leftDrawer() {
+      return this.$parent.$children[1].$refs.leftDrawer;
     },
-    methods: {
-      ...mapMutations(['setMobileMode'])
-    },
-    components: {
-      messagePopover
-    }
-  }
+  },
+  methods: {
+    ...mapMutations(['setMobileMode']),
+  },
+};
 </script>
 <style scoped>
   .toolbar{

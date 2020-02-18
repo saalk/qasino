@@ -1,48 +1,53 @@
 <template>
-  <div class="content-header" v-if="!getIsLoginPage">
-    <span id="content-header-title" class="vertical-bottom">{{routerTitle}}</span>
-    <button class="bg-blue-grey-8 text-white" id="configurations">
+  <div v-if="!getIsLoginPage" class="content-header">
+    <span id="content-header-title" class="vertical-bottom">{{ routerTitle }}</span>
+    <button id="configurations" class="bg-blue-grey-8 text-white">
       <i>settings</i>
       <q-menu ref="popover" anchor="top left" self="top right" class="bg-blue-grey-8 text-white">
         <div class="list highlight">
           <div class="item">
-            <div class="item-content has-secondary">Layout</div>
+            <div class="item-content has-secondary">
+              Layout
+            </div>
             <div class="item-secondary">
               <q-toggle
-                class="green"
                 v-model="getLayoutNeeded"
+                class="green"
                 @input="setLayoutNeeded(!getLayoutNeeded)"
-              ></q-toggle>
+              />
             </div>
           </div>
           <div class="item">
-            <div class="item-content has-secondary">Menu Collapse</div>
+            <div class="item-content has-secondary">
+              Menu Collapse
+            </div>
             <div class="item-secondary">
               <q-toggle
-                class="green"
                 v-model="getMenuCollapse"
+                class="green"
                 @input="setMenuCollapse(!getMenuCollapse)"
-              ></q-toggle>
+              />
             </div>
           </div>
         </div>
       </q-menu>
     </button>
-    <hr />
+    <hr>
   </div>
 </template>
-<script type="text/javascript">
-import { mapMutations, mapGetters } from "vuex";
+<script>
+import { mapMutations, mapGetters } from 'vuex';
+
 export default {
   computed: {
-    ...mapGetters(["getLayoutNeeded", "getIsLoginPage", "getMenuCollapse"]),
+    ...mapGetters(['getLayoutNeeded', 'getIsLoginPage', 'getMenuCollapse']),
     routerTitle() {
       return this.$route.meta.name;
-    }
+    },
   },
   methods: {
-    ...mapMutations(["setMobileMode", "setMenuCollapse", "setLayoutNeeded"])
-  }
+    ...mapMutations(['setMobileMode', 'setMenuCollapse', 'setLayoutNeeded']),
+  },
 };
 </script>
 <style scoped>

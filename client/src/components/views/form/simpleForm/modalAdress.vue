@@ -2,32 +2,32 @@
   <q-modal ref="modal" @open="startMap()">
     <div class="card fit">
       <div class="card-title bg-teal text-white">
-        Adress of {{user.name}}
+        Adress of {{ user.name }}
       </div>
       <div class="card-content bg-white">
-        <div id="map"></div>
+        <div id="map" />
         <div class="wrap gutter">
           <div class="width-1of1">
             <div class="floating-label">
-              <input required class="full-width" v-model="user.address.street">
+              <input v-model="user.address.street" required class="full-width">
               <label>Street</label>
             </div>
           </div>
           <div class="width-1of1">
             <div class="floating-label">
-              <input required class="full-width" v-model="user.address.suite">
+              <input v-model="user.address.suite" required class="full-width">
               <label>Suite</label>
             </div>
           </div>
           <div class="width-1of1">
             <div class="floating-label">
-              <input required class="full-width" v-model="user.address.city">
+              <input v-model="user.address.city" required class="full-width">
               <label>City</label>
             </div>
           </div>
           <div class="width-1of1">
             <div class="floating-label">
-              <input required class="full-width" v-model="user.address.zipcode">
+              <input v-model="user.address.zipcode" required class="full-width">
               <label>Zipcode</label>
             </div>
           </div>
@@ -36,17 +36,21 @@
     </div>
     <div class="card-actions justify-center flex">
       <div class="width-1of3 sm-width-3of3">
-        <button class="primary outline raised fit" @click="save()">Save</button>
+        <button class="primary outline raised fit" @click="save()">
+          Save
+        </button>
       </div>
       <div class="width-1of3 sm-width-3of3">
-        <button class="teal outline raised fit" @click="$refs.modal.close()">Close</button>
+        <button class="teal outline raised fit" @click="$refs.modal.close()">
+          Close
+        </button>
       </div>
     </div>
   </q-modal>
 </template>
 
 <script type="text/javascript">
-  /* eslint-disable */
+/* eslint-disable */
   import GMaps from 'gmaps'
 
   export default {

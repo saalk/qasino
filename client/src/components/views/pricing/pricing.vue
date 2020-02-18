@@ -2,19 +2,19 @@
   <div>
     <div class="layout-padding">
       <div class="label bg-secondary text-white">
-        Plan model type <span class="right-detail"><em>{{cardType}}</em></span>
+        Plan model type <span class="right-detail"><em>{{ cardType }}</em></span>
       </div>
       <div class="group inline-block">
-        <label >
-          <q-radio v-model="cardType" val="Vertical One"></q-radio> Vertical One
+        <label>
+          <q-radio v-model="cardType" val="Vertical One" /> Vertical One
         </label>
         <label>
-          <q-radio v-model="cardType" val="Horizontal One" class="teal"></q-radio> Horizontal One
+          <q-radio v-model="cardType" val="Horizontal One" class="teal" /> Horizontal One
         </label>
       </div>
 
       <div class="row wrap gutter justify-center">
-        <div class="auto " v-for="planData in plansData" v-bind:key="planData">
+        <div v-for="planData in plansData" :key="planData" class="auto ">
           <component :is="componentInstanceBySelectedPlanType"
                      :title="planData.title"
                      :title-classes="planData.titleClasses"
@@ -22,10 +22,10 @@
                      :price-subtitle="planData.priceSubtitle"
                      :button-classes="planData.buttonClasses"
                      :card-id="planData.cardId"
-                     v-on:card-selected="cardSelected"
+                     @card-selected="cardSelected"
           >
             <div slot="body" class="fit">
-              <component :is="planData.planBenefitComponent"></component>
+              <component :is="planData.planBenefitComponent" />
             </div>
           </component>
         </div>
@@ -34,7 +34,7 @@
   </div>
 </template>
 <script type="text/javascript">
-  /* eslint-disable */
+/* eslint-disable */
   import cardPlanOne from './cardPlanOne.vue'
   import cardPlanTwo from './cardPlanTwo.vue'
   import benefitOne from './plansBenefits/benefitOne.vue'

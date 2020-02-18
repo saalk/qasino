@@ -1,13 +1,21 @@
 <template>
   <div class="card bg-white">
     <div class="card-title bg-teal text-white">
-      {{cardTitle}}
+      {{ cardTitle }}
       <div class=" float-right">
-        <q-fab icon="keyboard_arrow_left" direction="left"  class="primary">
-          <q-fab-action class="teal" @click.native="type = 'bar'" icon=""><i>equalizer</i></q-fab-action>
-          <q-fab-action class="teal" @click.native="type = 'horizontalBar'" icon=""><i class="rotate-90">equalizer</i></q-fab-action>
-          <q-fab-action class="teal" @click.native="type = 'pie'" icon=""><i>pie_chart_outlined</i></q-fab-action>
-          <q-fab-action class="teal" @click.native="type = 'doughnut'" icon=""><i>donut_large</i></q-fab-action>
+        <q-fab icon="keyboard_arrow_left" direction="left" class="primary">
+          <q-fab-action class="teal" icon="" @click.native="type = 'bar'">
+            <i>equalizer</i>
+          </q-fab-action>
+          <q-fab-action class="teal" icon="" @click.native="type = 'horizontalBar'">
+            <i class="rotate-90">equalizer</i>
+          </q-fab-action>
+          <q-fab-action class="teal" icon="" @click.native="type = 'pie'">
+            <i>pie_chart_outlined</i>
+          </q-fab-action>
+          <q-fab-action class="teal" icon="" @click.native="type = 'doughnut'">
+            <i>donut_large</i>
+          </q-fab-action>
         </q-fab>
         <button class="primary circular raised gt-sm inline" @click="toImage()">
           <i>portrait</i>
@@ -15,12 +23,12 @@
       </div>
     </div>
     <div class="card-content">
-      <canvas ref="chart"></canvas>
+      <canvas ref="chart" />
     </div>
   </div>
 </template>
 <script type="text/javascript">
-  /* eslint-disable */
+/* eslint-disable */
   import Chart from 'chart.js'
   export default {
     data () {
