@@ -39,8 +39,7 @@ Vue.use(VueRouter)
 Quasar.start(() => {
   /* eslint-disable no-new */
   new Vue({
-    el: '#q-app',
-    created () {
+    el: '#q) {
       firebase
 	  // gives access to app's auth service
 	  .auth()
@@ -49,7 +48,8 @@ Quasar.start(() => {
           this.$store.state.user = this.$firebase.auth().currentUser;
           this.$router.push('/success');
         }
-        else {
+        else {-app',
+    created (
           this.$store.state.user = null
           if (this.$route.path !== '/auth') {
             this.$router.push('/auth');

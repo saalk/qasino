@@ -12,11 +12,11 @@ export default ({ Vue }) => {
   Firebase.auth().onAuthStateChanged((user) => {
     if (user) {
       store.state.user = Firebase.auth().currentUser;
-      router.push('/success');
+      //router.push('/success');
     }
     else {
       store.state.user = null
-      if (route.path !== '/auth') {
+      if (router.path !== '/auth') {
         router.push('/auth');
       }
     }
