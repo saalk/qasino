@@ -13,9 +13,9 @@
       var uiConfig = {
         signInSuccessUrl: '/success',
         signInOptions: [
-          firebase.auth.GoogleAuthProvider.PROVIDER_ID,
+          //firebase.auth.GoogleAuthProvider.PROVIDER_ID,
           firebase.auth.EmailAuthProvider.PROVIDER_ID,
-          firebase.auth.GithubAuthProvider.PROVIDER_ID
+          //firebase.auth.GithubAuthProvider.PROVIDER_ID
         ]
       }
       // Initialize the FirebaseUI Widget using Firebase.
@@ -26,5 +26,5 @@
 </script>
 
 <style lang="css">
-  
+
 </style>

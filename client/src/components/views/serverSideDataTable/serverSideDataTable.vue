@@ -10,22 +10,24 @@
               <q-search placeholder="Search for beer name" :debounce="500"
                         v-model.lazy="searchBeer" @input="getBeers"/>
             </div>
-            <div class="auto">
+            <!-- <div class="auto">
               <q-pagination
                 v-model="page"
                 :max="10"
               ></q-pagination>
-            </div>
+            </div> -->
           </div>
-          <q-data-table
+          <q-table title='Beer List'
             :data="beers"
-            :config="configs"
-            :columns="columns">
-
-            <template slot="col-image_url" slot-scope="cell">
+            :columns="columns"
+            row-key="name"
+            virtual-scroll
+            :pagination.sync="pagination"
+            :rows-per-page-options="[0]"
+          />
+            <!-- <template slot="col-image_url" slot-scope="cell">
               <tooltip-button :url="cell.row.image_url"></tooltip-button>
-            </template>
-          </q-data-table>
+            </template> -->
         </div>
       </div>
     </div>
@@ -41,18 +43,21 @@
     data () {
       return {
         beers: [],
-        page: 1,
+        //page: 1,
+        pagination: {
+          rowsPerPage: 0
+        },
         searchBeer: '',
         columns: [
-          { label: 'Name', field: 'name', width: '80px', sort: true },
-          { label: 'Description', field: 'description', width: '150px', sort: true },
-          { label: 'First Brewed', field: 'first_brewed', width: '50px', sort: true },
-          { label: 'Picture', field: 'image_url', width: '50px' }
+          { name: 'name', required: true, label: 'Name', field: 'name', width: '80px', sortable: true },
+          { name: 'description', label: 'Description', field: 'description', width: '150px', sortable: true },
+          { name: 'first', label: 'First Brewed', field: 'first_brewed', width: '50px', sortable: true },
+          { name: 'picture', label: 'Picture', field: 'image_url', width: '50px' }
         ],
-        configs: {
-          columnPicker: true,
-          title: 'Beer List'
-        }
+        // configs: {
+        //   columnPicker: true,
+        //   title: 'Beer List'
+        // }
       }
     },
     watch: {
