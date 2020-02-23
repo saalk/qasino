@@ -1,6 +1,6 @@
-# ![Qasino Admin](public\images\other\CoolTextQasinocardgames.png)
+# [Qasino Admin]
 
-> An Single-Page application (SPA) project based on Quasar framework and / Vuejs
+> An Single-Page application (SPA) project based on Quasar framework and Vuejs
 
 ## Links
 
@@ -9,8 +9,8 @@
 
 ## Demo (Android or IOS Style)
 
-![https://](public\images\other\icon-ios.png)
-![https://](public\images\other\icon-android.png)
+![https://](src\assets\misc\icon-ios.png)
+![https://](src\assets\misc\icon-android.png)
 
 ## Infos
 
@@ -31,24 +31,34 @@
 
 ## Project Setup
 
-### quasar
+### setup new quasar project
 
 ```bash
 npm install -g @quasar/cli
 quasar create <folder_name>
 ```
 
-### build setup
+### project install
 
 ```bash
 npm install // install package.json and all dependencies
-npm shrinkwrap
+maintenance:
+- rimraf node_modules
+- npm-install-missing
+- npm shrinkwrap
 ```
 
 ### serve with hot reload at localhost:8080
 
 ```bash
 quasar dev
+maintanance:
+- quasar info/ quasar upgrade
+- remove quasar-cli
+- rimraf .quasar
+- rimraf .node_modules
+- npm i quasar @quasar/extra
+- npm i @quasar/app --dev
 ```
 
 ### Lint the files

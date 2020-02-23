@@ -3,7 +3,13 @@
   "version": "0.0.1",
   "private": true,
   "description": "A Quasar App",
+  "capacitorId": "",
+  "cordovaId": "org.cordova.quasar.app",
+  "productName": "Qasino Card Game App",
   "bugs": "https://github.com/saalk/qasino/issues",
+  "resolutions": {
+    "@babel/parser": "7.7.5"
+  },
   "repository": {
     "type": "git",
     "url": "git://github.com/saalk/qasino.git"
@@ -63,7 +69,7 @@
   },
   "devDependencies": {
     "@babel/parser": "^7.7.5",
-    "@quasar/app": "^1.0.0",
+    "@quasar/app": "^1.2.2",
     "@vue/cli-plugin-babel": "~4.2.0",
     "@vue/cli-plugin-eslint": "~4.2.0",
     "@vue/cli-service": "~4.2.0",
@@ -88,7 +94,7 @@
     "dragula": "^3.7.2",
     "electron": "^8.0.0",
     "electron-packager": "^14.2.1",
-    "eslint": "^6.1.0",
+    "eslint": "^6.8.0",
     "eslint-auto-fix": "^1.0.1",
     "eslint-config-airbnb-base": "^14.0.0",
     "eslint-config-prettier": "^4.0.0",
@@ -127,6 +133,7 @@
     "quasar-framework": "^0.17.20",
     "repository": "^0.2.0",
     "roboto-fontface": "^0.10.0",
+    "sass-loader": "^7.1.0",
     "scripts": "^0.1.0",
     "shelljs": "^0.8.3",
     "stylus": "^0.54.7",
@@ -153,8 +160,5 @@
     "node": ">= 10.18.1",
     "npm": ">= 6.13.4",
     "yarn": ">= 1.21.1"
-  },
-  "capacitorId": "",
-  "cordovaId": "org.cordova.quasar.app",
-  "productName": "Qasino Card Game App"
+  }
 }

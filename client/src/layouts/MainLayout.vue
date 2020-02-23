@@ -1,43 +1,40 @@
 <template>
-  <!-- <div id="q-app">
-    <div v-if="getMobileMode">
-      <div id="android-preview" class="platform-android mat-only">
-        <iframe
-          id="android-iframe"
-          frameborder="0"
-          src="https://quasar-admin.firebaseapp.com/android/#/"
-        />
-      </div>
-      <div id="ios-preview" class="platform-ios ios-only">
-        <iframe id="ios-iframe" frameborder="0" src="https://quasar-admin.firebaseapp.com/ios/#/" />
-      </div>
-    </div> -->
-  <!-- <q-layout v-else :style="{ backgroundColor: backgroundColor}">
-  <toolbar slot="header" />
+  <div v-if="getMobileMode">
+    <div id="android-preview" class="platform-android mat-only">
+      <iframe
+        id="android-iframe"
+        frameborder="0"
+        src="https://quasar-admin.firebaseapp.com/android/#/"
+      />
+    </div>
+    <div id="ios-preview" class="platform-ios ios-only">
+      <iframe id="ios-iframe" frameborder="0" src="https://quasar-admin.firebaseapp.com/ios/#/" />
+    </div>
+  </div>
+  <q-layout v-else :style="{ backgroundColor: backgroundColor}">
+    <toolbar slot="header" />
     <drawer />
     <div class="layout-view">
       <content-header />
-      <transition name="fade" mode="out-in"> -->
-  <router-view />
-<!--   </transition>
-      </div>
-    </q-layout>
-  </div> -->
+      <transition name="fade" mode="out-in">
+        <router-view />
+      </transition>
+    </div>
+  </q-layout>
 </template>
-
 <script type="text/javascript">
 // import { mapMutations, mapGetters } from 'vuex';
 import { mapGetters } from 'vuex';
-// import toolbar from './components/layout/toolbar/toolbar.vue';
-// import drawer from './components/layout/drawer/drawer.vue';
-// import contentHeader from './components/layout/content-header.vue';
+import toolbar from '~../../../src/components/layout/toolbar/toolbar.vue';
+import drawer from '~../../../src/components/layout/drawer/drawer.vue';
+import contentHeader from '~../../../src/components/layout/content-header.vue';
 
 export default {
   name: 'App',
   components: {
-    // toolbar,
-    // drawer,
-    // contentHeader,
+    toolbar,
+    drawer,
+    contentHeader,
   },
   data() {
     return {
@@ -102,7 +99,7 @@ export default {
     -webkit-transform: translateX(100%);
   }
 }
-@keyframes cartOut {
+@keyframes moveToRight {
   from {
     transform: translate(0px, 0px);
   }
@@ -177,7 +174,7 @@ select {
   text-align: center;
   width: 467px;
   height: 800px;
-  background: url("./assets/misc/devices-sprite.jpg") 0 -800px no-repeat;
+  background: url("../../src/assets/misc/devices-sprite.jpg") 0 -800px no-repeat;
   background-size: 467px;
   margin: 5px auto 0;
 }
@@ -185,7 +182,7 @@ select {
   text-align: center;
   width: 467px;
   height: 800px;
-  background: url("./assets/misc/devices-sprite.jpg") center top no-repeat;
+  background: url("../../src/assets/misc/devices-sprite.jpg") center top no-repeat;
   background-size: 467px;
   margin: 5px auto 0;
 }

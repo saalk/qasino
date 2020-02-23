@@ -19,17 +19,8 @@
       
   </head>
   <body>
-    <% if (!htmlWebpackPlugin.options.ctx.mode.electron) { %>
-      <noscript>
-      <strong>We're sorry but <%= htmlWebpackPlugin.options.title %> doesn't work properly without JavaScript enabled. Please enable it to continue.</strong>
-    </noscript>
-    <% } %>
-    
+  
     <!-- DO NOT touch the following <div> -->
       <div id="q-app"></div>
-
-      <!-- DO NOT touch the following -->
-      <%= htmlWebpackPlugin.options.bodyScripts %>
-      <!-- built files will be auto injected here --></body>
   </body>
 </html>
