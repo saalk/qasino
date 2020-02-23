@@ -36,18 +36,19 @@ module.exports = {
 
   // https://quasar.dev/quasar-cli/cli-documentation/linter
   'rules': {
+    "linebreak-style": 0,
     'brace-style': [2, 'stroustrup', { 'allowSingleLine': true }],
-  
+
     'vue/max-attributes-per-line': 0,
     'vue/valid-v-for': 0,
-  
+
     // allow async-await
     'generator-star-spacing': 'off',
-  
+
     // allow paren-less arrow functions
     'arrow-parens': 0,
     'one-var': 0,
-  
+
     'import/first': 0,
     // 'import/named': 2,
     // 'import/namespace': 2,
@@ -56,7 +57,7 @@ module.exports = {
     'import/extensions': 0,
     'import/no-unresolved': 0,
     'import/no-extraneous-dependencies': 0,
-  
+
     // The 0'off', 1'warn' or 2'error' tells eslint to turn off the rule
     'no-debugger': process.env.NODE_ENV === 'production' ? 2 : 0,
 
