@@ -1,0 +1,35 @@
+{
+  "title": "Quiz about Creditcards",
+  "questions": [
+    {
+      "text": "Is true true?",
+      "type": "tf",
+      "answer": "t"
+    },
+    {
+      "text": "Is false true?",
+      "type": "tf",
+      "answer": "f"
+    },
+    {
+      "text": "What is the best creditcard?",
+      "type": "mc",
+      "answers": [
+        "ING Studentcard",
+        "ING Creditcard",
+        "ING Platinumcard"
+      ],
+      "answer": "ING Platinumcard"
+    },
+    {
+      "text": "What is the repayment for revolving?",
+      "type": "mc",
+      "answers": [
+        "5 percent",
+        "10 percent",
+        "15 percent"
+      ],
+      "answer": "5 percent"
+    }
+  ]
+}
