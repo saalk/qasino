@@ -1,9 +1,9 @@
 {
-  "name": "quiz",
-  "version": "0.0.1",
+  "name": "lion-quiz",
+  "version": "1.0.0",
   "description": "A Quasar Framework app",
   "productName": "Cards quiz-app",
-  "cordovaId": "org.cordova.quasar.app",
+  "cordovaId": "cloud.casino.cards.quiz",
   "capacitorId": "",
   "author": "Saalk Lightyear <vandermeulen.k@gmail.com>",
   "private": true,

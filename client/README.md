@@ -9,8 +9,8 @@
 
 ## Demo (Android or IOS Style)
 
-![https://](src\assets\misc\icon-ios.png)
-![https://](src\assets\misc\icon-android.png)
+![https://](~assets\misc\icon-ios.png)
+![https://](~assets\misc\icon-android.png)
 
 ## Infos
 

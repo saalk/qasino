@@ -8,16 +8,6 @@
       <q-item-label>{{ title }}</q-item-label>
       <q-item-label caption>{{ caption }}</q-item-label>
     </q-item-section>
-
-    <div class="fixed-bottom text-center">
-      Powered by
-      <a href="https://vuejs.org/">
-        <img src="~assets/logo/vue-logo.png" alt>
-      </a>
-      <a href="http://quasar-framework.org/">
-        <img src="~assets/logo/quasar-logo.png" alt>
-      </a>
-    </div>
   </q-item>
 </template>
 
@@ -33,7 +23,6 @@ export default {
       type: String,
       required: true,
     },
-
     caption: {
       type: String,
       default: '',

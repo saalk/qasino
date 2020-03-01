@@ -48,7 +48,9 @@ module.exports = function (ctx) {
       directives: [],
 
       // Quasar plugins
-      plugins: [],
+      plugins: [
+        'Cookies',
+      ],
     },
 
     // https://quasar.dev/quasar-cli/cli-documentation/supporting-ie
@@ -89,7 +91,10 @@ module.exports = function (ctx) {
 
     // animations: 'all', // --- includes all animations
     // https://quasar.dev/options/animations
-    animations: [],
+    animations: [
+      'bounceInLeft',
+      'bounceOutRight',
+    ],
 
     // https://quasar.dev/quasar-cli/developing-ssr/configuring-ssr
     ssr: {
@@ -141,7 +146,7 @@ module.exports = function (ctx) {
     // Full list of options: https://quasar.dev/quasar-cli/developing-cordova-apps/configuring-cordova
     cordova: {
       // noIosLegacyBuildFlag: true, // uncomment only if you know what you are doing
-      id: 'org.cordova.quasar.app',
+      id: 'cloud.casino.cards.quiz',
     },
 
 
