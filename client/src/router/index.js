@@ -1,7 +1,8 @@
 import Vue from 'vue';
 import VueRouter from 'vue-router';
-
-import routes from './routes';
+import { CHECK_AUTH } from 'src/store/types/actions.type';
+import router from './routes';
+// import store from 'src/store';
 
 Vue.use(VueRouter);
 
@@ -14,10 +15,11 @@ Vue.use(VueRouter);
  * with the Router instance.
  */
 
-export default function (/* { store, ssrContext } */) {
+// export default function (/* { store, ssrContext } */) {
+export default function ({ store }) {
   const Router = new VueRouter({
     scrollBehavior: () => ({ x: 0, y: 0 }),
-    routes,
+    router,
 
     // Leave these as they are and change in quasar.conf.js instead!
     // quasar.conf.js -> build -> vueRouterMode
@@ -25,6 +27,9 @@ export default function (/* { store, ssrContext } */) {
     mode: process.env.VUE_ROUTER_MODE,
     base: process.env.VUE_ROUTER_BASE,
   });
+
+  // Ensure we checked auth before each page load.
+  Router.beforeEach((to, from, next) => Promise.all([store.dispatch(CHECK_AUTH)]).then(next));
 
   return Router;
 }

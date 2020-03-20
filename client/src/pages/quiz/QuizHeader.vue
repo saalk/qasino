@@ -1,126 +1,35 @@
 <template>
-  <q-page id="QuizHeader">
-    <header class="site__header island">
-      <div class="wrap">
-        <span id="animationSandbox" style="display: block;" class="">
-          <h1 class="site__title mega">{{ title }}</h1>
+<div>
+  <!-- <q-page id="quiz"> -->
+    <!-- <header class="site__header island"> -->
+      <!-- <div class="wrap"> -->
+        <span id="animationSandbox" style="display: block;" class>
+          <h1 class="site__title mega">{{ headerProps.title }}</h1>
         </span>
-        <span class="beta subhead"
-          >{{ goal }} - {{ questions.length }} questions</span
-        >
+        <p class="beta subhead">{{ headerProps.subject }}: "{{ headerProps.scope }}"
+        <br/>{{ headerProps.description }} </p>
+        <p> {{ headerProps.questions.length }} questions </p>
+        <div v-if="introStage">
+        <button class="butt js--triggerAnimation" @click="startQuiz">
+          Start quiz
+        </button>
       </div>
-    </header>
-  </q-page>
+      <div v-else>
+        <button class="butt js--triggerAnimation" @click="stopQuiz">
+          Stop quiz
+        </button>
+      </div>
+      <!-- </div> -->
+    <!-- </header> -->
+  <!-- </q-page> -->
+</div>
 </template>
 
 <script type="text/javascript">
-const quizDataFile = `{
-  "id": "1",
-  "title": "Creditcards quiz",
-  "goal": "Test your basic creditcards knowledge",
-  "subject": "Payments",
-  "topic": "basic",
-  "questions": [
-    {
-      "text": "Is SIA the creditcard processor for ING Creditcards?",
-      "category": "truefale",
-      "answer": "t"
-    },
-    {
-      "text": "What is the best featured ING creditcard?",
-      "category": "multichoise",
-      "choices": [
-        {"label": "ING Studentcard", "value": "student"},
-        {"label": "ING Creditcard", "value": "creditcard"},
-        {"label": "ING Platinumcard", "value": "platinum"}
-      ],
-      "answer": "platinum"
-    },
-    {
-      "text": "What is the monthly repayment for revolving creditcards?",
-      "category": "multichoise",
-      "choices": [
-        {"label": "5", "value": "5"},
-        {"label": "10", "value": "10"},
-        {"label": "15", "value": "15"}
-      ],
-      "answer": "5"
-    }
-  ]}
-`;
-
 export default {
-  data() {
-    return {
-      quizData: [],
-      // use https://api.myjson.com/bins/d7kcc
-      introStage: true,
-      questionStage: false,
-      resultsStage: false,
-
-      title: 'Quiz title',
-      goal: 'goal',
-      subject: 'subject',
-      topic: 'topic',
-      questions: [],
-
-      currentQuestion: 1,
-      choices: [],
-      picked: '',
-      correct: 0,
-      perc: null,
-    };
-  },
-  mounted() {
-    this.loadData();
-  },
-  methods: {
-    loadData() {
-      this.quizData = JSON.parse(quizDataFile);
-      this.title = this.quizData.title;
-      this.goal = this.quizData.goal;
-      this.subject = this.quizData.subject;
-      this.topic = this.quizData.topic;
-      this.questions = this.quizData.questions;
-      this.introStage = true;
-    },
-    startQuiz() {
-      this.introStage = false;
-      this.questionStage = true;
-      this.resultsStage = false;
-
-      this.currentQuestion = 1;
-      this.choices = [];
-      this.picked = '';
-      this.correct = 0;
-      this.perc = null;
-    },
-    previousQuestion() {
-      if (this.currentQuestion >= 0) {
-        this.currentQuestion -= 1;
-      }
-    },
-    processAnswer(p) {
-      // console.log('answer event ftw', e);
-      this.choices[this.currentQuestion - 1] = p;
-      if (this.currentQuestion === this.questions.length) {
-        this.handleResults();
-      } else {
-        this.currentQuestion += 1;
-      }
-    },
-    handleResults() {
-      this.questions.forEach((a, index) => {
-        if (this.choices[index] === a.answer) this.correct += 1;
-      });
-      this.perc = ((this.correct / this.questions.length) * 100).toFixed(0);
-      // eslint-disable-next-line no-console
-      // console.log(`${this.correct} ${this.perc}`);
-      this.questionStage = false;
-      this.resultsStage = true;
-      this.introStage = true;
-    },
-  },
+  props: [
+    'headerProps',
+  ],
 };
 </script>
 
@@ -207,8 +116,8 @@ textarea {
 \*-----------------------------------*/
 h1,
 .alpha {
-  margin-bottom: 1.5rem;
-  font-size: 2rem;
+  margin-bottom: 1rem;
+  font-size: 3rem;
   font-weight: 100;
   line-height: 1;
   letter-spacing: -0.05em;

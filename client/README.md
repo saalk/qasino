@@ -1,4 +1,4 @@
-# [cards quiz]
+# [lion quiz]
 
 > An Single-Page application (SPA) project based on Quasar framework and Vuejs
 
@@ -67,16 +67,18 @@ maintanance:
 quasar lint
 ```
 
+### Set the App log everywhere
+
+```bash
+// source image should be 1240x1240 and 2436x2436
+quasar ext add @quasar/icon-genie
+```
+
 ### build for production with minification
 
 ```bash
 quasar build
-
-npx cap init
-
-npx cap add android
-npx cap add ios
-npx cap add electron
+quasar build -m cordova -T android
 ```
 
 ### Customize the configuration

@@ -7,8 +7,9 @@ module.exports = function (ctx) {
     // --> boot files are part of "main.js"
     // https://quasar.dev/quasar-cli/cli-documentation/boot-files
     boot: [
-      'i18n',
-      'axios',
+      'api',
+      'filter',
+
     ],
 
     // https://quasar.dev/quasar-cli/quasar-conf-js#Property%3A-css
@@ -106,8 +107,8 @@ module.exports = function (ctx) {
       workboxPluginMode: 'GenerateSW', // 'GenerateSW' or 'InjectManifest'
       workboxOptions: {}, // only for GenerateSW
       manifest: {
-        name: 'Cards quiz-app',
-        short_name: 'Cards quiz-app',
+        name: 'Lion quiz',
+        short_name: 'Lion quiz',
         description: 'A Quasar Framework app',
         display: 'standalone',
         orientation: 'portrait',
@@ -147,8 +148,11 @@ module.exports = function (ctx) {
     cordova: {
       // noIosLegacyBuildFlag: true, // uncomment only if you know what you are doing
       id: 'cloud.casino.cards.quiz',
+      name: 'Lion Quiz',
+      version: '1.1.0',
+      androidVersionCode: '000010002',
+      description: 'Make your own quiz',
     },
-
 
     // Full list of options: https://quasar.dev/quasar-cli/developing-capacitor-apps/configuring-capacitor
     capacitor: {
@@ -175,7 +179,7 @@ module.exports = function (ctx) {
       builder: {
         // https://www.electron.build/configuration/configuration
 
-        appId: 'quiz',
+        appId: 'Lion Quiz',
       },
 
       // More info: https://quasar.dev/quasar-cli/developing-electron-apps/node-integration

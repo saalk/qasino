@@ -10,10 +10,72 @@
           icon="menu"
           aria-label="Menu"
         />
-        <q-toolbar-title>Quiz App</q-toolbar-title>
-        <div>
+        <q-toolbar-title>
+          <router-link class="navbar-brand" :to="{ name: 'home' }">
+            Quiz App
+          </router-link>
+        </q-toolbar-title>
+        <q-list v-if="!isAuthenticated">
+         <q-btn flat round dense icon="home">
+          <q-tooltip content-class="bg-accent">home</q-tooltip>
+          <router-link
+            active-class="active"
+            exact
+            :to="{ name: 'home' }"
+          >
+          </router-link>
+          </q-btn>
+          <q-btn flat round dense icon="person">
+            <q-tooltip content-class="bg-accent">login</q-tooltip>
+            <router-link
+              active-class="active"
+              exact
+              :to="{ name: 'login' }"
+            >
+            </router-link>
+          </q-btn>
+          <q-btn flat round dense icon="person_add">
+            <q-tooltip content-class="bg-accent">register</q-tooltip>
+            <router-link
+              active-class="active"
+              exact
+              :to="{ name: 'register' }"
+            >
+            </router-link>
+          </q-btn>
+        </q-list>
+        <q-list v-else>
+          <q-btn flat round dense icon="home">
+          <q-tooltip content-class="bg-accent">home</q-tooltip>
+            <router-link
+              active-class="active"
+              exact
+              :to="{ name: 'home' }"
+            >
+            </router-link>
+          </q-btn>
+          <q-btn flat round dense icon="add">
+            <q-tooltip content-class="bg-accent">quiz</q-tooltip>
+            <router-link
+              active-class="active"
+              exact
+              :to="{ name: 'quiz-edit' }"
+            >
+            </router-link>
+          </q-btn>
+          <q-btn flat round dense icon="settings">
+            <q-tooltip content-class="bg-accent">settings</q-tooltip>
+            <router-link
+              active-class="active"
+              exact
+              :to="{ name: 'home' }"
+            >
+            </router-link>
+          </q-btn>
+         </q-list>
+        <!-- <div>
           Device: {{ $q.platform.is.name }}/{{ $q.platform.is.platform }}
-        </div>
+        </div> -->
       </q-toolbar>
     </q-header>
 
@@ -28,17 +90,36 @@
       <q-img
         class="absolute-top"
         src="https://cdn.quasar.dev/img/material.png"
-        style="height: 150px"
+        style="height: 100px"
       >
         <div class="absolute-bottom bg-transparent">
-          <q-avatar color="primary" text-color="white">KM</q-avatar>
-          <div class="text-weight-bold">Klaas</div>
+        <q-btn flat round dense icon="person_pin">
+          <q-tooltip content-class="bg-accent">profile</q-tooltip>
+          <router-link
+            active-class="active"
+            exact
+            :to="{ name: 'profile',
+            params: { username: currentUser.username }
+            }"
+          >
+          </router-link>
+          </q-btn>
+          <div class="text-weight-bold"> {{ currentUser.username }}</div>
         </div>
       </q-img>
       <q-scroll-area
-        style="height: calc(100% - 150px); margin-top: 150px; border-right: 1px solid #ddd"
+        style="height: calc(100% - 150px); margin-top: 100px; border-right: 1px solid #ddd"
       >
         <q-list padding>
+          <q-item-label header class="text-grey-8"
+            >Essential</q-item-label
+          >
+            <q-item clickable tag="a" target="_blank" :href="link">
+              <q-item-section v-if="icon" avatar>
+                <q-icon :name="icon" />
+              </q-item-section>
+            </q-item>
+
           <q-item-label header class="text-grey-8"
             >Essential Links</q-item-label
           >
@@ -71,7 +152,8 @@
       </div>
     </q-drawer>
     <q-page-container>
-      <Quiz></Quiz>
+      <QuizFromHome></QuizFromHome>
+      <!-- <QuizLayout></QuizLayout> -->
       <!-- <router-view /> -->
     </q-page-container>
   </q-layout>
@@ -79,19 +161,20 @@
 
 <script>
 import EssentialLink from 'src/components/EssentialLink';
-import Quiz from 'src/pages/Quiz';
-// import Index from 'src/pages/Index';
-// import { Platform } from 'quasar';
+// import QuizLayout from 'src/layouts/QuizLayout';
+import QuizFromHome from 'src/pages/QuizFromHome';
+import { mapGetters } from 'vuex';
 
 export default {
   name: 'MainLayout',
-
   components: {
     EssentialLink,
-    Quiz,
-    // Platform,
+    // QuizLayout,
+    QuizFromHome,
   },
-
+  computed: {
+    ...mapGetters(['currentUser', 'isAuthenticated']),
+  },
   data() {
     return {
       leftDrawerOpen: false,
@@ -116,12 +199,6 @@ export default {
           link:
             'https://lion-web-components.netlify.com/?path=/story/intro-lion-web-components--page',
         },
-        {
-          title: 'Services',
-          caption: 'ING Customer Services',
-          icon: 'record_voice_over',
-          link: 'https://www.ing.nl/particulier/klantenservice/index.html',
-        },
       ],
     };
   },
@@ -137,5 +214,13 @@ export default {
 .fixed-bottom a img {
   width: 25px;
   height: 25px;
+}
+.navbar-brand{
+    /* no underlining */
+    text-decoration: none;
+    font-size: 1.5rem;
+    padding-top: 0;
+    margin-right: 2rem;
+    color: #fdfffd;
 }
 </style>
