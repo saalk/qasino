@@ -12,8 +12,8 @@ const state = {
   tags: [],
   quizzes: [],
   isLoading: true,
-  // quizzesCount: 0
-  quizzesCount: 2,
+  quizzesCount: 0,
+  // quizzesCount: 2,
 };
 
 const getters = {
@@ -58,8 +58,8 @@ const mutations = {
   [FETCH_START](state) {
     state.isLoading = true;
   },
-  // [FETCH_END](state, { quizzes, quizzesCount }) {
-  [FETCH_END](state, { quizzes, quizzesCount = 2 }) {
+  [FETCH_END](state, { quizzes, quizzesCount }) {
+  // [FETCH_END](state, { quizzes, quizzesCount = 2 }) {
     state.quizzes = quizzes;
     state.quizzesCount = quizzesCount;
     state.isLoading = false;
@@ -69,7 +69,7 @@ const mutations = {
   },
   [UPDATE_QUIZ_IN_LIST](state, data) {
     state.quizzes = state.quizzes.map((quiz) => {
-      if (quiz.id !== data.id) {
+      if (quiz.quizId !== data.quizId) {
         return quiz;
       }
       // We could just return data, but it seems dangerous to

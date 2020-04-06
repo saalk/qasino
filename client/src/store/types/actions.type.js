@@ -6,14 +6,14 @@ export const QUIZ_EDIT_REMOVE_TAG = 'removeTagFromQuiz';
 export const QUIZ_RESET_STATE = 'resetQuizState';
 
 export const CHECK_AUTH = 'checkAuth';
-export const TEST_CREATE = 'createTest';
-export const TEST_DESTROY = 'destroyTest';
+export const ANSWER_CREATE = 'createAnswer';
+export const ANSWER_DESTROY = 'destroyAnswer';
 export const FAVORITE_ADD = 'addFavorite';
 export const FAVORITE_REMOVE = 'removeFavorite';
 
 export const FETCH_QUIZ = 'fetchQuiz';
 export const FETCH_QUIZS = 'fetchQuizzes';
-export const FETCH_TESTS = 'fetchTests';
+export const FETCH_ANSWERS = 'fetchAnswers';
 export const FETCH_PROFILE = 'fetchProfile';
 export const FETCH_PROFILE_FOLLOW = 'fetchProfileFollow';
 export const FETCH_PROFILE_UNFOLLOW = 'fetchProfileUnfollow';

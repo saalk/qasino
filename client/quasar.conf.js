@@ -9,12 +9,12 @@ module.exports = function (ctx) {
     boot: [
       'api',
       'filter',
-
     ],
 
     // https://quasar.dev/quasar-cli/quasar-conf-js#Property%3A-css
     css: [
       'app.sass',
+      'animate.css',
     ],
 
     // https://github.com/quasarframework/quasar/tree/dev/extras
@@ -26,9 +26,9 @@ module.exports = function (ctx) {
       // 'themify',
       // 'line-awesome',
       // 'roboto-font-latin-ext', // this or either 'roboto-font', NEVER both!
-
       'roboto-font', // optional, you are not bound to it
       'material-icons', // optional, you are not bound to it
+      'line-awesome', // optional, you are not bound to it
     ],
 
     // https://quasar.dev/quasar-cli/quasar-conf-js#Property%3A-framework
@@ -50,7 +50,7 @@ module.exports = function (ctx) {
 
       // Quasar plugins
       plugins: [
-        'Cookies',
+        // 'Cookies',
       ],
     },
 
@@ -92,10 +92,7 @@ module.exports = function (ctx) {
 
     // animations: 'all', // --- includes all animations
     // https://quasar.dev/options/animations
-    animations: [
-      'bounceInLeft',
-      'bounceOutRight',
-    ],
+    animations: 'all',
 
     // https://quasar.dev/quasar-cli/developing-ssr/configuring-ssr
     ssr: {

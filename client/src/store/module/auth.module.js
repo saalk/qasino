@@ -7,7 +7,7 @@ import {
   REGISTER,
   CHECK_AUTH,
   UPDATE_USER,
-} from '../types/actions.type';
+} from 'src/store/types/actions.type';
 import { SET_AUTH, PURGE_AUTH, SET_ERROR } from '../types/mutations.type';
 
 const state = {
@@ -26,34 +26,54 @@ const getters = {
 };
 
 const actions = {
-  [LOGIN](context, credentials) {
-    return new Promise((resolve) => {
-      // ApiService.post("users/login", { user: credentials })
-      ApiUserService.post('login', { user: credentials })
-        .then(({ data }) => {
-          context.commit(SET_AUTH, data.user);
-          resolve(data);
-        })
-        .catch(({ response }) => {
-          context.commit(SET_ERROR, response.data.errors);
-        });
-    });
+  // [LOGIN](context, credentials) {
+  //   return new Promise((resolve) => {
+  //     // ApiService.post("users/login", { user: credentials })
+  //     ApiUserService.post('login', { user: credentials })
+  //       .then(({ data }) => {
+  //         context.commit(SET_AUTH, data.user);
+  //         resolve(data);
+  //       })
+  //       .catch(({ response }) => {
+  //         context.commit(SET_ERROR, response.data.errors);
+  //       });
+  //   });
+  // },
+  // replace by this since a post gives the request in the resonse
+  [LOGIN](context) {
+    ApiUserService.get('user')
+      .then(({ data }) => {
+        context.commit(SET_AUTH, data.user);
+      })
+      .catch(({ response }) => {
+        context.commit(SET_ERROR, response.data.errors);
+      });
   },
   [LOGOUT](context) {
     context.commit(PURGE_AUTH);
   },
-  [REGISTER](context, credentials) {
-    return new Promise((resolve, reject) => {
-      ApiUserService.post('users', { user: credentials })
-        .then(({ data }) => {
-          context.commit(SET_AUTH, data.user);
-          resolve(data);
-        })
-        .catch(({ response }) => {
-          context.commit(SET_ERROR, response.data.errors);
-          reject(response);
-        });
-    });
+  // [REGISTER](context, credentials) {
+  //   return new Promise((resolve, reject) => {
+  //     ApiUserService.post('users', { user: credentials })
+  //       .then(({ data }) => {
+  //         context.commit(SET_AUTH, data.user);
+  //         resolve(data);
+  //       })
+  //       .catch(({ response }) => {
+  //         context.commit(SET_ERROR, response.data.errors);
+  //         reject(response);
+  //       });
+  //   });
+  // },
+  // replace by this since a put gives the no reponse
+  [REGISTER](context) {
+    ApiUserService.get('user')
+      .then(({ data }) => {
+        context.commit(SET_AUTH, data.user);
+      })
+      .catch(({ response }) => {
+        context.commit(SET_ERROR, response.data.errors);
+      });
   },
   [CHECK_AUTH](context) {
     if (JwtService.getToken()) {
@@ -71,22 +91,30 @@ const actions = {
   },
   [UPDATE_USER](context, payload) {
     const {
-      email, username, password, image, bio,
+      email, username, password, image, bio, token,
     } = payload;
     const user = {
-      email,
       username,
       bio,
       image,
+      email,
+      token,
     };
     if (password) {
       user.password = password;
     }
 
-    return ApiUserService.put('user', user).then(({ data }) => {
-      context.commit(SET_AUTH, data.user);
-      return data;
-    });
+    // return ApiUserService.put('user', user).then(({ data }) => {
+    //   context.commit(SET_AUTH, data.user);
+    //   return data;
+    // });
+    ApiUserService.get('user')
+      .then(({ data }) => {
+        context.commit(SET_AUTH, data.user);
+      })
+      .catch(({ response }) => {
+        context.commit(SET_ERROR, response.data.errors);
+      });
   },
 };
 
@@ -98,6 +126,7 @@ const mutations = {
     state.isAuthenticated = true;
     state.user = user;
     state.errors = {};
+    // token in the api response so disable this for now ?
     JwtService.saveToken(state.user.token);
   },
   [PURGE_AUTH](state) {

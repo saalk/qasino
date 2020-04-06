@@ -1,11 +1,11 @@
 /* eslint-disable no-shadow */
-import { QuizzesService, TestsService } from 'src/common/api.service';
-import { FETCH_QUIZ, FETCH_TESTS } from '../types/actions.type';
-import { SET_QUIZ, SET_TESTS } from '../types/mutations.type';
+import { QuizzesService, AnswersService } from 'src/common/api.service';
+import { FETCH_QUIZ, FETCH_ANSWERS } from '../types/actions.type';
+import { SET_QUIZ, SET_ANSWERS } from '../types/mutations.type';
 
 export const state = {
   quiz: {},
-  tests: [],
+  answers: [],
 };
 
 export const actions = {
@@ -18,10 +18,10 @@ export const actions = {
         throw new Error(error);
       });
   },
-  [FETCH_TESTS](context, quizid) {
-    return TestsService.get(quizid)
+  [FETCH_ANSWERS](context, quizid) {
+    return AnswersService.get(quizid)
       .then(({ data }) => {
-        context.commit(SET_TESTS, data.tests);
+        context.commit(SET_ANSWERS, data.answers);
       })
       .catch((error) => {
         throw new Error(error);
@@ -34,8 +34,8 @@ export const mutations = {
   [SET_QUIZ](state, quiz) {
     state.quiz = quiz;
   },
-  [SET_TESTS](state, tests) {
-    state.tests = tests;
+  [SET_ANSWERS](state, answers) {
+    state.answers = answers;
   },
 };
 

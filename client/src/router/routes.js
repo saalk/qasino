@@ -1,75 +1,75 @@
 const routes = [
   {
     path: '/',
-    component: () => import('src/pages/QuizFromHome.vue'),
-    // component: () => import("src/layouts/Home"),
-
-    // children: [
-    //   { path: '', component: () => import('src/pages/Quiz.vue') },
-    // ],
+    component: () => import('src/layouts/MainLayout.vue'),
     children: [
       {
         path: '',
-        name: 'home',
-        component: () => import('src/components/real/view/HomeGlobal'),
+        name: 'home-all',
+        component: () => import('src/components/home/HomeAll'),
       },
       {
-        path: 'my-feed',
-        name: 'home-my-feed',
-        component: () => import('src/components/real/view/HomeMyFeed'),
+        path: 'follow',
+        name: 'home-follow',
+        component: () => import('src/components/home/HomeFollow'),
+      },
+      {
+        path: 'favorited',
+        name: 'home-favorite',
+        component: () => import('src/components/home/HomeFavorite'),
       },
       {
         path: 'tag/:tag',
         name: 'home-tag',
-        component: () => import('src/components/real/view/HomeTag'),
+        component: () => import('src/components/home/HomeTag'),
       },
     ],
   },
   {
     name: 'login',
     path: '/login',
-    component: () => import('src/components/real/view/Login'),
+    component: () => import('src/components/user/UserLogin'),
   },
   {
     name: 'register',
     path: '/register',
-    component: () => import('src/components/real/view/Register'),
+    component: () => import('src/components/user/UserRegister'),
   },
   {
     name: 'settings',
     path: '/settings',
-    component: () => import('src/components/real/view/Settings'),
+    component: () => import('src/components/user/UserSettings'),
   },
   // Handle child routes with a default, by giving the name to the
   // child.
   // SO: https://github.com/vuejs/vue-router/issues/777
   {
-    path: '/@:username',
-    component: () => import('src/components/real/view/Profile'),
+    path: '/:username',
+    component: () => import('src/components/profile/ProfileUser'),
     children: [
       {
         path: '',
-        name: 'profile',
-        component: () => import('src/components/real/view/ProfileQuizzes'),
+        name: 'profile-user',
+        component: () => import('src/components/profile/ProfileUser'),
       },
       {
-        name: 'profile-favorites',
-        path: 'favorites',
-        component: () => import('src/components/real/view/ProfileFavorited'),
+        path: 'author',
+        name: 'profile-author',
+        component: () => import('src/components/profile/ProfileAuthor'),
       },
     ],
   },
   {
-    name: 'quiz',
-    path: '/quizzes/:id',
-    component: () => import('src/components/real/view/Quiz'),
+    name: 'quiz-play',
+    path: '/quizzes/:quizId',
+    component: () => import('src/components/quiz/QuizPlay'),
     props: true,
   },
   {
     name: 'quiz-edit',
-    path: '/editor/:id?',
+    path: '/editor/:quizId?',
     props: true,
-    component: () => import('src/components/real/view/QuizEdit'),
+    component: () => import('src/components/quiz/QuizEdit'),
   },
 ];
 

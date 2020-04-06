@@ -1,0 +1,255 @@
+/*-----------------------------------*\
+  $CUSTOM
+\*-----------------------------------*/
+
+.quiz {
+  overflow-x: hidden;
+}
+.actions{
+    /* no underlining */
+    text-decoration: none;
+    margin-right: 5px
+}
+
+/*-----------------------------------*\
+  $RESET
+\*-----------------------------------*/
+
+*,
+:before,
+:after {
+  /* was 1 */
+  margin: 0;
+  padding: 2;
+  position: relative;
+  box-sizing: border-box;
+}
+
+input,
+select,
+button,
+textarea {
+  -webkit-appearance: none;
+  appearance: none;
+
+  font: inherit;
+  color: inherit;
+}
+
+/*-----------------------------------*\
+  $OBJECTS
+\*-----------------------------------*/
+
+.butt,
+.input {
+  padding: 0.75rem;
+  margin: 0.375rem;
+
+  background-color: transparent;
+  border-radius: 10px;
+}
+
+.butt:focus,
+.input:focus {
+  outline: none;
+}
+
+.butt {
+  border: 2px solid #f35626;
+  line-height: 1.375;
+  padding-left: 1.5rem;
+  padding-right: 1.5rem;
+
+  font-weight: 700;
+  /* button text */
+  color: #ff6600;
+
+  cursor: pointer;
+  /* animation: hue 60s infinite linear; */
+}
+
+.butt--primary {
+  background-color: #ff6600;
+  color: #fff;
+}
+
+.input {
+  border: 1px solid #c0c8c9;
+  border-radius: 4px;
+}
+
+.input--dropdown {
+  background-image: url("~assets/misc/ddown.svg"), none;
+  background-repeat: no-repeat;
+  background-size: 1.5rem 1rem;
+  background-position: right center;
+}
+
+/*-----------------------------------*\
+  $TYPOGRAPHY
+\*-----------------------------------*/
+h1,
+.alpha {
+  margin-bottom: 0rem;
+  font-size: 4rem;
+  font-weight: 100;
+  line-height: 1.2;
+  letter-spacing: -0.05em;
+}
+h2,
+.beta {
+  margin-bottom: 0.75rem;
+  font-weight: 350;
+  font-size: 1rem;
+  line-height: 1;
+}
+/* change from 650 to 850 */
+@media (min-width: 850px) {
+  .mega {
+    font-size: 6rem;
+    line-height: 1.2;
+  }
+}
+.subhead,
+.answer {
+  color: #7b8993;
+}
+.question {
+  color: #f35626;
+  font-size: 1rem;
+}
+.promo {
+  text-align: center;
+}
+p,
+hr,
+form {
+  margin-bottom: 1.5rem;
+}
+hr {
+  border: none;
+  margin-top: -1px;
+  height: 1px;
+  background-color: #ff6600;
+  background-image: linear-gradient(
+    to right,
+    #ffffff 0%,
+    #c0c8c9 50%,
+    #ffffff 100%
+  );
+}
+a {
+  color: inherit;
+  text-decoration: underline;
+  animation: hue 60s infinite linear;
+}
+a:hover {
+  color: #f35626;
+}
+/*-----------------------------------*\
+  $LAYOUT
+\*-----------------------------------*/
+/* change from 650 to 850 + 48 to 70*/
+.wrap {
+  /* max-width: 70rem; */
+  margin: 0 auto;
+}
+.island {
+  padding: 1.5rem;
+}
+.isle {
+  padding: 0.75rem;
+}
+.spit {
+  padding: 0.375rem;
+}
+/*-----------------------------------*\
+  $BASE
+\*-----------------------------------*/
+.quiz {
+  font: 100%/0.5 "Roboto", Verdana, sans-serif;
+  color: #3d464d;
+  background-color: #fff;
+  -webkit-font-smoothing: antialiased;
+  width: 100%;
+  overflow: hidden-x;
+  /* Centering in The Unknown */
+  /* text-align: center; */
+}
+/* change from 650 to 850 + 48 to 70*/
+@media (min-width: 850px) {
+  .quiz {
+    height: 100%;
+    display: inline-block;
+    vertical-align: top;
+    max-width: 70rem;
+  }
+  .quiz:before {
+    content: "";
+    display: inline-block;
+    height: 100%;
+    vertical-align: middle;
+    margin-right: -0.25em;
+  }
+/* change from 650 to 850 + 38 to 70*/
+  body {
+    display: inline-block;
+    vertical-align: middle;
+    /* max-width: 70rem; */
+  }
+}
+/*-----------------------------------*\
+  $HEADER
+\*-----------------------------------*/
+.site__header {
+  animation: bounceInUp 1s;
+}
+.site__title {
+  color: #ff6600;
+  background-image: linear-gradient(92deg, #ff6600 0%, #9c27b0 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  /* animation: hue 60s infinite linear; */
+}
+.site__content {
+  animation: bounceInUp 1s;
+  animation-delay: 0.1s;
+}
+.site__content form {
+  animation: bounceInUp 1s;
+  animation-delay: 0.1s;
+}
+/*-----------------------------------*\
+  $ANIMATIONS
+\*-----------------------------------*/
+@keyframes hue {
+  from {
+    filter: hue-rotate(0deg);
+  }
+  to {
+    filter: hue-rotate(-360deg);
+  }
+}
+/*-----------------------------------*\
+  $REDUCED MOTION BANNER
+\*-----------------------------------*/
+.motionless__banner {
+  display: none;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  padding: 1rem;
+  background: #333;
+  color: #fff;
+  border-top: 2px solid #ff5722;
+}
+.motionless__paragraph {
+  margin-bottom: 0;
+}
+@media (print), (prefers-reduced-motion: reduce) {
+  .motionless__banner {
+    display: block;
+  }
+}

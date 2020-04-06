@@ -4,14 +4,14 @@
 import Vue from 'vue';
 import {
   QuizzesService,
-  TestsService,
+  AnswersService,
   FavoriteService,
 } from 'src/common/api.service';
 import {
   FETCH_QUIZ,
-  FETCH_TESTS,
-  TEST_CREATE,
-  TEST_DESTROY,
+  FETCH_ANSWERS,
+  ANSWER_CREATE,
+  ANSWER_DESTROY,
   FAVORITE_ADD,
   FAVORITE_REMOVE,
   QUIZ_PUBLISH,
@@ -24,7 +24,7 @@ import {
 import {
   RESET_STATE,
   SET_QUIZ,
-  SET_TESTS,
+  SET_ANSWERS,
   TAG_ADD,
   TAG_REMOVE,
   UPDATE_QUIZ_IN_LIST,
@@ -32,13 +32,19 @@ import {
 
 const initialState = {
   quiz: {
-    author: {},
     title: '',
     description: '',
-    body: '',
+    subject: '',
+    audiance: '',
     tagList: [],
+    author: {},
+    settings: '',
+    questions: [],
   },
-  tests: [],
+  answers: {
+    quizId: '',
+    questions: [],
+  },
 };
 
 export const state = { ...initialState };
@@ -53,18 +59,18 @@ export const actions = {
     context.commit(SET_QUIZ, data.quiz);
     return data;
   },
-  async [FETCH_TESTS](context, quizid) {
-    const { data } = await TestsService.get(quizid);
-    context.commit(SET_TESTS, data.tests);
-    return data.tests;
+  async [FETCH_ANSWERS](context, quizid) {
+    const { data } = await AnswersService.get(quizid);
+    context.commit(SET_ANSWERS, data.answers);
+    return data.answers;
   },
-  async [TEST_CREATE](context, payload) {
-    await TestsService.post(payload.id, payload.test);
-    context.dispatch(FETCH_TESTS, payload.id);
+  async [ANSWER_CREATE](context, payload) {
+    await AnswersService.post(payload.id, payload.answer);
+    context.dispatch(FETCH_ANSWERS, payload.id);
   },
-  async [TEST_DESTROY](context, payload) {
-    await TestsService.destroy(payload.id, payload.testId);
-    context.dispatch(FETCH_TESTS, payload.id);
+  async [ANSWER_DESTROY](context, payload) {
+    await AnswersService.destroy(payload.id, payload.answerId);
+    context.dispatch(FETCH_ANSWERS, payload.id);
   },
   async [FAVORITE_ADD](context, id) {
     const { data } = await FavoriteService.add(id);
@@ -102,8 +108,8 @@ export const mutations = {
   [SET_QUIZ](state, quiz) {
     state.quiz = quiz;
   },
-  [SET_TESTS](state, tests) {
-    state.tests = tests;
+  [SET_ANSWERS](state, answers) {
+    state.answers = answers;
   },
   [TAG_ADD](state, tag) {
     state.quiz.tagList = state.quiz.tagList.concat([tag]);
@@ -122,8 +128,8 @@ const getters = {
   quiz(state) {
     return state.quiz;
   },
-  tests(state) {
-    return state.tests;
+  answers(state) {
+    return state.answers;
   },
 };
 
