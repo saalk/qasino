@@ -1,21 +1,27 @@
 <template>
   <div>
     <q-item-label header class="text-grey-8">
-    Filters
+    Preset filters
     </q-item-label>
     <div class="tagz">
       <q-btn
-        :color="colorMine" label="Mine"
+        :color=colorMine label="Mine"
         unelevated rounded no-caps
-        @click="toggleMine()">
+        @click="toggleMine">
         <q-tooltip content-class="bg-accent">Your quizzes</q-tooltip>
+      </q-btn>
+      <q-btn
+        color="grey" label="New"
+        unelevated rounded no-caps
+        @click="toggleNew">
+        <q-tooltip content-class="bg-accent">Query builder</q-tooltip>
       </q-btn>
     </div>
     <div class="tagz">
       <q-btn-toggle v-model=selectedQuizzes
-        @input="toggleList()"
+        @input="toggleList"
         no-caps rounded
-        unelevated toggle-color="purple"
+        unelevated :toggle-color=colorQuizzes
         color="grey" text-color="white"
         :options="[
         {label: 'All', value: 'all', slot: 'one' },
@@ -37,7 +43,7 @@
     </div>
     <div class="tagz">
       <q-btn
-         color="grey" no-caps         unelevated rounded
+         :color=toggleTagsColor(tag) no-caps unelevated rounded
         :label="tag | capitalize"
         v-for="(tag, index) in tags"
         :key="index"
@@ -71,10 +77,13 @@ export default {
   name: 'DrawerFilters',
   data() {
     return {
-      selectedMine: 'none',
+      selectedMine: '',
       selectedQuizzes: 'all',
-      selectedTags: 'none',
+      selectedTags: '',
+
       colorMine: 'grey',
+      colorQuizzes: 'purple',
+      // colorTags: 'grey',
     };
   },
   mounted() {
@@ -87,52 +96,139 @@ export default {
     // },
   },
   methods: {
+    toggleNew() {
+    // NEW
+      this.$router.push({
+        name: 'home-new',
+        // params: { username: this.currentUser.username },
+      });
+    },
     toggleMine() {
+    // MINE
+      this.colorMine = 'purple';
+      this.colorQuizzes = 'grey';
+      // this.colorTags = 'grey';
+
       if (!this.isAuthenticated) {
         if (this.$route.name !== 'login') {
           this.$router.push({ name: 'login' });
         }
         return;
       }
-      // MINE
-      this.colorMine = 'purple';
+
       this.selectedMine = 'mine';
       this.selectedQuizzes = 'none';
       this.selectedTags = 'none';
-
+      if (this.$route.matched.some(({ name }) => name === 'profile-user')) {
+        // already on profile-user
+        this.colorMine = 'purple';
+        this.colorQuizzes = 'grey';
+        return;
+      }
       this.$router.push({
         name: 'profile-user',
         params: { username: this.currentUser.username },
       });
     },
     toggleList() {
+      // ALL | FAV | FEED
+      this.colorMine = 'grey';
+      this.colorQuizzes = 'purple';
+      // this.colorTags = 'grey';
+
       if (!this.isAuthenticated) {
         if (this.$route.name !== 'login') {
           this.$router.push({ name: 'login' });
         }
         return;
       }
-      // ALL | FAV | FEED
+
       this.selectedMine = 'none';
       this.selectedTags = 'none';
-      this.colorMine = 'grey';
       if (this.selectedQuizzes === 'all') {
+        if (this.$route.matched.some(({ name }) => name === 'home-all')) {
+          // already on home-all
+          return;
+        }
         this.$router.push({ name: 'home-all' });
       } else if (this.selectedQuizzes === 'fav') {
         this.selectedQuizzes = 'fav';
+        if (this.$route.matched.some(({ name }) => name === 'home-favorite')) {
+          // already on home-favorite
+          return;
+        }
         this.$router.push({ name: 'home-favorite' });
       } else if (this.selectedQuizzes === 'follow') {
+        if (this.$route.matched.some(({ name }) => name === 'home-follow')) {
+          // already on home-follow
+          return;
+        }
         this.selectedQuizzes = 'follow';
         this.$router.push({ name: 'home-follow' });
       }
     },
     toggleTags(value) {
       // TAG
-      this.selectedMine = 'none';
       this.colorMine = 'grey';
+      this.colorQuizzes = 'grey';
+      // this.colorTags = 'purple';
+
+      this.selectedMine = 'none';
       this.selectedQuizzes = 'none';
+      if (this.$route.matched.some(({ name }) => name === 'home-tag')) {
+        if (this.selectedTags === value) {
+        // already on home-tag
+          return;
+        }
+      }
       this.selectedTags = value;
       this.$router.push({ name: 'home-tag', params: { tag: this.selectedTags } });
+    },
+    // toggleQuizzesColor() {
+    //   // ALL | FAV | FEED
+    //  if (this.selectedQuizzes === 'all') {
+    //     if (this.$route.matched.some(({ name }) => name === 'home-all')) {
+    //       // already on home-all
+    //       return 'purple';
+    //     }
+    //     this.$router.push({ name: 'home-all' });
+    //   } else if (this.selectedQuizzes === 'fav') {
+    //     this.selectedQuizzes = 'fav';
+    //     if (this.$route.matched.some(({ name }) => name === 'home-favorite')) {
+    //       // already on home-favorite
+    //       return;
+    //     }
+    //     this.$router.push({ name: 'home-favorite' });
+    //   } else if (this.selectedQuizzes === 'follow') {
+    //     if (this.$route.matched.some(({ name }) => name === 'home-follow')) {
+    //       // already on home-follow
+    //       return;
+    //     }
+    //     this.selectedQuizzes = 'follow';
+    //     this.$router.push({ name: 'home-follow' });
+    //   }
+    //   return 'grey';
+    // },
+    // toggleMineColor() {
+    //   // MINE
+    //   if (this.$route.matched.some(({ name }) => name === 'profile-user')) {
+    //     // on profile-user
+    //     return 'purple';
+    //   }
+    //   return 'grey';
+    // },
+    toggleTagsColor(value) {
+      // TAG
+      if (this.$route.matched.some(({ name }) => name === 'home-tag')) {
+        // already on home-tag
+        if (this.selectedTags === value) {
+          return 'purple';
+        }
+      }
+      if (this.selectedTags === value) {
+        return 'purple';
+      }
+      return 'grey';
     },
   },
 };

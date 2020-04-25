@@ -23,6 +23,11 @@ const routes = [
         name: 'home-tag',
         component: () => import('src/components/home/HomeTag'),
       },
+      {
+        path: 'search',
+        name: 'home-new',
+        component: () => import('src/components/search/SearchQuizList'),
+      },
     ],
   },
   {

@@ -1,6 +1,9 @@
 <template>
-  <q-img  class="absolute-top"
+  <!-- <q-img  class="absolute-top"
           src="https://cdn.quasar.dev/img/material.png"
+          style="height: 140px">   -->
+  <q-img  class="absolute-top"
+          :src=currentUser.image
           style="height: 140px">
     <div v-if="(currentUser !== null) && (isAuthenticated)"
       class="absolute-bottom bg-transparent">

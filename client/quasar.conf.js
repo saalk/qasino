@@ -15,6 +15,9 @@ module.exports = function (ctx) {
     css: [
       'app.sass',
       'animate.css',
+      'vue-select.css',
+      'vue-range-slider.css',
+      'flatpickr.css',
     ],
 
     // https://github.com/quasarframework/quasar/tree/dev/extras
