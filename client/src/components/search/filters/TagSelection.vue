@@ -1,12 +1,24 @@
+<template>
+  <q-select
+    dense filled style="width: 230px"
+    :value="value"
+    @input="$emit('input', $event)"
+    :reduce="data => data"
+    :options="options"
+    label="Tag"
+    class="select-component"
+  />
+</template>
+
 <script>
 import { FETCH_TAGS } from 'src/store/types/actions.type';
 import { mapGetters } from 'vuex';
-import VueSelect from 'vue-select';
+// import VueSelect from 'vue-select';
 // import 'vue-select/dist/vue-select.css';
 
 export default {
   components: {
-    VueSelect,
+    // VueSelect,
   },
   props: ['value'],
   mounted() {
@@ -21,20 +33,9 @@ export default {
 };
 </script>
 
-<template>
-  <vue-select
-    :value="value"
-    @input="$emit('input', $event)"
-    :reduce="data => data"
-    :options="options"
-    label=""
-    class="select-component"
-  />
-</template>
-
 <style lang="scss" scoped>
-.select-component {
-  background-color: white;
-  margin-top: -5px;
-}
+// .select-component {
+//   background-color: white;
+//   margin-top: -5px;
+// }
 </style>

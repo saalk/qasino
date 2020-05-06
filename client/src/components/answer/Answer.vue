@@ -1,21 +1,21 @@
 <template>
   <div class="card">
     <div class="card-block">
-      <p class="card-text">{{ answer.body }}</p>
+      <p class="card-text">{{ answer }}</p>
     </div>
     <div class="card-footer">
-      <a href="" class="answer-author">
+      <!-- <a href="" class="answer-author">
         <img :src="answer.author.image" class="answer-author-img" />
-      </a>
-      <router-link
+      </a> -->
+      <!-- <router-link
         class="answer-author"
         :to="{ name: 'profile', params: { username: answer.author.username } }"
       >
         {{ answer.author.username }}
-      </router-link>
-      <span class="date-posted">{{ answer.createdAt | date }}</span>
+      </router-link> -->
+      <span class="date-posted">{{ result.createdAt | date }}</span>
       <span v-if="isCurrentUser" class="mod-options">
-        <i class="ion-trash-a" @click="destroy(answerId, answer.answerId)"></i>
+        <i class="ion-trash-a" @click="destroy(resultId, questionId)"></i>
       </span>
     </div>
   </div>
@@ -23,7 +23,7 @@
 
 <script>
 import { mapGetters } from 'vuex';
-import { ANSWER_DESTROY } from 'src/store/types/actions.type';
+import { RESULT_DESTROY } from 'src/store/types/actions.type';
 
 export default {
   name: 'Answer',
@@ -41,8 +41,8 @@ export default {
     ...mapGetters(['currentUser']),
   },
   methods: {
-    destroy(id, answerId) {
-      this.$store.dispatch(ANSWER_DESTROY, { id, answerId });
+    destroy(resultid) {
+      this.$store.dispatch(RESULT_DESTROY, { resultid });
     },
   },
 };

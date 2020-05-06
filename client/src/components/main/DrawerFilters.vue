@@ -10,12 +10,6 @@
         @click="toggleMine">
         <q-tooltip content-class="bg-accent">Your quizzes</q-tooltip>
       </q-btn>
-      <q-btn
-        color="grey" label="New"
-        unelevated rounded no-caps
-        @click="toggleNew">
-        <q-tooltip content-class="bg-accent">Query builder</q-tooltip>
-      </q-btn>
     </div>
     <div class="tagz">
       <q-btn-toggle v-model=selectedQuizzes
@@ -33,7 +27,7 @@
         </template>
 
         <template v-slot:two>
-          <q-tooltip content-class="bg-accent">Your favorites</q-tooltip>
+          <q-tooltip content-class="bg-accent">Your bookmarks</q-tooltip>
         </template>
 
         <template v-slot:three>
@@ -91,18 +85,8 @@ export default {
   },
   computed: {
     ...mapGetters(['isAuthenticated', 'currentUser', 'tags']),
-    // tag() {
-    //   return this.$route.params.tag;
-    // },
   },
   methods: {
-    toggleNew() {
-    // NEW
-      this.$router.push({
-        name: 'home-new',
-        // params: { username: this.currentUser.username },
-      });
-    },
     toggleMine() {
     // MINE
       this.colorMine = 'purple';
@@ -152,11 +136,11 @@ export default {
         }
         this.$router.push({ name: 'home-all' });
       } else if (this.selectedQuizzes === 'fav') {
-        this.selectedQuizzes = 'fav';
         if (this.$route.matched.some(({ name }) => name === 'home-favorite')) {
           // already on home-favorite
           return;
         }
+        this.selectedQuizzes = 'fav';
         this.$router.push({ name: 'home-favorite' });
       } else if (this.selectedQuizzes === 'follow') {
         if (this.$route.matched.some(({ name }) => name === 'home-follow')) {
@@ -184,39 +168,6 @@ export default {
       this.selectedTags = value;
       this.$router.push({ name: 'home-tag', params: { tag: this.selectedTags } });
     },
-    // toggleQuizzesColor() {
-    //   // ALL | FAV | FEED
-    //  if (this.selectedQuizzes === 'all') {
-    //     if (this.$route.matched.some(({ name }) => name === 'home-all')) {
-    //       // already on home-all
-    //       return 'purple';
-    //     }
-    //     this.$router.push({ name: 'home-all' });
-    //   } else if (this.selectedQuizzes === 'fav') {
-    //     this.selectedQuizzes = 'fav';
-    //     if (this.$route.matched.some(({ name }) => name === 'home-favorite')) {
-    //       // already on home-favorite
-    //       return;
-    //     }
-    //     this.$router.push({ name: 'home-favorite' });
-    //   } else if (this.selectedQuizzes === 'follow') {
-    //     if (this.$route.matched.some(({ name }) => name === 'home-follow')) {
-    //       // already on home-follow
-    //       return;
-    //     }
-    //     this.selectedQuizzes = 'follow';
-    //     this.$router.push({ name: 'home-follow' });
-    //   }
-    //   return 'grey';
-    // },
-    // toggleMineColor() {
-    //   // MINE
-    //   if (this.$route.matched.some(({ name }) => name === 'profile-user')) {
-    //     // on profile-user
-    //     return 'purple';
-    //   }
-    //   return 'grey';
-    // },
     toggleTagsColor(value) {
       // TAG
       if (this.$route.matched.some(({ name }) => name === 'home-tag')) {

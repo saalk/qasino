@@ -10,7 +10,7 @@
                 <input
                   type="text"
                   class="form-control form-control-lg"
-                  v-model="quiz.title"
+                  v-model="quiz.meta.title"
                   placeholder="Quiz Title"
                 />
               </fieldset>
@@ -18,7 +18,7 @@
                 <input
                   type="text"
                   class="form-control"
-                  v-model="quiz.description"
+                  v-model="quiz.meta.description"
                   placeholder="What's this quiz about?"
                 />
               </fieldset>
@@ -42,7 +42,7 @@
                 <div class="tag-list">
                   <span
                     class="tag-default tag-pill"
-                    v-for="(tag, index) of quiz.tagList"
+                    v-for="(tag, index) of quiz.meta.tagList"
                     :key="tag + index"
                   >
                     <i class="ion-close-round" @click="removeTag(tag)"> </i>

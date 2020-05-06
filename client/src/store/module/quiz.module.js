@@ -4,14 +4,14 @@
 import Vue from 'vue';
 import {
   QuizzesService,
-  AnswersService,
+  ResultsService,
   FavoriteService,
 } from 'src/common/api.service';
 import {
   FETCH_QUIZ,
-  FETCH_ANSWERS,
+  FETCH_RESULT,
   ANSWER_CREATE,
-  ANSWER_DESTROY,
+  RESULT_DESTROY,
   FAVORITE_ADD,
   FAVORITE_REMOVE,
   QUIZ_PUBLISH,
@@ -32,18 +32,40 @@ import {
 
 const initialState = {
   quiz: {
-    title: '',
-    description: '',
-    subject: '',
-    audiance: '',
-    tagList: [],
+    meta: {
+      title: '',
+      description: '',
+      subject: '',
+      audiance: '',
+      createdAt: `${(new Date()).getFullYear()}-${(new Date()).getMonth() + 1}-
+      ${(new Date()).getDay()}T${(new Date()).getHours()}:${(new Date()).getMinutes()}:
+      ${(new Date()).getSeconds()}`,
+      updatedAt: '',
+      tagList: [],
+    },
     author: {},
-    settings: '',
+    settings: {
+      final: 't',
+      maxSecondsPerQuestion: '5',
+      numberOfHints: '2',
+      allowExit: 't',
+      allowGoBack: 't',
+      randomizeQuestions: 'f',
+      randomizeAnswers: 'f',
+      minimumPercentToPass: '100',
+    },
     questions: [],
   },
-  answers: {
-    quizId: '',
-    questions: [],
+  result: {
+    resultId: 1,
+    quizId: 123,
+    createdAt: `${(new Date()).getFullYear()}-${(new Date()).getMonth() + 1}-
+    ${(new Date()).getDay()}T${(new Date()).getHours()}:${(new Date()).getMinutes()}:
+    ${(new Date()).getSeconds()}`,
+    updatedAt: '',
+    hintsTaken: 0,
+    answers: [],
+    user: '',
   },
 };
 
@@ -59,18 +81,18 @@ export const actions = {
     context.commit(SET_QUIZ, data.quiz);
     return data;
   },
-  async [FETCH_ANSWERS](context, quizid) {
-    const { data } = await AnswersService.get(quizid);
+  async [FETCH_RESULT](context, quizid, userid) {
+    const { data } = await ResultsService.get(quizid, userid);
     context.commit(SET_ANSWERS, data.answers);
     return data.answers;
   },
   async [ANSWER_CREATE](context, payload) {
-    await AnswersService.post(payload.id, payload.answer);
-    context.dispatch(FETCH_ANSWERS, payload.id);
+    await ResultsService.post(payload.id, payload.answer);
+    context.dispatch(SET_ANSWERS, payload.id);
   },
-  async [ANSWER_DESTROY](context, payload) {
-    await AnswersService.destroy(payload.id, payload.answerId);
-    context.dispatch(FETCH_ANSWERS, payload.id);
+  async [RESULT_DESTROY](context, payload) {
+    await ResultsService.destroy(payload.id, payload.answerId);
+    context.dispatch(RESULT_DESTROY, payload.id);
   },
   async [FAVORITE_ADD](context, id) {
     const { data } = await FavoriteService.add(id);

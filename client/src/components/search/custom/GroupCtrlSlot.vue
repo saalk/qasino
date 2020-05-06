@@ -24,6 +24,7 @@
           @click.stop="selectedRule = ''"
           class="cursor-pointer"/> -->
           <q-btn
+            v-if=false
             flat round
             @click="groupCtrl.newGroup"
             icon="las la-plus-square">

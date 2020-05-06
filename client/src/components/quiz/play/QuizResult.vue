@@ -1,24 +1,24 @@
 <template>
-  <div v-if="resultsStage">
-    Your result is {{ correct }}/{{ resultProps.questions.length }} correct choices
-    [ {{ perc }}% ]
+  <div v-if="this.quizProgress === 'results'">
+    Your have made {{ this.result.computed.correctCount }} /
+    {{ this.quiz.questions.length }} correct choices
+    [ {{ this.result.computed.currentPercentToPass }}% ]
+    <br/>
+    The minimum pass to pass is {{ this.quiz.settings.minimumPercentToPass }}%
+    <br/>
+    <br/>
+    <p class="beta subhead">Result: {{ this.result.computed.passed === true ? 'Passed' : 'Failed'}}
+      </P>
   </div>
 </template>
 
 <script type="text/javascript">
 export default {
   props: [
-    'resultProps',
+    'quiz',
+    'quizProgress',
+    'result',
   ],
-  data() {
-    return {
-      currentQuestion: 1,
-      choices: [],
-      picked: '',
-      correct: 0,
-      perc: null,
-    };
-  },
 };
 </script>
 

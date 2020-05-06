@@ -11,12 +11,12 @@ const routes = [
       {
         path: 'follow',
         name: 'home-follow',
-        component: () => import('src/components/home/HomeFollow'),
+        component: () => import('src/components/home/HomeFollowing'),
       },
       {
         path: 'favorited',
         name: 'home-favorite',
-        component: () => import('src/components/home/HomeFavorite'),
+        component: () => import('src/components/home/HomeFavorited'),
       },
       {
         path: 'tag/:tag',
@@ -66,7 +66,7 @@ const routes = [
   },
   {
     name: 'quiz-play',
-    path: '/quizzes/:quizId',
+    path: '/play/:quizId',
     component: () => import('src/components/quiz/QuizPlay'),
     props: true,
   },

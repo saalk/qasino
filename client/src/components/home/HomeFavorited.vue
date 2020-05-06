@@ -1,5 +1,5 @@
 <template>
-  <div class="home-follow">
+  <div class="home-favorite">
     <!-- List of quizzes filtered either
     - ALL | FAV | FOLLOWED
     - home-all: list All with no filter             (quiz all)
@@ -13,17 +13,17 @@
     - profile-user: list for you                    (quiz.author is you)
     - profile-quizzes: list for an author           (quiz.author is specific author)
     -->
-    <QuizList type="favorited" />
+    <SearchQuizList :bookmarks="true" />
   </div>
 </template>
 
 <script>
-import QuizList from 'src/components/quiz/QuizList';
+import SearchQuizList from 'src/components/search/SearchQuizList';
 
 export default {
   name: 'home-favorite',
   components: {
-    QuizList,
+    SearchQuizList,
   },
 };
 </script>

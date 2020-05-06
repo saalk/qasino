@@ -13,17 +13,17 @@
     - profile-user: list for you                    (quiz.author is you)
     - profile-quizzes: list for an author           (quiz.author is specific author)
     -->
-    <QuizList :tag="tag"></QuizList>
+    <SearchQuizList :tag="tag"></SearchQuizList>
   </div>
 </template>
 
 <script>
-import QuizList from 'src/components/quiz/QuizList';
+import SearchQuizList from 'src/components/search/SearchQuizList';
 
 export default {
   name: 'home-tag',
   components: {
-    QuizList,
+    SearchQuizList,
   },
   computed: {
     tag() {

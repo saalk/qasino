@@ -1,99 +1,114 @@
 <template>
   <div>
-    <strong class="beta subhead">Question {{ currentQuestion }}:</strong>
-    <p class="question">{{ questionsProps[currentQuestion - 1].text }}</p>
+    <strong class="beta subhead">Question {{ this.result.computed.currentQuestion }}:</strong>
+    <p class="question">{{ this.quiz.questions[this.result.computed.currentIndex].text }}</p>
     <!-- true-false -->
-    <div v-if="questionsProps[currentQuestion - 1].category === 'true-false'">
-      <br />
+    <div v-if="this.quiz.questions[this.question].category === 'trueFalse'">
       <q-radio v-model="picked" val="t" label="True" />
       <q-radio v-model="picked" val="f" label="False" />
       <br />
+      <br />
     </div>
     <!-- images -->
-    <div v-if="questionsProps[currentQuestion - 1].category === 'images'">
+    <div v-if="this.quiz.questions[this.result.computed.currentIndex].category === 'images'">
       <br />
       <q-option-group
-        :type="radio"
-        :options="questionsProps[currentQuestion - 1].images"
+        :options="this.quiz.questions[this.result.computed.currentIndex].images"
         v-model="picked"
       />
       <br />
     </div>
     <!-- multi-choice -->
-    <div v-if="questionsProps[currentQuestion - 1].category === 'multi-choice'">
+    <div v-if="this.quiz.questions[this.result.computed.currentIndex].category === 'multiChoice'">
       <br />
       <q-option-group
-        :type="radio"
-        :options="questionsProps[currentQuestion - 1].choices"
+        :options="this.quiz.questions[this.result.computed.currentIndex].choices"
         v-model="picked"
       />
       <br />
     </div>
     <!-- text-essay -->
-    <div v-if="questionsProps[currentQuestion - 1].category === 'text-essay'">
+    <div v-if="this.quiz.questions[this.result.computed.currentIndex].category === 'textEssay'">
       <br />
       <q-input v-bind='picked'
       />
       <br />
     </div>
     <!-- fill-the-blanks -->
-    <div v-if="questionsProps[currentQuestion - 1].category === 'fill-the-blanks'">
+    <div v-if="this.quiz.questions[this.result.computed.currentIndex].category === 'fillTheBlanks'">
       <br />
       <q-input v-bind='picked'
       />
       <br />
     </div>
     <!-- numerical -->
-    <div v-if="questionsProps[currentQuestion - 1].category === 'numerical'">
+    <div v-if="this.quiz.questions[this.result.computed.currentIndex].category === 'numerical'">
       <br />
       <q-input v-model='picked'
       />
       <br />
     </div>
     <!-- multi-answer -->
-    <div v-if="questionsProps[currentQuestion - 1].category === 'multi-answer'">
+    <div v-if="this.quiz.questions[this.result.computed.currentIndex].category === 'multiAnswer'">
       <br />
       <q-option-group
-        :type="checkbox"
-        :options="questionsProps[currentQuestion - 1].choices"
+        type="checkbox"
+        :options="this.quiz.questions[this.result.computed.currentIndex].choices"
         v-model="picked"
       />
       <br />
     </div>
-    <button
-      type="button"
-      v-if="currentQuestion !== 1"
-      class="butt js--triggerAnimation"
-      @click="previousQuestion()"
-    > Previous </button>
-    <button
-      type="submit"
-      v-if="currentQuestion != questionsProps.length"
-      class="butt js--triggerAnimation"
-      @click="processAnswer(picked)"
-    > Next </button>
-    <button
-      type="submit"
-      v-if="currentQuestion === questionsProps.length"
-      class="butt js--triggerAnimation"
-      @click="processAnswer(picked)"
-    > Finish </button>
+    <q-btn v-if="this.result.computed.currentQuestion !== 1"
+      class="actions text-h7 text-orange-9"
+      outline no-caps color="white"
+      label="Previous"
+      @click="previousQuestionChild()">
+    </q-btn>
+    <q-btn v-if="this.result.computed.answeredCount !== this.quiz.questions.length"
+      class="actions text-h7 text-orange-9"
+      outline no-caps color="white"
+      label="Next" type="submit"
+      :disable="picked === ''"
+      @click="processAnswerChild()">
+    </q-btn>
+    <q-btn v-if="this.result.computed.answeredCount === this.quiz.questions.length"
+      class="actions text-h7 text-orange-9"
+      outline no-caps color="white"
+      label="Finish" type="submit"
+      @click="processAnswerChild()">
+    </q-btn>
   </div>
 </template>
 
 <script type="text/javascript">
 export default {
   props: [
-    'questionsProps',
+    'quiz',
+    'quizProgress',
+    'result',
+    'previousQuestionParent',
+    'processAnswerParent',
   ],
   data() {
     return {
-      currentQuestion: 1,
-      choices: [],
       picked: '',
     };
   },
   methods: {
+    previousQuestionChild() {
+      this.$emit('previousQuestionParent');
+    },
+    processAnswerChild() {
+      this.$emit('processAnswerParent', this.picked);
+    },
+  },
+  computed: {
+    question() {
+      if (this.result.computed.currentQuestion === 0) {
+        return 0;
+      }
+      return this.result.computed.currentQuestion - 1;
+    },
   },
 };
 </script>
@@ -102,7 +117,11 @@ export default {
 /*-----------------------------------*\
   $RESET
 \*-----------------------------------*/
-
+.actions{
+    /* no underlining */
+    text-decoration: none;
+    margin-right: 5px
+}
 .quiz {
   overflow-x: hidden;
 }
@@ -135,7 +154,6 @@ textarea {
 .input {
   padding: 0.75rem;
   margin: 0.375rem;
-
   background-color: transparent;
   border-radius: 10px;
 }

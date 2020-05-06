@@ -1,6 +1,8 @@
 <template>
   <div>
     <vue-range-slider
+      filled style="width: 230px"
+      label="Questions"
       :value="value"
       @input="$emit('input', $event)"
       :min="1"

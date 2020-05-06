@@ -1,35 +1,138 @@
 <template>
-<div>
-  <!-- <q-page id="quiz"> -->
-    <!-- <header class="site__header island"> -->
-      <!-- <div class="wrap"> -->
-        <span id="animationSandbox" style="display: block;" class>
-          <h1 class="site__title mega">{{ headerProps.title }}</h1>
-        </span>
-        <p class="beta subhead">{{ headerProps.subject }}: "{{ headerProps.scope }}"
-        <br/>{{ headerProps.description }} </p>
-        <p> {{ headerProps.questions.length }} questions </p>
-        <div v-if="introStage">
-        <button class="butt js--triggerAnimation" @click="startQuiz()">
-          Start quiz
-        </button>
-      </div>
-      <div v-else>
-        <button class="butt js--triggerAnimation" @click="stopQuiz()">
-          Stop quiz
-        </button>
-      </div>
-      <!-- </div> -->
-    <!-- </header> -->
-  <!-- </q-page> -->
-</div>
+  <q-page class="quiz">
+    <header class="site__header island">
+      <QuizHeader v-bind:headerProps='getQuizMetaData()'/>
+    </header>
+    <hr>
+    <main class="site__content island" role="content">
+      <br />
+      <QuizQuestions
+        v-if="quizProgress.subString(0,1)=='q'"
+        v-bind:questionsProps='getQuizQuestions()'/>
+      <QuizResult
+        v-if="quizProgress.subString(0,1)=='r'"
+        v-bind:resultProps='getQuizResult()'/>
+    </main>
+  </q-page>
 </template>
 
 <script type="text/javascript">
+import { mapState, mapGetter, mapActions } from 'vuex';
+import QuizHeader from 'src/components/my-quiz/QuizHeader';
+import QuizQuestions from 'src/components/my-quiz/QuizQuestions';
+import QuizResult from 'src/components/my-quiz/QuizResult';
+
 export default {
-  props: [
-    'headerProps',
-  ],
+  name: 'QuizLayout',
+  quizResult: {
+    quizProgress: 'intro',
+    currentQuestion: '0',
+    startDateTime: '',
+    endDateTime: '',
+    totalPauzeTime: '',
+    answers: [],
+    correct: '0',
+    hintsTaken: '0',
+  },
+  picked: '',
+  components: {
+    QuizHeader,
+    QuizQuestions,
+    QuizResult,
+  },
+  computed: {
+    ...mapState(['quiz', 'quizResult']),
+    ...mapGetter(['getQuizMetaData', 'getQuizSettings',
+      'getQuizQuestions', 'getQuizResult']),
+  },
+  methods: {
+    ...mapActions(['modifyQuizMetaData', 'modifyQuizSettings',
+      'modifyQuizQuestions', 'modifyQuizResult']),
+
+    modifyQuizMetaData(quizMetaData) {
+      this.modifyQuizMetaDatat(quizMetaData);
+    },
+    modifyQuizSettings(quizSettings) {
+      this.modifyQuizSettings(quizSettings);
+    },
+    modifyQuizQuestions(quizQuestions) {
+      this.modifyQuizQuestions(quizQuestions);
+    },
+    modifyQuizResult(quizResult) {
+      this.modifyQuizResult(quizResult);
+    },
+  },
+  startQuiz() {
+    this.currentQuestion += 1;
+    this.progressQuizState();
+    this.currentQuestion = 1;
+    this.choices = [];
+    this.picked = '';
+    this.correct = 0;
+    this.perc = null;
+  },
+  stopQuiz() {
+    this.quizProgress = 'intro';
+    this.introStage = true;
+    this.questionStage = false;
+    this.resultsStage = false;
+  },
+  previousQuestion() {
+    if (this.currentQuestion > 1) {
+      this.currentQuestion -= 1;
+    } else {
+      this.quizProgress = 'question-first';
+    }
+  },
+  processAnswer(p) {
+    // console.log('answer event ftw', e);
+    this.choices[this.currentQuestion - 1] = p;
+    this.progressQuizState();
+    if (this.quizProgress === 'question-middle') {
+      //
+    }
+    if (this.currentQuestion === this.questions.length) {
+      this.progressQuizState();
+      this.handleResults();
+    } else {
+      this.quizProgress = 'question-middle';
+      this.currentQuestion += 1;
+    }
+  },
+  progressQuizState() {
+    if (this.questions.length === 1) {
+      this.quizProgress = 'question-only';
+    } else {
+      switch (this.currentQuestion) {
+        case 0:
+          this.quizProgress = 'intro';
+          break;
+        case 1:
+          this.quizProgress = 'question-first';
+          break;
+        case this.questions.length - 1:
+          this.quizProgress = 'question-last';
+          break;
+        case this.questions.length:
+          this.quizProgress = 'results';
+          break;
+        default:
+          this.quizProgress = 'question-middle';
+          break;
+      }
+    }
+  },
+  handleResults() {
+    this.questions.forEach((a, index) => {
+      if (this.choices[index] === a.answer) this.correct += 1;
+    });
+    this.perc = ((this.correct / this.questions.length) * 100).toFixed(0);
+    // eslint-disable-next-line no-console
+    // console.log(`${this.correct} ${this.perc}`);
+    this.questionStage = false;
+    this.resultsStage = true;
+    this.introStage = true;
+  },
 };
 </script>
 
@@ -116,8 +219,8 @@ textarea {
 \*-----------------------------------*/
 h1,
 .alpha {
-  margin-bottom: 1rem;
-  font-size: 3rem;
+  margin-bottom: 1.5rem;
+  font-size: 2rem;
   font-weight: 100;
   line-height: 1;
   letter-spacing: -0.05em;
@@ -179,7 +282,7 @@ a:hover {
   margin: 0 auto;
 }
 .island {
-  padding: 1.5rem;
+  padding: 0.5rem;
 }
 .isle {
   padding: 0.75rem;

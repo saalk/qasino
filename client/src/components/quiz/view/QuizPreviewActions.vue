@@ -1,12 +1,13 @@
 <template>
   <q-card-actions class="no-padding no-margin">
 
-    <router-link class="actions" :to="{ name: 'quiz-play', params: { quizId: quiz.quizId } }">
+    <router-link class="actions"
+      :to="{ name: 'quiz-play', params: { quizId: quiz.quizId } }">
       <q-btn dense outline text-color="grey" label="Start quiz" no-caps></q-btn>
     </router-link>
 
     <router-link v-if=canModify class="actions"
-                :to="{ name: 'quiz-edit', params: { quizId: quiz.quizId } }">
+      :to="{ name: 'quiz-edit', params: { quizId: quiz.quizId } }">
       <q-btn outline dense color="blue-grey-6" icon="las la-pen-alt">
         <q-tooltip content-class="bg-accent">edit</q-tooltip>
       </q-btn>
@@ -54,34 +55,34 @@ export default {
     ...mapGetters(['profile', 'isAuthenticated']),
     toggleFavoriteButtonClasses() {
       return {
-        'btn-primary': this.quiz.favorited,
-        'btn-outline-primary': !this.quiz.favorited,
+        'btn-primary': this.quiz.computed.favorited,
+        'btn-outline-primary': !this.quiz.computed.favorited,
       };
     },
     followUserLabel() {
-      return `${this.profile.following ? 'Unfollow' : 'Follow'} ${
+      return `${this.profile.computed.following ? 'Unfollow' : 'Follow'} ${
         this.quiz.author.username
       }`;
     },
     favoriteQuizIcon() {
       // favorite_border = no solid
-      return this.quiz.favorited ? 'bookmark' : 'bookmark_border';
+      return this.quiz.computed.favorited ? 'bookmark' : 'bookmark_border';
     },
     favoriteCounter() {
-      return `(${this.quiz.favoritesCount})`;
+      return `(${this.quiz.computed.favoritesCount})`;
     },
   },
   methods: {
     favoriteQuizTooltip() {
       // favorite_border = no solid
-      this.toolTipBookmark = this.quiz.favorited ? 'delete bookmark' : 'bookmark this quiz';
+      this.toolTipBookmark = this.quiz.computed.favorited ? 'delete bookmark' : 'bookmark this quiz';
     },
     toggleFavorite() {
       if (!this.isAuthenticated) {
         this.$router.push({ name: 'login' });
         return;
       }
-      const action = this.quiz.favorited ? FAVORITE_REMOVE : FAVORITE_ADD;
+      const action = this.quiz.computed.favorited ? FAVORITE_REMOVE : FAVORITE_ADD;
       this.$store.dispatch(action, this.quiz.quizId);
     },
     toggleFollow() {
@@ -89,7 +90,7 @@ export default {
         this.$router.push({ name: 'login' });
         return;
       }
-      const action = this.quiz.author.following
+      const action = this.quiz.author.computed.following
         ? FETCH_PROFILE_UNFOLLOW
         : FETCH_PROFILE_FOLLOW;
       this.$store.dispatch(action, {

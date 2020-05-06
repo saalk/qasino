@@ -1,3 +1,14 @@
+<template>
+  <q-input
+  class="no-padding no-margin"
+  dense filled style="width: 230px"
+  type="number" label="Quiz"
+  v-model.number="model"
+  placeholder="default is 1"
+  lazy-rules
+  :rules="[ typeof value !== 'number' || 'digits only']"/>
+</template>
+
 <script>
 export default {
   props: {
@@ -21,10 +32,6 @@ export default {
   },
 };
 </script>
-
-<template>
-  <input type="number" v-model.number="model" placeholder="dummy number">
-</template>
 
 <style lang="scss" scoped>
 .select-component {

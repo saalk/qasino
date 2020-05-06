@@ -11,7 +11,7 @@
       </q-btn>
       <q-btn
         class="actions text-h7 btn-fixed-width"
-        no-caps dense outline color="white" text-color="grey"
+        no-caps dense color="white" text-color="grey"
         :label=quasarQuery
       >
       </q-btn>
@@ -41,8 +41,9 @@
           <GroupCtrlSlot :group-ctrl="props"/>
         </template>
         <!-- ruleControl Slot -->
-        <template #rule="props">
-          <RuleSlot :ruleCtrl="props"/>
+        <template #rule="props"
+          class="query-builder-rule">
+          <RuleSlot :rules="config.rules" :ruleCtrl="props"/>
         </template>
       </QueryBuilder>
     </q-slide-transition>
@@ -53,17 +54,19 @@
 // https://rtucek.github.io/vue-query-builder/getting-started.html#installation
 import QueryBuilder from 'query-builder-vue';
 
-import FlatPickr from 'vue-flatpickr-component';
+// import FlatPickr from 'vue-flatpickr-component';
 import TagSelection from './filters/TagSelection.vue';
-import RangeSlider from './filters/RangeSlider.vue';
+import Questions from './filters/Questions.vue';
+import Author from './filters/Author.vue';
+import Quiz from './filters/Quiz.vue';
+import Created from './filters/Created.vue';
+import Bookmarks from './filters/Bookmarks.vue';
+import Following from './filters/Following.vue';
 
 // https://rtucek.github.io/vue-query-builder/demos.html#theming
 // import 'flatpickr/dist/flatpickr.css';
 import GroupCtrlSlot from './custom/GroupCtrlSlot';
 import RuleSlot from './custom/RuleSlot.vue';
-
-import Input from './filters/Input.vue';
-import Number from './filters/Number.vue';
 
 export default {
   components: {
@@ -72,7 +75,15 @@ export default {
     RuleSlot,
   },
   props: {
-    presetQuery: String,
+    presetQuery: Object,
+  },
+  watch: {
+    presetQuery() {
+      this.query = this.presetQuery;
+    },
+  },
+  mounted() {
+    this.query = this.presetQuery;
   },
   data() {
     return {
@@ -112,26 +123,38 @@ export default {
           {
             identifier: 'author',
             name: 'Author',
-            component: Input,
+            component: Author,
             initialValue: '',
           },
           {
             identifier: 'quiz',
             name: 'Quiz',
-            component: Number,
+            component: Quiz,
             initialValue: 1,
           },
           {
             identifier: 'created',
             name: 'Created',
-            component: FlatPickr,
+            component: Created,
             initialValue: () => new Date().toLocaleDateString('en-CA'),
           },
           {
             identifier: 'between',
             name: 'Questions',
-            component: RangeSlider,
+            component: Questions,
             initialValue: () => [1, 99],
+          },
+          {
+            identifier: 'bookmarks',
+            name: 'Bookmarks',
+            component: Bookmarks,
+            initialValue: 'true',
+          },
+          {
+            identifier: 'following',
+            name: 'Following',
+            component: Following,
+            initialValue: 'true',
           },
         ],
         colors: this.colors,
@@ -202,5 +225,18 @@ export default {
   padding: 6px;
   margin-top: 10px;
   background-color: hsl(33, 100%, 93%);
+}
+.query-builder-rule[data-v-2d9be62f] {
+    position: relative;
+    background-color: #f2f2f2;
+    padding: 6px;
+    padding-left: 16px;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-orient: horizontal;
+    -webkit-box-direction: normal;
+    -ms-flex-direction: row;
+    flex-direction: row;
 }
 </style>

@@ -2,7 +2,8 @@
   <q-page padding>
     <q-card class="no-padding no-margin q-pa-md items-start">
       <q-card-section>
-        <MyCustomQueryBuilderGroup></MyCustomQueryBuilderGroup>
+        <MyCustomQueryBuilderGroup :presetQuery="this.listConfig.queryPreset">
+        </MyCustomQueryBuilderGroup>
       </q-card-section>
     </q-card>
     <q-card class="no-padding no-margin q-pa-md">
@@ -46,7 +47,7 @@ import QuizPreview from 'src/components/quiz/view/QuizPreview';
 import MyCustomQueryBuilderGroup from './MyCustomQueryBuilderGroup';
 
 export default {
-  name: 'QuizList',
+  name: 'SearchQuizList',
   components: {
     QuizPreview,
     QuizPagination,
@@ -66,8 +67,12 @@ export default {
       type: String,
       required: false,
     },
-    favorited: {
-      type: String,
+    bookmarks: {
+      type: Boolean,
+      required: false,
+    },
+    following: {
+      type: Boolean,
       required: false,
     },
     itemsPerPage: {
@@ -84,14 +89,10 @@ export default {
   },
   computed: {
     listConfig() {
-      const queryPreset = `
-      {
-        "operatorIdentifier": "AND",
-        "children": [{
-          "identifier": "foo",
-          "value": "bar"
-      }]
-      `;
+      const queryPreset = {
+        operatorIdentifier: 'AND',
+        children: [],
+      };
       const { type } = this;
       const filters = {
         offset: (this.currentPage - 1) * this.itemsPerPage,
@@ -99,35 +100,37 @@ export default {
       };
       if (this.author) {
         filters.author = this.author;
-        queryPreset.replace('foo', 'author');
-        // this.query.slice(0).queryPreset.replace('bar', this.author);
+        queryPreset.children.push({ identifier: 'author', value: this.author });
       } else {
         filters.author = '';
       }
       if (this.tag) {
         filters.tag = this.tag;
-        queryPreset.replace('foo', 'tag');
-        // this.query.slice(0).queryPreset.replace('bar', this.tag);
+        queryPreset.children.push({ identifier: 'tag', value: this.tag });
       } else {
         filters.tag = '';
       }
-      if (this.favorited) {
-        filters.favorited = this.favorited;
-        queryPreset.replace('foo', 'favorited');
-        // this.query.slice(0).queryPreset.replace('bar', this.favorited);
+      if (this.bookmarks) {
+        filters.bookmarks = this.bookmarks;
+        queryPreset.children.push({ identifier: 'bookmarks', value: this.bookmarks });
       } else {
-        filters.favorited = '';
+        filters.bookmarks = false;
+      }
+      if (this.following) {
+        filters.following = this.following;
+        queryPreset.children.push({ identifier: 'following', value: this.following });
+      } else {
+        filters.following = false;
       }
       if (this.type) {
         filters.type = this.type;
-        queryPreset.replace('foo', 'type');
-        // this.query.slice(0).queryPreset.replace('bar', this.type);
       } else {
         filters.type = '';
       }
       return {
         type,
         filters,
+        queryPreset,
       };
     },
     pages() {
