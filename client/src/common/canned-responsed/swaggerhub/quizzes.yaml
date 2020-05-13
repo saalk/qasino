@@ -1,0 +1,962 @@
+openapi: 3.0.0
+info:
+  description: This is a sample quizzes server. Shift + Alt + P to view in vs
+  version: 1.0.0
+  title: Swagger Quizzes
+  termsOfService: http://swagger.io/terms/
+  contact:
+    email: apiteam@swagger.io
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+servers:
+# Added by API Auto Mocking Plugin
+  - description: SwaggerHub API Auto Mocking
+    url: https://virtserver.swaggerhub.com/klass/quizzes/1.0.0
+tags:
+- name: quiz
+  description: quiz and quizzes
+- name: score
+  description: score
+- name: tags
+  description: tags
+- name: user
+  description: user and profiles
+paths:
+  /quiz:
+    post:
+      tags:
+      - quiz
+      summary: Add a new quiz to the score
+      description: quiz
+      operationId: addQuiz
+
+      requestBody:
+        description: add a quiz to play
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Quiz'
+
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+               $ref: '#/components/schemas/ApiResponse'
+        '405':
+          description: Invalid input
+    get:
+      tags:
+      - quiz
+      summary: Finds quizzes by filter
+      description: Multiple filter values can be provided with comma separated strings
+      operationId: findQuizzesByFilter
+      parameters:
+      - name: author
+        in: query
+        description: Author values that need to be considered for filter
+        required: false
+        schema:
+            type: string
+      - name: tags
+        in: query
+        description: Tags to filter by
+        required: false
+        schema:
+          type: string
+      - name: where
+        in: query
+        description: Where values that need to be considered for filter
+        required: false
+        schema:
+            type: string
+      - name: offset
+        in: query
+        description: offset values that need to be considered for filter
+        required: false
+        schema:
+            type: string
+      - name: limit
+        in: query
+        description: limit values that need to be considered for filter
+        required: false
+        schema:
+            type: string
+      responses:
+        '200':
+          description: successful operation
+        '400':
+          description: Invalid Author value
+  /quiz/favorite:
+    get:
+      tags:
+      - quiz
+      summary: Finds favorite quizzes for user
+      description: User favorites that need to be considered for filter
+      operationId: findQuizzesByFavorite
+      parameters:
+      - name: user
+        in: query
+        description: User values that need to be considered for filter
+        required: true
+        schema:
+            type: string
+      responses:
+        '200':
+          description: successful operation
+        '400':
+          description: Invalid Author value
+  /quiz/followed:
+    get:
+      tags:
+      - quiz
+      summary: Finds quizzes of followed authors for user
+      description: User followed list of authors that need to be considered for filter
+      operationId: findQuizzesByFollowed
+      parameters:
+      - name: user
+        in: query
+        description: User values that need to be considered for filter
+        required: true
+        schema:
+            type: string
+      responses:
+        '200':
+          description: successful operation
+        '400':
+          description: Invalid Author value
+  /quiz/{quizId}:
+    get:
+      tags:
+      - quiz
+      summary: Find quiz by ID
+      description: Returns a single quiz
+      operationId: getQuizById
+      parameters:
+      - name: quizId
+        in: path
+        description: ID of quiz to return
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: successful operation
+        '400':
+          description: Invalid ID supplied
+        '404':
+          description: quiz not found
+    put:
+      tags:
+      - quiz
+      summary: Updates quiz data
+      description: quiz to update
+      operationId: updateQuizDetails
+      parameters:
+      - name: quizId
+        in: path
+        description: ID of quiz to update
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Quiz'
+        description: update a quiz details
+        required: true
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+               $ref: '#/components/schemas/ApiResponse'
+        '400':
+          description: Invalid ID supplied
+        '404':
+          description: quiz not found
+        '405':
+          description: Validation exception
+    delete:
+      tags:
+      - quiz
+      summary: Deletes a quiz
+      description: quiz to delete
+      operationId: deleteQuiz
+      parameters:
+      - name: api_key
+        in: header
+        required: false
+        schema:
+          type: string
+      - name: quizId
+        in: path
+        description: quiz id to delete
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+               $ref: '#/components/schemas/ApiResponse'
+        '400':
+          description: Invalid ID supplied
+        '404':
+          description: quiz not found
+  /quiz/{quizId}/questions:
+    post:
+      tags:
+      - quiz
+      summary: post questions
+      description: quiz to post
+      operationId: postQuestions
+      parameters:
+      - name: quizId
+        in: path
+        description: ID of quiz to update
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Quiz'
+        description: add questions to a quiz
+        required: true
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+               $ref: '#/components/schemas/ApiResponse'
+        '400':
+          description: Invalid ID supplied
+        '404':
+          description: quiz not found
+  /tags:
+    get:
+      tags:
+        - tags
+      summary: gets the tag list
+      operationId: getTags
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TagList'
+        '400':
+          description: Invalid username supplied
+        '404':
+          description: User not found
+  /score:
+    post:
+      tags:
+      - score
+      summary: Add a new score to the scores
+      description: score to post
+      operationId: addScore
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+               $ref: '#/components/schemas/ApiResponse'
+        '405':
+          description: Invalid input
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Score'
+        description: add a score to user
+        required: true
+  /score/{scoreId}:
+    get:
+      tags:
+      - score
+      summary: Find score by ID
+      description: Returns a single score
+      operationId: getScoreById
+      parameters:
+      - name: scoreId
+        in: path
+        description: ID of score to return
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: successful operation
+        '400':
+          description: Invalid ID supplied
+        '404':
+          description: score not found
+    put:
+      tags:
+      - score
+      summary: Updates score data
+      description: score to update
+      operationId: updatescoreDetails
+      parameters:
+      - name: scoreId
+        in: path
+        description: ID of score to update
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Score'
+        description: update a score details
+        required: true
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+               $ref: '#/components/schemas/ApiResponse'
+        '400':
+          description: Invalid ID supplied
+        '404':
+          description: score not found
+        '405':
+          description: Validation exception
+    delete:
+      tags:
+      - score
+      summary: Deletes a score
+      description: score to delete
+      operationId: deletescore
+      parameters:
+      - name: api_key
+        in: header
+        required: false
+        schema:
+          type: string
+      - name: scoreId
+        in: path
+        description: score id to delete
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+               $ref: '#/components/schemas/ApiResponse'
+        '400':
+          description: Invalid ID supplied
+        '404':
+          description: score not found
+  /score/{scoreId}/answers:
+    post:
+      tags:
+      - score
+      summary: post answers
+      description: answer to post
+      operationId: postAnsers
+      parameters:
+      - name: scoreId
+        in: path
+        description: ID of score to update
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Answer'
+        description: add answers to a score
+        required: true
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+               $ref: '#/components/schemas/ApiResponse'
+        '400':
+          description: Invalid ID supplied
+        '404':
+          description: score not found
+  /user:
+    post:
+      tags:
+        - user
+      summary: Create user
+      description: This can only be done by the logged in user.
+      operationId: createUser
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+               $ref: '#/components/schemas/ApiResponse'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+        description: Created user object
+        required: true
+  /profile/{username}:
+    get:
+      tags:
+        - user
+      summary: gets a user profile
+      operationId: getProfile
+      parameters:
+        - name: username
+          in: path
+          description: The name that needs to be fetched. Use user1 for testing.
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Profile'
+        '400':
+          description: Invalid username supplied
+        '404':
+          description: User not found
+  /user/login:
+    get:
+      tags:
+        - user
+      summary: Logs user into the system
+      operationId: loginUser
+      parameters:
+        - name: username
+          in: query
+          description: The user name for login
+          required: true
+          schema:
+            type: string
+        - name: password
+          in: query
+          description: The password for login in clear text
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: successful operation
+          headers:
+            X-Rate-Limit:
+              description: calls per hour allowed by the user
+              schema:
+                type: integer
+                format: int32
+            X-Expires-After:
+              description: date in UTC when token expires
+              schema:
+                type: string
+                format: date-time
+          content:
+            application/json:
+              schema:
+                type: string
+        '400':
+          description: Invalid username/password supplied
+  /user/logout:
+    get:
+      tags:
+        - user
+      summary: Logs out current logged in user session
+      operationId: logoutUser
+      responses:
+        default:
+          description: successful operation
+  /user/{username}:
+    get:
+      tags:
+        - user
+      summary: Get user by user name
+      operationId: getUserByName
+      parameters:
+        - name: username
+          in: path
+          description: The name that needs to be fetched. Use user1 for testing.
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/User'
+        '400':
+          description: Invalid username supplied
+        '404':
+          description: User not found
+    put:
+      tags:
+        - user
+      summary: Updated user
+      description: This can only be done by the logged in user.
+      operationId: updateUser
+      parameters:
+        - name: username
+          in: path
+          description: name that need to be updated
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+               $ref: '#/components/schemas/ApiResponse'
+        '400':
+          description: Invalid user supplied
+        '404':
+          description: User not found
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+        description: Updated user object
+        required: true
+    delete:
+      tags:
+        - user
+      summary: Delete user
+      description: This can only be done by the logged in user.
+      operationId: deleteUser
+      parameters:
+        - name: username
+          in: path
+          description: The name that needs to be deleted
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+               $ref: '#/components/schemas/ApiResponse'
+        '400':
+          description: Invalid username supplied
+        '404':
+          description: User not found
+externalDocs:
+  description: Find out more about Swagger
+  url: http://swagger.io
+components:
+  schemas:
+    Quiz:
+      type: object
+      required:
+        - quiz
+      properties:
+        quiz:
+          required:
+            - quiz
+          properties:
+            quiz:
+              required:
+                - quizId
+                - meta
+                - author
+                - settings
+              properties:
+                quizId:
+                  type: integer
+                meta:
+                  required:
+                    - title
+                    - description
+                    - subject
+                    - audiance
+                    - created
+                    - updated
+                    - tagList
+                  properties:
+                    title:
+                      type: string
+                    description:
+                      type: string
+                    subject:
+                      type: string
+                    audiance:
+                      $ref: '#/components/schemas/Audiance'
+                    created:
+                      type: string
+                      format: date-time
+                      pattern: "yyyy-MM-ddTHH:mm:ss"
+                    updated:
+                      type: string
+                      format: date-time
+                      pattern: "yyyy-MM-ddTHH:mm:ss"
+                    tagList:
+                      type: array
+                      items:
+                        type: string
+                  type: object
+                computed:
+                  required:
+                    - favorited
+                    - favoritesCount
+                  properties:
+                    favorited:
+                      type: boolean
+                    favoritesCount:
+                      type: integer
+                  type: object
+                author:
+                  required:
+                    - username
+                    - bio
+                    - image
+                    - computed
+                  properties:
+                    username:
+                      type: string
+                    bio:
+                      type: string
+                    image:
+                      type: string
+                    computed:
+                      required:
+                        - following
+                        - followingCount
+                      properties:
+                        following:
+                          type: boolean
+                        followingCount:
+                          type: integer
+                      type: object
+                  type: object
+                settings:
+                  required:
+                    - final
+                    - maxSecondsPerQuestion
+                    - numberOfHints
+                    - allowExit
+                    - allowGoBack
+                    - randomizeQuestions
+                    - randomizeAnswers
+                    - minimumPercentToPass
+                  properties:
+                    final:
+                      type: string
+                    maxSecondsPerQuestion:
+                      type: integer
+                    numberOfHints:
+                      type: integer
+                    allowExit:
+                      type: string
+                    allowGoBack:
+                      type: string
+                    randomizeQuestions:
+                      type: string
+                    randomizeAnswers:
+                      type: string
+                    minimumPercentToPass:
+                      type: integer
+                  type: object
+                questions:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/Question'
+              type: object
+          type: object
+    Score:
+      type: object
+      required:
+        - score
+        - answer
+      properties:
+        score:
+          type: array
+          items:
+            type: object
+            properties:
+              scoreId:
+                type: integer
+              quizId:
+                type: integer
+              created:
+                type: string
+                format: date-time
+                pattern: "yyyy-MM-ddTHH:mm:ss"
+              updated:
+                type: string
+                format: date-time
+                pattern: "yyyy-MM-ddTHH:mm:ss"
+              hintsTaken:
+                type: integer
+              computed:
+                required:
+                  - answeredCount
+                  - correctCount
+                  - currentQuestion
+                  - currentIndex
+                  - currentPercentToPass
+                  - passed
+                properties:
+                  answeredCount:
+                    type: integer
+                  correctCount:
+                    type: integer
+                  currentQuestion:
+                    type: integer
+                  currentIndex:
+                    type: integer
+                  currentPercentToPass:
+                    type: integer
+                  passed:
+                    type: boolean
+                type: object
+              answers:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/Answer'
+              user:
+                required:
+                  - username
+                properties:
+                  username:
+                    type: string
+                type: object
+        answer:
+          required:
+            - scoreId
+            - questionId
+            - answer
+            - secondsToAnswer
+          properties:
+            scoreId:
+              type: integer
+            questionId:
+              type: integer
+            answer:
+              type: string
+            secondsToAnswer:
+              type: integer
+          type: object
+    Answer:
+      type: object
+      properties:
+        questionId:
+          type: integer
+        answer:
+          type: string
+        secondsToAnswer:
+          type: integer
+    Audiance:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        name:
+          type: string
+      xml:
+        name: Audience
+    Profile:
+      type: object
+      required:
+      - user
+      properties:
+        user:
+          required:
+            - email
+            - token
+            - username
+            - bio
+            - image
+            - computed
+          properties:
+            email:
+              type: string
+            token:
+              type: string
+            username:
+              type: string
+            bio:
+              type: string
+            image:
+              type: string
+            computed:
+              required:
+                - following
+                - followingCount
+              properties:
+                following:
+                  type: boolean
+                followingCount:
+                  type: integer
+              type: object
+          type: object
+    User:
+      type: object
+      required:
+      - user
+      properties:
+        user:
+          required:
+            - userId
+            - token
+            - username
+            - userNameSequence
+          properties:
+            userId:
+              type: integer
+            created:
+                type: string
+                format: date-time
+                pattern: "yyyy-MM-ddTHH:mm:ss"
+            token:
+              type: string
+            userName:
+              type: string
+            userNameSequence:
+              type: integer
+            email:
+              type: string
+            bio:
+              type: string
+            image:
+              type: string
+            balance:
+              type: integer
+            securedLoan:
+              type: integer
+            year:
+              type: integer
+            month:
+              type: string
+            week:
+              type: string
+            day:
+              type: integer
+          type: object
+    TagList:
+      type: object
+      required:
+        - tags
+      properties:
+        tags:
+          type: array
+          items:
+            type: string
+    Question:
+      type: object
+      properties:
+        questionId:
+          type: integer
+        text:
+          type: string
+        category:
+          type: string
+        choices:
+          type: array
+          items:
+            type: object
+            properties:
+              label:
+                type: string
+              value:
+                type: string
+        answer:
+          type: string
+        explanation:
+          type: string
+    ApiResponse:
+      type: object
+      properties:
+        code:
+          type: integer
+          format: int32
+        type:
+          type: string
+        message:
+          type: string
+  requestBodies:
+    QuizBody:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Quiz'
+      description: Quiz object that needs to be added to the list
+      required: true
+    QuizzesArray:
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/Quiz'
+      description: List of Quiz object
+      required: true
+    ScoreBody:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Score'
+      description: Score object that needs to be added to the list
+      required: true
+    ScoresArray:
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/Score'
+      description: List of Score objects
+      required: true
+    UserBody:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/User'
+      description: User object
+      required: true
+  securitySchemes:
+    quizzes_auth:
+      type: oauth2
+      flows:
+        implicit:
+          authorizationUrl: 'http://quizzes.swagger.io/oauth/dialog'
+          scopes:
+            'write:quizzes': modify quizzes in your account
+            'read:quizzes': read quizzes list
+    api_key:
+      type: apiKey
+      name: api_key
+      in: header

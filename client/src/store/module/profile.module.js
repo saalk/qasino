@@ -33,7 +33,7 @@ const actions = {
     //     // #todo SET_ERROR cannot work in multiple states
     //     // context.commit(SET_ERROR, response.data.errors)
     //   });
-    ApiUserService.get('profiles')
+    ApiUserService.get('profile')
       .then(({ data }) => {
         context.commit(SET_PROFILE, data.profile);
       })
@@ -47,7 +47,7 @@ const actions = {
     let { username } = payload;
     if (username !== null) { username = ''; }
     // return ApiUserService.post(`profiles/${username}/follow`)
-    return ApiUserService.post('profiles')
+    return ApiUserService.post('profile')
       .then(({ data }) => {
         context.commit(SET_PROFILE, data.profile);
         return data;
@@ -63,7 +63,7 @@ const actions = {
     let { username } = payload;
     if (username !== null) { username = ''; }
     // return ApiUserService.delete(`profiles/${username}/follow`)
-    return ApiUserService.delete('profiles/profile')
+    return ApiUserService.delete('profile')
       .then(({ data }) => {
         context.commit(SET_PROFILE, data.profile);
         return data;

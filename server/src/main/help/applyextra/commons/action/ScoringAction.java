@@ -31,7 +31,7 @@ import java.util.UUID;
 
 /**
  * Note: import public key into keystore like so:
- * keytool -importcert -file pega-tst.europe.intranet-public.cer -keystore trusted-public-keys.pks -alias "Scoring"
+ * keytool -importcert -file pega-tst.europe.intranet-public.cer -keystore trusted-public-keys.pks -userName "Scoring"
  * You can use same password as used for api-trust.jks
  * <p>
  * check keystore like so:

@@ -254,7 +254,7 @@ let quizSettings = {
 // numerical
 // multiAnswer
 
-// let quizResult = {
+// let quizScore = {
 //   quizProgress: 'intro',
 //   currentQuestion: '0',
 //   startDateTime: '',

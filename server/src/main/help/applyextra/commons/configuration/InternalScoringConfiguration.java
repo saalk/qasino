@@ -41,12 +41,12 @@ public class InternalScoringConfiguration {
         String keyStorePath = jndiUtil.getJndiValueWithDefault("param/services/scoring/keyStoreLocation", null);
         char[] keyStorePassword = passwordUtil.decode(jndiUtil.getJndiValue("param/services/scoring/keyStorePassword"))
                 .toCharArray();
-        String keyAlias = jndiUtil.getJndiValue("param/services/scoring/keyAlias");
+        String keyUserName = jndiUtil.getJndiValue("param/services/scoring/keyUserName");
 
         KeyStoreSettings settings = null;
 
         if (keyStorePath != null) {
-            settings = new KeyStoreSettings(keyStorePath, keyStorePassword, keyAlias);
+            settings = new KeyStoreSettings(keyStorePath, keyStorePassword, keyUserName);
         }
 
         return settings;

@@ -9,7 +9,7 @@
         v-if="profile.computed.following" @click.prevent="unfollow()" label="Unfollow">
         </q-btn>
         <q-btn to="error" no-caps class="actions" type="button" outline dense color="blue-grey-6"
-        v-if="!profile.computed.following" @click.prevent="follow()" label="Follow">
+        v-else @click.prevent="follow()" label="Follow">
         </q-btn>
       </div>
     </q-card-actions>

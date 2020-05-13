@@ -6,7 +6,7 @@
   </span>
   <p class="beta subhead">subject: {{ this.quiz.meta.subject }}
   </p>
-  <q-btn v-if="this.quizProgress === 'intro' || this.quizProgress === 'results'"
+  <q-btn v-if="this.quizProgress === 'intro' || this.quizProgress === 'scores'"
     class="actions text-h7 text-orange-9"
     outline no-caps color="white"
     label="Start quiz"

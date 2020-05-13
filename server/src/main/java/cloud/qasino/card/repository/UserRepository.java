@@ -12,10 +12,10 @@ import java.util.Optional;
 @Repository
 public interface UserRepository extends JpaRepository<User, Integer> {
 
-    //@Query("SELECT count(u) FROM USERS u where u.ALIAS = ?1")
-    Long countByAlias(String alias);
+    //@Query("SELECT count(u) FROM USERS u where u.UserName = ?1")
+    Long countByUserName(String userName);
 
-    Optional<User> findUserByAliasAndAliasSequence(String alias, int aliasSequence);
+    Optional<User> findUserByUserNameAndUserNameSequence(String userName, int userNameSequence);
 
 
     @Query(

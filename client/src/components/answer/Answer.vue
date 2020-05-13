@@ -13,9 +13,9 @@
       >
         {{ answer.author.username }}
       </router-link> -->
-      <span class="date-posted">{{ result.createdAt | date }}</span>
+      <span class="date-posted">{{ score.createdAt | date }}</span>
       <span v-if="isCurrentUser" class="mod-options">
-        <i class="ion-trash-a" @click="destroy(resultId, questionId)"></i>
+        <i class="ion-trash-a" @click="destroy(scoreId, questionId)"></i>
       </span>
     </div>
   </div>
@@ -23,7 +23,7 @@
 
 <script>
 import { mapGetters } from 'vuex';
-import { RESULT_DESTROY } from 'src/store/types/actions.type';
+import { SCORE_DESTROY } from 'src/store/types/actions.type';
 
 export default {
   name: 'Answer',
@@ -41,8 +41,8 @@ export default {
     ...mapGetters(['currentUser']),
   },
   methods: {
-    destroy(resultid) {
-      this.$store.dispatch(RESULT_DESTROY, { resultid });
+    destroy(scoreid) {
+      this.$store.dispatch(SCORE_DESTROY, { scoreid });
     },
   },
 };

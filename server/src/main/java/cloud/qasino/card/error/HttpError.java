@@ -11,7 +11,7 @@ public enum HttpError {
 
     BAD_REQUEST_GAMETYPE("400", "Please supply correct 'gameType' in your move to 'init' your cardgame."),
     BAD_REQUEST_ANTE("400", "Please supply a normal 'ante' in your move to 'init' your cardgame."),
-    BAD_REQUEST_HUMAN_ALIAS("400", "Please supply a normal 'alias' in your move to 'setup' a human player in your cardgame."),
+    BAD_REQUEST_HUMAN_UserName("400", "Please supply a normal 'userName' in your move to 'setup' a human player in your cardgame."),
     BAD_REQUEST_HUMAN_AILEVEL("400", "Please supply the 'Human' aiLevel in your move to 'setup' a human player in your cardgame."),
     BAD_REQUEST_AI_AILEVEL("400", "Please do not supply the 'Human' aiLevel in your move to 'setup' a ai player in your cardgame."),
 

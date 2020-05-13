@@ -73,7 +73,7 @@ const mutations = {
         return quiz;
       }
       // We could just return data, but it seems dangerous to
-      // mix the results of different api calls, so we
+      // mix the scores of different api calls, so we
       // protect ourselves by copying the information.
       quiz.favorited = data.favorited;
       quiz.favoritesCount = data.favoritesCount;

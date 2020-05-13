@@ -1,0 +1,54 @@
+{
+	"results": [{
+		"resultId": 12345,
+		"quizId": 123,
+		"createdAt": "2019-02-18T03:22:56.637Z",
+		"updatedAt": "2020-02-18T03:22:56.637Z",
+		"hintsTaken": 1,
+		"computed": {
+			"answeredCount": 1,
+			"correctCount": 1,
+			"currentQuestion": 2,
+			"currentIndex": 1,
+			"currentPercentToPass": 10,
+			"passed": false
+		},
+		"answers": [{
+			"questionId": 111,
+			"answer": "t",
+			"secondsToAnswer": 10
+		}],
+		"user": {
+			"username": "tester"
+		}
+	}],
+	"result": [{
+		"resultId": 12345,
+		"quizId": 123,
+		"createdAt": "2019-02-18T03:22:56.637Z",
+		"updatedAt": "2020-02-18T03:22:56.637Z",
+		"hintsTaken": 1,
+		"computed": {
+			"answeredCount": 1,
+			"correctCount": 1,
+			"currentQuestion": 2,
+			"currentIndex": 1,
+			"currentPercentToPass": 10,
+			"passed": false
+		},
+		"answers": [{
+			"questionId": 1,
+			"answer": "t",
+			"secondsToAnswer": 10
+		}],
+		"user": {
+			"username": "tester"
+		}
+	}],
+	"answer": {
+		"resultId": 1,
+		"questionId": 2,
+		"answer": "b",
+		"secondsToAnswer": 9
+	}
+}

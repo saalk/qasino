@@ -16,18 +16,18 @@
       <main class="site__content island" role="content">
       <br />
       <QuizQuestions
-        v-if="quizProgress !== 'results' & quizProgress !== 'intro'"
+        v-if="quizProgress !== 'scores' & quizProgress !== 'intro'"
         :quiz="this.quiz"
         :quizProgress="this.quizProgress"
-        :result="this.result"
+        :score="this.score"
         @previousQuestionParent="previousQuestion"
         @processAnswerParent="processAnswer"
         />
-      <QuizResult
+      <QuizScore
         v-else
         :quiz="this.quiz"
         :quizProgress="this.quizProgress"
-        :result="this.result"
+        :score="this.score"
         />
       </main>
     </q-card>
@@ -45,7 +45,7 @@ import store from 'src/store';
 // import { FETCH_QUIZ, FETCH_ANSWERS } from 'src/store/types/actions.type';
 import QuizHeader from 'src/components/quiz/play/QuizHeader';
 import QuizQuestions from 'src/components/quiz/play/QuizQuestions';
-import QuizResult from 'src/components/quiz/play/QuizResult';
+import QuizScore from 'src/components/quiz/play/QuizScore';
 import {
   FETCH_QUIZ,
   QUIZ_RESET_STATE,
@@ -60,7 +60,7 @@ export default {
     // Tag,
     QuizHeader,
     QuizQuestions,
-    QuizResult,
+    QuizScore,
   },
   props: {
     previousQuiz: {
@@ -84,8 +84,8 @@ export default {
   data() {
     return {
       quizProgress: 'intro',
-      result: {
-        resultId: 0,
+      score: {
+        scoreId: 0,
         quizId: 0,
         createdAt: '',
         updatedAt: '',
@@ -121,81 +121,78 @@ export default {
   methods: {
     startQuiz() {
       this.totalPauzeTime = '';
-      // (re)set the results
-      this.result.quizId = this.quiz.quizId;
-      this.result.createdAt = '';
+      // (re)set the scores
+      this.score.quizId = this.quiz.quizId;
+      this.score.createdAt = '';
       // computed
-      this.result.computed.answeredCount = 0;
-      this.result.computed.correctCount = 0;
-      this.result.computed.currentQuestion = 1;
-      this.result.computed.currentIndex = 0;
-      this.result.computed.currentPercentToPass = 0;
-      this.result.computed.passed = false;
+      this.score.computed.answeredCount = 0;
+      this.score.computed.correctCount = 0;
+      this.score.computed.currentQuestion = 1;
+      this.score.computed.currentIndex = 0;
+      this.score.computed.currentPercentToPass = 0;
+      this.score.computed.passed = false;
       // answer s
-      this.result.answers = [];
+      this.score.answers = [];
       // user
-      this.result.user.username = this.currentUser.username;
+      this.score.user.username = this.currentUser.username;
       this.progressQuizState();
 
-      // TODO store start new result for quizId and username
+      // TODO store start new score for quizId and username
     },
     stopQuiz() {
-      this.result.computed.currentIndex = 0;
-      this.calculateResults();
-      this.quizProgress = 'results';
+      this.score.computed.currentIndex = 0;
+      this.calculateScores();
+      this.quizProgress = 'scores';
     },
     previousQuestion() {
-      if (this.result.computed.currentQuestion > 1) {
-        this.result.computed.currentQuestion -= 1;
-        this.result.computed.currentIndex -= 1;
+      if (this.score.computed.currentQuestion > 1) {
+        this.score.computed.currentQuestion -= 1;
+        this.score.computed.currentIndex -= 1;
         this.progressQuizState();
       }
     },
     processAnswer(a) {
       // console.log('answer event ftw', e);
-      this.answer.questionId = this.quiz.questions[this.result.computed.currentIndex].questionId;
+      this.answer.questionId = this.quiz.questions[this.score.computed.currentIndex].questionId;
       this.answer.answer = a;
       this.answer.secondsToAnswer = '10';
       this.pushToAnswers(this.answer);
       // TODO store answer on existing quizId and username
 
       if (this.quizProgress === 'intro'
+          || this.quizProgress === 'question-first'
           || this.quizProgress === 'question-middle') {
-        this.result.computed.currentQuestion += 1;
-        this.result.computed.currentIndex += 1;
+        this.score.computed.currentQuestion += 1;
+        this.score.computed.currentIndex += 1;
         this.progressQuizState();
       }
-      this.calculateResults();
+      this.calculateScores();
     },
     pushToAnswers(obj) {
-      if (this.result.answers.length === 0) {
-        this.result.answers.push(obj);
+      if (this.score.answers.length === 0) {
+        this.score.answers.push(obj);
       } else {
-        const index = this.result.answers.findIndex((item) => item.questionId === obj.questionId);
+        const index = this.score.answers.findIndex((item) => item.questionId === obj.questionId);
         if (index > -1) {
-          this.result.answers[index] = obj;
+          this.score.answers[index] = obj;
         } else {
-          this.result.answers.push(obj);
+          this.score.answers.push(obj);
         }
       }
     },
     progressQuizState() {
-      const question = this.result.computed.currentQuestion;
       if (this.quiz.questions.length === 1) {
         this.quizProgress = 'question-only';
       } else {
-        switch (question) {
+        switch (this.score.computed.currentQuestion) {
           case 0:
             this.quizProgress = 'intro';
             break;
-          case 1:
-            this.quizProgress = 'question-first';
-            break;
-          case this.quiz.questions.length - 1:
+          case this.quiz.questions.length:
             this.quizProgress = 'question-last';
             break;
-          case this.quiz.questions.length:
-            this.quizProgress = 'results';
+          case 1:
+            this.quizProgress = 'question-first';
             break;
           default:
             this.quizProgress = 'question-middle';
@@ -203,27 +200,27 @@ export default {
         }
       }
     },
-    calculateResults() {
-      this.result.computed.answeredCount = 0;
-      this.result.computed.correctCount = 0;
-      this.result.computed.currentPercentToPass = 0;
+    calculateScores() {
+      this.score.computed.answeredCount = 0;
+      this.score.computed.correctCount = 0;
+      this.score.computed.currentPercentToPass = 0;
 
-      if (this.result.answers !== null) {
-        this.result.computed.answeredCount = this.result.answers.length;
+      if (this.score.answers !== null) {
+        this.score.computed.answeredCount = this.score.answers.length;
         this.quiz.questions.forEach((a, index) => {
-          if (this.result.answers[index] === a.answer) this.result.computed.correctCount += 1;
+          if (this.score.answers[index] === a.answer) this.score.computed.correctCount += 1;
         });
-        this.result.computed
+        this.score.computed
           .currentPercentToPass = (
-            (this.result.computed.correctCount / this.quiz.questions.length) * 100
+            (this.score.computed.correctCount / this.quiz.questions.length) * 100
           ).toFixed(0);
       }
-      if (this.result.computed.currentPercentToPass < this.quiz.settings.minimumPercentToPass) {
-        this.result.computed.passed = false;
+      if (this.score.computed.currentPercentToPass < this.quiz.settings.minimumPercentToPass) {
+        this.score.computed.passed = false;
       } else {
-        this.result.computed.passed = true;
+        this.score.computed.passed = true;
       }
-      // TODO store result on existing quizId and username
+      // TODO store score on existing quizId and username
     },
   },
 };

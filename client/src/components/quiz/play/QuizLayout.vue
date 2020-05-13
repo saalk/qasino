@@ -9,9 +9,9 @@
       <QuizQuestions
         v-if="quizProgress.subString(0,1)=='q'"
         v-bind:questionsProps='getQuizQuestions()'/>
-      <QuizResult
+      <QuizScore
         v-if="quizProgress.subString(0,1)=='r'"
-        v-bind:resultProps='getQuizResult()'/>
+        v-bind:scoreProps='getQuizScore()'/>
     </main>
   </q-page>
 </template>
@@ -20,11 +20,11 @@
 import { mapState, mapGetter, mapActions } from 'vuex';
 import QuizHeader from 'src/components/my-quiz/QuizHeader';
 import QuizQuestions from 'src/components/my-quiz/QuizQuestions';
-import QuizResult from 'src/components/my-quiz/QuizResult';
+import QuizScore from 'src/components/my-quiz/QuizScore';
 
 export default {
   name: 'QuizLayout',
-  quizResult: {
+  quizScore: {
     quizProgress: 'intro',
     currentQuestion: '0',
     startDateTime: '',
@@ -38,16 +38,16 @@ export default {
   components: {
     QuizHeader,
     QuizQuestions,
-    QuizResult,
+    QuizScore,
   },
   computed: {
-    ...mapState(['quiz', 'quizResult']),
+    ...mapState(['quiz', 'quizScore']),
     ...mapGetter(['getQuizMetaData', 'getQuizSettings',
-      'getQuizQuestions', 'getQuizResult']),
+      'getQuizQuestions', 'getQuizScore']),
   },
   methods: {
     ...mapActions(['modifyQuizMetaData', 'modifyQuizSettings',
-      'modifyQuizQuestions', 'modifyQuizResult']),
+      'modifyQuizQuestions', 'modifyQuizScore']),
 
     modifyQuizMetaData(quizMetaData) {
       this.modifyQuizMetaDatat(quizMetaData);
@@ -58,8 +58,8 @@ export default {
     modifyQuizQuestions(quizQuestions) {
       this.modifyQuizQuestions(quizQuestions);
     },
-    modifyQuizResult(quizResult) {
-      this.modifyQuizResult(quizResult);
+    modifyQuizScore(quizScore) {
+      this.modifyQuizScore(quizScore);
     },
   },
   startQuiz() {
@@ -75,7 +75,7 @@ export default {
     this.quizProgress = 'intro';
     this.introStage = true;
     this.questionStage = false;
-    this.resultsStage = false;
+    this.scoresStage = false;
   },
   previousQuestion() {
     if (this.currentQuestion > 1) {
@@ -93,7 +93,7 @@ export default {
     }
     if (this.currentQuestion === this.questions.length) {
       this.progressQuizState();
-      this.handleResults();
+      this.handleScores();
     } else {
       this.quizProgress = 'question-middle';
       this.currentQuestion += 1;
@@ -114,7 +114,7 @@ export default {
           this.quizProgress = 'question-last';
           break;
         case this.questions.length:
-          this.quizProgress = 'results';
+          this.quizProgress = 'scores';
           break;
         default:
           this.quizProgress = 'question-middle';
@@ -122,7 +122,7 @@ export default {
       }
     }
   },
-  handleResults() {
+  handleScores() {
     this.questions.forEach((a, index) => {
       if (this.choices[index] === a.answer) this.correct += 1;
     });
@@ -130,7 +130,7 @@ export default {
     // eslint-disable-next-line no-console
     // console.log(`${this.correct} ${this.perc}`);
     this.questionStage = false;
-    this.resultsStage = true;
+    this.scoresStage = true;
     this.introStage = true;
   },
 };

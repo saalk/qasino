@@ -116,8 +116,8 @@
             <!-- </q-form> -->
             <!-- form end -->
           </div>
-          <div v-if="resultsStage">
-            Your result is {{ correct }}/{{ questions.length }} correct answers
+          <div v-if="scoresStage">
+            Your score is {{ correct }}/{{ questions.length }} correct answers
             [ {{ perc }}% ]
           </div>
         </div>
@@ -168,7 +168,7 @@ export default {
       // use https://api.myjson.com/bins/d7kcc
       introStage: true,
       questionStage: false,
-      resultsStage: false,
+      scoresStage: false,
 
       title: '<empty>',
       description: '<empty>',
@@ -199,7 +199,7 @@ export default {
     startQuiz() {
       this.introStage = false;
       this.questionStage = true;
-      this.resultsStage = false;
+      this.scoresStage = false;
 
       this.currentQuestion = 1;
       this.answers = [];
@@ -216,12 +216,12 @@ export default {
       // console.log('answer event ftw', e);
       this.answers[this.currentQuestion - 1] = p;
       if (this.currentQuestion === this.questions.length) {
-        this.handleResults();
+        this.handleScores();
       } else {
         this.currentQuestion += 1;
       }
     },
-    handleResults() {
+    handleScores() {
       this.questions.forEach((a, index) => {
         if (this.answers[index] === a.answer) this.correct += 1;
       });
@@ -229,7 +229,7 @@ export default {
       // eslint-disable-next-line no-console
       // console.log(`${this.correct} ${this.perc}`);
       this.questionStage = false;
-      this.resultsStage = true;
+      this.scoresStage = true;
       this.introStage = true;
     },
   },

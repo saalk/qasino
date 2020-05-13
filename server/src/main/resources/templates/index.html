@@ -71,7 +71,7 @@
         template: `<div class="playingCard">
                     <div class="playingCard-body">
                         <h6 class="playingCard-title">
-                            {{ user.alias }}
+                            {{ user.userName }}
                         </h6>
                         <p class="playingCard-text">
                             <div>
@@ -86,8 +86,8 @@
         el: '#contents',
         data: {
             users: [
-                {userId: "1", alias: "Lionel Messi", email: "Argentina's superstar"},
-                {userId: "2", alias: "Christiano Ronaldo", email: "Portugal top-ranked user"}
+                {userId: "1", userName: "Lionel Messi", email: "Argentina's superstar"},
+                {userId: "2", userName: "Christiano Ronaldo", email: "Portugal top-ranked user"}
             ]
         },
         mounted () {

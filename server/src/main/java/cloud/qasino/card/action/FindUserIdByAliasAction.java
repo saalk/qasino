@@ -13,44 +13,44 @@ import java.util.Optional;
 
 @Slf4j
 @Component
-public class FindUserIdByAliasAction implements Action<FindUserIdByAliasAction.FindUserIdByAliasActionDTO, EventOutput.Result> {
+public class FindUserIdByUserNameAction implements Action<FindUserIdByUserNameAction.FindUserIdByUserNameActionDTO, EventOutput.Result> {
 
     @Resource
     UserRepository userRepository;
 
     @Override
-    public EventOutput.Result perform(FindUserIdByAliasActionDTO actionDto) {
+    public EventOutput.Result perform(FindUserIdByUserNameActionDTO actionDto) {
 
-        log.debug("Action: FindUserByAliasAction");
+        log.debug("Action: FindUserByUserNameAction");
 
         // set http to created when done
 
-        if (!(StringUtils.isEmpty(actionDto.getSuppliedAlias()))) {
-            int sequence = Math.toIntExact(userRepository.countByAlias(actionDto.getSuppliedAlias()));
+        if (!(StringUtils.isEmpty(actionDto.getSuppliedUserName()))) {
+            int sequence = Math.toIntExact(userRepository.countByUserName(actionDto.getSuppliedUserName()));
             if (sequence > 1) {
-                // todo LOW split alias and number
-                setErrorMessageConflict(actionDto, "alias", String.valueOf(actionDto.getSuppliedAlias()));
+                // todo LOW split userName and number
+                setErrorMessageConflict(actionDto, "userName", String.valueOf(actionDto.getSuppliedUserName()));
                 return EventOutput.Result.FAILURE;
             } else if (sequence == 0) {
-                setErrorMessageNotFound(actionDto, "alias", String.valueOf(actionDto.getSuppliedAlias()));
+                setErrorMessageNotFound(actionDto, "userName", String.valueOf(actionDto.getSuppliedUserName()));
                 return EventOutput.Result.FAILURE;
             }
-            Optional<User> foundUser = userRepository.findUserByAliasAndAliasSequence(actionDto.getSuppliedAlias(), 1);
+            Optional<User> foundUser = userRepository.findUserByUserNameAndUserNameSequence(actionDto.getSuppliedUserName(), 1);
             if (foundUser.isPresent()) {
                 actionDto.setSuppliedUserId(foundUser.get().getUserId());
                 // call FindAllEntitiesForInputAction after this to do the actual retrieval
             } else {
-                setErrorMessageNotFound(actionDto, "userId", actionDto.getSuppliedAlias());
+                setErrorMessageNotFound(actionDto, "userId", actionDto.getSuppliedUserName());
                 return EventOutput.Result.FAILURE;
             }
         } else {
-            setErrorMessageBadRequest(actionDto, "alias", String.valueOf(actionDto.getSuppliedAlias()));
+            setErrorMessageBadRequest(actionDto, "userName", String.valueOf(actionDto.getSuppliedUserName()));
             return EventOutput.Result.FAILURE;
         }
         return EventOutput.Result.SUCCESS;
     }
 
-    private void setErrorMessageNotFound(FindUserIdByAliasActionDTO actionDto, String id,
+    private void setErrorMessageNotFound(FindUserIdByUserNameActionDTO actionDto, String id,
                                          String value) {
         actionDto.setHttpStatus(404);
         actionDto.setErrorKey(id);
@@ -59,7 +59,7 @@ public class FindUserIdByAliasAction implements Action<FindUserIdByAliasAction.F
         actionDto.setUriAndHeaders();
     }
 
-    private void setErrorMessageBadRequest(FindUserIdByAliasActionDTO actionDto, String id,
+    private void setErrorMessageBadRequest(FindUserIdByUserNameActionDTO actionDto, String id,
                                            String value) {
         actionDto.setHttpStatus(400);
         actionDto.setErrorKey(id);
@@ -69,7 +69,7 @@ public class FindUserIdByAliasAction implements Action<FindUserIdByAliasAction.F
     }
 
 
-    private void setErrorMessageConflict(FindUserIdByAliasActionDTO actionDto, String id,
+    private void setErrorMessageConflict(FindUserIdByUserNameActionDTO actionDto, String id,
                                          String value) {
         actionDto.setHttpStatus(409);
         actionDto.setErrorKey(id);
@@ -79,11 +79,11 @@ public class FindUserIdByAliasAction implements Action<FindUserIdByAliasAction.F
         actionDto.setUriAndHeaders();
     }
 
-    public interface FindUserIdByAliasActionDTO {
+    public interface FindUserIdByUserNameActionDTO {
 
         // @formatter:off
         // Getters
-        String getSuppliedAlias();
+        String getSuppliedUserName();
 
         // Setter
         void setSuppliedUserId(int id);

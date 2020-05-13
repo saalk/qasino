@@ -33,7 +33,7 @@ import java.util.Map;
 @Slf4j
 public class QasinoFlowDTO //extends AbstractFlowDTO
         implements
-        FindUserIdByAliasAction.FindUserIdByAliasActionDTO,
+        FindUserIdByUserNameAction.FindUserIdByUserNameActionDTO,
         SignUpNewUserAction.SignUpNewUserActionDTO,
         FindAllEntitiesForInputAction.FindAllEntitiesForInputActionDTO,
         CalculateHallOfFameAction.CalculateHallOfFameActionDTO,
@@ -75,7 +75,7 @@ public class QasinoFlowDTO //extends AbstractFlowDTO
     private int suppliedPages = 0;
     private int suppliedMaxPerPage = 4;
     // user
-    private String suppliedAlias;
+    private String suppliedUserName;
     private String suppliedEmail;
     // league
     private String suppliedLeagueName;
@@ -295,9 +295,9 @@ public class QasinoFlowDTO //extends AbstractFlowDTO
             }
         }
         // user
-        key = "alias";
+        key = "userName";
         if (paramData.containsKey(key)) {
-            this.suppliedAlias = (paramData.get("alias"));
+            this.suppliedUserName = (paramData.get("userName"));
         }
         key = "email";
         if (paramData.containsKey(key)) {

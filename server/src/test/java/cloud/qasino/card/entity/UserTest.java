@@ -7,10 +7,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class UserTest {
 
     @Test
-    public void whenCalledGetAlias_thenCorrect() {
+    public void whenCalledGetUserName_thenCorrect() {
         User user = new User("Julie", 1, "julie@domain.com");
 
-        assertThat(user.getAlias()).isEqualTo("Julie");
+        assertThat(user.getUserName()).isEqualTo("Julie");
     }
 
     @Test
@@ -21,12 +21,12 @@ public class UserTest {
     }
 
     @Test
-    public void whenCalledSetAlias_thenCorrect() {
+    public void whenCalledSetUserName_thenCorrect() {
         User user = new User("Julie", 9, "julie@domain.com");
 
-        user.setAlias("John");
+        user.setUserName("John");
 
-        assertThat(user.getAlias()).isEqualTo("John");
+        assertThat(user.getUserName()).isEqualTo("John");
     }
 
     @Test

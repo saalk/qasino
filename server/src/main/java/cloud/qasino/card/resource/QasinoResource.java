@@ -40,7 +40,7 @@ public class QasinoResource {
     @Autowired
     FindAllEntitiesForInputAction findAllEntitiesForInputAction;
     @Autowired
-    FindUserIdByAliasAction findUserIdByAliasAction;
+    FindUserIdByUserNameAction findUserIdByUserNameAction;
     @Autowired
     SignUpNewUserAction signUpNewUserAction;
     @Autowired
@@ -52,7 +52,7 @@ public class QasinoResource {
     @Autowired
     MapQasinoResponseFromRetrievedDataAction mapQasinoResponseFromRetrievedDataAction;
 
-    @GetMapping(value = "/logon/{alias}")
+    @GetMapping(value = "/logon/{userName}")
     public ResponseEntity logon(
             @RequestHeader Map<String, String> headerData,
             @PathVariable Map<String, String> pathData,
@@ -70,7 +70,7 @@ public class QasinoResource {
             return ResponseEntity.status(HttpStatus.valueOf(flowDTO.getHttpStatus())).headers(flowDTO.getHeaders()).build();
         }
         // logic
-        output = findUserIdByAliasAction.perform(flowDTO);
+        output = findUserIdByUserNameAction.perform(flowDTO);
         if (output == EventOutput.Result.FAILURE) {
             return ResponseEntity.status(HttpStatus.valueOf(flowDTO.getHttpStatus())).headers(flowDTO.getHeaders()).build();
         }
@@ -86,7 +86,7 @@ public class QasinoResource {
     }
 
     // tested
-    @PostMapping(value = "/signup/{alias}")
+    @PostMapping(value = "/signup/{userName}")
     public ResponseEntity signup(
             @RequestHeader Map<String, String> headerData,
             @PathVariable Map<String, String> pathData,

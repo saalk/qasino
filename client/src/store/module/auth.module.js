@@ -26,29 +26,28 @@ const getters = {
 };
 
 const actions = {
-  // [LOGIN](context, credentials) {
-  //   return new Promise((resolve) => {
-  //     // ApiService.post("users/login", { user: credentials })
-  //     ApiUserService.post('login', { user: credentials })
-  //       .then(({ data }) => {
-  //         context.commit(SET_AUTH, data.user);
-  //         resolve(data);
-  //       })
-  //       .catch(({ response }) => {
-  //         context.commit(SET_ERROR, response.data.errors);
-  //       });
-  //   });
-  // },
-  // replace by this since a post gives the request in the resonse
-  [LOGIN](context) {
-    ApiUserService.get('user')
-      .then(({ data }) => {
-        context.commit(SET_AUTH, data.user);
-      })
-      .catch(({ response }) => {
-        context.commit(SET_ERROR, response.data.errors);
-      });
+  [LOGIN](context, credentials) {
+    return new Promise((resolve) => {
+      ApiUserService.post('user/login', { user: credentials })
+        .then(({ data }) => {
+          context.commit(SET_AUTH, data.user);
+          resolve(data);
+        })
+        .catch(({ response }) => {
+          context.commit(SET_ERROR, response.data.errors);
+        });
+    });
   },
+  // replace by this since a post gives the request in the resonse
+  // [LOGIN](context) {
+  //   ApiUserService.get('user/login')
+  //     .then(({ data }) => {
+  //       context.commit(SET_AUTH, data.user);
+  //     })
+  //     .catch(({ response }) => {
+  //       context.commit(SET_ERROR, response.data.errors);
+  //     });
+  // },
   [LOGOUT](context) {
     context.commit(PURGE_AUTH);
   },

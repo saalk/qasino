@@ -10,8 +10,8 @@ public class UserService {
     @Autowired
     private UserRepository repository;
 
-    public long countAlias(String alias) {
-        return repository.countByAlias(alias);
+    public long countUserName(String userName) {
+        return repository.countByUserName(userName);
     }
 
 }

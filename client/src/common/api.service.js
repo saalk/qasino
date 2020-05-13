@@ -196,7 +196,7 @@ export const TagsService = {
 };
 
 // # quizzes management
-// // provide tag, author or favorited query parameter to filter results
+// // provide tag, author or favorited query parameter to filter scores
 // GET /api/quizzes -> added /api/favorite
 // GET /api/quizzes/:id -> replaced by /api/quiz
 // POST /api/quizzes -> replaced by /api/quiz
@@ -206,7 +206,7 @@ export const QuizzesService = {
   query(type, params) {
     Vue.axios.defaults.baseURL = API_QUIZ_URL;
     // return ApiQuizService.query(`quizzes${type === 'follow' ? '/follow' : ''}`, {
-    return ApiQuizService.query(`quizzes${type === 'following' ? '' : ''}`, {
+    return ApiQuizService.query(`quiz${type === 'following' ? '' : ''}`, {
       params,
     });
   },
@@ -217,11 +217,11 @@ export const QuizzesService = {
   },
   create(params) {
     Vue.axios.defaults.baseURL = API_QUIZ_URL;
-    return ApiQuizService.post('quizzes', { quiz: params });
+    return ApiQuizService.post('quiz', { quiz: params });
   },
   update(id, params) {
     Vue.axios.defaults.baseURL = API_QUIZ_URL;
-    return ApiQuizService.update('quizzes', id, { quiz: params });
+    return ApiQuizService.update('quiz', id, { quiz: params });
   },
   destroy(id) {
     Vue.axios.defaults.baseURL = API_QUIZ_URL;
@@ -229,34 +229,34 @@ export const QuizzesService = {
       // hack due to static my-json-server
       return ApiQuizService.delete(`quiz/${id}`);
     }
-    return ApiQuizService.delete(`quizzes/${id}`);
+    return ApiQuizService.delete(`quiz/${id}`);
   },
 };
 // # assessment management
-// POST /api/quizzes/:id/results replaced by -> /api/results
-// GET /api/quizzes/:id/results
-// DELETE /api/quizzes/:id/results/:id
-export const ResultsService = {
+// POST /api/quizzes/:id/scores replaced by -> /api/scores
+// GET /api/quizzes/:id/scores
+// DELETE /api/quizzes/:id/scores/:id
+export const ScoresService = {
   get(quizid, userid) {
     Vue.axios.defaults.baseURL = API_ANSWER_URL;
     if (quizid === null || userid === null) {
-      throw new Error('resultsService.get() quiz + user id required to fetch results');
+      throw new Error('scoresService.get() quiz + user id required to fetch scores');
     }
-    // return ApiQuizService.get("quizzes", `${id}/results`);
-    return ApiAnswerService.get('result');
+    // return ApiQuizService.get("quizzes", `${id}/scores`);
+    return ApiAnswerService.get('score');
   },
 
   post(id, payload) {
-    // return ApiQuizService.post(`quizzes/${id}/results`, {
+    // return ApiQuizService.post(`quizzes/${id}/scores`, {
     Vue.axios.defaults.baseURL = API_QUIZ_URL;
     return ApiAnswerService.post('answer', {
-      result: { body: payload },
+      score: { body: payload },
     });
   },
 
-  destroy(id, resultId) {
+  destroy(id, scoreId) {
     Vue.axios.defaults.baseURL = API_QUIZ_URL;
-    return ApiAnswerService.delete(`results/${resultId}`);
+    return ApiAnswerService.delete(`score/${scoreId}`);
   },
 };
 
@@ -283,6 +283,6 @@ export default {
   ApiQuizService,
   TagsService,
   QuizzesService,
-  ResultsService,
+  ScoresService,
   FavoriteService,
 };

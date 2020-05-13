@@ -42,7 +42,7 @@ public class MapQasinoResponseFromRetrievedDataAction implements Action<MapQasin
         navigationBarItem = new NavigationBarItem();
         navigationBarItem.setVisible(actionDto.isLoggedOn());
         if (actionDto.isLoggedOn()) {
-            navigationBarItem.setItemName(actionDto.getGameUser().getAlias());
+            navigationBarItem.setItemName(actionDto.getGameUser().getUserName());
             navigationBarItem.setItemStats("Balance " + actionDto.getGameUser().getBalance());
             navigationUser.setHasLoggedOn(actionDto.isLoggedOn());
             navigationUser.setUser(actionDto.getGameUser());
@@ -203,10 +203,10 @@ public class MapQasinoResponseFromRetrievedDataAction implements Action<MapQasin
 
             if (player.isHuman()) {
                 seat.setUserId(player.getUser().getUserId());
-                seat.setAlias(player.getUser().getAlias());
+                seat.setUserName(player.getUser().getUserName());
             } else {
                 seat.setUserId(0);
-                seat.setAlias(player.getAiLevel().getLabel() + " " + player.getAvatar().getLabel());
+                seat.setUserName(player.getAiLevel().getLabel() + " " + player.getAvatar().getLabel());
             }
 
             seat.setBalance(player.getFiches());

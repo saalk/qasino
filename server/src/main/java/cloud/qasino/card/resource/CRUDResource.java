@@ -59,7 +59,7 @@ public class CRUDResource {
     }
 
     // CREATE, GET, PUT, DELETE for single entities
-    // /api/users/{id} - GET, DELETE, PUT alias, email only
+    // /api/users/{id} - GET, DELETE, PUT userName, email only
     // /api/games/{id} - GET, DELETE, PUT type, style, ante - rules apply!
     // /api/players/{id} - GET, DELETE, PUT sequence, PUT avatar, ailevel - rules apply
 
@@ -101,7 +101,7 @@ public class CRUDResource {
     @PutMapping(value = "/users/{id}")
     public ResponseEntity<User> updateUser(
             @PathVariable("id") String id,
-            @RequestParam(name = "alias", defaultValue = "") String alias,
+            @RequestParam(name = "userName", defaultValue = "") String userName,
             @RequestParam(name = "email", defaultValue = "") String email
     ) {
 
@@ -109,7 +109,7 @@ public class CRUDResource {
         URI uri = ServletUriComponentsBuilder.fromCurrentRequest()
                 .path("")
                 .query("")
-                .buildAndExpand(alias, email)
+                .buildAndExpand(userName, email)
                 .toUri();
         HttpHeaders headers = new HttpHeaders();
         headers.add("URI", String.valueOf(uri));
@@ -127,10 +127,10 @@ public class CRUDResource {
 
         // logic
         User updatedUser = foundUser.get();
-        if (!StringUtils.isEmpty(alias)) {
-            int sequence = (int) (userRepository.countByAlias(alias) + 1);
-            updatedUser.setAlias(alias);
-            updatedUser.setAliasSequence(sequence);
+        if (!StringUtils.isEmpty(userName)) {
+            int sequence = (int) (userRepository.countByUserName(userName) + 1);
+            updatedUser.setUserName(userName);
+            updatedUser.setUserNameSequence(sequence);
         }
         if (!StringUtils.isEmpty(email)) {
             updatedUser.setEmail(email);

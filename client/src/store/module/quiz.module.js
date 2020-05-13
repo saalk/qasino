@@ -4,14 +4,14 @@
 import Vue from 'vue';
 import {
   QuizzesService,
-  ResultsService,
+  ScoresService,
   FavoriteService,
 } from 'src/common/api.service';
 import {
   FETCH_QUIZ,
-  FETCH_RESULT,
+  FETCH_SCORE,
   ANSWER_CREATE,
-  RESULT_DESTROY,
+  SCORE_DESTROY,
   FAVORITE_ADD,
   FAVORITE_REMOVE,
   QUIZ_PUBLISH,
@@ -32,40 +32,55 @@ import {
 
 const initialState = {
   quiz: {
+    quizId: '',
     meta: {
-      title: '',
-      description: '',
-      subject: '',
-      audiance: '',
-      createdAt: `${(new Date()).getFullYear()}-${(new Date()).getMonth() + 1}-
+      title: 'dummy',
+      description: 'dummy',
+      subject: 'dummy',
+      audiance: 'dummy',
+      created: `${(new Date()).getFullYear()}-${(new Date()).getMonth() + 1}-
       ${(new Date()).getDay()}T${(new Date()).getHours()}:${(new Date()).getMinutes()}:
       ${(new Date()).getSeconds()}`,
-      updatedAt: '',
-      tagList: [],
+      updated: '',
+      tagList: ['dummy'],
     },
     author: {},
     settings: {
-      final: 't',
-      maxSecondsPerQuestion: '5',
-      numberOfHints: '2',
-      allowExit: 't',
-      allowGoBack: 't',
-      randomizeQuestions: 'f',
-      randomizeAnswers: 'f',
-      minimumPercentToPass: '100',
+      final: true,
+      maxSecondsPerQuestion: 10,
+      numberOfHints: 2,
+      allowExit: true,
+      allowGoBack: true,
+      randomizeQuestions: false,
+      randomizeAnswers: false,
+      minimumPercentToPass: 100,
+    },
+    computed: {
+      favorited: true,
+      favoritesCount: 0,
     },
     questions: [],
   },
-  result: {
-    resultId: 1,
+  score: {
+    scoreId: 1,
     quizId: 123,
-    createdAt: `${(new Date()).getFullYear()}-${(new Date()).getMonth() + 1}-
+    created: `${(new Date()).getFullYear()}-${(new Date()).getMonth() + 1}-
     ${(new Date()).getDay()}T${(new Date()).getHours()}:${(new Date()).getMinutes()}:
     ${(new Date()).getSeconds()}`,
-    updatedAt: '',
+    updated: '',
     hintsTaken: 0,
+    computed: {
+      answeredCount: 0,
+      correctCount: 0,
+      currentQuestion: 0,
+      currentIndex: 0,
+      currentPercentToPass: 0,
+      passed: false,
+    },
     answers: [],
-    user: '',
+    user: {
+      username: 'dummy',
+    },
   },
 };
 
@@ -81,18 +96,18 @@ export const actions = {
     context.commit(SET_QUIZ, data.quiz);
     return data;
   },
-  async [FETCH_RESULT](context, quizid, userid) {
-    const { data } = await ResultsService.get(quizid, userid);
+  async [FETCH_SCORE](context, quizid, userid) {
+    const { data } = await ScoresService.get(quizid, userid);
     context.commit(SET_ANSWERS, data.answers);
     return data.answers;
   },
   async [ANSWER_CREATE](context, payload) {
-    await ResultsService.post(payload.id, payload.answer);
+    await ScoresService.post(payload.id, payload.answer);
     context.dispatch(SET_ANSWERS, payload.id);
   },
-  async [RESULT_DESTROY](context, payload) {
-    await ResultsService.destroy(payload.id, payload.answerId);
-    context.dispatch(RESULT_DESTROY, payload.id);
+  async [SCORE_DESTROY](context, payload) {
+    await ScoresService.destroy(payload.id, payload.answerId);
+    context.dispatch(SCORE_DESTROY, payload.id);
   },
   async [FAVORITE_ADD](context, id) {
     const { data } = await FavoriteService.add(id);

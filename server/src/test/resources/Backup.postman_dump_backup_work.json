@@ -457,7 +457,7 @@
 				{
 					"id": "67cd14b3-20e7-4c98-8620-b562f1214874",
 					"name": "Players-C-1",
-					"url": "{{url}}/qasino/users/aliasextra?email=asdg",
+					"url": "{{url}}/qasino/users/userNameextra?email=asdg",
 					"description": null,
 					"data": null,
 					"dataOptions": null,
@@ -577,7 +577,7 @@
 				{
 					"id": "c01ac9ef-4ca9-4d1d-bf2c-7ab9fa3672ab",
 					"name": "Players-U-1",
-					"url": "{{url}}/qasino/players/1?alias=alias&email=n@n.nl",
+					"url": "{{url}}/qasino/players/1?userName=userName&email=n@n.nl",
 					"description": null,
 					"data": null,
 					"dataOptions": null,
@@ -595,8 +595,8 @@
 					"pathVariableData": [],
 					"queryParams": [
 						{
-							"key": "alias",
-							"value": "alias",
+							"key": "userName",
+							"value": "userName",
 							"equals": true,
 							"description": null,
 							"enabled": true
@@ -662,7 +662,7 @@
 				{
 					"id": "06ced14e-97f5-46f4-afec-2bba5915aef9",
 					"name": "Users-C-1",
-					"url": "{{url}}/qasino/users/alias?email=asdg@asdf.nl",
+					"url": "{{url}}/qasino/users/userName?email=asdg@asdf.nl",
 					"description": null,
 					"data": null,
 					"dataOptions": null,
@@ -792,7 +792,7 @@
 				{
 					"id": "bc401003-fe43-4391-8b70-e2a248e6fda0",
 					"name": "Users-U-1",
-					"url": "{{url}}/qasino/users/1?alias=alias&email=n@n.nl",
+					"url": "{{url}}/qasino/users/1?userName=userName&email=n@n.nl",
 					"description": null,
 					"data": null,
 					"dataOptions": null,
@@ -810,8 +810,8 @@
 					"pathVariableData": [],
 					"queryParams": [
 						{
-							"key": "alias",
-							"value": "alias",
+							"key": "userName",
+							"value": "userName",
 							"equals": true,
 							"description": null,
 							"enabled": true

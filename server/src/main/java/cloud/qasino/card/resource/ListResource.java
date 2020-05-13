@@ -93,8 +93,8 @@ public class ListResource {
 
         // logic
         Pageable pageable = PageRequest.of(pages, maximum, Sort.by(
-                Order.asc("ALIAS"),
-                Order.desc("ALIAS_SEQ")));
+                Order.asc("UserName"),
+                Order.desc("UserName_SEQ")));
 
         ArrayList users = (ArrayList) userRepository.findAllUsersWithPage(pageable);
 

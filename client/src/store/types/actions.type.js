@@ -7,13 +7,13 @@ export const QUIZ_RESET_STATE = 'resetQuizState';
 
 export const CHECK_AUTH = 'checkAuth';
 export const ANSWER_CREATE = 'createAnswer';
-export const RESULT_DESTROY = 'destroyResult';
+export const SCORE_DESTROY = 'destroyScore';
 export const FAVORITE_ADD = 'addFavorite';
 export const FAVORITE_REMOVE = 'removeFavorite';
 
 export const FETCH_QUIZ = 'fetchQuiz';
 export const FETCH_QUIZS = 'fetchQuizzes';
-export const FETCH_RESULT = 'fetchResult';
+export const FETCH_SCORE = 'fetchScore';
 export const FETCH_PROFILE = 'fetchProfile';
 export const FETCH_PROFILE_FOLLOW = 'fetchProfileFollow';
 export const FETCH_PROFILE_UNFOLLOW = 'fetchProfileUnfollow';

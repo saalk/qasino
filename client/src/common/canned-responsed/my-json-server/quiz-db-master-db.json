@@ -1,0 +1,367 @@
+{
+	"tags": {
+		"tags": [
+			"basic",
+			"x",
+			"y"
+		]
+	},
+	"quizzes": {
+		"quizzesCount": 2,
+		"quizzes": [{
+				"quizId": 123,
+				"meta": {
+					"title": "x quiz",
+					"description": "Test your basic product x knowledge",
+					"subject": "Product x",
+					"audiance": "engineers",
+					"createdAt": "2016-02-18T03:22:56.637Z",
+					"updatedAt": "2016-02-18T03:48:35.824Z",
+					"tagList": [
+						"basic",
+						"x"
+					]
+				},
+				"computed": {
+					"favorited": true,
+					"favoritesCount": 321
+				},
+				"author": {
+					"username": "tester",
+					"bio": "Test user api",
+					"image": "https://api.adorable.io/avatars/285/test@test.com",
+					"computed": {
+						"following": false,
+						"followingCount": 285
+					}
+				},
+				"settings": {
+					"final": "t",
+					"maxSecondsPerQuestion": 5,
+					"numberOfHints": 2,
+					"allowExit": "f",
+					"allowGoBack": "f",
+					"randomizeQuestions": "t",
+					"randomizeAnswers": "t",
+					"minimumPercentToPass": 60
+				},
+				"questions": [{
+						"questionId": 111,
+						"text": "Is product x hosted by a third party outside ING?",
+						"category": "trueFalse",
+						"choices": null,
+						"answer": "t",
+						"explanation": "Product x is being administrated at a third party located in y"
+					},
+					{
+						"questionId": 222,
+						"text": "Which product variant of product x has the beste features?",
+						"category": "multiChoice",
+						"choices": [{
+								"label": "Variant a",
+								"value": "a"
+							},
+							{
+								"label": "Variant b",
+								"value": "b"
+							},
+							{
+								"label": "Variant c",
+								"value": "c"
+							}
+						],
+						"answer": "c",
+						"explanation": "Variant c has in total z features more then the other variants"
+					},
+					{
+						"questionId": 333,
+						"text": "What is the minimum age to apply for porduct x?",
+						"category": "numerical",
+						"choices": null,
+						"answer": 18,
+						"explanation": "You should be at least 18 to apply but for a partner 16 is the minimum"
+					}
+				]
+			},
+			{
+				"quizId": 456,
+				"meta": {
+					"title": "y quiz",
+					"description": "Test your basic product y knowledge",
+					"subject": "Product y",
+					"audiance": "engineers",
+					"createdAt": "2016-02-18T03:22:56.637Z",
+					"updatedAt": "2016-02-18T03:48:35.824Z",
+					"tagList": [
+						"basic",
+						"y"
+					]
+				},
+				"computed": {
+					"favorited": false,
+					"favoritesCount": 456
+				},
+				"author": {
+					"username": "visitor",
+					"bio": "Test user api",
+					"image": "https://api.adorable.io/avatars/285/visitor@visitor.com",
+					"computed": {
+						"following": true,
+						"followingCount": 285
+					}
+				},
+				"settings": {
+					"final": "t",
+					"maxSecondsPerQuestion": 5,
+					"numberOfHints": 2,
+					"allowExit": "f",
+					"allowGoBack": "f",
+					"randomizeQuestions": "t",
+					"randomizeAnswers": "t",
+					"minimumPercentToPass": 60
+				},
+				"questions": [{
+						"questionId": 112,
+						"text": "Is product y hosted by a third party outside ING?",
+						"category": "trueFalse",
+						"choices": null,
+						"answer": "t",
+						"explanation": "Product y is being administrated at a third party located in y"
+					},
+					{
+						"questionId": 223,
+						"text": "Which product variant of product y has the beste features?",
+						"category": "multiChoice",
+						"choices": [{
+								"label": "Variant a",
+								"value": "a"
+							},
+							{
+								"label": "Variant b",
+								"value": "b"
+							},
+							{
+								"label": "Variant c",
+								"value": "c"
+							}
+						],
+						"answer": "c",
+						"explanation": "Variant c has in total z features more then the other variants"
+					},
+					{
+						"questionId": 334,
+						"text": "What is the minimum age to apply for porduct y?",
+						"category": "numerical",
+						"choices": null,
+						"answer": 18,
+						"explanation": "You should be at least 18 to apply but for a partner 16 is the minimum"
+					}
+				]
+			},
+			{
+				"quizId": 789,
+				"meta": {
+					"title": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+					"description": "Curabitur tortor. Pellentesque nibh. Aenean quam. In scelerisque sem at dolor. Maecenas mattis. Sed convallis tristique sem.",
+					"subject": "Nam nec ante. Sed lacinia, urna non tincidunt mattis, tortor neque adipiscing diam, a cursus ipsum ante quis turpis.",
+					"audiance": "Integer euismod lacus luctus magna. Quisque cursus, metus vitae pharetra auctor, sem massa mattis sem, at interdum magna augue eget diam.",
+					"createdAt": "2016-02-18T03:22:56.637Z",
+					"updatedAt": "2016-02-18T03:48:35.824Z",
+					"tagList": [
+						"basic",
+						"advanced",
+						"expert",
+						"x",
+						"y",
+						"z"
+					]
+				},
+				"computed": {
+					"favorited": false,
+					"favoritesCount": 789
+				},
+				"author": {
+					"username": "random user",
+					"bio": "Random user api",
+					"image": "https://api.adorable.io/avatars/285/random@random.com",
+					"computed": {
+						"following": true,
+						"followingCount": 285
+					}
+				},
+				"settings": {
+					"final": "t",
+					"maxSecondsPerQuestion": 5,
+					"numberOfHints": 2,
+					"allowExit": "f",
+					"allowGoBack": "f",
+					"randomizeQuestions": "t",
+					"randomizeAnswers": "t",
+					"minimumPercentToPass": 60
+				},
+				"questions": [{
+					"questionId": 1234,
+					"text": "Morbi in dui quis est pulvinar ullamcorper. Nulla facilisi. Integer lacinia sollicitudin massa. Cras metus. Sed aliquet risus a tortor.?",
+					"category": "trueFalse",
+					"choices": null,
+					"answer": "t",
+					"explanation": "Praesent blandit dolor. Sed non quam. In vel mi sit amet augue congue elementum. Morbi in ipsum sit amet pede facilisis laoreet."
+				}]
+			}
+		]
+	},
+	"quiz": {
+		"quiz": {
+			"quizId": "123",
+			"meta": {
+				"title": "x quiz",
+				"description": "Test your basic product x knowledge",
+				"subject": "Product x",
+				"audiance": "engineers",
+				"createdAt": "2016-02-18T03:22:56.637Z",
+				"updatedAt": "2016-02-18T03:48:35.824Z",
+				"tagList": [
+					"basic",
+					"x"
+				]
+			},
+			"computed": {
+				"favorited": true,
+				"favoritesCount": 123
+			},
+			"author": {
+				"username": "tester",
+				"bio": "Test user api",
+				"image": "https://api.adorable.io/avatars/285/tester@tester.com",
+				"computed": {
+					"following": false,
+					"followingCount": 285
+				}
+			},
+			"settings": {
+				"final": "t",
+				"maxSecondsPerQuestion": 5,
+				"numberOfHints": 2,
+				"allowExit": "f",
+				"allowGoBack": "f",
+				"randomizeQuestions": "t",
+				"randomizeAnswers": "t",
+				"minimumPercentToPass": 60
+			},
+			"questions": [{
+					"questionId": 111,
+					"text": "Is product x hosted by a third party outside ING?",
+					"category": "trueFalse",
+					"choices": null,
+					"answer": "t",
+					"explanation": "Product x is being administrated at a third party located in y"
+				},
+				{
+					"questionId": "222",
+					"text": "Which product variant of product x has the beste features?",
+					"category": "multiChoice",
+					"choices": [{
+							"label": "Variant a",
+							"value": "a"
+						},
+						{
+							"label": "Variant b",
+							"value": "b"
+						},
+						{
+							"label": "Variant c",
+							"value": "c"
+						}
+					],
+					"answer": "c",
+					"explanation": "Variant c has in total z features more then the other variants"
+				},
+				{
+					"questionId": 333,
+					"text": "What is the minimum age to apply for porduct x?",
+					"category": "numerical",
+					"choices": null,
+					"answer": "18",
+					"explanation": "You should be at least 18 to apply but for a partner 16 is the minimum"
+				}
+			]
+		}
+	},
+	"favorite": {
+		"quiz": {
+			"quizId": 456,
+			"meta": {
+				"title": "y quiz",
+				"description": "Test your basic product y knowledge",
+				"subject": "Product y",
+				"audiance": "engineers",
+				"createdAt": "2016-02-18T03:22:56.637Z",
+				"updatedAt": "2016-02-18T03:48:35.824Z",
+				"tagList": [
+					"basic",
+					"y"
+				]
+			},
+			"computed": {
+				"favorited": true,
+				"favoritesCount": 456
+			},
+			"author": {
+				"username": "visitor",
+				"bio": "Test user api",
+				"image": "https://api.adorable.io/avatars/285/visitor@visitor.com",
+				"computed": {
+					"following": true,
+					"followingCount": 285
+				}
+			},
+			"settings": {
+				"final": "t",
+				"maxSecondsPerQuestion": 5,
+				"numberOfHints": 2,
+				"allowExit": "f",
+				"allowGoBack": "f",
+				"randomizeQuestions": "t",
+				"randomizeAnswers": "t",
+				"minimumPercentToPass": 60
+			},
+			"questions": [{
+					"questionId": 112,
+					"text": "Is product y hosted by a third party outside ING?",
+					"category": "trueFalse",
+					"choices": null,
+					"answer": "t",
+					"explanation": "Product y is being administrated at a third party located in y"
+				},
+				{
+					"questionId": 223,
+					"text": "Which product variant of product y has the beste features?",
+					"category": "multiChoice",
+					"choices": [{
+							"label": "Variant a",
+							"value": "a"
+						},
+						{
+							"label": "Variant b",
+							"value": "b"
+						},
+						{
+							"label": "Variant c",
+							"value": "c"
+						}
+					],
+					"answer": "c",
+					"explanation": "Variant c has in total z features more then the other variants"
+				},
+				{
+					"questionId": 334,
+					"text": "What is the minimum age to apply for porduct y?",
+					"category": "numerical",
+					"choices": null,
+					"answer": "18",
+					"explanation": "You should be at least 18 to apply but for a partner 16 is the minimum"
+				}
+			]
+		}
+	}
+}

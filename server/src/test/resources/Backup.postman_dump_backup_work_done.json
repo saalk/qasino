@@ -5637,7 +5637,7 @@
 				{
 					"id": "8c77da14-bb98-4838-a942-cf5d7ba7545b",
 					"name": "Users-U",
-					"url": "{{url}}/qasino/users/2?alias=alias&email=a@a.nl",
+					"url": "{{url}}/qasino/users/2?userName=userName&email=a@a.nl",
 					"description": "",
 					"data": null,
 					"dataOptions": null,
@@ -5655,8 +5655,8 @@
 					"pathVariableData": [],
 					"queryParams": [
 						{
-							"key": "alias",
-							"value": "alias",
+							"key": "userName",
+							"value": "userName",
 							"equals": true,
 							"description": "",
 							"enabled": true
@@ -5732,7 +5732,7 @@
 				{
 					"id": "bca84185-d8fd-45d9-a0ac-0f832805fdfa",
 					"name": "Users-C",
-					"url": "{{url}}/qasino/users/alias?email=a@a.nl",
+					"url": "{{url}}/qasino/users/userName?email=a@a.nl",
 					"description": "",
 					"data": null,
 					"dataOptions": null,

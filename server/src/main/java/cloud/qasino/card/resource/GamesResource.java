@@ -515,7 +515,7 @@ public class GamesResource {
 
         // rules
         if (AiLevel.fromLabelWithDefault(aiLevel) == AiLevel.HUMAN)
-            // todo LOW split alias and number
+            // todo LOW split userName and number
             return ResponseEntity.status(HttpStatus.CONFLICT).headers(headers).build();
 
         int gameId = Integer.parseInt(id);

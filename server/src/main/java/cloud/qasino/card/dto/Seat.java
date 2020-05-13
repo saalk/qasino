@@ -31,7 +31,7 @@ public class Seat {
 
     // when user
     private int userId;
-    private String alias;
+    private String userName;
     private int balance;
     private int fiches;
 

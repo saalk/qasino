@@ -52,7 +52,7 @@ export default new Vuex.Store({
 //         answer: 't',
 //         explanation: 'Product x is being administrated at a third party located in y',
 //       },
-//       quizResult: {
+//       quizScore: {
 //         quizProgress: 'intro',
 //         currentQuestion: '0',
 //         startDateTime: '',
@@ -68,7 +68,7 @@ export default new Vuex.Store({
 //       getQuizSettings: (state) => state.quiz.setttings,
 //       getQuizQuestions: (state) => state.quiz.questinos,
 
-//       getQuizResult: (state) => state.quizResult,
+//       getQuizScore: (state) => state.quizScore,
 //     },
 //     mutations: {
 //       modifyQuizMetaData(metaData) {
@@ -80,8 +80,8 @@ export default new Vuex.Store({
 //       modifyQuizQuestions(questions) {
 //         this.quiz.questions = questions;
 //       },
-//       modifyQuizResult(quizResult) {
-//         this.quizResult = quizResult;
+//       modifyQuizScore(quizScore) {
+//         this.quizScore = quizScore;
 //       },
 //     },
 //     actions: {
@@ -99,8 +99,8 @@ export default new Vuex.Store({
 //         context.commit('modifyQuizQuestions', quizQuestions);
 //       },
 
-//       modifyQuizResult(context, quizResult) {
-//         context.commit('modifyQuizResult', quizResult);
+//       modifyQuizScore(context, quizScore) {
+//         context.commit('modifyQuizScore', quizScore);
 //       },
 //     },
 //   });

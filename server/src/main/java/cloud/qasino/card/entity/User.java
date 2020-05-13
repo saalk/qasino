@@ -26,7 +26,7 @@ import java.util.Random;
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 @Table(name = "users", indexes =
         {@Index(name = "users_index", columnList = "user_id", unique = true),
-                @Index(name = "alias_index", columnList = "alias", unique = false)
+                @Index(name = "userName_index", columnList = "userName", unique = false)
         })
 public class User {
 
@@ -43,11 +43,11 @@ public class User {
 
     // Normal fields
 
-    @Column(name = "alias", length = 50, nullable = false)
-    private String alias;
+    @Column(name = "userName", length = 50, nullable = false)
+    private String userName;
 
-    @Column(name = "alias_seq")
-    private int aliasSequence;
+    @Column(name = "userName_seq")
+    private int userNameSequence;
 
 
     @Column(name = "email", length = 50, nullable = true)
@@ -102,13 +102,13 @@ public class User {
         DateTimeFormatter week = DateTimeFormatter.ofPattern("W");
         this.week = localDateAndTime.format(week);
         this.day = localDateAndTime.getDayOfMonth();
-        this.alias = "alias";
+        this.userName = "userName";
     }
 
-    public User(String alias, int aliasSequence, String email) {
+    public User(String userName, int userNameSequence, String email) {
         this();
-        this.alias = alias;
-        this.aliasSequence = aliasSequence;
+        this.userName = userName;
+        this.userNameSequence = userNameSequence;
         this.email = email;
     }
 

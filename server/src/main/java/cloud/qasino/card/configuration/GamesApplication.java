@@ -71,7 +71,7 @@ public class GamesApplication {
             TurnRepository turnRepository,
             CardMoveRepository cardMoveRepository
     ) {
-        User user = new User("aliasName", 1, "a@b.c");
+        User user = new User("userNameName", 1, "a@b.c");
         int pawn = User.pawnShipValue(0);
         user.pawnShip(pawn);
         user = userRepository.save(user);

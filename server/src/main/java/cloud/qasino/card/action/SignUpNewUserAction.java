@@ -22,23 +22,23 @@ public class SignUpNewUserAction implements Action<SignUpNewUserAction.SignUpNew
 
         log.debug("Action: SignUpNewUserAction");
 
-        if (!(StringUtils.isEmpty(actionDto.getSuppliedAlias()))) {
-            int sequence = Math.toIntExact(userRepository.countByAlias(actionDto.getSuppliedAlias()));
+        if (!(StringUtils.isEmpty(actionDto.getSuppliedUserName()))) {
+            int sequence = Math.toIntExact(userRepository.countByUserName(actionDto.getSuppliedUserName()));
             if (sequence != 0) {
-                setErrorMessageConflict(actionDto, "alias", String.valueOf(actionDto.getSuppliedAlias()));
+                setErrorMessageConflict(actionDto, "userName", String.valueOf(actionDto.getSuppliedUserName()));
                 return EventOutput.Result.FAILURE;
             }
-            // todo LOW split alias and number
-            User createdUser = userRepository.save(new User(actionDto.getSuppliedAlias(), 1,
+            // todo LOW split userName and number
+            User createdUser = userRepository.save(new User(actionDto.getSuppliedUserName(), 1,
                     actionDto.getSuppliedEmail()));
             if (createdUser.getUserId() == 0) {
-                setErrorMessageInternalServerError(actionDto, "alias", String.valueOf(actionDto.getSuppliedAlias()));
+                setErrorMessageInternalServerError(actionDto, "userName", String.valueOf(actionDto.getSuppliedUserName()));
                 return EventOutput.Result.FAILURE;
             }
             actionDto.setSuppliedUserId(createdUser.getUserId());
             // call FindAllEntitiesForInputAction after this to do the actual retrieval
         } else {
-            setErrorMessageBadRequest(actionDto, "alias", String.valueOf(actionDto.getSuppliedAlias()));
+            setErrorMessageBadRequest(actionDto, "userName", String.valueOf(actionDto.getSuppliedUserName()));
             return EventOutput.Result.FAILURE;
         }
         return EventOutput.Result.SUCCESS;
@@ -49,7 +49,7 @@ public class SignUpNewUserAction implements Action<SignUpNewUserAction.SignUpNew
         actionDto.setHttpStatus(400);
         actionDto.setErrorKey(id);
         actionDto.setErrorValue(value);
-        actionDto.setErrorMessage("Supplied value for alias is empty");
+        actionDto.setErrorMessage("Supplied value for userName is empty");
         actionDto.setUriAndHeaders();
     }
 
@@ -59,7 +59,7 @@ public class SignUpNewUserAction implements Action<SignUpNewUserAction.SignUpNew
         actionDto.setHttpStatus(409);
         actionDto.setErrorKey(id);
         actionDto.setErrorValue(value);
-        actionDto.setErrorMessage("Alias [" + value + "] not available any more");
+        actionDto.setErrorMessage("UserName [" + value + "] not available any more");
         actionDto.setUriAndHeaders();
     }
 
@@ -76,7 +76,7 @@ public class SignUpNewUserAction implements Action<SignUpNewUserAction.SignUpNew
 
         // @formatter:off
         // Getters
-        String getSuppliedAlias();
+        String getSuppliedUserName();
         String getSuppliedEmail();
 
         // Setter
