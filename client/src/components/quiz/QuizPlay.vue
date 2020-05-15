@@ -87,9 +87,9 @@ export default {
       score: {
         scoreId: 0,
         quizId: 0,
-        createdAt: '',
-        updatedAt: '',
-        hintsTaken: '0',
+        created: '',
+        updated: '',
+        hintsTaken: 0,
         // computed
         computed: {
           answeredCount: 0,
@@ -108,11 +108,11 @@ export default {
       },
       // current answer
       answer: {
-        questionId: '',
+        questionId: 0,
         answer: '',
-        secondsToAnswer: '',
+        secondsToAnswer: 0,
       },
-      totalPauzeTime: '',
+      totalPauzeTime: 0,
     };
   },
   computed: {
@@ -120,7 +120,7 @@ export default {
   },
   methods: {
     startQuiz() {
-      this.totalPauzeTime = '';
+      this.totalPauzeTime = 0;
       // (re)set the scores
       this.score.quizId = this.quiz.quizId;
       this.score.createdAt = '';

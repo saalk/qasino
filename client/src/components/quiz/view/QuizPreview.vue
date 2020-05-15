@@ -22,7 +22,7 @@
             <span>&nbsp;by:&nbsp;</span>
             <router-link
               :to="{ name: 'profile-author',
-              params: { username: quiz.author.username } }">{{ quiz.author.username }}
+              params: { username: this.quiz.author.username } }">{{ quiz.author.username }}
             </router-link>
             </q-img>
           </div>

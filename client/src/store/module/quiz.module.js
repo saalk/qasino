@@ -32,7 +32,7 @@ import {
 
 const initialState = {
   quiz: {
-    quizId: '',
+    quizId: 0,
     meta: {
       title: 'dummy',
       description: 'dummy',

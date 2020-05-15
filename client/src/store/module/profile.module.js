@@ -24,22 +24,23 @@ const actions = {
     // do not send an id, does not work
     let { username } = payload;
     if (username !== null) { username = ''; }
-    // return ApiUserService.get('profiles', username)
+    return ApiUserService.get('profile')
+      .then(({ data }) => {
+        context.commit(SET_PROFILE, data.profile);
+        return data;
+      })
+      .catch(({ response }) => {
+        // #todo SET_ERROR cannot work in multiple states
+        context.commit(SET_ERROR, response.data.errors);
+      });
+    // ApiUserService.get('profile', username)
     //   .then(({ data }) => {
     //     context.commit(SET_PROFILE, data.profile);
     //     return data;
     //   })
-    //   .catch(() => {
-    //     // #todo SET_ERROR cannot work in multiple states
-    //     // context.commit(SET_ERROR, response.data.errors)
+    //   .catch(({ response }) => {
+    //     context.commit(SET_ERROR, response.data.errors);
     //   });
-    ApiUserService.get('profile')
-      .then(({ data }) => {
-        context.commit(SET_PROFILE, data.profile);
-      })
-      .catch(({ response }) => {
-        context.commit(SET_ERROR, response.data.errors);
-      });
   },
   [FETCH_PROFILE_FOLLOW](context, payload) {
     // const { username } = payload;

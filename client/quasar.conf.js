@@ -64,10 +64,10 @@ module.exports = function (ctx) {
     build: {
       env: ctx.dev
         ? { // so on dev we'll have
-          API: JSON.stringify('https://quizzes.getsandbox.com:443')
+          API: JSON.stringify('https://quizzes.getsandbox.com:443'),
         }
         : { // and on build (production):
-          API: JSON.stringify('https://quizzes.getsandbox.com:443')
+          API: JSON.stringify('https://quizzes.getsandbox.com:443'),
         },
       scopeHoisting: true,
       vueRouterMode: 'hash', // available values: 'hash', 'history'
@@ -98,7 +98,7 @@ module.exports = function (ctx) {
       https: false,
       port: 8080,
       open: true, // opens browser window automatically
-      vueDevtools: true,
+      // vueDevtools: true,
     },
 
     // animations: 'all', // --- includes all animations

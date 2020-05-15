@@ -12,6 +12,7 @@ export const FAVORITE_ADD = 'addFavorite';
 export const FAVORITE_REMOVE = 'removeFavorite';
 
 export const FETCH_QUIZ = 'fetchQuiz';
+export const FETCH_ANSWERS = 'fetchAnswers';
 export const FETCH_QUIZS = 'fetchQuizzes';
 export const FETCH_SCORE = 'fetchScore';
 export const FETCH_PROFILE = 'fetchProfile';

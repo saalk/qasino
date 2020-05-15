@@ -60,16 +60,18 @@ export default {
       };
     },
     followUserLabel() {
-      return `${this.profile.computed.following ? 'Unfollow' : 'Follow'} ${
-        this.quiz.author.username
-      }`;
+      const isFollowing = this.quiz.author.computed.following ? 'Unfollow' : 'Follow';
+      return isFollowing;
+      // return `${this.profile.computed.following ? 'Unfollow' : 'Follow'} ${
+      //   this.quiz.author.username
+      // }`;
     },
     favoriteQuizIcon() {
       // favorite_border = no solid
       return this.quiz.computed.favorited ? 'bookmark' : 'bookmark_border';
     },
     favoriteCounter() {
-      return `(${this.quiz.computed.favoritesCount})`;
+      return this.quiz.computed.favoritesCount;
     },
   },
   methods: {
