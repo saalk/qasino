@@ -13,7 +13,7 @@
       >
         {{ answer.author.username }}
       </router-link> -->
-      <span class="date-posted">{{ score.createdAt | date }}</span>
+      <span class="date-posted">{{ score.created | date }}</span>
       <span v-if="isCurrentUser" class="mod-options">
         <i class="ion-trash-a" @click="destroy(scoreId, questionId)"></i>
       </span>

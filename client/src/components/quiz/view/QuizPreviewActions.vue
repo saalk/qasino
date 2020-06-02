@@ -2,12 +2,12 @@
   <q-card-actions class="no-padding no-margin">
 
     <router-link class="actions"
-      :to="{ name: 'quiz-play', params: { quizId: quiz.quizId } }">
+      :to="{ name: 'quiz-play', params: { quizId: this.quiz.quizId } }">
       <q-btn dense outline text-color="grey" label="Start quiz" no-caps></q-btn>
     </router-link>
 
     <router-link v-if=canModify class="actions"
-      :to="{ name: 'quiz-edit', params: { quizId: quiz.quizId } }">
+      :to="{ name: 'quiz-edit', params: { quizId: this.quiz.quizId } }">
       <q-btn outline dense color="blue-grey-6" icon="las la-pen-alt">
         <q-tooltip content-class="bg-accent">edit</q-tooltip>
       </q-btn>

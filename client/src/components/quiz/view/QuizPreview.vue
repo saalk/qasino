@@ -37,7 +37,7 @@
             &nbsp;&nbsp;Questions: {{ quiz.questions.length }}
             <br>
             <br>
-            &nbsp;&nbsp;{{ quiz.meta.createdAt | date }}
+            &nbsp;&nbsp;{{ quiz.meta.created | date }}
           </div>
         </div>
       </div>

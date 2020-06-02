@@ -127,7 +127,7 @@ export const actions = {
     return QuizzesService.destroy(id);
   },
   [QUIZ_EDIT]({ state }) {
-    return QuizzesService.update(state.quiz.id, state.quiz);
+    return QuizzesService.update(state.quiz.quizId, state.quiz);
   },
   [QUIZ_EDIT_ADD_TAG](context, tag) {
     context.commit(TAG_ADD, tag);

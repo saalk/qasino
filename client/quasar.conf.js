@@ -70,6 +70,7 @@ module.exports = function (ctx) {
           API: JSON.stringify('https://quizzes.getsandbox.com:443'),
         },
       scopeHoisting: true,
+      devtool: 'source-map',
       vueRouterMode: 'hash', // available values: 'hash', 'history'
       showProgress: true,
       gzip: false,

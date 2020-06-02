@@ -98,8 +98,8 @@ export const ApiQuizService = {
   get(resource, id = '') {
     Vue.axios.defaults.baseURL = API_QUIZ_URL;
     if (id !== '') {
-      // return Vue.axios.get(`${resource}/${id}`).catch(error => {
-      return Vue.axios.get(`${resource}`).catch((error) => {
+      return Vue.axios.get(`${resource}/${id}`).catch((error) => {
+      // return Vue.axios.get(`${resource}`).catch((error) => {
         throw new Error(`ApiQuizService ${error}`);
       });
     }
@@ -197,39 +197,39 @@ export const TagsService = {
 
 // # quizzes management
 // // provide tag, author or favorited query parameter to filter scores
-// GET /api/quizzes -> added /api/favorite
-// GET /api/quizzes/:id -> replaced by /api/quiz
-// POST /api/quizzes -> replaced by /api/quiz
-// PUT /api/quizzes/:id -> replaced by /api/quiz
-// DELETE /api/quizzes/:id -> replaced by /api/quiz
+// GET /api/quizzes
+// GET /api/quizzes/:id
+// POST /api/quizzes
+// PUT /api/quizzes/:id
+// DELETE /api/quizzes/:id
 export const QuizzesService = {
   query(type, params) {
     Vue.axios.defaults.baseURL = API_QUIZ_URL;
     // return ApiQuizService.query(`quizzes${type === 'follow' ? '/follow' : ''}`, {
-    return ApiQuizService.query(`quiz${type === 'following' ? '' : ''}`, {
+    return ApiQuizService.query(`quizzes${type === 'following' ? '' : ''}`, {
       params,
     });
   },
   get(id) {
     Vue.axios.defaults.baseURL = API_QUIZ_URL;
     // return ApiQuizService.get("quizzes", id);
-    return ApiQuizService.get('quiz', id);
+    return ApiQuizService.get('quizzes', id);
   },
   create(params) {
     Vue.axios.defaults.baseURL = API_QUIZ_URL;
-    return ApiQuizService.post('quiz', { quiz: params });
+    return ApiQuizService.post('quizzes', { quiz: params });
   },
   update(id, params) {
     Vue.axios.defaults.baseURL = API_QUIZ_URL;
-    return ApiQuizService.update('quiz', id, { quiz: params });
+    return ApiQuizService.update('quizzes', id, { quiz: params });
   },
   destroy(id) {
     Vue.axios.defaults.baseURL = API_QUIZ_URL;
     if (id !== null) {
       // hack due to static my-json-server
-      return ApiQuizService.delete(`quiz/${id}`);
+      return ApiQuizService.delete(`quizzes/${id}`);
     }
-    return ApiQuizService.delete(`quiz/${id}`);
+    return ApiQuizService.delete(`quizzes/${id}`);
   },
 };
 // # assessment management
@@ -243,20 +243,20 @@ export const ScoresService = {
       throw new Error('scoresService.get() quiz + user id required to fetch scores');
     }
     // return ApiQuizService.get("quizzes", `${id}/scores`);
-    return ApiAnswerService.get('score');
+    return ApiAnswerService.get('scores');
   },
 
   post(id, payload) {
     // return ApiQuizService.post(`quizzes/${id}/scores`, {
     Vue.axios.defaults.baseURL = API_QUIZ_URL;
-    return ApiAnswerService.post('answer', {
+    return ApiAnswerService.post('answers', {
       score: { body: payload },
     });
   },
 
   destroy(id, scoreId) {
     Vue.axios.defaults.baseURL = API_QUIZ_URL;
-    return ApiAnswerService.delete(`score/${scoreId}`);
+    return ApiAnswerService.delete(`scores/${scoreId}`);
   },
 };
 
@@ -267,8 +267,9 @@ export const FavoriteService = {
   // add(id) {
   add() {
     Vue.axios.defaults.baseURL = API_QUIZ_URL;
+    return ApiQuizService.post('quizzes/favorite');
     // return ApiQuizService.post(`quizzes/${id}/favorite`);
-    return ApiQuizService.post('favorite');
+    // return ApiQuizService.post('favorite');
   },
   // remove(id) {
   remove() {

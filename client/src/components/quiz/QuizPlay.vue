@@ -12,19 +12,21 @@
       <!-- </header> -->
       </q-card-section>
     </q-card>
-    <q-card class="no-padding no-margin q-pa-md items-start">
+    <q-card v-if="this.quizProgress !== 'intro'"
+      class="no-padding no-margin q-pa-md items-start">
       <main class="site__content island" role="content">
       <br />
       <QuizQuestions
-        v-if="quizProgress !== 'scores' & quizProgress !== 'intro'"
+        v-if="this.quizProgress !== 'showScores' & this.quizProgress !== 'intro'"
         :quiz="this.quiz"
         :quizProgress="this.quizProgress"
         :score="this.score"
+        :previousAnswer="this.currentAnswer"
         @previousQuestionParent="previousQuestion"
         @processAnswerParent="processAnswer"
         />
       <QuizScore
-        v-else
+        v-if="this.quizProgress === 'showScores'"
         :quiz="this.quiz"
         :quizProgress="this.quizProgress"
         :score="this.score"
@@ -107,7 +109,7 @@ export default {
         },
       },
       // current answer
-      answer: {
+      currentAnswer: {
         questionId: 0,
         answer: '',
         secondsToAnswer: 0,
@@ -123,11 +125,11 @@ export default {
       this.totalPauzeTime = 0;
       // (re)set the scores
       this.score.quizId = this.quiz.quizId;
-      this.score.createdAt = '';
+      this.score.created = '';
       // computed
       this.score.computed.answeredCount = 0;
       this.score.computed.correctCount = 0;
-      this.score.computed.currentQuestion = 1;
+      this.score.computed.currentQuestion = 0;
       this.score.computed.currentIndex = 0;
       this.score.computed.currentPercentToPass = 0;
       this.score.computed.passed = false;
@@ -135,52 +137,87 @@ export default {
       this.score.answers = [];
       // user
       this.score.user.username = this.currentUser.username;
-      this.progressQuizState();
+      // state
+      this.progressQuizState('start');
 
       // TODO store start new score for quizId and username
     },
     stopQuiz() {
       this.score.computed.currentIndex = 0;
       this.calculateScores();
-      this.quizProgress = 'scores';
+      this.progressQuizState('stop');
     },
     previousQuestion() {
-      if (this.score.computed.currentQuestion > 1) {
-        this.score.computed.currentQuestion -= 1;
-        this.score.computed.currentIndex -= 1;
-        this.progressQuizState();
+      if (this.score.computed.currentQuestion >= 1) {
+        this.pullFromAnswers(this.quiz.questions[this.score.computed.currentIndex - 1].questionId);
+        this.progressQuizState('previous');
       }
     },
-    processAnswer(a) {
-      // console.log('answer event ftw', e);
-      this.answer.questionId = this.quiz.questions[this.score.computed.currentIndex].questionId;
-      this.answer.answer = a;
-      this.answer.secondsToAnswer = '10';
-      this.pushToAnswers(this.answer);
-      // TODO store answer on existing quizId and username
-
-      if (this.quizProgress === 'intro'
-          || this.quizProgress === 'question-first'
-          || this.quizProgress === 'question-middle') {
-        this.score.computed.currentQuestion += 1;
-        this.score.computed.currentIndex += 1;
-        this.progressQuizState();
-      }
-      this.calculateScores();
-    },
-    pushToAnswers(obj) {
-      if (this.score.answers.length === 0) {
-        this.score.answers.push(obj);
-      } else {
-        const index = this.score.answers.findIndex((item) => item.questionId === obj.questionId);
-        if (index > -1) {
-          this.score.answers[index] = obj;
-        } else {
-          this.score.answers.push(obj);
+    pullFromAnswers(id) {
+      // let index = -1;
+      this.currentAnswer = {};
+      if (this.score.answers.length !== 0) {
+        // eslint-disable-next-line no-restricted-syntax
+        for (const item in this.score.answers) {
+          if (this.score.answers[item].questionId === id) {
+            this.currentAnswer.questionId = this.score.answers[item].questionId;
+            this.currentAnswer.secondsToAnswer = this.score.answers[item].secondsToAnswer;
+            this.currentAnswer.answer = this.score.answers[item].answer;
+            break;
+          }
         }
       }
     },
-    progressQuizState() {
+    processAnswer(a) {
+      this.currentAnswer.questionId = this.quiz
+        .questions[this.score.computed.currentIndex].questionId;
+      this.currentAnswer.answer = a;
+      this.currentAnswer.secondsToAnswer = '10';
+      this.pushToAnswers(this.currentAnswer);
+      this.calculateScores();
+      this.progressQuizState('next');
+    },
+    pushToAnswers(obj) {
+      let found = false;
+      if (this.score.answers.length !== 0) {
+        this.score.answers.forEach((a) => {
+          if (a.questionId === this.currentAnswer.questionId) {
+            a.answer = this.currentAnswer.answer;
+            found = true;
+          }
+        });
+      }
+      if (!found) {
+        this.score.answers.push({ ...obj });
+      }
+      // TODO store answer on existing quizId and username
+    },
+    progressQuizState(event) {
+      switch (event) {
+        case 'start':
+          this.score.computed.currentQuestion = 1;
+          this.score.computed.currentIndex = 0;
+          break;
+        case 'stop':
+          this.quizProgress = 'showScores';
+          return;
+        case 'previous':
+          this.score.computed.currentQuestion -= 1;
+          this.score.computed.currentIndex -= 1;
+          break;
+        case 'next':
+          if (this.quizProgress !== 'question-last') {
+            this.score.computed.currentQuestion += 1;
+            this.score.computed.currentIndex += 1;
+          } else {
+            this.quizProgress = 'showScores';
+            return;
+          }
+          break;
+        default:
+          break;
+      }
+      // update state
       if (this.quiz.questions.length === 1) {
         this.quizProgress = 'question-only';
       } else {
@@ -207,8 +244,13 @@ export default {
 
       if (this.score.answers !== null) {
         this.score.computed.answeredCount = this.score.answers.length;
-        this.quiz.questions.forEach((a, index) => {
-          if (this.score.answers[index] === a.answer) this.score.computed.correctCount += 1;
+        this.quiz.questions.forEach((a) => {
+          this.score.answers.forEach((b) => {
+            if ((a.questionId === b.questionId)
+              && (a.answer === b.answer)) {
+              this.score.computed.correctCount += 1;
+            }
+          });
         });
         this.score.computed
           .currentPercentToPass = (

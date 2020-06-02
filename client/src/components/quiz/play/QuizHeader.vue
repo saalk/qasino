@@ -6,13 +6,15 @@
   </span>
   <p class="beta subhead">subject: {{ this.quiz.meta.subject }}
   </p>
-  <q-btn v-if="this.quizProgress === 'intro' || this.quizProgress === 'scores'"
+  <q-btn class="actions text-h7 text-orange-9"
+    @click="$router.go(-1)" outline label="Back" no-caps></q-btn>
+  <q-btn v-if="this.quizProgress === 'intro' & this.quizProgress !== 'showScores'"
     class="actions text-h7 text-orange-9"
     outline no-caps color="white"
     label="Start quiz"
     @click="startQuizChild()">
   </q-btn>
-  <q-btn v-else
+  <q-btn v-if="this.quizProgress !== 'intro' & this.quizProgress !== 'showScores'"
     class="actions text-h7 text-orange-9"
     outline no-caps color="white"
     @click="stopQuizChild()"

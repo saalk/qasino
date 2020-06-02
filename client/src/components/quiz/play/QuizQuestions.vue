@@ -11,7 +11,6 @@
     </div>
     <!-- images -->
     <div v-if="this.quiz.questions[this.score.computed.currentIndex].category === 'images'">
-      <br />
       <q-option-group
         :options="this.quiz.questions[this.score.computed.currentIndex].images"
         v-model="picked"
@@ -20,7 +19,6 @@
     </div>
     <!-- multi-choice -->
     <div v-if="this.quiz.questions[this.score.computed.currentIndex].category === 'multiChoice'">
-      <br />
       <q-option-group
         :options="this.quiz.questions[this.score.computed.currentIndex].choices"
         v-model="picked"
@@ -29,28 +27,26 @@
     </div>
     <!-- text-essay -->
     <div v-if="this.quiz.questions[this.score.computed.currentIndex].category === 'textEssay'">
-      <br />
-      <q-input v-bind='picked'
+      <q-input v-bind="picked"
       />
       <br />
     </div>
     <!-- fill-the-blanks -->
     <div v-if="this.quiz.questions[this.score.computed.currentIndex].category === 'fillTheBlanks'">
-      <br />
-      <q-input v-bind='picked'
+      <q-input v-bind="picked"
       />
       <br />
     </div>
     <!-- numerical -->
     <div v-if="this.quiz.questions[this.score.computed.currentIndex].category === 'numerical'">
-      <br />
-      <q-input v-model='picked'
+      <q-input v-model="picked"
+      placeholder="type your answer"
+      lazy-rules :rules="[ val => val && !isNaN(val) || 'only digits']"
       />
       <br />
     </div>
     <!-- multi-answer -->
     <div v-if="this.quiz.questions[this.score.computed.currentIndex].category === 'multiAnswer'">
-      <br />
       <q-option-group
         type="checkbox"
         :options="this.quiz.questions[this.score.computed.currentIndex].choices"
@@ -64,17 +60,18 @@
       label="Previous"
       @click="previousQuestionChild()">
     </q-btn>
-    <q-btn v-if="this.score.computed.answeredCount !== this.quiz.questions.length"
+    <q-btn v-if="this.score.computed.currentQuestion !== this.quiz.questions.length"
       class="actions text-h7 text-orange-9"
       outline no-caps color="white"
-      label="Next" type="submit"
+      label="Next"
       :disable="picked === ''"
       @click="processAnswerChild()">
     </q-btn>
-    <q-btn v-if="this.score.computed.answeredCount === this.quiz.questions.length"
+    <q-btn v-else
       class="actions text-h7 text-orange-9"
       outline no-caps color="white"
-      label="Finish" type="submit"
+      label="Finish"
+      :disable="picked === ''"
       @click="processAnswerChild()">
     </q-btn>
   </div>
@@ -86,6 +83,7 @@ export default {
     'quiz',
     'quizProgress',
     'score',
+    'previousAnswer',
     'previousQuestionParent',
     'processAnswerParent',
   ],
@@ -96,10 +94,12 @@ export default {
   },
   methods: {
     previousQuestionChild() {
+      this.picked = '';
       this.$emit('previousQuestionParent');
     },
     processAnswerChild() {
       this.$emit('processAnswerParent', this.picked);
+      this.picked = '';
     },
   },
 };

@@ -1,12 +1,12 @@
 <template>
-  <div v-if="this.quizProgress === 'scores'">
+  <div>
+    <h2>
     Your have made {{ this.score.computed.correctCount }} /
     {{ this.quiz.questions.length }} correct choices
     [ {{ this.score.computed.currentPercentToPass }}% ]
     <br/>
     The minimum pass to pass is {{ this.quiz.settings.minimumPercentToPass }}%
-    <br/>
-    <br/>
+    </h2>
     <p class="beta subhead">Score: {{ this.score.computed.passed === true ? 'Passed' : 'Failed'}}
       </P>
   </div>
