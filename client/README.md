@@ -43,8 +43,10 @@ quasar create <folder_name>
 ```bash
 npm install // install package.json and all dependencies
 maintenance:
-- rimraf node_modules
-- npm-install-missing
+- npm install rimraf --global
+- rimraf node_modules // alternative to the Linux command rm -rf
+- npm install -g install-missing
+- npm-install-missing // installs missing modules and saves as dependencies in package.json
 - npm shrinkwrap
 ```
 
