@@ -12,7 +12,6 @@
     <q-btn type="a" href="https://play.google.com/store/apps/details?id=cloud.casino.cards.quiz"
     class="actions" dense outline text-color="grey" label="Rate me" no-caps></q-btn>
 
-
   </div>
 </template>
 

@@ -33,14 +33,7 @@ module.exports = {
   // add your custom rules here
   rules: {
     'no-param-reassign': 'off',
-    'max-classes-per-file': 'off',
-  	'no-useless-constructor': 'off',
-    'no-empty-function': 'off',
-    '@typescript-eslint/no-useless-constructor': 'error',
-    'import/prefer-default-export': 'off',
-    'no-use-before-define': 'off',
-    '@typescript-eslint/no-unused-vars': ['error'],
-    
+ 
     'import/first': 'off',
     'import/named': 'error',
     'import/namespace': 'error',

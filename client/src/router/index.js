@@ -1,11 +1,12 @@
 import Vue from 'vue';
-import { createRouter, createMemoryHistory, createWebHistory, createWebHashHistory } from 'vue-router'
+import { 
+  createRouter, createMemoryHistory, createWebHistory, createWebHashHistory } from 'vue-router'
 import { CHECK_AUTH } from 'src/store/types/actions.type';
 import store from 'src/store';
 import routes from './routes';
 
 // needed ?
-Vue.use(VueRouter);
+// Vue.use(VueRouter);
 
 /*
  * If not building with SSR mode, you can
