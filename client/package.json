@@ -1,17 +1,14 @@
 {
   "name": "lion-quiz",
   "version": "1.1.0",
-  "description": "A Quasar Framework app",
-  "productName": "Lion Quiz",
-  "cordovaId": "cloud.casino.cards.quiz",
-  "capacitorId": "",
-  "author": "Saalk Lightyear <vandermeulen.k@gmail.com>",
   "private": true,
+  "description": "A Quasar Framework app",
+  "author": "Saalk Lightyear <vandermeulen.k@gmail.com>",
   "scripts": {
-    "dev": "quasar dev",
     "build": "quasar build",
-    "build:pwa": "quasar build -m pwa",
     "lint": "eslint --ext .js,.vue src",
+    "build:pwa": "quasar build -m pwa",
+    "dev": "quasar dev",
     "test": "echo \"No test specified\" && exit 0"
   },
   "dependencies": {
@@ -25,37 +22,43 @@
     "quasar": "^2.0.4",
     "query-builder-vue": "^1.0.9",
     "register-service-worker": "^1.7.2",
+    "vue": "^3.0.0-beta.1",
     "vue-axios": "^3.2.5",
     "vue-flatpickr-component": "^9.0.4",
     "vue-i18n": "^8.25.0",
     "vue-range-component": "^1.0.3",
     "vue-router": "^3.5.2",
     "vue-select": "^3.12.3",
-    "vuex": "^3.6.2"
+    "vuex": "^4.0.0-alpha.1"
   },
   "devDependencies": {
     "@babel/core": "^7.15.0",
+    "@babel/eslint-parser": "^7.15.0",
     "@babel/preset-env": "^7.15.0",
     "@quasar/app": "^3.1.0",
+    "@vue/compiler-sfc": "^3.0.0-beta.1",
     "@vue/devtools": "^5.3.4",
     "babel-core": "6.26.3",
-    "@babel/eslint-parser": "^7.15.0",
     "babel-jest": "^27.0.6",
     "cross-env": "^7.0.3",
     "eslint": "^7.32.0",
     "eslint-config-airbnb-base": "^14.2.1",
     "eslint-plugin-import": "^2.24.2",
+    "eslint-plugin-quasar": "1.0.0",
     "eslint-plugin-vue": "^7.16.0",
-    "eslint-plugin-quasar": "1.0.0"
+    "vue-cli-plugin-vue-next": "~0.1.4"
   },
+  "browserslist": [
+    "last 1 version, not dead, ie >= 11"
+  ],
+  "capacitorId": "",
+  "cordovaId": "cloud.casino.cards.quiz",
   "engines": {
     "node": ">= 16.8.0",
     "npm": ">= 7.21.0",
     "yarn": ">= 1.22.5"
   },
-  "browserslist": [
-    "last 1 version, not dead, ie >= 11"
-  ],
+  "productName": "Lion Quiz",
   "resolutions": {
     "@babel/parser": "7.7.5"
   }

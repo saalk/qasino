@@ -1,5 +1,3 @@
-/* eslint-disable no-tabs */
-import Vue from 'vue';
 import Vuex from 'vuex';
 
 // import example from './module-example'
@@ -8,15 +6,13 @@ import auth from './module/auth.module';
 import quiz from './module/quiz.module';
 import profile from './module/profile.module';
 
-Vue.use(Vuex);
-
 // https://garywoodfine.com/how-to-split-vuex-store-into-modules/
 // const vuexStorage = new VuexPersist({
 //   key: process.env.VUE_APP_STORAGE_KEY,
 //   storage: localForage,
 // });
 
-export default new Vuex.Store({
+export default Vuex.createStore({
   modules: {
     home,
     auth,
