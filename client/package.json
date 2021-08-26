@@ -29,7 +29,7 @@
     "vue-range-component": "^1.0.3",
     "vue-router": "^3.5.2",
     "vue-select": "^3.12.3",
-    "vuex": "^4.0.0-alpha.1"
+    "vuex": "^4.0.2"
   },
   "devDependencies": {
     "@babel/core": "^7.15.0",
@@ -44,8 +44,10 @@
     "eslint": "^7.32.0",
     "eslint-config-airbnb-base": "^14.2.1",
     "eslint-plugin-import": "^2.24.2",
-    "eslint-plugin-quasar": "1.0.0",
+    "eslint-plugin-node": "^11.0.0",
+    "eslint-plugin-quasar": "^1.0.0",
     "eslint-plugin-vue": "^7.16.0",
+    "eslint-webpack-plugin": "^2.4.0",
     "vue-cli-plugin-vue-next": "~0.1.4"
   },
   "browserslist": [
