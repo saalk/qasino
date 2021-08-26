@@ -11,29 +11,29 @@
 
     <q-list v-if="!isAuthenticated">
       <q-btn :to="{ name: 'home-all' }" flat round dense icon="las la-home">
-        <q-tooltip content-class="bg-accent">home</q-tooltip>
+        <q-tooltip class="bg-accent">home</q-tooltip>
       </q-btn>
       <q-btn :to="{ name: 'login' }"  flat round dense icon="las la-sign-in-alt">
-        <q-tooltip content-class="bg-accent">sign-in</q-tooltip>
+        <q-tooltip class="bg-accent">sign-in</q-tooltip>
       </q-btn>
       <q-btn :to="{ name: 'register' }"  flat round dense icon="las la-user-plus">
-       <q-tooltip content-class="bg-accent">register</q-tooltip>
+       <q-tooltip class="bg-accent">register</q-tooltip>
       </q-btn>
     </q-list>
 
     <q-list v-else>
       <q-btn :to="{ name: 'home-all' }"  flat round dense icon="las la-home">
-       <q-tooltip content-class="bg-accent">home</q-tooltip>
+       <q-tooltip class="bg-accent">home</q-tooltip>
       </q-btn>
       <q-btn :to="{ name: 'quiz-edit', params: { quizId: 0 } }"
         flat round dense icon="las la-plus-square">
-        <q-tooltip content-class="bg-accent">new quiz</q-tooltip>
+        <q-tooltip class="bg-accent">new quiz</q-tooltip>
       </q-btn>
       <q-btn :to="{ name: 'settings' }"  flat round dense icon="las la-cog">
-        <q-tooltip content-class="bg-accent">settings</q-tooltip>
+        <q-tooltip class="bg-accent">settings</q-tooltip>
       </q-btn>
       <q-btn @click="logout()" flat round dense icon="las la-sign-out-alt">
-        <q-tooltip content-class="bg-accent">logout</q-tooltip>
+        <q-tooltip class="bg-accent">logout</q-tooltip>
       </q-btn>
     </q-list>
 

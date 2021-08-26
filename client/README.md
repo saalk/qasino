@@ -46,9 +46,7 @@ npm install // install package.json and all dependencies
 - dl from nodejs.org // install latest nodes version manager
 maintenance:
 - npm install -g @quasar/icongenie
-- rimraf node_modules // alternative to the Linux command rm -rf
-- rimraf .quasar // alternative to the Linux command rm -rf
-- rimraf package-lock.json // alternative to the Linux command rm -rf
+- rimraf node_modules package-lock.json yarn.lock // command rm -rf
 - npm shrinkwrap
 ```
 

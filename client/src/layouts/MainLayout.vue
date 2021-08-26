@@ -6,7 +6,7 @@
     </q-header>
 
     <q-drawer v-model="left" side="left" overlay behavior="mobile" elevated
-              :width="200" :breakpoint="500" bordered content-class="bg-grey-1">
+              :width="200" :breakpoint="500" bordered class="bg-grey-1">
       <DrawerImage></DrawerImage>
       <q-scroll-area
         style="height: calc(100% - 150px); margin-top: 140px; border-right: 1px solid #ddd">

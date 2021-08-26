@@ -12,19 +12,19 @@
       dense no-caps color="white"
       icon="las la-pen-alt"
       @click="editQuiz()">
-      <q-tooltip content-class="bg-accent">edit</q-tooltip>
+      <q-tooltip class="bg-accent">edit</q-tooltip>
     </q-btn>
     <q-btn v-if=canModify class="actions text-h7 text-orange-9"
       dense no-caps color="white"
       icon="las la-trash"
       @click="deleteQuiz()">
-      <q-tooltip content-class="bg-accent">delete</q-tooltip>
+      <q-tooltip class="bg-accent">delete</q-tooltip>
     </q-btn>
     <q-btn v-if=!canModify class="actions text-h7 text-orange-9"
       dense no-caps color="white"
       :icon="favoriteQuizIcon"
       @click="toggleFavorite()">
-      <q-tooltip content-class="bg-accent">{{ toolTipBookmark }}</q-tooltip>
+      <q-tooltip class="bg-accent">{{ toolTipBookmark }}</q-tooltip>
     </q-btn>
 
   </q-card-actions>

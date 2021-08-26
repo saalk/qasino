@@ -8,7 +8,7 @@
     <div v-if="(currentUser !== null) && (isAuthenticated)"
       class="absolute-bottom bg-transparent">
       <q-btn size="23px" type="button" flat round icon="person_pin" to="settings">
-        <q-tooltip content-class="bg-accent">{{ toolTip }}</q-tooltip>
+        <q-tooltip class="bg-accent">{{ toolTip }}</q-tooltip>
       </q-btn>
       <div class="tags"> {{ currentUser.username }}
         <hr>
@@ -17,7 +17,7 @@
     </div>
     <div v-else class="absolute-bottom bg-transparent">
       <q-btn @click="onClick()" size="23px" type="button" flat round icon="person_pin">
-        <q-tooltip content-class="bg-accent">{{ toolTip }}</q-tooltip>
+        <q-tooltip class="bg-accent">{{ toolTip }}</q-tooltip>
       </q-btn>
       <div class="tags">&nbsp;
         <hr>

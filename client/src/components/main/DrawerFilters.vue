@@ -8,7 +8,7 @@
         :color=colorMine label="Mine"
         unelevated rounded no-caps
         @click="toggleMine">
-        <q-tooltip content-class="bg-accent">Your quizzes</q-tooltip>
+        <q-tooltip class="bg-accent">Your quizzes</q-tooltip>
       </q-btn>
     </div>
     <div class="tagz">
@@ -23,15 +23,15 @@
         {label: 'Feed', value: 'follow', slot: 'three' }]"
         >
         <template v-slot:one>
-          <q-tooltip content-class="bg-accent">No Filter</q-tooltip>
+          <q-tooltip class="bg-accent">No Filter</q-tooltip>
         </template>
 
         <template v-slot:two>
-          <q-tooltip content-class="bg-accent">Your bookmarks</q-tooltip>
+          <q-tooltip class="bg-accent">Your bookmarks</q-tooltip>
         </template>
 
         <template v-slot:three>
-          <q-tooltip content-class="bg-accent">Followed authors</q-tooltip>
+          <q-tooltip class="bg-accent">Followed authors</q-tooltip>
         </template>
       </q-btn-toggle>
     </div>
@@ -42,7 +42,7 @@
         v-for="(tag, index) in tags"
         :key="index"
         @click="toggleTags(tag)">
-        <q-tooltip content-class="bg-accent">Only this tag</q-tooltip>
+        <q-tooltip class="bg-accent">Only this tag</q-tooltip>
       </q-btn>
     </div>
     <!-- <div class="tagz">
