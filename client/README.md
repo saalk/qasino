@@ -34,7 +34,8 @@
 ### setup new quasar project
 
 ```bash
-npm install -g @quasar/cli
+npm install -g @quasar/cli // for quasar
+npm install -g cordova // tool for building mobile apps using HTML, CSS and JS
 quasar create <folder_name>
 ```
 
@@ -42,11 +43,12 @@ quasar create <folder_name>
 
 ```bash
 npm install // install package.json and all dependencies
+- dl from nodejs.org // install latest nodes version manager
 maintenance:
-- npm install rimraf --global
+- npm install -g @quasar/icongenie
 - rimraf node_modules // alternative to the Linux command rm -rf
-- npm install -g install-missing
-- npm-install-missing // installs missing modules and saves as dependencies in package.json
+- rimraf .quasar // alternative to the Linux command rm -rf
+- rimraf package-lock.json // alternative to the Linux command rm -rf
 - npm shrinkwrap
 ```
 
@@ -59,8 +61,8 @@ maintanance:
 - remove quasar-cli
 - rimraf .quasar
 - rimraf .node_modules
-- npm i quasar @quasar/extra
-- npm i @quasar/app --dev
+- npm i @quasar/app include=dev
+- npm i @quasar/extras
 ```
 
 ### Lint the files
