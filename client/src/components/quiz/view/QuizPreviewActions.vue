@@ -1,27 +1,32 @@
 <template>
   <q-card-actions class="no-padding no-margin">
 
-    <router-link class="actions"
-      :to="{ name: 'quiz-play', params: { quizId: this.quiz.quizId } }">
-      <q-btn dense outline text-color="grey" label="Start quiz" no-caps></q-btn>
-    </router-link>
-
-    <router-link v-if=canModify class="actions"
-      :to="{ name: 'quiz-edit', params: { quizId: this.quiz.quizId } }">
-      <q-btn outline dense color="blue-grey-6" icon="las la-pen-alt">
-        <q-tooltip content-class="bg-accent">edit</q-tooltip>
-      </q-btn>
-    </router-link>
-
-    <q-btn v-if=canModify outline to="error" dense color="blue-grey-6" icon="las la-trash"
+    <q-btn
+      class="actions text-h7 text-orange-9"
+      dense no-caps color="white"
+      label="Start quiz"
+      @click="startQuiz()">
+    </q-btn>
+    <q-btn v-if=canModify
+      class="actions text-h7 text-orange-9"
+      dense no-caps color="white"
+      icon="las la-pen-alt"
+      @click="editQuiz()">
+      <q-tooltip content-class="bg-accent">edit</q-tooltip>
+    </q-btn>
+    <q-btn v-if=canModify class="actions text-h7 text-orange-9"
+      dense no-caps color="white"
+      icon="las la-trash"
       @click="deleteQuiz()">
-        <q-tooltip content-class="bg-accent">delete</q-tooltip>
+      <q-tooltip content-class="bg-accent">delete</q-tooltip>
+    </q-btn>
+    <q-btn v-if=!canModify class="actions text-h7 text-orange-9"
+      dense no-caps color="white"
+      :icon="favoriteQuizIcon"
+      @click="toggleFavorite()">
+      <q-tooltip content-class="bg-accent">{{ toolTipBookmark }}</q-tooltip>
     </q-btn>
 
-    <q-btn v-if=!canModify to="error" outline dense color="blue-grey-6" :icon="favoriteQuizIcon"
-      @click="toggleFavorite()">
-        <q-tooltip content-class="bg-accent">{{ toolTipBookmark }}</q-tooltip>
-    </q-btn>
   </q-card-actions>
 </template>
 
@@ -75,6 +80,12 @@ export default {
     },
   },
   methods: {
+    startQuiz() {
+      this.$router.push({ name: 'quiz-play', params: { quizId: this.quiz.quizId } });
+    },
+    editQuiz() {
+      this.$router.push({ name: 'quiz-edit', params: { quizId: this.quiz.quizId } });
+    },
     favoriteQuizTooltip() {
       // favorite_border = no solid
       this.toolTipBookmark = this.quiz.computed.favorited ? 'delete bookmark' : 'bookmark this quiz';

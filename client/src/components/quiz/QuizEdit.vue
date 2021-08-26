@@ -1,9 +1,37 @@
 <template>
-  <div class="editor-page">
-    <div class="container page">
-      <div class="row">
-        <div class="col-md-10 offset-md-1 col-xs-12">
-          <ListErrors :errors="errors" />
+
+
+  <q-page padding>
+    <q-card class="no-padding no-margin q-pa-md items-start">
+      <q-card-section>
+      <!-- <header class="site__header island"> -->
+      <QuizEditHeader
+      :quiz="this.quiz"
+      :quizProgress="this.quizProgress"
+      @startQuizParent="startQuiz"
+      @stopQuizParent="stopQuiz"
+      />
+      <!-- </header> -->
+      </q-card-section>
+    </q-card>
+    <q-card v-if="this.errors !== null">
+      <ListErrors :errors="errors" />
+    </q-card>
+    <q-card>
+      class="no-padding no-margin q-pa-md items-start">
+      <main class="site__content island" role="content">
+      <br />
+      <QuizEditQuestions
+        :quiz="this.quiz"
+        :quizProgress="this.quizProgress"
+        :score="this.score"
+        :picked="this.currentAnswer.answer"
+        @previousQuestionParent="previousQuestion"
+        @processAnswerParent="processAnswer"
+        />
+      </main>
+    </q-card>
+      <q-card>
           <form @submit.prevent="onPublish(quiz.quizId)">
             <fieldset :disabled="inProgress">
               <fieldset class="form-group">
@@ -59,16 +87,16 @@
               Publish Quiz
             </button>
           </form>
-        </div>
-      </div>
-    </div>
-  </div>
+    </q-card>
+  </q-page>
 </template>
 
 <script>
 import { mapGetters } from 'vuex';
 import store from 'src/store';
 import ListErrors from 'src/components/quiz/view/ListErrors';
+import QuizEditHeader from 'src/components/quiz/edit/QuizEditHeader';
+import QuizEditQuestions from 'src/components/quiz/edit/QuizEditQuestions';
 import {
   QUIZ_PUBLISH,
   QUIZ_EDIT,
@@ -80,7 +108,7 @@ import {
 
 export default {
   name: 'QuizEdit',
-  components: { ListErrors },
+  components: { ListErrors, QuizEditHeader, QuizEditQuestions },
   props: {
     previousQuiz: {
       type: Object,

@@ -14,16 +14,19 @@
     </q-card>
     <q-card v-if="this.quizProgress !== 'intro'"
       class="no-padding no-margin q-pa-md items-start">
-      <main class="site__content island" role="content">
+      <main class="island" role="content">
       <br />
       <QuizQuestions
         v-if="this.quizProgress !== 'showScores' & this.quizProgress !== 'intro'"
         :quiz="this.quiz"
         :quizProgress="this.quizProgress"
         :score="this.score"
-        :previousAnswer="this.currentAnswer"
+        :previouslyPicked="this.currentAnswer.answer"
+        :showHintParent="this.showHintParent"
         @previousQuestionParent="previousQuestion"
         @processAnswerParent="processAnswer"
+        @processNoAnswerParent="processNoAnswer"
+        @processTakeHintParent="processTakeHint"
         />
       <QuizScore
         v-if="this.quizProgress === 'showScores'"
@@ -40,10 +43,8 @@
 import { mapGetters } from 'vuex';
 // import marked from 'marked';
 import store from 'src/store';
-// import QuizMeta from 'src/components/quiz/view/QuizMeta';
 // import Answer from 'src/components/answer/Answer';
 // import AnswerEditor from 'src/components/answer/AnswerEditor';
-// import Tag from 'src/components/main/VTag';
 // import { FETCH_QUIZ, FETCH_ANSWERS } from 'src/store/types/actions.type';
 import QuizHeader from 'src/components/quiz/play/QuizHeader';
 import QuizQuestions from 'src/components/quiz/play/QuizQuestions';
@@ -56,10 +57,8 @@ import {
 export default {
   name: 'play-quiz',
   components: {
-    // QuizMeta,
     // Answer,
     // AnswerEditor,
-    // Tag,
     QuizHeader,
     QuizQuestions,
     QuizScore,
@@ -115,6 +114,7 @@ export default {
         secondsToAnswer: 0,
       },
       totalPauzeTime: 0,
+      showHintParent: false,
     };
   },
   computed: {
@@ -122,6 +122,7 @@ export default {
   },
   methods: {
     startQuiz() {
+      this.showHintParent = false;
       this.totalPauzeTime = 0;
       // (re)set the scores
       this.score.quizId = this.quiz.quizId;
@@ -143,14 +144,16 @@ export default {
       // TODO store start new score for quizId and username
     },
     stopQuiz() {
+      this.showHintParent = false;
       this.score.computed.currentIndex = 0;
       this.calculateScores();
-      this.progressQuizState('stop');
+      this.progressQuizState('stop', 0);
     },
     previousQuestion() {
+      this.showHintParent = false;
       if (this.score.computed.currentQuestion >= 1) {
         this.pullFromAnswers(this.quiz.questions[this.score.computed.currentIndex - 1].questionId);
-        this.progressQuizState('previous');
+        this.progressQuizState('previous', 0);
       }
     },
     pullFromAnswers(id) {
@@ -168,6 +171,21 @@ export default {
         }
       }
     },
+    processTakeHint() {
+      if (this.score.hintsTaken < this.quiz.settings.numberOfHints) {
+        this.score.hintsTaken += 1;
+        this.showHintParent = true;
+      }
+    },
+    processNoAnswer(slider) {
+      this.showHintParent = false;
+      this.calculateScores();
+      if (slider !== 0) {
+        this.progressQuizState('slider', slider);
+      } else {
+        this.progressQuizState('next', 0);
+      }
+    },
     processAnswer(a) {
       this.currentAnswer.questionId = this.quiz
         .questions[this.score.computed.currentIndex].questionId;
@@ -175,7 +193,7 @@ export default {
       this.currentAnswer.secondsToAnswer = '10';
       this.pushToAnswers(this.currentAnswer);
       this.calculateScores();
-      this.progressQuizState('next');
+      this.progressQuizState('next', 0);
     },
     pushToAnswers(obj) {
       let found = false;
@@ -192,7 +210,7 @@ export default {
       }
       // TODO store answer on existing quizId and username
     },
-    progressQuizState(event) {
+    progressQuizState(event, slider) {
       switch (event) {
         case 'start':
           this.score.computed.currentQuestion = 1;
@@ -209,12 +227,17 @@ export default {
           if (this.quizProgress !== 'question-last') {
             this.score.computed.currentQuestion += 1;
             this.score.computed.currentIndex += 1;
+            this.pullFromAnswers(this.quiz.questions[this.score.computed.currentIndex].questionId);
           } else {
             this.quizProgress = 'showScores';
             return;
           }
           break;
         default:
+          // the slider has been used
+          this.score.computed.currentQuestion = slider;
+          this.score.computed.currentIndex = slider - 1;
+          this.pullFromAnswers(this.quiz.questions[this.score.computed.currentIndex].questionId);
           break;
       }
       // update state
@@ -276,4 +299,10 @@ export default {
 /* .quiz {
   overflow-x: hidden;
 } */
+.island {
+  padding-top: 0rem;
+  padding-right: 1rem;
+  padding-bottom: 1rem;
+  padding-left: 1rem;
+}
 </style>

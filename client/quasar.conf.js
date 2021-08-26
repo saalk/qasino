@@ -71,6 +71,11 @@ module.exports = function (ctx) {
         },
       scopeHoisting: true,
       devtool: 'source-map',
+      // history does not get you the # in your url but you have to do some extra configuration
+      // if you want users to be able to access all sub-urls directly
+      // therefore you have to make the catch-all fallback to index.html
+
+      // the configuration is in apache / nginx or node.js
       vueRouterMode: 'hash', // available values: 'hash', 'history'
       showProgress: true,
       gzip: false,

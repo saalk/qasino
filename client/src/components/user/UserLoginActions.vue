@@ -8,16 +8,21 @@
       </q-toggle>
     </q-item>
     <q-card-actions class="no-padding no-margin">
-
-      <q-btn no-caps dense class="actions" outline color="blue-grey-6"
+      <q-btn
+        class="actions text-h7 text-orange-9"
+        dense no-caps color="white"
         @click="onSubmit()" type="submit" label="Submit">
       </q-btn>
-      <q-btn no-caps class="actions" outline dense color="blue-grey-6"
-        @click="onReset()" label="Reset" type="button">
+      <q-btn
+        class="actions text-h7 text-orange-9"
+        dense no-caps color="white"
+        @click="onReset()" label="Reset">
       </q-btn>
-      <q-btn no-caps dense class="actions" :to="{ name: 'register'}"
-      outline color="blue-grey-6" type="button">
-        Register</q-btn>
+      <q-btn
+        class="actions text-h7 text-orange-9"
+        dense no-caps color="white"
+        @click="onRegister()" label="Register">
+      </q-btn>
     </q-card-actions>
   </q-list >
 </template>
@@ -70,6 +75,9 @@ export default {
       this.$emit('update:emailParent', null);
       this.$emit('update:passwordParent', null);
       this.accept = false;
+    },
+    onRegister() {
+      this.$router.push({ name: 'register' });
     },
   },
   computed: {

@@ -4,6 +4,8 @@
 
       <div class="text-h6 text-orange-9">Title: {{ quiz.meta.title | trimto(30) }}</div>
       <div class="no-margin text-h7 q-mt-sm q-mb-xs">{{ quiz.meta.description | trimto(55) }}</div>
+      <div class="no-margin text-h7 q-mt-sm q-mb-xs">
+        Subject: {{ quiz.meta.subject | trimto(55) }}</div>
       <q-item dense class="no-padding no-margin ">
         <q-item-label class="no-padding no-margin">Tags:&nbsp;[&nbsp;</q-item-label>
         <q-item-label class="no-padding no-margin"
@@ -34,8 +36,9 @@
             <br>
             &nbsp;&nbsp;Subject: {{ quiz.meta.subject | trimto(20) }}
             <br>
-            &nbsp;&nbsp;Questions: {{ quiz.questions.length }}
+            &nbsp;&nbsp;Hints allowed: {{ quiz.settings.numberOfHints }}
             <br>
+            &nbsp;&nbsp;Questions: {{ quiz.questions.length }}
             <br>
             &nbsp;&nbsp;{{ quiz.meta.created | date }}
           </div>

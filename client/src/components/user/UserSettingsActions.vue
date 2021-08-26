@@ -8,15 +8,21 @@
       </q-toggle>
     </q-item>
     <q-card-actions class="no-padding no-margin">
-
-      <q-btn no-caps class="actions" outline dense color="blue-grey-6"
+      <q-btn
+        class="actions text-h7 text-orange-9"
+        dense no-caps color="white"
         @click="onSubmit()" type="submit" label="Update">
       </q-btn>
-      <q-btn no-caps class="actions" type="button" outline dense color="blue-grey-6"
+      <q-btn
+        class="actions text-h7 text-orange-9"
+        dense no-caps color="white"
         @click="onReset()" label="Reset">
       </q-btn>
-      <q-btn v-if="isAuthenticated" no-caps @click="logout()" type="button" label="Logout"
-      outline dense color="blue-grey-6"></q-btn>
+      <q-btn
+        class="actions text-h7 text-orange-9"
+        dense no-caps color="white"
+        @click="logout()" label="Logout">
+      </q-btn>
     </q-card-actions>
   </q-list>
 </template>

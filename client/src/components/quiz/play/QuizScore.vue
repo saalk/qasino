@@ -1,11 +1,22 @@
 <template>
-  <div>
+  <div class="site__content">
     <h2>
-    Your have made {{ this.score.computed.correctCount }} /
-    {{ this.quiz.questions.length }} correct choices
-    [ {{ this.score.computed.currentPercentToPass }}% ]
-    <br/>
-    The minimum pass to pass is {{ this.quiz.settings.minimumPercentToPass }}%
+      <div v-if='this.score.computed.correctCount !== this.quiz.questions.length'>
+      Your have made {{ this.score.computed.correctCount }} /
+      {{ this.quiz.questions.length }} correct choices
+      [ {{ this.score.computed.currentPercentToPass }}% ]
+      </div>
+      <div v-if='this.score.computed.answeredCount !== this.quiz.questions.length'>
+      Your have answered only {{ this.score.computed.answeredCount }} questions
+      <!-- - [ {{ ((this.score.computed.answeredCount /
+      this.quiz.questions.length)*100).toFixed(0) }}% ] -->
+      </div>
+      <div v-if='this.score.computed.correctCount===this.quiz.questions.length'>
+      Your have made all the correct choices!
+      </div>
+      <div>
+      The minimum correct % to pass is {{ this.quiz.settings.minimumPercentToPass }}%
+      </div>
     </h2>
     <p class="beta subhead">Score: {{ this.score.computed.passed === true ? 'Passed' : 'Failed'}}
       </P>
@@ -224,7 +235,7 @@ a:hover {
   /* animation: hue 60s infinite linear; */
 }
 .site__content {
-  animation: bounceInUp 1s;
+  animation: bounceInRight 1s;
   animation-delay: 0.1s;
 }
 .site__content form {

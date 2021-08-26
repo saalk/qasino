@@ -1,44 +1,24 @@
 <template>
-<div class="site__content">
+<div>
   <span id="animationSandbox" style="display: block;" class>
     <h1 class="site__title mega">{{ this.quiz.meta.title }}</h1>
     <h2>{{ this.quiz.meta.description }} - {{ this.quiz.questions.length }} questions</h2>
   </span>
   <p class="beta subhead">subject: {{ this.quiz.meta.subject }}
   </p>
-
-  <!-- <q-btn
-    class="actions text-h7 text-orange-9"
-    dense no-caps color="white"
-    :disable="this.score.computed.currentQuestion === 1"
-    icon="las la-arrow-left"
-    @click="previousQuestionChild()">
-  </q-btn> -->
-
   <q-btn class="actions text-h7 text-orange-9"
-    @click="$router.go(-1)" icon="las la-list"
-    dense label="Back" no-caps>
-  </q-btn>
-
+    @click="$router.go(-1)" outline label="Back" no-caps></q-btn>
   <q-btn v-if="this.quizProgress === 'intro' & this.quizProgress !== 'showScores'"
     class="actions text-h7 text-orange-9"
-    dense no-caps color="white"
-    label="Start" icon="las la-play"
+    outline no-caps color="white"
+    label="Start quiz"
     @click="startQuizChild()">
   </q-btn>
-
   <q-btn v-if="this.quizProgress !== 'intro' & this.quizProgress !== 'showScores'"
     class="actions text-h7 text-orange-9"
-    dense no-caps color="white" icon="las la-stop"
+    outline no-caps color="white"
     @click="stopQuizChild()"
-    label="Stop">
-  </q-btn>
-
-  <q-btn v-if="this.quizProgress === 'showScores'"
-    class="actions text-h7 text-orange-9"
-    dense no-caps color="white" icon="las la-redo-alt"
-    @click="startQuizChild()"
-    label="Restart">
+    label="Stop quiz">
   </q-btn>
     <!-- <button
     v-else
@@ -156,27 +136,5 @@ a {
 }
 a:hover {
   color: #f35626;
-}
-/*-----------------------------------*\
-  $HEADER
-\*-----------------------------------*/
-.site__header {
-  animation: bounceInUp 1s;
-}
-.site__title {
-  color: #ff6600;
-  background-image: linear-gradient(92deg, #ff6600 0%, #9c27b0 100%);
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
-  /* animation: hue 60s infinite linear; */
-}
-.site__content {
-  animation: bounceInRight 1s;
-  animation-delay: 0.1s;
-}
-.site__content form {
-  animation: bounceInUp 1s;
-  animation-delay: 0.1s;
 }
 </style>

@@ -1,15 +1,5 @@
 <template>
-  <div >
-    <q-slider class="no-padding no-margin"
-      v-model="this.score.computed.currentQuestion"
-      color=#ff6600
-      markers
-      snap
-      disable
-      :min="1"
-      :max='this.quiz.questions.length + 1'
-    />
-    <div class="site__content">
+  <div>
     <strong class="beta subhead">Question {{ this.score.computed.currentQuestion }}:</strong>
     <p class="question">{{ this.quiz.questions[this.score.computed.currentIndex].text }}</p>
     <!-- true-false -->
@@ -31,7 +21,8 @@
     <div v-if="this.quiz.questions[this.score.computed.currentIndex].category === 'multiChoice'">
       <q-option-group
         :options="this.quiz.questions[this.score.computed.currentIndex].choices"
-        v-model="picked"/>
+        v-model="picked"
+      />
       <br />
     </div>
     <!-- text-essay -->
@@ -63,54 +54,26 @@
       />
       <br />
     </div>
-
-    <q-btn
+    <q-btn v-if="this.score.computed.currentQuestion !== 1"
       class="actions text-h7 text-orange-9"
-      dense no-caps color="white"
-      :disable="this.score.computed.currentQuestion === 1"
-      icon="las la-backward"
+      outline no-caps color="white"
+      label="Previous"
       @click="previousQuestionChild()">
     </q-btn>
     <q-btn v-if="this.score.computed.currentQuestion !== this.quiz.questions.length"
       class="actions text-h7 text-orange-9"
-      dense no-caps color="white"
-      icon="las la-save" label="Next"
+      outline no-caps color="white"
+      label="Next"
       :disable="picked === ''"
       @click="processAnswerChild()">
     </q-btn>
     <q-btn v-else
       class="actions text-h7 text-orange-9"
-      dense no-caps color="white"
-      icon="las la-save" label="Finish"
+      outline no-caps color="white"
+      label="Finish"
       :disable="picked === ''"
       @click="processAnswerChild()">
     </q-btn>
-    <q-btn
-      class="actions text-h7 text-orange-9"
-      dense no-caps
-      icon="las la-forward"
-      @click="processNoAnswerChild(0)">
-    </q-btn>
-    <q-btn
-      class="actionsleft text-h7 text-orange-9"
-      dense no-caps
-      icon="las la-trash"
-      @click="processDeleteAnswerChild()">
-    </q-btn>
-    <q-btn
-      class="actions text-h7 text-orange-9"
-      dense no-caps
-      icon="las la-question"
-      :disable="this.hideHintButton"
-      @click="processTakeHintChild()">
-    </q-btn>
-    <div v-if="this.showHint">
-      <br>
-      <div class="no-margin text-h7 q-mt-sm q-mb-xs">
-        Hint: {{ quiz.questions[this.score.computed.currentIndex].explanation }}</div>
-    </div>
-
-  </div>
   </div>
 </template>
 
@@ -120,59 +83,28 @@ export default {
     'quiz',
     'quizProgress',
     'score',
-    'previouslyPicked',
+    'picked',
     'previousQuestionParent',
     'processAnswerParent',
-    'processNoAnswerParent',
-    'showHintParent',
-    'processTakeHintParent',
   ],
-  data() {
-    return {
-      picked: '',
-      showHint: false,
-      hideHintButton: false,
-    };
-  },
-  watch: {
-    previouslyPicked: {
-      // the callback will be called immediately after the start of the observation
-      immediate: true,
-      handler(val) {
-        this.picked = val;
-      },
-    },
-    showHintParent: {
-      // the callback will be called immediately after the start of the observation
-      immediate: true,
-      handler(val) {
-        this.showHint = val;
-      },
-    },
-  },
+  // data() {
+  //   return {
+  //     picked: '',
+  //   };
+  // },
+  // watch: {
+  //   pickedPrevious() {
+  //     this.picked = this.pickedPrevious;
+  //   },
+  // },
   methods: {
     previousQuestionChild() {
       this.picked = '';
-      this.hideHintButton = false;
       this.$emit('previousQuestionParent');
     },
     processAnswerChild() {
-      this.hideHintButton = false;
       this.$emit('processAnswerParent', this.picked);
       this.picked = '';
-    },
-    processNoAnswerChild() {
-      this.hideHintButton = false;
-      this.$emit('processNoAnswerParent');
-      this.picked = '';
-    },
-    processDeleteAnswerChild() {
-      this.hideHintButton = false;
-      this.picked = '';
-    },
-    processTakeHintChild() {
-      this.hideHintButton = true;
-      this.$emit('processTakeHintParent');
     },
   },
 };
@@ -185,13 +117,7 @@ export default {
 .actions{
     /* no underlining */
     text-decoration: none;
-    margin-right: 10px
-}
-.actionsleft{
-    /* no underlining */
-    text-decoration: none;
-    margin-right: 5px;
-    margin-left: 15px
+    margin-right: 5px
 }
 .quiz {
   overflow-x: hidden;
@@ -389,7 +315,7 @@ a:hover {
   /* animation: hue 60s infinite linear; */
 }
 .site__content {
-  animation: bounceInRight 1s;
+  animation: bounceInUp 1s;
   animation-delay: 0.1s;
 }
 .site__content form {
