@@ -1,6 +1,7 @@
 import Vue from 'vue';
-import { 
-  createRouter, createMemoryHistory, createWebHistory, createWebHashHistory } from 'vue-router'
+import {
+  createRouter, createMemoryHistory, createWebHistory, createWebHashHistory,
+} from 'vue-router';
 import { CHECK_AUTH } from 'src/store/types/actions.type';
 import store from 'src/store';
 import routes from './routes';
@@ -18,20 +19,20 @@ import routes from './routes';
  */
 
 // export default function (/* { store, ssrContext } */) {
-  export default function (/* { store, ssrContext } */) {
-    const createHistory = process.env.SERVER
-      ? createMemoryHistory
-      : process.env.VUE_ROUTER_MODE === 'history' ? createWebHistory : createWebHashHistory
-  
-    const Router = createRouter({
-      scrollBehavior: () => ({ left: 0, top: 0 }),
-      routes,
-  
-      // Leave this as is and make changes in quasar.conf.js instead!
-      // quasar.conf.js -> build -> vueRouterMode
-      // quasar.conf.js -> build -> publicPath
-      history: createHistory(process.env.MODE === 'ssr' ? void 0 : process.env.VUE_ROUTER_BASE)
-    })
+export default function (/* { store, ssrContext } */) {
+  const createHistory = process.env.SERVER
+    ? createMemoryHistory
+    : process.env.VUE_ROUTER_MODE === 'history' ? createWebHistory : createWebHashHistory;
+
+  const Router = createRouter({
+    scrollBehavior: () => ({ left: 0, top: 0 }),
+    routes,
+
+    // Leave this as is and make changes in quasar.conf.js instead!
+    // quasar.conf.js -> build -> vueRouterMode
+    // quasar.conf.js -> build -> publicPath
+    history: createHistory(process.env.MODE === 'ssr' ? void 0 : process.env.VUE_ROUTER_BASE),
+  });
 
   // Ensure we checked auth before each page load, check auth uses token!!
   Router.beforeEach((to, from, next) => Promise.all([store.dispatch(CHECK_AUTH)]).then(next));

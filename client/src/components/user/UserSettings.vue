@@ -32,13 +32,13 @@
               />
             </template>
           </q-input>
-          <UserSettingsActions v-if="showButtons" :currentUserParent.sync="currentUserModify">
+          <UserSettingsActions v-if="showButtons" v-model:currentUserParent="currentUserModify">
           </UserSettingsActions>
         </q-form>
       </div>
       <br>
       <ul v-if="errors" class="error-messages">
-        <li v-for="(v, k) in errors" :key="k">{{ k }} {{ v | error }}</li>
+        <li v-for="(v, k) in errors" :key="k">{{ k }} {{ error(v) }}</li>
       </ul>
     </q-page>
 </template>

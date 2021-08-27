@@ -17,5 +17,4 @@ export const API_USER_URL = 'https://quizzes.getsandbox.com:443/klass/quizzes/1.
 // export const API_ANSWER_URL = 'https://my-json-server.typicode.com/saalk/answer-db';
 export const API_ANSWER_URL = 'https://quizzes.getsandbox.com:443/klass/quizzes/1.0.0/';
 
-
 export default { API_QUIZ_URL, API_ANSWER_URL, API_USER_URL };

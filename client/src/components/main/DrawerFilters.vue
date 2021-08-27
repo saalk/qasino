@@ -38,7 +38,7 @@
     <div class="tagz">
       <q-btn
          :color=toggleTagsColor(tag) no-caps unelevated rounded
-        :label="tag | capitalize"
+        :label=" capitalize(tag) "
         v-for="(tag, index) in tags"
         :key="index"
         @click="toggleTags(tag)">

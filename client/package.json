@@ -6,7 +6,7 @@
   "author": "Saalk Lightyear <vandermeulen.k@gmail.com>",
   "scripts": {
     "build": "quasar build",
-    "lint": "eslint --ext .js,.vue src",
+    "lint": "eslint --fix --ext .js,.vue src",
     "build:pwa": "quasar build -m pwa",
     "dev": "quasar dev",
     "test": "echo \"No test specified\" && exit 0"

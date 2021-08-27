@@ -2,7 +2,7 @@
   <q-page padding>
     <q-card class="no-padding no-margin q-pa-md items-start">
       <q-card-section>
-        <div class="text-h6 text-orange-9">Profile: {{ profile.username | trimto(30) }}</div>
+        <div class="text-h6 text-orange-9">Profile: {{ trimto(30)(profile.username) }}</div>
         <div class="text-grey-6">
           <div class="row">
             <div class="no-padding col-md-4">
@@ -14,14 +14,14 @@
               &nbsp;&nbsp;&nbsp;
             </div>
             <div class="no-padding col-md-4 offset-md-4">
-              Bio: {{ profile.bio | trimto(20) }}
+              Bio: {{ trimto(20)(profile.bio) }}
             </div>
           </div>
         </div>
         <br>
         <ProfileQuizListActions v-if="showButtons"></ProfileQuizListActions>
         <ul v-if="errors" class="error-messages">
-          <li v-for="(v, k) in errors" :key="k">{{ k }} {{ v | error }}</li>
+          <li v-for="(v, k) in errors" :key="k">{{ k }} {{ error(v) }}</li>
         </ul>
       </q-card-section>
     </q-card>
@@ -34,7 +34,6 @@ import { mapState, mapGetters } from 'vuex';
 import { FETCH_PROFILE } from 'src/store/types/actions.type';
 import QuizList from 'src/components/quiz/QuizList';
 import ProfileQuizListActions from './ProfileQuizListActions';
-
 
 export default {
   name: 'ProfileQuizList',

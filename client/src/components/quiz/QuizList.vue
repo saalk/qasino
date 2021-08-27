@@ -24,7 +24,7 @@
         :key="quiz.quizId + index"
         :quiz="quiz"
       />
-      <QuizPagination :pages="pages" :currentPage.sync="currentPage" />
+      <QuizPagination :pages="pages" v-model:currentPage="currentPage" />
     </div>
   </q-page>
 </template>

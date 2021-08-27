@@ -1,6 +1,5 @@
 <template>
 
-
   <q-page padding>
     <q-card class="no-padding no-margin q-pa-md items-start">
       <q-card-section>

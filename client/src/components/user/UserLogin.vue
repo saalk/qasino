@@ -22,7 +22,7 @@
           </template>
         </q-input>
         <UserLoginActions v-if="showButtons"
-        :emailParent.sync="email" :passwordParent.sync="password"></UserLoginActions>
+        v-model:emailParent="email" v-model:passwordParent="password"></UserLoginActions>
       </q-form>
     </div>
     <br>
