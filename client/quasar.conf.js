@@ -15,7 +15,6 @@ module.exports = function (ctx) {
     css: [
       'app.sass',
       'animate.css',
-      'vue-select.css',
       'vue-range-slider.css',
       'flatpickr.css',
     ],
@@ -85,17 +84,17 @@ module.exports = function (ctx) {
       // extractCSS: false,
 
       // https://quasar.dev/quasar-cli/cli-documentation/handling-webpack
-      extendWebpack(cfg) {
-        cfg.module.rules.push({
-          enforce: 'pre',
-          test: /\.(js|vue)$/,
-          loader: 'eslint-loader',
-          exclude: /node_modules/,
-          options: {
-            formatter: require('eslint').CLIEngine.getFormatter('stylish'),
-          },
-        });
-      },
+      // extendWebpack(cfg) {
+      //   cfg.module.rules.push({
+      //     enforce: 'pre',
+      //     test: /\.(js|vue)$/,
+      //     loader: 'eslint-loader',
+      //     exclude: /node_modules/,
+      //     options: {
+      //       formatter: require('eslint').CLIEngine.getFormatter('stylish'),
+      //     },
+      //   });
+      // },
       // https://github.com/neutrinojs/webpack-chain/tree/v4#getting-started
     },
 
@@ -174,35 +173,35 @@ module.exports = function (ctx) {
     },
 
     // Full list of options: https://quasar.dev/quasar-cli/developing-electron-apps/configuring-electron
-    electron: {
-      bundler: 'packager', // 'packager' or 'builder'
+    // electron: {
+    //   bundler: 'packager', // 'packager' or 'builder'
 
-      packager: {
-        // https://github.com/electron-userland/electron-packager/blob/master/docs/api.md#options
+    //   packager: {
+    //     // https://github.com/electron-userland/electron-packager/blob/master/docs/api.md#options
 
-        // OS X / Mac App Store
-        // appBundleId: '',
-        // appCategoryType: '',
-        // osxSign: '',
-        // protocol: 'myapp://path',
+    //     // OS X / Mac App Store
+    //     // appBundleId: '',
+    //     // appCategoryType: '',
+    //     // osxSign: '',
+    //     // protocol: 'myapp://path',
 
-        // Windows only
-        // win32metadata: { ... }
-      },
+    //     // Windows only
+    //     // win32metadata: { ... }
+    //   },
 
-      builder: {
-        // https://www.electron.build/configuration/configuration
+    //   builder: {
+    //     // https://www.electron.build/configuration/configuration
 
-        appId: 'Lion Quiz',
-      },
+    //     appId: 'Lion Quiz',
+    //   },
 
-      // More info: https://quasar.dev/quasar-cli/developing-electron-apps/node-integration
-      nodeIntegration: true,
+    //   // More info: https://quasar.dev/quasar-cli/developing-electron-apps/node-integration
+    //   nodeIntegration: true,
 
-      extendWebpack(cfg) {
-        // do something with Electron main process Webpack cfg
-        // chainWebpack also available besides this extendWebpack
-      },
-    },
+    //   extendWebpack(cfg) {
+    //     // do something with Electron main process Webpack cfg
+    //     // chainWebpack also available besides this extendWebpack
+    //   },
+    // },
   };
 };
