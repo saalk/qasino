@@ -2,8 +2,8 @@
   <q-card class="no-padding no-margin q-pa-md items-start">
     <q-card-section>
 
-      <div class="text-h6 text-orange-9">Title: {{ quiz.meta.title | trimto(30) }}</div>
-      <div class="no-margin text-h7 q-mt-sm q-mb-xs">{{ quiz.meta.description | trimto(55) }}</div>
+      <div class="text-h6 text-orange-9">Title: {{ trimto(30)(quiz.meta.title) }}</div>
+      <div class="no-margin text-h7 q-mt-sm q-mb-xs">{{ trimto(55)(quiz.meta.description) }}</div>
       <div class="no-margin text-h7 q-mt-sm q-mb-xs">
         Subject: {{ trimto(55)(quiz.meta.subject) }}</div>
       <q-item dense class="no-padding no-margin ">

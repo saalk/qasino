@@ -2,7 +2,18 @@
 // https://quasar.dev/quasar-cli/quasar-conf-js
 
 module.exports = function (ctx) {
+  console.log(ctx)
+  
   return {
+
+    //https://quasar.dev/quasar-cli/supporting-ts
+    supportTS: true,
+
+    // https://quasar.dev/quasar-cli/prefetch-feature
+    // validate a route and redirect to loon
+    // or init a store state
+    // preFetch: true,
+
     // app boot file (/src/boot)
     // --> boot files are part of "main.js"
     // https://quasar.dev/quasar-cli/cli-documentation/boot-files

@@ -23,5 +23,9 @@ export default {
   components: {
     MainLayout,
   },
+  // preFetch hook runs only once
+  // preFetch ({ store }) {
+  //   // initialize something in store here
+  // }
 };
 </script>

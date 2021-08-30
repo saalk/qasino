@@ -1,4 +1,4 @@
-import Vue from 'vue';
+// import Vue from 'vue';
 import {
   createRouter, createMemoryHistory, createWebHistory, createWebHashHistory,
 } from 'vue-router';
@@ -17,8 +17,6 @@ import routes from './routes';
  * async/await or return a Promise which resolves
  * with the Router instance.
  */
-
-// export default function (/* { store, ssrContext } */) {
 export default function (/* { store, ssrContext } */) {
   const createHistory = process.env.SERVER
     ? createMemoryHistory
@@ -31,11 +29,14 @@ export default function (/* { store, ssrContext } */) {
     // Leave this as is and make changes in quasar.conf.js instead!
     // quasar.conf.js -> build -> vueRouterMode
     // quasar.conf.js -> build -> publicPath
-    history: createHistory(process.env.MODE === 'ssr' ? void 0 : process.env.VUE_ROUTER_BASE),
+    history: createHistory(process.env.MODE === 'ssr' ? undefined : process.env.VUE_ROUTER_BASE),
   });
 
   // Ensure we checked auth before each page load, check auth uses token!!
-  Router.beforeEach((to, from, next) => Promise.all([store.dispatch(CHECK_AUTH)]).then(next));
+  // https://next.router.vuejs.org/guide/advanced/navigation-guards.html#optional-third-argument-next
+  Router.beforeEach((to, from, next) => {
+    Promise.all([store.dispatch(CHECK_AUTH)]).then(next());
+  })
 
   return Router;
 }

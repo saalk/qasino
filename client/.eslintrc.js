@@ -33,7 +33,10 @@ module.exports = {
   // add your custom rules here
   rules: {
     'no-param-reassign': 'off',
- 
+    'vue/no-mutating-props': 'off',
+    'vue/no-unused-vars': 'off',
+    'no-nested-ternary': 'off',
+
     'import/first': 'off',
     'import/named': 'error',
     'import/namespace': 'error',

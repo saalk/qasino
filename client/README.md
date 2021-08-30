@@ -48,6 +48,7 @@ maintenance:
 - npm install -g @quasar/icongenie
 - rimraf node_modules package-lock.json yarn.lock // command rm -rf
 - npm shrinkwrap
+- icongenie generate -i src/statics/start/icon.png
 ```
 
 ### serve with hot reload at localhost:8080
@@ -66,14 +67,14 @@ maintanance:
 ### Lint the files
 
 ```bash
-quasar lint
+npm run lint
 ```
 
 ### Set the App log everywhere
 
 ```bash
 // source image should be 1240x1240 and 2436x2436
-quasar ext add @quasar/icon-genie
+icongenie generate -i src/statics/start/icon.png
 ```
 
 ### build for production with minification

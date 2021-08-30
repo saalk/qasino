@@ -1,8 +1,18 @@
-import Vue from 'vue';
+// old: import Vue from 'vue';
+// vue 3 new:
+import { createApp } from 'vue';
+import App from 'src/App.vue';
+
 import axios from 'axios';
 import VueAxios from 'vue-axios';
 import JwtService from 'src/common/api/jwt.service';
 import { API_QUIZ_URL, API_ANSWER_URL, API_USER_URL } from 'src/common/api/config';
+
+// vue 3 new:
+createApp(App).use(VueAxios, axios).mount('#app');
+
+// todo: return GET this.$api_user + resource + params
+// import { api_user } from 'boot/axios'
 
 // Endpoints USER-DB
 // =================
@@ -26,51 +36,56 @@ import { API_QUIZ_URL, API_ANSWER_URL, API_USER_URL } from 'src/common/api/confi
 
 export const ApiUserService = {
   init() {
-    Vue.use(VueAxios, axios);
-    // Vue.axios.defaults.baseURL = API_USER_URL;
+    // old:
+    // Vue.use(VueAxios, axios);
+    // this.$axios.defaults.baseURL = API_USER_URL;
   },
 
   setHeader() {
-    Vue.axios.defaults.headers.common.Authorization = `Token ${JwtService.getToken()}`;
+    this.$axios.defaults.headers.common.Authorization = `Token ${JwtService.getToken()}`;
   },
 
   query(resource, params) {
-    Vue.axios.defaults.baseURL = API_USER_URL;
-    return Vue.axios.get(resource, params).catch((error) => {
+    this.$axios.defaults.baseURL = API_USER_URL;
+    // todo: return GET this.$api_user + resource + params
+    // return api_user.get(resource, params).catch((error) => {
+    //   throw new Error(`ApiUserService ${error}`);
+    // });
+    return this.$axios.get(resource, params).catch((error) => {
       throw new Error(`ApiUserService ${error}`);
     });
   },
 
   get(resource, id = '') {
-    Vue.axios.defaults.baseURL = API_USER_URL;
+    this.$axios.defaults.baseURL = API_USER_URL;
     if (id !== '') {
-      return Vue.axios.get(`${resource}/${id}`).catch((error) => {
+      return this.$axios.get(`${resource}/${id}`).catch((error) => {
         throw new Error(`ApiUserService ${error}`);
       });
     }
-    return Vue.axios.get(`${resource}`).catch((error) => {
+    return this.$axios.get(`${resource}`).catch((error) => {
       throw new Error(`ApiUserService ${error}`);
     });
   },
 
   post(resource, params) {
-    Vue.axios.defaults.baseURL = API_USER_URL;
-    return Vue.axios.post(`${resource}`, params);
+    this.$axios.defaults.baseURL = API_USER_URL;
+    return this.$axios.post(`${resource}`, params);
   },
 
   update(resource, id, params) {
-    Vue.axios.defaults.baseURL = API_USER_URL;
-    return Vue.axios.put(`${resource}/${id}`, params);
+    this.$axios.defaults.baseURL = API_USER_URL;
+    return this.$axios.put(`${resource}/${id}`, params);
   },
 
   put(resource, params) {
-    Vue.axios.defaults.baseURL = API_USER_URL;
-    return Vue.axios.put(`${resource}`, params);
+    this.$axios.defaults.baseURL = API_USER_URL;
+    return this.$axios.put(`${resource}`, params);
   },
 
   delete(resource) {
-    Vue.axios.defaults.baseURL = API_USER_URL;
-    return Vue.axios.delete(resource).catch((error) => {
+    this.$axios.defaults.baseURL = API_USER_URL;
+    return this.$axios.delete(resource).catch((error) => {
       throw new Error(`ApiUserService ${error}`);
     });
   },
@@ -80,52 +95,53 @@ export const ApiUserService = {
 // =================
 export const ApiQuizService = {
   init() {
-    Vue.use(VueAxios, axios);
-    // Vue.axios.defaults.baseURL = API_QUIZ_URL;
+    // old:
+    // Vue.use(VueAxios, axios);
+    // this.$axios.defaults.baseURL = API_QUIZ_URL;
   },
 
   setHeader() {
-    Vue.axios.defaults.headers.common.Authorization = `Token ${JwtService.getToken()}`;
+    this.$axios.defaults.headers.common.Authorization = `Token ${JwtService.getToken()}`;
   },
 
   query(resource, params) {
-    Vue.axios.defaults.baseURL = API_QUIZ_URL;
-    return Vue.axios.get(resource, params).catch((error) => {
+    this.$axios.defaults.baseURL = API_QUIZ_URL;
+    return this.$axios.get(resource, params).catch((error) => {
       throw new Error(`ApiQuizService ${error}`);
     });
   },
 
   get(resource, id = '') {
-    Vue.axios.defaults.baseURL = API_QUIZ_URL;
+    this.$axios.defaults.baseURL = API_QUIZ_URL;
     if (id !== '') {
-      return Vue.axios.get(`${resource}/${id}`).catch((error) => {
-      // return Vue.axios.get(`${resource}`).catch((error) => {
+      return this.$axios.get(`${resource}/${id}`).catch((error) => {
+      // return this.$axios.get(`${resource}`).catch((error) => {
         throw new Error(`ApiQuizService ${error}`);
       });
     }
-    return Vue.axios.get(`${resource}`).catch((error) => {
+    return this.$axios.get(`${resource}`).catch((error) => {
       throw new Error(`ApiQuizService ${error}`);
     });
   },
 
   post(resource, params) {
-    Vue.axios.defaults.baseURL = API_QUIZ_URL;
-    return Vue.axios.post(`${resource}`, params);
+    this.$axios.defaults.baseURL = API_QUIZ_URL;
+    return this.$axios.post(`${resource}`, params);
   },
 
   update(resource, id, params) {
-    Vue.axios.defaults.baseURL = API_QUIZ_URL;
-    return Vue.axios.put(`${resource}/${id}`, params);
+    this.$axios.defaults.baseURL = API_QUIZ_URL;
+    return this.$axios.put(`${resource}/${id}`, params);
   },
 
   put(resource, params) {
-    Vue.axios.defaults.baseURL = API_QUIZ_URL;
-    return Vue.axios.put(`${resource}`, params);
+    this.$axios.defaults.baseURL = API_QUIZ_URL;
+    return this.$axios.put(`${resource}`, params);
   },
 
   delete(resource) {
-    Vue.axios.defaults.baseURL = API_QUIZ_URL;
-    return Vue.axios.delete(resource).catch((error) => {
+    this.$axios.defaults.baseURL = API_QUIZ_URL;
+    return this.$axios.delete(resource).catch((error) => {
       throw new Error(`ApiQuizService ${error}`);
     });
   },
@@ -135,52 +151,53 @@ export const ApiQuizService = {
 // =================
 export const ApiAnswerService = {
   init() {
-    Vue.use(VueAxios, axios);
-    // Vue.axios.defaults.baseURL = API_ANSWER_URL;
+    // old:
+    // Vue.use(VueAxios, axios);
+    // this.$axios.defaults.baseURL = API_ANSWER_URL;
   },
 
   setHeader() {
-    Vue.axios.defaults.headers.common.Authorization = `Token ${JwtService.getToken()}`;
+    this.$axios.defaults.headers.common.Authorization = `Token ${JwtService.getToken()}`;
   },
 
   query(resource, params) {
-    Vue.axios.defaults.baseURL = API_ANSWER_URL;
-    return Vue.axios.get(resource, params).catch((error) => {
+    this.$axios.defaults.baseURL = API_ANSWER_URL;
+    return this.$axios.get(resource, params).catch((error) => {
       throw new Error(`ApiAnswerService ${error}`);
     });
   },
 
   get(resource, id = '') {
-    Vue.axios.defaults.baseURL = API_ANSWER_URL;
+    this.$axios.defaults.baseURL = API_ANSWER_URL;
     if (id !== '') {
-      // return Vue.axios.get(`${resource}/${id}`).catch(error => {
-      return Vue.axios.get(`${resource}`).catch((error) => {
+      // return this.$axios.get(`${resource}/${id}`).catch(error => {
+      return this.$axios.get(`${resource}`).catch((error) => {
         throw new Error(`ApiAnswerService ${error}`);
       });
     }
-    return Vue.axios.get(`${resource}`).catch((error) => {
+    return this.$axios.get(`${resource}`).catch((error) => {
       throw new Error(`ApiAnswerService ${error}`);
     });
   },
 
   post(resource, params) {
-    Vue.axios.defaults.baseURL = API_ANSWER_URL;
-    return Vue.axios.post(`${resource}`, params);
+    this.$axios.defaults.baseURL = API_ANSWER_URL;
+    return this.$axios.post(`${resource}`, params);
   },
 
   update(resource, id, params) {
-    Vue.axios.defaults.baseURL = API_ANSWER_URL;
-    return Vue.axios.put(`${resource}/${id}`, params);
+    this.$axios.defaults.baseURL = API_ANSWER_URL;
+    return this.$axios.put(`${resource}/${id}`, params);
   },
 
   put(resource, params) {
-    Vue.axios.defaults.baseURL = API_ANSWER_URL;
-    return Vue.axios.put(`${resource}`, params);
+    this.$axios.defaults.baseURL = API_ANSWER_URL;
+    return this.$axios.put(`${resource}`, params);
   },
 
   delete(resource) {
-    Vue.axios.defaults.baseURL = API_ANSWER_URL;
-    return Vue.axios.delete(resource).catch((error) => {
+    this.$axios.defaults.baseURL = API_ANSWER_URL;
+    return this.$axios.delete(resource).catch((error) => {
       throw new Error(`ApiAnswerService ${error}`);
     });
   },
@@ -190,7 +207,7 @@ export const ApiAnswerService = {
 // GET /api/tags
 export const TagsService = {
   get() {
-    Vue.axios.defaults.baseURL = API_QUIZ_URL;
+    this.$axios.defaults.baseURL = API_QUIZ_URL;
     return ApiQuizService.get('tags');
   },
 };
@@ -204,27 +221,27 @@ export const TagsService = {
 // DELETE /api/quizzes/:id
 export const QuizzesService = {
   query(type, params) {
-    Vue.axios.defaults.baseURL = API_QUIZ_URL;
+    this.$axios.defaults.baseURL = API_QUIZ_URL;
     // return ApiQuizService.query(`quizzes${type === 'follow' ? '/follow' : ''}`, {
     return ApiQuizService.query(`quizzes${type === 'following' ? '' : ''}`, {
       params,
     });
   },
   get(id) {
-    Vue.axios.defaults.baseURL = API_QUIZ_URL;
+    this.$axios.defaults.baseURL = API_QUIZ_URL;
     // return ApiQuizService.get("quizzes", id);
     return ApiQuizService.get('quizzes', id);
   },
   create(params) {
-    Vue.axios.defaults.baseURL = API_QUIZ_URL;
+    this.$axios.defaults.baseURL = API_QUIZ_URL;
     return ApiQuizService.post('quizzes', { quiz: params });
   },
   update(id, params) {
-    Vue.axios.defaults.baseURL = API_QUIZ_URL;
+    this.$axios.defaults.baseURL = API_QUIZ_URL;
     return ApiQuizService.update('quizzes', id, { quiz: params });
   },
   destroy(id) {
-    Vue.axios.defaults.baseURL = API_QUIZ_URL;
+    this.$axios.defaults.baseURL = API_QUIZ_URL;
     if (id !== null) {
       // hack due to static my-json-server
       return ApiQuizService.delete(`quizzes/${id}`);
@@ -238,7 +255,7 @@ export const QuizzesService = {
 // DELETE /api/quizzes/:id/scores/:id
 export const ScoresService = {
   get(quizid, userid) {
-    Vue.axios.defaults.baseURL = API_ANSWER_URL;
+    this.$axios.defaults.baseURL = API_ANSWER_URL;
     if (quizid === null || userid === null) {
       throw new Error('scoresService.get() quiz + user id required to fetch scores');
     }
@@ -248,14 +265,14 @@ export const ScoresService = {
 
   post(id, payload) {
     // return ApiQuizService.post(`quizzes/${id}/scores`, {
-    Vue.axios.defaults.baseURL = API_QUIZ_URL;
+    this.$axios.defaults.baseURL = API_QUIZ_URL;
     return ApiAnswerService.post('answers', {
       score: { body: payload },
     });
   },
 
   destroy(id, scoreId) {
-    Vue.axios.defaults.baseURL = API_QUIZ_URL;
+    this.$axios.defaults.baseURL = API_QUIZ_URL;
     return ApiAnswerService.delete(`scores/${scoreId}`);
   },
 };
@@ -266,14 +283,14 @@ export const ScoresService = {
 export const FavoriteService = {
   // add(id) {
   add() {
-    Vue.axios.defaults.baseURL = API_QUIZ_URL;
+    this.$axios.defaults.baseURL = API_QUIZ_URL;
     return ApiQuizService.post('quizzes/favorite');
     // return ApiQuizService.post(`quizzes/${id}/favorite`);
     // return ApiQuizService.post('favorite');
   },
   // remove(id) {
   remove() {
-    Vue.axios.defaults.baseURL = API_QUIZ_URL;
+    this.$axios.defaults.baseURL = API_QUIZ_URL;
     // return ApiQuizService.delete(`quizzes/${id}/favorite`);
     return ApiQuizService.delete('favorite');
   },

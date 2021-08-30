@@ -11,7 +11,7 @@
           label="URL of profile picture"
           lazy-rules
             :rules="[ val => val && val.length > 0 || 'Please type something']"/>
-          <q-input @keydown.native.space.prevent filled type="text"
+          <q-input @keydown.space.prevent filled type="text"
           v-model="currentUserModify.username" label="Your username (no spaces)"
           autocomplete="on" lazy-rules
             :rules="[ val => val && val.length > 0 || 'Please type something']"/>

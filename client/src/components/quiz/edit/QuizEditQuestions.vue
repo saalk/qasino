@@ -4,6 +4,8 @@
     <p class="question">{{ this.quiz.questions[this.score.computed.currentIndex].text }}</p>
     <!-- true-false -->
     <div v-if="this.quiz.questions[this.score.computed.currentIndex].category === 'trueFalse'">
+      <!-- <q-radio v-model="picked" val="t" label="True" />
+      <q-radio v-model="picked" val="f" label="False" /> -->
       <q-radio v-model="picked" val="t" label="True" />
       <q-radio v-model="picked" val="f" label="False" />
       <br />
@@ -50,7 +52,6 @@
       <q-option-group
         type="checkbox"
         :options="this.quiz.questions[this.score.computed.currentIndex].choices"
-        v-model="picked"
       />
       <br />
     </div>

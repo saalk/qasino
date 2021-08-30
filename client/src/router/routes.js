@@ -1,3 +1,4 @@
+// lazy loading of layouts and pages () => import(<path>)
 const routes = [
   {
     path: '/',

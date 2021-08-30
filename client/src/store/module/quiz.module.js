@@ -2,11 +2,7 @@
 /* eslint-disable guard-for-in */
 /* eslint-disable no-shadow */
 import Vue from 'vue';
-import {
-  QuizzesService,
-  ScoresService,
-  FavoriteService,
-} from 'src/common/api.service';
+import { QuizzesService, ScoresService, FavoriteService } from 'src/common/api.service';
 import {
   FETCH_QUIZ,
   FETCH_SCORE,
