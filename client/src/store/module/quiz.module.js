@@ -1,7 +1,7 @@
 /* eslint-disable no-restricted-syntax */
 /* eslint-disable guard-for-in */
 /* eslint-disable no-shadow */
-import Vue from 'vue';
+// import Vue from 'vue';
 import { QuizzesService, ScoresService, FavoriteService } from 'src/common/api.service';
 import {
   FETCH_QUIZ,
@@ -152,7 +152,7 @@ export const mutations = {
   },
   [RESET_STATE]() {
     for (const f in state) {
-      Vue.set(state, f, initialState[f]);
+      this.$set(state, f, initialState[f]);
     }
   },
 };

@@ -84,6 +84,18 @@ quasar build
 quasar build -m cordova -T android
 ```
 
+### Sign the APK for playstore
+### https://quasar.dev/quasar-cli/developing-cordova-apps/publishing-to-store
+
+```bash
+keytool -genkey -v -keystore my-release-key.keystore -alias alias_name -keyalg RSA -keysize 2048 -validity 20000
+cd to src-cordova\platforms\android\app\build\outputs\apk\release\
+jarsigner -verbose -sigalg SHA1withRSA -digestalg SHA1 -keystore my-release-key.keystore <path-to-unsigned-apk-file> alias_name
+// run zipalign to optimise the APK and generate the final APK file 
+// zipalign is part of the Android SDK
+zipalign -v 4 <path-to-same-apk-file> HelloWorld.apk
+```
+
 ### Customize the configuration
 
 See [Configuring quasar.conf.js](https://quasar.dev/quasar-cli/quasar-conf-js).

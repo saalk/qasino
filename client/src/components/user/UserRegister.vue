@@ -30,7 +30,7 @@
     </div>
     <br>
     <ul v-if="errors" class="error-messages">
-      <li v-for="(v, k) in errors" :key="k">{{ k }} {{ error(v) }}</li>
+      <li v-for="(v, k) in errors" :key="k">{{ k }} {{ $filters.error(v) }}</li>
     </ul>
   </q-page>
 </template>

@@ -28,7 +28,7 @@
     <br>
     <ul v-if="errors" class="error-messages">
       <li v-for="(value, key) in errors" :key="key">
-        {{ key }} {{ error(value) }}
+        {{ key }} {{ $filters.error(value) }}
       </li>
     </ul>
   </q-page>

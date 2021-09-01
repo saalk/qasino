@@ -11,15 +11,16 @@ module.exports = function (ctx) {
 
     // https://quasar.dev/quasar-cli/prefetch-feature
     // validate a route and redirect to loon
-    // or init a store state
+    // or init a store state:
     // preFetch: true,
 
     // app boot file (/src/boot)
     // --> boot files are part of "main.js"
     // https://quasar.dev/quasar-cli/cli-documentation/boot-files
     boot: [
-      'api',
+      // 'api',
       'filter',
+      'axios',
     ],
 
     // https://quasar.dev/quasar-cli/quasar-conf-js#Property%3A-css
@@ -75,6 +76,9 @@ module.exports = function (ctx) {
       env: ctx.dev
         ? { // so on dev we'll have
           API: JSON.stringify('https://quizzes.getsandbox.com:443'),
+          // API: JSON.stringify('http://localhost:5000/api') 
+          // dont use localhost on emulator or phone when testing, use a specific ip and port
+          // API: JSON.stringify('http://10.0.2.2:5000/api')
         }
         : { // and on build (production):
           API: JSON.stringify('https://quizzes.getsandbox.com:443'),
@@ -114,7 +118,7 @@ module.exports = function (ctx) {
       https: false,
       port: 8080,
       open: true, // opens browser window automatically
-      // vueDevtools: true,
+      vueDevtools: true,
     },
 
     // animations: 'all', // --- includes all animations

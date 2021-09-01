@@ -1,18 +1,11 @@
 // old: import Vue from 'vue';
-// vue 3 new:
-import { createApp } from 'vue';
-import App from 'src/App.vue';
+// old: import axios from 'axios';
+// old: import VueAxios from 'vue-axios';
+// new vue3
+import { apiUser, apiQuiz, apiAnswer } from 'boot/axios'
 
-import axios from 'axios';
-import VueAxios from 'vue-axios';
 import JwtService from 'src/common/api/jwt.service';
 import { API_QUIZ_URL, API_ANSWER_URL, API_USER_URL } from 'src/common/api/config';
-
-// vue 3 new:
-createApp(App).use(VueAxios, axios).mount('#app');
-
-// todo: return GET this.$api_user + resource + params
-// import { api_user } from 'boot/axios'
 
 // Endpoints USER-DB
 // =================
@@ -46,46 +39,46 @@ export const ApiUserService = {
   },
 
   query(resource, params) {
-    this.$axios.defaults.baseURL = API_USER_URL;
-    // todo: return GET this.$api_user + resource + params
-    // return api_user.get(resource, params).catch((error) => {
+    // this.$axios.defaults.baseURL = API_USER_URL;
+    // todo: return GET this.$apiUser + resource + params
+    // return apiUser.get(resource, params).catch((error) => {
     //   throw new Error(`ApiUserService ${error}`);
     // });
-    return this.$axios.get(resource, params).catch((error) => {
+    return apiUser.get(resource, params).catch((error) => {
       throw new Error(`ApiUserService ${error}`);
     });
   },
 
   get(resource, id = '') {
-    this.$axios.defaults.baseURL = API_USER_URL;
+    // this.$axios.defaults.baseURL = API_USER_URL;
     if (id !== '') {
-      return this.$axios.get(`${resource}/${id}`).catch((error) => {
+      return apiUser.get(`${resource}/${id}`).catch((error) => {
         throw new Error(`ApiUserService ${error}`);
       });
     }
-    return this.$axios.get(`${resource}`).catch((error) => {
+    return apiUser.get(`${resource}`).catch((error) => {
       throw new Error(`ApiUserService ${error}`);
     });
   },
 
   post(resource, params) {
-    this.$axios.defaults.baseURL = API_USER_URL;
-    return this.$axios.post(`${resource}`, params);
+    // this.$axios.defaults.baseURL = API_USER_URL;
+    return apiUser.post(`${resource}`, params);
   },
 
   update(resource, id, params) {
-    this.$axios.defaults.baseURL = API_USER_URL;
-    return this.$axios.put(`${resource}/${id}`, params);
+    // this.$axios.defaults.baseURL = API_USER_URL;
+    return apiUser.put(`${resource}/${id}`, params);
   },
 
   put(resource, params) {
-    this.$axios.defaults.baseURL = API_USER_URL;
-    return this.$axios.put(`${resource}`, params);
+    // this.$axios.defaults.baseURL = API_USER_URL;
+    return apiUser.put(`${resource}`, params);
   },
 
   delete(resource) {
-    this.$axios.defaults.baseURL = API_USER_URL;
-    return this.$axios.delete(resource).catch((error) => {
+    // this.$axios.defaults.baseURL = API_USER_URL;
+    return apiUser.delete(resource).catch((error) => {
       throw new Error(`ApiUserService ${error}`);
     });
   },
@@ -105,43 +98,43 @@ export const ApiQuizService = {
   },
 
   query(resource, params) {
-    this.$axios.defaults.baseURL = API_QUIZ_URL;
-    return this.$axios.get(resource, params).catch((error) => {
+    // this.$axios.defaults.baseURL = API_QUIZ_URL;
+    return apiQuiz.get(resource, params).catch((error) => {
       throw new Error(`ApiQuizService ${error}`);
     });
   },
 
   get(resource, id = '') {
-    this.$axios.defaults.baseURL = API_QUIZ_URL;
+    // this.$axios.defaults.baseURL = API_QUIZ_URL;
     if (id !== '') {
-      return this.$axios.get(`${resource}/${id}`).catch((error) => {
+      return apiQuiz.get(`${resource}/${id}`).catch((error) => {
       // return this.$axios.get(`${resource}`).catch((error) => {
         throw new Error(`ApiQuizService ${error}`);
       });
     }
-    return this.$axios.get(`${resource}`).catch((error) => {
+    return apiQuiz.get(`${resource}`).catch((error) => {
       throw new Error(`ApiQuizService ${error}`);
     });
   },
 
   post(resource, params) {
-    this.$axios.defaults.baseURL = API_QUIZ_URL;
-    return this.$axios.post(`${resource}`, params);
+    // this.$axios.defaults.baseURL = API_QUIZ_URL;
+    return apiQuiz.post(`${resource}`, params);
   },
 
   update(resource, id, params) {
-    this.$axios.defaults.baseURL = API_QUIZ_URL;
-    return this.$axios.put(`${resource}/${id}`, params);
+    // this.$axios.defaults.baseURL = API_QUIZ_URL;
+    return apiQuiz.put(`${resource}/${id}`, params);
   },
 
   put(resource, params) {
-    this.$axios.defaults.baseURL = API_QUIZ_URL;
-    return this.$axios.put(`${resource}`, params);
+    // this.$axios.defaults.baseURL = API_QUIZ_URL;
+    return apiQuiz.put(`${resource}`, params);
   },
 
   delete(resource) {
-    this.$axios.defaults.baseURL = API_QUIZ_URL;
-    return this.$axios.delete(resource).catch((error) => {
+    // this.$axios.defaults.baseURL = API_QUIZ_URL;
+    return apiQuiz.delete(resource).catch((error) => {
       throw new Error(`ApiQuizService ${error}`);
     });
   },
@@ -161,43 +154,43 @@ export const ApiAnswerService = {
   },
 
   query(resource, params) {
-    this.$axios.defaults.baseURL = API_ANSWER_URL;
-    return this.$axios.get(resource, params).catch((error) => {
+    // this.$axios.defaults.baseURL = API_ANSWER_URL;
+    return apiAnswer.get(resource, params).catch((error) => {
       throw new Error(`ApiAnswerService ${error}`);
     });
   },
 
   get(resource, id = '') {
-    this.$axios.defaults.baseURL = API_ANSWER_URL;
+    // this.$axios.defaults.baseURL = API_ANSWER_URL;
     if (id !== '') {
       // return this.$axios.get(`${resource}/${id}`).catch(error => {
-      return this.$axios.get(`${resource}`).catch((error) => {
+      return apiAnswer.get(`${resource}`).catch((error) => {
         throw new Error(`ApiAnswerService ${error}`);
       });
     }
-    return this.$axios.get(`${resource}`).catch((error) => {
+    return apiAnswer.get(`${resource}`).catch((error) => {
       throw new Error(`ApiAnswerService ${error}`);
     });
   },
 
   post(resource, params) {
-    this.$axios.defaults.baseURL = API_ANSWER_URL;
-    return this.$axios.post(`${resource}`, params);
+    // this.$axios.defaults.baseURL = API_ANSWER_URL;
+    return apiAnswer.post(`${resource}`, params);
   },
 
   update(resource, id, params) {
-    this.$axios.defaults.baseURL = API_ANSWER_URL;
-    return this.$axios.put(`${resource}/${id}`, params);
+    // this.$axios.defaults.baseURL = API_ANSWER_URL;
+    return apiAnswer.put(`${resource}/${id}`, params);
   },
 
   put(resource, params) {
-    this.$axios.defaults.baseURL = API_ANSWER_URL;
-    return this.$axios.put(`${resource}`, params);
+    // this.$axios.defaults.baseURL = API_ANSWER_URL;
+    return apiAnswer.put(`${resource}`, params);
   },
 
   delete(resource) {
-    this.$axios.defaults.baseURL = API_ANSWER_URL;
-    return this.$axios.delete(resource).catch((error) => {
+    // this.$axios.defaults.baseURL = API_ANSWER_URL;
+    return apiAnswer.delete(resource).catch((error) => {
       throw new Error(`ApiAnswerService ${error}`);
     });
   },
@@ -207,7 +200,7 @@ export const ApiAnswerService = {
 // GET /api/tags
 export const TagsService = {
   get() {
-    this.$axios.defaults.baseURL = API_QUIZ_URL;
+    // this.$axios.defaults.baseURL = API_QUIZ_URL;
     return ApiQuizService.get('tags');
   },
 };
@@ -221,27 +214,27 @@ export const TagsService = {
 // DELETE /api/quizzes/:id
 export const QuizzesService = {
   query(type, params) {
-    this.$axios.defaults.baseURL = API_QUIZ_URL;
+    // this.$axios.defaults.baseURL = API_QUIZ_URL;
     // return ApiQuizService.query(`quizzes${type === 'follow' ? '/follow' : ''}`, {
     return ApiQuizService.query(`quizzes${type === 'following' ? '' : ''}`, {
       params,
     });
   },
   get(id) {
-    this.$axios.defaults.baseURL = API_QUIZ_URL;
+    // this.$axios.defaults.baseURL = API_QUIZ_URL;
     // return ApiQuizService.get("quizzes", id);
     return ApiQuizService.get('quizzes', id);
   },
   create(params) {
-    this.$axios.defaults.baseURL = API_QUIZ_URL;
+    // this.$axios.defaults.baseURL = API_QUIZ_URL;
     return ApiQuizService.post('quizzes', { quiz: params });
   },
   update(id, params) {
-    this.$axios.defaults.baseURL = API_QUIZ_URL;
+    // this.$axios.defaults.baseURL = API_QUIZ_URL;
     return ApiQuizService.update('quizzes', id, { quiz: params });
   },
   destroy(id) {
-    this.$axios.defaults.baseURL = API_QUIZ_URL;
+    // this.$axios.defaults.baseURL = API_QUIZ_URL;
     if (id !== null) {
       // hack due to static my-json-server
       return ApiQuizService.delete(`quizzes/${id}`);
@@ -255,7 +248,7 @@ export const QuizzesService = {
 // DELETE /api/quizzes/:id/scores/:id
 export const ScoresService = {
   get(quizid, userid) {
-    this.$axios.defaults.baseURL = API_ANSWER_URL;
+    // this.$axios.defaults.baseURL = API_ANSWER_URL;
     if (quizid === null || userid === null) {
       throw new Error('scoresService.get() quiz + user id required to fetch scores');
     }
@@ -265,14 +258,14 @@ export const ScoresService = {
 
   post(id, payload) {
     // return ApiQuizService.post(`quizzes/${id}/scores`, {
-    this.$axios.defaults.baseURL = API_QUIZ_URL;
+    // this.$axios.defaults.baseURL = API_QUIZ_URL;
     return ApiAnswerService.post('answers', {
       score: { body: payload },
     });
   },
 
   destroy(id, scoreId) {
-    this.$axios.defaults.baseURL = API_QUIZ_URL;
+    // this.$axios.defaults.baseURL = API_QUIZ_URL;
     return ApiAnswerService.delete(`scores/${scoreId}`);
   },
 };
@@ -283,14 +276,14 @@ export const ScoresService = {
 export const FavoriteService = {
   // add(id) {
   add() {
-    this.$axios.defaults.baseURL = API_QUIZ_URL;
+    // this.$axios.defaults.baseURL = API_QUIZ_URL;
     return ApiQuizService.post('quizzes/favorite');
     // return ApiQuizService.post(`quizzes/${id}/favorite`);
     // return ApiQuizService.post('favorite');
   },
   // remove(id) {
   remove() {
-    this.$axios.defaults.baseURL = API_QUIZ_URL;
+    // this.$axios.defaults.baseURL = API_QUIZ_URL;
     // return ApiQuizService.delete(`quizzes/${id}/favorite`);
     return ApiQuizService.delete('favorite');
   },

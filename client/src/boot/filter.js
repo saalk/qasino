@@ -11,8 +11,8 @@ import format from 'date-fns/format';
 const app = createApp(App);
 
 app.config.globalProperties.$filters = {
-  currencyUSD(value) {
-    return `$${value}`;
+  currencyEUR(value) {
+    return `€${value}`;
   },
   capitalizeFilter(s) {
     if (typeof s !== 'string') return '';

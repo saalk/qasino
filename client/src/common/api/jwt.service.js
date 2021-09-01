@@ -1,6 +1,3 @@
-// Pass the API Key as an HTTP Header with name  API-Key
-const ID_TOKEN_KEY = 'api-8c0ebe4a-4c4c-440c-a91d-79f05a2eba38';
-
 // window.localStorage is
 // users browser of 5MB,
 // only string data,

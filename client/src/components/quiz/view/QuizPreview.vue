@@ -32,15 +32,15 @@
             &nbsp;&nbsp;&nbsp;
           </div> -->
           <div class="no-padding col-md-4 offset-md-4">
-            &nbsp;&nbsp;Audiance: {{ trimto(20)(quiz.meta.audiance) }}
+            &nbsp;&nbsp;Audiance: {{ $filters.trimto(20)(quiz.meta.audiance) }}
             <br>
-            &nbsp;&nbsp;Subject: {{ trimto(20)(quiz.meta.subject) }}
+            &nbsp;&nbsp;Subject: {{ $filters.trimto(20)(quiz.meta.subject) }}
             <br>
             &nbsp;&nbsp;Hints allowed: {{ quiz.settings.numberOfHints }}
             <br>
             &nbsp;&nbsp;Questions: {{ quiz.questions.length }}
             <br>
-            &nbsp;&nbsp;{{ date(quiz.meta.created) }}
+            &nbsp;&nbsp;{{ $filters.date(quiz.meta.created) }}
           </div>
         </div>
       </div>
