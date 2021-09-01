@@ -20,11 +20,18 @@
       class="no-padding no-margin q-pa-md items-start">
       <main class="site__content island" role="content">
       <br />
-      <QuizEditQuestions
+      <!-- <QuizEditQuestions
         :quiz="this.quiz"
         :quizProgress="this.quizProgress"
         :score="this.score"
         :picked="this.currentAnswer.answer"
+        @previousQuestionParent="previousQuestion"
+        @processAnswerParent="processAnswer"
+        /> -->
+      <QuizEditQuestions
+        :quiz="this.quiz"
+        :quizProgress="this.quizProgress"
+        :score="this.score"
         @previousQuestionParent="previousQuestion"
         @processAnswerParent="processAnswer"
         />

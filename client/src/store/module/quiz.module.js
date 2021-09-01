@@ -149,7 +149,7 @@ export const mutations = {
   [RESET_STATE]() {
     for (const f in state) {
       // this.$set(state, f, initialState[f]);
-      state[f]=initialState[f];
+      state[f] = initialState[f];
     }
   },
 };
