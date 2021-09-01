@@ -1,4 +1,4 @@
-/// quiz : {"quizId":123,"meta":{"title":"x quiz","description":"Test your basic product x knowledge","subject":"Product x","audiance":"engineers","created":"2016-02-18T03:22:56.637Z","updated":"2016-02-18T03:48:35.824Z","tagList":["basic","x"]},"computed":{"favorited":true,"favoritesCount":123},"author":{"username":"tester","bio":"Test user api","image":"https://api.hello-avatar.com/adorables/avatars/280","computed":{"following":false,"followingCount":285}},"settings":{"final":"t","maxSecondsPerQuestion":5,"numberOfHints":2,"allowExit":"f","allowGoBack":"f","randomizeQuestions":"t","randomizeAnswers":"t","minimumPercentToPass":60},"questions":[{"questionId":111,"text":"Is product x hosted by a third party outside ING?","category":"trueFalse","choices":null,"answer":"t","explanation":"Product x is being administrated at a third party located in y"},{"questionId":222,"text":"Which product variant of product x has the beste features?","category":"multiChoice","choices":[{"label":"Variant a","value":"a"},{"label":"Variant b","value":"b"},{"label":"Variant c","value":"c"}],"answer":"c","explanation":"Variant c has in total z features more then the other variants"},{"questionId":333,"text":"What is the minimum age to apply for porduct x?","category":"numerical","choices":null,"answer":"18","explanation":"You should be at least 18 to apply but for a partner 16 is the minimum"}]}
+/// quiz : {"quizId":123,"meta":{"title":"x quiz","description":"Test your basic product x knowledge","subject":"Product x","audiance":"engineers","created":"2016-02-18T03:22:56.637Z","updated":"2016-02-18T03:48:35.824Z","tagList":["basic","x"]},"computedAnswer":{"favorited":true,"favoritesCount":123},"author":{"username":"tester","bio":"Test user api","image":"https://api.hello-avatar.com/adorables/avatars/280","computedAnswer":{"following":false,"followingCount":285}},"settings":{"final":"t","maxSecondsPerQuestion":5,"numberOfHints":2,"allowExit":"f","allowGoBack":"f","randomizeQuestions":"t","randomizeAnswers":"t","minimumPercentToPass":60},"questions":[{"questionId":111,"text":"Is product x hosted by a third party outside ING?","category":"trueFalse","choices":null,"answer":"t","explanation":"Product x is being administrated at a third party located in y"},{"questionId":222,"text":"Which product variant of product x has the beste features?","category":"multiChoice","choices":[{"label":"Variant a","value":"a"},{"label":"Variant b","value":"b"},{"label":"Variant c","value":"c"}],"answer":"c","explanation":"Variant c has in total z features more then the other variants"},{"questionId":333,"text":"What is the minimum age to apply for porduct x?","category":"numerical","choices":null,"answer":"18","explanation":"You should be at least 18 to apply but for a partner 16 is the minimum"}]}
 
 class Quiz {
   Quiz _quiz;
@@ -26,8 +26,8 @@ class Quiz {
 
 /// quizId : 123
 /// meta : {"title":"x quiz","description":"Test your basic product x knowledge","subject":"Product x","audiance":"engineers","created":"2016-02-18T03:22:56.637Z","updated":"2016-02-18T03:48:35.824Z","tagList":["basic","x"]}
-/// computed : {"favorited":true,"favoritesCount":123}
-/// author : {"username":"tester","bio":"Test user api","image":"https://api.hello-avatar.com/adorables/avatars/280","computed":{"following":false,"followingCount":285}}
+/// computedAnswer : {"favorited":true,"favoritesCount":123}
+/// author : {"username":"tester","bio":"Test user api","image":"https://api.hello-avatar.com/adorables/avatars/280","computedAnswer":{"following":false,"followingCount":285}}
 /// settings : {"final":"t","maxSecondsPerQuestion":5,"numberOfHints":2,"allowExit":"f","allowGoBack":"f","randomizeQuestions":"t","randomizeAnswers":"t","minimumPercentToPass":60}
 /// questions : [{"questionId":111,"text":"Is product x hosted by a third party outside ING?","category":"trueFalse","choices":null,"answer":"t","explanation":"Product x is being administrated at a third party located in y"},{"questionId":222,"text":"Which product variant of product x has the beste features?","category":"multiChoice","choices":[{"label":"Variant a","value":"a"},{"label":"Variant b","value":"b"},{"label":"Variant c","value":"c"}],"answer":"c","explanation":"Variant c has in total z features more then the other variants"},{"questionId":333,"text":"What is the minimum age to apply for porduct x?","category":"numerical","choices":null,"answer":"18","explanation":"You should be at least 18 to apply but for a partner 16 is the minimum"}]
 
@@ -41,7 +41,7 @@ class Quiz {
 
   int get quizId => _quizId;
   Meta get meta => _meta;
-  Computed get computed => _computed;
+  Computed get computedAnswer => _computed;
   Author get author => _author;
   Settings get settings => _settings;
   List<Questions> get questions => _questions;
@@ -49,13 +49,13 @@ class Quiz {
   Quiz({
       int quizId, 
       Meta meta, 
-      Computed computed, 
+      Computed computedAnswer,
       Author author, 
       Settings settings, 
       List<Questions> questions}){
     _quizId = quizId;
     _meta = meta;
-    _computed = computed;
+    _computed = computedAnswer;
     _author = author;
     _settings = settings;
     _questions = questions;
@@ -64,7 +64,7 @@ class Quiz {
   Quiz.fromJson(dynamic json) {
     _quizId = json['quizId'];
     _meta = json['meta'] != null ? Meta.fromJson(json['meta']) : null;
-    _computed = json['computed'] != null ? Computed.fromJson(json['computed']) : null;
+    _computed = json['computedAnswer'] != null ? Computed.fromJson(json['computedAnswer']) : null;
     _author = json['author'] != null ? Author.fromJson(json['author']) : null;
     _settings = json['settings'] != null ? Settings.fromJson(json['settings']) : null;
     if (json['questions'] != null) {
@@ -82,7 +82,7 @@ class Quiz {
       map['meta'] = _meta.toJson();
     }
     if (_computed != null) {
-      map['computed'] = _computed.toJson();
+      map['computedAnswer'] = _computed.toJson();
     }
     if (_author != null) {
       map['author'] = _author.toJson();
@@ -233,7 +233,7 @@ class Settings {
 /// username : "tester"
 /// bio : "Test user api"
 /// image : "https://api.hello-avatar.com/adorables/avatars/280"
-/// computed : {"following":false,"followingCount":285}
+/// computedAnswer : {"following":false,"followingCount":285}
 
 class Author {
   String _username;
@@ -244,24 +244,24 @@ class Author {
   String get username => _username;
   String get bio => _bio;
   String get image => _image;
-  Computed get computed => _computed;
+  Computed get computedAnswer => _computed;
 
   Author({
       String username, 
       String bio, 
       String image, 
-      Computed computed}){
+      Computed computedAnswer}){
     _username = username;
     _bio = bio;
     _image = image;
-    _computed = computed;
+    _computed = computedAnswer;
 }
 
   Author.fromJson(dynamic json) {
     _username = json['username'];
     _bio = json['bio'];
     _image = json['image'];
-    _computed = json['computed'] != null ? Computed.fromJson(json['computed']) : null;
+    _computed = json['computedAnswer'] != null ? Computed.fromJson(json['computedAnswer']) : null;
   }
 
   Map<String, dynamic> toJson() {
@@ -270,7 +270,7 @@ class Author {
     map['bio'] = _bio;
     map['image'] = _image;
     if (_computed != null) {
-      map['computed'] = _computed.toJson();
+      map['computedAnswer'] = _computed.toJson();
     }
     return map;
   }

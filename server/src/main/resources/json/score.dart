@@ -1,4 +1,4 @@
-/// score : [{"scoreId":12345,"quizId":123,"created":"2019-02-18T03:22:56.637Z","updated":"2020-02-18T03:22:56.637Z","hintsTaken":1,"computed":{"answeredCount":1,"correctCount":1,"currentQuestion":2,"currentIndex":1,"currentPercentToPass":10,"passed":false},"answers":[{"questionId":111,"answer":"t","secondsToAnswer":10}],"user":{"username":"tester"}}]
+/// score : [{"scoreId":12345,"quizId":123,"created":"2019-02-18T03:22:56.637Z","updated":"2020-02-18T03:22:56.637Z","hintsTaken":1,"computedAnswer":{"answeredCount":1,"correctCount":1,"currentQuestion":2,"currentIndex":1,"currentPercentToPass":10,"passed":false},"answers":[{"questionId":111,"answer":"t","secondsToAnswer":10}],"user":{"username":"tester"}}]
 
 class Score {
   List<Score> _score;
@@ -34,7 +34,7 @@ class Score {
 /// created : "2019-02-18T03:22:56.637Z"
 /// updated : "2020-02-18T03:22:56.637Z"
 /// hintsTaken : 1
-/// computed : {"answeredCount":1,"correctCount":1,"currentQuestion":2,"currentIndex":1,"currentPercentToPass":10,"passed":false}
+/// computedAnswer : {"answeredCount":1,"correctCount":1,"currentQuestion":2,"currentIndex":1,"currentPercentToPass":10,"passed":false}
 /// answers : [{"questionId":111,"answer":"t","secondsToAnswer":10}]
 /// user : {"username":"tester"}
 
@@ -53,7 +53,7 @@ class Score {
   String get created => _created;
   String get updated => _updated;
   int get hintsTaken => _hintsTaken;
-  Computed get computed => _computed;
+  Computed get computedAnswer => _computed;
   List<Answers> get answers => _answers;
   User get user => _user;
 
@@ -63,7 +63,7 @@ class Score {
       String created, 
       String updated, 
       int hintsTaken, 
-      Computed computed, 
+      Computed computedAnswer,
       List<Answers> answers, 
       User user}){
     _scoreId = scoreId;
@@ -71,7 +71,7 @@ class Score {
     _created = created;
     _updated = updated;
     _hintsTaken = hintsTaken;
-    _computed = computed;
+    _computed = computedAnswer;
     _answers = answers;
     _user = user;
 }
@@ -82,7 +82,7 @@ class Score {
     _created = json['created'];
     _updated = json['updated'];
     _hintsTaken = json['hintsTaken'];
-    _computed = json['computed'] != null ? Computed.fromJson(json['computed']) : null;
+    _computed = json['computedAnswer'] != null ? Computed.fromJson(json['computedAnswer']) : null;
     if (json['answers'] != null) {
       _answers = [];
       json['answers'].forEach((v) {
@@ -100,7 +100,7 @@ class Score {
     map['updated'] = _updated;
     map['hintsTaken'] = _hintsTaken;
     if (_computed != null) {
-      map['computed'] = _computed.toJson();
+      map['computedAnswer'] = _computed.toJson();
     }
     if (_answers != null) {
       map['answers'] = _answers.map((v) => v.toJson()).toList();

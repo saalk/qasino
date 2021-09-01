@@ -84,7 +84,7 @@ public class GamesApplication {
         game.shuffleGame(0);
         game.setState(GameState.PLAYING);
         game = gameRepository.save(game);
-        quizRepository.saveAll(game.getQuizs());
+//        gameRepository.saveAll(game);
 
         List<Player> players = new ArrayList<>();
         players.add(playerRepository.save(new Player(user, game, Role.INITIATOR,

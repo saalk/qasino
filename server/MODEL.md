@@ -14,7 +14,7 @@
 			"updated": "2016-02-18T03:48:35.824Z",
 			"tagList": ["basic", "x"]
 		},
-		"computed": {
+		"computedAnswer": {
 			"favorited": true,
 			"favoritesCount": 123
 		},
@@ -22,7 +22,7 @@
 			"username": "tester",
 			"bio": "Test user api",
 			"image": "https://api.hello-avatar.com/adorables/avatars/280",
-			"computed": {
+			"computedAnswer": {
 				"following": false,
 				"followingCount": 285
 			}
@@ -87,7 +87,7 @@
 		"created": "2019-02-18T03:22:56.637Z",
 		"updated": "2020-02-18T03:22:56.637Z",
 		"hintsTaken": 1,
-		"computed": {
+		"computedAnswer": {
 			"answeredCount": 1,
 			"correctCount": 1,
 			"currentQuestion": 2,
@@ -122,7 +122,7 @@
 		"bio": "Visitor profiles api",
 		"image": "https://api.hello-avatar.com/adorables/avatars/288",
 		"securedLoan": 100,
-		"computed": {
+		"computedAnswer": {
 			"following": true,
 			"followingCount": 285
 		}
