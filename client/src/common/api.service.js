@@ -2,10 +2,12 @@
 // old: import axios from 'axios';
 // old: import VueAxios from 'vue-axios';
 // new vue3
-import { apiUser, apiQuiz, apiAnswer } from 'boot/axios'
+import {
+  apiUser, apiQuiz, apiAnswer, axios,
+} from 'boot/axios';
 
 import JwtService from 'src/common/api/jwt.service';
-import { API_QUIZ_URL, API_ANSWER_URL, API_USER_URL } from 'src/common/api/config';
+// import { API_QUIZ_URL, API_ANSWER_URL, API_USER_URL } from 'src/common/api/config';
 
 // Endpoints USER-DB
 // =================
@@ -35,7 +37,7 @@ export const ApiUserService = {
   },
 
   setHeader() {
-    this.$axios.defaults.headers.common.Authorization = `Token ${JwtService.getToken()}`;
+    axios.defaults.headers.common.Authorization = `Token ${JwtService.getToken()}`;
   },
 
   query(resource, params) {
@@ -93,9 +95,9 @@ export const ApiQuizService = {
     // this.$axios.defaults.baseURL = API_QUIZ_URL;
   },
 
-  setHeader() {
-    this.$axios.defaults.headers.common.Authorization = `Token ${JwtService.getToken()}`;
-  },
+  // setHeader() {
+  //   this.$axios.defaults.headers.common.Authorization = `Token ${JwtService.getToken()}`;
+  // },
 
   query(resource, params) {
     // this.$axios.defaults.baseURL = API_QUIZ_URL;
@@ -149,9 +151,9 @@ export const ApiAnswerService = {
     // this.$axios.defaults.baseURL = API_ANSWER_URL;
   },
 
-  setHeader() {
-    this.$axios.defaults.headers.common.Authorization = `Token ${JwtService.getToken()}`;
-  },
+  // setHeader() {
+  //   this.$axios.defaults.headers.common.Authorization = `Token ${JwtService.getToken()}`;
+  // },
 
   query(resource, params) {
     // this.$axios.defaults.baseURL = API_ANSWER_URL;

@@ -28,7 +28,7 @@
     <br>
     <ul v-if="errors" class="error-messages">
       <li v-for="(value, key) in errors" :key="key">
-        {{ key }} {{ $filters.error(value) }}
+        {{ key }} {{ error(value) }}
       </li>
     </ul>
   </q-page>
@@ -36,6 +36,7 @@
 
 <script>
 import { mapState } from 'vuex';
+import format from 'date-fns/format';
 import UserLoginActions from './UserLoginActions';
 
 export default {
@@ -57,6 +58,30 @@ export default {
     ...mapState({
       errors: (state) => state.auth.errors,
     }),
+    currencyEUR(value) {
+      return `€${value}`;
+    },
+    capitalize(stringToCap) {
+      if (typeof stringToCap !== 'string') return 'no-string';
+      return `${stringToCap.charAt(0).toUpperCase() + stringToCap.slice(1)}`;
+    },
+    date(date) {
+      return format(new Date(date), 'MMMM d, yyyy');
+    },
+    error(errorValue) {
+      return `${errorValue[0]}`;
+    },
+    trimto(value, len) {
+      if (!value) return '';
+      if (!len) len = 20;
+      value = value.toString();
+      if (value.length <= len) {
+        // return `${value}`;
+        return value;
+      }
+      // return `${value.substr(0, size)}...`;
+      return `${value.substring(0, len - 3)}...`;
+    },
   },
 };
 </script>

@@ -34,9 +34,7 @@ const initialState = {
       description: 'dummy',
       subject: 'dummy',
       audiance: 'dummy',
-      created: `${(new Date()).getFullYear()}-${(new Date()).getMonth() + 1}-
-      ${(new Date()).getDay()}T${(new Date()).getHours()}:${(new Date()).getMinutes()}:
-      ${(new Date()).getSeconds()}`,
+      created: `${(new Date()).getFullYear()}-${(new Date()).getMonth() + 1}-${(new Date()).getDay()}T${(new Date()).getHours()}:${(new Date()).getMinutes()}:${(new Date()).getSeconds()}`,
       updated: '',
       tagList: ['dummy'],
     },
@@ -60,9 +58,7 @@ const initialState = {
   score: {
     scoreId: 1,
     quizId: 123,
-    created: `${(new Date()).getFullYear()}-${(new Date()).getMonth() + 1}-
-    ${(new Date()).getDay()}T${(new Date()).getHours()}:${(new Date()).getMinutes()}:
-    ${(new Date()).getSeconds()}`,
+    created: `${(new Date()).getFullYear()}-${(new Date()).getMonth() + 1}-${(new Date()).getDay()}T${(new Date()).getHours()}:${(new Date()).getMinutes()}:${(new Date()).getSeconds()}`,
     updated: '',
     hintsTaken: 0,
     computed: {
@@ -152,7 +148,8 @@ export const mutations = {
   },
   [RESET_STATE]() {
     for (const f in state) {
-      this.$set(state, f, initialState[f]);
+      // this.$set(state, f, initialState[f]);
+      state[f]=initialState[f];
     }
   },
 };

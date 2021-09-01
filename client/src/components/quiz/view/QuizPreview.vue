@@ -2,10 +2,14 @@
   <q-card class="no-padding no-margin q-pa-md items-start">
     <q-card-section>
 
-      <div class="text-h6 text-orange-9">Title: {{ trimto(30)(quiz.meta.title) }}</div>
-      <div class="no-margin text-h7 q-mt-sm q-mb-xs">{{ trimto(55)(quiz.meta.description) }}</div>
+      <div class="text-h6 text-orange-9">
+        Title: {{ trimto(quiz.meta.title, 30) }}
+      </div>
       <div class="no-margin text-h7 q-mt-sm q-mb-xs">
-        Subject: {{ trimto(55)(quiz.meta.subject) }}</div>
+        {{ trimto(quiz.meta.description, 55) }}
+      </div>
+      <div class="no-margin text-h7 q-mt-sm q-mb-xs">
+        Subject: {{ trimto(quiz.meta.subject, 55) }}</div>
       <q-item dense class="no-padding no-margin ">
         <q-item-label class="no-padding no-margin">Tags:&nbsp;[&nbsp;</q-item-label>
         <q-item-label class="no-padding no-margin"
@@ -32,15 +36,15 @@
             &nbsp;&nbsp;&nbsp;
           </div> -->
           <div class="no-padding col-md-4 offset-md-4">
-            &nbsp;&nbsp;Audiance: {{ $filters.trimto(20)(quiz.meta.audiance) }}
+            &nbsp;&nbsp;Audiance: {{ trimto(quiz.meta.audiance, 20) }}
             <br>
-            &nbsp;&nbsp;Subject: {{ $filters.trimto(20)(quiz.meta.subject) }}
+            &nbsp;&nbsp;Subject: {{ trimto(quiz.meta.subject, 20) }}
             <br>
             &nbsp;&nbsp;Hints allowed: {{ quiz.settings.numberOfHints }}
             <br>
             &nbsp;&nbsp;Questions: {{ quiz.questions.length }}
             <br>
-            &nbsp;&nbsp;{{ $filters.date(quiz.meta.created) }}
+            &nbsp;&nbsp;{{ date(quiz.meta.created) }}
           </div>
         </div>
       </div>
@@ -53,6 +57,7 @@
 
 <script>
 import { mapGetters } from 'vuex';
+import format from 'date-fns/format';
 import QuizPreviewActions from './QuizPreviewActions';
 
 export default {
@@ -73,6 +78,30 @@ export default {
         return this.currentUser.username === this.quiz.author.username;
       }
       return false;
+    },
+    currencyEUR(value) {
+      return `€${value}`;
+    },
+    capitalize(stringToCap) {
+      if (typeof stringToCap !== 'string') return 'no-string';
+      return `${stringToCap.charAt(0).toUpperCase() + stringToCap.slice(1)}`;
+    },
+    date(date) {
+      return format(new Date(date), 'MMMM d, yyyy');
+    },
+    error(errorValue) {
+      return `${errorValue[0]}`;
+    },
+    trimto(value, len) {
+      if (!value) return '';
+      if (!len) len = 20;
+      value = value.toString();
+      if (value.length <= len) {
+        // return `${value}`;
+        return value;
+      }
+      // return `${value.substr(0, size)}...`;
+      return `${value.substring(0, len - 3)}...`;
     },
   },
 };

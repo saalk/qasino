@@ -5,6 +5,7 @@
 // only your js and hackers js can access it
 //
 // use IndexedDB to take full advantage of it
+import { ID_TOKEN_KEY } from 'src/common/api/api.key';
 
 export const getToken = () => window.localStorage.getItem(ID_TOKEN_KEY);
 

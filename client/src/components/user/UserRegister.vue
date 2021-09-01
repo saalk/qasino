@@ -22,7 +22,7 @@
         <q-input class="no padding" filled type="password"
         v-model="password" label="Password"/>
         <UserRegisterActions v-if="showButtons"
-          v-model:usernamearent="username"
+          v-model:usernameParent="username"
           v-model:emailParent="email"
           v-model:passwordParent="password">
         </UserRegisterActions>
@@ -30,7 +30,7 @@
     </div>
     <br>
     <ul v-if="errors" class="error-messages">
-      <li v-for="(v, k) in errors" :key="k">{{ k }} {{ $filters.error(v) }}</li>
+      <li v-for="(v, k) in errors" :key="k">{{ k }} {{ error(v) }}</li>
     </ul>
   </q-page>
 </template>

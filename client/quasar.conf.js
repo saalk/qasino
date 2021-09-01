@@ -19,7 +19,7 @@ module.exports = function (ctx) {
     // https://quasar.dev/quasar-cli/cli-documentation/boot-files
     boot: [
       // 'api',
-      'filter',
+      // 'filter',
       'axios',
     ],
 
@@ -84,7 +84,7 @@ module.exports = function (ctx) {
           API: JSON.stringify('https://quizzes.getsandbox.com:443'),
         },
       scopeHoisting: true,
-      devtool: 'source-map',
+      // devtool: 'source-map',
       // history does not get you the # in your url but you have to do some extra configuration
       // if you want users to be able to access all sub-urls directly
       // therefore you have to make the catch-all fallback to index.html

@@ -33,4 +33,4 @@ yarn-error.log*
 *.sln
 
 # Api key file
-apiKey.js
+api.key.js

@@ -13,7 +13,7 @@
       >
         {{ answer.author.username }}
       </router-link> -->
-      <span class="date-posted">{{ $filters.date(score.created) }}</span>
+      <span class="date-posted">{{ date(score.created) }}</span>
       <span v-if="isCurrentUser" class="mod-options">
         <i class="ion-trash-a" @click="destroy(scoreId, questionId)"></i>
       </span>
@@ -24,6 +24,7 @@
 <script>
 import { mapGetters } from 'vuex';
 import { SCORE_DESTROY } from 'src/store/types/actions.type';
+import format from 'date-fns/format';
 
 export default {
   name: 'Answer',
@@ -43,6 +44,30 @@ export default {
   methods: {
     destroy(scoreid) {
       this.$store.dispatch(SCORE_DESTROY, { scoreid });
+    },
+    currencyEUR(value) {
+      return `€${value}`;
+    },
+    capitalize(stringToCap) {
+      if (typeof stringToCap !== 'string') return 'no-string';
+      return `${stringToCap.charAt(0).toUpperCase() + stringToCap.slice(1)}`;
+    },
+    date(date) {
+      return format(new Date(date), 'MMMM d, yyyy');
+    },
+    error(errorValue) {
+      return `${errorValue[0]}`;
+    },
+    trimto(value, len) {
+      if (!value) return '';
+      if (!len) len = 20;
+      value = value.toString();
+      if (value.length <= len) {
+        // return `${value}`;
+        return value;
+      }
+      // return `${value.substr(0, size)}...`;
+      return `${value.substring(0, len - 3)}...`;
     },
   },
 };

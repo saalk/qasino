@@ -66,6 +66,7 @@
 <script>
 import { mapGetters } from 'vuex';
 import { FETCH_TAGS } from 'src/store/types/actions.type';
+import format from 'date-fns/format';
 
 export default {
   name: 'DrawerFilters',
@@ -180,6 +181,30 @@ export default {
         return 'purple';
       }
       return 'grey';
+    },
+    currencyEUR(value) {
+      return `€${value}`;
+    },
+    capitalize(stringToCap) {
+      if (typeof stringToCap !== 'string') return 'no-string';
+      return `${stringToCap.charAt(0).toUpperCase() + stringToCap.slice(1)}`;
+    },
+    date(date) {
+      return format(new Date(date), 'MMMM d, yyyy');
+    },
+    error(errorValue) {
+      return `${errorValue[0]}`;
+    },
+    trimto(value, len) {
+      if (!value) return '';
+      if (!len) len = 20;
+      value = value.toString();
+      if (value.length <= len) {
+        // return `${value}`;
+        return value;
+      }
+      // return `${value.substr(0, size)}...`;
+      return `${value.substring(0, len - 3)}...`;
     },
   },
 };
