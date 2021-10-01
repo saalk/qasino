@@ -109,6 +109,7 @@
       <div class="no-margin text-h7 q-mt-sm q-mb-xs">
         Hint: {{ quiz.questions[this.score.computed.currentIndex].explanation }}</div>
     </div>
+    </div>
   </div>
 </template>
 
