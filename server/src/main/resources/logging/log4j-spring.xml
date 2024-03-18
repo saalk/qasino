@@ -44,8 +44,8 @@
             <AppenderRef ref="roll-by-time-and-size" />
         </Root>
 
-        <!-- LOG "cloud.Qasino*" at TRACE level for debugging purposes-->
-        <Logger name="cloud.Qasino.*" level="trace"></Logger>
+        <!-- LOG "cloud.qasino*" at TRACE level for debugging purposes-->
+        <Logger name="cloud.qasino.*" level="trace"></Logger>
     </Loggers>
 
 </Configuration>

@@ -8,10 +8,6 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import static org.mockito.Mockito.*;
-
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -26,7 +22,7 @@ class QasinoFlowDTOTest {
     QasinoFlowDTO flow;
 
     @Test
-    void callOrocessPathDataOK() throws URISyntaxException {
+    void callProcessPathDataOK() {
 
         //private boolean requestingToRepay = false;
         //private boolean offeringShipForPawn = false;
@@ -43,7 +39,7 @@ class QasinoFlowDTOTest {
         boolean result = flow.validateInput();
 
         assertThat(result);
-        assertThat(flow.isRequestingToRepay() == true );
+        assertThat(flow.isRequestingToRepay());
     }
 
 }
