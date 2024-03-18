@@ -1,14 +1,13 @@
 package cloud.qasino.card.service;
 
-import cloud.qasino.card.properties.MarvelProperties;
 import cloud.qasino.card.domain.marvel.Character;
 import cloud.qasino.card.domain.marvel.Serie;
+import cloud.qasino.card.properties.MarvelProperties;
 import cloud.qasino.card.util.MD5Util;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectReader;
-import lombok.extern.java.Log;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
