@@ -3,8 +3,6 @@ package cloud.qasino.card.dto;
 import cloud.qasino.card.action.*;
 import cloud.qasino.card.dto.statistics.Counter;
 import cloud.qasino.card.entity.*;
-import cloud.qasino.card.statemachine.GameStateGroup;
-import cloud.qasino.card.statemachine.GameTrigger;
 import cloud.qasino.card.entity.enums.card.Face;
 import cloud.qasino.card.entity.enums.card.Location;
 import cloud.qasino.card.entity.enums.card.Position;
@@ -13,9 +11,9 @@ import cloud.qasino.card.entity.enums.move.Move;
 import cloud.qasino.card.entity.enums.player.AiLevel;
 import cloud.qasino.card.entity.enums.player.Avatar;
 import cloud.qasino.card.entity.enums.player.Role;
-import cloud.qasino.card.util.Systemout;
+import cloud.qasino.card.statemachine.GameStateGroup;
+import cloud.qasino.card.statemachine.GameTrigger;
 import lombok.AccessLevel;
-import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
@@ -189,7 +187,7 @@ public class QasinoFlowDTO //extends AbstractFlowDTO
         String key;
         String dataName = "headerData";
         String headerDataString = StringUtils.join(headerData);
-        log.info(this.getClass().getName() + ": " + dataName + " is " + headerDataString);
+//        log.info(this.getClass().getName() + ": " + dataName + " is " + headerDataString);
 
         if (headerData==null) return true;
 
@@ -217,7 +215,7 @@ public class QasinoFlowDTO //extends AbstractFlowDTO
         String key;
         String dataName = "pathData";
         String pathDataString = StringUtils.join(pathData);
-        log.info(this.getClass().getName() + ": " + dataName + " is " + pathDataString);
+//        log.info(this.getClass().getName() + ": " + dataName + " is " + pathDataString);
 
         if (pathData==null) return true;
 
@@ -273,7 +271,7 @@ public class QasinoFlowDTO //extends AbstractFlowDTO
         String key;
         String dataName = "paramData";
         String paramDataString = StringUtils.join(paramData);
-        log.info(this.getClass().getName() + ": " + dataName + " is " + paramDataString);
+//        log.info(this.getClass().getName() + ": " + dataName + " is " + paramDataString);
 
         if (paramData==null) return true;
 

@@ -14,9 +14,9 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 
 import java.util.concurrent.Executor;
 
-@Slf4j
 @EnableAsync
 @Configuration
+@Slf4j
 public class QasinoAsyncConfiguration implements AsyncConfigurer {
 
     public static final String ASYNC_EXECUTOR_THREAD_NAME = "EventHandler-Executor";

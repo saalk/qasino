@@ -4,9 +4,7 @@ import cloud.qasino.card.statemachine.GameState;
 import cloud.qasino.card.orchestration.interfaces.EventHandlingResponse;
 import lombok.Getter;
 import lombok.Setter;
-import lombok.extern.slf4j.Slf4j;
 
-@Slf4j
 public abstract class AbstractFlowDTO { //implements FlowEventCallback {
 
     @Getter
