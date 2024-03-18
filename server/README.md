@@ -1,8 +1,7 @@
 # Qasino backend
-- a Java 8 Spring-Boot based application
+- a Java 17 Spring-Boot based application
 - serving only one endpoint using GraphQL
 - based upon EventSourcing architecture limiting tables MySQL database
-- hosted in the cloud with Strato and ...
 
 ### Running the application
 - 'mvn spring-boot:run`
