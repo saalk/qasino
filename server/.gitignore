@@ -1,0 +1,60 @@
+target/
+!.mvn/wrapper/maven-wrapper.jar
+!**/src/main/**
+!**/src/test/**
+
+### STS ###
+.apt_generated
+.classpath
+.factorypath
+.project
+.settings
+.springBeans
+.sts4-cache
+
+### IntelliJ IDEA ###
+.idea
+*.iws
+*.iml
+*.ipr
+
+### NetBeans ###
+/nbproject/private/
+/nbbuild/
+/dist/
+/nbdist/
+/.nb-gradle/
+build/
+
+### VS Code ###
+.vscode/
+/.idea/
+
+### Cer and Key
+**/*.key
+**/*.cer
+
+*/.swp
+**/*.log
+**/*.log.gz
+**/~*.xlsx
+**/~*.docx
+.toDelete
+
+### Maven release tmp files.
+**/*.releaseBackup
+**/release.properties
+
+# OS generated files #
+.DS_Store
+ehthumbs.db
+Icon?
+Thumbs.db
+
+**/*.swp
+**/jasypt_pwd_*.txt
+**/cookies.txt
+
+# help files from ing
+**/help/**
+/server/CardGamesServiceWeb/src/main/help/

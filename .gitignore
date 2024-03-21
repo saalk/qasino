@@ -51,3 +51,4 @@ yarn-error.log*
 client/package.json
 client/yarn.lock
 client/package-lock.json
+/server/CardGamesServiceWeb/src/main/help/
