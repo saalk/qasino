@@ -1,0 +1,1260 @@
+{
+  "swagger" : "2.0",
+  "info" : {
+    "description" : "This API exposes endpoints for all the NL Consumer Credit Card life cycle processes that a NL customer (via Mijn ING or Assisted Channels) can perform. Endpoints requiring an access token are exposed in NGINX except for the authorize endpoints which should only be called   by AWA. The exception endpoints are only exposed in iris, the other endpoints are exposed in ming and most also in iris.",
+    "version" : "10.3.0",
+    "title" : "Consumer Credit Cards Requests API",
+    "contact" : {
+      "name" : "Team Arabica",
+      "url" : "https://confluence.europe.intranet/display/TSP/Squad+Arabica",
+      "email" : "ml-arabica@qasino.cloud"
+    }
+  },
+  "host" : "api.qasino.cloud",
+  "schemes" : [ "https" ],
+  "consumes" : [ "application/json" ],
+  "produces" : [ "application/json" ],
+  "paths" : {
+    "/consumer-credit-cards/requests/apply-card/initiate" : {
+      "post" : {
+        "tags" : [ "Apply Card" ],
+        "summary" : "Select card to apply flow.",
+        "description" : "Initial endpoint in apply a credit card. Responds with a request id, that needs to be provided on subsequent requests.",
+        "parameters" : [ {
+          "name" : "X-ING-AccessToken",
+          "in" : "header",
+          "description" : "The ING access token, required when connecting to the frontend.",
+          "required" : true,
+          "type" : "string"
+        }, {
+          "in" : "body",
+          "name" : "Apply card Initiate Request",
+          "description" : "Request to apply card process.",
+          "required" : true,
+          "schema" : {
+            "$ref" : "#/definitions/InitiateRequestApply"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "schema" : {
+              "$ref" : "#/definitions/DefaultResponse"
+            }
+          },
+          "400" : {
+            "description" : "Bad Request"
+          },
+          "401" : {
+            "description" : "Unauthorized"
+          },
+          "403" : {
+            "description" : "Forbidden"
+          },
+          "404" : {
+            "description" : "Not Found"
+          },
+          "500" : {
+            "description" : "Internal Server Error - Something went wrong on the server, check status site and/or report the issue. There is no need to really specify this any further (other than 503 below) as the client is powerless in fixing the condition that caused the error"
+          },
+          "503" : {
+            "description" : "Service Unavailable - The API is temporarily unavailable. This is the only 500 code that allows for the client to try and remedy the condition (i.e. by retrying)"
+          }
+        }
+      }
+    },
+    "/consumer-credit-cards/requests/apply-card/exception/initiate" : {
+      "post" : {
+        "tags" : [ "Apply Card" ],
+        "summary" : "Select card to apply flow for exception process.",
+        "description" : "Initial endpoint in apply a credit card. Responds with a request id, that needs to be provided on subsequent requests.",
+        "parameters" : [ {
+          "name" : "X-ING-AccessToken",
+          "in" : "header",
+          "description" : "The ING access token, required when connecting to the frontend.",
+          "required" : true,
+          "type" : "string"
+        }, {
+          "in" : "body",
+          "name" : "Apply card Initiate Request",
+          "description" : "Request to apply card process.",
+          "required" : true,
+          "schema" : {
+            "$ref" : "#/definitions/InitiateRequestApply"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "schema" : {
+              "$ref" : "#/definitions/ExceptionProcessDefaultResponse"
+            }
+          },
+          "400" : {
+            "description" : "Bad Request"
+          },
+          "401" : {
+            "description" : "Unauthorized"
+          },
+          "403" : {
+            "description" : "Forbidden"
+          },
+          "404" : {
+            "description" : "Not Found"
+          },
+          "500" : {
+            "description" : "Internal Server Error - Something went wrong on the server, check status site and/or report the issue. There is no need to really specify this any further (other than 503 below) as the client is powerless in fixing the condition that caused the error"
+          },
+          "503" : {
+            "description" : "Service Unavailable - The API is temporarily unavailable. This is the only 500 code that allows for the client to try and remedy the condition (i.e. by retrying)"
+          }
+        }
+      }
+    },
+    "/consumer-credit-cards/requests/apply-card/{requestId}/select-card-type" : {
+      "put" : {
+        "tags" : [ "Apply Card" ],
+        "summary" : "select the card type request.",
+        "description" : "The endpoint should be used to verify if the user is allowed to proceed with the apply process.",
+        "parameters" : [ {
+          "name" : "requestId",
+          "in" : "path",
+          "description" : "The uuid of the request that the customer initiated.",
+          "required" : true,
+          "type" : "string"
+        }, {
+          "name" : "X-ING-AccessToken",
+          "in" : "header",
+          "description" : "The ING access token, required when connecting to the frontend.",
+          "required" : true,
+          "type" : "string"
+        }, {
+          "in" : "body",
+          "name" : "applyCardCardTypeRequest",
+          "description" : "Type of card being applied for.",
+          "required" : false,
+          "schema" : {
+            "$ref" : "#/definitions/ApplyCardCardTypeRequest"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "schema" : {
+              "$ref" : "#/definitions/DefaultResponse"
+            }
+          },
+          "400" : {
+            "description" : "Bad Request"
+          },
+          "401" : {
+            "description" : "Unauthorized"
+          },
+          "403" : {
+            "description" : "Forbidden"
+          },
+          "404" : {
+            "description" : "Not Found"
+          },
+          "500" : {
+            "description" : "Internal Server Error - Something went wrong on the server, check status site and/or report the issue. There is no need to really specify this any further (other than 503 below) as the client is powerless in fixing the condition that caused the error"
+          },
+          "503" : {
+            "description" : "Service Unavailable - The API is temporarily unavailable. This is the only 500 code that allows for the client to try and remedy the condition (i.e. by retrying)"
+          }
+        }
+      }
+    },
+    "/consumer-credit-cards/requests/apply-card/exception/{requestId}/select-card-type" : {
+      "put" : {
+        "tags" : [ "Apply Card" ],
+        "summary" : "select the card type request during exception process.",
+        "description" : "The endpoint should be used to verify if the user is allowed to proceed with the apply process.",
+        "parameters" : [ {
+          "name" : "requestId",
+          "in" : "path",
+          "description" : "The uuid of the request that the customer initiated.",
+          "required" : true,
+          "type" : "string"
+        }, {
+          "name" : "X-ING-AccessToken",
+          "in" : "header",
+          "description" : "The ING access token, required when connecting to the frontend.",
+          "required" : true,
+          "type" : "string"
+        }, {
+          "in" : "body",
+          "name" : "ApplyCardCardTypeRequestExceptionProcess",
+          "description" : "Type of card being applied for.",
+          "required" : false,
+          "schema" : {
+            "$ref" : "#/definitions/ApplyCardCardTypeRequestExceptionProcess"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "schema" : {
+              "$ref" : "#/definitions/ExceptionProcessDefaultResponse"
+            }
+          },
+          "400" : {
+            "description" : "Bad Request"
+          },
+          "401" : {
+            "description" : "Unauthorized"
+          },
+          "403" : {
+            "description" : "Forbidden"
+          },
+          "404" : {
+            "description" : "Not Found"
+          },
+          "500" : {
+            "description" : "Internal Server Error - Something went wrong on the server, check status site and/or report the issue. There is no need to really specify this any further (other than 503 below) as the client is powerless in fixing the condition that caused the error"
+          },
+          "503" : {
+            "description" : "Service Unavailable - The API is temporarily unavailable. This is the only 500 code that allows for the client to try and remedy the condition (i.e. by retrying)"
+          }
+        }
+      }
+    },
+    "/consumer-credit-cards/requests/apply-card/{requestId}/credit-score" : {
+      "put" : {
+        "tags" : [ "Apply Card" ],
+        "summary" : "Check score to apply card.",
+        "description" : "The endpoint should be used to verify if the user is allowed to proceed with the apply process, by checking the credit score .",
+        "parameters" : [ {
+          "name" : "requestId",
+          "in" : "path",
+          "description" : "The uuid of the request that the customer initiated.",
+          "required" : true,
+          "type" : "string"
+        }, {
+          "name" : "X-ING-AccessToken",
+          "in" : "header",
+          "description" : "The ING access token, required when connecting to the frontend.",
+          "required" : true,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "schema" : {
+              "$ref" : "#/definitions/LimitResponse"
+            }
+          },
+          "400" : {
+            "description" : "Bad Request"
+          },
+          "401" : {
+            "description" : "Unauthorized"
+          },
+          "403" : {
+            "description" : "Forbidden"
+          },
+          "404" : {
+            "description" : "Not Found"
+          },
+          "500" : {
+            "description" : "Internal Server Error - Something went wrong on the server, check status site and/or report the issue. There is no need to really specify this any further (other than 503 below) as the client is powerless in fixing the condition that caused the error"
+          },
+          "503" : {
+            "description" : "Service Unavailable - The API is temporarily unavailable. This is the only 500 code that allows for the client to try and remedy the condition (i.e. by retrying)"
+          }
+        }
+      }
+    },
+    "/consumer-credit-cards/requests/apply-card/exception/{requestId}/credit-score" : {
+      "put" : {
+        "tags" : [ "Apply Card" ],
+        "summary" : "Check score to apply card during exception process.",
+        "description" : "The endpoint should be used to verify if the user is allowed to proceed with the apply process, by checking the credit score .",
+        "parameters" : [ {
+          "name" : "requestId",
+          "in" : "path",
+          "description" : "The uuid of the request that the customer initiated.",
+          "required" : true,
+          "type" : "string"
+        }, {
+          "name" : "X-ING-AccessToken",
+          "in" : "header",
+          "description" : "The ING access token, required when connecting to the frontend.",
+          "required" : true,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "schema" : {
+              "$ref" : "#/definitions/ExceptionProcessDefaultResponse"
+            }
+          },
+          "400" : {
+            "description" : "Bad Request"
+          },
+          "401" : {
+            "description" : "Unauthorized"
+          },
+          "403" : {
+            "description" : "Forbidden"
+          },
+          "404" : {
+            "description" : "Not Found"
+          },
+          "500" : {
+            "description" : "Internal Server Error - Something went wrong on the server, check status site and/or report the issue. There is no need to really specify this any further (other than 503 below) as the client is powerless in fixing the condition that caused the error"
+          },
+          "503" : {
+            "description" : "Service Unavailable - The API is temporarily unavailable. This is the only 500 code that allows for the client to try and remedy the condition (i.e. by retrying)"
+          }
+        }
+      }
+    },
+    "/consumer-credit-cards/requests/apply-card/{requestId}/credit-limit" : {
+      "put" : {
+        "tags" : [ "Apply Card" ],
+        "summary" : "Check limit to apply card.",
+        "description" : "The endpoint should be used to verify if the user is allowed to proceed with the apply process, by checking the credit limit .",
+        "parameters" : [ {
+          "name" : "requestId",
+          "in" : "path",
+          "description" : "The uuid of the request that the customer initiated.",
+          "required" : true,
+          "type" : "string"
+        }, {
+          "name" : "X-ING-AccessToken",
+          "in" : "header",
+          "description" : "The ING access token, required when connecting to the frontend.",
+          "required" : true,
+          "type" : "string"
+        }, {
+          "in" : "body",
+          "name" : "creditLimitRequest",
+          "description" : "Credit limit request payload with information collected from customer.",
+          "required" : true,
+          "schema" : {
+            "$ref" : "#/definitions/CreditLimitRequest"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "schema" : {
+              "$ref" : "#/definitions/DefaultResponse"
+            }
+          },
+          "400" : {
+            "description" : "Bad Request"
+          },
+          "401" : {
+            "description" : "Unauthorized"
+          },
+          "403" : {
+            "description" : "Forbidden"
+          },
+          "404" : {
+            "description" : "Not Found"
+          },
+          "500" : {
+            "description" : "Internal Server Error - Something went wrong on the server, check status site and/or report the issue. There is no need to really specify this any further (other than 503 below) as the client is powerless in fixing the condition that caused the error"
+          },
+          "503" : {
+            "description" : "Service Unavailable - The API is temporarily unavailable. This is the only 500 code that allows for the client to try and remedy the condition (i.e. by retrying)"
+          }
+        }
+      }
+    },
+    "/consumer-credit-cards/requests/apply-card/exception/{requestId}/credit-limit" : {
+      "put" : {
+        "tags" : [ "Apply Card" ],
+        "summary" : "Check limit to apply card during exception process.",
+        "description" : "The endpoint should be used to verify if the user is allowed to proceed with the apply process, by checking the credit limit .",
+        "parameters" : [ {
+          "name" : "requestId",
+          "in" : "path",
+          "description" : "The uuid of the request that the customer initiated.",
+          "required" : true,
+          "type" : "string"
+        }, {
+          "name" : "X-ING-AccessToken",
+          "in" : "header",
+          "description" : "The ING access token, required when connecting to the frontend.",
+          "required" : true,
+          "type" : "string"
+        }, {
+          "in" : "body",
+          "name" : "creditLimitRequest",
+          "description" : "Credit limit request payload with information collected from customer.",
+          "required" : true,
+          "schema" : {
+            "$ref" : "#/definitions/CreditLimitRequest"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "schema" : {
+              "$ref" : "#/definitions/ExceptionProcessDefaultResponse"
+            }
+          },
+          "400" : {
+            "description" : "Bad Request"
+          },
+          "401" : {
+            "description" : "Unauthorized"
+          },
+          "403" : {
+            "description" : "Forbidden"
+          },
+          "404" : {
+            "description" : "Not Found"
+          },
+          "500" : {
+            "description" : "Internal Server Error - Something went wrong on the server, check status site and/or report the issue. There is no need to really specify this any further (other than 503 below) as the client is powerless in fixing the condition that caused the error"
+          },
+          "503" : {
+            "description" : "Service Unavailable - The API is temporarily unavailable. This is the only 500 code that allows for the client to try and remedy the condition (i.e. by retrying)"
+          }
+        }
+      }
+    },
+    "/consumer-credit-cards/requests/apply-card/{requestId}/submit" : {
+      "put" : {
+        "tags" : [ "Apply Card" ],
+        "summary" : "Submit the apply card request.",
+        "description" : "Used to initiate the authorization component, and create a reference for the customer to approve with one of the available means.",
+        "parameters" : [ {
+          "name" : "requestId",
+          "in" : "path",
+          "description" : "request ID obtained in the response from the initial endpoint",
+          "required" : true,
+          "type" : "string"
+        }, {
+          "name" : "X-ING-AccessToken",
+          "in" : "header",
+          "description" : "The ING access token, required when connecting to the frontend.",
+          "required" : true,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "schema" : {
+              "$ref" : "#/definitions/SubmitResponse"
+            }
+          },
+          "400" : {
+            "description" : "Bad Request"
+          },
+          "401" : {
+            "description" : "Unauthorized"
+          },
+          "403" : {
+            "description" : "Forbidden"
+          },
+          "404" : {
+            "description" : "Not Found"
+          },
+          "500" : {
+            "description" : "Internal Server Error - Something went wrong on the server, check status site and/or report the issue. There is no need to really specify this any further (other than 503 below) as the client is powerless in fixing the condition that caused the error"
+          },
+          "503" : {
+            "description" : "Service Unavailable - The API is temporarily unavailable. This is the only 500 code that allows for the client to try and remedy the condition (i.e. by retrying)"
+          }
+        }
+      }
+    },
+    "/consumer-credit-cards/requests/apply-card/exception/{requestId}/submit" : {
+      "put" : {
+        "tags" : [ "Apply Card" ],
+        "summary" : "Submit the apply card request during exception process.",
+        "description" : "Used to initiate the authorization component, and create a reference for the customer to approve with one of the available means.",
+        "parameters" : [ {
+          "name" : "requestId",
+          "in" : "path",
+          "description" : "request ID obtained in the response from the initial endpoint",
+          "required" : true,
+          "type" : "string"
+        }, {
+          "name" : "X-ING-AccessToken",
+          "in" : "header",
+          "description" : "The ING access token, required when connecting to the frontend.",
+          "required" : true,
+          "type" : "string"
+        }, {
+          "in" : "body",
+          "name" : "Apply card Submit Request exception flow",
+          "description" : "Apply card payload during submit exception flow.",
+          "required" : false,
+          "schema" : {
+            "$ref" : "#/definitions/SubmitRequestExceptionFlow"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "schema" : {
+              "$ref" : "#/definitions/SubmitResponse"
+            }
+          },
+          "400" : {
+            "description" : "Bad Request"
+          },
+          "401" : {
+            "description" : "Unauthorized"
+          },
+          "403" : {
+            "description" : "Forbidden"
+          },
+          "404" : {
+            "description" : "Not Found"
+          },
+          "500" : {
+            "description" : "Internal Server Error - Something went wrong on the server, check status site and/or report the issue. There is no need to really specify this any further (other than 503 below) as the client is powerless in fixing the condition that caused the error"
+          },
+          "503" : {
+            "description" : "Service Unavailable - The API is temporarily unavailable. This is the only 500 code that allows for the client to try and remedy the condition (i.e. by retrying)"
+          }
+        }
+      }
+    },
+    "/consumer-credit-cards/requests/apply-card/{requestId}/cancel" : {
+      "patch" : {
+        "tags" : [ "Apply Card" ],
+        "summary" : "Cancel apply card request.",
+        "description" : "Endpoint used to cancel a request in the database. Once this is performed, a request is no longer usable for a customer. Can only be used when a request exists.",
+        "parameters" : [ {
+          "name" : "requestId",
+          "in" : "path",
+          "description" : "request ID obtained in the response from the initial endpoint",
+          "required" : true,
+          "type" : "string"
+        }, {
+          "name" : "X-ING-AccessToken",
+          "in" : "header",
+          "description" : "The ING access token, required when connecting to the frontend.",
+          "required" : true,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK"
+          },
+          "400" : {
+            "description" : "Bad Request"
+          },
+          "401" : {
+            "description" : "Unauthorized"
+          },
+          "403" : {
+            "description" : "Forbidden"
+          },
+          "404" : {
+            "description" : "Not Found"
+          },
+          "500" : {
+            "description" : "Internal Server Error - Something went wrong on the server, check status site and/or report the issue. There is no need to really specify this any further (other than 503 below) as the client is powerless in fixing the condition that caused the error"
+          },
+          "503" : {
+            "description" : "Service Unavailable - The API is temporarily unavailable. This is the only 500 code that allows for the client to try and remedy the condition (i.e. by retrying)"
+          }
+        }
+      }
+    },
+    "/consumer-credit-cards/requests/apply-card/exception/{requestId}/cancel" : {
+      "patch" : {
+        "tags" : [ "Apply Card" ],
+        "summary" : "Cancel apply card request during exception process.",
+        "description" : "Endpoint used to cancel a request in the database. Once this is performed, a request is no longer usable for a customer. Can only be used when a request exists.",
+        "parameters" : [ {
+          "name" : "requestId",
+          "in" : "path",
+          "description" : "request ID obtained in the response from the initial endpoint",
+          "required" : true,
+          "type" : "string"
+        }, {
+          "name" : "X-ING-AccessToken",
+          "in" : "header",
+          "description" : "The ING access token, required when connecting to the frontend.",
+          "required" : true,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK"
+          },
+          "400" : {
+            "description" : "Bad Request"
+          },
+          "401" : {
+            "description" : "Unauthorized"
+          },
+          "403" : {
+            "description" : "Forbidden"
+          },
+          "404" : {
+            "description" : "Not Found"
+          },
+          "500" : {
+            "description" : "Internal Server Error - Something went wrong on the server, check status site and/or report the issue. There is no need to really specify this any further (other than 503 below) as the client is powerless in fixing the condition that caused the error"
+          },
+          "503" : {
+            "description" : "Service Unavailable - The API is temporarily unavailable. This is the only 500 code that allows for the client to try and remedy the condition (i.e. by retrying)"
+          }
+        }
+      }
+    },
+    "/consumer-credit-cards/requests/apply-card/{requestId}/reset" : {
+      "patch" : {
+        "tags" : [ "Apply Card" ],
+        "summary" : "Reset Apply Card request to the previous step.",
+        "description" : "Endpoint used to reset a request in the database. Once this is performed, a request is reset to a previous state and values are reset.",
+        "parameters" : [ {
+          "name" : "requestId",
+          "in" : "path",
+          "description" : "request ID obtained in the response from the initial endpoint",
+          "required" : true,
+          "type" : "string"
+        }, {
+          "name" : "X-ING-AccessToken",
+          "in" : "header",
+          "description" : "The ING access token, required when connecting to the frontend.",
+          "required" : true,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK"
+          },
+          "400" : {
+            "description" : "Bad Request"
+          },
+          "401" : {
+            "description" : "Unauthorized"
+          },
+          "403" : {
+            "description" : "Forbidden"
+          },
+          "404" : {
+            "description" : "Not Found"
+          },
+          "500" : {
+            "description" : "Internal Server Error - Something went wrong on the server, check status site and/or report the issue. There is no need to really specify this any further (other than 503 below) as the client is powerless in fixing the condition that caused the error"
+          },
+          "503" : {
+            "description" : "Service Unavailable - The API is temporarily unavailable. This is the only 500 code that allows for the client to try and remedy the condition (i.e. by retrying)"
+          }
+        }
+      }
+    },
+    "/consumer-credit-cards/requests/apply-card/exception/{requestId}/reset" : {
+      "patch" : {
+        "tags" : [ "Apply Card" ],
+        "summary" : "Reset Apply Card request to the previous step during exception process.",
+        "description" : "Endpoint used to reset a request in the database. Once this is performed, a request is reset to a previous state and values are reset.",
+        "parameters" : [ {
+          "name" : "requestId",
+          "in" : "path",
+          "description" : "request ID obtained in the response from the initial endpoint",
+          "required" : true,
+          "type" : "string"
+        }, {
+          "name" : "X-ING-AccessToken",
+          "in" : "header",
+          "description" : "The ING access token, required when connecting to the frontend.",
+          "required" : true,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK"
+          },
+          "400" : {
+            "description" : "Bad Request"
+          },
+          "401" : {
+            "description" : "Unauthorized"
+          },
+          "403" : {
+            "description" : "Forbidden"
+          },
+          "404" : {
+            "description" : "Not Found"
+          },
+          "500" : {
+            "description" : "Internal Server Error - Something went wrong on the server, check status site and/or report the issue. There is no need to really specify this any further (other than 503 below) as the client is powerless in fixing the condition that caused the error"
+          },
+          "503" : {
+            "description" : "Service Unavailable - The API is temporarily unavailable. This is the only 500 code that allows for the client to try and remedy the condition (i.e. by retrying)"
+          }
+        }
+      }
+    }
+  },
+  "definitions" : {
+    "InitiateRequest" : {
+      "type" : "object",
+      "required" : [ "cardId" ],
+      "properties" : {
+        "cardId" : {
+          "type" : "string",
+          "example" : "1234",
+          "description" : "the selected card for the process",
+          "x-ing-type" : "string"
+        }
+      }
+    },
+    "InitiateRequestApply" : {
+      "type" : "object",
+      "required" : [ "ibanUuid" ],
+      "properties" : {
+        "ibanUuid" : {
+          "type" : "string",
+          "example" : "73deb751-a68d-48c0-be73-9d1ec4ca4c51",
+          "description" : "the selected current account for the process",
+          "x-ing-type" : "string"
+        }
+      }
+    },
+    "SubmitRequestExceptionFlow" : {
+      "type" : "object",
+      "required" : [ "exceptionExplanation" ],
+      "properties" : {
+        "exceptionExplanation" : {
+          "type" : "string",
+          "example" : " this process is not allowed to send message",
+          "description" : "Textual explanation why this process should be handled in a certain manner.",
+          "x-ing-type" : "string"
+        },
+        "customerMessageDisabled" : {
+          "type" : "boolean",
+          "example" : true,
+          "description" : "Whether the customer message for the processes should be sent to customer or not.",
+          "x-ing-type" : "boolean"
+        }
+      }
+    },
+    "ApplyCardCardTypeRequest" : {
+      "type" : "object",
+      "required" : [ "cardType" ],
+      "properties" : {
+        "cardType" : {
+          "type" : "string",
+          "description" : "the card type requested by the customer",
+          "enum" : [ "Creditcard", "Platinumcard", "Studentencard" ],
+          "x-ing-type" : "string"
+        }
+      }
+    },
+    "ApplyCardCardTypeRequestExceptionProcess" : {
+      "type" : "object",
+      "required" : [ "cardType" ],
+      "properties" : {
+        "cardType" : {
+          "type" : "string",
+          "description" : "the card type requested by the customer",
+          "enum" : [ "Creditcard", "Platinumcard", "Studentencard" ],
+          "x-ing-type" : "string"
+        },
+        "beneficiaryId" : {
+          "type" : "string",
+          "description" : "UUID / Customer Id of an Additional customer",
+          "x-ing-type" : "string"
+        }
+      }
+    },
+    "DirectApplyRequest" : {
+      "type" : "object",
+      "required" : [ "ibanUuid", "idempotencyKey", "personUuid" ],
+      "properties" : {
+        "idempotencyKey" : {
+          "type" : "string",
+          "example" : "73deb751-a68d-48c0-be73-9d1ec4ca4c51",
+          "description" : "identifier for the request",
+          "x-ing-type" : "string"
+        },
+        "personUuid" : {
+          "type" : "string",
+          "example" : "73deb751-a68d-48c0-be73-9d1ec4ca4c51",
+          "description" : "UUID / Customer Id of the customer",
+          "x-ing-type" : "string"
+        },
+        "ibanUuid" : {
+          "type" : "string",
+          "example" : "73deb751-a68d-48c0-be73-9d1ec4ca4c51",
+          "description" : "the selected current account for the process",
+          "x-ing-type" : "string"
+        }
+      }
+    },
+    "DirectCallResponse" : {
+      "type" : "object",
+      "required" : [ "idempotencyKey", "requestId" ],
+      "properties" : {
+        "idempotencyKey" : {
+          "type" : "string",
+          "example" : "73deb751-a68d-48c0-be73-9d1ec4ca4c51",
+          "description" : "identifier for the initiated request",
+          "x-ing-type" : "string"
+        },
+        "requestId" : {
+          "type" : "string",
+          "example" : "73deb751-a68d-48c0-be73-9d1ec4ca4c51",
+          "description" : "generated request id by apply process, we use it to trace requests.",
+          "x-ing-type" : "string"
+        }
+      }
+    },
+    "CloseCardCheckAndVerifyRequest" : {
+      "type" : "object",
+      "required" : [ "mortgageRelated", "switchRepaymentOff" ],
+      "properties" : {
+        "switchRepaymentOff" : {
+          "type" : "boolean",
+          "example" : true,
+          "description" : "The switchRepaymentOff decision, supply with false when charge",
+          "x-ing-type" : "boolean"
+        },
+        "mortgageRelated" : {
+          "type" : "boolean",
+          "example" : false,
+          "description" : "The mortgageRelated decision",
+          "x-ing-type" : "boolean"
+        }
+      }
+    },
+    "DirectCloseRequest" : {
+      "type" : "object",
+      "required" : [ "creditCardAccountId", "idempotencyKey", "personUuid", "switchRepaymentOff" ],
+      "properties" : {
+        "idempotencyKey" : {
+          "type" : "string",
+          "example" : "73deb751-a68d-48c0-be73-9d1ec4ca4c51",
+          "description" : "identifier for the request",
+          "x-ing-type" : "string"
+        },
+        "personUuid" : {
+          "type" : "string",
+          "example" : "73deb751-a68d-48c0-be73-9d1ec4ca4c51",
+          "description" : "UUID / Customer Id of the customer",
+          "x-ing-type" : "string"
+        },
+        "creditCardAccountId" : {
+          "type" : "string",
+          "example" : "210012345678",
+          "description" : "the selected sia credit card account for the process",
+          "x-ing-type" : "string"
+        },
+        "switchRepaymentOff" : {
+          "type" : "boolean",
+          "example" : true,
+          "description" : "The switchRepaymentOff decision, supply with false when already on charge",
+          "x-ing-type" : "boolean"
+        }
+      }
+    },
+    "CreditLimitRequest" : {
+      "type" : "object",
+      "required" : [ "requestedCreditLimit" ],
+      "properties" : {
+        "requestedCreditLimit" : {
+          "type" : "string",
+          "example" : "2500",
+          "description" : "the credit limit requested by the customer",
+          "x-ing-type" : "string"
+        }
+      }
+    },
+    "ReplaceReasonRequest" : {
+      "type" : "object",
+      "required" : [ "reasonId" ],
+      "properties" : {
+        "reasonId" : {
+          "type" : "string",
+          "example" : "DAMAGED_PLASTIC",
+          "description" : "Reason for requesting a Replace Card.",
+          "enum" : [ "DAMAGED_PLASTIC", "EARLY_REISSUE" ],
+          "x-ing-type" : "string"
+        }
+      }
+    },
+    "AuthorizeRequest" : {
+      "type" : "object",
+      "required" : [ "approvedBy", "callback", "data", "externalId", "initiatedBy", "initiatedFrom", "status", "templateData", "transactionData" ],
+      "properties" : {
+        "initiatedBy" : {
+          "type" : "object",
+          "properties" : {
+            "profile" : {
+              "type" : "string",
+              "format" : "UUID or CorporateKey",
+              "example" : "73736d38-9800-4442-81c4-84e1eada793a",
+              "description" : "Profile id, which is taken from the AccessToken. Can be a UUID or Corporate Key.",
+              "x-ing-type" : "string"
+            }
+          },
+          "required" : [ "profile" ],
+          "x-ing-type" : "object"
+        },
+        "initiatedFrom" : {
+          "type" : "object",
+          "properties" : {
+            "cid" : {
+              "type" : "string",
+              "example" : "99739d38-0800-4122-11f4-46e9eabe883f",
+              "description" : "The Client Application ID that initiated the response. The Client Application ID is taken from the AccessToken.",
+              "x-ing-type" : "string"
+            }
+          },
+          "required" : [ "cid" ],
+          "x-ing-type" : "object"
+        },
+        "approvedBy" : {
+          "type" : "array",
+          "example" : [ "73736d38-9800-4442-81c4-84e1eada793a" ],
+          "description" : "A list of profile ids (UUID or Corporate Key) that have already given their consent.",
+          "items" : {
+            "type" : "string",
+            "format" : "UUID or CorporateKey",
+            "x-ing-type" : "string"
+          },
+          "minItems" : 0,
+          "x-ing-type" : "array"
+        },
+        "status" : {
+          "type" : "string",
+          "example" : "Pending",
+          "description" : "After the Approval request has just been created, it will be Pending.",
+          "enum" : [ "Pending", "Done", "Expired", "Cancelled" ],
+          "x-ing-type" : "string"
+        },
+        "statusDetails" : {
+          "type" : "string",
+          "description" : "Extra information related to the status of the approval request.",
+          "x-ing-type" : "string"
+        },
+        "data" : {
+          "type" : "object",
+          "description" : "The JSON object provided by the caller in the creation of the approval request.",
+          "properties" : { },
+          "x-ing-type" : "object"
+        },
+        "callback" : {
+          "$ref" : "#/definitions/Callback"
+        },
+        "externalId" : {
+          "$ref" : "#/definitions/ExternalId"
+        },
+        "templateData" : {
+          "$ref" : "#/definitions/TemplateData"
+        },
+        "transactionData" : {
+          "$ref" : "#/definitions/TransactionDataDto"
+        }
+      }
+    },
+    "DefaultResponse" : {
+      "type" : "object",
+      "required" : [ "requestId" ],
+      "properties" : {
+        "requestId" : {
+          "type" : "string",
+          "example" : "c542199a-f52d-4a85-a2ac-4832a36bb86f",
+          "description" : "ID of the request returned by the application",
+          "x-ing-type" : "string"
+        },
+        "errorCode" : {
+          "type" : "string",
+          "example" : "451",
+          "description" : "functional error code",
+          "x-ing-type" : "string"
+        }
+      }
+    },
+    "LimitResponse" : {
+      "required" : [ "requestId" ],
+      "properties" : {
+        "requestId" : {
+          "type" : "string",
+          "example" : "c542199a-f52d-4a85-a2ac-4832a36bb86f",
+          "description" : "ID of the request returned by the application",
+          "x-ing-type" : "string"
+        },
+        "adjustedLimit" : {
+          "type" : "string",
+          "example" : "2000",
+          "description" : "new limit in case it is corrected down",
+          "x-ing-type" : "string"
+        },
+        "errorCode" : {
+          "type" : "string",
+          "example" : "451",
+          "description" : "functional error code",
+          "x-ing-type" : "string"
+        }
+      }
+    },
+    "ExceptionProcessDefaultResponse" : {
+      "type" : "object",
+      "required" : [ "requestId" ],
+      "properties" : {
+        "requestId" : {
+          "type" : "string",
+          "example" : "c542199a-f52d-4a85-a2ac-4832a36bb86f",
+          "description" : "ID of the request returned by the application",
+          "x-ing-type" : "string"
+        },
+        "errorCode" : {
+          "type" : "string",
+          "example" : "451",
+          "description" : "functional error code",
+          "x-ing-type" : "string"
+        },
+        "rejectRules" : {
+          "type" : "array",
+          "description" : "list of rejected rules",
+          "items" : {
+            "$ref" : "#/definitions/Rule"
+          },
+          "minItems" : 0,
+          "x-ing-type" : "array"
+        }
+      }
+    },
+    "Rule" : {
+      "type" : "object",
+      "properties" : {
+        "code" : {
+          "type" : "string",
+          "description" : "rejected rule code",
+          "x-ing-type" : "string"
+        },
+        "name" : {
+          "type" : "string",
+          "description" : "Name of the rule",
+          "x-ing-type" : "string"
+        },
+        "type" : {
+          "type" : "string",
+          "description" : "type can either be magdat or kandat",
+          "enum" : [ "QUALIFICATION_CHECK", "BUSINESS_RULE" ],
+          "x-ing-type" : "string"
+        },
+        "canBeOverruled" : {
+          "type" : "boolean",
+          "description" : "Can the rule be overruled in this exception process and allow the process to continue?",
+          "x-ing-type" : "boolean"
+        }
+      }
+    },
+    "SubmitResponse" : {
+      "type" : "object",
+      "required" : [ "externalId", "requestId" ],
+      "properties" : {
+        "requestId" : {
+          "type" : "string",
+          "example" : "c542199a-f52d-4a85-a2ac-4832a36bb86f",
+          "description" : "ID of the request returned by the application",
+          "x-ing-type" : "string"
+        },
+        "externalId" : {
+          "$ref" : "#/definitions/ExternalId"
+        }
+      }
+    },
+    "Callback" : {
+      "type" : "object",
+      "properties" : {
+        "host" : {
+          "type" : "string",
+          "example" : "api.ing.net",
+          "description" : "Host of the HTTP callback. Should be the host as specified for the API in API Marketplace.\"",
+          "x-ing-type" : "string"
+        },
+        "path" : {
+          "type" : "string",
+          "example" : "/approval-request-completed",
+          "description" : "Path of the HTTP callback. Should be the path from the API in API Marketplace. Cannot contain path parameters.",
+          "x-ing-type" : "string"
+        },
+        "topic" : {
+          "type" : "string",
+          "example" : "PIS",
+          "description" : "Event TOPIC_NAME of the KAFKA callback. It should be base topic only.",
+          "x-ing-type" : "string"
+        }
+      },
+      "description" : "The endpoint that the service will call when the created approval request is completed - executed when calling approval-requests/consents/complete.\nIf using HTTP callback then host and path need to be both set, topic field needs to be left out completely and ApprovalWorkflowAPI needs to be whitelisted. The object received on HTTP callback is the same as the response object from this endpoint. \nIf using KAFKA callback then topic needs to be set, the other 2 fields (host & path) need to be left out entirely and a request needs to be made to  subscribe ApprovalWorkflowAPI to that topic.\nIf not using any callback at all, then callback object should still be specified, but empty without including any of the 3 fields: host, path, topic."
+    },
+    "ExternalId" : {
+      "required" : [ "externalReference", "externalSource" ],
+      "properties" : {
+        "externalSource" : {
+          "type" : "string",
+          "example" : "CapabilityAPI",
+          "description" : "The name of the external source. Should be the same for every approval requests from a capability.",
+          "x-ing-type" : "string"
+        },
+        "externalReference" : {
+          "type" : "string",
+          "example" : "32f8fbe2-b86e-41d2-add0-a49070be2cf4",
+          "description" : "The external reference. Should be unique for every approval requests, for example by generating each time a UUID.",
+          "x-ing-type" : "string"
+        }
+      }
+    },
+    "TransactionDataDto" : {
+      "type" : "object",
+      "required" : [ "criteriaInput", "expiryTime", "hash", "involves" ],
+      "properties" : {
+        "expiryTime" : {
+          "type" : "string",
+          "format" : "yyyy-MM-ddTHH:mm:ss.SSSZ",
+          "example" : "2022-05-11T10:09:49.087Z",
+          "description" : "Date-time in UTC at which the approvalRequest expires. It should not be in the past and neither more than 6 weeks in the future.",
+          "x-ing-type" : "string"
+        },
+        "hash" : {
+          "type" : "string",
+          "example" : "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "description" : "A signature of the NewApprovalRequest body (excluding 'hash' field). Not used by ApprovalWorkflowAPI.  Solely for the capability to check if the content is still the same, based on the same fields on which the hash has been performed.",
+          "x-ing-type" : "string"
+        },
+        "involves" : {
+          "type" : "object",
+          "properties" : {
+            "type" : {
+              "type" : "string",
+              "example" : "party",
+              "description" : "The type of the involved object",
+              "enum" : [ "agreement", "party", "approvalMandate" ],
+              "x-ing-type" : "string"
+            },
+            "id" : {
+              "type" : "string",
+              "format" : "UUID",
+              "example" : "9e0ed863-0dcd-43b8-b5d2-e8d6d628ee74",
+              "description" : "The id of the involved object",
+              "x-ing-type" : "string"
+            }
+          },
+          "required" : [ "id", "type" ],
+          "x-ing-type" : "object"
+        },
+        "criteriaInput" : {
+          "type" : "object",
+          "properties" : {
+            "service" : {
+              "type" : "string",
+              "example" : "current-accounts:payment:approve",
+              "description" : "The service activity",
+              "x-ing-type" : "string"
+            },
+            "subType" : {
+              "type" : "string",
+              "example" : "singleCreditTransfer",
+              "description" : "Additional information about the type of the service activity.",
+              "x-ing-type" : "string"
+            },
+            "serviceDetails" : {
+              "type" : "object",
+              "description" : "If the service activity is meant for a non-financial transaction, then instructedAmount and creditorAccount are OPTIONAL.\nOtherwise, instructedAmount and creditorAccount are REQUIRED and AWA would still expect for those fields to be present. Please look at our The Forge documentation for more details.",
+              "properties" : { },
+              "x-ing-type" : "object"
+            }
+          },
+          "required" : [ "service", "serviceDetails", "subType" ],
+          "x-ing-type" : "object"
+        },
+        "isStraightThrough" : {
+          "type" : "boolean",
+          "example" : true,
+          "description" : "Flag which defines if request is straight through flow or not. In the straight through flow, the ApprovalWorkflowAPI will check if the creator of the approval request can also approve it. If not it will not create the approval request and return an error.",
+          "x-ing-type" : "boolean"
+        },
+        "nrsTtlYears" : {
+          "type" : "integer",
+          "example" : 5,
+          "description" : "The duration, in years, for storing the sensitive data associated to the approval request inside NRS. It should be an integer with values between 1 and 15. If not specified, the default value is to be stored for 15 years.",
+          "minimum" : 1,
+          "maximum" : 15,
+          "x-ing-type" : "integer"
+        }
+      }
+    },
+    "TemplateData" : {
+      "type" : "object",
+      "required" : [ "data", "singleTransactionConsent" ],
+      "properties" : {
+        "singleTransactionConsent" : {
+          "type" : "string",
+          "example" : "default",
+          "description" : "Template id to markup the consent-request when  authorised (individually)",
+          "x-ing-type" : "string"
+        },
+        "data" : {
+          "type" : "object",
+          "description" : "The JSON data that will be injected into the template. Has to match with the provided template id.",
+          "properties" : { },
+          "x-ing-type" : "object"
+        }
+      }
+    },
+    "ApplyExtraCardCheckAndVerifyRequest" : {
+      "type" : "object",
+      "required" : [ "beneficiaryId", "processType" ],
+      "properties" : {
+        "processType" : {
+          "type" : "string",
+          "description" : "The process type the request will make",
+          "enum" : [ "CHECK", "VERIFY" ],
+          "x-ing-type" : "string"
+        },
+        "beneficiaryId" : {
+          "type" : "string",
+          "description" : "UUID of the beneficiary for this request",
+          "x-ing-type" : "string"
+        }
+      }
+    },
+    "ApplyExtraCardCheckAndVerifyResponse" : {
+      "type" : "object",
+      "required" : [ "passed" ],
+      "properties" : {
+        "passed" : {
+          "type" : "boolean",
+          "example" : true,
+          "description" : "boolean true if passed functional verification, otherwise false.",
+          "x-ing-type" : "boolean"
+        },
+        "errorCode" : {
+          "type" : "string",
+          "example" : "451",
+          "description" : "functional error code",
+          "x-ing-type" : "string"
+        }
+      }
+    }
+  },
+  "parameters" : {
+    "requestId" : {
+      "name" : "requestId",
+      "in" : "path",
+      "description" : "request ID obtained in the response from the initial endpoint",
+      "required" : true,
+      "type" : "string"
+    },
+    "accessToken" : {
+      "name" : "X-ING-AccessToken",
+      "in" : "header",
+      "description" : "The ING access token, required when connecting to the frontend.",
+      "required" : true,
+      "type" : "string"
+    }
+  },
+  "externalDocs" : {
+    "description" : "Confluence page",
+    "url" : "https://confluence.ing.net/display/TSP/Applications"
+  }
+}

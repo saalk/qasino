@@ -1,0 +1,37 @@
+type Query {
+    characters(limit: Int!): [Character]
+#{
+#    characters(limit: 5) {
+#        id, name
+#    }
+#}
+    character(id: Int!): Character
+#{
+#    character(id:1011334) {
+#        id, name
+#    }
+#}
+}
+type Character {
+    id: Int
+    name: String
+    description: String
+    modified: String
+    thumbnail: Thumbnail
+    comics: Resource
+}
+type Thumbnail {
+    path: String
+    extension: String
+}
+type Resource {
+    available: Int
+    collectionURI: String
+    items: [Item]
+    returned: Int
+}
+type Item {
+    resourceURI: String
+    name: String
+    type: String
+}
