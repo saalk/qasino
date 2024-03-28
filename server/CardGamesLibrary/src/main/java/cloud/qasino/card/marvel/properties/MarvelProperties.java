@@ -1,4 +1,4 @@
-package cloud.qasino.card.properties;
+package cloud.qasino.card.marvel.properties;
 
 import lombok.Data;
 import lombok.Getter;

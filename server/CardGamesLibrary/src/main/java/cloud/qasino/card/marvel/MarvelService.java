@@ -1,7 +1,6 @@
-package cloud.qasino.card.database.service;
+package cloud.qasino.card.marvel;
 
-import cloud.qasino.card.domain.marvel.Character;
-import cloud.qasino.card.domain.marvel.Serie;
+import cloud.qasino.card.marvel.model.Serie;
 import cloud.qasino.card.properties.MarvelProperties;
 import cloud.qasino.card.util.MD5Util;
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -23,23 +22,22 @@ import java.util.Objects;
 import java.util.Optional;
 
 @Service
-@Slf4j
+@EnableConfigurationProperties(MarvelProperties.class)
 public class MarvelService {
 
     private static final String API_KEY = "apikey";
     private static final String HASH = "hash";
     private static final String TIMESTAMP = "ts";
 
-    private MarvelProperties marvelProperties;
+    private final MarvelProperties marvelProperties;
 
-    @Autowired
     public MarvelService(MarvelProperties marvelProperties) {
         this.marvelProperties = marvelProperties;
 
-        log.info("Marvel Properties are [" + marvelProperties.toString() + "]." );
+//        log.info("Marvel Properties are [" + marvelProperties.toString() + "]." );
     }
 
-    public List<Character> getAllCharacters(int limit) throws IOException {
+    public List<java.lang.Character> getAllCharacters(int limit) throws IOException {
 
         Date now = new Date();
         String timestamp = String.valueOf(now.getTime());
@@ -58,13 +56,13 @@ public class MarvelService {
                 .queryParam("limit", limit)
                 .build();
 
-        log.info("Hash used for Marvel [" + hash + "], " +
-                "uriComponents is [" + uriComponents.toString() + "].");
+//        log.info("Hash used for Marvel [" + hash + "], " +
+//                "uriComponents is [" + uriComponents.toString() + "].");
 
         return getCharacters(uriComponents.toString());
     }
 
-    public Optional<Character> getCharacter(int id) throws IOException {
+    public Optional<java.lang.Character> getCharacter(int id) throws IOException {
 
         Date now = new Date();
         String timestamp = String.valueOf(now.getTime());
@@ -107,7 +105,7 @@ public class MarvelService {
         return getSeries(uriComponents.toString());
     }
 
-    private List<Character> getCharacters(final String url) throws IOException {
+    private List<java.lang.Character> getCharacters(final String url) throws IOException {
 
         RestTemplate restTemplate = new RestTemplate();
         ResponseEntity<String> json = restTemplate.getForEntity(url, String.class);

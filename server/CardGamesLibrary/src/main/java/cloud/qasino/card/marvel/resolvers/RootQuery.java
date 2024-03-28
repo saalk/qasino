@@ -1,7 +1,7 @@
 //package cloud.qasino.card.resolvers;
 //
 //import com.coxautodev.graphql.tools.GraphQLQueryResolver;
-//import cloud.qasino.card.domain.marvel.Character;
+//import cloud.qasino.card.marvel.model.Character;
 //import cloud.qasino.card.database.service.MarvelService;
 //import org.springframework.stereotype.Component;
 //

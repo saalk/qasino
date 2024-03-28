@@ -3,12 +3,7 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
-	<!-- spring-boot-starter-parent
-	The spring-boot-starter-parent project is a special starter project that provides
-	default configurations and a complete dependency tree.
-	It also provides default configurations for Maven plugins, such as maven-failsafe-plugin,
-	maven-jar-plugin, maven-surefire-plugin and maven-war-plugin.
-	-->
+
 <!--	<parent>-->
 <!--		<groupId>org.springframework.boot</groupId>-->
 <!--		<artifactId>spring-boot-starter-parent</artifactId>-->
@@ -27,45 +22,34 @@
 	</modules>
 
 	<properties>
-<!--		<spring-boot.version>2.7.18</spring-boot.version>-->
-<!--		<swagger-codegen-maven-plugin>3.0.34</swagger-codegen-maven-plugin>-->
-<!--		<version.swagger>2.2.19</version.swagger>-->
-<!--		<commons-text.version>1.11</commons-text.version>-->
-<!--		<tomakehurst-wiremock.version>2.32.0</tomakehurst-wiremock.version>-->
-<!--		<jasypt-spring-boot-starter>3.0.3</jasypt-spring-boot-starter>-->
-<!--		<checkstyle-maven-plugin.version>3.2.0</checkstyle-maven-plugin.version>-->
-<!--		<java.version>17</java.version>-->
-<!--		<enforcer.legacy.fail>false</enforcer.legacy.fail>-->
-
-<!--		<maven-assembly-plugin.version>3.3.0</maven-assembly-plugin.version>-->
-
+<!--			<spring-boot-starter-parent.version>2.7.18</spring-boot-starter-parent.version>-->
 	</properties>
 
 
-	<build>
-		<pluginManagement>
-			<plugins>
-				<plugin>
-					<groupId>org.springframework.boot</groupId>
-					<artifactId>spring-boot-maven-plugin</artifactId>
-					<version>${spring-boot.version}</version>
-				</plugin>
-				<plugin>
-					<groupId>org.apache.maven.plugins</groupId>
-					<artifactId>maven-surefire-plugin</artifactId>
-					<configuration>
-						<useSystemClassLoader>false</useSystemClassLoader>
-						<environmentVariables>
-							<LOG_PATH>${project.build.directory}/logs</LOG_PATH>
-						</environmentVariables>
-<!--						<skipTests>true</skipTests>-->
-					</configuration>
-				</plugin>
-			</plugins>
+<!--	<build>-->
+<!--		<pluginManagement>-->
+<!--			<plugins>-->
+<!--				<plugin>-->
+<!--					<groupId>org.springframework.boot</groupId>-->
+<!--					<artifactId>spring-boot-maven-plugin</artifactId>-->
+<!--					<version>${spring-boot.version}</version>-->
+<!--				</plugin>-->
+<!--				<plugin>-->
+<!--					<groupId>org.apache.maven.plugins</groupId>-->
+<!--					<artifactId>maven-surefire-plugin</artifactId>-->
+<!--					<configuration>-->
+<!--						<useSystemClassLoader>false</useSystemClassLoader>-->
+<!--						<environmentVariables>-->
+<!--							<LOG_PATH>${project.build.directory}/logs</LOG_PATH>-->
+<!--						</environmentVariables>-->
+<!--&lt;!&ndash;						<skipTests>true</skipTests>&ndash;&gt;-->
+<!--					</configuration>-->
+<!--				</plugin>-->
+<!--			</plugins>-->
 
-			<!-- TODO plugin repo for github -->
-		</pluginManagement>
-	</build>
+<!--			&lt;!&ndash; TODO plugin repo for github &ndash;&gt;-->
+<!--		</pluginManagement>-->
+<!--	</build>-->
 
 
 </project>

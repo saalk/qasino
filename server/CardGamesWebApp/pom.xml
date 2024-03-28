@@ -20,18 +20,20 @@
 
 		<!-- 1: spring boot and web development -->
 		<spring-boot.version>2.7.18</spring-boot.version>
-		<jasypt-spring-boot-starter>3.0.3</jasypt-spring-boot-starter>
 		<enforcer.legacy.fail>false</enforcer.legacy.fail>
 		<httpclient.version>4.5.14</httpclient.version>
 
 		<!-- 2: database -->
 		<h2.version>2.2.224</h2.version>
+		<mariadb-java-client.version>2.5.2</mariadb-java-client.version>
+		<tomcat-dbcp.version>9.0.1</tomcat-dbcp.version>
+		<jackson-jsog.version>1.1.1</jackson-jsog.version>
 
 		<!-- 3: utility -->
+		<commons-collections4.version>4.4</commons-collections4.version>
 		<commons-io.version>2.15.1</commons-io.version>
 		<!--		<commons-text.version>1.11</commons-text.version>-->
 		<commons-lang3.version>3.9</commons-lang3.version>
-		<commons-collections4.version>4.4</commons-collections4.version>
 		<commons-text.version>1.10.0</commons-text.version>
 		<lombok.version>1.18.30</lombok.version>
 
@@ -56,6 +58,7 @@
 		<tomakehurst-wiremock.version>2.32.0</tomakehurst-wiremock.version>
 
 		<!-- 8: maven plugins -->
+		<surefire-logger-api.version>3.2.5</surefire-logger-api.version>
 		<maven-assembly-plugin.version>3.3.0</maven-assembly-plugin.version>
 		<exec-maven-plugin.version>1.6.0</exec-maven-plugin.version>
 		<maven-compiler-plugin.version>3.8.1</maven-compiler-plugin.version>
@@ -71,13 +74,16 @@
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
+			<version>2.7.18</version>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-thymeleaf</artifactId>
+			<version>2.7.18</version>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
+			<version>2.7.18</version>
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
 			<exclusions>
@@ -89,21 +95,22 @@
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
+			<version>2.7.18</version>
 			<artifactId>spring-boot-starter-validation</artifactId>
 		</dependency>
 
 		<!-- 2: database -->
-		<!-- database -->
 		<!-- integrate spring-boot with jpa using the default hibernate -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
+			<version>2.7.18</version>
 			<artifactId>spring-boot-starter-data-jpa</artifactId>
 		</dependency>
 		<!-- use H2 as a very lightweight database -->
 		<dependency>
 			<groupId>com.h2database</groupId>
 			<artifactId>h2</artifactId>
-			<version>${h2.verson}</version>
+			<version>${h2.version}</version>
 			<scope>runtime</scope>
 		</dependency>
 		<!-- use Tomcat JDBC Connection Pooling -->
@@ -111,35 +118,23 @@
 		<dependency>
 			<groupId>org.apache.tomcat</groupId>
 			<artifactId>tomcat-dbcp</artifactId>
-			<version>9.0.1</version>
+			<version>${tomcat-dbcp.version}</version>
 		</dependency>
 		<!-- https://mvnrepository.com/artifact/org.mariadb.jdbc/mariadb-java-client -->
 		<dependency>
 			<groupId>org.mariadb.jdbc</groupId>
 			<artifactId>mariadb-java-client</artifactId>
-			<version>2.5.2</version>
+			<version>${mariadb-java-client.version}</version>
 		</dependency>
-
 		<!-- resolving infinite loop problems caused by bi-directional relationships between objects -->
 		<dependency>
 			<groupId>com.voodoodyne.jackson.jsog</groupId>
 			<artifactId>jackson-jsog</artifactId>
-			<version>1.1.1</version>
+			<version>${jackson-jsog.version}</version>
 			<scope>compile</scope>
 		</dependency>
 
-		<dependency>
-			<groupId>com.credibledoc</groupId>
-			<artifactId>plantuml-core</artifactId>
-			<version>1.0.51</version>
-		</dependency>
-		<!--		<dependency>-->
-		<!--			<groupId>net.sourceforge.plantuml</groupId>-->
-		<!--			<artifactId>plantuml</artifactId>-->
-		<!--			<version>${plantuml.version}</version>-->
-		<!--		</dependency>-->
-
-		<!-- utility -->
+		<!-- 3: utility -->
 		<dependency>
 			<groupId>org.apache.commons</groupId>
 			<artifactId>commons-lang3</artifactId>
@@ -161,20 +156,50 @@
 			<artifactId>commons-io</artifactId>
 			<version>${commons-io.version}</version>
 		</dependency>
+		<dependency>
+			<groupId>org.projectlombok</groupId>
+			<artifactId>lombok</artifactId>
+			<optional>true</optional>
+			<version>${lombok.version}</version>
+		</dependency>
 
-		<!-- logging -->
+		<!-- 4: GraphQL dependencies -->
 		<!--		<dependency>-->
-		<!--			<groupId>org.slf4j</groupId>-->
-		<!--			<artifactId>slf4j-api</artifactId>-->
-		<!--			<version>${org.slf4j.version}</version>-->
+		<!--			<groupId>com.graphql-java-kickstart</groupId>-->
+		<!--			&lt;!&ndash; GraphQL core &ndash;&gt;-->
+		<!--			<artifactId>graphql-spring-boot-starter</artifactId>-->
+		<!--			<version>${graphql-spring-boot-starter.version}</version>-->
 		<!--		</dependency>-->
 		<!--		<dependency>-->
-		<!--			<groupId>org.slf4j</groupId>-->
-		<!--			<artifactId>jcl-over-slf4j</artifactId>-->
-		<!--			<version>${org.slf4j.version}</version>-->
+		<!--			<groupId>com.graphql-java-kickstart</groupId>-->
+		<!--			&lt;!&ndash; to embed GraphiQL tool &ndash;&gt;-->
+		<!--			<artifactId>graphiql-spring-boot-starter</artifactId>-->
+		<!--			<version>${graphiql-spring-boot-starter.version}</version>-->
+		<!--			<scope>runtime</scope>-->
+		<!--		</dependency>-->
+		<!--		<dependency>-->
+		<!--			<groupId>com.graphql-java-kickstart</groupId>-->
+		<!--			&lt;!&ndash; use the GraphQL schema language to build your graphql-java schema &ndash;&gt;-->
+		<!--			<artifactId>graphql-java-tools</artifactId>-->
+		<!--			<version>${graphql-java-tools.version}</version>-->
 		<!--		</dependency>-->
 
-		<!-- test -->
+		<!-- 5: readability -->
+		<dependency>
+			<groupId>com.credibledoc</groupId>
+			<artifactId>plantuml-core</artifactId>
+			<version>1.0.51</version>
+		</dependency>
+		<!--		<dependency>-->
+		<!--			<groupId>net.sourceforge.plantuml</groupId>-->
+		<!--			<artifactId>plantuml</artifactId>-->
+		<!--			<version>${plantuml.version}</version>-->
+		<!--		</dependency>-->
+
+		<!-- 6: logging -->
+
+
+		<!-- 7: test -->
 		<dependency>
 			<groupId>com.github.tomakehurst</groupId>
 			<artifactId>wiremock-jre8</artifactId>
@@ -198,15 +223,6 @@
 			<version>${mockito-core.version}</version>
 			<!--scope>test</scope>-->
 		</dependency>
-		<dependency>
-			<groupId>org.apache.maven.surefire</groupId>
-			<artifactId>surefire-logger-api</artifactId>
-			<version>${maven-surefire-plugin.version}</version>
-			<!-- to get around bug https://github.com/junit-team/junit5/issues/801 -->
-			<!--<scope>test</scope>-->
-			<optional>true</optional>
-		</dependency>
-
 		<!-- testing with http -->
 		<dependency>
 			<groupId>org.apache.httpcomponents</groupId>
@@ -219,61 +235,23 @@
 		<!--			<artifactId>httpclient5</artifactId>-->
 		<!--			<version>5.4-alpha2</version>-->
 		<!--		</dependency>-->
-
-
-
-
-		<!-- GraphQL dependencies -->
-		<!--		<dependency>-->
-		<!--			<groupId>com.graphql-java-kickstart</groupId>-->
-		<!--			&lt;!&ndash; GraphQL core &ndash;&gt;-->
-		<!--			<artifactId>graphql-spring-boot-starter</artifactId>-->
-		<!--			<version>${graphql-spring-boot-starter.version}</version>-->
-		<!--		</dependency>-->
-		<!--		<dependency>-->
-		<!--			<groupId>com.graphql-java-kickstart</groupId>-->
-		<!--			&lt;!&ndash; to embed GraphiQL tool &ndash;&gt;-->
-		<!--			<artifactId>graphiql-spring-boot-starter</artifactId>-->
-		<!--			<version>${graphiql-spring-boot-starter.version}</version>-->
-		<!--			<scope>runtime</scope>-->
-		<!--		</dependency>-->
-		<!--		<dependency>-->
-		<!--			<groupId>com.graphql-java-kickstart</groupId>-->
-		<!--			&lt;!&ndash; use the GraphQL schema language to build your graphql-java schema &ndash;&gt;-->
-		<!--			<artifactId>graphql-java-tools</artifactId>-->
-		<!--			<version>${graphql-java-tools.version}</version>-->
-		<!--		</dependency>-->
-
-		<!-- plugins -->
-		<dependency>
-			<groupId>org.projectlombok</groupId>
-			<artifactId>lombok</artifactId>
-			<optional>true</optional>
-			<version>${lombok.version}</version>
-		</dependency>
 		<!--		<dependency>-->
 		<!--			<groupId>junit</groupId>-->
 		<!--			<artifactId>junit</artifactId>-->
 		<!--			<scope>test</scope>-->
 		<!--		</dependency>-->
 
-
+		<!-- 8: maven plugins -->
+		<dependency>
+			<groupId>org.apache.maven.surefire</groupId>
+			<artifactId>surefire-logger-api</artifactId>
+			<version>${surefire-logger-api.version}</version>
+			<!-- to get around bug https://github.com/junit-team/junit5/issues/801 -->
+			<scope>test</scope>
+			<optional>true</optional>
+		</dependency>
 
 	</dependencies>
-
-	<distributionManagement>
-		<repository>
-			<id>releases</id>
-			<url>http://domain:port/content/repositories/releases</url>
-		</repository>
-		<snapshotRepository>
-			<id>snapshots</id>
-			<url>http://domain:port/content/repositories/snapshots</url>
-		</snapshotRepository>
-	</distributionManagement>
-
-
-
 
 	<build>
 		<plugins>

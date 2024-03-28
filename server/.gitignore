@@ -54,7 +54,3 @@ Thumbs.db
 **/*.swp
 **/jasypt_pwd_*.txt
 **/cookies.txt
-
-# help files from ing
-**/help/**
-/server/CardGamesServiceWeb/src/main/help/

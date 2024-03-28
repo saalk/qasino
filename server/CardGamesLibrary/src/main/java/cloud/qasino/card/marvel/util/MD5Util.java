@@ -1,4 +1,4 @@
-package cloud.qasino.card.util;
+package cloud.qasino.card.marvel.util;
 
 import java.math.BigInteger;
 import java.security.MessageDigest;
