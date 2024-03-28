@@ -17,39 +17,23 @@
 	<packaging>pom</packaging>
 
 	<modules>
-		<module>CardGamesLibrary</module>
-		<module>CardGamesWebApp</module>
+		<module>library</module>
+		<module>webapp</module>
 	</modules>
 
 	<properties>
-<!--			<spring-boot-starter-parent.version>2.7.18</spring-boot-starter-parent.version>-->
+		<java.version>17</java.version>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 	</properties>
 
+	<!-- Dependency management is a mechanism for centralizing the dependency information -->
+	<!-- for a multi module parent project and its children.-->
 
-<!--	<build>-->
-<!--		<pluginManagement>-->
-<!--			<plugins>-->
-<!--				<plugin>-->
-<!--					<groupId>org.springframework.boot</groupId>-->
-<!--					<artifactId>spring-boot-maven-plugin</artifactId>-->
-<!--					<version>${spring-boot.version}</version>-->
-<!--				</plugin>-->
-<!--				<plugin>-->
-<!--					<groupId>org.apache.maven.plugins</groupId>-->
-<!--					<artifactId>maven-surefire-plugin</artifactId>-->
-<!--					<configuration>-->
-<!--						<useSystemClassLoader>false</useSystemClassLoader>-->
-<!--						<environmentVariables>-->
-<!--							<LOG_PATH>${project.build.directory}/logs</LOG_PATH>-->
-<!--						</environmentVariables>-->
-<!--&lt;!&ndash;						<skipTests>true</skipTests>&ndash;&gt;-->
-<!--					</configuration>-->
-<!--				</plugin>-->
-<!--			</plugins>-->
-
-<!--			&lt;!&ndash; TODO plugin repo for github &ndash;&gt;-->
-<!--		</pluginManagement>-->
-<!--	</build>-->
-
+	<parent>
+		<groupId>org.springframework.boot</groupId>
+		<artifactId>spring-boot-starter-parent</artifactId>
+		<version>2.7.18</version>
+	</parent>
 
 </project>

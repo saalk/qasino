@@ -23,7 +23,6 @@ target/
 *.sln
 *.sw*
 
-
 ### NetBeans ###
 /nbproject/private/
 /nbbuild/
@@ -34,7 +33,6 @@ build/
 ### VS Code ###
 .vscode/
 application*.properties
-marvel.properties
 .DS_Store
 node_modules
 /dist
@@ -51,4 +49,3 @@ yarn-error.log*
 client/package.json
 client/yarn.lock
 client/package-lock.json
-/server/CardGamesServiceWeb/src/main/help/
