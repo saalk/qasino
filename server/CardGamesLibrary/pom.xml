@@ -24,17 +24,30 @@
 	<version>1.0.0-SNAPSHOT</version>
 	<name>CardGamesLibrary</name>
 
+	<properties>
+		<lombok.version>1.18.30</lombok.version>
+	</properties>
+
 	<dependencies>
+		<!-- 1: spring boot no web starter needed-->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot</artifactId>
 		</dependency>
-
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
 		</dependency>
+
+		<!-- 3: utility -->
+		<dependency>
+			<groupId>org.projectlombok</groupId>
+			<artifactId>lombok</artifactId>
+			<optional>true</optional>
+			<version>${lombok.version}</version>
+		</dependency>
+
 	</dependencies>
 
 </project>
