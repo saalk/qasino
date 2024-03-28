@@ -55,7 +55,7 @@
 
 		<!-- 7: test -->
 		<mockito-core.version>5.11.0</mockito-core.version>
-		<tomakehurst-wiremock.version>2.32.0</tomakehurst-wiremock.version>
+		<tomakehurst-wiremock.version>2.35.1</tomakehurst-wiremock.version>
 		<junit>4.13.2</junit>
 
 		<!-- 8: maven plugins -->
