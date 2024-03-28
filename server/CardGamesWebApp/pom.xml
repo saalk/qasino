@@ -1,0 +1,349 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>cloud.qasino.games</groupId>
+		<artifactId>CardGames</artifactId>
+		<version>1.0.0-SNAPSHOT</version>
+	</parent>
+
+	<artifactId>CardGamesWebApp</artifactId>
+	<packaging>war</packaging>
+
+	<properties>
+
+		<java.version>17</java.version>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+
+		<!-- 1: spring boot and web development -->
+		<spring-boot.version>2.7.18</spring-boot.version>
+		<jasypt-spring-boot-starter>3.0.3</jasypt-spring-boot-starter>
+		<enforcer.legacy.fail>false</enforcer.legacy.fail>
+		<httpclient.version>4.5.14</httpclient.version>
+
+		<!-- 2: database -->
+		<h2.version>2.2.224</h2.version>
+
+		<!-- 3: utility -->
+		<commons-io.version>2.15.1</commons-io.version>
+		<!--		<commons-text.version>1.11</commons-text.version>-->
+		<commons-lang3.version>3.9</commons-lang3.version>
+		<commons-collections4.version>4.4</commons-collections4.version>
+		<commons-text.version>1.10.0</commons-text.version>
+		<lombok.version>1.18.30</lombok.version>
+
+		<!-- 4: GraphQL dependencies -->
+		<!--		<graphql-spring-boot-starter.version>5.11.1</graphql-spring-boot-starter.version>-->
+		<!--		<graphiql-spring-boot-starter.version>5.11.1</graphiql-spring-boot-starter.version>-->
+		<!--		<graphql-java-tools.version>5.7.1</graphql-java-tools.version>-->
+
+		<!-- 5: readability -->
+		<checkstyle-maven-plugin.version>3.2.0</checkstyle-maven-plugin.version>
+		<plantuml-core.version>1.0.51</plantuml-core.version>
+		<swagger-codegen-maven-plugin>3.0.34</swagger-codegen-maven-plugin>
+		<version.swagger>2.2.19</version.swagger>
+
+		<!-- 6: logging -->
+		<org.slf4j.version>1.7.21</org.slf4j.version>
+		<!--		<logback.version>1.5.3</logback.version>-->
+		<logback.version>1.2.11</logback.version>
+
+		<!-- 7: test -->
+		<mockito-core.version>5.11.0</mockito-core.version>
+		<tomakehurst-wiremock.version>2.32.0</tomakehurst-wiremock.version>
+
+		<!-- 8: maven plugins -->
+		<maven-assembly-plugin.version>3.3.0</maven-assembly-plugin.version>
+		<exec-maven-plugin.version>1.6.0</exec-maven-plugin.version>
+		<maven-compiler-plugin.version>3.8.1</maven-compiler-plugin.version>
+		<versions-maven-plugin.version>2.7</versions-maven-plugin.version>
+
+	</properties>
+
+	<!-- Dependencies are libraries that either must be included in the jar/war file or are expected to be found in
+		 the container such as GlassFish -->
+	<dependencies>
+
+		<!-- 1: spring boot and web development -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-web</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-thymeleaf</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-test</artifactId>
+			<scope>test</scope>
+			<exclusions>
+				<exclusion>
+					<groupId>org.junit.vintage</groupId>
+					<artifactId>junit-vintage-engine</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-validation</artifactId>
+		</dependency>
+
+		<!-- 2: database -->
+		<!-- database -->
+		<!-- integrate spring-boot with jpa using the default hibernate -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-data-jpa</artifactId>
+		</dependency>
+		<!-- use H2 as a very lightweight database -->
+		<dependency>
+			<groupId>com.h2database</groupId>
+			<artifactId>h2</artifactId>
+			<version>${h2.verson}</version>
+			<scope>runtime</scope>
+		</dependency>
+		<!-- use Tomcat JDBC Connection Pooling -->
+		<!-- so don't use DriverManagerDataSource from spring any more -->
+		<dependency>
+			<groupId>org.apache.tomcat</groupId>
+			<artifactId>tomcat-dbcp</artifactId>
+			<version>9.0.1</version>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/org.mariadb.jdbc/mariadb-java-client -->
+		<dependency>
+			<groupId>org.mariadb.jdbc</groupId>
+			<artifactId>mariadb-java-client</artifactId>
+			<version>2.5.2</version>
+		</dependency>
+
+		<!-- resolving infinite loop problems caused by bi-directional relationships between objects -->
+		<dependency>
+			<groupId>com.voodoodyne.jackson.jsog</groupId>
+			<artifactId>jackson-jsog</artifactId>
+			<version>1.1.1</version>
+			<scope>compile</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>com.credibledoc</groupId>
+			<artifactId>plantuml-core</artifactId>
+			<version>1.0.51</version>
+		</dependency>
+		<!--		<dependency>-->
+		<!--			<groupId>net.sourceforge.plantuml</groupId>-->
+		<!--			<artifactId>plantuml</artifactId>-->
+		<!--			<version>${plantuml.version}</version>-->
+		<!--		</dependency>-->
+
+		<!-- utility -->
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-lang3</artifactId>
+			<version>${commons-lang3.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-collections4</artifactId>
+			<version>${commons-collections4.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-text</artifactId>
+			<version>${commons-text.version}</version>
+		</dependency>
+		<!-- io for card pictures -->
+		<dependency>
+			<groupId>commons-io</groupId>
+			<artifactId>commons-io</artifactId>
+			<version>${commons-io.version}</version>
+		</dependency>
+
+		<!-- logging -->
+		<!--		<dependency>-->
+		<!--			<groupId>org.slf4j</groupId>-->
+		<!--			<artifactId>slf4j-api</artifactId>-->
+		<!--			<version>${org.slf4j.version}</version>-->
+		<!--		</dependency>-->
+		<!--		<dependency>-->
+		<!--			<groupId>org.slf4j</groupId>-->
+		<!--			<artifactId>jcl-over-slf4j</artifactId>-->
+		<!--			<version>${org.slf4j.version}</version>-->
+		<!--		</dependency>-->
+
+		<!-- test -->
+		<dependency>
+			<groupId>com.github.tomakehurst</groupId>
+			<artifactId>wiremock-jre8</artifactId>
+			<version>${tomakehurst-wiremock.version}</version>
+			<scope>test</scope>
+		</dependency>
+		<!--		<dependency>-->
+		<!--			<groupId>org.junit.vintage</groupId>-->
+		<!--			<artifactId>junit-vintage-engine</artifactId>-->
+		<!--			<scope>test</scope>-->
+		<!--			<exclusions>-->
+		<!--				<exclusion>-->
+		<!--					<groupId>org.hamcrest</groupId>-->
+		<!--					<artifactId>hamcrest-core</artifactId>-->
+		<!--				</exclusion>-->
+		<!--			</exclusions>-->
+		<!--		</dependency>-->
+		<dependency>
+			<groupId>org.mockito</groupId>
+			<artifactId>mockito-core</artifactId>
+			<version>${mockito-core.version}</version>
+			<!--scope>test</scope>-->
+		</dependency>
+		<dependency>
+			<groupId>org.apache.maven.surefire</groupId>
+			<artifactId>surefire-logger-api</artifactId>
+			<version>${maven-surefire-plugin.version}</version>
+			<!-- to get around bug https://github.com/junit-team/junit5/issues/801 -->
+			<!--<scope>test</scope>-->
+			<optional>true</optional>
+		</dependency>
+
+		<!-- testing with http -->
+		<dependency>
+			<groupId>org.apache.httpcomponents</groupId>
+			<artifactId>httpclient</artifactId>
+			<version>${httpclient.version}</version>
+			<scope>compile</scope>
+		</dependency>
+		<!--		<dependency>-->
+		<!--			<groupId>org.apache.httpcomponents.client5</groupId>-->
+		<!--			<artifactId>httpclient5</artifactId>-->
+		<!--			<version>5.4-alpha2</version>-->
+		<!--		</dependency>-->
+
+
+
+
+		<!-- GraphQL dependencies -->
+		<!--		<dependency>-->
+		<!--			<groupId>com.graphql-java-kickstart</groupId>-->
+		<!--			&lt;!&ndash; GraphQL core &ndash;&gt;-->
+		<!--			<artifactId>graphql-spring-boot-starter</artifactId>-->
+		<!--			<version>${graphql-spring-boot-starter.version}</version>-->
+		<!--		</dependency>-->
+		<!--		<dependency>-->
+		<!--			<groupId>com.graphql-java-kickstart</groupId>-->
+		<!--			&lt;!&ndash; to embed GraphiQL tool &ndash;&gt;-->
+		<!--			<artifactId>graphiql-spring-boot-starter</artifactId>-->
+		<!--			<version>${graphiql-spring-boot-starter.version}</version>-->
+		<!--			<scope>runtime</scope>-->
+		<!--		</dependency>-->
+		<!--		<dependency>-->
+		<!--			<groupId>com.graphql-java-kickstart</groupId>-->
+		<!--			&lt;!&ndash; use the GraphQL schema language to build your graphql-java schema &ndash;&gt;-->
+		<!--			<artifactId>graphql-java-tools</artifactId>-->
+		<!--			<version>${graphql-java-tools.version}</version>-->
+		<!--		</dependency>-->
+
+		<!-- plugins -->
+		<dependency>
+			<groupId>org.projectlombok</groupId>
+			<artifactId>lombok</artifactId>
+			<optional>true</optional>
+			<version>${lombok.version}</version>
+		</dependency>
+		<!--		<dependency>-->
+		<!--			<groupId>junit</groupId>-->
+		<!--			<artifactId>junit</artifactId>-->
+		<!--			<scope>test</scope>-->
+		<!--		</dependency>-->
+
+
+
+	</dependencies>
+
+	<distributionManagement>
+		<repository>
+			<id>releases</id>
+			<url>http://domain:port/content/repositories/releases</url>
+		</repository>
+		<snapshotRepository>
+			<id>snapshots</id>
+			<url>http://domain:port/content/repositories/snapshots</url>
+		</snapshotRepository>
+	</distributionManagement>
+
+
+
+
+	<build>
+		<plugins>
+			<!-- plugin for several goals to work with a Spring Boot application -->
+			<plugin>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-maven-plugin</artifactId>
+				<!-- used dev when spring-boot:run is executed -->
+				<configuration>
+					<profiles>
+						<profile>dev</profile>
+					</profiles>
+				</configuration>
+
+			</plugin>
+			<!-- The MojoHaus project is a collection of plugins for Apache Maven 2 & 3 -->
+			<plugin>
+				<!-- when you want to manage the versions of artifacts in a project's POM -->
+				<!-- mvn versions:display-plugin-updates -->
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>versions-maven-plugin</artifactId>
+				<version>${versions-maven-plugin.version}</version>
+				<configuration>
+					<generateBackupPoms>false</generateBackupPoms>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>exec-maven-plugin</artifactId>
+				<version>${exec-maven-plugin.version}</version>
+				<configuration>
+					<executable>maven</executable>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>${maven-compiler-plugin.version}</version>
+				<configuration>
+					<compilerArgs>
+						<arg>-Xlint:unchecked</arg>
+					</compilerArgs>
+					<source>${java.version}</source>
+					<target>${java.version}</target>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+
+	<profiles>
+		<profile>
+			<id>dev</id>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+			</activation>
+			<properties>
+				<spring.profiles.active>dev</spring.profiles.active>
+			</properties>
+		</profile>
+		<profile>
+			<id>acc</id>
+			<properties>
+				<spring.profiles.active>acc</spring.profiles.active>
+			</properties>
+		</profile>
+		<profile>
+			<id>prod</id>
+			<properties>
+				<spring.profiles.active>prd</spring.profiles.active>
+			</properties>
+		</profile>
+	</profiles>
+</project>

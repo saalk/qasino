@@ -1,0 +1,46 @@
+<assembly
+	xmlns="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.2"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.2 http://maven.apache.org/xsd/assembly-1.1.2.xsd">
+
+    <id>config</id>
+    <formats>
+        <format>zip</format>
+    </formats>
+	
+    <includeBaseDirectory>false</includeBaseDirectory>
+
+    <fileSets>
+        <fileSet>
+            <directory>${project.build.directory}/generated-sources/environments</directory>
+            <outputDirectory>environments</outputDirectory>
+            <includes>
+                <include>*.tar</include>
+            </includes>
+            <excludes>
+                <exclude>${project.artifactId}-files-local.tar</exclude>
+            </excludes>
+            <fileMode>0755</fileMode>
+            <filtered>false</filtered>
+            <lineEnding>keep</lineEnding>
+        </fileSet>
+
+        <fileSet>
+            <directory>src/main/environments</directory>
+            <outputDirectory>environments</outputDirectory>
+            <includes>
+                <include>*.csv.enc</include>
+            </includes>
+            <excludes>
+                <exclude>encrypt.sh</exclude>
+                <exclude>decrypt.sh</exclude>
+            </excludes>
+            <fileMode>0755</fileMode>
+            <!-- DO NOT modify these, and preserve contents, since these are ciphertext... -->
+            <filtered>false</filtered>
+            <lineEnding>keep</lineEnding>
+        </fileSet>
+    </fileSets>
+
+
+</assembly>

@@ -1,0 +1,287 @@
+{
+  "individual": {
+    "involvedPartyIdentifier": "025f9f66-75cf-48ff-a78d-02c34e997b1b",
+    "involvedPartyType": "OU",
+    "dataSource": "BOS",
+    "logicalDataDomain": "ING_NL",
+    "countryOfResidence": "NL",
+    "preferredLanguage": "nl",
+    "financialLegalStatusType": "IN_ADMIN",
+    "channelOfEntry": "DGTL_CHAN",
+    "effectiveDate": "2020-10-10T08:11:12.345Z",
+    "endDate": "2050-12-12T21:59:59.999Z",
+    "dateCreated": "2020-10-10T08:11:12.345Z",
+    "dateInactivated": null,
+    "lastUpdateUser": "IN_ADMIN",
+    "lastUpdateDate": "2021-04-27T09:11:11.111Z",
+    "postalAddresses": [
+      {
+        "postalAddressUsageType": "RSDNT_ADR",
+        "countryCode": "NL",
+        "countryRegionCode": "IT-RM",
+        "cityName": "ROMA",
+        "regionName": "Greater New York",
+        "postalCode": "808",
+        "streetName": "Rodeo Drive",
+        "houseNumber": "123",
+        "houseNumberAddition": "A",
+        "buildingName": "White House",
+        "deliveryInformation": "Watch out for the angry dog",
+        "poBoxNumber": "123",
+        "streetType": "ES_CALLE",
+        "unstructuredAddressLine1": "Tempura Road",
+        "unstructuredAddressLine2": "Big house on the hill",
+        "unstructuredAddressLine3": "Third house from the right",
+        "deliveryFailureReasonType": "ADR_NOT_EXST",
+        "dataSource": "FOS_IT",
+        "lastUpdateUser": "OnePam",
+        "lastUpdateDate": "2021-04-27T09:11:11.111Z",
+        "effectiveDate": "2020-10-10T08:11:12.345Z",
+        "endDate": "2050-12-12T21:59:59.999Z"
+      }
+    ],
+    "digitalAddresses": [
+      {
+        "digitalAddressType": "EMAIL_ADR",
+        "digitalAddressUsageType": "PSN_EMAIL",
+        "fullDigitalAddress": "hello@ing.com",
+        "deliveryFailureReasonType": "ADR_NOT_EXST",
+        "dataSource": "FOS_IT",
+        "effectiveDate": "2020-10-10T08:11:12.345Z",
+        "endDate": "2050-12-12T21:59:59.999Z",
+        "lastUpdateUser": "OnePam",
+        "lastUpdateDate": "2021-04-27T09:11:11.111Z"
+      }
+    ],
+    "involvedPartyInternalIdentifiers": [
+      {
+        "involvedPartyInternalIdentifierType": "UUID",
+        "involvedPartyInternalIdentifierValue": "025f9f66-75cf-48ff-a78d-02c34e997b1b",
+        "lastUpdateUser": "theForge",
+        "lastUpdateDate": "2021-04-27T09:11:11.111Z"
+      }
+    ],
+    "cityOfBirth": "Amsterdam",
+    "countryOfBirth": "NL",
+    "dateOfBirth": "2017-01-01",
+    "dateOfDeath": null,
+    "gender": "ML",
+    "employmentStatusType": "STDNT",
+    "individualLifeCycleStatusType": "DSCD_IDV",
+    "maritalStatus": "DI",
+    "notificationDateOfDeath": null,
+    "legalCompetencyStatusType": "EMPWR_MNR",
+    "dateOfBirthQualityIndicator": "COMPL",
+    "individualName": {
+      "lastName": "Bern",
+      "lastNamePrefix": "V004",
+      "lastNamePrefixValue": "Van",
+      "givenName": "van Duijn",
+      "firstName1": "Tom",
+      "firstName2": "Tim",
+      "firstName3": "Ted",
+      "firstName4": "Todd",
+      "nameInitials": "Thj",
+      "nickName": "Tobie",
+      "secondLastName": "groot",
+      "birthLastName": "klein",
+      "partnerLastName": "bakker",
+      "partnerLastNamePrefix": "V008",
+      "partnerLastNamePrefixValue": "van de",
+      "nameSuffix": "MSc",
+      "salutation": "MR",
+      "salutationValue": "Dhr",
+      "title1": "PRINS",
+      "title1Value": "prins",
+      "title2": "DRS",
+      "title2Value": "drs",
+      "title3": "H_R_H",
+      "title3Value": "H.R.H.",
+      "dataSource": "FOS_IT",
+      "lastUpdateUser": "OnePam",
+      "lastUpdateDate": "2021-04-27T09:11:11.111Z",
+      "effectiveDate": "2020-10-10T08:11:12.345Z",
+      "endDate": "2050-12-12T21:59:59.999Z"
+    },
+    "individualFormattedNames": [
+      {
+        "individualNameType": "CORRPDC_NM",
+        "individualNameValue": "Michiel Van Buren",
+        "dataSource": "USR_M_DE",
+        "effectiveDate": "2020-10-10T08:11:12.345Z",
+        "endDate": "2050-12-12T21:59:59.999Z",
+        "lastUpdateUser": "OnePAM",
+        "lastUpdateDate": "2021-04-27T09:11:11.111Z"
+      }
+    ],
+    "_links": {
+      "self": {
+        "href": "https://(hostname):(port)/v6/involved-parties/{uuid}"
+      }
+    }
+  },
+  "organisation": {
+    "involvedPartyIdentifier": "025f9f66-75cf-48ff-a78d-02c34e997b1b",
+    "involvedPartyType": "ORG",
+    "dataSource": "BOS",
+    "logicalDataDomain": "ING_NL",
+    "countryOfResidence": "NL",
+    "preferredLanguage": "nl",
+    "financialLegalStatusType": "IN_ADMIN",
+    "channelOfEntry": "DGTL_CHAN",
+    "effectiveDate": "2020-10-10T08:11:12.345Z",
+    "endDate": "2050-12-12T21:59:59.999Z",
+    "dateCreated": "2020-10-10T08:11:12.345Z",
+    "dateInactivated": "2021-04-27T09:11:11.111Z",
+    "lastUpdateUser": "IN_ADMIN",
+    "lastUpdateDate": "2021-04-27T09:11:11.111Z",
+    "postalAddresses": [
+      {
+        "postalAddressUsageType": "RSDNT_ADR",
+        "countryCode": "NL",
+        "countryRegionCode": "IT-RM",
+        "cityName": "ROMA",
+        "regionName": "Greater New York",
+        "postalCode": "808",
+        "streetName": "Rodeo Drive",
+        "houseNumber": "123",
+        "houseNumberAddition": "A",
+        "buildingName": "White House",
+        "deliveryInformation": "Watch out for the angry dog",
+        "poBoxNumber": "123",
+        "streetType": "ES_CALLE",
+        "unstructuredAddressLine1": "Tempura Road",
+        "unstructuredAddressLine2": "Big house on the hill",
+        "unstructuredAddressLine3": "Third house from the right",
+        "deliveryFailureReasonType": "ADR_NOT_EXST",
+        "dataSource": "FOS_IT",
+        "lastUpdateUser": "OnePam",
+        "lastUpdateDate": "2021-04-27T09:11:11.111Z",
+        "effectiveDate": "2020-10-10T08:11:12.345Z",
+        "endDate": "2050-12-12T21:59:59.999Z"
+      }
+    ],
+    "digitalAddresses": [
+      {
+        "digitalAddressType": "EMAIL_ADR",
+        "digitalAddressUsageType": "PSN_EMAIL",
+        "fullDigitalAddress": "hello@ing.com",
+        "deliveryFailureReasonType": "ADR_NOT_EXST",
+        "dataSource": "FOS_IT",
+        "effectiveDate": "2020-10-10T08:11:12.345Z",
+        "endDate": "2050-12-12T21:59:59.999Z",
+        "lastUpdateUser": "OnePam",
+        "lastUpdateDate": "2021-04-27T09:11:11.111Z"
+      }
+    ],
+    "involvedPartyInternalIdentifiers": [
+      {
+        "involvedPartyInternalIdentifierType": "UUID",
+        "involvedPartyInternalIdentifierValue": "025f9f66-75cf-48ff-a78d-02c34e997b1b",
+        "lastUpdateUser": "theForge",
+        "lastUpdateDate": "2021-04-27T09:11:11.111Z"
+      }
+    ],
+    "countryOfIncorporation": "NL",
+    "dateOfFoundation": "1985-10-19",
+    "legalForm": "BE_303",
+    "organisationLifeCycleStatusType": "FORM_ORG",
+    "businessClosedDownDate": "2014-01-12",
+    "organisationNames": [
+      {
+        "organisationNameType": "LGL_NM",
+        "organisationName": "ACME",
+        "dataSource": "FOS_IT",
+        "lastUpdateUser": "OnePam",
+        "lastUpdateDate": "2021-04-27T09:11:11.111Z",
+        "effectiveDate": "2020-10-10T08:11:12.345Z",
+        "endDate": "2050-12-12T21:59:59.999Z"
+      }
+    ],
+    "_links": {
+      "self": {
+        "href": "https://(hostname):(port)/v6/involved-parties/{uuid}"
+      }
+    }
+  },
+  "organisationUnit": {
+    "involvedPartyIdentifier": "025f9f66-75cf-48ff-a78d-02c34e997b1b",
+    "involvedPartyType": "OU",
+    "dataSource": "BOS",
+    "logicalDataDomain": "ING_NL",
+    "countryOfResidence": "NL",
+    "preferredLanguage": "nl",
+    "financialLegalStatusType": "IN_ADMIN",
+    "channelOfEntry": "DGTL_CHAN",
+    "effectiveDate": "2020-10-10T08:11:12.345Z",
+    "endDate": "2050-12-12T21:59:59.999Z",
+    "dateCreated": "2020-10-10T08:11:12.345Z",
+    "dateInactivated": "2021-04-27T09:11:11.111Z",
+    "lastUpdateUser": "IN_ADMIN",
+    "lastUpdateDate": "2021-04-27T09:11:11.111Z",
+    "postalAddresses": [
+      {
+        "postalAddressUsageType": "RSDNT_ADR",
+        "countryCode": "NL",
+        "countryRegionCode": "IT-RM",
+        "cityName": "ROMA",
+        "regionName": "Greater New York",
+        "postalCode": "808",
+        "streetName": "Rodeo Drive",
+        "houseNumber": "123",
+        "houseNumberAddition": "A",
+        "buildingName": "White House",
+        "deliveryInformation": "Watch out for the angry dog",
+        "poBoxNumber": "123",
+        "streetType": "ES_CALLE",
+        "unstructuredAddressLine1": "Tempura Road",
+        "unstructuredAddressLine2": "Big house on the hill",
+        "unstructuredAddressLine3": "Third house from the right",
+        "deliveryFailureReasonType": "ADR_NOT_EXST",
+        "dataSource": "FOS_IT",
+        "lastUpdateUser": "OnePam",
+        "lastUpdateDate": "2021-04-27T09:11:11.111Z",
+        "effectiveDate": "2020-10-10T08:11:12.345Z",
+        "endDate": "2050-12-12T21:59:59.999Z"
+      }
+    ],
+    "digitalAddresses": [
+      {
+        "digitalAddressType": "EMAIL_ADR",
+        "digitalAddressUsageType": "PSN_EMAIL",
+        "fullDigitalAddress": "hello@ing.com",
+        "deliveryFailureReasonType": "ADR_NOT_EXST",
+        "dataSource": "FOS_IT",
+        "effectiveDate": "2020-10-10T08:11:12.345Z",
+        "endDate": "2050-12-12T21:59:59.999Z",
+        "lastUpdateUser": "OnePam",
+        "lastUpdateDate": "2021-04-27T09:11:11.111Z"
+      }
+    ],
+    "involvedPartyInternalIdentifiers": [
+      {
+        "involvedPartyInternalIdentifierType": "UUID",
+        "involvedPartyInternalIdentifierValue": "025f9f66-75cf-48ff-a78d-02c34e997b1b",
+        "lastUpdateUser": "theForge",
+        "lastUpdateDate": "2021-04-27T09:11:11.111Z"
+      }
+    ],
+    "organisationUnitStructureType": "DEPT",
+    "organisationUnitNames": [
+      {
+        "organisationUnitNameType": "OU_NM",
+        "organisationUnitName": "ABC corporation",
+        "dataSource": "FOS_IT",
+        "lastUpdateUser": "OnePam",
+        "lastUpdateDate": "2021-04-27T09:11:11.111Z",
+        "effectiveDate": "2020-10-10T08:11:12.345Z",
+        "endDate": "2050-12-12T21:59:59.999Z"
+      }
+    ],
+    "_links": {
+      "self": {
+        "href": "https://(hostname):(port)/v6/involved-parties/{uuid}"
+      }
+    }
+  }
+}

@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration scan="true" scanPeriod="60 seconds">
+    <statusListener class="ch.qos.logback.core.status.NopStatusListener"/>
+
+    <appender name="Console-Appender" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%green(%d{ISO8601}) %highlight(%-5level) [%blue(%t)] %yellow(%C{1.}): %msg%n%throwable</pattern>
+        </encoder>
+    </appender>
+
+    <appender name="ApplicationLog" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${LOG_PATH}/${APP_NAME}-application.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${LOG_PATH}/${APP_NAME}-application.%d{yyyy-MMM-dd}.log.gz</fileNamePattern>
+            <maxHistory>30</maxHistory>
+        </rollingPolicy>
+        <encoder>
+            <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <appender name="AuditLog" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${LOG_PATH}/${APP_NAME}-audit.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${LOG_PATH}/${APP_NAME}-audit.%d{yyyy-MMM-dd}.log.gz</fileNamePattern>
+            <maxHistory>30</maxHistory>
+        </rollingPolicy>
+        <encoder>
+            <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+<!--    <logger name="com.ing.apisdk.toolkit.logging.audit.slf4j" level="info" additivity="false">-->
+<!--        <appender-ref ref="AuditLog"/>-->
+<!--    </logger>-->
+
+    <logger name="com.zaxxer.hikari" level="info">
+        <appender-ref ref="ApplicationLog"/>
+    </logger>
+
+    <Logger name="org.hibernate.engine" level="info" additivity="false">
+        <appender-ref ref="Console-Appender"/>
+    </Logger>
+
+    <root level="info">
+        <appender-ref ref="ApplicationLog"/>
+        <appender-ref ref="Console-Appender"/>
+    </root>
+</configuration>

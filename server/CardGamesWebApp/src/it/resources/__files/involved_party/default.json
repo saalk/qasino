@@ -1,0 +1,121 @@
+{
+  "individual": {
+    "involvedPartyIdentifier": "37ca10bb-afd8-478f-93d3-e142e3985dae",
+    "involvedPartyType": "INDIV",
+    "dataSource": "IDV_ORCH_NL",
+    "logicalDataDomain": "ING_NL",
+    "countryOfResidence": "NL",
+    "preferredLanguage": "nl",
+    "channelOfEntry": "AGNT_CHAN",
+    "legalCompetencyStatusType": "LGL_CMP_ADLT",
+    "individualLifeCycleStatusType": "LIVING_IDV",
+    "countryOfBirth": "SY",
+    "cityOfBirth": "de wolden",
+    "dateOfBirth": "2004-08-07",
+    "dateOfBirthQualityIndicator": "COMPL",
+    "gender": "FEML",
+    "effectiveDate": "2023-05-23T09:36:11.999Z",
+    "dateCreated": "2023-05-23T09:36:12.008Z",
+    "lastUpdateUser": "Mobile IDV",
+    "lastUpdateDate": "2023-05-23T09:42:15.576Z",
+    "postalAddresses": [
+      {
+        "postalAddressUsageType": "CRSPD_ADR",
+        "countryCode": "NL",
+        "cityName": "AMSTERDAM",
+        "postalCode": "1025XM",
+        "streetName": "Termini",
+        "houseNumber": "197",
+        "unstructuredAddressLine1": "Termini 197",
+        "unstructuredAddressLine2": "1025 XM  AMSTERDAM",
+        "lastUpdateUser": "AMS",
+        "lastUpdateDate": "2023-05-23T09:42:16.556Z",
+        "effectiveDate": "2023-05-23T09:42:16.464Z"
+      },
+      {
+        "postalAddressUsageType": "RSDNT_ADR",
+        "countryCode": "NL",
+        "cityName": "AMSTERDAM",
+        "postalCode": "1025XM",
+        "streetName": "Termini",
+        "houseNumber": "197",
+        "unstructuredAddressLine1": "Termini 197",
+        "unstructuredAddressLine2": "1025 XM  AMSTERDAM",
+        "lastUpdateUser": "AMS",
+        "lastUpdateDate": "2023-05-23T09:42:16.372Z",
+        "effectiveDate": "2023-05-23T09:42:16.292Z"
+      }
+    ],
+    "digitalAddresses": [
+      {
+        "digitalAddressType": "NL_MING_INBOX",
+        "digitalAddressUsageType": "STD",
+        "fullDigitalAddress": "23976506",
+        "effectiveDate": "2023-05-23T09:36:12.204Z",
+        "lastUpdateUser": "INBOX",
+        "lastUpdateDate": "2023-05-23T09:36:12.260Z"
+      }
+    ],
+    "involvedPartyInternalIdentifiers": [
+      {
+        "involvedPartyInternalIdentifierType": "UUID",
+        "involvedPartyInternalIdentifierValue": "37ca10bb-afd8-478f-93d3-e142e3985dae",
+        "lastUpdateUser": "PartyRegistration",
+        "lastUpdateDate": "2023-05-23T09:36:12.070Z"
+      },
+      {
+        "involvedPartyInternalIdentifierType": "RGB_NL",
+        "involvedPartyInternalIdentifierValue": "422224316",
+        "lastUpdateUser": "PartyRegistration",
+        "lastUpdateDate": "2023-05-23T09:36:12.054Z"
+      }
+    ],
+    "involvedPartyGroups": [
+      {
+        "involvedPartyGroupType": "SVC_SEGM_NL",
+        "involvedPartyGroupCode": "329",
+        "effectiveDate": "2023-06-22T22:00:00.000Z",
+        "lastUpdateUser": "DS-MDM",
+        "lastUpdateDate": "2023-06-24T03:03:38.662Z"
+      }
+    ],
+    "managingEntities": [
+      {
+        "managingEntityType": "MANAGING_ENTITIES_CODE_NL",
+        "managingEntityCode": "18101002",
+        "effectiveDate": "2023-05-23T09:36:12.132Z",
+        "lastUpdateDate": "2023-05-23T09:36:12.193Z",
+        "lastUpdateUser": "PartyRegistration"
+      }
+    ],
+    "individualName": {
+      "lastName": "KampTD",
+      "firstName1": "DeliceTD",
+      "nameInitials": "D",
+      "effectiveDate": "2023-05-23T09:36:11.999Z",
+      "lastUpdateUser": "Mobile IDV",
+      "lastUpdateDate": "2023-05-23T09:42:15.724Z"
+    },
+    "individualFormattedNames": [
+      {
+        "individualNameType": "CORRPDC_NM",
+        "individualNameValue": "Mw D KampTD",
+        "effectiveDate": "2023-05-23T09:42:16.277Z",
+        "lastUpdateUser": "INCA",
+        "lastUpdateDate": "2023-05-23T09:42:16.277Z"
+      },
+      {
+        "individualNameType": "NL_AANHEF_NM",
+        "individualNameValue": "mevrouw KampTD",
+        "effectiveDate": "2023-05-23T09:42:16.264Z",
+        "lastUpdateUser": "INCA",
+        "lastUpdateDate": "2023-05-23T09:42:16.264Z"
+      }
+    ],
+    "_links": {
+      "self": {
+        "href": "https://apis.ing.com/v6/involved-parties/37ca10bb-afd8-478f-93d3-e142e3985dae"
+      }
+    }
+  }
+}
