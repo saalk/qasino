@@ -9,37 +9,38 @@
 	It also provides default configurations for Maven plugins, such as maven-failsafe-plugin,
 	maven-jar-plugin, maven-surefire-plugin and maven-war-plugin.
 	-->
-	<parent>
-		<groupId>org.springframework.boot</groupId>
-		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>2.7.18</version>
-		<relativePath/> <!-- lookup parent from repository -->
-	</parent>
+<!--	<parent>-->
+<!--		<groupId>org.springframework.boot</groupId>-->
+<!--		<artifactId>spring-boot-starter-parent</artifactId>-->
+<!--		<version>2.7.18</version>-->
+<!--		<relativePath/> &lt;!&ndash; lookup parent from repository &ndash;&gt;-->
+<!--	</parent>-->
 
 	<groupId>cloud.qasino.games</groupId>
-	<artifactId>CardGamesService</artifactId>
+	<artifactId>CardGames</artifactId>
 	<version>1.0.0-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
-	<properties>
-		<spring-boot.version>2.7.18</spring-boot.version>
-		<swagger-codegen-maven-plugin>3.0.34</swagger-codegen-maven-plugin>
-		<version.swagger>2.2.19</version.swagger>
-		<commons-text.version>1.11</commons-text.version>
-		<tomakehurst-wiremock.version>2.32.0</tomakehurst-wiremock.version>
-		<jasypt-spring-boot-starter>3.0.3</jasypt-spring-boot-starter>
-		<checkstyle-maven-plugin.version>3.2.0</checkstyle-maven-plugin.version>
-		<java.version>17</java.version>
-		<enforcer.legacy.fail>false</enforcer.legacy.fail>
+	<modules>
+		<module>CardGamesLibrary</module>
+		<module>CardGamesWebApp</module>
+	</modules>
 
-		<maven-assembly-plugin.version>3.3.0</maven-assembly-plugin.version>
+	<properties>
+<!--		<spring-boot.version>2.7.18</spring-boot.version>-->
+<!--		<swagger-codegen-maven-plugin>3.0.34</swagger-codegen-maven-plugin>-->
+<!--		<version.swagger>2.2.19</version.swagger>-->
+<!--		<commons-text.version>1.11</commons-text.version>-->
+<!--		<tomakehurst-wiremock.version>2.32.0</tomakehurst-wiremock.version>-->
+<!--		<jasypt-spring-boot-starter>3.0.3</jasypt-spring-boot-starter>-->
+<!--		<checkstyle-maven-plugin.version>3.2.0</checkstyle-maven-plugin.version>-->
+<!--		<java.version>17</java.version>-->
+<!--		<enforcer.legacy.fail>false</enforcer.legacy.fail>-->
+
+<!--		<maven-assembly-plugin.version>3.3.0</maven-assembly-plugin.version>-->
+
 	</properties>
 
-	<modules>
-		<module>CardGamesServiceWeb</module>
-		<module>CardGamesServiceAssembly</module>
-		<module>CardGamesServiceLibrary</module>
-	</modules>
 
 	<build>
 		<pluginManagement>
