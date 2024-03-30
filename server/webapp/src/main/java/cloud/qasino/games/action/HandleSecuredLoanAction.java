@@ -1,9 +1,9 @@
 package cloud.qasino.games.action;
 
 import cloud.qasino.games.action.interfaces.Action;
-import cloud.qasino.games.database.entity.User;
+import cloud.qasino.games.database.entity.Visitor;
 import cloud.qasino.games.event.EventOutput;
-import cloud.qasino.games.database.repository.UserRepository;
+import cloud.qasino.games.database.repository.VisitorRepository;
 import cloud.qasino.games.util.Systemout;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -16,7 +16,7 @@ import java.util.Random;
 public class HandleSecuredLoanAction implements Action<HandleSecuredLoanAction.HandleSecuredLoanActionDTO, EventOutput.Result> {
 
     @Resource
-    UserRepository userRepository;
+    VisitorRepository visitorRepository;
 
     @Override
     public EventOutput.Result perform(HandleSecuredLoanActionDTO actionDto) {
@@ -24,17 +24,17 @@ public class HandleSecuredLoanAction implements Action<HandleSecuredLoanAction.H
         log.debug("Action: HandleSecuredLoanAction");
 
         EventOutput.Result result = EventOutput.Result.FAILURE;
-        User updateUser = actionDto.getGameUser();
+        Visitor updateVisitor = actionDto.getGameVisitor();
 
         if (actionDto.isRequestingToRepay()) {
             Systemout.handleSecuredLoanActionFlow(actionDto); //todo delete
-            if (!updateUser.repayLoan()) {
+            if (!updateVisitor.repayLoan()) {
                 Systemout.handleSecuredLoanActionFlow(actionDto); //todo delete
 
                 setErrorMessagConflict(actionDto, "isRequestingToRepay", "true");
                 return EventOutput.Result.FAILURE;
             }
-            actionDto.setGameUser(userRepository.save(updateUser));
+            actionDto.setGameVisitor(visitorRepository.save(updateVisitor));
             Systemout.handleSecuredLoanActionFlow(actionDto); //todo delete
 
             result = EventOutput.Result.SUCCESS;
@@ -44,12 +44,12 @@ public class HandleSecuredLoanAction implements Action<HandleSecuredLoanAction.H
             Random random = new Random();
             int randomNumber = random.nextInt(1001);
             Systemout.handleSecuredLoanActionFlow(actionDto); //todo delete
-            if (!updateUser.pawnShip(randomNumber)) {
+            if (!updateVisitor.pawnShip(randomNumber)) {
                 Systemout.handleSecuredLoanActionFlow(actionDto); //todo delete
                 setErrorMessagConflict(actionDto,"isOfferingShipForPawn", "true");
                 return EventOutput.Result.FAILURE;
             }
-            actionDto.setGameUser(userRepository.save(updateUser));
+            actionDto.setGameVisitor(visitorRepository.save(updateVisitor));
             Systemout.handleSecuredLoanActionFlow(actionDto); //todo delete
 
             result = EventOutput.Result.SUCCESS;
@@ -83,10 +83,10 @@ public class HandleSecuredLoanAction implements Action<HandleSecuredLoanAction.H
 
         boolean isRequestingToRepay();
         boolean isOfferingShipForPawn();
-        User getGameUser();
+        Visitor getGameVisitor();
 
         // Setters
-        void setGameUser(User user);
+        void setGameVisitor(Visitor visitor);
 
         // error setters
         void setHttpStatus(int status);

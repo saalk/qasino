@@ -29,9 +29,9 @@ public class Seat {
     private boolean isInitiator;
     private int currentBet;
 
-    // when user
-    private int userId;
-    private String userName;
+    // when visitor
+    private int visitorId;
+    private String visitorName;
     private int balance;
     private int fiches;
 

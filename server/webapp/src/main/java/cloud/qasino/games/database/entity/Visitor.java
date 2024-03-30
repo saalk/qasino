@@ -23,16 +23,16 @@ import java.util.Random;
 @Setter
 @JsonIdentityInfo(generator = JSOGGenerator.class)
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
-@Table(name = "users", indexes =
-        {@Index(name = "users_index", columnList = "user_id", unique = true),
-                @Index(name = "userName_index", columnList = "userName", unique = false)
+@Table(name = "visitors", indexes =
+        {@Index(name = "visitors_index", columnList = "visitor_id", unique = true),
+                @Index(name = "visitorName_index", columnList = "visitorName", unique = false)
         })
-public class User {
+public class Visitor {
 
     @Id
     @GeneratedValue
-    @Column(name = "user_id", nullable = false)
-    private int userId;
+    @Column(name = "visitor_id", nullable = false)
+    private int visitorId;
 
     @JsonIgnore
     @Column(name = "created", length = 25)
@@ -42,11 +42,11 @@ public class User {
 
     // Normal fields
 
-    @Column(name = "userName", length = 50, nullable = false)
-    private String userName;
+    @Column(name = "visitorName", length = 50, nullable = false)
+    private String visitorName;
 
-    @Column(name = "userName_seq")
-    private int userNameSequence;
+    @Column(name = "visitorName_seq")
+    private int visitorNameSequence;
 
 
     @Column(name = "email", length = 50, nullable = true)
@@ -76,21 +76,21 @@ public class User {
 
     // References
 
-    // PL: a User becomes a Player when playing a GameSubTotals
+    // PL: a Visitor becomes a Player when playing a GameSubTotals
     @JsonIgnore
-    @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
+    @OneToMany(mappedBy = "visitor", cascade = CascadeType.REMOVE)
     // just a reference, the actual fk column is in player not here!
-    // However ai players are no users!
+    // However ai players are no visitors!
     private List<Player> players;
 
     @JsonIgnore
-    // UsPl: a User can start many Leagues
+    // UsPl: a Visitor can start many Leagues
     // However bots cannot start a league
-    @OneToMany(mappedBy = "user", cascade = CascadeType.DETACH)
+    @OneToMany(mappedBy = "visitor", cascade = CascadeType.DETACH)
     // just a reference, the actual fk column is in league not here!
     private List<League> leagues;
 
-    public User() {
+    public Visitor() {
         LocalDateTime localDateAndTime = LocalDateTime.now();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd-HH:mm-ssSSS-nnnnnnnnn");
         String result = localDateAndTime.format(formatter);
@@ -101,13 +101,13 @@ public class User {
         DateTimeFormatter week = DateTimeFormatter.ofPattern("W");
         this.week = localDateAndTime.format(week);
         this.day = localDateAndTime.getDayOfMonth();
-        this.userName = "userName";
+        this.visitorName = "visitorName";
     }
 
-    public User(String userName, int userNameSequence, String email) {
+    public Visitor(String visitorName, int visitorNameSequence, String email) {
         this();
-        this.userName = userName;
-        this.userNameSequence = userNameSequence;
+        this.visitorName = visitorName;
+        this.visitorNameSequence = visitorNameSequence;
         this.email = email;
     }
 
@@ -156,13 +156,13 @@ public class User {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        User user = (User) o;
-        return userId == user.userId;
+        Visitor visitor = (Visitor) o;
+        return visitorId == visitor.visitorId;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(userId);
+        return Objects.hash(visitorId);
     }
 
 }

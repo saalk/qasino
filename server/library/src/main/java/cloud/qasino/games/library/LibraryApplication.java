@@ -1,8 +1,7 @@
-package cloud.qasino.games;
+package cloud.qasino.games.library;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
 
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -15,18 +14,12 @@ import javax.servlet.ServletException;
  * this module which consists of rest services can also run without web module.
  */
 @Configuration
-@ComponentScan("cloud.qasino.games.*")
+@ComponentScan("cloud.qasino.games.library.*")
 @SpringBootApplication
 @EnableJpaRepositories
-public class LibraryApplication extends SpringBootServletInitializer {
+public class LibraryApplication {
 
     public static void main(String[] args) throws Exception {
         SpringApplication.run(LibraryApplication.class, args);
-    }
-
-    @Override
-    public void onStartup(jakarta.servlet.ServletContext servletContext) {
-        servletContext.setInitParameter("com.sun.faces.expressionFactory", "org.apache.el.ExpressionFactoryImpl");
-
     }
 }

@@ -1,4 +1,4 @@
-package cloud.qasino.games.marvel.util;
+package cloud.qasino.games.library.marvel.util;
 
 import java.math.BigInteger;
 import java.security.MessageDigest;

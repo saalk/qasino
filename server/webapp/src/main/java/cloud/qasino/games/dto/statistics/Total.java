@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 //@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Total {
 
-    public int totalUsers;
+    public int totalVisitors;
     public int totalGames;
     public int totalPlayers;
     public int totalLeagues;

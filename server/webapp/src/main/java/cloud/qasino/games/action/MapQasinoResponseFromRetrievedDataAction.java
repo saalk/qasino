@@ -30,25 +30,25 @@ public class MapQasinoResponseFromRetrievedDataAction implements Action<MapQasin
 
         List<NavigationBarItem> navigationBarItems = new ArrayList<>();
         NavigationBarItem navigationBarItem;
-        NavigationUser navigationUser = new NavigationUser();
+        NavigationVisitor navigationVisitor = new NavigationVisitor();
         NavigationGame navigationGame = new NavigationGame();
         NavigationQasino navigationQasino = new NavigationQasino();
         NavigationLeague navigationLeague = new NavigationLeague();
         NavigationFriends navigationFriends = new NavigationFriends();
         Table table = new Table();
 
-        // user
+        // visitor
         navigationBarItem = new NavigationBarItem();
         navigationBarItem.setVisible(actionDto.isLoggedOn());
         if (actionDto.isLoggedOn()) {
-            navigationBarItem.setItemName(actionDto.getGameUser().getUserName());
-            navigationBarItem.setItemStats("Balance " + actionDto.getGameUser().getBalance());
-            navigationUser.setHasLoggedOn(actionDto.isLoggedOn());
-            navigationUser.setUser(actionDto.getGameUser());
-            navigationUser.setNewGames(actionDto.getNewGamesForUser());
-            navigationUser.setPendingInvitation(null); //todo LOW pending invitations
-            navigationUser.setAcceptedGames(null); // todo LOW accepted games
-            navigationUser.setStartedGames(actionDto.getStartedGamesForUser());
+            navigationBarItem.setItemName(actionDto.getGameVisitor().getVisitorName());
+            navigationBarItem.setItemStats("Balance " + actionDto.getGameVisitor().getBalance());
+            navigationVisitor.setHasLoggedOn(actionDto.isLoggedOn());
+            navigationVisitor.setVisitor(actionDto.getGameVisitor());
+            navigationVisitor.setNewGames(actionDto.getNewGamesForVisitor());
+            navigationVisitor.setPendingInvitation(null); //todo LOW pending invitations
+            navigationVisitor.setAcceptedGames(null); // todo LOW accepted games
+            navigationVisitor.setStartedGames(actionDto.getStartedGamesForVisitor());
         } else {
             navigationBarItem.setItemName("You");
             navigationBarItem.setItemStats("0");
@@ -65,12 +65,12 @@ public class MapQasinoResponseFromRetrievedDataAction implements Action<MapQasin
                 navigationGame.setTotalBots(
                         (int) actionDto.getQasinoGamePlayers().stream().filter(c -> !c.isHuman()).count());
                 long all = actionDto.getQasinoGamePlayers().size();
-                navigationGame.setTotalUsers((int) (all - navigationGame.getTotalBots()));
+                navigationGame.setTotalVisitors((int) (all - navigationGame.getTotalBots()));
                 navigationBarItem.setItemStats(navigationGame.getTotalBots() + "/" + all + " bots/total");
 
                 navigationGame.setHasBalance(actionDto.isBalanceNotZero());
                 navigationGame.setGame(actionDto.getQasinoGame());
-                navigationGame.setLeagues(actionDto.getLeaguesForUser());
+                navigationGame.setLeagues(actionDto.getLeaguesForVisitor());
 
                 Style style = Style.fromLabelWithDefault(actionDto.getQasinoGame().getStyle());
                 navigationGame.setAnteToWin(style.getAnteToWin());
@@ -115,12 +115,12 @@ public class MapQasinoResponseFromRetrievedDataAction implements Action<MapQasin
         navigationBarItem = new NavigationBarItem();
         navigationBarItem.setVisible(actionDto.isLeaguePresent());
         if (actionDto.isLeaguePresent()) {
-            if (!(actionDto.getLeaguesForUser() == null)) {
+            if (!(actionDto.getLeaguesForVisitor() == null)) {
                 navigationBarItem.setItemName( "League " +
                         actionDto.getQasinoGameLeague().getName());
                 navigationBarItem.setItemStats(actionDto.getQasinoGameLeague().getEnded() + " enddate");
 
-                navigationLeague.setLeagues(actionDto.getLeaguesForUser());
+                navigationLeague.setLeagues(actionDto.getLeaguesForVisitor());
             }
         } else {
             navigationBarItem.setItemName("League - ");
@@ -132,7 +132,7 @@ public class MapQasinoResponseFromRetrievedDataAction implements Action<MapQasin
         navigationBarItem = new NavigationBarItem();
         navigationBarItem.setVisible(actionDto.isFriendsPresent());
         if (actionDto.isFriendsPresent()) {
-            if (!(actionDto.getLeaguesForUser() == null)) {
+            if (!(actionDto.getLeaguesForVisitor() == null)) {
                 navigationBarItem.setItemName("0 friends");
                 navigationFriends.setTotalFriends(0);
                 navigationFriends.setPendingInvites(0);
@@ -147,7 +147,7 @@ public class MapQasinoResponseFromRetrievedDataAction implements Action<MapQasin
 
         Qasino qasino = new Qasino();
         qasino.setNavBarItems(navigationBarItems);
-        qasino.setUserData(navigationUser);
+        qasino.setVisitorData(navigationVisitor);
         qasino.setGameData(navigationGame);
         qasino.setQasinoData(navigationQasino);
         qasino.setLeagueData(navigationLeague);
@@ -201,11 +201,11 @@ public class MapQasinoResponseFromRetrievedDataAction implements Action<MapQasin
             seat.setInitiator(player.getRole() == Role.INITIATOR);
 
             if (player.isHuman()) {
-                seat.setUserId(player.getUser().getUserId());
-                seat.setUserName(player.getUser().getUserName());
+                seat.setVisitorId(player.getVisitor().getVisitorId());
+                seat.setVisitorName(player.getVisitor().getVisitorName());
             } else {
-                seat.setUserId(0);
-                seat.setUserName(player.getAiLevel().getLabel() + " " + player.getAvatar().getLabel());
+                seat.setVisitorId(0);
+                seat.setVisitorName(player.getAiLevel().getLabel() + " " + player.getAvatar().getLabel());
             }
 
             seat.setBalance(player.getFiches());
@@ -241,16 +241,16 @@ public class MapQasinoResponseFromRetrievedDataAction implements Action<MapQasin
         boolean isLeaguePresent();
         boolean isFriendsPresent();
 
-        User getGameUser();
+        Visitor getGameVisitor();
         Player getInvitedPlayer();
         Player getAcceptedPlayer();
-        List<League> getLeaguesForUser();
+        List<League> getLeaguesForVisitor();
 
         Player getTurnPlayer();
-        List<Game> getNewGamesForUser();
-        List<Game> getStartedGamesForUser();
+        List<Game> getNewGamesForVisitor();
+        List<Game> getStartedGamesForVisitor();
 
-        List<Game> getFinishedGamesForUser();
+        List<Game> getFinishedGamesForVisitor();
         Game getQasinoGame();
         League getQasinoGameLeague();
         List<Player> getQasinoGamePlayers();

@@ -16,7 +16,7 @@ public class DataSourceConfiguration {
     @Bean
     public DataSource getDataSource() {
         DataSourceBuilder dataSourceBuilder = DataSourceBuilder.create();
-        dataSourceBuilder.username("sa");
+        dataSourceBuilder.visitorname("sa");
         dataSourceBuilder.password("");
         return dataSourceBuilder.build();
     }

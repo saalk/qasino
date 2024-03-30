@@ -1,8 +1,8 @@
-package cloud.qasino.games.marvel;
+package cloud.qasino.games.library.marvel;
 
-import cloud.qasino.games.marvel.model.Serie;
-import cloud.qasino.games.marvel.properties.MarvelProperties;
-import cloud.qasino.games.marvel.util.MD5Util;
+import cloud.qasino.games.library.marvel.model.Serie;
+import cloud.qasino.games.library.marvel.util.MD5Util;
+import cloud.qasino.games.library.marvel.properties.MarvelProperties;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;

@@ -20,7 +20,7 @@ public class CalculateHallOfFameAction implements Action<CalculateHallOfFameActi
     @Autowired
     private GameRepository gameRepository;
     @Autowired
-    private UserRepository userRepository;
+    private VisitorRepository visitorRepository;
     @Autowired
     private PlayerRepository playerRepository;
     @Autowired
@@ -48,7 +48,7 @@ public class CalculateHallOfFameAction implements Action<CalculateHallOfFameActi
         Total totals = new Total();
         totals.setSubTotalsGames(subTotalsGame);
         totals.totalLeagues = ((int) leagueRepository.count());
-        totals.totalUsers = ((int) userRepository.count());
+        totals.totalVisitors = ((int) visitorRepository.count());
         totals.totalGames = ((int) gameRepository.count());
         totals.totalPlayers = ((int) playerRepository.count());
         totals.totalCards = ((int) cardRepository.count());

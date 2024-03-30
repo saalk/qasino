@@ -12,7 +12,7 @@
     "endDate": "2050-12-12T21:59:59.999Z",
     "dateCreated": "2020-10-10T08:11:12.345Z",
     "dateInactivated": null,
-    "lastUpdateUser": "IN_ADMIN",
+    "lastUpdateVisitor": "IN_ADMIN",
     "lastUpdateDate": "2021-04-27T09:11:11.111Z",
     "postalAddresses": [
       {
@@ -34,7 +34,7 @@
         "unstructuredAddressLine3": "Third house from the right",
         "deliveryFailureReasonType": "ADR_NOT_EXST",
         "dataSource": "FOS_IT",
-        "lastUpdateUser": "OnePam",
+        "lastUpdateVisitor": "OnePam",
         "lastUpdateDate": "2021-04-27T09:11:11.111Z",
         "effectiveDate": "2020-10-10T08:11:12.345Z",
         "endDate": "2050-12-12T21:59:59.999Z"
@@ -49,7 +49,7 @@
         "dataSource": "FOS_IT",
         "effectiveDate": "2020-10-10T08:11:12.345Z",
         "endDate": "2050-12-12T21:59:59.999Z",
-        "lastUpdateUser": "OnePam",
+        "lastUpdateVisitor": "OnePam",
         "lastUpdateDate": "2021-04-27T09:11:11.111Z"
       }
     ],
@@ -57,7 +57,7 @@
       {
         "involvedPartyInternalIdentifierType": "UUID",
         "involvedPartyInternalIdentifierValue": "42d992bd-d24e-4f22-b59c-56145c955cb1",
-        "lastUpdateUser": "theForge",
+        "lastUpdateVisitor": "theForge",
         "lastUpdateDate": "2021-04-27T09:11:11.111Z"
       }
     ],
@@ -98,7 +98,7 @@
       "title3": "H_R_H",
       "title3Value": "H.R.H.",
       "dataSource": "FOS_IT",
-      "lastUpdateUser": "OnePam",
+      "lastUpdateVisitor": "OnePam",
       "lastUpdateDate": "2021-04-27T09:11:11.111Z",
       "effectiveDate": "2020-10-10T08:11:12.345Z",
       "endDate": "2050-12-12T21:59:59.999Z"
@@ -110,7 +110,7 @@
         "dataSource": "USR_M_DE",
         "effectiveDate": "2020-10-10T08:11:12.345Z",
         "endDate": "2050-12-12T21:59:59.999Z",
-        "lastUpdateUser": "OnePAM",
+        "lastUpdateVisitor": "OnePAM",
         "lastUpdateDate": "2021-04-27T09:11:11.111Z"
       }
     ],
@@ -133,7 +133,7 @@
     "endDate": "2050-12-12T21:59:59.999Z",
     "dateCreated": "2020-10-10T08:11:12.345Z",
     "dateInactivated": "2021-04-27T09:11:11.111Z",
-    "lastUpdateUser": "IN_ADMIN",
+    "lastUpdateVisitor": "IN_ADMIN",
     "lastUpdateDate": "2021-04-27T09:11:11.111Z",
     "postalAddresses": [
       {
@@ -155,7 +155,7 @@
         "unstructuredAddressLine3": "Third house from the right",
         "deliveryFailureReasonType": "ADR_NOT_EXST",
         "dataSource": "FOS_IT",
-        "lastUpdateUser": "OnePam",
+        "lastUpdateVisitor": "OnePam",
         "lastUpdateDate": "2021-04-27T09:11:11.111Z",
         "effectiveDate": "2020-10-10T08:11:12.345Z",
         "endDate": "2050-12-12T21:59:59.999Z"
@@ -170,7 +170,7 @@
         "dataSource": "FOS_IT",
         "effectiveDate": "2020-10-10T08:11:12.345Z",
         "endDate": "2050-12-12T21:59:59.999Z",
-        "lastUpdateUser": "OnePam",
+        "lastUpdateVisitor": "OnePam",
         "lastUpdateDate": "2021-04-27T09:11:11.111Z"
       }
     ],
@@ -178,7 +178,7 @@
       {
         "involvedPartyInternalIdentifierType": "UUID",
         "involvedPartyInternalIdentifierValue": "42d992bd-d24e-4f22-b59c-56145c955cb1",
-        "lastUpdateUser": "theForge",
+        "lastUpdateVisitor": "theForge",
         "lastUpdateDate": "2021-04-27T09:11:11.111Z"
       }
     ],
@@ -192,7 +192,7 @@
         "organisationNameType": "LGL_NM",
         "organisationName": "ACME",
         "dataSource": "FOS_IT",
-        "lastUpdateUser": "OnePam",
+        "lastUpdateVisitor": "OnePam",
         "lastUpdateDate": "2021-04-27T09:11:11.111Z",
         "effectiveDate": "2020-10-10T08:11:12.345Z",
         "endDate": "2050-12-12T21:59:59.999Z"
@@ -217,7 +217,7 @@
     "endDate": "2050-12-12T21:59:59.999Z",
     "dateCreated": "2020-10-10T08:11:12.345Z",
     "dateInactivated": "2021-04-27T09:11:11.111Z",
-    "lastUpdateUser": "IN_ADMIN",
+    "lastUpdateVisitor": "IN_ADMIN",
     "lastUpdateDate": "2021-04-27T09:11:11.111Z",
     "postalAddresses": [
       {
@@ -239,7 +239,7 @@
         "unstructuredAddressLine3": "Third house from the right",
         "deliveryFailureReasonType": "ADR_NOT_EXST",
         "dataSource": "FOS_IT",
-        "lastUpdateUser": "OnePam",
+        "lastUpdateVisitor": "OnePam",
         "lastUpdateDate": "2021-04-27T09:11:11.111Z",
         "effectiveDate": "2020-10-10T08:11:12.345Z",
         "endDate": "2050-12-12T21:59:59.999Z"
@@ -254,7 +254,7 @@
         "dataSource": "FOS_IT",
         "effectiveDate": "2020-10-10T08:11:12.345Z",
         "endDate": "2050-12-12T21:59:59.999Z",
-        "lastUpdateUser": "OnePam",
+        "lastUpdateVisitor": "OnePam",
         "lastUpdateDate": "2021-04-27T09:11:11.111Z"
       }
     ],
@@ -262,7 +262,7 @@
       {
         "involvedPartyInternalIdentifierType": "UUID",
         "involvedPartyInternalIdentifierValue": "42d992bd-d24e-4f22-b59c-56145c955cb1",
-        "lastUpdateUser": "theForge",
+        "lastUpdateVisitor": "theForge",
         "lastUpdateDate": "2021-04-27T09:11:11.111Z"
       }
     ],
@@ -272,7 +272,7 @@
         "organisationUnitNameType": "OU_NM",
         "organisationUnitName": "ABC corporation",
         "dataSource": "FOS_IT",
-        "lastUpdateUser": "OnePam",
+        "lastUpdateVisitor": "OnePam",
         "lastUpdateDate": "2021-04-27T09:11:11.111Z",
         "effectiveDate": "2020-10-10T08:11:12.345Z",
         "endDate": "2050-12-12T21:59:59.999Z"

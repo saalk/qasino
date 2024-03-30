@@ -4,13 +4,13 @@ import cloud.qasino.games.statemachine.GameState;
 import cloud.qasino.games.database.entity.Card;
 import cloud.qasino.games.database.entity.Game;
 import cloud.qasino.games.database.entity.Player;
-import cloud.qasino.games.database.entity.User;
+import cloud.qasino.games.database.entity.Visitor;
 import cloud.qasino.games.database.entity.enums.player.AiLevel;
 import cloud.qasino.games.database.entity.enums.player.Avatar;
 import cloud.qasino.games.database.repository.GameRepository;
 import cloud.qasino.games.database.repository.PlayerRepository;
 import cloud.qasino.games.database.repository.CardRepository;
-import cloud.qasino.games.database.repository.UserRepository;
+import cloud.qasino.games.database.repository.VisitorRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,7 +26,7 @@ import java.util.List;
 import java.util.Optional;
 
 // basic path /qasino
-// basic header @RequestHeader(value "user", required = true) int userId" // else 400
+// basic header @RequestHeader(value "visitor", required = true) int visitorId" // else 400
 //
 // 200 - ok
 // 201 - created
@@ -40,26 +40,26 @@ import java.util.Optional;
 @RestController
 public class CRUDResource {
 
-    private UserRepository userRepository;
+    private VisitorRepository visitorRepository;
     private GameRepository gameRepository;
     private PlayerRepository playerRepository;
     private CardRepository cardRepository;
 
     @Autowired
     public CRUDResource(
-            UserRepository userRepository,
+            VisitorRepository visitorRepository,
             GameRepository gameRepository,
             CardRepository cardRepository,
             PlayerRepository playerRepository) {
 
-        this.userRepository = userRepository;
+        this.visitorRepository = visitorRepository;
         this.gameRepository = gameRepository;
         this.cardRepository = cardRepository;
         this.playerRepository = playerRepository;
     }
 
     // CREATE, GET, PUT, DELETE for single entities
-    // /api/users/{id} - GET, DELETE, PUT userName, email only
+    // /api/visitors/{id} - GET, DELETE, PUT visitorName, email only
     // /api/games/{id} - GET, DELETE, PUT type, style, ante - rules apply!
     // /api/players/{id} - GET, DELETE, PUT sequence, PUT avatar, ailevel - rules apply
 
@@ -69,8 +69,8 @@ public class CRUDResource {
     // /api/result/{id} - GET, DELETE, PUT name - rules apply
 
     // tested
-    @GetMapping("/users/{id}")
-    public ResponseEntity<Optional<User>> getUser(
+    @GetMapping("/visitors/{id}")
+    public ResponseEntity<Optional<Visitor>> getVisitor(
             @PathVariable String id
     ) {
 
@@ -88,9 +88,9 @@ public class CRUDResource {
         }
 
         // logic
-        Optional<User> foundUser = userRepository.findById(Integer.parseInt(id));
-        if (foundUser.isPresent()) {
-            return ResponseEntity.ok().headers(headers).body(foundUser);
+        Optional<Visitor> foundVisitor = visitorRepository.findById(Integer.parseInt(id));
+        if (foundVisitor.isPresent()) {
+            return ResponseEntity.ok().headers(headers).body(foundVisitor);
         } else {
             return ResponseEntity.notFound().headers(headers).build();
         }
@@ -98,10 +98,10 @@ public class CRUDResource {
     }
 
     // tested
-    @PutMapping(value = "/users/{id}")
-    public ResponseEntity<User> updateUser(
+    @PutMapping(value = "/visitors/{id}")
+    public ResponseEntity<Visitor> updateVisitor(
             @PathVariable("id") String id,
-            @RequestParam(name = "userName", defaultValue = "") String userName,
+            @RequestParam(name = "visitorName", defaultValue = "") String visitorName,
             @RequestParam(name = "email", defaultValue = "") String email
     ) {
 
@@ -109,7 +109,7 @@ public class CRUDResource {
         URI uri = ServletUriComponentsBuilder.fromCurrentRequest()
                 .path("")
                 .query("")
-                .buildAndExpand(userName, email)
+                .buildAndExpand(visitorName, email)
                 .toUri();
         HttpHeaders headers = new HttpHeaders();
         headers.add("URI", String.valueOf(uri));
@@ -118,32 +118,32 @@ public class CRUDResource {
         if (!StringUtils.isNumeric(id))
             // 400
             return ResponseEntity.badRequest().headers(headers).build();
-        int userId = Integer.parseInt(id);
-        Optional<User> foundUser = userRepository.findById(userId);
-        if (!foundUser.isPresent()) {
+        int visitorId = Integer.parseInt(id);
+        Optional<Visitor> foundVisitor = visitorRepository.findById(visitorId);
+        if (!foundVisitor.isPresent()) {
             // 404
             return ResponseEntity.status(HttpStatus.NOT_FOUND).headers(headers).build();
         }
 
         // logic
-        User updatedUser = foundUser.get();
-        if (!StringUtils.isEmpty(userName)) {
-            int sequence = (int) (userRepository.countByUserName(userName) + 1);
-            updatedUser.setUserName(userName);
-            updatedUser.setUserNameSequence(sequence);
+        Visitor updatedVisitor = foundVisitor.get();
+        if (!StringUtils.isEmpty(visitorName)) {
+            int sequence = (int) (visitorRepository.countByVisitorName(visitorName) + 1);
+            updatedVisitor.setVisitorName(visitorName);
+            updatedVisitor.setVisitorNameSequence(sequence);
         }
         if (!StringUtils.isEmpty(email)) {
-            updatedUser.setEmail(email);
+            updatedVisitor.setEmail(email);
         }
-        updatedUser = userRepository.save(updatedUser);
+        updatedVisitor = visitorRepository.save(updatedVisitor);
 
         // 200
-        return ResponseEntity.ok().headers(headers).body(updatedUser);
+        return ResponseEntity.ok().headers(headers).body(updatedVisitor);
     }
 
     // tested
-    @DeleteMapping("/users/{id}")
-    public ResponseEntity<User> deleteUser(
+    @DeleteMapping("/visitors/{id}")
+    public ResponseEntity<Visitor> deleteVisitor(
             @PathVariable("id") String id
     ) {
 
@@ -159,15 +159,15 @@ public class CRUDResource {
         if (!StringUtils.isNumeric(id))
             // 400
             return ResponseEntity.badRequest().headers(headers).build();
-        int userId = Integer.parseInt(id);
-        Optional<User> foundUser = userRepository.findById(userId);
-        if (!foundUser.isPresent()) {
+        int visitorId = Integer.parseInt(id);
+        Optional<Visitor> foundVisitor = visitorRepository.findById(visitorId);
+        if (!foundVisitor.isPresent()) {
             // 404
             return ResponseEntity.status(HttpStatus.NOT_FOUND).headers(headers).build();
         }
 
         // logic
-        userRepository.deleteById(userId);
+        visitorRepository.deleteById(visitorId);
         // delete 204
         return ResponseEntity.status(HttpStatus.NO_CONTENT).headers(headers).build();
     }

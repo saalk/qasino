@@ -3,11 +3,11 @@
 		package "cloud.qasino.card" {
 		package "entity" {
 
-class User {
-- userId : int
+class Visitor {
+- visitorId : int
 - created : String
 ..
-- userName : String
+- visitorName : String
 - email : String
 - balance : int
 - pawn : int
@@ -16,13 +16,13 @@ class User {
 -- MAIN --
 + repayLoan()
 }
-User "1" -right- "n" Player: has played
+Visitor "1" -right- "n" Player: has played
 
 class Player {
 - playerId : int
 - created : String
 ..
-- (MoreToOne) userId : User
+- (MoreToOne) visitorId : Visitor
 - (MoreToOne) gameId : Game
 ..
 - avatar : String

@@ -44,11 +44,11 @@ public class Result {
             (name = "fk_player_id"), nullable = false)
     private Player player;
 
-    // UsPl: a User can win the Games as a Player
+    // UsPl: a Visitor can win the Games as a Player
     @ManyToOne(cascade = CascadeType.DETACH)
-    @JoinColumn(name = "user_id", referencedColumnName = "user_id", foreignKey = @ForeignKey
-            (name = "fk_user_id"), nullable = true)
-    private User user;
+    @JoinColumn(name = "visitor_id", referencedColumnName = "visitor_id", foreignKey = @ForeignKey
+            (name = "fk_visitor_id"), nullable = true)
+    private Visitor visitor;
 
     // the game for which the result is achieved
     @OneToOne (cascade = CascadeType.DETACH)
@@ -92,10 +92,10 @@ public class Result {
         this.day = localDateAndTime.getDayOfMonth();
     }
 
-    public Result(Player player, User user, Game game, Type type, int fichesWon) {
+    public Result(Player player, Visitor visitor, Game game, Type type, int fichesWon) {
         this();
         this.player = player;
-        this.user = user;
+        this.visitor = visitor;
         this.game = game;
 
         this.type = type;

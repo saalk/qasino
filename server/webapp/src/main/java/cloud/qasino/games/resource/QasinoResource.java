@@ -12,7 +12,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 // basic path /qasino
-// basic header @RequestHeader(value "user", required = true) int userId" // else 400
+// basic header @RequestHeader(value "visitor", required = true) int visitorId" // else 400
 //
 // 200 - ok
 // 201 - created
@@ -29,9 +29,9 @@ public class QasinoResource {
     @Autowired
     FindAllEntitiesForInputAction findAllEntitiesForInputAction;
     @Autowired
-    FindUserIdByUserNameAction findUserIdByUserNameAction;
+    FindVisitorIdByVisitorNameAction findVisitorIdByVisitorNameAction;
     @Autowired
-    SignUpNewUserAction signUpNewUserAction;
+    SignUpNewVisitorAction signUpNewVisitorAction;
     @Autowired
     HandleSecuredLoanAction handleSecuredLoanAction;
     @Autowired
@@ -41,7 +41,7 @@ public class QasinoResource {
     @Autowired
     MapQasinoResponseFromRetrievedDataAction mapQasinoResponseFromRetrievedDataAction;
 
-    @GetMapping(value = "/logon/{userName}")
+    @GetMapping(value = "/logon/{visitorName}")
     public ResponseEntity logon(
             @RequestHeader Map<String, String> headerData,
             @PathVariable Map<String, String> pathData,
@@ -59,7 +59,7 @@ public class QasinoResource {
             return ResponseEntity.status(HttpStatus.valueOf(flowDTO.getHttpStatus())).headers(flowDTO.getHeaders()).build();
         }
         // logic
-        output = findUserIdByUserNameAction.perform(flowDTO);
+        output = findVisitorIdByVisitorNameAction.perform(flowDTO);
         if (output == EventOutput.Result.FAILURE) {
             return ResponseEntity.status(HttpStatus.valueOf(flowDTO.getHttpStatus())).headers(flowDTO.getHeaders()).build();
         }
@@ -75,7 +75,7 @@ public class QasinoResource {
     }
 
     // tested
-    @PostMapping(value = "/signup/{userName}")
+    @PostMapping(value = "/signup/{visitorName}")
     public ResponseEntity signup(
             @RequestHeader Map<String, String> headerData,
             @PathVariable Map<String, String> pathData,
@@ -94,7 +94,7 @@ public class QasinoResource {
         }
 
         // logic
-        output = signUpNewUserAction.perform(flowDTO);
+        output = signUpNewVisitorAction.perform(flowDTO);
         if (output == EventOutput.Result.FAILURE) {
             return ResponseEntity.status(HttpStatus.valueOf(flowDTO.getHttpStatus())).headers(flowDTO.getHeaders()).build();
         }
@@ -110,7 +110,7 @@ public class QasinoResource {
         }
 
     // tested
-    @PutMapping(value = "/users/pawnship")
+    @PutMapping(value = "/visitors/pawnship")
     public ResponseEntity pawnship(
             @RequestHeader Map<String, String> headerData,
             @PathVariable Map<String, String> pathData,
@@ -146,7 +146,7 @@ public class QasinoResource {
     }
 
     // tested
-    @PutMapping(value = "/users/repayloan")
+    @PutMapping(value = "/visitors/repayloan")
     public ResponseEntity repayloan(
             @RequestHeader Map<String, String> headerData,
             @PathVariable Map<String, String> pathData,

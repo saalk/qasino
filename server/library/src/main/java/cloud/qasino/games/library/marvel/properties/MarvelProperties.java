@@ -1,4 +1,4 @@
-package cloud.qasino.games.marvel.properties;
+package cloud.qasino.games.library.marvel.properties;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -19,14 +19,18 @@ import javax.validation.constraints.NotNull;
 @Validated
 public class MarvelProperties {
 
+    private final String BASE_URL = "https://gateway.marvel.com/v1/public/";
+    private final String API_KEY = "37d075af85235a76c92b60dcc53bdf38";
+    private final String PRIVATE_KEY = "ad760beea0edbe11702b1928b6974d13bcdc6841";
+
     @NotEmpty
-    private String scheme;
+    private String scheme = "https://";
     @NotEmpty
-    private String host;
+    private String host = "gateway.marvel.com/v1/public/";
     @NotEmpty
-    private String publicKey;
+    private String publicKey = API_KEY;
     @NotEmpty
-    private String privateKey;
+    private String privateKey= PRIVATE_KEY;
 
     @Valid
     private Characters characters = new Characters();
@@ -34,6 +38,6 @@ public class MarvelProperties {
     @Data
     public static class Characters {
         @NotEmpty
-        private String path;
+        private String path = "/characters";
     }
 }

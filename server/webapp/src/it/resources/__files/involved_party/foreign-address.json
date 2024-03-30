@@ -12,7 +12,7 @@
     "endDate": "2050-12-12T21:59:59.999Z",
     "dateCreated": "2020-10-10T08:11:12.345Z",
     "dateInactivated": "2021-04-27T09:11:11.111Z",
-    "lastUpdateUser": "IN_ADMIN",
+    "lastUpdateVisitor": "IN_ADMIN",
     "lastUpdateDate": "2021-04-27T09:11:11.111Z",
     "postalAddresses": [
       {
@@ -34,7 +34,7 @@
         "unstructuredAddressLine3": "Third house from the right",
         "deliveryFailureReasonType": "ADR_NOT_EXST",
         "dataSource": "FOS_IT",
-        "lastUpdateUser": "OnePam",
+        "lastUpdateVisitor": "OnePam",
         "lastUpdateDate": "2021-04-27T09:11:11.111Z",
         "effectiveDate": "2020-10-10T08:11:12.345Z",
         "endDate": "2050-12-12T21:59:59.999Z"
@@ -49,7 +49,7 @@
         "dataSource": "FOS_IT",
         "effectiveDate": "2020-10-10T08:11:12.345Z",
         "endDate": "2050-12-12T21:59:59.999Z",
-        "lastUpdateUser": "OnePam",
+        "lastUpdateVisitor": "OnePam",
         "lastUpdateDate": "2021-04-27T09:11:11.111Z"
       }
     ],
@@ -57,7 +57,7 @@
       {
         "involvedPartyInternalIdentifierType": "UUID",
         "involvedPartyInternalIdentifierValue": "ee5cf2f8-4286-49b6-9134-1e3d055cd597",
-        "lastUpdateUser": "theForge",
+        "lastUpdateVisitor": "theForge",
         "lastUpdateDate": "2021-04-27T09:11:11.111Z"
       }
     ],
@@ -98,7 +98,7 @@
       "title3": "H_R_H",
       "title3Value": "H.R.H.",
       "dataSource": "FOS_IT",
-      "lastUpdateUser": "OnePam",
+      "lastUpdateVisitor": "OnePam",
       "lastUpdateDate": "2021-04-27T09:11:11.111Z",
       "effectiveDate": "2020-10-10T08:11:12.345Z",
       "endDate": "2050-12-12T21:59:59.999Z"
@@ -110,7 +110,7 @@
         "dataSource": "USR_M_DE",
         "effectiveDate": "2020-10-10T08:11:12.345Z",
         "endDate": "2050-12-12T21:59:59.999Z",
-        "lastUpdateUser": "OnePAM",
+        "lastUpdateVisitor": "OnePAM",
         "lastUpdateDate": "2021-04-27T09:11:11.111Z"
       }
     ],
@@ -133,7 +133,7 @@
     "endDate": "2050-12-12T21:59:59.999Z",
     "dateCreated": "2020-10-10T08:11:12.345Z",
     "dateInactivated": "2021-04-27T09:11:11.111Z",
-    "lastUpdateUser": "IN_ADMIN",
+    "lastUpdateVisitor": "IN_ADMIN",
     "lastUpdateDate": "2021-04-27T09:11:11.111Z",
     "postalAddresses": [
       {
@@ -155,7 +155,7 @@
         "unstructuredAddressLine3": "Third house from the right",
         "deliveryFailureReasonType": "ADR_NOT_EXST",
         "dataSource": "FOS_IT",
-        "lastUpdateUser": "OnePam",
+        "lastUpdateVisitor": "OnePam",
         "lastUpdateDate": "2021-04-27T09:11:11.111Z",
         "effectiveDate": "2020-10-10T08:11:12.345Z",
         "endDate": "2050-12-12T21:59:59.999Z"

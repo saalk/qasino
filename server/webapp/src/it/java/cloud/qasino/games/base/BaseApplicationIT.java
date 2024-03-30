@@ -13,11 +13,9 @@ import java.util.Collections;
 import java.util.Map;
 
 import static cloud.qasino.games.configuration.Constants.BASE_PATH;
-import static cloud.qasino.games.configuration.Constants.ENDPOINT_USERS;
+import static cloud.qasino.games.configuration.Constants.ENDPOINT_VISITORS;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-@ContextConfiguration(classes = {TestDatabaseAutoConfiguration.class})
-@EnableAutoConfiguration(exclude = TestDatabaseAutoConfiguration.class)
 @Slf4j
 class BaseApplicationIT extends AbstractBaseApplicationIT {
 
@@ -38,9 +36,9 @@ class BaseApplicationIT extends AbstractBaseApplicationIT {
         return this.callEndpoint(httpMethod, BASE_PATH + endpoint, requestPayload, customerId, params);
     }
 
-    ResponseEntity<String> callUsersEndpoint(final String customerId,
+    ResponseEntity<String> callVisitorsEndpoint(final String customerId,
                                                    final String requestId) {
-        return this.callEndpoint(HttpMethod.PUT, BASE_PATH + ENDPOINT_USERS, "",customerId, Collections.singletonMap("REQUEST_ID", requestId));
+        return this.callEndpoint(HttpMethod.PUT, BASE_PATH + ENDPOINT_VISITORS, "",customerId, Collections.singletonMap("REQUEST_ID", requestId));
     }
 
 }
