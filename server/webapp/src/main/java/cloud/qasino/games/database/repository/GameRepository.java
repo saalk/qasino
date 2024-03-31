@@ -33,34 +33,34 @@ public interface GameRepository extends JpaRepository<Game, Integer> {
                     "WHERE g.YEAR = :year " +
                     "AND g.MONTH = :month ";
 
-    public final static String FIND_NEWGAMES_BY_USER_ID =
+    public final static String FIND_NEWGAMES_BY_VISITOR_ID =
             "SELECT * FROM GAME a JOIN PLAYER b " +
                     "WHERE a.GAME_ID = b.GAME_ID " +
                     "AND b.VISITOR_ID = :visitorId " +
                      "AND a.STATE IN ('NEW','PENDING_INVITATIONS','PREPARED') ";
-    public final static String COUNT_NEWGAMES_BY_USER_ID =
+    public final static String COUNT_NEWGAMES_BY_VISITOR_ID =
             "SELECT count(*) FROM GAME a JOIN PLAYER b " +
                     "WHERE a.GAME_ID = b.GAME_ID " +
                     "AND b.VISITOR_ID = :visitorId " +
                     "AND a.STATE IN ('NEW','PENDING_INVITATIONS','PREPARED') ";
 
-    public final static String FIND_STARTEDGAMES_BY_USER_ID =
+    public final static String FIND_STARTEDGAMES_BY_VISITOR_ID =
             "SELECT * FROM GAME a JOIN PLAYER b " +
                     "WHERE a.GAME_ID = b.GAME_ID " +
                     "AND b.VISITOR_ID = :visitorId " +
                     "AND a.STATE IN ('PLAYING') ";
-    public final static String COUNT_STARTEDGAMES_BY_USER_ID =
+    public final static String COUNT_STARTEDGAMES_BY_VISITOR_ID =
             "SELECT count(*) FROM GAME a JOIN PLAYER b " +
                     "WHERE a.GAME_ID = b.GAME_ID " +
                     "AND b.VISITOR_ID = :visitorId " +
                     "AND a.STATE IN ('PLAYING') ";
 
-    public final static String FIND_FINISHEDGAMES_BY_USER_ID =
+    public final static String FIND_FINISHEDGAMES_BY_VISITOR_ID =
             "SELECT * FROM GAME a JOIN PLAYER b " +
                     "WHERE a.GAME_ID = b.GAME_ID " +
                     "AND b.VISITOR_ID = :visitorId " +
                     "AND a.STATE IN ('PLAYING') ";
-    public final static String COUNT_FINISHEDGAMES_BY_USER_ID =
+    public final static String COUNT_FINISHEDGAMES_BY_VISITOR_ID =
             "SELECT count(*) FROM GAME a JOIN PLAYER b " +
                     "WHERE a.GAME_ID = b.GAME_ID " +
                     "AND b.VISITOR_ID = :visitorId " +

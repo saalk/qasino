@@ -44,20 +44,20 @@ import java.util.List;
  * <p>
  * common beans with ApplicationContext:
  * 1) Singleton (default scope) - you always get the same bean
- * 2) prototype - you will get a new instance of the spring bean
+ * 2) Prototype - you will get a new instance of the spring bean
  * <p>
  * only for web aware applications with WebApplicationContext:
- * 3) request - each http request has its own bean
- * 4) session - each session has its own bean
- * 5) global-session
+ * 3) Request - each http request has its own bean
+ * 4) Session - each session has its own bean
+ * 5) Global-session
  */
 
 @SpringBootApplication
-@EnableAutoConfiguration
+//@EnableAutoConfiguration // is already default
 //@EnableResourceServer //
-@EnableJpaRepositories(basePackages = "cloud.qasino.games.database.*")
+@EnableJpaRepositories(basePackages = "cloud.qasino.*")
 @EnableTransactionManagement
-@EntityScan(basePackages = "cloud.qasino.games.*")
+@EntityScan(basePackages = "cloud.qasino.*")
 @EnableJpaAuditing
 @Slf4j
 public class GamesApplication {
