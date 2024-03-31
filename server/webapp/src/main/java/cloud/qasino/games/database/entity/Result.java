@@ -22,13 +22,14 @@ import java.util.Objects;
 @Setter
 @JsonIdentityInfo(generator = JSOGGenerator.class)
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
-@Table(name = "results", indexes = {@Index(name = "results_index", columnList = "result_id",
-        unique = true)})
+@Table(name = "result", indexes = {
+        // not needed : @Index(name = "results_index", columnList = "result_id", unique = true)
+})
 public class Result {
 
     @Id
     @GeneratedValue
-    @Column(name = "result_id", nullable = false)
+    @Column(name = "result_id")
     private int resultId;
 
     @JsonIgnore
@@ -75,7 +76,7 @@ public class Result {
     private int day;
 
     @Setter(AccessLevel.NONE)
-    @Column(name = "is_active")
+    @Column(name = "fiches_won")
     private int fichesWon;
 
     // References

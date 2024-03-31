@@ -23,15 +23,15 @@ import java.util.Random;
 @Setter
 @JsonIdentityInfo(generator = JSOGGenerator.class)
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
-@Table(name = "users", indexes =
-        {@Index(name = "users_index", columnList = "user_id", unique = true),
+@Table(name = "user", indexes =
+        { // not needed : @Index(name = "users_index", columnList = "user_id", unique = true),
                 @Index(name = "userName_index", columnList = "userName", unique = false)
         })
 public class User {
 
     @Id
     @GeneratedValue
-    @Column(name = "user_id", nullable = false)
+    @Column(name = "user_id")
     private int userId;
 
     @JsonIgnore

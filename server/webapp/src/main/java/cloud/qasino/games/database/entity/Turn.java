@@ -23,9 +23,10 @@ import java.util.Objects;
 @Setter
 @JsonIdentityInfo(generator = JSOGGenerator.class)
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
-@Table(name = "turns", indexes =
-        {@Index(name = "turns_game_index", columnList = "game_id", unique = false),
-                @Index(name = "turns_index", columnList = "turn_id", unique = true)}
+@Table(name = "turn", indexes =
+        {@Index(name = "turns_game_index", columnList = "game_id", unique = false)
+         // not needed : @Index(name = "turns_index", columnList = "turn_id", unique = true)
+        }
 )
 public class Turn {
 

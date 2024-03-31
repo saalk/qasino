@@ -12,9 +12,12 @@ import org.hibernate.annotations.DynamicUpdate;
 import javax.persistence.*;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.Period;
 
 import static java.time.temporal.TemporalAdjusters.*;
+
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -25,18 +28,19 @@ import java.util.Objects;
 @Setter
 @JsonIdentityInfo(generator = JSOGGenerator.class)
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
-@Table(name = "leagues", indexes = {@Index(name = "leagues_index", columnList = "league_id",
-        unique = true)})
+@Table(name = "league", indexes = {
+        // not needed : @Index(name = "leagues_index", columnList = "league_id", unique = true)
+})
 public class League {
 
     @Id
     @GeneratedValue
-    @Column(name = "league_id", nullable = false)
+    @Column(name = "league_id")
     private int leagueId;
 
     @JsonIgnore
-    @Column(columnDefinition = "DATE")
-    private LocalDate created;
+    @Column(name = "created", length = 25)
+    private String created;
 
 
     // Foreign keys
@@ -62,8 +66,9 @@ public class League {
     @Column(name = "is_active")
     private boolean active;
 
-    @Column(columnDefinition = "DATE")
-    private LocalDate ended;
+    @JsonIgnore
+    @Column(name = "ended", length = 25)
+    private String ended;
 
 
     // References
@@ -74,7 +79,11 @@ public class League {
     private List<Game> games = new ArrayList<>();
 
     public League() {
-        this.created = LocalDate.now();
+        LocalDateTime localDateAndTime = LocalDateTime.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd-HH:mm-ssSSS-nnnnnnnnn");
+        String result = localDateAndTime.format(formatter);
+        this.created = result.substring(2, 20);
+
         this.active = true;
 
     }
@@ -90,19 +99,31 @@ public class League {
 
     public boolean endLeagueDaysFromNow(int days) {
         if (!this.isActive()) return false;
-        this.ended = LocalDate.now().plus(Period.ofDays(days));
+        LocalDateTime localDateAndTime = LocalDateTime.now().plus(Period.ofDays(days));
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd-HH:mm-ssSSS-nnnnnnnnn");
+        String result = localDateAndTime.format(formatter);
+        this.ended = result.substring(2, 20);
+
         return true;
     }
 
     public boolean endLeagueNextMonday() {
         if (!this.isActive()) return false;
-        this.ended = LocalDate.now().with(next(DayOfWeek.MONDAY));
+        LocalDateTime localDateAndTime = LocalDateTime.now().with(next(DayOfWeek.MONDAY));
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd-HH:mm-ssSSS-nnnnnnnnn");
+        String result = localDateAndTime.format(formatter);
+        this.ended = result.substring(2, 20);
+
         return true;
     }
 
     public boolean endLeagueThisMonth() {
         if (!this.isActive()) return false;
-        this.ended = LocalDate.now().with(lastDayOfMonth());
+        LocalDateTime localDateAndTime = LocalDateTime.now().with(lastDayOfMonth());;
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd-HH:mm-ssSSS-nnnnnnnnn");
+        String result = localDateAndTime.format(formatter);
+        this.ended = result.substring(2, 20);
+
         return true;
     }
 
@@ -111,12 +132,16 @@ public class League {
         if (this.ended == null) return true;
         // check if ended has passed
         LocalDate yesterday = LocalDate.now().plusDays(-1);
-        int days = Period.between(yesterday, this.ended).getDays();
+        int days = Period.between(yesterday, LocalDate.parse(this.ended)).getDays();
         return days <= 0; // todo test this
     }
 
     public void closeLeaguePerYesterday() {
-        this.ended = LocalDate.now().plusDays(-1); // yesterday;
+
+        LocalDateTime localDateAndTime = LocalDateTime.now().plusDays(-1); // yesterday;
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd-HH:mm-ssSSS-nnnnnnnnn");
+        String result = localDateAndTime.format(formatter);
+        this.ended = result.substring(2, 20);
         this.active = false;
     }
 

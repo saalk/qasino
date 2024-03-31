@@ -70,33 +70,33 @@ public class GamesApplication {
             TurnRepository turnRepository,
             CardMoveRepository cardMoveRepository
     ) {
-        User user = new User("userNameName", 1, "a@b.c");
-        int pawn = User.pawnShipValue(0);
-        user.pawnShip(pawn);
-        user = userRepository.save(user);
-
-        League league = new League(user, "default", 1);
-        league.endLeagueThisMonth();
-        leagueRepository.save(league);
-
-        Game game = new Game(league, "highlow", user.getUserId()," " ,100);
-        game.shuffleGame(0);
-        game.setState(GameState.PLAYING);
-        game = gameRepository.save(game);
-        cardRepository.saveAll(game.getCards());
-
-        List<Player> players = new ArrayList<>();
-        players.add(playerRepository.save(new Player(user, game, Role.INITIATOR,
-                user.getBalance(), 1, Avatar.ELF, AiLevel.HUMAN)));
-        players.add(playerRepository.save(new Player(null, game, Role.BOT, user.getBalance(), 2,
-                Avatar.GOBLIN, AiLevel.AVERAGE)));
-        game.setPlayers(players);
-
-        Turn turn = new Turn( game, players.get(0).getPlayerId());
-        turnRepository.save(turn);
-        CardMove cardMove = new CardMove(turn, players.get(0), null, Move.DEAL,
-                Location.HAND);
-        cardMoveRepository.save(cardMove);
+//        User user = new User("userNameName", 1, "a@b.c");
+//        int pawn = User.pawnShipValue(0);
+//        user.pawnShip(pawn);
+//        user = userRepository.save(user);
+//
+//        League league = new League(user, "default", 1);
+//        league.endLeagueThisMonth();
+//        leagueRepository.save(league);
+//
+//        Game game = new Game(league, "highlow", user.getUserId()," " ,100);
+//        game.shuffleGame(0);
+//        game.setState(GameState.PLAYING);
+//        game = gameRepository.save(game);
+//        cardRepository.saveAll(game.getCards());
+//
+//        List<Player> players = new ArrayList<>();
+//        players.add(playerRepository.save(new Player(user, game, Role.INITIATOR,
+//                user.getBalance(), 1, Avatar.ELF, AiLevel.HUMAN)));
+//        players.add(playerRepository.save(new Player(null, game, Role.BOT, user.getBalance(), 2,
+//                Avatar.GOBLIN, AiLevel.AVERAGE)));
+//        game.setPlayers(players);
+//
+//        Turn turn = new Turn( game, players.get(0).getPlayerId());
+//        turnRepository.save(turn);
+//        CardMove cardMove = new CardMove(turn, players.get(0), null, Move.DEAL,
+//                Location.HAND);
+//        cardMoveRepository.save(cardMove);
 
         return null;
     }

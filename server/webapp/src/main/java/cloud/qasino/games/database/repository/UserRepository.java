@@ -19,7 +19,7 @@ public interface UserRepository extends JpaRepository<User, Integer> {
 
 
     @Query(
-            value = "SELECT * FROM USERS ORDER BY USER_ID",
+            value = "SELECT * FROM USER ORDER BY USER_ID",
             countQuery = "SELECT count(*) FROM USERS",
             nativeQuery = true)
     List<User> findAllUsersWithPage(Pageable pageable);
