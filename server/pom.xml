@@ -17,9 +17,6 @@
 		<java.version>17</java.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-
-		<spring-boot.version>2.7.18</spring-boot.version>
-
 	</properties>
 
 	<!-- Dependency management is a mechanism for centralizing the dependency information -->
@@ -30,32 +27,5 @@
 		<artifactId>spring-boot-starter-parent</artifactId>
 		<version>2.7.18</version>
 	</parent>
-
-<!--	Apache Maven automates and perform build and reporting tasks in a Java project.-->
-<!--	- build -> Clean, Install, and Surefire plugins-->
-<!--	- reporting -> Javadoc and Checkstyle plugins-->
-
-	<!-- Plugin management has plugins that becomes available to this POM, and all inheriting child POMs. -->
-	<build>
-		<pluginManagement>
-			<plugins>
-				<plugin>
-					<!-- plugin for several goals to work with a Spring Boot application -->
-					<!-- https://spring.io/projects/spring-boot#support -->
-					<groupId>ocd rg.springframework.boot</groupId>
-					<artifactId>spring-boot-maven-plugin</artifactId>
-					<version>${spring-boot.version}</version>
-					<configuration>
-						<profiles>
-							<profile>dev</profile>
-						</profiles>
-						<skip>true</skip>
-					</configuration>
-				</plugin>
-			</plugins>
-		</pluginManagement>
-	</build>
-
-
 
 </project>
