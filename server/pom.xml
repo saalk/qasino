@@ -10,7 +10,6 @@
 <!--		<version>2.7.18</version>-->
 <!--		<relativePath/> &lt;!&ndash; lookup parent from repository &ndash;&gt;-->
 <!--	</parent>-->
-
 	<groupId>cloud.qasino.games</groupId>
 	<artifactId>CardGames</artifactId>
 	<version>1.0.0-SNAPSHOT</version>
