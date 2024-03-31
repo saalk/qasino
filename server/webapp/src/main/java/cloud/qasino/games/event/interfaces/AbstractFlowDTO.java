@@ -13,7 +13,7 @@ public abstract class AbstractFlowDTO { //implements FlowEventCallback {
 
     @Setter
     @Getter
-    protected String userId;
+    protected String visitorId;
 /*
 
     @Getter

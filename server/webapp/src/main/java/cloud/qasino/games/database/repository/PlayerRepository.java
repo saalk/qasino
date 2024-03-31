@@ -2,7 +2,7 @@ package cloud.qasino.games.database.repository;
 
 import cloud.qasino.games.database.entity.Game;
 import cloud.qasino.games.database.entity.Player;
-import cloud.qasino.games.database.entity.User;
+import cloud.qasino.games.database.entity.Visitor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -17,7 +17,7 @@ public interface PlayerRepository extends JpaRepository<Player, Integer> {
     //@Query("SELECT * FROM PLAYERS p WHERE p.GAME_ID = ?1")
     List<Player> findByGameOrderBySeatAsc(Game game);
 
-    //@Query("SELECT * FROM PLAYERS p ORDER BY CREATED desc WHERE p.USER_ID = ?1")
+    //@Query("SELECT * FROM PLAYERS p ORDER BY CREATED desc WHERE p.VISITOR_ID = ?1")
     List<Player> findByGameOrderByCreatedDesc(Game game);
 
 
@@ -28,6 +28,6 @@ public interface PlayerRepository extends JpaRepository<Player, Integer> {
             value = "SELECT * FROM PLAYER ORDER BY PLAYER_ID",
             countQuery = "SELECT count(*) FROM PLAYERS",
             nativeQuery = true)
-    Page<User> findAllPlayersWithPage(Pageable pageable);
+    Page<Visitor> findAllPlayersWithPage(Pageable pageable);
 
 }

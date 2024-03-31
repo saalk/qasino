@@ -75,7 +75,7 @@ public abstract class AbstractQasinoFlowDTO extends AbstractFlowDTO {
     public void setChannelContext(ChannelContext channelContext) {
         this.channelContext = channelContext;
 
-        if (this.game.getPlayers().get(0).getUser().getUserId() == 0) {
+        if (this.game.getPlayers().get(0).getVisitor().getVisitorId() == 0) {
             this.setRequestorId(channelContext.getCustomers()
                     .get()
                     .getActiveCustomer()

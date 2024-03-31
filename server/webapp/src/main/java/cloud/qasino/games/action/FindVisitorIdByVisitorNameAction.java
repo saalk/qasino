@@ -1,8 +1,8 @@
 package cloud.qasino.games.action;
 
 import cloud.qasino.games.action.interfaces.Action;
-import cloud.qasino.games.database.entity.User;
-import cloud.qasino.games.database.repository.UserRepository;
+import cloud.qasino.games.database.entity.Visitor;
+import cloud.qasino.games.database.repository.VisitorRepository;
 import cloud.qasino.games.event.EventOutput;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -13,44 +13,44 @@ import java.util.Optional;
 
 @Slf4j
 @Component
-public class FindUserIdByUserNameAction implements Action<FindUserIdByUserNameAction.FindUserIdByUserNameActionDTO, EventOutput.Result> {
+public class FindVisitorIdByVisitorNameAction implements Action<FindVisitorIdByVisitorNameAction.FindVisitorIdByVisitorNameActionDTO, EventOutput.Result> {
 
     @Resource
-    UserRepository userRepository;
+    VisitorRepository visitorRepository;
 
     @Override
-    public EventOutput.Result perform(FindUserIdByUserNameActionDTO actionDto) {
+    public EventOutput.Result perform(FindVisitorIdByVisitorNameActionDTO actionDto) {
 
-        log.debug("Action: FindUserByUserNameAction");
+        log.debug("Action: FindVisitorByVisitorNameAction");
 
         // set http to created when done
 
-        if (!(StringUtils.isEmpty(actionDto.getSuppliedUserName()))) {
-            int sequence = Math.toIntExact(userRepository.countByUserName(actionDto.getSuppliedUserName()));
+        if (!(StringUtils.isEmpty(actionDto.getSuppliedVisitorName()))) {
+            int sequence = Math.toIntExact(visitorRepository.countByVisitorName(actionDto.getSuppliedVisitorName()));
             if (sequence > 1) {
-                // todo LOW split userName and number
-                setErrorMessageConflict(actionDto, "userName", String.valueOf(actionDto.getSuppliedUserName()));
+                // todo LOW split visitorName and number
+                setErrorMessageConflict(actionDto, "visitorName", String.valueOf(actionDto.getSuppliedVisitorName()));
                 return EventOutput.Result.FAILURE;
             } else if (sequence == 0) {
-                setErrorMessageNotFound(actionDto, "userName", String.valueOf(actionDto.getSuppliedUserName()));
+                setErrorMessageNotFound(actionDto, "visitorName", String.valueOf(actionDto.getSuppliedVisitorName()));
                 return EventOutput.Result.FAILURE;
             }
-            Optional<User> foundUser = userRepository.findUserByUserNameAndUserNameSequence(actionDto.getSuppliedUserName(), 1);
-            if (foundUser.isPresent()) {
-                actionDto.setSuppliedUserId(foundUser.get().getUserId());
+            Optional<Visitor> foundVisitor = visitorRepository.findVisitorByVisitorNameAndVisitorNameSequence(actionDto.getSuppliedVisitorName(), 1);
+            if (foundVisitor.isPresent()) {
+                actionDto.setSuppliedVisitorId(foundVisitor.get().getVisitorId());
                 // call FindAllEntitiesForInputAction after this to do the actual retrieval
             } else {
-                setErrorMessageNotFound(actionDto, "userId", actionDto.getSuppliedUserName());
+                setErrorMessageNotFound(actionDto, "visitorId", actionDto.getSuppliedVisitorName());
                 return EventOutput.Result.FAILURE;
             }
         } else {
-            setErrorMessageBadRequest(actionDto, "userName", String.valueOf(actionDto.getSuppliedUserName()));
+            setErrorMessageBadRequest(actionDto, "visitorName", String.valueOf(actionDto.getSuppliedVisitorName()));
             return EventOutput.Result.FAILURE;
         }
         return EventOutput.Result.SUCCESS;
     }
 
-    private void setErrorMessageNotFound(FindUserIdByUserNameActionDTO actionDto, String id,
+    private void setErrorMessageNotFound(FindVisitorIdByVisitorNameActionDTO actionDto, String id,
                                          String value) {
         actionDto.setHttpStatus(404);
         actionDto.setErrorKey(id);
@@ -59,7 +59,7 @@ public class FindUserIdByUserNameAction implements Action<FindUserIdByUserNameAc
         actionDto.setUriAndHeaders();
     }
 
-    private void setErrorMessageBadRequest(FindUserIdByUserNameActionDTO actionDto, String id,
+    private void setErrorMessageBadRequest(FindVisitorIdByVisitorNameActionDTO actionDto, String id,
                                            String value) {
         actionDto.setHttpStatus(400);
         actionDto.setErrorKey(id);
@@ -69,7 +69,7 @@ public class FindUserIdByUserNameAction implements Action<FindUserIdByUserNameAc
     }
 
 
-    private void setErrorMessageConflict(FindUserIdByUserNameActionDTO actionDto, String id,
+    private void setErrorMessageConflict(FindVisitorIdByVisitorNameActionDTO actionDto, String id,
                                          String value) {
         actionDto.setHttpStatus(409);
         actionDto.setErrorKey(id);
@@ -79,14 +79,14 @@ public class FindUserIdByUserNameAction implements Action<FindUserIdByUserNameAc
         actionDto.setUriAndHeaders();
     }
 
-    public interface FindUserIdByUserNameActionDTO {
+    public interface FindVisitorIdByVisitorNameActionDTO {
 
         // @formatter:off
         // Getters
-        String getSuppliedUserName();
+        String getSuppliedVisitorName();
 
         // Setter
-        void setSuppliedUserId(int id);
+        void setSuppliedVisitorId(int id);
 
         // error setters
         void setHttpStatus(int status);

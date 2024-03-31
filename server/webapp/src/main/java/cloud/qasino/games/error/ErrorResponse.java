@@ -29,7 +29,7 @@ public class ErrorResponse {
                     options += "gametType, ante]";
                     break;
                 case "setup":
-                    options += "userName, ante]";
+                    options += "visitorName, ante]";
                     break;
                 case "shuffle":
                     options += "jokers, suit]";

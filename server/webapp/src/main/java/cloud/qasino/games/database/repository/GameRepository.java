@@ -33,37 +33,37 @@ public interface GameRepository extends JpaRepository<Game, Integer> {
                     "WHERE g.YEAR = :year " +
                     "AND g.MONTH = :month ";
 
-    public final static String FIND_NEWGAMES_BY_USER_ID =
+    public final static String FIND_NEWGAMES_BY_VISITOR_ID =
             "SELECT * FROM GAME a JOIN PLAYER b " +
                     "WHERE a.GAME_ID = b.GAME_ID " +
-                    "AND b.USER_ID = :userId " +
+                    "AND b.VISITOR_ID = :visitorId " +
                      "AND a.STATE IN ('NEW','PENDING_INVITATIONS','PREPARED') ";
-    public final static String COUNT_NEWGAMES_BY_USER_ID =
+    public final static String COUNT_NEWGAMES_BY_VISITOR_ID =
             "SELECT count(*) FROM GAME a JOIN PLAYER b " +
                     "WHERE a.GAME_ID = b.GAME_ID " +
-                    "AND b.USER_ID = :userId " +
+                    "AND b.VISITOR_ID = :visitorId " +
                     "AND a.STATE IN ('NEW','PENDING_INVITATIONS','PREPARED') ";
 
-    public final static String FIND_STARTEDGAMES_BY_USER_ID =
+    public final static String FIND_STARTEDGAMES_BY_VISITOR_ID =
             "SELECT * FROM GAME a JOIN PLAYER b " +
                     "WHERE a.GAME_ID = b.GAME_ID " +
-                    "AND b.USER_ID = :userId " +
+                    "AND b.VISITOR_ID = :visitorId " +
                     "AND a.STATE IN ('PLAYING') ";
-    public final static String COUNT_STARTEDGAMES_BY_USER_ID =
+    public final static String COUNT_STARTEDGAMES_BY_VISITOR_ID =
             "SELECT count(*) FROM GAME a JOIN PLAYER b " +
                     "WHERE a.GAME_ID = b.GAME_ID " +
-                    "AND b.USER_ID = :userId " +
+                    "AND b.VISITOR_ID = :visitorId " +
                     "AND a.STATE IN ('PLAYING') ";
 
-    public final static String FIND_FINISHEDGAMES_BY_USER_ID =
+    public final static String FIND_FINISHEDGAMES_BY_VISITOR_ID =
             "SELECT * FROM GAME a JOIN PLAYER b " +
                     "WHERE a.GAME_ID = b.GAME_ID " +
-                    "AND b.USER_ID = :userId " +
+                    "AND b.VISITOR_ID = :visitorId " +
                     "AND a.STATE IN ('PLAYING') ";
-    public final static String COUNT_FINISHEDGAMES_BY_USER_ID =
+    public final static String COUNT_FINISHEDGAMES_BY_VISITOR_ID =
             "SELECT count(*) FROM GAME a JOIN PLAYER b " +
                     "WHERE a.GAME_ID = b.GAME_ID " +
-                    "AND b.USER_ID = :userId " +
+                    "AND b.VISITOR_ID = :visitorId " +
                     "AND a.STATE IN ('PLAYING') ";
     // counts
     Integer countByLeague(League league);
@@ -92,19 +92,19 @@ public interface GameRepository extends JpaRepository<Game, Integer> {
     @Query(value = FIND_ALL, countQuery = COUNT_ALL, nativeQuery = true)
     List<Game> findAllGamesWithPage(Pageable pageable);
 
-    @Query(value = FIND_NEWGAMES_BY_USER_ID, countQuery = COUNT_NEWGAMES_BY_USER_ID, nativeQuery = true)
-    public List<Game> findAllNewGamesForUserWithPage(
-            @Param("userId") int userId,
+    @Query(value = FIND_NEWGAMES_BY_VISITOR_ID, countQuery = COUNT_NEWGAMES_BY_VISITOR_ID, nativeQuery = true)
+    public List<Game> findAllNewGamesForVisitorWithPage(
+            @Param("visitorId") int visitorId,
             Pageable pageable);
 
-    @Query(value = FIND_STARTEDGAMES_BY_USER_ID, countQuery = COUNT_STARTEDGAMES_BY_USER_ID, nativeQuery = true)
-    public List<Game> findAllStartedGamesForUserWithPage(
-            @Param("userId") int userId,
+    @Query(value = FIND_STARTEDGAMES_BY_VISITOR_ID, countQuery = COUNT_STARTEDGAMES_BY_VISITOR_ID, nativeQuery = true)
+    public List<Game> findAllStartedGamesForVisitorWithPage(
+            @Param("visitorId") int visitorId,
             Pageable pageable);
 
-    @Query(value = FIND_FINISHEDGAMES_BY_USER_ID, countQuery = COUNT_FINISHEDGAMES_BY_USER_ID, nativeQuery = true)
-    public List<Game> findAllFinishedGamesForUserWithPage(
-            @Param("userId") int userId,
+    @Query(value = FIND_FINISHEDGAMES_BY_VISITOR_ID, countQuery = COUNT_FINISHEDGAMES_BY_VISITOR_ID, nativeQuery = true)
+    public List<Game> findAllFinishedGamesForVisitorWithPage(
+            @Param("visitorId") int visitorId,
             Pageable pageable);
 
     default String getYear() {
@@ -125,9 +125,9 @@ public interface GameRepository extends JpaRepository<Game, Integer> {
     }
 
     // todo implement
-    //List<Game> getCurrentGamesForUserByState(Game currentGame, List<Type> typesToCancel,
+    //List<Game> getCurrentGamesForVisitorByState(Game currentGame, List<Type> typesToCancel,
     //                                          List<GameState> pendingStates);
 
     // todo implement
-    //Game getLastTypeGameByUser(Type contextType, int userId);
+    //Game getLastTypeGameByVisitor(Type contextType, int visitorId);
 }

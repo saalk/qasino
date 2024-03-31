@@ -40,12 +40,12 @@ public class Player {
 
     // Foreign keys
 
-    // UsPl: a User can play many Games as a Player
-    // However ai players are no users!
+    // UsPl: a Visitor can play many Games as a Player
+    // However ai players are no visitors!
     @ManyToOne(cascade = CascadeType.DETACH)
-    @JoinColumn(name = "user_id", referencedColumnName = "user_id", foreignKey = @ForeignKey
-            (name = "fk_user_id"), nullable = true)
-    private User user;
+    @JoinColumn(name = "visitor_id", referencedColumnName = "visitor_id", foreignKey = @ForeignKey
+            (name = "fk_visitor_id"), nullable = true)
+    private Visitor visitor;
 
     @JsonIgnore
     // PlGa: many Players can play the same GameSubTotals
@@ -68,7 +68,7 @@ public class Player {
     @Column(name = "fiches")
     private int fiches;
 
-    // current sequence of the player in the game, zero is a DECLINED USER
+    // current sequence of the player in the game, zero is a DECLINED VISITOR
     @Column(name = "seat")
     private int seat;
 
@@ -107,19 +107,19 @@ public class Player {
         this.seat = 1;
     }
 
-    public Player(User user, Game game, Role role, int fiches, int seat) {
+    public Player(Visitor visitor, Game game, Role role, int fiches, int seat) {
         this();
-        this.user = user;
+        this.visitor = visitor;
         this.role = role;
         this.game = game;
-        this.human = this.user != null;
+        this.human = this.visitor != null;
         this.fiches = fiches;
         this.seat = seat;
         this.aiLevel = AiLevel.HUMAN;
     }
 
-    public Player(User user, Game game, Role role, int fiches, int seat, Avatar avatar, AiLevel aiLevel) {
-        this(user, game, role, fiches, seat);
+    public Player(Visitor visitor, Game game, Role role, int fiches, int seat, Avatar avatar, AiLevel aiLevel) {
+        this(visitor, game, role, fiches, seat);
 
         this.avatar = avatar;
         this.aiLevel = aiLevel;

@@ -1,0 +1,33 @@
+00:00:26.319 [restartedMain] INFO  c.q.g.c.GamesApplication - Starting GamesApplication using Java 17.0.5 on HP450G5-klaas with PID 12356 (C:\Users\vande\IdeaProjects\qasino\server\webapp\target\classes started by vande in C:\Users\vande\IdeaProjects\qasino)
+00:00:26.329 [restartedMain] INFO  c.q.g.c.GamesApplication - No active profile set, falling back to 1 default profile: "default"
+00:01:21.129 [restartedMain] INFO  c.q.g.c.GamesApplication - Starting GamesApplication using Java 17.0.5 on HP450G5-klaas with PID 3228 (C:\Users\vande\IdeaProjects\qasino\server\webapp\target\classes started by vande in C:\Users\vande\IdeaProjects\qasino)
+00:01:21.130 [restartedMain] INFO  c.q.g.c.GamesApplication - No active profile set, falling back to 1 default profile: "default"
+00:04:14.973 [restartedMain] INFO  c.q.g.c.GamesApplication - Starting GamesApplication using Java 17.0.5 on HP450G5-klaas with PID 3480 (C:\Users\vande\IdeaProjects\qasino\server\webapp\target\classes started by vande in C:\Users\vande\IdeaProjects\qasino)
+00:04:14.974 [restartedMain] INFO  c.q.g.c.GamesApplication - No active profile set, falling back to 1 default profile: "default"
+00:22:58.345 [restartedMain] INFO  c.q.g.c.GamesApplication - Starting GamesApplication using Java 17.0.5 on HP450G5-klaas with PID 16196 (C:\Users\vande\IdeaProjects\qasino\server\webapp\target\classes started by vande in C:\Users\vande\IdeaProjects\qasino)
+00:22:58.346 [restartedMain] INFO  c.q.g.c.GamesApplication - No active profile set, falling back to 1 default profile: "default"
+00:23:41.150 [restartedMain] INFO  c.q.g.c.GamesApplication - Starting GamesApplication using Java 17.0.5 on HP450G5-klaas with PID 11140 (C:\Users\vande\IdeaProjects\qasino\server\webapp\target\classes started by vande in C:\Users\vande\IdeaProjects\qasino)
+00:23:41.151 [restartedMain] INFO  c.q.g.c.GamesApplication - No active profile set, falling back to 1 default profile: "default"
+00:30:04.320 [restartedMain] INFO  c.q.g.c.GamesApplication - Starting GamesApplication using Java 17.0.5 on HP450G5-klaas with PID 5068 (C:\Users\vande\IdeaProjects\qasino\server\webapp\target\classes started by vande in C:\Users\vande\IdeaProjects\qasino)
+00:30:04.322 [restartedMain] INFO  c.q.g.c.GamesApplication - No active profile set, falling back to 1 default profile: "default"
+00:34:47.173 [restartedMain] INFO  c.q.g.c.GamesApplication - Starting GamesApplication using Java 17.0.5 on HP450G5-klaas with PID 17932 (C:\Users\vande\IdeaProjects\qasino\server\webapp\target\classes started by vande in C:\Users\vande\IdeaProjects\qasino)
+00:34:47.175 [restartedMain] INFO  c.q.g.c.GamesApplication - No active profile set, falling back to 1 default profile: "default"
+00:35:32.443 [restartedMain] INFO  c.q.g.c.GamesApplication - Starting GamesApplication using Java 17.0.5 on HP450G5-klaas with PID 4560 (C:\Users\vande\IdeaProjects\qasino\server\webapp\target\classes started by vande in C:\Users\vande\IdeaProjects\qasino)
+00:35:32.444 [restartedMain] INFO  c.q.g.c.GamesApplication - No active profile set, falling back to 1 default profile: "default"
+00:38:09.823 [restartedMain] INFO  c.q.g.c.GamesApplication - Starting GamesApplication using Java 17.0.5 on HP450G5-klaas with PID 19104 (C:\Users\vande\IdeaProjects\qasino\server\webapp\target\classes started by vande in C:\Users\vande\IdeaProjects\qasino)
+00:38:09.824 [restartedMain] INFO  c.q.g.c.GamesApplication - No active profile set, falling back to 1 default profile: "default"
+00:38:52.673 [restartedMain] INFO  c.q.g.c.GamesApplication - Starting GamesApplication using Java 17.0.5 on HP450G5-klaas with PID 7452 (C:\Users\vande\IdeaProjects\qasino\server\webapp\target\classes started by vande in C:\Users\vande\IdeaProjects\qasino)
+00:38:52.676 [restartedMain] INFO  c.q.g.c.GamesApplication - No active profile set, falling back to 1 default profile: "default"
+00:50:56.061 [restartedMain] INFO  c.q.g.c.GamesApplication - Starting GamesApplication using Java 17.0.5 on HP450G5-klaas with PID 18792 (C:\Users\vande\IdeaProjects\qasino\server\webapp\target\classes started by vande in C:\Users\vande\IdeaProjects\qasino)
+00:50:56.062 [restartedMain] INFO  c.q.g.c.GamesApplication - No active profile set, falling back to 1 default profile: "default"
+01:12:46.097 [restartedMain] INFO  c.q.g.c.GamesApplication - Starting GamesApplication using Java 17.0.5 on HP450G5-klaas with PID 12936 (C:\Users\vande\IdeaProjects\qasino\server\webapp\target\classes started by vande in C:\Users\vande\IdeaProjects\qasino)
+01:12:46.100 [restartedMain] INFO  c.q.g.c.GamesApplication - No active profile set, falling back to 1 default profile: "default"
+01:14:13.422 [restartedMain] INFO  c.q.g.c.GamesApplication - Starting GamesApplication using Java 17.0.5 on HP450G5-klaas with PID 19380 (C:\Users\vande\IdeaProjects\qasino\server\webapp\target\classes started by vande in C:\Users\vande\IdeaProjects\qasino)
+01:14:13.424 [restartedMain] INFO  c.q.g.c.GamesApplication - No active profile set, falling back to 1 default profile: "default"
+01:14:29.959 [restartedMain] INFO  c.q.g.c.GamesApplication - Started GamesApplication in 17.43 seconds (JVM running for 18.937)
+01:14:29.971 [restartedMain] INFO  c.q.g.c.GamesApplication - 
+
+ Application cloud.qasino.cards started: 
+ - environment [null] 
+ - command-line arguments [[Ljava.lang.String;@6e66f6fb]
+

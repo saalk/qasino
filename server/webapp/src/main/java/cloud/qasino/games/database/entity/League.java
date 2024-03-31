@@ -45,12 +45,12 @@ public class League {
 
     // Foreign keys
 
-    // UsPl: a User can start many Leagues
+    // UsPl: a Visitor can start many Leagues
     // However bots cannot start a league
     @ManyToOne(cascade = CascadeType.DETACH)
-    @JoinColumn(name = "user_id", referencedColumnName = "user_id", foreignKey = @ForeignKey
-            (name = "fk_user_id"), nullable = false)
-    private User user;
+    @JoinColumn(name = "visitor_id", referencedColumnName = "visitor_id", foreignKey = @ForeignKey
+            (name = "fk_visitor_id"), nullable = false)
+    private Visitor visitor;
 
 
     // Normal fields
@@ -88,9 +88,9 @@ public class League {
 
     }
 
-    public League(User user, String name, int nameSequence) {
+    public League(Visitor visitor, String name, int nameSequence) {
         this();
-        this.user = user;
+        this.visitor = visitor;
         this.name = name;
         this.nameSequence = nameSequence;
 
@@ -128,7 +128,7 @@ public class League {
     }
 
     public boolean isActive() {
-        if (!this.active) return false; // user can set to inactive before enddate
+        if (!this.active) return false; // visitor can set to inactive before enddate
         if (this.ended == null) return true;
         // check if ended has passed
         LocalDate yesterday = LocalDate.now().plusDays(-1);

@@ -21,7 +21,7 @@ import java.util.List;
 import java.util.Optional;
 
 // basic path /qasino
-// basic header @RequestHeader(value "user", required = true) int userId" // else 400
+// basic header @RequestHeader(value "visitor", required = true) int visitorId" // else 400
 //
 // 200 - ok
 // 201 - created
@@ -39,7 +39,7 @@ public class PlayingCardResource {
 
     @Autowired
     public PlayingCardResource(
-            UserRepository userRepository,
+            VisitorRepository visitorRepository,
             GameRepository gameRepository,
             PlayerRepository playerRepository,
             TurnRepository turnRepository,

@@ -2,7 +2,7 @@ package cloud.qasino.games.dto.navigation;
 
 import cloud.qasino.games.database.entity.Game;
 import cloud.qasino.games.database.entity.League;
-import cloud.qasino.games.database.entity.User;
+import cloud.qasino.games.database.entity.Visitor;
 import cloud.qasino.games.database.entity.enums.game.style.*;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
@@ -25,12 +25,12 @@ public class NavigationGame {
     private Game game; // including a list of players + intiator
 
     @JsonProperty("Friends")
-    private List<User> friends; // todo friends
+    private List<Visitor> friends; // todo friends
 
     @JsonProperty("Leagues")
     private List<League> leagues;
 
-    private int totalUsers;
+    private int totalVisitors;
     private int totalBots;
     // selections
     private AnteToWin anteToWin;

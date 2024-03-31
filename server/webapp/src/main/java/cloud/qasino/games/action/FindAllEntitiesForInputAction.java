@@ -21,7 +21,7 @@ public class FindAllEntitiesForInputAction implements Action<FindAllEntitiesForI
     @Resource
     GameRepository gameRepository;
     @Resource
-    UserRepository userRepository;
+    VisitorRepository visitorRepository;
     @Resource
     PlayerRepository playerRepository;
     @Resource
@@ -40,31 +40,31 @@ public class FindAllEntitiesForInputAction implements Action<FindAllEntitiesForI
         int id;
         Pageable pageable = PageRequest.of(actionDto.getSuppliedPages(), actionDto.getSuppliedMaxPerPage());
 
-        id = actionDto.getSuppliedUserId();
+        id = actionDto.getSuppliedVisitorId();
         if (!(id == 0)) {
-            Optional<User> foundUser = userRepository.findById(Integer.parseInt(String.valueOf(id)));
-            if (foundUser.isPresent()) {
-                actionDto.setGameUser(foundUser.get());
+            Optional<Visitor> foundVisitor = visitorRepository.findById(Integer.parseInt(String.valueOf(id)));
+            if (foundVisitor.isPresent()) {
+                actionDto.setGameVisitor(foundVisitor.get());
             } else {
-                setErrorMessageNotFound(actionDto, "userId", String.valueOf(id));
+                setErrorMessageNotFound(actionDto, "visitorId", String.valueOf(id));
                 return EventOutput.Result.FAILURE;
             }
             pageable = PageRequest.of(actionDto.getSuppliedPages(), actionDto.getSuppliedMaxPerPage(),
                     Sort.by(
                     Sort.Order.asc("TYPE"),
                     Sort.Order.desc("UPDATED")));
-            actionDto.setNewGamesForUser(gameRepository.findAllNewGamesForUserWithPage(id,
+            actionDto.setNewGamesForVisitor(gameRepository.findAllNewGamesForVisitorWithPage(id,
                     pageable));
-            actionDto.setStartedGamesForUser(gameRepository.findAllStartedGamesForUserWithPage(id,
+            actionDto.setStartedGamesForVisitor(gameRepository.findAllStartedGamesForVisitorWithPage(id,
                     pageable));
             // todo LOW select if one Game is active
-            actionDto.setFinishedGamesForUser(gameRepository.findAllFinishedGamesForUserWithPage(id,
+            actionDto.setFinishedGamesForVisitor(gameRepository.findAllFinishedGamesForVisitorWithPage(id,
                     pageable));
             pageable = PageRequest.of(actionDto.getSuppliedPages(), actionDto.getSuppliedMaxPerPage(),
                     Sort.by(
                             Sort.Order.asc("NAME"),
                             Sort.Order.desc("CREATED")));
-            actionDto.setLeaguesForUser(leagueRepository.findAllActiveLeaguesForUserWithPage(id, pageable));
+            actionDto.setLeaguesForVisitor(leagueRepository.findAllActiveLeaguesForVisitorWithPage(id, pageable));
             // todo LOW select if one league is active
         }
         id = actionDto.getSuppliedGameId();
@@ -144,24 +144,24 @@ public class FindAllEntitiesForInputAction implements Action<FindAllEntitiesForI
         // Getters
         int getSuppliedPages();
         int getSuppliedMaxPerPage();
-        int getSuppliedUserId();
+        int getSuppliedVisitorId();
         int getSuppliedGameId();
         int getSuppliedLeagueId();
         int getInvitedPlayerId();
         int getAcceptedPlayerId();
         int getSuppliedTurnPlayerId();
 
-        List<League> getLeaguesForUser();
+        List<League> getLeaguesForVisitor();
 
         // Setter
-        void setGameUser(User user);
+        void setGameVisitor(Visitor visitor);
         void setInvitedPlayer(Player player);
         void setAcceptedPlayer(Player player);
         void setTurnPlayer(Player player);
 
-        void setNewGamesForUser(List<Game> games);
-        void setStartedGamesForUser(List<Game> games);
-        void setFinishedGamesForUser(List<Game> games);
+        void setNewGamesForVisitor(List<Game> games);
+        void setStartedGamesForVisitor(List<Game> games);
+        void setFinishedGamesForVisitor(List<Game> games);
 
         void setQasinoGame(Game game);
         void setQasinoGamePlayers(List<Player> players);
@@ -170,10 +170,10 @@ public class FindAllEntitiesForInputAction implements Action<FindAllEntitiesForI
         void setQasinoGameCardMoves(List<CardMove> cardMoves);
 
         void setQasinoGameLeague(League league);
-        void setLeaguesForUser(List<League> leagues);
+        void setLeaguesForVisitor(List<League> leagues);
         void setResultsForLeague(List<Result> results);
 
-        void setFriends(List<User> users);
+        void setFriends(List<Visitor> visitors);
 
         // error setters
         void setHttpStatus(int status);

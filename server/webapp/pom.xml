@@ -15,10 +15,10 @@
 	<packaging>war</packaging>
 
 	<properties>
-
+<!--		<start-class>cloud.qasino.games.configuration.GamesApplication</start-class>-->
 
 		<!-- 1: spring boot and web development -->
-		<spring-boot.version>2.7.18</spring-boot.version>
+		<!-- <spring-boot.version>2.7.18</spring-boot.version>-->
 		<enforcer.legacy.fail>false</enforcer.legacy.fail>
 		<httpclient.version>4.5.14</httpclient.version>
 
@@ -57,7 +57,7 @@
 		<tomakehurst-wiremock.version>2.35.1</tomakehurst-wiremock.version>
 		<junit>4.13.2</junit>
 
-		<!-- 8: maven plugins -->
+		<!-- 8: maven plugins to parent pom -->
 		<surefire-logger-api.version>3.2.5</surefire-logger-api.version>
 		<maven-assembly-plugin.version>3.3.0</maven-assembly-plugin.version>
 		<exec-maven-plugin.version>1.6.0</exec-maven-plugin.version>
@@ -101,6 +101,11 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-validation</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-devtools</artifactId>
+			<scope>runtime</scope>
+		</dependency>
 
 		<!-- 2: database -->
 		<!-- integrate spring-boot with jpa using the default hibernate -->
@@ -113,7 +118,7 @@
 			<groupId>com.h2database</groupId>
 			<artifactId>h2</artifactId>
 			<version>${h2.version}</version>
-			<scope>runtime</scope>
+			<scope>test</scope>
 		</dependency>
 		<!-- use Tomcat JDBC Connection Pooling -->
 		<!-- so don't use DriverManagerDataSource from spring any more -->
@@ -249,22 +254,26 @@
 			<optional>true</optional>
 		</dependency>
 
-
 	</dependencies>
 
 	<build>
 		<plugins>
-			<!-- plugin for several goals to work with a Spring Boot application -->
 			<plugin>
+				<!-- plugin for several goals to work with a Spring Boot application -->
+				<!-- https://spring.io/projects/spring-boot#support -->
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
-				<!-- used dev when spring-boot:run is executed -->
 				<configuration>
-					<profiles>
-						<profile>dev</profile>
-					</profiles>
+					<mainClass>cloud.qasino.games.configuration.GamesApplication</mainClass>
+					<layout>WAR</layout>
 				</configuration>
-
+				<executions>
+					<execution>
+						<goals>
+							<goal>repackage</goal>
+						</goals>
+					</execution>
+				</executions>
 			</plugin>
 			<!-- The MojoHaus project is a collection of plugins for Apache Maven 2 & 3 -->
 			<plugin>
@@ -308,6 +317,7 @@
 			</activation>
 			<properties>
 				<spring.profiles.active>dev</spring.profiles.active>
+				<spring.boot.mainclass>cloud.qasino.games.configuration.GamesApplication</spring.boot.mainclass>
 			</properties>
 		</profile>
 		<profile>

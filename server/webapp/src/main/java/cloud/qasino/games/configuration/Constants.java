@@ -22,7 +22,7 @@ import java.util.List;
 public interface Constants {
 
     public static final String BASE_PATH = "/cloud/qasino/games";
-    public static final String ENDPOINT_USERS = "/users";
+    public static final String ENDPOINT_VISITORS = "/visitors";
     public static final String ENDPOINT_GAMES = "/games";
     public static final String ENDPOINT_PLAYERS = "/players";
     public static final String ENDPOINT_PLAYINGCARDS = "/playingcards";

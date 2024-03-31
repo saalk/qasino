@@ -1,7 +1,7 @@
 package cloud.qasino.games;
 
 import cloud.qasino.games.configuration.GamesApplication;
-import cloud.qasino.games.database.entity.User;
+import cloud.qasino.games.database.entity.Visitor;
 import cloud.qasino.games.database.repository.*;
 import org.junit.Before;
 import org.junit.jupiter.api.Test;
@@ -22,7 +22,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 class QasinoRestControllerIntegrationTest {
 
     @Autowired
-    private UserRepository userRepository;
+    private VisitorRepository visitorRepository;
     @Autowired
     private LeagueRepository leagueRepository;
     @Autowired
@@ -45,33 +45,47 @@ class QasinoRestControllerIntegrationTest {
     }
 
     // CREATE, GET, PUT, DELETE for single entities
-    // /api/users/{id} - GET, DELETE, PUT userName, email only
+    // /api/visitors/{id} - GET, DELETE, PUT visitorName, email only
     // /api/games/{id} - GET, DELETE, PUT type, style, ante - rules apply!
     // /api/players/{id} - GET, DELETE, PUT sequence, PUT avatar, ailevel - rules apply
 
 
     @Test
-    public void givenExistingUser_whenPatched_thenOnlyPatchedFieldsUpdated() {
+    public void givenExistingVisitor_whenPatched_thenOnlyPatchedFieldsUpdated() {
 //        Map<String, Boolean> communicationPreferences = new HashMap<>();
 //        communicationPreferences.put("post", true);
 //        communicationPreferences.put("email", true);
-        User newUser = new User("userName",1, "email");
-        User user = userRepository.save(newUser);
-        String userId = String.valueOf(user.getUserId());
+        Visitor newVisitor = new Visitor("visitorName",1, "email");
+        Visitor visitor = visitorRepository.save(newVisitor);
+        String visitorId = String.valueOf(visitor.getVisitorId());
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.valueOf("application/json"));
-        ResponseEntity<User> getResponse
-                = testRestTemplate.exchange("/users/{id}",
+        ResponseEntity<Visitor> getResponse
+                = testRestTemplate.exchange("/visitors/{id}",
                 HttpMethod.GET,
                 new HttpEntity<>("", headers),
-                User.class,
-                user.getUserId());
+                Visitor.class,
+                visitor.getVisitorId());
 
-        User userResponse = getResponse.getBody();
+        Visitor visitorResponse = getResponse.getBody();
         assertThat(getResponse.getStatusCode()).isEqualTo(HttpStatus.OK);
-        assertThat(userResponse.getUserId()).isEqualTo(userId);
-        assertThat(userResponse.getUserName()).isEqualTo("userName");
+        assertThat(visitorResponse.getVisitorId()).isEqualTo(visitorId);
+        assertThat(visitorResponse.getVisitorName()).isEqualTo("visitorName");
     }
 
+//    public void homeQasino_whenGet_thenQasinoAllReported() {
+//        HttpHeaders headers = new HttpHeaders();
+//        headers.setContentType(MediaType.valueOf("application/json-patch+json"));
+//        String getBody = "";
+//        ResponseEntity<Qasino> getResponse
+//                = testRestTemplate.exchange("/home",
+//                HttpMethod.GET,
+//                new HttpEntity<>(getBody, headers),
+//                Qasino.class);
+//
+//        Qasino qasinoHome = getResponse.getBody();
+//        assertThat(getResponse.getStatusCode()).isEqualTo(HttpStatus.OK);
+//        assertThat(qasinoHome.getLeagueData().getLeagues()).isEqualTo(null);
+//    }
 }

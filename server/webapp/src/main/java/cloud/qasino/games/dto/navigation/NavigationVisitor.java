@@ -1,7 +1,7 @@
 package cloud.qasino.games.dto.navigation;
 
 import cloud.qasino.games.database.entity.Game;
-import cloud.qasino.games.database.entity.User;
+import cloud.qasino.games.database.entity.Visitor;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -14,13 +14,13 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class NavigationUser {
+public class NavigationVisitor {
 
-    private boolean hasLoggedOn;     // icon is spaceship -> logon to enable nav-user
+    private boolean hasLoggedOn;     // icon is spaceship -> logon to enable nav-visitor
     // modification only possible when <hasLoggedOn = true>
 
-    @JsonProperty("User")
-    private User user;
+    @JsonProperty("Visitor")
+    private Visitor visitor;
 
     // list of playable initiated games
     // + boolean isSelected

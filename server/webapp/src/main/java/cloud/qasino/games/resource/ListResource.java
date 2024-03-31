@@ -26,7 +26,7 @@ import java.util.List;
 import java.util.Optional;
 
 // basic path /qasino
-// basic header @RequestHeader(value "user", required = true) int userId" // else 400
+// basic header @RequestHeader(value "visitor", required = true) int visitorId" // else 400
 //
 // 200 - ok
 // 201 - created
@@ -39,7 +39,7 @@ import java.util.Optional;
 @RestController
 public class ListResource {
 
-    private UserRepository userRepository;
+    private VisitorRepository visitorRepository;
     private LeagueRepository leagueRepository;
     private GameRepository gameRepository;
     private PlayerRepository playerRepository;
@@ -49,7 +49,7 @@ public class ListResource {
 
     @Autowired
     public ListResource(
-            UserRepository userRepository,
+            VisitorRepository visitorRepository,
             LeagueRepository leagueRepository,
             GameRepository gameRepository,
             PlayerRepository playerRepository,
@@ -58,7 +58,7 @@ public class ListResource {
             ResultsRepository resultsRepository
     ) {
 
-        this.userRepository = userRepository;
+        this.visitorRepository = visitorRepository;
         this.leagueRepository = leagueRepository;
         this.gameRepository = gameRepository;
         this.playerRepository = playerRepository;
@@ -67,11 +67,11 @@ public class ListResource {
         this.resultsRepository = resultsRepository;
     }
 
-    // ListResource - special POST and GET only for USER
+    // ListResource - special POST and GET only for VISITOR
 
     // tested
-    @GetMapping(value = "/users/all")
-    public ResponseEntity listUsersWithPaging(
+    @GetMapping(value = "/visitors/all")
+    public ResponseEntity listVisitorsWithPaging(
             @RequestParam(defaultValue = "0") String page,
             @RequestParam(defaultValue = "4") String max
     ) {
@@ -93,19 +93,19 @@ public class ListResource {
 
         // logic
         Pageable pageable = PageRequest.of(pages, maximum, Sort.by(
-                Order.asc("UserName"),
-                Order.desc("UserName_SEQ")));
+                Order.asc("VisitorName"),
+                Order.desc("VisitorName_SEQ")));
 
-        ArrayList users = (ArrayList) userRepository.findAllUsersWithPage(pageable);
+        ArrayList visitors = (ArrayList) visitorRepository.findAllVisitorsWithPage(pageable);
 
         return ResponseEntity.ok()
                 .headers(headers)
-                .body(users);
+                .body(visitors);
     }
 
     // tested
-    @GetMapping(value = "/games/{state}/users/{id}")
-    public ResponseEntity listActiveGamesForUser(
+    @GetMapping(value = "/games/{state}/visitors/{id}")
+    public ResponseEntity listActiveGamesForVisitor(
             @PathVariable("id") String id,
             @PathVariable("state") String state,
             @RequestParam(defaultValue = "0") String page,
@@ -132,7 +132,7 @@ public class ListResource {
         }
         int maximum = Integer.parseInt(max);
         int pages = Integer.parseInt(page);
-        int userId = Integer.parseInt(id);
+        int visitorId = Integer.parseInt(id);
 
         // logic
         Pageable pageable = PageRequest.of(pages, maximum, Sort.by(
@@ -142,17 +142,17 @@ public class ListResource {
         switch (state) {
             case ("new"):
             default:
-                foundGames = gameRepository.findAllNewGamesForUserWithPage(userId, pageable);
+                foundGames = gameRepository.findAllNewGamesForVisitorWithPage(visitorId, pageable);
                 break;
             // todo LOW finish the other states
 /*            case("started"):
-                foundGames = gameRepository.findAllStartedGamesForUserWithPage(userId, pageable);
+                foundGames = gameRepository.findAllStartedGamesForVisitorWithPage(visitorId, pageable);
                 break;
             case("finished"):
-                foundGames = gameRepository.findAllFinishedGamesForUserWithPage(userId, pageable);
+                foundGames = gameRepository.findAllFinishedGamesForVisitorWithPage(visitorId, pageable);
                 break;
             default:
-                foundGames = gameRepository.findAllErrorGamesForUserWithPage(userId, pageable);
+                foundGames = gameRepository.findAllErrorGamesForVisitorWithPage(visitorId, pageable);
                 break;*/
         }
         if (!(foundGames.size() > 0)) {

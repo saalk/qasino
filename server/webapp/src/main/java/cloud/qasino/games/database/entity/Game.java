@@ -54,7 +54,7 @@ public class Game {
     private League league;
 
     @Column(name = "initiator")
-    private int initiator; // userId
+    private int initiator; // visitorId
 
 
     // Normal fields

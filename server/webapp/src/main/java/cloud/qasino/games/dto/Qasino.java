@@ -20,8 +20,8 @@ public class Qasino {
     @JsonProperty("NavBarItems")
     private List<NavigationBarItem> navBarItems;
 
-    @JsonProperty("UserData")
-    private NavigationUser userData;
+    @JsonProperty("VisitorData")
+    private NavigationVisitor visitorData;
     @JsonProperty("GameData")
     private NavigationGame gameData;
     @JsonProperty("QasinoData")
