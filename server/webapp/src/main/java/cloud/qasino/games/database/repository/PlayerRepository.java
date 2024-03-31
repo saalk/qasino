@@ -25,7 +25,7 @@ public interface PlayerRepository extends JpaRepository<Player, Integer> {
     int countByGame(Game game);
 
     @Query(
-            value = "SELECT * FROM PLAYERS ORDER BY PLAYER_ID",
+            value = "SELECT * FROM PLAYER ORDER BY PLAYER_ID",
             countQuery = "SELECT count(*) FROM PLAYERS",
             nativeQuery = true)
     Page<Visitor> findAllPlayersWithPage(Pageable pageable);

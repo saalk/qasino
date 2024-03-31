@@ -21,14 +21,15 @@ import java.util.Objects;
         property = "cardId")
 //@JsonIdentityInfo(generator=JSOGGenerator.class)
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
-@Table(name = "cards", indexes =
+@Table(name = "card", indexes =
         { //@Index(name = "cards_game_index", columnList = "game_id", unique = false ),
-          @Index(name = "cards_index", columnList = "card_id", unique = true )})
+          // not needed : @Index(name = "cards_index", columnList = "card_id", unique = true )
+        })
 public class Card {
     
     @Id
     @GeneratedValue
-    @Column(name = "card_id", nullable = false)
+    @Column(name = "card_id")
     private int cardId;
 
     @JsonIgnore
@@ -43,7 +44,8 @@ public class Card {
     @JsonIgnore
     // SF: a shuffled Card is added to a GameSubTotals at the start
     @ManyToOne(cascade = CascadeType.DETACH)
-    @JoinColumn(name = "game_id", referencedColumnName = "game_id", foreignKey = @ForeignKey(name =
+    @JoinColumn(name = "game_id", referencedColumnName = "game_id", foreignKey =
+    @ForeignKey(name =
             "fk_game_id"), nullable=false)
     private Game game;
 

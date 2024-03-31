@@ -17,58 +17,58 @@ import java.util.List;
 public interface GameRepository extends JpaRepository<Game, Integer> {
 
     // prepared queries
-    public final static String FIND_ALL = "SELECT * FROM GAMES ORDER BY CREATED DESC";
-    public final static String COUNT_ALL = "SELECT count(*) FROM GAMES";
+    public final static String FIND_ALL = "SELECT * FROM GAME ORDER BY CREATED DESC";
+    public final static String COUNT_ALL = "SELECT count(*) FROM GAME";
     public final static String COUNT_TODAY =
-            "SELECT count(*) FROM GAMES g " +
+            "SELECT count(*) FROM GAME g " +
                     "WHERE g.YEAR = :year " +
                     "AND g.MONTH = :month " +
                     "AND g.DAY = :day ";
     public final static String COUNT_WEEK =
-            "SELECT count(*) FROM GAMES g " +
+            "SELECT count(*) FROM GAME g " +
                     "WHERE g.YEAR = :year " +
                     "AND g.WEEK = :week ";
     public final static String COUNT_MONTH =
-            "SELECT count(*) FROM GAMES g " +
+            "SELECT count(*) FROM GAME g " +
                     "WHERE g.YEAR = :year " +
                     "AND g.MONTH = :month ";
 
-    public final static String FIND_NEWGAMES_BY_VISITOR_ID =
-            "SELECT * FROM GAMES a JOIN PLAYERS b " +
+    public final static String FIND_NEWGAMES_BY_USER_ID =
+            "SELECT * FROM GAME a JOIN PLAYER b " +
                     "WHERE a.GAME_ID = b.GAME_ID " +
                     "AND b.VISITOR_ID = :visitorId " +
                      "AND a.STATE IN ('NEW','PENDING_INVITATIONS','PREPARED') ";
-    public final static String COUNT_NEWGAMES_BY_VISITOR_ID =
-            "SELECT count(*) FROM GAMES a JOIN PLAYERS b " +
+    public final static String COUNT_NEWGAMES_BY_USER_ID =
+            "SELECT count(*) FROM GAME a JOIN PLAYER b " +
                     "WHERE a.GAME_ID = b.GAME_ID " +
                     "AND b.VISITOR_ID = :visitorId " +
                     "AND a.STATE IN ('NEW','PENDING_INVITATIONS','PREPARED') ";
 
-    public final static String FIND_STARTEDGAMES_BY_VISITOR_ID =
-            "SELECT * FROM GAMES a JOIN PLAYERS b " +
+    public final static String FIND_STARTEDGAMES_BY_USER_ID =
+            "SELECT * FROM GAME a JOIN PLAYER b " +
                     "WHERE a.GAME_ID = b.GAME_ID " +
                     "AND b.VISITOR_ID = :visitorId " +
                     "AND a.STATE IN ('PLAYING') ";
-    public final static String COUNT_STARTEDGAMES_BY_VISITOR_ID =
-            "SELECT count(*) FROM GAMES a JOIN PLAYERS b " +
+    public final static String COUNT_STARTEDGAMES_BY_USER_ID =
+            "SELECT count(*) FROM GAME a JOIN PLAYER b " +
                     "WHERE a.GAME_ID = b.GAME_ID " +
                     "AND b.VISITOR_ID = :visitorId " +
                     "AND a.STATE IN ('PLAYING') ";
 
-    public final static String FIND_FINISHEDGAMES_BY_VISITOR_ID =
-            "SELECT * FROM GAMES a JOIN PLAYERS b " +
+    public final static String FIND_FINISHEDGAMES_BY_USER_ID =
+            "SELECT * FROM GAME a JOIN PLAYER b " +
                     "WHERE a.GAME_ID = b.GAME_ID " +
                     "AND b.VISITOR_ID = :visitorId " +
                     "AND a.STATE IN ('PLAYING') ";
-    public final static String COUNT_FINISHEDGAMES_BY_VISITOR_ID =
-            "SELECT count(*) FROM GAMES a JOIN PLAYERS b " +
+    public final static String COUNT_FINISHEDGAMES_BY_USER_ID =
+            "SELECT count(*) FROM GAME a JOIN PLAYER b " +
                     "WHERE a.GAME_ID = b.GAME_ID " +
                     "AND b.VISITOR_ID = :visitorId " +
                     "AND a.STATE IN ('PLAYING') ";
     // counts
     Integer countByLeague(League league);
 
-    @Query(value = "SELECT count(*) FROM GAMES g WHERE g.STATE IN (:states)", nativeQuery = true)
+    @Query(value = "SELECT count(*) FROM GAME g WHERE g.STATE IN (:states)", nativeQuery = true)
     Integer countByStates(@Param(value = "states") String[] states);
 
     @Query(value = COUNT_TODAY, nativeQuery = true)
@@ -84,7 +84,7 @@ public interface GameRepository extends JpaRepository<Game, Integer> {
     // special finds
     List<Game> findGamesByLeague(League league);
 
-    @Query(value = "SELECT * FROM GAMES g WHERE g.STATE IN :states", nativeQuery = true)
+    @Query(value = "SELECT * FROM GAME g WHERE g.STATE IN :states", nativeQuery = true)
     List<Game> findActiveGameNodeStates(@Param(value = "states") List<GameState> states);
 
 

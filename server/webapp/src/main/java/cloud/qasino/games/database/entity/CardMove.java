@@ -22,8 +22,9 @@ import java.util.Objects;
 @JsonIdentityInfo(generator = JSOGGenerator.class)
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 @Table(name = "cardmove", indexes =
-        {@Index(name = "cardmove_turn_index", columnList = "turn_id", unique = false),
-                @Index(name = "cardmove_index", columnList = "cardmove_id", unique = true)}
+        { @Index(name = "cardmove_turn_index", columnList = "turn_id", unique = false),
+          // not needed : @Index(name = "cardmove_index", columnList = "cardmove_id", unique = true)
+        }
 )
 public class CardMove {
 
@@ -46,7 +47,7 @@ public class CardMove {
             (name = "fk_turn_id"), nullable = true)
     private Turn turn;
 
-    @Column(name = "player_id", nullable = false)
+    @Column(name = "player_id")
     private int playerId;
 
     @Column(name = "card_id", nullable = true)
@@ -65,10 +66,10 @@ public class CardMove {
     private String cardMoveDetails;
 
     // json fields, filled in by engine
-    @Column(name = "round_number", nullable = false)
+    @Column(name = "round_number")
     private int roundNumber;
 
-    @Column(name = "move_number", nullable = false)
+    @Column(name = "move_number")
     private int moveNumber;
 
     @Enumerated(EnumType.STRING)
