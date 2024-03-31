@@ -15,10 +15,9 @@
 	<packaging>war</packaging>
 
 	<properties>
-<!--		<start-class>cloud.qasino.games.configuration.GamesApplication</start-class>-->
 
 		<!-- 1: spring boot and web development -->
-		<!-- <spring-boot.version>2.7.18</spring-boot.version>-->
+		 <spring-boot.version>2.7.18</spring-boot.version>
 		<enforcer.legacy.fail>false</enforcer.legacy.fail>
 		<httpclient.version>4.5.14</httpclient.version>
 
@@ -101,11 +100,6 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-validation</artifactId>
 		</dependency>
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-devtools</artifactId>
-			<scope>runtime</scope>
-		</dependency>
 
 		<!-- 2: database -->
 		<!-- integrate spring-boot with jpa using the default hibernate -->
@@ -117,8 +111,8 @@
 		<dependency>
 			<groupId>com.h2database</groupId>
 			<artifactId>h2</artifactId>
-			<version>${h2.version}</version>
-			<scope>test</scope>
+			<!-- spring boot decides version -->
+			<scope>runtime</scope>
 		</dependency>
 		<!-- use Tomcat JDBC Connection Pooling -->
 		<!-- so don't use DriverManagerDataSource from spring any more -->
@@ -259,21 +253,15 @@
 	<build>
 		<plugins>
 			<plugin>
-				<!-- plugin for several goals to work with a Spring Boot application -->
-				<!-- https://spring.io/projects/spring-boot#support -->
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
+				<!-- used dev when spring-boot:run is executed -->
 				<configuration>
-					<mainClass>cloud.qasino.games.configuration.GamesApplication</mainClass>
-					<layout>WAR</layout>
+					<profiles>
+						<profile>dev</profile>
+					</profiles>
 				</configuration>
-				<executions>
-					<execution>
-						<goals>
-							<goal>repackage</goal>
-						</goals>
-					</execution>
-				</executions>
+
 			</plugin>
 			<!-- The MojoHaus project is a collection of plugins for Apache Maven 2 & 3 -->
 			<plugin>
@@ -318,18 +306,6 @@
 			<properties>
 				<spring.profiles.active>dev</spring.profiles.active>
 				<spring.boot.mainclass>cloud.qasino.games.configuration.GamesApplication</spring.boot.mainclass>
-			</properties>
-		</profile>
-		<profile>
-			<id>acc</id>
-			<properties>
-				<spring.profiles.active>acc</spring.profiles.active>
-			</properties>
-		</profile>
-		<profile>
-			<id>prod</id>
-			<properties>
-				<spring.profiles.active>prd</spring.profiles.active>
 			</properties>
 		</profile>
 	</profiles>

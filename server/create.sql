@@ -52,7 +52,7 @@ create sequence "hibernate_sequence" start with 1 increment by 1;
         "ended" varchar(25),
         "name" varchar(50) not null,
         "name_seq" integer,
-        "user_id" integer not null,
+        "visitor_id" integer not null,
         primary key ("league_id")
     );
 
@@ -67,7 +67,7 @@ create sequence "hibernate_sequence" start with 1 increment by 1;
         "seat" integer,
         "is_winner" boolean,
         "game_id" integer,
-        "user_id" integer,
+        "visitor_id" integer,
         primary key ("player_id")
     );
 
@@ -82,7 +82,7 @@ create sequence "hibernate_sequence" start with 1 increment by 1;
         "year" integer,
         "game_id" integer not null,
         "player_id" integer not null,
-        "user_id" integer,
+        "visitor_id" integer,
         primary key ("result_id")
     );
 
@@ -100,23 +100,23 @@ create sequence "hibernate_sequence" start with 1 increment by 1;
         primary key ("turn_id")
     );
 
-    create table "user" (
-       "user_id" integer not null,
+    create table "visitors" (
+       "visitor_id" integer not null,
         "balance" integer,
         "created" varchar(25),
         "day" integer,
         "email" varchar(50),
         "month" integer,
         "secured_loan" integer,
-        "user_name" varchar(50) not null,
-        "user_name_seq" integer,
+        "visitor_name" varchar(50) not null,
+        "visitor_name_seq" integer,
         "week" varchar(3),
         "year" integer,
-        primary key ("user_id")
+        primary key ("visitor_id")
     );
 create index "cardmove_turn_index" on "cardmove" ("turn_id");
 create index "turns_game_index" on "turn" ("game_id");
-create index "userName_index" on "user" ("user_name");
+create index "visitorName_index" on "visitors" ("visitor_name");
 
     alter table "card" 
        add constraint fk_game_id 
@@ -139,9 +139,9 @@ create index "userName_index" on "user" ("user_name");
        references "league";
 
     alter table "league" 
-       add constraint fk_user_id 
-       foreign key ("user_id") 
-       references "user";
+       add constraint fk_visitor_id 
+       foreign key ("visitor_id") 
+       references "visitors";
 
     alter table "player" 
        add constraint fk_game_id 
@@ -149,9 +149,9 @@ create index "userName_index" on "user" ("user_name");
        references "game";
 
     alter table "player" 
-       add constraint fk_user_id 
-       foreign key ("user_id") 
-       references "user";
+       add constraint fk_visitor_id 
+       foreign key ("visitor_id") 
+       references "visitors";
 
     alter table "result" 
        add constraint fk_game_id 
@@ -164,9 +164,9 @@ create index "userName_index" on "user" ("user_name");
        references "player";
 
     alter table "result" 
-       add constraint fk_user_id 
-       foreign key ("user_id") 
-       references "user";
+       add constraint fk_visitor_id 
+       foreign key ("visitor_id") 
+       references "visitors";
 
     alter table "turn" 
        add constraint fk_game_id 

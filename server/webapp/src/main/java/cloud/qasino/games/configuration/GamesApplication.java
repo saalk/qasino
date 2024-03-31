@@ -1,40 +1,17 @@
 package cloud.qasino.games.configuration;
 
-import cloud.qasino.games.database.entity.CardMove;
-import cloud.qasino.games.database.entity.Game;
-import cloud.qasino.games.database.entity.League;
-import cloud.qasino.games.database.entity.Player;
-import cloud.qasino.games.database.entity.Turn;
-import cloud.qasino.games.database.entity.Visitor;
-import cloud.qasino.games.database.entity.enums.card.Location;
-import cloud.qasino.games.database.entity.enums.move.Move;
-import cloud.qasino.games.database.entity.enums.player.AiLevel;
-import cloud.qasino.games.database.entity.enums.player.Avatar;
-import cloud.qasino.games.database.entity.enums.player.Role;
-import cloud.qasino.games.database.repository.CardMoveRepository;
-import cloud.qasino.games.database.repository.CardRepository;
-import cloud.qasino.games.database.repository.GameRepository;
-import cloud.qasino.games.database.repository.LeagueRepository;
-import cloud.qasino.games.database.repository.PlayerRepository;
-import cloud.qasino.games.database.repository.TurnRepository;
-import cloud.qasino.games.database.repository.VisitorRepository;
-import cloud.qasino.games.statemachine.GameState;
+import cloud.qasino.games.database.repository.*;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.catalina.Server;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
+import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
-
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
 
 //import org.springframework.security.oauth2.config.annotation.web.configuration
 // .EnableResourceServer;
@@ -51,16 +28,14 @@ import java.util.List;
  * 4) Session - each session has its own bean
  * 5) Global-session
  */
-
-@SpringBootApplication
-//@EnableAutoConfiguration // is already default
-//@EnableResourceServer //
-@EnableJpaRepositories(basePackages = "cloud.qasino.*")
+@SpringBootApplication(exclude = {DataSourceAutoConfiguration.class})
+@EnableJpaRepositories(basePackages = "cloud.qasino.games.database.*")
 @EnableTransactionManagement
-@EntityScan(basePackages = "cloud.qasino.*")
+@EntityScan(basePackages = "cloud.qasino.games.database.*")
 @EnableJpaAuditing
 @Slf4j
 public class GamesApplication {
+
     @Value("${spring.profiles.active:dev}")
     private static String activeProfile; // dev = default
 

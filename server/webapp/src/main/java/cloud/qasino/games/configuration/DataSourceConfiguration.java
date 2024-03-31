@@ -1,5 +1,4 @@
-/*
-package cloud.qasino.card.configuration;
+package cloud.qasino.games.configuration;
 
 import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.context.annotation.Bean;
@@ -16,9 +15,9 @@ public class DataSourceConfiguration {
     @Bean
     public DataSource getDataSource() {
         DataSourceBuilder dataSourceBuilder = DataSourceBuilder.create();
-        dataSourceBuilder.visitorname("sa");
+        dataSourceBuilder.username("sa");
         dataSourceBuilder.password("");
         return dataSourceBuilder.build();
     }
 
-}*/
+}
