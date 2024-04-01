@@ -29,9 +29,9 @@ import java.util.Objects;
 public class CardMove {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "cardmove_id")
-    private int cardMoveId;
+    private long cardMoveId;
 
     @JsonIgnore
     @Column(name = "created", length = 25)
@@ -48,7 +48,7 @@ public class CardMove {
     private Turn turn;
 
     @Column(name = "player_id")
-    private int playerId;
+    private long playerId;
 
     @Column(name = "card_id", nullable = true)
     private String cardId;

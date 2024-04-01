@@ -29,9 +29,9 @@ import java.util.Objects;
 public class Player {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "player_id")
-    private int playerId;
+    private long playerId;
 
     @JsonIgnore
     @Column(name = "created", length = 25)

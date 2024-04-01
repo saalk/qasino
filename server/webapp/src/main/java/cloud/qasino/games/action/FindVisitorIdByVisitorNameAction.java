@@ -86,7 +86,7 @@ public class FindVisitorIdByVisitorNameAction implements Action<FindVisitorIdByV
         String getSuppliedVisitorName();
 
         // Setter
-        void setSuppliedVisitorId(int id);
+        void setSuppliedVisitorId(long id);
 
         // error setters
         void setHttpStatus(int status);

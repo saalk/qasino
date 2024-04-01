@@ -92,7 +92,7 @@ public class MapQasinoResponseFromRetrievedDataAction implements Action<MapQasin
         if (actionDto.isGamePlayable()) {
             if (!(actionDto.getQasinoGame() == null)) {
                 navigationBarItem.setItemName("Qasinogame#" +
-                        Integer.toHexString( actionDto.getQasinoGame().getGameId()) );
+                        Integer.toHexString((int) actionDto.getQasinoGame().getGameId()) );
                 navigationQasino.setCurrentRound(
                         (int) actionDto.getQasinoGameTurn().getCurrentRoundNumber());
                 navigationQasino.setCurrentMove(

@@ -94,8 +94,8 @@ public class TurnResource {
             // 400
             return ResponseEntity.badRequest().headers(headers).build();
 
-        int gameId = Integer.parseInt(gId);
-        int playerId = Integer.parseInt(pId);
+        long gameId = Long.parseLong(gId);
+        long playerId = Long.parseLong(pId);
         Move move = Move.fromLabelWithDefault(inputAction);
         Location location = Location.fromLabelWithDefault(inputLocation);
         //int roundNumber = Integer.parseInt(inputRoundNumber);

@@ -22,7 +22,7 @@ public class Seat {
     private boolean isActive;
 
     private boolean isBot;
-    private int playerId;
+    private long playerId;
     private Avatar avatar;
     private AiLevel aiLevel;
 
@@ -30,7 +30,7 @@ public class Seat {
     private int currentBet;
 
     // when visitor
-    private int visitorId;
+    private long visitorId;
     private String visitorName;
     private int balance;
     private int fiches;

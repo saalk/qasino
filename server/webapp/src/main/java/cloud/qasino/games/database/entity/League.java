@@ -34,9 +34,9 @@ import java.util.Objects;
 public class League {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "league_id")
-    private int leagueId;
+    private long leagueId;
 
     @JsonIgnore
     @Column(name = "created", length = 25)

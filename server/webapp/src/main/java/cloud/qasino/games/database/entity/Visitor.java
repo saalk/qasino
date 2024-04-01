@@ -30,9 +30,9 @@ import java.util.Random;
 public class Visitor {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "visitor_id", nullable = false)
-    private int visitorId;
+    private long visitorId;
 
     @JsonIgnore
     @Column(name = "created", length = 25)

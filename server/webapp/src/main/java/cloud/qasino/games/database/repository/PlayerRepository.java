@@ -12,7 +12,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface PlayerRepository extends JpaRepository<Player, Integer> {
+public interface PlayerRepository extends JpaRepository<Player, Long> {
 
     //@Query("SELECT * FROM PLAYERS p WHERE p.GAME_ID = ?1")
     List<Player> findByGameOrderBySeatAsc(Game game);

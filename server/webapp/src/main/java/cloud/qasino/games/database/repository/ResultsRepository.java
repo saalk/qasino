@@ -10,7 +10,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface ResultsRepository extends JpaRepository<Result, Integer> {
+public interface ResultsRepository extends JpaRepository<Result, Long> {
 
     public final static String FIND_ACTIVE_RESULTS_BY_LEAGUE_ID =
             "SELECT * FROM RESULT a JOIN LEAGUE b " +
@@ -23,7 +23,7 @@ public interface ResultsRepository extends JpaRepository<Result, Integer> {
 
     @Query(value = FIND_ACTIVE_RESULTS_BY_LEAGUE_ID, countQuery = COUNT_ACTIVE_RESULTS_BY_LEAGUE_ID, nativeQuery = true)
     public List<Result> findAllResultsForLeagueWithPage(
-            @Param("leagueId") int leagueId,
+            @Param("leagueId") long leagueId,
             Pageable pageable);
 
 }

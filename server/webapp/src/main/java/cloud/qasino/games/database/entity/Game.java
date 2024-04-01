@@ -35,9 +35,9 @@ import java.util.Objects;
 public class Game {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "game_id")
-    private int gameId;
+    private long gameId;
 
     @JsonIgnore
     @Column(name = "updated", length = 25, nullable = false)
@@ -54,7 +54,7 @@ public class Game {
     private League league;
 
     @Column(name = "initiator")
-    private int initiator; // visitorId
+    private long initiator; // visitorId
 
 
     // Normal fields
@@ -128,14 +128,14 @@ public class Game {
         this.ante = 20;
     }
 
-    public Game(League league, String type, int initiator ) {
+    public Game(League league, String type, long initiator ) {
         this();
         this.league = league;
         this.type = Type.fromLabelWithDefault(type);
         this.initiator = initiator;
     }
 
-    public Game(League league, String type, int initiator, String style, int ante) {
+    public Game(League league, String type, long initiator, String style, int ante) {
         this(league, type, initiator);
         this.style = Style.fromLabelWithDefault(style).getLabel();
         this.ante = ante;

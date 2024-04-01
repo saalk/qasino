@@ -53,8 +53,10 @@ public class QuickTestAtStartup implements ApplicationRunner {
         log.info("\nApplication started in environment : \n {} \n",
                 (Arrays.asList(environment.getDefaultProfiles())));
 
+        if (true) return;
+
         // A new VISITOR arrives
-        Visitor visitor = new Visitor("visitorNameName", 1, "a@b.c");
+        Visitor visitor = new Visitor("visitorNameName",1 , "a@b.c");
         int pawn = Visitor.pawnShipValue(0);
         visitor.pawnShip(pawn);
         visitor = visitorRepository.save(visitor);

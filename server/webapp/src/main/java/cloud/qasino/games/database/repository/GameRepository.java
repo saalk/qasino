@@ -14,7 +14,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @Repository
-public interface GameRepository extends JpaRepository<Game, Integer> {
+public interface GameRepository extends JpaRepository<Game, Long> {
 
     // prepared queries
     public final static String FIND_ALL = "SELECT * FROM GAME ORDER BY CREATED DESC";
@@ -94,17 +94,17 @@ public interface GameRepository extends JpaRepository<Game, Integer> {
 
     @Query(value = FIND_NEWGAMES_BY_VISITOR_ID, countQuery = COUNT_NEWGAMES_BY_VISITOR_ID, nativeQuery = true)
     public List<Game> findAllNewGamesForVisitorWithPage(
-            @Param("visitorId") int visitorId,
+            @Param("visitorId") long visitorId,
             Pageable pageable);
 
     @Query(value = FIND_STARTEDGAMES_BY_VISITOR_ID, countQuery = COUNT_STARTEDGAMES_BY_VISITOR_ID, nativeQuery = true)
     public List<Game> findAllStartedGamesForVisitorWithPage(
-            @Param("visitorId") int visitorId,
+            @Param("visitorId") long visitorId,
             Pageable pageable);
 
     @Query(value = FIND_FINISHEDGAMES_BY_VISITOR_ID, countQuery = COUNT_FINISHEDGAMES_BY_VISITOR_ID, nativeQuery = true)
     public List<Game> findAllFinishedGamesForVisitorWithPage(
-            @Param("visitorId") int visitorId,
+            @Param("visitorId") long visitorId,
             Pageable pageable);
 
     default String getYear() {
@@ -129,5 +129,5 @@ public interface GameRepository extends JpaRepository<Game, Integer> {
     //                                          List<GameState> pendingStates);
 
     // todo implement
-    //Game getLastTypeGameByVisitor(Type contextType, int visitorId);
+    //Game getLastTypeGameByVisitor(Type contextType, long visitorId);
 }

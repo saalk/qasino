@@ -50,16 +50,16 @@ public class QasinoFlowDTO //extends AbstractFlowDTO
 
     // FRONTEND ID DATA
     // frontend header
-    private int suppliedVisitorId;
-    private int suppliedGameId;
+    private long suppliedVisitorId;
+    private long suppliedGameId;
     // frontend path ids
-    private int suppliedLeagueId;
-    private int invitedPlayerId;
-    private int acceptedPlayerId;
-    private int suppliedTurnPlayerId;
+    private long suppliedLeagueId;
+    private long invitedPlayerId;
+    private long acceptedPlayerId;
+    private long suppliedTurnPlayerId;
     // generic frontend path ids
     private String suppliedEntity;      // todo
-    private int suppliedEntityId;       // todo
+    private long suppliedEntityId;       // todo
     private String suppliedPathParam;   // todo
 
     // FRONTEND PATH/PARAM DATA
@@ -194,7 +194,7 @@ public class QasinoFlowDTO //extends AbstractFlowDTO
         key = "gameid"; // todo why is this lower if passed is upper
         if (headerData.containsKey(key)) {
             if (isValueForIntKeyValid(key, headerData.get(key), dataName, headerDataString)) {
-                this.suppliedGameId = Integer.parseInt(headerData.get(key));
+                this.suppliedGameId = Long.parseLong(headerData.get(key));
             } else {
                 return false;
             }
@@ -203,7 +203,7 @@ public class QasinoFlowDTO //extends AbstractFlowDTO
         key = "visitorid";
         if (headerData.containsKey(key)) {
             if (isValueForIntKeyValid(key, headerData.get(key), dataName, headerDataString)) {
-                this.suppliedVisitorId = Integer.parseInt(headerData.get(key));
+                this.suppliedVisitorId = Long.parseLong(headerData.get(key));
             } else {
                 return false;
             }
@@ -232,7 +232,7 @@ public class QasinoFlowDTO //extends AbstractFlowDTO
         key = "leagueId";
         if (pathData.containsKey(key)) {
             if (isValueForIntKeyValid(key, pathData.get(key), dataName, pathDataString)) {
-                this.suppliedLeagueId = Integer.parseInt(pathData.get(key));
+                this.suppliedLeagueId = Long.parseLong(pathData.get(key));
             } else {
                 return false;
             }
@@ -240,7 +240,7 @@ public class QasinoFlowDTO //extends AbstractFlowDTO
         key = "invitedPlayerId";
         if (pathData.containsKey(key)) {
             if (isValueForIntKeyValid(key, pathData.get(key), dataName, pathDataString)) {
-                this.invitedPlayerId = Integer.parseInt(pathData.get(key));
+                this.invitedPlayerId = Long.parseLong(pathData.get(key));
             } else {
                 return false;
             }
@@ -248,7 +248,7 @@ public class QasinoFlowDTO //extends AbstractFlowDTO
         key = "acceptedPlayerId";
         if (pathData.containsKey(key)) {
             if (isValueForIntKeyValid(key, pathData.get(key), dataName, pathDataString)) {
-                this.suppliedLeagueId = Integer.parseInt(pathData.get(key));
+                this.suppliedLeagueId = Long.parseLong(pathData.get(key));
             } else {
                 return false;
             }
@@ -256,7 +256,7 @@ public class QasinoFlowDTO //extends AbstractFlowDTO
         key = "turnPlayerId";
         if (pathData.containsKey(key)) {
             if (isValueForIntKeyValid(key, pathData.get(key), dataName, pathDataString)) {
-                this.suppliedTurnPlayerId = Integer.parseInt(pathData.get(key));
+                this.suppliedTurnPlayerId = Long.parseLong(pathData.get(key));
             } else {
                 return false;
             }
