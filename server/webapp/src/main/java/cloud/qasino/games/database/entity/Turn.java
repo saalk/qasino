@@ -51,6 +51,8 @@ public class Turn {
 
     // Derived functional fields
 
+
+    // can be player objet instead of id
     @Column(name = "activePlayer_id", nullable = true)
     private long activePlayerId;
 
@@ -106,7 +108,7 @@ public class Turn {
         LocalDateTime localDateAndTime = LocalDateTime.now();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd-HH:mm-ssSSS-nnnnnnnnn");
         String result = localDateAndTime.format(formatter);
-        this.updated = result.substring(2, 20);
+        this.updated = result.substring(0, 20);
 
         this.year = localDateAndTime.getYear();
         this.month = localDateAndTime.getMonth();

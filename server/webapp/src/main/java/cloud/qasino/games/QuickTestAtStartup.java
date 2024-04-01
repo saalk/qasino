@@ -53,8 +53,6 @@ public class QuickTestAtStartup implements ApplicationRunner {
         log.info("\nApplication started in environment : \n {} \n",
                 (Arrays.asList(environment.getDefaultProfiles())));
 
-        if (true) return;
-
         // A new VISITOR arrives
         Visitor visitor = new Visitor("visitorNameName",1 , "a@b.c");
         int pawn = Visitor.pawnShipValue(0);
@@ -87,7 +85,7 @@ public class QuickTestAtStartup implements ApplicationRunner {
         turnRepository.save(turn);
 
         // VISITOR gets a card CARDMOVE
-        CardMove cardMove = new CardMove(turn, players.get(0), null, Move.DEAL,
+        CardMove cardMove = new CardMove(turn, players.get(0), 0, Move.DEAL,
                 Location.HAND);
         cardMoveRepository.save(cardMove);
 

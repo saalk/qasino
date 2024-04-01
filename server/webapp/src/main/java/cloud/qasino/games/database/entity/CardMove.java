@@ -51,7 +51,7 @@ public class CardMove {
     private long playerId;
 
     @Column(name = "card_id", nullable = true)
-    private String cardId;
+    private long cardId;
 
 
     // cardMove basics, what move does the player make
@@ -86,7 +86,7 @@ public class CardMove {
         setCreated();
     }
 
-    public CardMove(Turn turn, Player player, String cardId, Move move, Location location) {
+    public CardMove(Turn turn, Player player, long cardId, Move move, Location location) {
         this();
         this.turn = turn;
         this.playerId = player.getPlayerId();
@@ -100,7 +100,7 @@ public class CardMove {
         LocalDateTime localDateAndTime = LocalDateTime.now();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd-HH:mm-ssSSS-nnnnnnnnn");
         String result = localDateAndTime.format(formatter);
-        this.created = result.substring(2, 20);
+        this.created = result.substring(0, 20);
 
     }
 

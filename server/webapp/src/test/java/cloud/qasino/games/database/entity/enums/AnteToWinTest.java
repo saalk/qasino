@@ -1,4 +1,4 @@
-package cloud.qasino.games.entity.enums.game.style;
+package cloud.qasino.games.database.entity.enums;
 
 
 import cloud.qasino.games.database.entity.enums.game.style.AnteToWin;
