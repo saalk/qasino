@@ -31,18 +31,18 @@
             <!-- Since we create a Vue component pointing to id=contents,
                  Vue will generate a unordered list of items such
                  as this inside this div.
-                 v-for will cause a loop to run over all users
-                 as per the users array found in app.data
+                 v-for will cause a loop to run over all visitors
+                 as per the visitors array found in app.data
             <ul>
                 <li></li>
                 <li></li>
             </ul>
             -->
             <ul>
-                <li style="list-style-type:none" v-for="user in users">
-                    <user-playingCard
-                            v-bind:user="user" v-bind:key="user.userId">
-                    </user-playingCard>
+                <li style="list-style-type:none" v-for="visitor in visitors">
+                    <visitor-playingCard
+                            v-bind:visitor="visitor" v-bind:key="visitor.visitorId">
+                    </visitor-playingCard>
                 </li>
             </ul>
         </div>
@@ -63,19 +63,19 @@
 <script src="https://cdn.jsdelivr.net/npm/vue@2.5.16/dist/vue.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/6.21.1/babel.min.js"></script>
 <script type="text/babel">
-    // user-playingCard is now a Vue component that generates a 'playingCard' showing a user
-    // It can be used declaratively like <user-playingCard v-bind:user="someuser">
+    // visitor-playingCard is now a Vue component that generates a 'playingCard' showing a visitor
+    // It can be used declaratively like <visitor-playingCard v-bind:visitor="somevisitor">
     //
-    Vue.component('user-playingCard', {
-        props: ['user'],
+    Vue.component('visitor-playingCard', {
+        props: ['visitor'],
         template: `<div class="playingCard">
                     <div class="playingCard-body">
                         <h6 class="playingCard-title">
-                            {{ user.userName }}
+                            {{ visitor.visitorName }}
                         </h6>
                         <p class="playingCard-text">
                             <div>
-                            {{ user.email }}
+                            {{ visitor.email }}
                             </div>
                         </p>
                     </div>
@@ -85,9 +85,9 @@
     var app = new Vue({
         el: '#contents',
         data: {
-            users: [
-                {userId: "1", userName: "Lionel Messi", email: "Argentina's superstar"},
-                {userId: "2", userName: "Christiano Ronaldo", email: "Portugal top-ranked user"}
+            visitors: [
+                {visitorId: "1", visitorName: "Lionel Messi", email: "Argentina's superstar"},
+                {visitorId: "2", visitorName: "Christiano Ronaldo", email: "Portugal top-ranked visitor"}
             ]
         },
         mounted () {
