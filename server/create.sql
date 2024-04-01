@@ -100,7 +100,7 @@ create sequence "hibernate_sequence" start with 1 increment by 1;
         primary key ("turn_id")
     );
 
-    create table "visitors" (
+    create table "visitor" (
        "visitor_id" integer not null,
         "balance" integer,
         "created" varchar(25),
@@ -116,7 +116,7 @@ create sequence "hibernate_sequence" start with 1 increment by 1;
     );
 create index "cardmove_turn_index" on "cardmove" ("turn_id");
 create index "turns_game_index" on "turn" ("game_id");
-create index "visitorName_index" on "visitors" ("visitor_name");
+create index "visitorName_index" on "visitor" ("visitor_name");
 
     alter table "card" 
        add constraint fk_game_id 
@@ -141,7 +141,7 @@ create index "visitorName_index" on "visitors" ("visitor_name");
     alter table "league" 
        add constraint fk_visitor_id 
        foreign key ("visitor_id") 
-       references "visitors";
+       references "visitor";
 
     alter table "player" 
        add constraint fk_game_id 
@@ -151,7 +151,7 @@ create index "visitorName_index" on "visitors" ("visitor_name");
     alter table "player" 
        add constraint fk_visitor_id 
        foreign key ("visitor_id") 
-       references "visitors";
+       references "visitor";
 
     alter table "result" 
        add constraint fk_game_id 
@@ -166,7 +166,7 @@ create index "visitorName_index" on "visitors" ("visitor_name");
     alter table "result" 
        add constraint fk_visitor_id 
        foreign key ("visitor_id") 
-       references "visitors";
+       references "visitor";
 
     alter table "turn" 
        add constraint fk_game_id 

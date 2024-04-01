@@ -111,7 +111,8 @@
 		<dependency>
 			<groupId>com.h2database</groupId>
 			<artifactId>h2</artifactId>
-			<!-- spring boot decides version -->
+			<version>${h2.version}</version>
+			<!-- spring boot can decide version also -->
 			<scope>runtime</scope>
 		</dependency>
 		<!-- use Tomcat JDBC Connection Pooling -->
@@ -305,7 +306,7 @@
 			</activation>
 			<properties>
 				<spring.profiles.active>dev</spring.profiles.active>
-				<spring.boot.mainclass>cloud.qasino.games.configuration.GamesApplication</spring.boot.mainclass>
+				<spring.boot.mainclass>cloud.qasino.games.GamesApplication</spring.boot.mainclass>
 			</properties>
 		</profile>
 	</profiles>
