@@ -5,7 +5,6 @@
 - Each name-value pair is one cookie, and document.cookie will return all cookies in one string
 - By default, the cookie is deleted when the browser is closed, so add an expiry date in UTC time
 - check with navigator.cookieEnabled if cookies are enabled
-*/
 <!DOCTYPE html>
 <html>
 <head>
