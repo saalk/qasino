@@ -1,0 +1,90 @@
+<!-- Primary Page Layout Player
+    –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+<div class="container" ng-controller="PlayerController as vm">
+
+    <header>
+        <div class="row">
+            <div class="twelve columns">
+                <h2 class="title">Welcome {{ vm.name }}</h2>
+                <h5 class="subtitle">and play this simple, but yet very addictive
+                    High-low card game</h5>
+            </div>
+        </div>
+    </header>
+
+    <section class="section-main">
+        <div class="row">
+            <div class="nine columns">
+                <p class="main-description">
+                    Like Netflix and YouTube this web application is build with directives and
+                    views supplied by the popular framework
+                    <a href="https://www.codeschool.com/pages/angular-1-vs-2">AngularJS</a>.
+                    Being a
+                    <a href="http://singlepageappbook.com/goal.html">Single Page app</a>
+                    this site is a showcase for
+                    <a href="https://mediaweb.nl/blog/responsive-website/">responsive webdesign</a>
+                    thanks to the 'death simple' css framework
+                    <a href="https://mother.domains/blog/responsive-skeleton-css/">Skeleton</a>.
+                    <p>
+                    <p class="main-description">
+     
+                    In this webapp you can play the
+                    <a href="https://smartcasinoguide.com/high-low-card-game/">High-Low</a>
+                    card game 'betting style'. Choose choose amongst the many game options
+                    before and while playing to secure or increase you cubits.
+                    </p>
+                    <ul>
+                        <li>Pawn your ship and receive <strong>up to 1000</strong> starting 
+                        <a href="https://en.battlestarwikiclone.org/wiki/Cubit">Cubits!</a>
+                        </li>
+                        <li>Get a name, don't be a stranger any more
+                        </li>
+                    </ul>
+                <p class="main-description">
+                    <strong>How to play?</strong><br>
+                    All you do is guess if the next card will be higher or lower than the
+                    card facing up. An <strong>bonus</strong> (todo) is rewarded for winning.
+                    Select up to 2 opponent aliens to join you with differ
+                    <a href="http://www.alanturing.net/turing_archive/pages/reference%20articles/what%20is%20ai.html">AI</a>
+                    . Be careful, the extra bonus is paid by the losers...
+                    </p>
+                <p class="main-description">
+                    <strong>Coming soon</strong><br>
+                    This card game will soon go move to qasino.cloud! Together will a Spring-boot redo and <a href="https://graphql.org/">GraphQL</a> query language for APIs will replace the many REST endpoints
+                    currently configured in this app. REST is so 2016...
+                </p>
+                <a class="button main-button" ng-click="vm.pawnHumanShipForCubits(750)"
+                   href="/player">Home</a>
+                <a class="button button-primary main-button animate-if" ng-if="vm.gotogame" data-ng-click="vm.changeVisitorDetailsForGame(vm.cardGame, vm.players[0])"
+                   href="/game">Enter the
+                    Casino</a>
+            </div>
+            <div class="three columns main-prop">
+                <img class="u-max-full-width main-img" alt="you" src="img/alien-1.jpg" ng-click="vm.setHumanName()">
+                <a class="button button-primary" ng-click="vm.setHumanName()">{{ vm.players[0].visitor.alias }}: {{
+                    vm.players[0].visitor.cubits | minLength:4:"0" }}</a>
+                <img class="u-max-full-width main-img" alt="your ship" src="img/ship-1.jpg"
+                     ng-click="vm.pawnHumanShipForCubits(250)">
+                <div ng-if="vm.players[0].visitor.securedLoan !== 0">
+                    <a class="button button-primary" ng-click="vm.pawnHumanShipForCubits(250)">Repay
+                        for: {{
+                        vm.players[0].visitor.securedLoan | minLength:4:"0" }}</a>
+                </div>
+                <div ng-if="vm.players[0].visitor.securedLoan === 0">
+                    <a class="button button-primary" ng-click="vm.pawnHumanShipForCubits(250)">Pawn
+                        your ship</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="aliens">
+        <div my-player-directive template-path="javascript/directives/players-player.html">
+        </div>
+    </section>
+
+    <section class="section-list" ng-show="vm.showListForDebug">
+        <div my-player-directive template-path="javascript/directives/players-list.html">
+        </div>
+    </section>
+</div>
