@@ -37,12 +37,12 @@ public class FindAllEntitiesForInputAction implements Action<FindAllEntitiesForI
     public EventOutput.Result perform(FindAllEntitiesForInputActionDTO actionDto) {
 
         log.debug("Action: FindAllEntitiesForInputAction");
-        int id;
+        long id;
         Pageable pageable = PageRequest.of(actionDto.getSuppliedPages(), actionDto.getSuppliedMaxPerPage());
 
         id = actionDto.getSuppliedVisitorId();
         if (!(id == 0)) {
-            Optional<Visitor> foundVisitor = visitorRepository.findById(Integer.parseInt(String.valueOf(id)));
+            Optional<Visitor> foundVisitor = visitorRepository.findById(Long.parseLong(String.valueOf(id)));
             if (foundVisitor.isPresent()) {
                 actionDto.setGameVisitor(foundVisitor.get());
             } else {
@@ -69,7 +69,7 @@ public class FindAllEntitiesForInputAction implements Action<FindAllEntitiesForI
         }
         id = actionDto.getSuppliedGameId();
         if (!(id == 0)) {
-            Optional<Game> foundGame = gameRepository.findById(Integer.parseInt(String.valueOf(id)));
+            Optional<Game> foundGame = gameRepository.findById(Long.parseLong(String.valueOf(id)));
             if (foundGame.isPresent()) {
                 actionDto.setQasinoGame(foundGame.get());
                 actionDto.setQasinoGamePlayers(foundGame.get().getPlayers());
@@ -83,7 +83,7 @@ public class FindAllEntitiesForInputAction implements Action<FindAllEntitiesForI
         }
         id = actionDto.getAcceptedPlayerId();
         if (!(id == 0)) {
-            Optional<Player> foundPlayer = playerRepository.findById(Integer.parseInt(String.valueOf(id)));
+            Optional<Player> foundPlayer = playerRepository.findById(Long.parseLong(String.valueOf(id)));
             if (foundPlayer.isPresent()) {
                 actionDto.setAcceptedPlayer(foundPlayer.get());
             } else {
@@ -93,7 +93,7 @@ public class FindAllEntitiesForInputAction implements Action<FindAllEntitiesForI
         }
         id = actionDto.getInvitedPlayerId();
         if (!(id == 0)) {
-            Optional<Player> foundPlayer = playerRepository.findById(Integer.parseInt(String.valueOf(id)));
+            Optional<Player> foundPlayer = playerRepository.findById(Long.parseLong(String.valueOf(id)));
             if (foundPlayer.isPresent()) {
                 actionDto.setInvitedPlayer(foundPlayer.get());
             } else {
@@ -103,7 +103,7 @@ public class FindAllEntitiesForInputAction implements Action<FindAllEntitiesForI
         }
         id = actionDto.getSuppliedTurnPlayerId();
         if (!(id == 0)) {
-            Optional<Player> foundPlayer = playerRepository.findById(Integer.parseInt(String.valueOf(id)));
+            Optional<Player> foundPlayer = playerRepository.findById(Long.parseLong(String.valueOf(id)));
             if (foundPlayer.isPresent()) {
                 actionDto.setTurnPlayer(foundPlayer.get());
             } else {
@@ -114,7 +114,7 @@ public class FindAllEntitiesForInputAction implements Action<FindAllEntitiesForI
         id = actionDto.getSuppliedLeagueId();
         if (!(id == 0)) {
             Optional<League> foundLeague =
-                    leagueRepository.findById(Integer.parseInt(String.valueOf(id)));
+                    leagueRepository.findById(Long.parseLong(String.valueOf(id)));
             if (foundLeague.isPresent()) {
                 actionDto.setQasinoGameLeague(foundLeague.get());
                 pageable = PageRequest.of(actionDto.getSuppliedPages(), actionDto.getSuppliedMaxPerPage(),
@@ -144,12 +144,12 @@ public class FindAllEntitiesForInputAction implements Action<FindAllEntitiesForI
         // Getters
         int getSuppliedPages();
         int getSuppliedMaxPerPage();
-        int getSuppliedVisitorId();
-        int getSuppliedGameId();
-        int getSuppliedLeagueId();
-        int getInvitedPlayerId();
-        int getAcceptedPlayerId();
-        int getSuppliedTurnPlayerId();
+        long getSuppliedVisitorId();
+        long getSuppliedGameId();
+        long getSuppliedLeagueId();
+        long getInvitedPlayerId();
+        long getAcceptedPlayerId();
+        long getSuppliedTurnPlayerId();
 
         List<League> getLeaguesForVisitor();
 

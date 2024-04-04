@@ -1,0 +1,67 @@
+<!-- Primary Page Layout Casino
+    –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+<div class="container" ng-controller="GameController as vm">
+
+
+    <header>
+        <div class="row">
+            <div class="twelve columns">
+                <h2 class="title">{{ vm.players[0].visitor.alias }}, select your opponents</h2>
+                <h5 class="subtitle">also choose the options for this High-low card game</h5>
+            </div>
+        </div>
+    </header>
+
+    <section class="section-main">
+        <div class="row">
+            <div class="twelve columns">
+                <p class="main-description">
+                    Choose the ante for the game and determine double or nothing or a normal raise
+                    at each turn and select your opponent(s) together with
+                    their ai level. Remember: your
+                    <a href="https://en.wikipedia.org/wiki/Honour">honour</a>
+                    is at stake as well as repaying your ship...
+                    <br></p>
+            </div>
+        </div>
+        <div class="row">
+            <div class="one-half column">
+                <label>{{ vm.cardGame.gameType }} variant<select class="u-full-width" ng-model="myVariant" ng-options="variant.text for variant in vm.variants"></select>
+                </label>
+            </div>
+            <div class="one-half column">
+                <label>Initial ante <select class="u-full-width" ng-model="myAnte" ng-options="ante.amount for ante in vm.antes"></select>
+                </label>
+            </div>
+        </div>
+        <div class="row">
+            <div class="twelve columns">
+                <p class="main-description">
+                    Only after one guess you can opt to pass on to the next player, but keep playing
+                    and each next turn will reward you the ante or more.
+                    Win or lose depends on a series of good guesses and of course the results of
+                    your selected opponents ai player(s) strength...<br></p>
+                <a class="button game-button" href="/player">Leave</a>
+                <a class="button button-primary game-button1" data-ng-click="vm.changeAlien(1)"
+                >Alien 1</a>
+                <a class="button button-primary game-button2 animate-if"
+                   data-ng-click="vm.changeAlien(2)" ng-if="vm.showalien1">Alien 2</a>
+                <a class="button game-button animate-if" ng-if="vm.tothecasino" href="/casino"
+                   data-ng-click="vm.prepareForShuffle()">start the game</a>
+            </div>
+            <div class="three column main-prop">
+            </div>
+        </div>
+    </section>
+
+    <section class="aliens">
+        <div my-game-directive template-path="javascript/directives/players-game.html">
+        </div>
+    </section>
+
+    <section class="section-list" ng-show="vm.showListForDebug">
+        <div my-game-directive template-path="javascript/directives/players-list.html">
+        </div>
+    </section>
+
+</div>

@@ -11,7 +11,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface CardRepository extends JpaRepository<Card, Integer> {
+public interface CardRepository extends JpaRepository<Card, Long> {
 
     public final static String FIND_CARDS_BY_GAME_ID =
             "SELECT * FROM CARD " +
@@ -30,7 +30,7 @@ public interface CardRepository extends JpaRepository<Card, Integer> {
     @Query( value = FIND_CARDS_BY_GAME_ID,
             countQuery = COUNT_CARDS_BY_GAME_ID,
             nativeQuery = true)
-    List<Card> findAllCardsByGameWithPage(@Param("gameId") int gameId, Pageable pageable);
+    List<Card> findAllCardsByGameWithPage(@Param("gameId") long gameId, Pageable pageable);
 
     List<Card> findByGameOrderByLocationAscSequenceAsc(Game game);
 }

@@ -83,7 +83,7 @@ public class PlayingCardResource {
             // 400
             return ResponseEntity.badRequest().headers(headers).build();
         }
-        int gameId = Integer.parseInt(id);
+        long gameId = Long.parseLong(id);
         int jokersCount = Integer.parseInt(jokers);
 
         Optional<Game> foundGame = gameRepository.findById(gameId);

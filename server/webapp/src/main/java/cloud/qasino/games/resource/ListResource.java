@@ -132,7 +132,7 @@ public class ListResource {
         }
         int maximum = Integer.parseInt(max);
         int pages = Integer.parseInt(page);
-        int visitorId = Integer.parseInt(id);
+        long visitorId = Long.parseLong(id);
 
         // logic
         Pageable pageable = PageRequest.of(pages, maximum, Sort.by(
@@ -179,7 +179,7 @@ public class ListResource {
         if (!StringUtils.isNumeric(id)) {
             return ResponseEntity.badRequest().headers(headers).build();
         }
-        int gameId = Integer.parseInt(id);
+        long gameId = Long.parseLong(id);
 
         // logic
         Optional<Game> foundGame = gameRepository.findById(gameId);
@@ -211,7 +211,7 @@ public class ListResource {
             // 400
             return ResponseEntity.badRequest().headers(headers).build();
         }
-        int gameId = Integer.parseInt(id);
+        long gameId = Long.parseLong(id);
 
         Optional<Game> foundGame = gameRepository.findById(gameId);
         Game linkedGame;
@@ -260,7 +260,7 @@ public class ListResource {
             // 400
             return ResponseEntity.badRequest().headers(headers).build();
         }
-        int gameId = Integer.parseInt(id);
+        long gameId = Long.parseLong(id);
 
         Optional<Game> foundGame = gameRepository.findById(gameId);
         if (!foundGame.isPresent()) {

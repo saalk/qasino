@@ -23,16 +23,16 @@ import java.util.Random;
 @Setter
 @JsonIdentityInfo(generator = JSOGGenerator.class)
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
-@Table(name = "visitors", indexes =
+@Table(name = "visitor", indexes =
         {@Index(name = "visitors_index", columnList = "visitor_id", unique = true),
                 @Index(name = "visitorName_index", columnList = "visitorName", unique = false)
         })
 public class Visitor {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "visitor_id", nullable = false)
-    private int visitorId;
+    private long visitorId;
 
     @JsonIgnore
     @Column(name = "created", length = 25)
@@ -55,6 +55,7 @@ public class Visitor {
     @Column(name = "balance")
     private int balance;
 
+    @Setter(AccessLevel.NONE)
     @Column(name = "secured_loan")
     private int securedLoan;
 
@@ -94,7 +95,7 @@ public class Visitor {
         LocalDateTime localDateAndTime = LocalDateTime.now();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd-HH:mm-ssSSS-nnnnnnnnn");
         String result = localDateAndTime.format(formatter);
-        this.created = result.substring(2, 20);
+        this.created = result.substring(0, 20);
 
         this.year = localDateAndTime.getYear();
         this.month = localDateAndTime.getMonth();
@@ -110,6 +111,7 @@ public class Visitor {
         this.visitorNameSequence = visitorNameSequence;
         this.email = email;
     }
+
 
     public boolean repayLoan() {
         int loan = this.securedLoan;

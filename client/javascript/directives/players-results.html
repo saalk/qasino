@@ -1,0 +1,60 @@
+<div class="alien-props row" style="margin-top: 1%">
+    <div class="four columns alien-prop">
+        <img class="human-img" alt="you" src="img/aliensmall.jpg">
+        <br>
+        <h5>You: {{ vm.players[0].visitor.alias }}</h5>
+        <p>Playing the game gained you {{ vm.players[0].visitor.cubits - vm.players[0].visitor.securedLoan }} cubits
+            .</p>
+    </div>
+    <div class="four columns alien-prop">
+        <div ng-if="vm.showalien1" data-ng-click="vm.changeAlien(1)">
+            <div ng-if="vm.players[1].visitor.aiLevel.toUpperCase() == 'DUMB'">
+                <img alt="alien1" src="img/ailow.jpg">
+                <br>
+                <h5>{{ vm.players[1].visitor.alias }}</h5>
+                
+                <p>Quick to beat and having only {{ vm.players[1].visitor.cubits - vm.players[1].visitor.securedLoan }} cubits
+                    .</p>                
+            </div>
+            <div ng-if="vm.players[1].visitor.aiLevel.toUpperCase() == 'MEDIUM'">
+                <img alt="alien1" src="img/aimedium.jpg">
+                <br>
+                <h5>{{ vm.players[1].visitor.alias }}</h5>
+                <p>A nice competitor, he now has {{ vm.players[1].visitor.cubits - vm.players[1].visitor.securedLoan }} cubits
+                    .</p>                
+            </div>
+            <div ng-if="vm.players[1].visitor.aiLevel.toUpperCase() == 'SMART'">
+                <img alt="alien1" src="img/aihigh.jpg">
+                <br>
+                <h5>{{ vm.players[1].visitor.alias }}</h5>
+                <p>Most evolved alien species, this fellow played {{ vm.players[1].visitor.cubits - vm.players[1].visitor.securedLoan }} cubits
+                    .</p>                
+            </div>
+        </div>
+    </div>
+    <div class="four columns alien-prop">
+        <div ng-if="vm.showalien2" data-ng-click="vm.changeAlien(2)">
+            <div ng-if="vm.players[2].visitor.aiLevel.toUpperCase() == 'DUMB'">
+                <img alt="alien2" src="img/ailow.jpg">
+                <br>
+                <h5>{{ vm.players[2].visitor.alias }}</h5>
+                <p>Quick to beat and now having {{ vm.players[2].visitor.cubits - vm.players[2].visitor.securedLoan }} cubits
+                    .</p>                
+            </div>
+            <div ng-if="vm.players[2].visitor.aiLevel.toUpperCase() == 'MEDIUM'">
+                <img alt="alien2" src="img/aimedium.jpg">
+                <br>
+                <h5>{{ vm.players[2].visitor.alias }}</h5>
+                <p>A nice competitor, he has now {{ vm.players[2].visitor.cubits - vm.players[2].visitor.securedLoan }} cubits
+                    .</p>                
+            </div>
+            <div ng-if="vm.players[2].visitor.aiLevel.toUpperCase() == 'SMART'">
+                <img alt="alien2" src="img/aihigh.jpg">
+                <br>
+                <h5>{{ vm.players[2].visitor.alias }}</h5>
+                <p>Most evolved alien species, this fellow splayed {{ vm.players[2].visitor.cubits - vm.players[2].visitor.securedLoan }} cubits
+                    .</p>                
+            </div>
+        </div>
+    </div>
+</div>

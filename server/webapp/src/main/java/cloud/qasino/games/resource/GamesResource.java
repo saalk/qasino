@@ -131,7 +131,7 @@ public class GamesResource {
             return ResponseEntity.badRequest().headers(headers).build();
         }
 
-        int visitorId = Integer.parseInt(uId);
+        long visitorId = Long.parseLong(uId);
         Optional<Visitor> foundVisitor = visitorRepository.findById(visitorId);
         if (!foundVisitor.isPresent())
             // 404
@@ -195,7 +195,7 @@ public class GamesResource {
         if (AiLevel.fromLabelWithDefault(aiLevel) == AiLevel.HUMAN)
             return ResponseEntity.status(HttpStatus.CONFLICT).headers(headers).build();
 
-        int visitorId = Integer.parseInt(uId);
+        long visitorId = Long.parseLong(uId);
         Optional<Visitor> foundVisitor = visitorRepository.findById(visitorId);
         if (!foundVisitor.isPresent())
             // 404
@@ -266,8 +266,8 @@ public class GamesResource {
             return ResponseEntity.badRequest().headers(headers).build();
         }
 
-        int visitorId = Integer.parseInt(uId);
-        int leagueId = Integer.parseInt(lId);
+        long visitorId = Long.parseLong(uId);
+        long leagueId = Long.parseLong(lId);
         Optional<Visitor> foundVisitor = visitorRepository.findById(visitorId);
         Optional<League> foundLeague = leagueRepository.findById(leagueId);
         if (!foundVisitor.isPresent() || !foundLeague.isPresent())
@@ -334,8 +334,8 @@ public class GamesResource {
         if (AiLevel.fromLabelWithDefault(aiLevel) == AiLevel.HUMAN)
             return ResponseEntity.status(HttpStatus.CONFLICT).headers(headers).build();
 
-        int visitorId = Integer.parseInt(uId);
-        int leagueId = Integer.parseInt(lId);
+        long visitorId = Long.parseLong(uId);
+        long leagueId = Long.parseLong(lId);
         Optional<Visitor> foundVisitor = visitorRepository.findById(visitorId);
         Optional<League> foundLeague = leagueRepository.findById(leagueId);
         if (!foundVisitor.isPresent() || !foundLeague.isPresent())
@@ -405,7 +405,7 @@ public class GamesResource {
             // 400
             return ResponseEntity.badRequest().headers(headers).build();
 
-        int gameId = Integer.parseInt(gid);
+        long gameId = Long.parseLong(gid);
         int ante = Integer.parseInt(inputAnte);
         Optional<Game> foundGame = gameRepository.findById(gameId);
         if (!foundGame.isPresent()) {
@@ -457,8 +457,8 @@ public class GamesResource {
             return ResponseEntity.badRequest().headers(headers).build();
         }
 
-        int gameId = Integer.parseInt(gId);
-        int visitorId = Integer.parseInt(uId);
+        long gameId = Long.parseLong(gId);
+        long visitorId = Long.parseLong(uId);
 
         Optional<Game> foundGame = gameRepository.findById(gameId);
         if (!foundGame.isPresent()) {
@@ -518,7 +518,7 @@ public class GamesResource {
             // todo LOW split visitorName and number
             return ResponseEntity.status(HttpStatus.CONFLICT).headers(headers).build();
 
-        int gameId = Integer.parseInt(id);
+        long gameId = Long.parseLong(id);
         Optional<Game> foundGame = gameRepository.findById(gameId);
         if (!foundGame.isPresent()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).headers(headers).build();
@@ -567,8 +567,8 @@ public class GamesResource {
             return ResponseEntity.badRequest().headers(headers).build();
         }
 
-        int gameId = Integer.parseInt(gid);
-        int playerId = Integer.parseInt(pid);
+        long gameId = Long.parseLong(gid);
+        long playerId = Long.parseLong(pid);
         int fiches = Integer.parseInt(fichesInput);
 
         Optional<Game> foundGame = gameRepository.findById(gameId);
@@ -623,8 +623,8 @@ public class GamesResource {
             return ResponseEntity.badRequest().headers(headers).build();
         }
 
-        int gameId = Integer.parseInt(gid);
-        int playerId = Integer.parseInt(pid);
+        long gameId = Long.parseLong(gid);
+        long playerId = Long.parseLong(pid);
 
         Optional<Game> foundGame = gameRepository.findById(gameId);
         if (!foundGame.isPresent()) {
@@ -676,7 +676,7 @@ public class GamesResource {
             // 400
             return ResponseEntity.badRequest().headers(headers).build();}
 
-        int gameId = Integer.parseInt(id);
+        long gameId = Long.parseLong(id);
         Optional<Game> foundGame = gameRepository.findById(gameId);
         if (!foundGame.isPresent()) {
             // 404

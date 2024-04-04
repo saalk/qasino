@@ -10,7 +10,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface LeagueRepository extends JpaRepository<League, Integer> {
+public interface LeagueRepository extends JpaRepository<League, Long> {
 
     public final static String FIND_ACTIVE_LEAGUES_BY_VISITOR_ID =
             "SELECT * FROM LEAGUES a WHERE a.VISITOR_ID = :visitorId " +
@@ -21,6 +21,6 @@ public interface LeagueRepository extends JpaRepository<League, Integer> {
 
     @Query(value = FIND_ACTIVE_LEAGUES_BY_VISITOR_ID, countQuery = COUNT_ACTIVE_LEAGUES_BY_VISITOR_ID, nativeQuery = true)
     public List<League> findAllActiveLeaguesForVisitorWithPage(
-            @Param("visitorId") int visitorId,
+            @Param("visitorId") long visitorId,
             Pageable pageable);
 }

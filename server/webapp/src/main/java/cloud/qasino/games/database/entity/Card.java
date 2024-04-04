@@ -28,9 +28,9 @@ import java.util.Objects;
 public class Card {
     
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "card_id")
-    private int cardId;
+    private long cardId;
 
     @JsonIgnore
     @Column(name = "created", length = 25)
@@ -69,7 +69,7 @@ public class Card {
     @Column(name = "location", nullable = false)
     private Location location;
 
-    // current Postion for the card in the location
+    // current Postion for the card in the location TODO make Ordered
     @Enumerated(EnumType.STRING)
     @Column(name = "position", nullable = false)
     private Position position;
@@ -85,7 +85,7 @@ public class Card {
         LocalDateTime localDateAndTime = LocalDateTime.now();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd-HH:mm-ssSSS-nnnnnnnnn");
         String result = localDateAndTime.format(formatter);
-        this.created = result.substring(2, 20);
+        this.created = result.substring(0, 20);
 
     }
 

@@ -18,6 +18,7 @@ import java.time.Period;
 import static java.time.temporal.TemporalAdjusters.*;
 
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeFormatterBuilder;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -34,9 +35,9 @@ import java.util.Objects;
 public class League {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "league_id")
-    private int leagueId;
+    private long leagueId;
 
     @JsonIgnore
     @Column(name = "created", length = 25)
@@ -61,7 +62,6 @@ public class League {
     @Column(name = "name_seq")
     private int nameSequence;
 
-    @Setter(AccessLevel.NONE)
     @Getter(AccessLevel.NONE)
     @Column(name = "is_active")
     private boolean active;
@@ -82,7 +82,7 @@ public class League {
         LocalDateTime localDateAndTime = LocalDateTime.now();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd-HH:mm-ssSSS-nnnnnnnnn");
         String result = localDateAndTime.format(formatter);
-        this.created = result.substring(2, 20);
+        this.created = result.substring(0, 20);
 
         this.active = true;
 
@@ -102,7 +102,7 @@ public class League {
         LocalDateTime localDateAndTime = LocalDateTime.now().plus(Period.ofDays(days));
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd-HH:mm-ssSSS-nnnnnnnnn");
         String result = localDateAndTime.format(formatter);
-        this.ended = result.substring(2, 20);
+        this.ended = result.substring(0, 20);
 
         return true;
     }
@@ -112,7 +112,7 @@ public class League {
         LocalDateTime localDateAndTime = LocalDateTime.now().with(next(DayOfWeek.MONDAY));
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd-HH:mm-ssSSS-nnnnnnnnn");
         String result = localDateAndTime.format(formatter);
-        this.ended = result.substring(2, 20);
+        this.ended = result.substring(0, 20);
 
         return true;
     }
@@ -122,18 +122,26 @@ public class League {
         LocalDateTime localDateAndTime = LocalDateTime.now().with(lastDayOfMonth());;
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd-HH:mm-ssSSS-nnnnnnnnn");
         String result = localDateAndTime.format(formatter);
-        this.ended = result.substring(2, 20);
+        this.ended = result.substring(0, 20);
 
         return true;
     }
 
     public boolean isActive() {
         if (!this.active) return false; // visitor can set to inactive before enddate
-        if (this.ended == null) return true;
+
+        if (this.ended == null || this.ended.isEmpty()) return true;
+
         // check if ended has passed
         LocalDate yesterday = LocalDate.now().plusDays(-1);
-        int days = Period.between(yesterday, LocalDate.parse(this.ended)).getDays();
-        return days <= 0; // todo test this
+
+        DateTimeFormatterBuilder dateTimeFormatterBuilder = new DateTimeFormatterBuilder()
+                .append(DateTimeFormatter.ofPattern("yyyyMMdd-HH:mm-ssSSS"));
+        DateTimeFormatter dateTimeFormatter = dateTimeFormatterBuilder.toFormatter();
+        LocalDate ended = LocalDate.parse(this.ended,dateTimeFormatter);
+
+        int days = Period.between(yesterday, ended).getDays();
+        return days > 0;
     }
 
     public void closeLeaguePerYesterday() {
@@ -141,7 +149,7 @@ public class League {
         LocalDateTime localDateAndTime = LocalDateTime.now().plusDays(-1); // yesterday;
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd-HH:mm-ssSSS-nnnnnnnnn");
         String result = localDateAndTime.format(formatter);
-        this.ended = result.substring(2, 20);
+        this.ended = result.substring(0, 20);
         this.active = false;
     }
 

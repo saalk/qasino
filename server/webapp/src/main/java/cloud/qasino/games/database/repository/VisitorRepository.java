@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface VisitorRepository extends JpaRepository<Visitor, Integer> {
+public interface VisitorRepository extends JpaRepository<Visitor, Long> {
 
     //@Query("SELECT count(u) FROM VISITORS u where u.VisitorName = ?1")
     Long countByVisitorName(String visitorName);

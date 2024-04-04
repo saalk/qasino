@@ -26,7 +26,7 @@ import java.util.List;
 import java.util.Optional;
 
 // basic path /qasino
-// basic header @RequestHeader(value "visitor", required = true) int visitorId" // else 400
+// basic header @RequestHeader(value "visitor", required = true) long visitorId" // else 400
 //
 // 200 - ok
 // 201 - created
@@ -88,7 +88,7 @@ public class CRUDResource {
         }
 
         // logic
-        Optional<Visitor> foundVisitor = visitorRepository.findById(Integer.parseInt(id));
+        Optional<Visitor> foundVisitor = visitorRepository.findById(Long.parseLong(id));
         if (foundVisitor.isPresent()) {
             return ResponseEntity.ok().headers(headers).body(foundVisitor);
         } else {
@@ -118,7 +118,7 @@ public class CRUDResource {
         if (!StringUtils.isNumeric(id))
             // 400
             return ResponseEntity.badRequest().headers(headers).build();
-        int visitorId = Integer.parseInt(id);
+        long visitorId = Long.parseLong(id);
         Optional<Visitor> foundVisitor = visitorRepository.findById(visitorId);
         if (!foundVisitor.isPresent()) {
             // 404
@@ -159,7 +159,7 @@ public class CRUDResource {
         if (!StringUtils.isNumeric(id))
             // 400
             return ResponseEntity.badRequest().headers(headers).build();
-        int visitorId = Integer.parseInt(id);
+        long visitorId = Long.parseLong(id);
         Optional<Visitor> foundVisitor = visitorRepository.findById(visitorId);
         if (!foundVisitor.isPresent()) {
             // 404
@@ -192,7 +192,7 @@ public class CRUDResource {
         }
 
         // logic
-        Optional<Game> foundGame = gameRepository.findById(Integer.parseInt(id));
+        Optional<Game> foundGame = gameRepository.findById(Long.parseLong(id));
         if (foundGame.isPresent()) {
             return ResponseEntity.ok().headers(headers).body(foundGame);
         } else {
@@ -224,7 +224,7 @@ public class CRUDResource {
             // 400
             return ResponseEntity.badRequest().headers(headers).build();}
 
-        int gameId = Integer.parseInt(id);
+        long gameId = Long.parseLong(id);
         Optional<Game> foundGame = gameRepository.findById(gameId);
         if (!foundGame.isPresent()) {
             // 404
@@ -258,7 +258,7 @@ public class CRUDResource {
             // 400
             return ResponseEntity.badRequest().headers(headers).build();
 
-        int gameId = Integer.parseInt(id);
+        long gameId = Long.parseLong(id);
         Optional<Game> foundGame = gameRepository.findById(gameId);
         if (!foundGame.isPresent()) {
             // 404
@@ -291,7 +291,7 @@ public class CRUDResource {
         }
 
         // logic
-        Optional<Player> foundPlayer = playerRepository.findById(Integer.parseInt(id));
+        Optional<Player> foundPlayer = playerRepository.findById(Long.parseLong(id));
         if (foundPlayer.isPresent()) {
             return ResponseEntity.ok().headers(headers).body(foundPlayer);
         } else {
@@ -324,7 +324,7 @@ public class CRUDResource {
             return ResponseEntity.badRequest().headers(headers).build();
         }
 
-        int playerId = Integer.parseInt(id);
+        long playerId = Long.parseLong(id);
         Optional<Player> foundPlayer = playerRepository.findById(playerId);
         if (!foundPlayer.isPresent()) {
             // 404
@@ -369,7 +369,7 @@ public class CRUDResource {
             // 400
             return ResponseEntity.badRequest().headers(headers).build();
         }
-        int playerId = Integer.parseInt(id);
+        long playerId = Long.parseLong(id);
         int orderValue = Integer.parseInt(order);
 
         // logic get player
@@ -411,7 +411,7 @@ public class CRUDResource {
         if (!StringUtils.isNumeric(id))
             // 400
             return ResponseEntity.badRequest().headers(headers).build();
-        int playerId = Integer.parseInt(id);
+        long playerId = Long.parseLong(id);
 
         Optional<Player> foundPlayer = playerRepository.findById(playerId);
         if (!foundPlayer.isPresent()) {
@@ -468,7 +468,7 @@ public class CRUDResource {
             // 400
             return ResponseEntity.badRequest().headers(headers).build();
 
-        int gameId = Integer.parseInt(id);
+        long gameId = Long.parseLong(id);
         Optional<Game> foundGame = gameRepository.findById(gameId);
         if (!foundGame.isPresent()) {
             // 404
@@ -507,7 +507,7 @@ public class CRUDResource {
             // 400
             return ResponseEntity.badRequest().headers(headers).build();
 
-        int playingCardId = Integer.parseInt(id);
+        long playingCardId = Long.parseLong(id);
         Optional<Card> foundPlayingCard = cardRepository.findById(playingCardId);
         if (!foundPlayingCard.isPresent()) {
             // 404

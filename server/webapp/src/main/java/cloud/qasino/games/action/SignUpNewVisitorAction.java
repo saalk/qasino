@@ -80,7 +80,7 @@ public class SignUpNewVisitorAction implements Action<SignUpNewVisitorAction.Sig
         String getSuppliedEmail();
 
         // Setter
-        void setSuppliedVisitorId(int id);
+        void setSuppliedVisitorId(long id);
 
         // error setters
         void setHttpStatus(int status);

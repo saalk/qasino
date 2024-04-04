@@ -29,9 +29,9 @@ import java.util.Objects;
 public class Player {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "player_id")
-    private int playerId;
+    private long playerId;
 
     @JsonIgnore
     @Column(name = "created", length = 25)
@@ -100,24 +100,36 @@ public class Player {
         LocalDateTime localDateAndTime = LocalDateTime.now();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd-HH:mm-ssSSS-nnnnnnnnn");
         String result = localDateAndTime.format(formatter);
-        this.created = result.substring(2, 20);
+        this.created = result.substring(0, 20);
         this.role = Role.INITIATOR;
         this.winner = false;
         this.human = true;
         this.seat = 1;
     }
 
+    // visitor
     public Player(Visitor visitor, Game game, Role role, int fiches, int seat) {
         this();
         this.visitor = visitor;
         this.role = role;
         this.game = game;
-        this.human = this.visitor != null;
         this.fiches = fiches;
         this.seat = seat;
         this.aiLevel = AiLevel.HUMAN;
+        this.human = true;
     }
 
+    // bot
+    public Player(Game game, int fiches, int seat, AiLevel aiLevel) {
+        this();
+        this.visitor = null;
+        this.role = Role.BOT;
+        this.game = game;
+        this.human = false;
+        this.fiches = fiches;
+        this.seat = seat;
+        this.aiLevel = aiLevel;
+    }
     public Player(Visitor visitor, Game game, Role role, int fiches, int seat, Avatar avatar, AiLevel aiLevel) {
         this(visitor, game, role, fiches, seat);
 

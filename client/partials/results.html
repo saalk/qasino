@@ -1,0 +1,58 @@
+<!-- Primary Page Layout Results
+    –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+<div class="container"  ng-controller="ResultsController as vm">
+    <header>
+        <div class="row">
+            <div class="twelve columns">
+                <h2 class="title">Well played {{ vm.players[0].visitor.alias }}</h2>
+                <h5 class="subtitle">have a look at the results and repay your loan</h5>
+            </div>
+        </div>
+    </header>
+
+    <section class="section-main">
+        <div class="row">
+            <div class="nine columns">
+                <p class="main-description">
+                    Play another game with different ante, change your opponent(s) ai level.
+                    <br></p>
+                <p class="main-description">
+                    After one guess you can opt to pass on to the next player, but keep playing
+                    next turn will reward you double or nothing. Changing opponents ai level will not change their cubits.
+                    <br></p>
+                <a class="button game-button" href="/player">Quit</a>
+                <a class="button button-primary game-button1" data-ng-click="vm.changeAlien(1)"
+                   >Alien 1</a>
+                <a class="button button-primary game-button2 animate-if" data-ng-click="vm.changeAlien(2)" ng-if="vm.showalien1">Alien 2</a>
+                <a class="button game-button  animate-if" ng-if="vm.tothecasino" href="/casino" data-ng-click="vm.start()">Start the game</a>
+            </div>
+            <div class="three columns main-prop">
+                <img class="u-max-full-width main-img" alt="you" src="img/alien-1.jpg" ng-click="vm.setHumanName()">
+                <a class="button button-primary" ng-click="vm.setHumanName()">{{ vm.players[0].visitor.alias }}: {{
+                    vm.players[0].visitor.cubits | minLength:4:"0" }}</a>
+                <img class="u-max-full-width main-img" alt="your ship" src="img/ship-1.jpg"
+                     ng-click="vm.pawnHumanShipForCubits(250)">
+                <div ng-if="vm.players[0].visitor.securedLoan !== 0">
+                    <a class="button button-primary" ng-click="vm.pawnHumanShipForCubits(250)">Repay
+                        for: {{
+                        vm.players[0].visitor.securedLoan | minLength:4:"0" }}</a>
+                </div>
+                <div ng-if="vm.players[0].visitor.securedLoan === 0">
+                    <a class="button button-primary" ng-click="vm.pawnHumanShipForCubits(250)">Pawn
+                        your ship</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="aliens">
+        <div my-results-directive template-path="javascript/directives/players-results.html">
+        </div>
+    </section>
+
+    <section class="section-list" ng-show="vm.showListForDebug">
+        <div my-results-directive template-path="javascript/directives/players-list.html">
+        </div>
+    </section>
+
+</div>

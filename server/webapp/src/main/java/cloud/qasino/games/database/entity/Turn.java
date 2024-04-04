@@ -31,9 +31,9 @@ import java.util.Objects;
 public class Turn {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "turn_id")
-    private int turnId;
+    private long turnId;
 
     @JsonIgnore
     @Column(name = "created", length = 25)
@@ -51,8 +51,10 @@ public class Turn {
 
     // Derived functional fields
 
+
+    // can be player objet instead of id
     @Column(name = "activePlayer_id", nullable = true)
-    private int activePlayerId;
+    private long activePlayerId;
 
     @Column(name = "current_round_number", nullable = true)
     private int currentRoundNumber;
@@ -92,7 +94,7 @@ public class Turn {
         setUpdated();
     }
 
-    public Turn(Game game, int playerId) {
+    public Turn(Game game, long playerId) {
         this();
         this.game = game;
         this.activePlayerId = playerId;
@@ -106,7 +108,7 @@ public class Turn {
         LocalDateTime localDateAndTime = LocalDateTime.now();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd-HH:mm-ssSSS-nnnnnnnnn");
         String result = localDateAndTime.format(formatter);
-        this.updated = result.substring(2, 20);
+        this.updated = result.substring(0, 20);
 
         this.year = localDateAndTime.getYear();
         this.month = localDateAndTime.getMonth();
@@ -115,7 +117,7 @@ public class Turn {
         this.day = localDateAndTime.getDayOfMonth();
     }
 
-    public void newTurn(int newPlayerId) {
+    public void newTurn(long newPlayerId) {
         setUpdated();
         this.activePlayerId = newPlayerId;
         this.currentRoundNumber = ++ currentRoundNumber;
