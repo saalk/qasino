@@ -15,8 +15,8 @@ import javax.servlet.ServletException;
  */
 @Configuration
 @ComponentScan("cloud.qasino.games.library.*")
-@SpringBootApplication
-@EnableJpaRepositories
+//@SpringBootApplication
+//@EnableJpaRepositories
 public class LibraryApplication {
 
     public static void main(String[] args) throws Exception {
