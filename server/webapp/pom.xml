@@ -107,7 +107,13 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-data-jpa</artifactId>
 		</dependency>
-		<!-- use H2 as a very lightweight database -->
+		<!-- use maria db -->
+		<dependency>
+			<groupId>org.mariadb.jdbc</groupId>
+			<artifactId>mariadb-java-client</artifactId>
+			<version>3.3.3</version>
+		</dependency>
+		<!-- use H2 as a very lightweight test database -->
 		<dependency>
 			<groupId>com.h2database</groupId>
 			<artifactId>h2</artifactId>
@@ -252,6 +258,7 @@
 	</dependencies>
 
 	<build>
+
 		<plugins>
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
@@ -262,7 +269,6 @@
 						<profile>dev</profile>
 					</profiles>
 				</configuration>
-
 			</plugin>
 			<!-- The MojoHaus project is a collection of plugins for Apache Maven 2 & 3 -->
 			<plugin>
