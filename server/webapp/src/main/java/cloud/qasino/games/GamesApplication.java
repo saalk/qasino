@@ -7,6 +7,8 @@ import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
@@ -41,6 +43,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 /**
  * Sping looks for beans in web.xml -> applicationContext.xml -> spring-servlet.xml
+ * /WEB-INF/jsp/
  * web.xml -
  * /WEB-INF/applicationContext.xml - central in spring boot (@SpringBootApplication creates)
  * -> for properties, basic data source,
@@ -48,6 +51,10 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
  * -> /WEB-INF/jsp/
  */
 
+/*Java configuration typically uses @Bean-annotated methods within a @Configuration class. The @Bean annotation on a method indicates that the method creates a Spring bean. Moreover, a class annotated with @Configuration
+indicates that it contains Spring bean configurations.
+https://www.baeldung.com/spring-application-context
+*/
 
 @SpringBootApplication(exclude = {DataSourceAutoConfiguration.class})
 @EnableJpaRepositories(basePackages = "cloud.qasino.games.*")
