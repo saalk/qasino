@@ -2,7 +2,7 @@ package cloud.qasino.games.base;
 
 import cloud.qasino.games.database.entity.Game;
 import cloud.qasino.games.database.entity.Player;
-import cloud.qasino.games.database.entity.User;
+import cloud.qasino.games.database.entity.Visitor;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -96,12 +96,12 @@ public class TestDatabaseTriggerHandler implements PreUpdateEventListener, PreIn
         Object entity = event.getEntity();
         Class<?> type = null;
         boolean isCreationTimePresent = true;
-        if (entity instanceof User) {
+        if (entity instanceof Visitor) {
             if (event instanceof PreUpdateEvent) {
-                User requestEntity = (User) entity;
+                Visitor requestEntity = (Visitor) entity;
                 isCreationTimePresent = requestEntity.getCreated() != null;
             }
-            type = User.class.getDeclaredField(CREATION_TIME).getType();
+            type = Visitor.class.getDeclaredField(CREATION_TIME).getType();
         }
 
         if (entity instanceof Game) {

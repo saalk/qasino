@@ -22,14 +22,15 @@ import java.util.Objects;
 @Setter
 @JsonIdentityInfo(generator = JSOGGenerator.class)
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
-@Table(name = "results", indexes = {@Index(name = "results_index", columnList = "result_id",
-        unique = true)})
+@Table(name = "result", indexes = {
+        // not needed : @Index(name = "results_index", columnList = "result_id", unique = true)
+})
 public class Result {
 
     @Id
-    @GeneratedValue
-    @Column(name = "result_id", nullable = false)
-    private int resultId;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "result_id")
+    private long resultId;
 
     @JsonIgnore
     @Column(name = "created", length = 25)
@@ -44,11 +45,11 @@ public class Result {
             (name = "fk_player_id"), nullable = false)
     private Player player;
 
-    // UsPl: a User can win the Games as a Player
+    // UsPl: a Visitor can win the Games as a Player
     @ManyToOne(cascade = CascadeType.DETACH)
-    @JoinColumn(name = "user_id", referencedColumnName = "user_id", foreignKey = @ForeignKey
-            (name = "fk_user_id"), nullable = true)
-    private User user;
+    @JoinColumn(name = "visitor_id", referencedColumnName = "visitor_id", foreignKey = @ForeignKey
+            (name = "fk_visitor_id"), nullable = true)
+    private Visitor visitor;
 
     // the game for which the result is achieved
     @OneToOne (cascade = CascadeType.DETACH)
@@ -75,7 +76,7 @@ public class Result {
     private int day;
 
     @Setter(AccessLevel.NONE)
-    @Column(name = "is_active")
+    @Column(name = "fiches_won")
     private int fichesWon;
 
     // References
@@ -85,17 +86,17 @@ public class Result {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd-HH:mm-ssSSS-nnnnnnnnn");
         DateTimeFormatter week = DateTimeFormatter.ofPattern("W");
         String result = localDateAndTime.format(formatter);
-        this.created = result.substring(2, 20);
+        this.created = result.substring(0, 20);
         this.year = localDateAndTime.getYear();
         this.month = localDateAndTime.getMonth();
         this.week = localDateAndTime.format(week);
         this.day = localDateAndTime.getDayOfMonth();
     }
 
-    public Result(Player player, User user, Game game, Type type, int fichesWon) {
+    public Result(Player player, Visitor visitor, Game game, Type type, int fichesWon) {
         this();
         this.player = player;
-        this.user = user;
+        this.visitor = visitor;
         this.game = game;
 
         this.type = type;

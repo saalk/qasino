@@ -23,14 +23,15 @@ import java.util.Objects;
 @Setter
 @JsonIdentityInfo(generator= JSOGGenerator.class)
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
-@Table(name = "players", indexes = {@Index(name = "players_index", columnList = "player_id",
-        unique = true)})
+@Table(name = "player", indexes = {
+        // not needed : @Index(name = "players_index", columnList = "player_id", unique = true)
+})
 public class Player {
 
     @Id
-    @GeneratedValue
-    @Column(name = "player_id", nullable = false)
-    private int playerId;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "player_id")
+    private long playerId;
 
     @JsonIgnore
     @Column(name = "created", length = 25)
@@ -39,12 +40,12 @@ public class Player {
 
     // Foreign keys
 
-    // UsPl: a User can play many Games as a Player
-    // However ai players are no users!
+    // UsPl: a Visitor can play many Games as a Player
+    // However ai players are no visitors!
     @ManyToOne(cascade = CascadeType.DETACH)
-    @JoinColumn(name = "user_id", referencedColumnName = "user_id", foreignKey = @ForeignKey
-            (name = "fk_user_id"), nullable = true)
-    private User user;
+    @JoinColumn(name = "visitor_id", referencedColumnName = "visitor_id", foreignKey = @ForeignKey
+            (name = "fk_visitor_id"), nullable = true)
+    private Visitor visitor;
 
     @JsonIgnore
     // PlGa: many Players can play the same GameSubTotals
@@ -67,7 +68,7 @@ public class Player {
     @Column(name = "fiches")
     private int fiches;
 
-    // current sequence of the player in the game, zero is a DECLINED USER
+    // current sequence of the player in the game, zero is a DECLINED VISITOR
     @Column(name = "seat")
     private int seat;
 
@@ -99,26 +100,38 @@ public class Player {
         LocalDateTime localDateAndTime = LocalDateTime.now();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd-HH:mm-ssSSS-nnnnnnnnn");
         String result = localDateAndTime.format(formatter);
-        this.created = result.substring(2, 20);
+        this.created = result.substring(0, 20);
         this.role = Role.INITIATOR;
         this.winner = false;
         this.human = true;
         this.seat = 1;
     }
 
-    public Player(User user, Game game, Role role, int fiches, int seat) {
+    // visitor
+    public Player(Visitor visitor, Game game, Role role, int fiches, int seat) {
         this();
-        this.user = user;
+        this.visitor = visitor;
         this.role = role;
         this.game = game;
-        this.human = this.user != null;
         this.fiches = fiches;
         this.seat = seat;
         this.aiLevel = AiLevel.HUMAN;
+        this.human = true;
     }
 
-    public Player(User user, Game game, Role role, int fiches, int seat, Avatar avatar, AiLevel aiLevel) {
-        this(user, game, role, fiches, seat);
+    // bot
+    public Player(Game game, int fiches, int seat, AiLevel aiLevel) {
+        this();
+        this.visitor = null;
+        this.role = Role.BOT;
+        this.game = game;
+        this.human = false;
+        this.fiches = fiches;
+        this.seat = seat;
+        this.aiLevel = aiLevel;
+    }
+    public Player(Visitor visitor, Game game, Role role, int fiches, int seat, Avatar avatar, AiLevel aiLevel) {
+        this(visitor, game, role, fiches, seat);
 
         this.avatar = avatar;
         this.aiLevel = aiLevel;

@@ -12,14 +12,13 @@
 	<artifactId>webapp</artifactId>
 	<version>1.0.0-SNAPSHOT</version>
 	<name>CardGamesWebApp</name>
-
 	<packaging>war</packaging>
 
 	<properties>
-
+<!--		<start-class>cloud.qasino.games.configuration.GamesApplication</start-class>-->
 
 		<!-- 1: spring boot and web development -->
-		<spring-boot.version>2.7.18</spring-boot.version>
+		 <spring-boot.version>2.7.18</spring-boot.version>
 		<enforcer.legacy.fail>false</enforcer.legacy.fail>
 		<httpclient.version>4.5.14</httpclient.version>
 
@@ -58,7 +57,7 @@
 		<tomakehurst-wiremock.version>2.35.1</tomakehurst-wiremock.version>
 		<junit>4.13.2</junit>
 
-		<!-- 8: maven plugins -->
+		<!-- 8: maven plugins to parent pom -->
 		<surefire-logger-api.version>3.2.5</surefire-logger-api.version>
 		<maven-assembly-plugin.version>3.3.0</maven-assembly-plugin.version>
 		<exec-maven-plugin.version>1.6.0</exec-maven-plugin.version>
@@ -109,11 +108,18 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-data-jpa</artifactId>
 		</dependency>
-		<!-- use H2 as a very lightweight database -->
+		<!-- use maria db -->
+		<dependency>
+			<groupId>org.mariadb.jdbc</groupId>
+			<artifactId>mariadb-java-client</artifactId>
+			<version>3.3.3</version>
+		</dependency>
+		<!-- use H2 as a very lightweight test database -->
 		<dependency>
 			<groupId>com.h2database</groupId>
 			<artifactId>h2</artifactId>
 			<version>${h2.version}</version>
+			<!-- spring boot can decide version also -->
 			<scope>runtime</scope>
 		</dependency>
 		<!-- use Tomcat JDBC Connection Pooling -->
@@ -250,12 +256,11 @@
 			<optional>true</optional>
 		</dependency>
 
-
 	</dependencies>
 
 	<build>
+
 		<plugins>
-			<!-- plugin for several goals to work with a Spring Boot application -->
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
@@ -265,7 +270,13 @@
 						<profile>dev</profile>
 					</profiles>
 				</configuration>
-
+				<executions>
+					<execution>
+						<goals>
+							<goal>repackage</goal>
+						</goals>
+					</execution>
+				</executions>
 			</plugin>
 			<!-- The MojoHaus project is a collection of plugins for Apache Maven 2 & 3 -->
 			<plugin>
@@ -309,6 +320,7 @@
 			</activation>
 			<properties>
 				<spring.profiles.active>dev</spring.profiles.active>
+				<spring.boot.mainclass>cloud.qasino.games.configuration.GamesApplication</spring.boot.mainclass>
 			</properties>
 		</profile>
 		<profile>

@@ -1,0 +1,80 @@
+/* Toastr color buttons #fa39c3 pink 
+–––––––––––––––––––––––––––––––––––––––––––––––––– */
+.toast {
+  background-color: #4a8df8; /* blue used to be #030303 */
+}
+.toast-success {
+  background-color: #34AB47; /* green used to be #51A351 */
+}
+.toast-error {
+  background-color: #e02222; /* rood used to be #BD362F */
+}
+.toast-info {
+  background-color: #ff33cc; /* roze used to be #2F96B4 */
+}
+.toast-warning {
+  background-color: #feb74a; /* geel used to be #F89406 */
+}
+
+﻿/* General, .says class and # means its an id
+–––––––––––––––––––––––––––––––––––––––––––––––––– */
+.button {
+  border-radius: 100px; }
+
+.some-class {
+  foreground-color: lightgreen;
+}
+
+/*
+.b, strong {
+     color: #ff33cc;
+     }
+*/
+/*
+.container {
+  max-width: 900px; }
+*/
+/* Header 
+–––––––––––––––––––––––––––––––––––––––––––––––––– */
+header {
+  margin-top: 2rem;}
+
+/* Section main
+–––––––––––––––––––––––––––––––––––––––––––––––––– */
+.main-img {
+  display: block;
+  height: 90%;
+  width: 90%;
+  text-align: center; }
+
+/* Three alien picture
+–––––––––––––––––––––––––––––––––––––––––––––––––– */
+
+/* Footer
+–––––––––––––––––––––––––––––––––––––––––––––––––– */
+
+.footer {
+   position: absolute;
+   bottom: 0;
+   height: 60px;
+   border-top-width: 5px;
+   border-top-style: solid;
+   border-top-color: #FFF;  }
+
+/* ngif animate
+–––––––––––––––––––––––––––––––––––––––––––––––––– */
+.animate-if.ng-enter, .animate-if.ng-leave {
+  transition:all cubic-bezier(0.42, 0.0, 0.58, 1.0) 0.5s;
+}
+
+.animate-if.ng-enter,
+.animate-if.ng-leave.ng-leave-active {
+  opacity:0;
+}
+
+.animate-if.ng-leave,
+.animate-if.ng-enter.ng-enter-active {
+  opacity:1;
+}
+
+

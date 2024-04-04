@@ -31,8 +31,8 @@ import java.util.Map;
 @Slf4j
 public class QasinoFlowDTO //extends AbstractFlowDTO
         implements
-        FindUserIdByUserNameAction.FindUserIdByUserNameActionDTO,
-        SignUpNewUserAction.SignUpNewUserActionDTO,
+        FindVisitorIdByVisitorNameAction.FindVisitorIdByVisitorNameActionDTO,
+        SignUpNewVisitorAction.SignUpNewVisitorActionDTO,
         FindAllEntitiesForInputAction.FindAllEntitiesForInputActionDTO,
         CalculateHallOfFameAction.CalculateHallOfFameActionDTO,
         HandleSecuredLoanAction.HandleSecuredLoanActionDTO,
@@ -50,16 +50,16 @@ public class QasinoFlowDTO //extends AbstractFlowDTO
 
     // FRONTEND ID DATA
     // frontend header
-    private int suppliedUserId;
-    private int suppliedGameId;
+    private long suppliedVisitorId;
+    private long suppliedGameId;
     // frontend path ids
-    private int suppliedLeagueId;
-    private int invitedPlayerId;
-    private int acceptedPlayerId;
-    private int suppliedTurnPlayerId;
+    private long suppliedLeagueId;
+    private long invitedPlayerId;
+    private long acceptedPlayerId;
+    private long suppliedTurnPlayerId;
     // generic frontend path ids
     private String suppliedEntity;      // todo
-    private int suppliedEntityId;       // todo
+    private long suppliedEntityId;       // todo
     private String suppliedPathParam;   // todo
 
     // FRONTEND PATH/PARAM DATA
@@ -72,8 +72,8 @@ public class QasinoFlowDTO //extends AbstractFlowDTO
     // paging
     private int suppliedPages = 0;
     private int suppliedMaxPerPage = 4;
-    // user
-    private String suppliedUserName;
+    // visitor
+    private String suppliedVisitorName;
     private String suppliedEmail;
     // league
     private String suppliedLeagueName;
@@ -99,14 +99,14 @@ public class QasinoFlowDTO //extends AbstractFlowDTO
 
     // RETRIEVED DATA BASED ON FRONTEND ID's
     // in game data
-    private User gameUser;
+    private Visitor gameVisitor;
     private Player invitedPlayer;
     private Player acceptedPlayer;
     private Player turnPlayer;
 
-    private List<Game> newGamesForUser;
-    private List<Game> startedGamesForUser;
-    private List<Game> finishedGamesForUser;
+    private List<Game> newGamesForVisitor;
+    private List<Game> startedGamesForVisitor;
+    private List<Game> finishedGamesForVisitor;
 
     private Game qasinoGame;
     private List<Player> qasinoGamePlayers;
@@ -115,15 +115,15 @@ public class QasinoFlowDTO //extends AbstractFlowDTO
     private List<CardMove> qasinoGameCardMoves;
 
     private League qasinoGameLeague;
-    private List<League> leaguesForUser;
+    private List<League> leaguesForVisitor;
     private Result gameResult;
     private List<Result> resultsForLeague;
     // todo
-    private List<User> friends;
+    private List<Visitor> friends;
 
     // STATS based on RETRIEVED DATA
     // stats
-    public boolean loggedOn;     // icon is spaceShip -> logon to enable nav-user
+    public boolean loggedOn;     // icon is spaceShip -> logon to enable nav-visitor
     public boolean balanceNotZero;      // icon is cards -> select/start game to enable nav-game
     public boolean gamePlayable;      // icon is fiches -> playable game to enable nav-qasino
     public boolean leaguePresent;       // icon is hallOfFame -> position in league or no league
@@ -194,16 +194,16 @@ public class QasinoFlowDTO //extends AbstractFlowDTO
         key = "gameid"; // todo why is this lower if passed is upper
         if (headerData.containsKey(key)) {
             if (isValueForIntKeyValid(key, headerData.get(key), dataName, headerDataString)) {
-                this.suppliedGameId = Integer.parseInt(headerData.get(key));
+                this.suppliedGameId = Long.parseLong(headerData.get(key));
             } else {
                 return false;
             }
         }
 
-        key = "userid";
+        key = "visitorid";
         if (headerData.containsKey(key)) {
             if (isValueForIntKeyValid(key, headerData.get(key), dataName, headerDataString)) {
-                this.suppliedUserId = Integer.parseInt(headerData.get(key));
+                this.suppliedVisitorId = Long.parseLong(headerData.get(key));
             } else {
                 return false;
             }
@@ -219,7 +219,7 @@ public class QasinoFlowDTO //extends AbstractFlowDTO
 
         if (pathData==null) return true;
 
-        // user repay or pawn
+        // visitor repay or pawn
         key = "pawnship";
         if (pathData.containsKey(key)) {
             this.offeringShipForPawn = true;
@@ -232,7 +232,7 @@ public class QasinoFlowDTO //extends AbstractFlowDTO
         key = "leagueId";
         if (pathData.containsKey(key)) {
             if (isValueForIntKeyValid(key, pathData.get(key), dataName, pathDataString)) {
-                this.suppliedLeagueId = Integer.parseInt(pathData.get(key));
+                this.suppliedLeagueId = Long.parseLong(pathData.get(key));
             } else {
                 return false;
             }
@@ -240,7 +240,7 @@ public class QasinoFlowDTO //extends AbstractFlowDTO
         key = "invitedPlayerId";
         if (pathData.containsKey(key)) {
             if (isValueForIntKeyValid(key, pathData.get(key), dataName, pathDataString)) {
-                this.invitedPlayerId = Integer.parseInt(pathData.get(key));
+                this.invitedPlayerId = Long.parseLong(pathData.get(key));
             } else {
                 return false;
             }
@@ -248,7 +248,7 @@ public class QasinoFlowDTO //extends AbstractFlowDTO
         key = "acceptedPlayerId";
         if (pathData.containsKey(key)) {
             if (isValueForIntKeyValid(key, pathData.get(key), dataName, pathDataString)) {
-                this.suppliedLeagueId = Integer.parseInt(pathData.get(key));
+                this.suppliedLeagueId = Long.parseLong(pathData.get(key));
             } else {
                 return false;
             }
@@ -256,7 +256,7 @@ public class QasinoFlowDTO //extends AbstractFlowDTO
         key = "turnPlayerId";
         if (pathData.containsKey(key)) {
             if (isValueForIntKeyValid(key, pathData.get(key), dataName, pathDataString)) {
-                this.suppliedTurnPlayerId = Integer.parseInt(pathData.get(key));
+                this.suppliedTurnPlayerId = Long.parseLong(pathData.get(key));
             } else {
                 return false;
             }
@@ -292,10 +292,10 @@ public class QasinoFlowDTO //extends AbstractFlowDTO
                 return false;
             }
         }
-        // user
-        key = "userName";
+        // visitor
+        key = "visitorName";
         if (paramData.containsKey(key)) {
-            this.suppliedUserName = (paramData.get("userName"));
+            this.suppliedVisitorName = (paramData.get("visitorName"));
         }
         key = "email";
         if (paramData.containsKey(key)) {

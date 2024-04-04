@@ -12,9 +12,13 @@ import org.hibernate.annotations.DynamicUpdate;
 import javax.persistence.*;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.Period;
 
 import static java.time.temporal.TemporalAdjusters.*;
+
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeFormatterBuilder;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -25,28 +29,29 @@ import java.util.Objects;
 @Setter
 @JsonIdentityInfo(generator = JSOGGenerator.class)
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
-@Table(name = "leagues", indexes = {@Index(name = "leagues_index", columnList = "league_id",
-        unique = true)})
+@Table(name = "league", indexes = {
+        // not needed : @Index(name = "leagues_index", columnList = "league_id", unique = true)
+})
 public class League {
 
     @Id
-    @GeneratedValue
-    @Column(name = "league_id", nullable = false)
-    private int leagueId;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "league_id")
+    private long leagueId;
 
     @JsonIgnore
-    @Column(columnDefinition = "DATE")
-    private LocalDate created;
+    @Column(name = "created", length = 25)
+    private String created;
 
 
     // Foreign keys
 
-    // UsPl: a User can start many Leagues
+    // UsPl: a Visitor can start many Leagues
     // However bots cannot start a league
     @ManyToOne(cascade = CascadeType.DETACH)
-    @JoinColumn(name = "user_id", referencedColumnName = "user_id", foreignKey = @ForeignKey
-            (name = "fk_user_id"), nullable = false)
-    private User user;
+    @JoinColumn(name = "visitor_id", referencedColumnName = "visitor_id", foreignKey = @ForeignKey
+            (name = "fk_visitor_id"), nullable = false)
+    private Visitor visitor;
 
 
     // Normal fields
@@ -57,13 +62,13 @@ public class League {
     @Column(name = "name_seq")
     private int nameSequence;
 
-    @Setter(AccessLevel.NONE)
     @Getter(AccessLevel.NONE)
     @Column(name = "is_active")
     private boolean active;
 
-    @Column(columnDefinition = "DATE")
-    private LocalDate ended;
+    @JsonIgnore
+    @Column(name = "ended", length = 25)
+    private String ended;
 
 
     // References
@@ -74,14 +79,18 @@ public class League {
     private List<Game> games = new ArrayList<>();
 
     public League() {
-        this.created = LocalDate.now();
+        LocalDateTime localDateAndTime = LocalDateTime.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd-HH:mm-ssSSS-nnnnnnnnn");
+        String result = localDateAndTime.format(formatter);
+        this.created = result.substring(0, 20);
+
         this.active = true;
 
     }
 
-    public League(User user, String name, int nameSequence) {
+    public League(Visitor visitor, String name, int nameSequence) {
         this();
-        this.user = user;
+        this.visitor = visitor;
         this.name = name;
         this.nameSequence = nameSequence;
 
@@ -90,33 +99,57 @@ public class League {
 
     public boolean endLeagueDaysFromNow(int days) {
         if (!this.isActive()) return false;
-        this.ended = LocalDate.now().plus(Period.ofDays(days));
+        LocalDateTime localDateAndTime = LocalDateTime.now().plus(Period.ofDays(days));
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd-HH:mm-ssSSS-nnnnnnnnn");
+        String result = localDateAndTime.format(formatter);
+        this.ended = result.substring(0, 20);
+
         return true;
     }
 
     public boolean endLeagueNextMonday() {
         if (!this.isActive()) return false;
-        this.ended = LocalDate.now().with(next(DayOfWeek.MONDAY));
+        LocalDateTime localDateAndTime = LocalDateTime.now().with(next(DayOfWeek.MONDAY));
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd-HH:mm-ssSSS-nnnnnnnnn");
+        String result = localDateAndTime.format(formatter);
+        this.ended = result.substring(0, 20);
+
         return true;
     }
 
     public boolean endLeagueThisMonth() {
         if (!this.isActive()) return false;
-        this.ended = LocalDate.now().with(lastDayOfMonth());
+        LocalDateTime localDateAndTime = LocalDateTime.now().with(lastDayOfMonth());;
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd-HH:mm-ssSSS-nnnnnnnnn");
+        String result = localDateAndTime.format(formatter);
+        this.ended = result.substring(0, 20);
+
         return true;
     }
 
     public boolean isActive() {
-        if (!this.active) return false; // user can set to inactive before enddate
-        if (this.ended == null) return true;
+        if (!this.active) return false; // visitor can set to inactive before enddate
+
+        if (this.ended == null || this.ended.isEmpty()) return true;
+
         // check if ended has passed
         LocalDate yesterday = LocalDate.now().plusDays(-1);
-        int days = Period.between(yesterday, this.ended).getDays();
-        return days <= 0; // todo test this
+
+        DateTimeFormatterBuilder dateTimeFormatterBuilder = new DateTimeFormatterBuilder()
+                .append(DateTimeFormatter.ofPattern("yyyyMMdd-HH:mm-ssSSS"));
+        DateTimeFormatter dateTimeFormatter = dateTimeFormatterBuilder.toFormatter();
+        LocalDate ended = LocalDate.parse(this.ended,dateTimeFormatter);
+
+        int days = Period.between(yesterday, ended).getDays();
+        return days > 0;
     }
 
     public void closeLeaguePerYesterday() {
-        this.ended = LocalDate.now().plusDays(-1); // yesterday;
+
+        LocalDateTime localDateAndTime = LocalDateTime.now().plusDays(-1); // yesterday;
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd-HH:mm-ssSSS-nnnnnnnnn");
+        String result = localDateAndTime.format(formatter);
+        this.ended = result.substring(0, 20);
         this.active = false;
     }
 

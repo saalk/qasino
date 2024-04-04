@@ -1,0 +1,86 @@
+<!-- Primary Page Layout Casino
+    –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+<div class="container" ng-controller="CasinoController as vm">
+
+
+    <header>
+        <div class="row">
+            <div class="twelve columns">
+                <h2 class="title">{{ vm.players[vm.loopplayer].visitor.alias }}, ante up!</h2>
+                <h5 class="subtitle">{{ vm.cardGame.name }} card game round {{vm.cardGame.currentRound}}</h5>
+            </div>
+        </div>
+    </header>
+
+    <section class="section-main">
+        <div class="row">
+            <div class="12 columns">
+                <p class="main-description">
+                    Make a good guess.
+                    Only after one guess you can opt to pass on to the next player, but keep playing
+                    next turn will reward you double or nothing.<br></p>
+                <p class="main-description">
+                    When the last player has passed, you can start a new turn or go to the
+                    resuls.<br></p>
+
+
+                <div class="row">
+                    <h6>{{vm.cardGame.state}} - {{ vm.cardGame.dealt }}</h6>
+                    <table>
+                        <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Name</th>
+                            <th>Ai level</th>
+                            <th>Bet</th>
+                            <th>Cards</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr data-ng-repeat="player in vm.players">
+                            <td>{{ player.playingOrder }}</td>
+                            <td>{{ player.visitor.alias }}</td>
+                            <td>{{ player.visitor.aiLevel }}</td>
+                            <td>{{ player.balance }}</td>
+                            <td>{{ player.hand }}</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div>
+                    <a class="button game-button1" ng-if="vm.cardGame.currentRound >= 1"
+                       href="/results">Results</a>
+                    <a class="button game-button2" ng-if="vm.cardGame.currentRound == 0"
+                       href="/game">Leave</a>
+                    <a class="button button-primary game-button3" ng-if="vm.deal" class="animate-if"
+                       data-ng-click="vm.turn('Deal')">Deal</a>
+                    <a class="button button-primary game-button4" ng-if="vm.higher"
+                       class="animate-if"
+                       data-ng-click="vm.turn('Higher')">Higher</a>
+                    <a class="button button-primary game-button5" ng-if="vm.lower"
+                       class="animate-if"
+                       data-ng-click="vm.turn('Lower')">Lower</a>
+                    <a class="button button-primary game-button5" ng-if="vm.next" class="animate-if"
+                       data-ng-click="vm.turn('Lower')">Next</a>
+                    <!-- pass the round logic-->
+                    <a class="button game-button6" ng-if="vm.pass" class="animate-if"
+                       data-ng-click="vm.turn('Pass')">pass the turn</a>
+                </div>
+            </div>
+            <div class="three column main-prop">
+            </div>
+        </div>
+    </section>
+
+    <section class="aliens">
+        <div my-game-directive template-path="javascript/directives/players-casino.html">
+        </div>
+    </section>
+
+    <section class="section-list" ng-show="vm.showListForDebug">
+        <div my-game-directive template-path="javascript/directives/players-list.html">
+        </div>
+    </section>
+
+</div>

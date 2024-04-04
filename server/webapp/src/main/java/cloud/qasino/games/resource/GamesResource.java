@@ -25,7 +25,7 @@ import static cloud.qasino.games.configuration.Constants.DEFAULT_PAWN_SHIP_BOT;
 import static cloud.qasino.games.configuration.Constants.isNullOrEmpty;
 
 // basic path /qasino
-// basic header @RequestHeader(value "user", required = true) int userId" // else 400
+// basic header @RequestHeader(value "visitor", required = true) int visitorId" // else 400
 //
 // 200 - ok
 // 201 - created
@@ -37,7 +37,7 @@ import static cloud.qasino.games.configuration.Constants.isNullOrEmpty;
 @RestController
 public class GamesResource {
 
-    private UserRepository userRepository;
+    private VisitorRepository visitorRepository;
     private LeagueRepository leagueRepository;
     private GameRepository gameRepository;
     private PlayerRepository playerRepository;
@@ -46,14 +46,14 @@ public class GamesResource {
 
     @Autowired
     public GamesResource(
-            UserRepository userRepository,
+            VisitorRepository visitorRepository,
             LeagueRepository leagueRepository,
             GameRepository gameRepository,
             PlayerRepository playerRepository,
             CardRepository cardRepository,
             TurnRepository turnRepository) {
 
-        this.userRepository = userRepository;
+        this.visitorRepository = visitorRepository;
         this.leagueRepository = leagueRepository;
         this.gameRepository = gameRepository;
         this.playerRepository = playerRepository;
@@ -66,7 +66,7 @@ public class GamesResource {
     // todo HIGH make endpoints
     // /api/games/{id}/ACCEPT -> PUT player fiches // PREPARED
     // /api/games/{id}/WITHDRAW/bot -> DELETE players // PREPARED
-    // /api/games/{id}/WITHDRAW/user{id} -> DELETE players // PREPARED
+    // /api/games/{id}/WITHDRAW/visitor{id} -> DELETE players // PREPARED
 
     // tested ok
     @PostMapping(value = "/games/new/{type}")
@@ -104,8 +104,8 @@ public class GamesResource {
     }
 
     // tested
-    @PostMapping(value = "/games/new/{type}/users/{uId}")
-    public ResponseEntity<Game> setupInitGameWithUser(
+    @PostMapping(value = "/games/new/{type}/visitors/{uId}")
+    public ResponseEntity<Game> setupInitGameWithVisitor(
             @PathVariable("type") String type,
             @PathVariable("uId") String uId,
             @RequestParam(name = "style", defaultValue = " ") String style,
@@ -131,23 +131,23 @@ public class GamesResource {
             return ResponseEntity.badRequest().headers(headers).build();
         }
 
-        int userId = Integer.parseInt(uId);
-        Optional<User> foundUser = userRepository.findById(userId);
-        if (!foundUser.isPresent())
+        long visitorId = Long.parseLong(uId);
+        Optional<Visitor> foundVisitor = visitorRepository.findById(visitorId);
+        if (!foundVisitor.isPresent())
             // 404
             return ResponseEntity.status(HttpStatus.NOT_FOUND).headers(headers).build();
-        User linkedUser = foundUser.get();
+        Visitor linkedVisitor = foundVisitor.get();
 
         // create game no league
         Game startedGame = gameRepository.save(new Game(null, type,
-                linkedUser.getUserId(), style, Integer.parseInt(ante)));
+                linkedVisitor.getVisitorId(), style, Integer.parseInt(ante)));
         if (startedGame.getGameId() == 0) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).headers(headers).build();
         }
 
         // create initiator
         Player createdHuman = new Player(
-                linkedUser, startedGame, Role.INITIATOR,linkedUser.getBalance(), 1,
+                linkedVisitor, startedGame, Role.INITIATOR,linkedVisitor.getBalance(), 1,
                 Avatar.fromLabelWithDefault(avatar), AiLevel.HUMAN);
         createdHuman = playerRepository.save(createdHuman);
         if (createdHuman.getPlayerId() == 0) {
@@ -162,8 +162,8 @@ public class GamesResource {
     }
 
     // tested
-    @PostMapping(value = "/games/new/{type}/users/{uId}/players/{aiLevel}")
-    public ResponseEntity<Game> setupInitGameWithUserAndPlayer(
+    @PostMapping(value = "/games/new/{type}/visitors/{uId}/players/{aiLevel}")
+    public ResponseEntity<Game> setupInitGameWithVisitorAndPlayer(
             @PathVariable("type") String type,
             @PathVariable("uId") String uId,
             @PathVariable("aiLevel") String aiLevel,
@@ -195,23 +195,23 @@ public class GamesResource {
         if (AiLevel.fromLabelWithDefault(aiLevel) == AiLevel.HUMAN)
             return ResponseEntity.status(HttpStatus.CONFLICT).headers(headers).build();
 
-        int userId = Integer.parseInt(uId);
-        Optional<User> foundUser = userRepository.findById(userId);
-        if (!foundUser.isPresent())
+        long visitorId = Long.parseLong(uId);
+        Optional<Visitor> foundVisitor = visitorRepository.findById(visitorId);
+        if (!foundVisitor.isPresent())
             // 404
             return ResponseEntity.status(HttpStatus.NOT_FOUND).headers(headers).build();
-        User linkedUser = foundUser.get();
+        Visitor linkedVisitor = foundVisitor.get();
 
         // create game no league
         Game startedGame = gameRepository.save(new Game(null, type,
-                linkedUser.getUserId(), style, Integer.parseInt(ante)));
+                linkedVisitor.getVisitorId(), style, Integer.parseInt(ante)));
         if (startedGame.getGameId() == 0) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).headers(headers).build();
         }
 
         // create initiator
         Player createdHuman = new Player(
-                linkedUser, startedGame, Role.INITIATOR,linkedUser.getBalance(), 1,
+                linkedVisitor, startedGame, Role.INITIATOR,linkedVisitor.getBalance(), 1,
                 Avatar.fromLabelWithDefault(avatar), AiLevel.HUMAN);
         createdHuman = playerRepository.save(createdHuman);
         if (createdHuman.getPlayerId() == 0) {
@@ -237,8 +237,8 @@ public class GamesResource {
     }
 
     // tested
-    @PostMapping(value = "/games/new/{type}/league/{lId}/users/{uId}")
-    public ResponseEntity<Game> setupInitGameInLeagueWithUser(
+    @PostMapping(value = "/games/new/{type}/league/{lId}/visitors/{uId}")
+    public ResponseEntity<Game> setupInitGameInLeagueWithVisitor(
             @PathVariable("type") String type,
             @PathVariable("uId") String uId,
             @PathVariable("lId") String lId,
@@ -266,26 +266,26 @@ public class GamesResource {
             return ResponseEntity.badRequest().headers(headers).build();
         }
 
-        int userId = Integer.parseInt(uId);
-        int leagueId = Integer.parseInt(lId);
-        Optional<User> foundUser = userRepository.findById(userId);
+        long visitorId = Long.parseLong(uId);
+        long leagueId = Long.parseLong(lId);
+        Optional<Visitor> foundVisitor = visitorRepository.findById(visitorId);
         Optional<League> foundLeague = leagueRepository.findById(leagueId);
-        if (!foundUser.isPresent() || !foundLeague.isPresent())
+        if (!foundVisitor.isPresent() || !foundLeague.isPresent())
             // 404
             return ResponseEntity.status(HttpStatus.NOT_FOUND).headers(headers).build();
-        User linkedUser = foundUser.get();
+        Visitor linkedVisitor = foundVisitor.get();
         League linkedLeague = foundLeague.get();
 
         // create game with league
         Game startedGame = gameRepository.save(new Game(linkedLeague, type,
-                linkedUser.getUserId(), style, Integer.parseInt(ante)));
+                linkedVisitor.getVisitorId(), style, Integer.parseInt(ante)));
         if (startedGame.getGameId() == 0) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).headers(headers).build();
         }
 
         // create initiator
         Player createdHuman = new Player(
-                linkedUser, startedGame, Role.INITIATOR,linkedUser.getBalance(), 1,
+                linkedVisitor, startedGame, Role.INITIATOR,linkedVisitor.getBalance(), 1,
                 Avatar.fromLabelWithDefault(avatar), AiLevel.HUMAN);
         createdHuman = playerRepository.save(createdHuman);
         if (createdHuman.getPlayerId() == 0) {
@@ -300,8 +300,8 @@ public class GamesResource {
     }
 
     // tested
-    @PostMapping(value = "/games/new/{type}/league/{lId}/users/{uId}/players/{aiLevel}")
-    public ResponseEntity<Game> setupInitGameInLEagueWithUserAndPlayer(
+    @PostMapping(value = "/games/new/{type}/league/{lId}/visitors/{uId}/players/{aiLevel}")
+    public ResponseEntity<Game> setupInitGameInLEagueWithVisitorAndPlayer(
             @PathVariable("type") String type,
             @PathVariable("uId") String uId,
             @PathVariable("lId") String lId,
@@ -334,18 +334,18 @@ public class GamesResource {
         if (AiLevel.fromLabelWithDefault(aiLevel) == AiLevel.HUMAN)
             return ResponseEntity.status(HttpStatus.CONFLICT).headers(headers).build();
 
-        int userId = Integer.parseInt(uId);
-        int leagueId = Integer.parseInt(lId);
-        Optional<User> foundUser = userRepository.findById(userId);
+        long visitorId = Long.parseLong(uId);
+        long leagueId = Long.parseLong(lId);
+        Optional<Visitor> foundVisitor = visitorRepository.findById(visitorId);
         Optional<League> foundLeague = leagueRepository.findById(leagueId);
-        if (!foundUser.isPresent() || !foundLeague.isPresent())
+        if (!foundVisitor.isPresent() || !foundLeague.isPresent())
             // 404
             return ResponseEntity.status(HttpStatus.NOT_FOUND).headers(headers).build();
-        User linkedUser = foundUser.get();
+        Visitor linkedVisitor = foundVisitor.get();
         League linkedLeague = foundLeague.get();
 
         // create game with league
-        Game startedGame = gameRepository.save(new Game(linkedLeague, type, linkedUser.getUserId(),
+        Game startedGame = gameRepository.save(new Game(linkedLeague, type, linkedVisitor.getVisitorId(),
                 style, Integer.parseInt(ante)));
         startedGame.shuffleGame(0);
         List<Card> cards =
@@ -356,7 +356,7 @@ public class GamesResource {
 
         // create initiator
         Player createdHuman = new Player(
-                linkedUser, startedGame, Role.INITIATOR,linkedUser.getBalance(), 1,
+                linkedVisitor, startedGame, Role.INITIATOR,linkedVisitor.getBalance(), 1,
                 Avatar.fromLabelWithDefault(avatar), AiLevel.HUMAN);
         createdHuman = playerRepository.save(createdHuman);
         if (createdHuman.getPlayerId() == 0) {
@@ -365,7 +365,7 @@ public class GamesResource {
 
         // create bot // todo LOW generated its won fiches
         Player createdAi = new Player(
-                null, startedGame, Role.BOT,linkedUser.getBalance(), 2,
+                null, startedGame, Role.BOT,linkedVisitor.getBalance(), 2,
                 Avatar.fromLabelWithDefault(avatar), AiLevel.fromLabelWithDefault(aiLevel));
         createdAi = playerRepository.save(createdAi);
         if (createdAi.getPlayerId() == 0) {
@@ -405,7 +405,7 @@ public class GamesResource {
             // 400
             return ResponseEntity.badRequest().headers(headers).build();
 
-        int gameId = Integer.parseInt(gid);
+        long gameId = Long.parseLong(gid);
         int ante = Integer.parseInt(inputAnte);
         Optional<Game> foundGame = gameRepository.findById(gameId);
         if (!foundGame.isPresent()) {
@@ -434,10 +434,10 @@ public class GamesResource {
 
     }
 
-    @PostMapping(value = "/games/{gameId}/invite/users{userId}")
+    @PostMapping(value = "/games/{gameId}/invite/visitors{visitorId}")
     public ResponseEntity<Game> inviteHumanPLayerForGame(
             @PathVariable("gameId") String gId,
-            @PathVariable("userId") String uId,
+            @PathVariable("visitorId") String uId,
             @RequestParam(name = "avatar", defaultValue = "elf") String avatar) {
 
         // header in response
@@ -457,8 +457,8 @@ public class GamesResource {
             return ResponseEntity.badRequest().headers(headers).build();
         }
 
-        int gameId = Integer.parseInt(gId);
-        int userId = Integer.parseInt(uId);
+        long gameId = Long.parseLong(gId);
+        long visitorId = Long.parseLong(uId);
 
         Optional<Game> foundGame = gameRepository.findById(gameId);
         if (!foundGame.isPresent()) {
@@ -467,17 +467,17 @@ public class GamesResource {
         }
         Game linkedGame = foundGame.get();
 
-        Optional<User> foundUser = userRepository.findById(userId);
-        if (!foundUser.isPresent()) {
+        Optional<Visitor> foundVisitor = visitorRepository.findById(visitorId);
+        if (!foundVisitor.isPresent()) {
             // 404
             return ResponseEntity.status(HttpStatus.NOT_FOUND).headers(headers).build();
         }
-        User linkedUser = foundUser.get();
+        Visitor linkedVisitor = foundVisitor.get();
 
         int sequenceCalculated = (playerRepository.countByGame(linkedGame)) + 1;
         // create initiator
         Player createdHuman = new Player(
-                linkedUser, linkedGame, Role.INVITED,0, sequenceCalculated,
+                linkedVisitor, linkedGame, Role.INVITED,0, sequenceCalculated,
                 Avatar.fromLabelWithDefault(avatar), AiLevel.HUMAN);
         createdHuman = playerRepository.save(createdHuman);
         if (createdHuman.getPlayerId() == 0) {
@@ -515,10 +515,10 @@ public class GamesResource {
 
         // rules
         if (AiLevel.fromLabelWithDefault(aiLevel) == AiLevel.HUMAN)
-            // todo LOW split userName and number
+            // todo LOW split visitorName and number
             return ResponseEntity.status(HttpStatus.CONFLICT).headers(headers).build();
 
-        int gameId = Integer.parseInt(id);
+        long gameId = Long.parseLong(id);
         Optional<Game> foundGame = gameRepository.findById(gameId);
         if (!foundGame.isPresent()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).headers(headers).build();
@@ -567,8 +567,8 @@ public class GamesResource {
             return ResponseEntity.badRequest().headers(headers).build();
         }
 
-        int gameId = Integer.parseInt(gid);
-        int playerId = Integer.parseInt(pid);
+        long gameId = Long.parseLong(gid);
+        long playerId = Long.parseLong(pid);
         int fiches = Integer.parseInt(fichesInput);
 
         Optional<Game> foundGame = gameRepository.findById(gameId);
@@ -623,8 +623,8 @@ public class GamesResource {
             return ResponseEntity.badRequest().headers(headers).build();
         }
 
-        int gameId = Integer.parseInt(gid);
-        int playerId = Integer.parseInt(pid);
+        long gameId = Long.parseLong(gid);
+        long playerId = Long.parseLong(pid);
 
         Optional<Game> foundGame = gameRepository.findById(gameId);
         if (!foundGame.isPresent()) {
@@ -676,7 +676,7 @@ public class GamesResource {
             // 400
             return ResponseEntity.badRequest().headers(headers).build();}
 
-        int gameId = Integer.parseInt(id);
+        long gameId = Long.parseLong(id);
         Optional<Game> foundGame = gameRepository.findById(gameId);
         if (!foundGame.isPresent()) {
             // 404

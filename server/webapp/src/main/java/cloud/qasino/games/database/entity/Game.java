@@ -1,5 +1,6 @@
 package cloud.qasino.games.database.entity;
 
+import cloud.qasino.games.database.entity.enums.card.Face;
 import cloud.qasino.games.statemachine.GameState;
 import cloud.qasino.games.database.entity.enums.game.Style;
 import cloud.qasino.games.database.entity.enums.game.Type;
@@ -29,14 +30,15 @@ import java.util.Objects;
 @Setter
 @JsonIdentityInfo(generator = JSOGGenerator.class)
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
-@Table(name = "games", indexes = {@Index(name = "games_index", columnList = "game_id", unique =
-        true)})
+@Table(name = "game", indexes = {
+        // not needed : @Index(name = "games_index", columnList = "game_id", unique = true)
+})
 public class Game {
 
     @Id
-    @GeneratedValue
-    @Column(name = "game_id", nullable = false)
-    private int gameId;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "game_id")
+    private long gameId;
 
     @JsonIgnore
     @Column(name = "updated", length = 25, nullable = false)
@@ -53,7 +55,7 @@ public class Game {
     private League league;
 
     @Column(name = "initiator")
-    private int initiator; // userId
+    private long initiator; // visitorId
 
 
     // Normal fields
@@ -127,14 +129,20 @@ public class Game {
         this.ante = 20;
     }
 
-    public Game(League league, String type, int initiator ) {
+    public Game(League league, long initiator ) {
+        this();
+        this.league = league;
+        this.initiator = initiator;
+    }
+
+    public Game(League league, String type, long initiator ) {
         this();
         this.league = league;
         this.type = Type.fromLabelWithDefault(type);
         this.initiator = initiator;
     }
 
-    public Game(League league, String type, int initiator, String style, int ante) {
+    public Game(League league, String type, long initiator, String style, int ante) {
         this(league, type, initiator);
         this.style = Style.fromLabelWithDefault(style).getLabel();
         this.ante = ante;
@@ -144,7 +152,7 @@ public class Game {
         LocalDateTime localDateAndTime = LocalDateTime.now();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd-HH:mm-ssSSS-nnnnnnnnn");
         String result = localDateAndTime.format(formatter);
-        this.updated = result.substring(2, 20);
+        this.updated = result.substring(0, 20);
 
         this.year = localDateAndTime.getYear();
         this.month = localDateAndTime.getMonth();
@@ -165,7 +173,20 @@ public class Game {
         }
     }
 
-    // todo LOW make this work with up / down and playerId
+    public Card dealCard(Player humanOrBot, Face face) {
+        for (int i = 0; i < this.cards.size(); i++) {
+             if (this.cards.get(i).getHand() == null) {
+                this.cards.get(i).setHand(humanOrBot);
+                this.cards.get(i).setLocation(Location.HAND);
+                this.cards.get(i).setFace(face);
+                return this.cards.get(i);
+            }
+        }
+        return null;
+    }
+
+    // TODO LOW make this work with up / down and playerId
+    // TODO error, a bot is no player !!!
     public boolean switchPlayers(int sequence, int direction) {
 
         // check if playing order is up (-1) or down (+1)

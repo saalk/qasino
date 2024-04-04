@@ -21,15 +21,16 @@ import java.util.Objects;
         property = "cardId")
 //@JsonIdentityInfo(generator=JSOGGenerator.class)
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
-@Table(name = "cards", indexes =
+@Table(name = "card", indexes =
         { //@Index(name = "cards_game_index", columnList = "game_id", unique = false ),
-          @Index(name = "cards_index", columnList = "card_id", unique = true )})
+          // not needed : @Index(name = "cards_index", columnList = "card_id", unique = true )
+        })
 public class Card {
     
     @Id
-    @GeneratedValue
-    @Column(name = "card_id", nullable = false)
-    private int cardId;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "card_id")
+    private long cardId;
 
     @JsonIgnore
     @Column(name = "created", length = 25)
@@ -43,7 +44,8 @@ public class Card {
     @JsonIgnore
     // SF: a shuffled Card is added to a GameSubTotals at the start
     @ManyToOne(cascade = CascadeType.DETACH)
-    @JoinColumn(name = "game_id", referencedColumnName = "game_id", foreignKey = @ForeignKey(name =
+    @JoinColumn(name = "game_id", referencedColumnName = "game_id", foreignKey =
+    @ForeignKey(name =
             "fk_game_id"), nullable=false)
     private Game game;
 
@@ -67,7 +69,7 @@ public class Card {
     @Column(name = "location", nullable = false)
     private Location location;
 
-    // current Postion for the card in the location
+    // current Postion for the card in the location TODO make Ordered
     @Enumerated(EnumType.STRING)
     @Column(name = "position", nullable = false)
     private Position position;
@@ -83,7 +85,7 @@ public class Card {
         LocalDateTime localDateAndTime = LocalDateTime.now();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd-HH:mm-ssSSS-nnnnnnnnn");
         String result = localDateAndTime.format(formatter);
-        this.created = result.substring(2, 20);
+        this.created = result.substring(0, 20);
 
     }
 

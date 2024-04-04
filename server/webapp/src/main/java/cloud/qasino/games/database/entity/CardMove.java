@@ -22,15 +22,16 @@ import java.util.Objects;
 @JsonIdentityInfo(generator = JSOGGenerator.class)
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 @Table(name = "cardmove", indexes =
-        {@Index(name = "cardmove_turn_index", columnList = "turn_id", unique = false),
-                @Index(name = "cardmove_index", columnList = "cardmove_id", unique = true)}
+        { @Index(name = "cardmove_turn_index", columnList = "turn_id", unique = false),
+          // not needed : @Index(name = "cardmove_index", columnList = "cardmove_id", unique = true)
+        }
 )
 public class CardMove {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "cardmove_id")
-    private int cardMoveId;
+    private long cardMoveId;
 
     @JsonIgnore
     @Column(name = "created", length = 25)
@@ -46,11 +47,11 @@ public class CardMove {
             (name = "fk_turn_id"), nullable = true)
     private Turn turn;
 
-    @Column(name = "player_id", nullable = false)
-    private int playerId;
+    @Column(name = "player_id")
+    private long playerId;
 
     @Column(name = "card_id", nullable = true)
-    private String cardId;
+    private long cardId;
 
 
     // cardMove basics, what move does the player make
@@ -65,10 +66,10 @@ public class CardMove {
     private String cardMoveDetails;
 
     // json fields, filled in by engine
-    @Column(name = "round_number", nullable = false)
+    @Column(name = "round_number")
     private int roundNumber;
 
-    @Column(name = "move_number", nullable = false)
+    @Column(name = "move_number")
     private int moveNumber;
 
     @Enumerated(EnumType.STRING)
@@ -85,7 +86,7 @@ public class CardMove {
         setCreated();
     }
 
-    public CardMove(Turn turn, Player player, String cardId, Move move, Location location) {
+    public CardMove(Turn turn, Player player, long cardId, Move move, Location location) {
         this();
         this.turn = turn;
         this.playerId = player.getPlayerId();
@@ -99,7 +100,7 @@ public class CardMove {
         LocalDateTime localDateAndTime = LocalDateTime.now();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd-HH:mm-ssSSS-nnnnnnnnn");
         String result = localDateAndTime.format(formatter);
-        this.created = result.substring(2, 20);
+        this.created = result.substring(0, 20);
 
     }
 

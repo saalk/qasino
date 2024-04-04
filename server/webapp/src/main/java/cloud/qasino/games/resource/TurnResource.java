@@ -25,7 +25,7 @@ import java.net.URI;
 import java.util.Optional;
 
 // basic path /qasino
-// basic header @RequestHeader(value "user", required = true) int userId" // else 400
+// basic header @RequestHeader(value "visitor", required = true) int visitorId" // else 400
 //
 // 200 - ok
 // 201 - created
@@ -39,7 +39,7 @@ public class TurnResource {
 
     // TurnResource - special POST for GAME, PLAYINGCARD, EVENT and RESULT has state machine
     // /api/move/game/{id}/DEAL first -> POST add jokers and update state // PLAYING
-    // /api/move/game/{id}/HIGER|LOWER|PASS/power -> only for user self // PLAYING, FINSHED
+    // /api/move/game/{id}/HIGER|LOWER|PASS/power -> only for visitor self // PLAYING, FINSHED
     // /api/move/game/{id}/NEXT/player/{id} -> only for bot // PLAYING, FINISHED
 
     GameRepository gameRepository;
@@ -94,8 +94,8 @@ public class TurnResource {
             // 400
             return ResponseEntity.badRequest().headers(headers).build();
 
-        int gameId = Integer.parseInt(gId);
-        int playerId = Integer.parseInt(pId);
+        long gameId = Long.parseLong(gId);
+        long playerId = Long.parseLong(pId);
         Move move = Move.fromLabelWithDefault(inputAction);
         Location location = Location.fromLabelWithDefault(inputLocation);
         //int roundNumber = Integer.parseInt(inputRoundNumber);

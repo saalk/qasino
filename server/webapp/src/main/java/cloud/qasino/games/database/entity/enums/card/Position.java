@@ -10,9 +10,11 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
+// TODO make ordered
 @Getter
 public enum Position implements LabeledEnum {
 
+    // TODO ordered make sequential, what is manual ??
     @Column(name = "location", length = 25, nullable = false)
     SHUFFLED("shuffled"), ORDERED("ordered"), MANUAL("manual"), ERROR("error");
 

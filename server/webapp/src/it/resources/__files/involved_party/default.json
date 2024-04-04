@@ -16,7 +16,7 @@
     "gender": "FEML",
     "effectiveDate": "2023-05-23T09:36:11.999Z",
     "dateCreated": "2023-05-23T09:36:12.008Z",
-    "lastUpdateUser": "Mobile IDV",
+    "lastUpdateVisitor": "Mobile IDV",
     "lastUpdateDate": "2023-05-23T09:42:15.576Z",
     "postalAddresses": [
       {
@@ -28,7 +28,7 @@
         "houseNumber": "197",
         "unstructuredAddressLine1": "Termini 197",
         "unstructuredAddressLine2": "1025 XM  AMSTERDAM",
-        "lastUpdateUser": "AMS",
+        "lastUpdateVisitor": "AMS",
         "lastUpdateDate": "2023-05-23T09:42:16.556Z",
         "effectiveDate": "2023-05-23T09:42:16.464Z"
       },
@@ -41,7 +41,7 @@
         "houseNumber": "197",
         "unstructuredAddressLine1": "Termini 197",
         "unstructuredAddressLine2": "1025 XM  AMSTERDAM",
-        "lastUpdateUser": "AMS",
+        "lastUpdateVisitor": "AMS",
         "lastUpdateDate": "2023-05-23T09:42:16.372Z",
         "effectiveDate": "2023-05-23T09:42:16.292Z"
       }
@@ -52,7 +52,7 @@
         "digitalAddressUsageType": "STD",
         "fullDigitalAddress": "23976506",
         "effectiveDate": "2023-05-23T09:36:12.204Z",
-        "lastUpdateUser": "INBOX",
+        "lastUpdateVisitor": "INBOX",
         "lastUpdateDate": "2023-05-23T09:36:12.260Z"
       }
     ],
@@ -60,13 +60,13 @@
       {
         "involvedPartyInternalIdentifierType": "UUID",
         "involvedPartyInternalIdentifierValue": "37ca10bb-afd8-478f-93d3-e142e3985dae",
-        "lastUpdateUser": "PartyRegistration",
+        "lastUpdateVisitor": "PartyRegistration",
         "lastUpdateDate": "2023-05-23T09:36:12.070Z"
       },
       {
         "involvedPartyInternalIdentifierType": "RGB_NL",
         "involvedPartyInternalIdentifierValue": "422224316",
-        "lastUpdateUser": "PartyRegistration",
+        "lastUpdateVisitor": "PartyRegistration",
         "lastUpdateDate": "2023-05-23T09:36:12.054Z"
       }
     ],
@@ -75,7 +75,7 @@
         "involvedPartyGroupType": "SVC_SEGM_NL",
         "involvedPartyGroupCode": "329",
         "effectiveDate": "2023-06-22T22:00:00.000Z",
-        "lastUpdateUser": "DS-MDM",
+        "lastUpdateVisitor": "DS-MDM",
         "lastUpdateDate": "2023-06-24T03:03:38.662Z"
       }
     ],
@@ -85,7 +85,7 @@
         "managingEntityCode": "18101002",
         "effectiveDate": "2023-05-23T09:36:12.132Z",
         "lastUpdateDate": "2023-05-23T09:36:12.193Z",
-        "lastUpdateUser": "PartyRegistration"
+        "lastUpdateVisitor": "PartyRegistration"
       }
     ],
     "individualName": {
@@ -93,7 +93,7 @@
       "firstName1": "DeliceTD",
       "nameInitials": "D",
       "effectiveDate": "2023-05-23T09:36:11.999Z",
-      "lastUpdateUser": "Mobile IDV",
+      "lastUpdateVisitor": "Mobile IDV",
       "lastUpdateDate": "2023-05-23T09:42:15.724Z"
     },
     "individualFormattedNames": [
@@ -101,14 +101,14 @@
         "individualNameType": "CORRPDC_NM",
         "individualNameValue": "Mw D KampTD",
         "effectiveDate": "2023-05-23T09:42:16.277Z",
-        "lastUpdateUser": "INCA",
+        "lastUpdateVisitor": "INCA",
         "lastUpdateDate": "2023-05-23T09:42:16.277Z"
       },
       {
         "individualNameType": "NL_AANHEF_NM",
         "individualNameValue": "mevrouw KampTD",
         "effectiveDate": "2023-05-23T09:42:16.264Z",
-        "lastUpdateUser": "INCA",
+        "lastUpdateVisitor": "INCA",
         "lastUpdateDate": "2023-05-23T09:42:16.264Z"
       }
     ],
