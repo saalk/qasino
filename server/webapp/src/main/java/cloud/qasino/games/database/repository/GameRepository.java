@@ -23,7 +23,7 @@ public interface GameRepository extends JpaRepository<Game, Long> {
             "SELECT count(*) FROM GAME g " +
                     "WHERE g.YEAR = :year " +
                     "AND g.MONTH = :month " +
-                    "AND g.DAY = :day ";
+                    "AND g.WEEKDAY = :weekday ";
     public final static String COUNT_WEEK =
             "SELECT count(*) FROM GAME g " +
                     "WHERE g.YEAR = :year " +

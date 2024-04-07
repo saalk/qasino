@@ -15,7 +15,7 @@
 	<packaging>war</packaging>
 
 	<properties>
-<!--		<start-class>cloud.qasino.games.configuration.GamesApplication</start-class>-->
+		<start-class>cloud.qasino.games.GamesApplication</start-class>
 
 		<!-- 1: spring boot and web development -->
 		 <spring-boot.version>2.7.18</spring-boot.version>
@@ -107,12 +107,6 @@
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-data-jpa</artifactId>
-		</dependency>
-		<!-- use maria db -->
-		<dependency>
-			<groupId>org.mariadb.jdbc</groupId>
-			<artifactId>mariadb-java-client</artifactId>
-			<version>3.3.3</version>
 		</dependency>
 		<!-- use H2 as a very lightweight test database -->
 		<dependency>
@@ -259,7 +253,13 @@
 	</dependencies>
 
 	<build>
-
+		<!-- enable resource filtering to switch profiles -->
+<!--		<resources>-->
+<!--			<resource>-->
+<!--				<directory>src/main/resources</directory>-->
+<!--				<filtering>true</filtering>-->
+<!--			</resource>-->
+<!--		</resources>-->
 		<plugins>
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
@@ -320,13 +320,6 @@
 			</activation>
 			<properties>
 				<spring.profiles.active>dev</spring.profiles.active>
-				<spring.boot.mainclass>cloud.qasino.games.configuration.GamesApplication</spring.boot.mainclass>
-			</properties>
-		</profile>
-		<profile>
-			<id>acc</id>
-			<properties>
-				<spring.profiles.active>acc</spring.profiles.active>
 			</properties>
 		</profile>
 		<profile>

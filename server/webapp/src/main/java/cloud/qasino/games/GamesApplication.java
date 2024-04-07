@@ -65,9 +65,6 @@ https://www.baeldung.com/spring-application-context
 @Slf4j
 public class GamesApplication {
 
-    @Value("${spring.profiles.active:dev}")
-    private static String activeProfile; // dev = default
-
     public static void main(String[] args) {
         SpringApplication.run(GamesApplication.class, args);
     }

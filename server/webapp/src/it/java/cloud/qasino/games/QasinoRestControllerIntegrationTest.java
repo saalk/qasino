@@ -1,6 +1,6 @@
 package cloud.qasino.games;
 
-import cloud.qasino.games.configuration.GamesApplication;
+import cloud.qasino.games.GamesApplication;
 import cloud.qasino.games.database.entity.Visitor;
 import cloud.qasino.games.database.repository.*;
 import org.junit.Before;
@@ -11,6 +11,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.http.*;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -19,6 +20,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @SpringBootTest(
         webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
         classes = GamesApplication.class)
+@ActiveProfiles("dev")
 class QasinoRestControllerIntegrationTest {
 
     @Autowired

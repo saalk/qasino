@@ -72,8 +72,8 @@ public class Visitor {
     private String week;
 
     @Setter(AccessLevel.NONE)
-    @Column(name = "day", length = 2)
-    private int day;
+    @Column(name = "weekday", length = 2)
+    private int weekday;
 
     // References
 
@@ -101,7 +101,7 @@ public class Visitor {
         this.month = localDateAndTime.getMonth();
         DateTimeFormatter week = DateTimeFormatter.ofPattern("W");
         this.week = localDateAndTime.format(week);
-        this.day = localDateAndTime.getDayOfMonth();
+        this.weekday = localDateAndTime.getDayOfMonth();
         this.visitorName = "visitorName";
     }
 

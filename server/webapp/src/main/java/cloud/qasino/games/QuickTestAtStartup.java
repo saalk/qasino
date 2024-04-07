@@ -10,6 +10,7 @@ import cloud.qasino.games.database.repository.*;
 import cloud.qasino.games.statemachine.GameState;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.core.env.Environment;
@@ -50,10 +51,12 @@ public class QuickTestAtStartup implements ApplicationRunner {
 
     @PostConstruct
     public void init() {
-        log.info("\nApplication started in environment : \n {} \n",
-                (Arrays.asList(environment.getDefaultProfiles())));
+        String[] profiles = environment.getActiveProfiles();
+        String firstProfile = (profiles[0]==null?"dev":profiles[0]);
+        log.info("\nApplication started in environment : \n {} \n",firstProfile);
 
-//        if (true)  return;
+//        if (!firstProfile.equals("dev")) return;
+        if (true) return;
 
         // A new VISITOR arrives
         Visitor visitor = new Visitor("visitorNameName",1 , "a@b.c");
@@ -90,8 +93,5 @@ public class QuickTestAtStartup implements ApplicationRunner {
         CardMove cardMove = new CardMove(turn, players.get(0), 0, Move.DEAL,
                 Location.HAND);
         cardMoveRepository.save(cardMove);
-
     }
-
-
 }

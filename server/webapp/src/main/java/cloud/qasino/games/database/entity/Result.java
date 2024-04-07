@@ -72,8 +72,8 @@ public class Result {
     @Column(name = "week", length = 3)
     private String week;
 
-    @Column(name = "day", length = 2)
-    private int day;
+    @Column(name = "weekday", length = 2)
+    private int weekday;
 
     @Setter(AccessLevel.NONE)
     @Column(name = "fiches_won")
@@ -90,7 +90,7 @@ public class Result {
         this.year = localDateAndTime.getYear();
         this.month = localDateAndTime.getMonth();
         this.week = localDateAndTime.format(week);
-        this.day = localDateAndTime.getDayOfMonth();
+        this.weekday = localDateAndTime.getDayOfMonth();
     }
 
     public Result(Player player, Visitor visitor, Game game, Type type, int fichesWon) {
