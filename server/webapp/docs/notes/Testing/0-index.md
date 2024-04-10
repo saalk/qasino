@@ -1,4 +1,4 @@
 Index of JAVA
 
-- [Java history](1-java-history.md) notes
-- [Java history](1-java-history.md) notes
+- [Kibana](./1-Kibana.md) notes1
+- [Kibana](./1-Kibana.md) notes2

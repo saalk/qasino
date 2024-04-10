@@ -1,4 +1,4 @@
 Index of JAVA
 
-- [Java history](1-java-history.md) notes
-- [Java history](1-java-history.md) notes
+- [Linux basics](1-linux-basics.md) notes1
+- [Linux basics](1-linux-basics.md) notes2
