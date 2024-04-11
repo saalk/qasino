@@ -20,6 +20,7 @@ import javax.annotation.PostConstruct;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 @Component
 @Slf4j
@@ -43,22 +44,23 @@ public class QuickTestAtStartup implements ApplicationRunner {
     @Autowired
     CardMoveRepository cardMoveRepository;
 
+
     @Override
     public void run(ApplicationArguments args) throws Exception {
-        log.info("\nApplication started with arguments : \n {}\n",
-                args.getOptionNames());
-        init();
-    }
+        String[] profiles = activeProfiles.split(",");
+        log.info("\nCurrently active profile - {} ", profiles[0]);
 
-    public void init() {
-
-        for (String profileName : activeProfiles.split(",")) {
-            log.info("\nCurrently active profile - {} ", profileName);
+        String optionTest = "";
+        if (args.getOptionValues("test") != null) {
+            optionTest = args.getOptionValues("test").toString();
         }
 
-//        if (!firstProfile.equals("dev")) return;
-        if (true) return;
+        log.info("\nApplication started with argument '--test=' is: \n {}\n",
+                optionTest);
+        if (profiles[0].equals("dev") && !optionTest.isEmpty() && !optionTest.equals("[skip]")) tests();
+    }
 
+    public void tests() {
         // A new VISITOR arrives
         Visitor visitor = new Visitor("visitorNameName",1 , "a@b.c");
         int pawn = Visitor.pawnShipValue(0);

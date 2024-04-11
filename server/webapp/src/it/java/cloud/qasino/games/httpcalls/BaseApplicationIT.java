@@ -1,12 +1,10 @@
-package cloud.qasino.games.base;
+package cloud.qasino.games.httpcalls;
 
 import cloud.qasino.games.database.repository.GameRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.TestInstance;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
-import org.springframework.test.context.ContextConfiguration;
 
 import javax.annotation.Resource;
 import java.util.Collections;

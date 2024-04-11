@@ -20,7 +20,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @SpringBootTest(
         webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
         classes = GamesApplication.class)
-@ActiveProfiles("dev")
+@ActiveProfiles("ittest")
 class QasinoRestControllerIntegrationTest {
 
     @Autowired

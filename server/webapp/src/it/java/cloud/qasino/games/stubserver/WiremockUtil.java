@@ -1,4 +1,4 @@
-package cloud.qasino.games.base;
+package cloud.qasino.games.stubserver;
 
 import com.github.tomakehurst.wiremock.WireMockServer;
 import lombok.extern.slf4j.Slf4j;
@@ -6,22 +6,18 @@ import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
 
-import static com.github.tomakehurst.wiremock.client.WireMock.containing;
-import static com.github.tomakehurst.wiremock.client.WireMock.equalTo;
 import static com.github.tomakehurst.wiremock.client.WireMock.get;
-import static com.github.tomakehurst.wiremock.client.WireMock.notFound;
 import static com.github.tomakehurst.wiremock.client.WireMock.ok;
 import static com.github.tomakehurst.wiremock.client.WireMock.post;
-import static com.github.tomakehurst.wiremock.client.WireMock.urlPathMatching;
 
 
 @Slf4j
-@Component
+//@Component
 public class WiremockUtil {
 
 //    @Resource protected InvolvedPartyGetByIdServiceProperties involvedPartyGetByIdServiceProperties;
 
-    @Resource
+//    @Resource
     protected WireMockServer wireMockServer;
 
     public static final String REGULAR_CUSTOMER = "6219b533-0889-469f-95f5-740fa2da637b";

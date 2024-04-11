@@ -1,4 +1,4 @@
-package cloud.qasino.games.base;
+package cloud.qasino.games.configuration;
 
 import cloud.qasino.games.database.entity.Game;
 import cloud.qasino.games.database.entity.Player;

@@ -15,7 +15,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * This class manages various state transitions
  * based on the move
  * The superclass AbstractStateTransitionsManager
- * calls the two methods initializeState and
+ * httpcalls the two methods initializeState and
  * processStateTransition in that order
  */
 @RequiredArgsConstructor

@@ -1,4 +1,4 @@
-package cloud.qasino.games.base;
+package cloud.qasino.games.stubserver;
 
 import com.github.tomakehurst.wiremock.WireMockServer;
 import com.github.tomakehurst.wiremock.core.WireMockConfiguration;

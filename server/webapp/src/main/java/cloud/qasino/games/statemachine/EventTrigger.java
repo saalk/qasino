@@ -9,7 +9,7 @@ import static java.util.EnumSet.of;
 @Getter
 public enum EventTrigger {
 
-    // started - TurnResource calls StateMachine
+    // started - TurnResource httpcalls StateMachine
     START, DEAL, DRAW, SPLIT, HIGHER, LOWER, STOP, // player events
     CRASH, WINNER, NO_CARDS_LEFT; // system events
 

@@ -19,7 +19,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
  * - query records from a database (xx extends GenericServlet )
  * - create web pages dynamically.
  *
- * Servlets are under the control of a Servlet Container (runtime environment). A Web Server calls
+ * Servlets are under the control of a Servlet Container (runtime environment). A Web Server httpcalls
  * the Servlet/Web Container which in turn passes it to the target Servlet.
  * This concept is the driver for
  * - JSP (JavaServer Pages) - html pages renamed to .jsp with <% java code %> // web.xml lists them

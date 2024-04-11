@@ -1,4 +1,4 @@
-//package cloud.qasino.card.base;
+//package cloud.qasino.card.httpcalls;
 //
 //import com.ing.cards.credit.database.requests.action.AbstractPersistProcessSpecificDataAction;
 //import com.ing.cards.credit.database.requests.entity.CreditCardRequestEntity;

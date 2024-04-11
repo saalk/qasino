@@ -1,4 +1,4 @@
-//package cloud.qasino.games.base;
+//package cloud.qasino.games.httpcalls;
 //
 //import cloud.qasino.games.database.configuration.DatabaseAutoConfiguration;
 //import cloud.qasino.games.database.configuration.DatabaseProperties;

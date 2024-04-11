@@ -1,5 +1,7 @@
-package cloud.qasino.games.base;
+package cloud.qasino.games.httpcalls;
 
+import cloud.qasino.games.configuration.IntegrationTestConfiguration;
+import cloud.qasino.games.stubserver.WireMockInitializer;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
@@ -18,17 +20,15 @@ import java.util.Map;
 
 @SpringBootTest(
         webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT
-        // "merak-base" is the value on the OU in the certificate on identity.jks
 )
 @TestPropertySources({
-        @TestPropertySource(value = "classpath:application-test.properties"),
-        @TestPropertySource(value = "classpath:application-retry.properties"),
+        @TestPropertySource(value = "classpath:application-ittest.properties"),
         @TestPropertySource(value = "classpath:application-business.properties")
 })
-@ContextConfiguration(
-        initializers = {WireMockInitializer.class},
-        classes = {IntegrationTestConfiguration.class}
-)
+//@ContextConfiguration(
+//        initializers = {WireMockInitializer.class},
+//        classes = {IntegrationTestConfiguration.class}
+//)
 @Slf4j
 public abstract class AbstractBaseApplicationIT {
 
@@ -41,7 +41,7 @@ public abstract class AbstractBaseApplicationIT {
     protected static final String HOST = "https://localhost";
     protected static final String ACCESS_TOKEN_HEADER = "local_access_token_profile";
 
-
+    // without params
     protected <T> ResponseEntity<String> callEndpoint(HttpMethod httpMethod, String endpoint, T requestPayload, String customerId) {
         final HttpHeaders headers = createHeaders();
         headers.add(ACCESS_TOKEN_HEADER, customerId);
@@ -75,12 +75,12 @@ public abstract class AbstractBaseApplicationIT {
      */
     private HttpHeaders createHeaders() {
         HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.add("Host", "api.ing.com");
+        httpHeaders.add("Host", "cloud.qasino.games");
         return httpHeaders;
     }
 
     /**
-     * Default method for executing the test calls for each IT developed within the context of this class.
+     * Default method for executing the test httpcalls for each IT developed within the context of this class.
      *
      * @param httpMethod       {@link HttpMethod}
      * @param fullPath         full fullPath of the endpoint

@@ -6,7 +6,7 @@ Back to [README](README.md)
 - H2 console: http://localhost:8080/h2-console/
 - in intellij
 - ![Intelij](Running-the-app.png)
-- 
+
 ### To investigate
 To make life easier use [variables] (https://graphql.org/learn/queries/#variables) in your GraphQL query.
 Create a custom [Resolver] (https://www.graphql-java-kickstart.com/tools/schema-definition/#resolvers-and-data-classes).   
