@@ -3,6 +3,12 @@ Back - [Java index](0-index.md)
 # Java frameworks
 Jersey and Spring Boot are two popular frameworks in the Java ecosystem for building web applications.
 
+- Jersey
+- Spring
+- Spring boot
+- Apache Kafka - Stream processing platform
+- Drools - BRMS
+
 ## DI = Dependency injection / inversion principle
 A technique where objects or functions receive other objects or services that is requires instead of creating them internally. This dminishes the inmportance of the new keyword. An injector, container introduces services to the client and the framework handles that.
 
