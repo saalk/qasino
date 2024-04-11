@@ -25,8 +25,8 @@ import java.util.List;
 @Slf4j
 public class QuickTestAtStartup implements ApplicationRunner {
 
-    @Autowired
-    private Environment environment;
+    @Value("${spring.profiles.active:}")
+    private String activeProfiles;
 
     @Autowired
     VisitorRepository visitorRepository;
@@ -47,13 +47,14 @@ public class QuickTestAtStartup implements ApplicationRunner {
     public void run(ApplicationArguments args) throws Exception {
         log.info("\nApplication started with arguments : \n {}\n",
                 args.getOptionNames());
+        init();
     }
 
-    @PostConstruct
     public void init() {
-        String[] profiles = environment.getActiveProfiles();
-        String firstProfile = (profiles[0]==null?"dev":profiles[0]);
-        log.info("\nApplication started in environment : \n {} \n",firstProfile);
+
+        for (String profileName : activeProfiles.split(",")) {
+            log.info("\nCurrently active profile - {} ", profileName);
+        }
 
 //        if (!firstProfile.equals("dev")) return;
         if (true) return;

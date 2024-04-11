@@ -72,7 +72,7 @@ public interface GameRepository extends JpaRepository<Game, Long> {
     Integer countByStates(@Param(value = "states") String[] states);
 
     @Query(value = COUNT_TODAY, nativeQuery = true)
-    Integer countByToday(String year, String month, String day);
+    Integer countByToday(String year, String month, String weekday);
 
     @Query(value = COUNT_WEEK, nativeQuery = true)
     Integer countByThisWeek(String year, String week);
