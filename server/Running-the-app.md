@@ -1,7 +1,12 @@
-### Running the application
-- 'mvn spring-boot:run`
-- go to: http://localhost:8080/
+Back to [README](README.md)
 
+### Running the application
+- 'mvn spring-boot:run -Dspring.profiles.active=dev`
+- go to: http://localhost:8080/
+- H2 console: http://localhost:8080/h2-console/
+- in intellij
+- ![Intelij](Running-the-app.png)
+- 
 ### To investigate
 To make life easier use [variables] (https://graphql.org/learn/queries/#variables) in your GraphQL query.
 Create a custom [Resolver] (https://www.graphql-java-kickstart.com/tools/schema-definition/#resolvers-and-data-classes).   

@@ -1,4 +1,4 @@
-## Change log
+Back to [Index](0-index.md)
 
 ## Background
 link = Network and Firewalls on confluence

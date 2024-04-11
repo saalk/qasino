@@ -1,8 +1,6 @@
-## Change log
+Back to [Index](0-index.md)
 
-## Background
-Forge 
-
+## Forge 
 Every API is implemented by one or more Services. 
 For exposing endpoints they have to be implemented by a Service and be set to be exposable in the API settings.
 API = 

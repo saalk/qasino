@@ -1,3 +1,5 @@
+Back to [Index](0-index.md)
+
 ## D-Pane T-Tab W-Window options
 | |fn|ctrl|alt|com|Letter|Pane/tab/window|
 |:----|:----|:----|:----|:----|:----|:----|

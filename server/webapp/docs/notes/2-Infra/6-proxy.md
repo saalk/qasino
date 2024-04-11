@@ -1,4 +1,4 @@
-## Change log
+Back to [Index](0-index.md)
 
 ## Background
 GIBA = Global Internet Browse Access = proxy environment of ING

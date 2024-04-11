@@ -1,4 +1,4 @@
-## Change log
+Back to [Index](0-index.md)
 
 ## Background
 Gateway = reverse proxy server = in addition to being a "basic" web server, Apache httpd can act as a reverse proxy server aka 

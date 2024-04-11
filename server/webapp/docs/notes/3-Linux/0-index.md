@@ -1,4 +1,5 @@
-Index of JAVA
+Back to [README](../../../../README.md)
+
+Index of Linux
 
 - [Linux basics](1-linux-basics.md) notes1
-- [Linux basics](1-linux-basics.md) notes2
