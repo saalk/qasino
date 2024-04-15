@@ -21,7 +21,7 @@ import java.util.List;
 
 public interface Constants {
 
-    public static final String BASE_PATH = "/cloud/qasino/games";
+    public static final String BASE_PATH = "/qasino";
     public static final String ENDPOINT_VISITORS = "/visitors";
     public static final String ENDPOINT_GAMES = "/games";
     public static final String ENDPOINT_PLAYERS = "/players";

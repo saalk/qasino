@@ -12,7 +12,7 @@ import static com.github.tomakehurst.wiremock.client.WireMock.post;
 
 
 @Slf4j
-//@Component
+@Component
 public class WiremockUtil {
 
 //    @Resource protected InvolvedPartyGetByIdServiceProperties involvedPartyGetByIdServiceProperties;

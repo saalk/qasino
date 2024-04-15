@@ -15,7 +15,7 @@ public interface VisitorRepository extends JpaRepository<Visitor, Long> {
     //@Query("SELECT count(u) FROM VISITORS u where u.VisitorName = ?1")
     Long countByVisitorName(String visitorName);
 
-    Optional<Visitor> findVisitorById(Long id);
+    Optional<Visitor> findVisitorByVisitorId(Long visitorId);
     Optional<Visitor> findVisitorByVisitorNameAndVisitorNameSequence(String visitorName, int visitorNameSequence);
 
 

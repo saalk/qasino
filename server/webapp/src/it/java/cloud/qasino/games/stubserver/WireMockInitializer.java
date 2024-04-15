@@ -10,7 +10,6 @@ import org.springframework.context.ApplicationContextInitializer;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.event.ContextClosedEvent;
 import org.springframework.core.env.ConfigurableEnvironment;
-import org.springframework.util.ResourceUtils;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -33,11 +32,11 @@ public class WireMockInitializer implements ApplicationContextInitializer<Config
 
         var wireMockServer = new WireMockServer(new WireMockConfiguration().dynamicHttpsPort()
                 .extensions(new ResponseTemplateTransformer(true))
-                .keystorePath(ResourceUtils.getFile("classpath:identity.jks").getAbsolutePath())
-                .keystorePassword(environment.getProperty(SERVER_SSL_KEY_STORE_PASSWORD))
-                .keyManagerPassword(environment.getProperty(SERVER_SSL_KEY_STORE_PASSWORD))
-                .trustStorePath(ResourceUtils.getFile("classpath:trust.jks").getAbsolutePath())
-                .trustStorePassword(environment.getProperty(SERVER_SSL_TRUST_STORE_PASSWORD))
+//                .keystorePath(ResourceUtils.getFile("classpath:identity.jks").getAbsolutePath())
+//                .keystorePassword(environment.getProperty(SERVER_SSL_KEY_STORE_PASSWORD))
+//                .keyManagerPassword(environment.getProperty(SERVER_SSL_KEY_STORE_PASSWORD))
+//                .trustStorePath(ResourceUtils.getFile("classpath:trust.jks").getAbsolutePath())
+//                .trustStorePassword(environment.getProperty(SERVER_SSL_TRUST_STORE_PASSWORD))
                 .asynchronousResponseEnabled(true)
                 .asynchronousResponseThreads(10)
                 .usingFilesUnderClasspath("src/it/resources")

@@ -1,4 +1,4 @@
-package cloud.qasino.games.httpcalls;
+package cloud.qasino.games;
 
 import cloud.qasino.games.database.entity.Visitor;
 import cloud.qasino.games.database.repository.VisitorRepository;
@@ -23,8 +23,11 @@ public class BaseApplicationIT extends AbstractBaseApplicationIT {
     @Resource protected VisitorRepository visitorRepository;
     @Resource protected ObjectMapper objectMapper;
 
-    public ResponseEntity<String> callVisitorsEndpoint(final long visitorId) {
-        return this.callEndpoint(HttpMethod.PUT, BASE_PATH + ENDPOINT_VISITORS, "",visitorId, Collections.singletonMap("visitorName", "name"));
+    public ResponseEntity<String> getVisitorById(final long visitorId) {
+        return this.callEndpoint(HttpMethod.GET, BASE_PATH + ENDPOINT_VISITORS + "/" + visitorId, "",
+                visitorId
+//                ,Collections.singletonMap("visitorName", "name")
+        );
     }
 
     @SneakyThrows
@@ -37,6 +40,6 @@ public class BaseApplicationIT extends AbstractBaseApplicationIT {
         return visitorRepository.save(newVisitor);
     }
     public Optional<Visitor> fetchVisitorFromDatabase(long visitorId) {
-        return visitorRepository.findVisitorById(visitorId);
+        return visitorRepository.findVisitorByVisitorId(visitorId);
     }
 }

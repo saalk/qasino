@@ -1,8 +1,5 @@
-package cloud.qasino.games.httpcalls;
+package cloud.qasino.games;
 
-import cloud.qasino.games.configuration.IntegrationTestConfiguration;
-import cloud.qasino.games.stubserver.WireMockInitializer;
-import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -15,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.TestPropertySources;
+import org.springframework.test.context.web.WebAppConfiguration;
 
 import javax.annotation.Resource;
 import java.util.Collections;
@@ -22,15 +20,13 @@ import java.util.Map;
 
 @SpringBootTest(
         webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT
+        , classes = GamesApplication.class
 )
 @TestPropertySources({
-        @TestPropertySource(value = "classpath:application-ittest.properties"),
-        @TestPropertySource(value = "classpath:application-business.properties")
+        @TestPropertySource(locations = "/application-ittest.properties"),
+        @TestPropertySource(locations = "/application-business.properties")
 })
-@ContextConfiguration(
-//        initializers = {WireMockInitializer.class},
-        classes = {IntegrationTestConfiguration.class}
-)
+@ContextConfiguration(classes = IntegrationTestConfiguration.class)
 public abstract class AbstractBaseApplicationIT {
 
     private static final Logger log = LoggerFactory.getLogger(AbstractBaseApplicationIT.class);
@@ -41,13 +37,14 @@ public abstract class AbstractBaseApplicationIT {
     @LocalServerPort
     protected int port;
 
-    protected static final String HOST = "https://localhost";
+    protected static final String HOST = "http://localhost";
     protected static final String ACCESS_TOKEN_HEADER = "local_access_token_profile";
+    protected static final String VISITOR = "visitor";
 
     // without params
     protected <T> ResponseEntity<String> callEndpoint(HttpMethod httpMethod, String endpoint, T requestPayload, long visitorId) {
         HttpHeaders headers = this.createHeaders();
-        headers.add(ACCESS_TOKEN_HEADER, String.valueOf(visitorId));
+        headers.add(VISITOR, String.valueOf(visitorId));
         HttpEntity<T> httpEntity = requestPayload == null ? new HttpEntity<>(headers) : new HttpEntity<>(requestPayload, headers);
 
         return this.execute(
@@ -60,7 +57,7 @@ public abstract class AbstractBaseApplicationIT {
     // with params
     protected <T> ResponseEntity<String> callEndpoint(HttpMethod httpMethod, String endpoint, T requestPayload, long visitorId, Map<String, String> params) {
         HttpHeaders headers = this.createHeaders();
-        headers.add(ACCESS_TOKEN_HEADER, String.valueOf(visitorId));
+        headers.add(VISITOR, String.valueOf(visitorId));
         HttpEntity<T> httpEntity = requestPayload == null ? new HttpEntity<>(headers) : new HttpEntity<>(requestPayload, headers);
 
         return this.execute(
