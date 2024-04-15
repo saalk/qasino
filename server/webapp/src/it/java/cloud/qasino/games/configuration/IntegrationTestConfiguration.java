@@ -9,6 +9,7 @@ import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 
 import javax.net.ssl.SSLContext;
 
+// separate test configuration class
 @TestConfiguration
 public class IntegrationTestConfiguration {
 
