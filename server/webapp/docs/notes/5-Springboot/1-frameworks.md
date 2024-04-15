@@ -20,60 +20,43 @@ This dminishes the inmportance of the new keyword. An injector, container introd
 In Java, there are three main types of dependency injection:
 
 1. Constructor Injection
-![contructor](5-constructor-injection.jpg)
+![contructor](1-constructor-injection.jpg)
 2. Setter Injection
-![setter](5-setter-injection.jpg)
+![setter](1-setter-injection.jpg)
 3. Field Injection
-![field](5-field-injection.jpg)
+![field](1-field-injection.jpg)
 Note that in all three examples, Spring Boot uses the @Autowired annotation to indicate that the dependency should be injected at runtime. Additionally, Spring Boot provides a variety of other annotations that can be used to further control the dependency injection process, such as @Qualifier and @Value.
 
-
 ## ICO Containers
-The container will create the objects, wire them together, configure them, and manage their complete life cycle from creation till destruction. The Spring container uses DI to manage the components that make up an application. Guice is another container based framework from google.
-![img.png](img.png)
+The Spring container uses DI to manage the components that make up an application.
+![img.png](1-ioc.png)
 There are two types of IoC containers. They are:
-- BeanFactory
-- ApplicationContext
+- BeanFactory – in org.springframework.beans.factory package, use "@Bean"
+- ApplicationContext – in org.springframework.context package, use "@Autowired"
 
-The ApplicationContext interface is built on top of the BeanFactory interface. It adds some extra functionality.
+The BeanFactory (https://www.baeldung.com/spring-factorybean) is a basic IoC container that 
+provides basic features such as bean 
+instantiation and dependency injection. The ApplicationContext is a more advanced IoC container that builds on top of the BeanFactory and provides additional features such as event publishing, messaging, and internationalization.
+A container will create the objects, wire them together, configure them, and manage their 
+complete life cycle from creation till destruction. 
+
 ## Beans
+Java configuration typically uses @Bean-annotated methods within a @Configuration class. The @Bean annotation on a method indicates that the method creates a Spring bean. Moreover, a class annotated with @Configuration
+indicates that it contains Spring bean configurations.
+https://www.baeldung.com/spring-application-context
+
 Objects created by a container are called managed objects or beans. The spring container detects beans with annotations on the configuration classes.
+BeanFactory loads beans on-demand, while ApplicationContext loads all beans at startup.
 
-## Jakarta EE specification (JAX-RS)
-Jakarta RESTful web services is a specification that provides support for creating web services with REST architecture: a uniform interface using HHTP based methods and URI's (web adresses). It has annotations like @Path, @GET, @Consumes, @Produces and @?Param (Path, Query, Header). Known implementations are:
-- Jersey from Oracle for json integratino
-- Apache CXF, WebSphere IBM,
+Beans have 5 scopes:
 
-eg
-@Path("/hello")
-public class HelloResource {
+common beans with ApplicationContext:
+1. Singleton (default scope) - you always get the same bean
+2. Prototype - you will get a new instance of the spring bean 
 
-@GET
-public String sayHello() {
-return "Hello World";
-}
-}
-
-## Spring (now 6.0) framework
-The Spring programming model does not embrace the Jakarta EE platform specification; rather, it integrates with carefully selected individual specifications from the traditional EE umbrella: Servlet 5/6.0, JPA 3.0/1 etc which have the Jakara namespace. In spring you use @Bean, @Service, @Repository, @Configuration, @Controller, @RequestMapping, @Autowired, @Component, @SpringBootApplication, @EnableAutoConfiguration.
-
-eg
-@RequestMapping(value = "/ex/foos", method = RequestMethod.GET)
-@ResponseBody
-public String getFoosBySimplePath() {
-return "Get some Foos";
-}
-
-## Spring framework modules
-The spring framework is an free inversion of control container for java platform from VMWare. Version 6 is based on Java 17 and jakarta. Modules are
-- Spring-core with the IoC container
-- Spring modules AOP, JDBC, MVC with hooks for Rest services
-  Spring modules are packaged as JAR files in the central maven repository.
-
-## Spring boot
-Spring Boot is basically an extension of the Spring framework, which eliminates the boilerplate configurations required for setting up a Spring. It has a starter and embedded server and automatic config for spring functions.
-
-
-
+3. for web aware applications with WebApplicationContext:
+3. Request - each http request has its own bean
+4. Session - each session has its own bean
+5. Global-session
 
 
