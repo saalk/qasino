@@ -9,15 +9,16 @@ A Servlet is a java class that handles requests, processes them and reply with a
 Servlets are under the control of a Servlet Container (runtime environment). A Web Server calls
 the Servlet/Web Container which in turn passes it to the target Servlet.
 This concept is the driver for
-- JSP (JavaServer Pages) - html pages renamed to .jsp with <% java code %> // web.xml lists them
+- JSP (JavaServer/Jakarta Pages) - html pages renamed to .jsp with <% java code %> // web.xml lists 
+  them
 - Spring MVC - part of Spring Boot
 
 # JSP (JavaServer Pages / Jakarta Server Pages )
 Jakarta Server Pages (JSP; formerly JavaServer Pages) is a collection of technologies that helps software developers create dynamically generated web pages based on HTML, XML, SOAP, or other document types.
 
-![JSP](1-jsp.jpg)
+![JSP](jpg/1-jsp.jpg)
 Eample - Java in html -> use jsp extension
-![Example](1-jsp-example.jpg)
+![Example](jpg/1-jsp-example.jpg)
 
 # Web containers
 Web Container examples are Tomcat, Jetty, and GlassFish, a Spring container works together with

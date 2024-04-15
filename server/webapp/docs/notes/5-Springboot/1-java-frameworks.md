@@ -20,16 +20,16 @@ This dminishes the inmportance of the new keyword. An injector, container introd
 In Java, there are three main types of dependency injection:
 
 1. Constructor Injection
-![contructor](1-constructor-injection.jpg)
+![contructor](jpg/1-constructor-injection.jpg)
 2. Setter Injection
-![setter](1-setter-injection.jpg)
+![setter](jpg/1-setter-injection.jpg)
 3. Field Injection
-![field](1-field-injection.jpg)
+![field](jpg/1-field-injection.jpg)
 Note that in all three examples, Spring Boot uses the @Autowired annotation to indicate that the dependency should be injected at runtime. Additionally, Spring Boot provides a variety of other annotations that can be used to further control the dependency injection process, such as @Qualifier and @Value.
 
 ## ICO Containers
 The Spring container uses DI to manage the components that make up an application.
-![img.png](1-ioc.png)
+![img.png](jpg/1-ioc.png)
 There are two types of IoC containers. They are:
 - BeanFactory – in org.springframework.beans.factory package, use "@Bean"
 - ApplicationContext – in org.springframework.context package, use "@Autowired"

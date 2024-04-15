@@ -5,7 +5,7 @@ link = Network and Firewalls on confluence
 link = Global Network Standardisation on confluence
 RCEC = describes traffic wallowed on the ING network 
 
-![img_2.png](img_2.png)
+![img_2.png](jpg/img_2.png)
 
 EIN = Ext Internfacing Network eg vendor via a leased line (VPN or XFB is also possible)
 IIN = Non verified connectivity zone

@@ -10,8 +10,10 @@ Back to [Index](0-index.md)
 ## Background
 Web server = software that can accept HTTP requests and answer with files or pages
 - Examples: Apache Web Server (Apache httpd) / Node.js / NGINX / Apache Tomcat 
-Application server = software that host apps eg. containers or a framework between the OS, application and dbms
+![img_3.png](jpg/1-webservers.png)
+- Application server = software that host apps eg. containers or a framework between the OS, application and dbms
 - Examples: Java = Tomcat, Jetty, Glassfish / JS = Node.js, Deno / Win = .Net fw  
+
 
 ## Web servers
 Node.js = 2009 a JavaScript runtime built on Chrome's V8 JavaScript engine
@@ -39,7 +41,7 @@ TcServer = 2009 web application server that extends Apache Tomcat
 - server.xml for port and password management
 Pivotal  = formerly known as VMware vFabric tc Server, Pivotal owns TcServer.
 
-![img.png](img.png)
+![img.png](jpg/img.png)
 
 ## Folder structure for web server
 /etc/httpd/conf/httpd.conf and /etc/httpd/conf.d =
