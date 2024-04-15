@@ -3,6 +3,8 @@ package cloud.qasino.games.httpcalls;
 import cloud.qasino.games.configuration.IntegrationTestConfiguration;
 import cloud.qasino.games.stubserver.WireMockInitializer;
 import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.test.web.server.LocalServerPort;
@@ -25,12 +27,13 @@ import java.util.Map;
         @TestPropertySource(value = "classpath:application-ittest.properties"),
         @TestPropertySource(value = "classpath:application-business.properties")
 })
-//@ContextConfiguration(
+@ContextConfiguration(
 //        initializers = {WireMockInitializer.class},
-//        classes = {IntegrationTestConfiguration.class}
-//)
-@Slf4j
+        classes = {IntegrationTestConfiguration.class}
+)
 public abstract class AbstractBaseApplicationIT {
+
+    private static final Logger log = LoggerFactory.getLogger(AbstractBaseApplicationIT.class);
 
     @Resource
     protected TestRestTemplate testRestTemplate;
@@ -42,29 +45,29 @@ public abstract class AbstractBaseApplicationIT {
     protected static final String ACCESS_TOKEN_HEADER = "local_access_token_profile";
 
     // without params
-    protected <T> ResponseEntity<String> callEndpoint(HttpMethod httpMethod, String endpoint, T requestPayload, String customerId) {
-        final HttpHeaders headers = createHeaders();
-        headers.add(ACCESS_TOKEN_HEADER, customerId);
+    protected <T> ResponseEntity<String> callEndpoint(HttpMethod httpMethod, String endpoint, T requestPayload, long visitorId) {
+        HttpHeaders headers = this.createHeaders();
+        headers.add(ACCESS_TOKEN_HEADER, String.valueOf(visitorId));
         HttpEntity<T> httpEntity = requestPayload == null ? new HttpEntity<>(headers) : new HttpEntity<>(requestPayload, headers);
 
-        return execute(
+        return this.execute(
                 httpMethod,
                 endpoint,
                 (HttpEntity<Object>) httpEntity,
-                Collections.emptyMap());
+                Collections.emptyMap()); // no params
     }
 
     // with params
-    protected <T> ResponseEntity<String> callEndpoint(HttpMethod httpMethod, String endpoint, T requestPayload, String customerId, Map<String, String> params) {
-        final HttpHeaders headers = createHeaders();
-        headers.add(ACCESS_TOKEN_HEADER, customerId);
+    protected <T> ResponseEntity<String> callEndpoint(HttpMethod httpMethod, String endpoint, T requestPayload, long visitorId, Map<String, String> params) {
+        HttpHeaders headers = this.createHeaders();
+        headers.add(ACCESS_TOKEN_HEADER, String.valueOf(visitorId));
         HttpEntity<T> httpEntity = requestPayload == null ? new HttpEntity<>(headers) : new HttpEntity<>(requestPayload, headers);
 
-        return execute(
+        return this.execute(
                 httpMethod,
                 endpoint,
                 (HttpEntity<Object>) httpEntity,
-                params);
+                params); // the params
     }
 
     /**
