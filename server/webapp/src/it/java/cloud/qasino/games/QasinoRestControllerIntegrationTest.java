@@ -1,6 +1,5 @@
 package cloud.qasino.games;
 
-import cloud.qasino.games.GamesApplication;
 import cloud.qasino.games.database.entity.Visitor;
 import cloud.qasino.games.database.repository.*;
 import org.junit.Before;
@@ -57,7 +56,7 @@ class QasinoRestControllerIntegrationTest {
 //        Map<String, Boolean> communicationPreferences = new HashMap<>();
 //        communicationPreferences.put("post", true);
 //        communicationPreferences.put("email", true);
-        Visitor newVisitor = new Visitor("visitorName",1, "email");
+        Visitor newVisitor = new Visitor("visitorName", 1, "email");
         Visitor visitor = visitorRepository.save(newVisitor);
         String visitorId = String.valueOf(visitor.getVisitorId());
 

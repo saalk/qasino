@@ -25,10 +25,10 @@ import java.util.Map;
         @TestPropertySource(value = "classpath:application-ittest.properties"),
         @TestPropertySource(value = "classpath:application-business.properties")
 })
-//@ContextConfiguration(
+@ContextConfiguration(
 //        initializers = {WireMockInitializer.class},
-//        classes = {IntegrationTestConfiguration.class}
-//)
+        classes = {IntegrationTestConfiguration.class}
+)
 @Slf4j
 public abstract class AbstractBaseApplicationIT {
 
