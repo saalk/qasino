@@ -64,7 +64,7 @@ public class FindAllEntitiesForInputAction implements Action<FindAllEntitiesForI
                     Sort.by(
                             Sort.Order.asc("NAME"),
                             Sort.Order.desc("CREATED")));
-            actionDto.setLeaguesForVisitor(leagueRepository.findAllActiveLeaguesForVisitorWithPage(id, pageable));
+            actionDto.setLeaguesForVisitor(leagueRepository.findAllActiveLeagueForVisitorWithPage(id, pageable));
             // todo LOW select if one league is active
         }
         id = actionDto.getSuppliedGameId();
@@ -119,7 +119,7 @@ public class FindAllEntitiesForInputAction implements Action<FindAllEntitiesForI
                 actionDto.setQasinoGameLeague(foundLeague.get());
                 pageable = PageRequest.of(actionDto.getSuppliedPages(), actionDto.getSuppliedMaxPerPage(),
                         Sort.by(Sort.Order.desc("CREATED")));
-                actionDto.setResultsForLeague(resultsRepository.findAllResultsForLeagueWithPage(id,
+                actionDto.setResultsForLeague(resultsRepository.findAllResultForLeagueWithPage(id,
                         pageable));
             } else {
                 setErrorMessageNotFound(actionDto, "leagueId", String.valueOf(id));

@@ -2,7 +2,7 @@ Back to [README](README.md)
 
 ### Running the application
 - 'mvn spring-boot:run -Dspring.profiles.active=dev`
-- go to: http://localhost:8080/
+- Home go to: http://localhost:8080/qasino/api/home
 - H2 console: http://localhost:8080/h2-console/
 - Swagger springfox: http://localhost:8080/v2/api-docs
 - Swagger ui: http://localhost:8080/swagger-ui/

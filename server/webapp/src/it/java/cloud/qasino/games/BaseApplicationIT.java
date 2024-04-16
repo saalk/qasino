@@ -14,7 +14,7 @@ import java.util.Collections;
 import java.util.Optional;
 
 import static cloud.qasino.games.configuration.Constants.BASE_PATH;
-import static cloud.qasino.games.configuration.Constants.ENDPOINT_VISITORS;
+import static cloud.qasino.games.configuration.Constants.ENDPOINT_VISITOR;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @Slf4j
@@ -24,7 +24,7 @@ public class BaseApplicationIT extends AbstractBaseApplicationIT {
     @Resource protected ObjectMapper objectMapper;
 
     public ResponseEntity<String> getVisitorById(final long visitorId) {
-        return this.callEndpoint(HttpMethod.GET, BASE_PATH + ENDPOINT_VISITORS + "/" + visitorId, "",
+        return this.callEndpoint(HttpMethod.GET, BASE_PATH + ENDPOINT_VISITOR + "/" + visitorId, "",
                 visitorId
 //                ,Collections.singletonMap("visitorName", "name")
         );

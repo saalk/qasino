@@ -14,19 +14,19 @@ import java.util.List;
 @Repository
 public interface PlayerRepository extends JpaRepository<Player, Long> {
 
-    //@Query("SELECT * FROM PLAYERS p WHERE p.GAME_ID = ?1")
+    //@Query("SELECT * FROM playerS p WHERE p.game_id = ?1")
     List<Player> findByGameOrderBySeatAsc(Game game);
 
-    //@Query("SELECT * FROM PLAYERS p ORDER BY CREATED desc WHERE p.VISITOR_ID = ?1")
+    //@Query("SELECT * FROM playerS p ORDER BY CREATED desc WHERE p.visitor_id = ?1")
     List<Player> findByGameOrderByCreatedDesc(Game game);
 
 
-    //@Query("SELECT count(p) FROM PLAYERS p WHERE p.GAME_ID = ?1")
+    //@Query("SELECT count(p) FROM playerS p WHERE p.game_id = ?1")
     int countByGame(Game game);
 
     @Query(
-            value = "SELECT * FROM PLAYER ORDER BY PLAYER_ID",
-            countQuery = "SELECT count(*) FROM PLAYERS",
+            value = "SELECT * FROM \"player\" ORDER BY player_id",
+            countQuery = "SELECT count(*) FROM player",
             nativeQuery = true)
     Page<Visitor> findAllPlayersWithPage(Pageable pageable);
 

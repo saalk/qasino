@@ -128,7 +128,7 @@ public class League {
     }
 
     public boolean isActive() {
-        if (!this.active) return false; // visitor can set to inactive before enddate
+        if (!this.active) return false; // \"visitor\"can set to inactive before enddate
 
         if (this.ended == null || this.ended.isEmpty()) return true;
 

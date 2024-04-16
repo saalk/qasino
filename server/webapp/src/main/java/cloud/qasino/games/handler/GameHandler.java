@@ -13,7 +13,7 @@ import java.time.LocalTime;
 
 @Slf4j
 @Component
-public class QasinoController {
+public class GameHandler {
 
     @Resource
     private QasinoStateMachine qasinoStateMachine;

@@ -60,21 +60,21 @@ public class Card {
 
     // Normal fields
 
-    // current sequence of the card in the deck or hand
+    // current sequence of the \"card\" in the deck or hand
     @Column(name = "sequence")
     private int sequence;
 
-    // current location for the card (can be hand or not)
+    // current location for the \"card\" (can be hand or not)
     @Enumerated(EnumType.STRING)
     @Column(name = "location", nullable = false)
     private Location location;
 
-    // current Postion for the card in the location TODO make Ordered
+    // current Postion for the \"card\" in the location TODO make Ordered
     @Enumerated(EnumType.STRING)
     @Column(name = "position", nullable = false)
     private Position position;
 
-    // current Face for the card in the location (up or down)
+    // current Face for the \"card\" in the location (up or down)
     @Enumerated(EnumType.STRING)
     @Column(name = "face", nullable = false)
     private Face face;

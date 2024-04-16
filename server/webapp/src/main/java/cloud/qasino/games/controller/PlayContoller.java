@@ -1,4 +1,4 @@
-package cloud.qasino.games.resource;
+package cloud.qasino.games.controller;
 
 import cloud.qasino.games.statemachine.GameState;
 import cloud.qasino.games.database.entity.Turn;
@@ -24,6 +24,9 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import java.net.URI;
 import java.util.Optional;
 
+import static cloud.qasino.games.configuration.Constants.BASE_PATH;
+import static cloud.qasino.games.configuration.Constants.ENDPOINT_PLAY;
+
 // basic path /qasino
 // basic header @RequestHeader(value "visitor", required = true) int visitorId" // else 400
 //
@@ -35,7 +38,7 @@ import java.util.Optional;
 // 500 - internal server error
 
 @RestController
-public class TurnResource {
+public class PlayContoller {
 
     // TurnResource - special POST for GAME, PLAYINGCARD, EVENT and RESULT has state machine
     // /api/move/game/{id}/DEAL first -> POST add jokers and update state // PLAYING
@@ -48,7 +51,7 @@ public class TurnResource {
     TurnRepository turnRepository;
 
     @Autowired
-    public TurnResource(
+    public PlayContoller(
             GameRepository gameRepository,
             PlayerRepository playerRepository,
             CardRepository cardRepository,
@@ -60,11 +63,11 @@ public class TurnResource {
         this.turnRepository = turnRepository;
     }
 
-    @PostMapping(value = "move/{suppliedMove}/games/{gId}/players/{pId}/location/{location}")
+    @PostMapping(value = "/play/{suppliedMove}/game/{gameId}/player/{playerId}/location/{location}")
     public ResponseEntity startGame(
             @PathVariable("suppliedMove") String inputAction,
-            @PathVariable("gId") String gId,
-            @PathVariable("pId") String pId,
+            @PathVariable("gameId") String gId,
+            @PathVariable("playerId") String pId,
             @PathVariable("location") String inputLocation,
 
             @RequestParam(value = "cardId", required = false) String cardId,

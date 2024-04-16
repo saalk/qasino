@@ -12,7 +12,7 @@ import java.util.Optional;
 @Repository
 public interface VisitorRepository extends JpaRepository<Visitor, Long> {
 
-    //@Query("SELECT count(u) FROM VISITORS u where u.VisitorName = ?1")
+    //@Query("SELECT count(u) FROM visitorS u where u.VisitorName = ?1")
     Long countByVisitorName(String visitorName);
 
     Optional<Visitor> findVisitorByVisitorId(Long visitorId);
@@ -20,8 +20,8 @@ public interface VisitorRepository extends JpaRepository<Visitor, Long> {
 
 
     @Query(
-            value = "SELECT * FROM VISITORS ORDER BY VISITOR_ID",
-            countQuery = "SELECT count(*) FROM VISITORS",
+            value = "SELECT * FROM \"visitor\"ORDER BY visitor_id",
+            countQuery = "SELECT count(*) FROM visitor",
             nativeQuery = true)
     List<Visitor> findAllVisitorsWithPage(Pageable pageable);
 

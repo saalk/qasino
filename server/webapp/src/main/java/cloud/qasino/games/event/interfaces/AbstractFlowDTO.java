@@ -14,12 +14,6 @@ public abstract class AbstractFlowDTO { //implements FlowEventCallback {
     @Setter
     @Getter
     protected String visitorId;
-/*
-
-    @Getter
-    @Setter
-    protected String employeeId;
-*/
 
     private GameState startState;
     private Event currentEvent;

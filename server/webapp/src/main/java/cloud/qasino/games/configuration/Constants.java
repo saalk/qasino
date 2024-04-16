@@ -21,12 +21,12 @@ import java.util.List;
 
 public interface Constants {
 
-    public static final String BASE_PATH = "/qasino";
-    public static final String ENDPOINT_VISITORS = "/visitors";
-    public static final String ENDPOINT_GAMES = "/games";
-    public static final String ENDPOINT_PLAYERS = "/players";
-    public static final String ENDPOINT_PLAYINGCARDS = "/playingcards";
-    public static final String ENDPOINT_EVENTS = "/events";
+    public static final String BASE_PATH = "/qasino/api";
+    public static final String ENDPOINT_VISITOR = "/visitor";
+    public static final String ENDPOINT_GAME = "/game";
+    public static final String ENDPOINT_PLAYER = "/player";
+    public static final String ENDPOINT_CARD = "/card";
+    public static final String ENDPOINT_PLAY = "/play";
 
     public static final String NUMERIC_REGEX = "^([\\p{N}]+)$";
     public static final String ALPHANUMERIC_REGEX = "^([\\p{N}\\p{L}]+)$";

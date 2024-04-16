@@ -1,6 +1,6 @@
 package cloud.qasino.games.statemachine.configuration;
 
-import cloud.qasino.games.controller.AsyncEventHandlerService;
+import cloud.qasino.games.handler.AsyncEventHandlerService;
 import cloud.qasino.games.event.interfaces.AbstractFlowDTO;
 import cloud.qasino.games.event.interfaces.Event;
 import lombok.extern.slf4j.Slf4j;

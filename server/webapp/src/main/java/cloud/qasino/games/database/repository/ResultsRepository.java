@@ -12,17 +12,17 @@ import java.util.List;
 @Repository
 public interface ResultsRepository extends JpaRepository<Result, Long> {
 
-    public final static String FIND_ACTIVE_RESULTS_BY_LEAGUE_ID =
-            "SELECT * FROM RESULT a JOIN LEAGUE b " +
-                    "WHERE a.RESULT_ID = b.RESULT_ID " +
-                    "AND b.LEAGUE_ID = :leagueId ";
-    public final static String COUNT_ACTIVE_RESULTS_BY_LEAGUE_ID =
-            "SELECT count(*) FROM RESULT a JOIN LEAGUE b " +
-                    "WHERE a.RESULT_ID = b.RESULT_ID " +
-                    "AND b.LEAGUE_ID = :leagueId ";
+    public final static String FIND_ACTIVE_RESULT_BY_LEAGUE_ID =
+            "SELECT * FROM \"result\" a JOIN \"league\" b " +
+                    "WHERE a.result_id = b.result_id " +
+                    "AND b.league_id = :leagueId ";
+    public final static String COUNT_ACTIVE_RESULT_BY_LEAGUE_ID =
+            "SELECT count(*) FROM \"result\" a JOIN \"league\" b " +
+                    "WHERE a.result_id = b.result_id " +
+                    "AND b.league_id = :leagueId ";
 
-    @Query(value = FIND_ACTIVE_RESULTS_BY_LEAGUE_ID, countQuery = COUNT_ACTIVE_RESULTS_BY_LEAGUE_ID, nativeQuery = true)
-    public List<Result> findAllResultsForLeagueWithPage(
+    @Query(value = FIND_ACTIVE_RESULT_BY_LEAGUE_ID, countQuery = COUNT_ACTIVE_RESULT_BY_LEAGUE_ID, nativeQuery = true)
+    public List<Result> findAllResultForLeagueWithPage(
             @Param("leagueId") long leagueId,
             Pageable pageable);
 

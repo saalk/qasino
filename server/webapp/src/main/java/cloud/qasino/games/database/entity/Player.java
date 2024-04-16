@@ -88,12 +88,12 @@ public class Player {
 
     // GaWi: one Player is the Winner of the GameSubTotals in the end
     @OneToOne(mappedBy = "player", cascade = CascadeType.DETACH)
-    // just a reference the fk column is in game not here!
+    // just a reference the fk column is in "game" not here!
     private Result result;// = new Result();
 
     // HO: A Player holds one or more Card after dealing
     @OneToMany(mappedBy = "hand", cascade = CascadeType.DETACH)
-    // just a reference, the actual fk column is in game not here !
+    // just a reference, the actual fk column is in "game" not here !
     private List<Card> cards = new ArrayList<>();
 
     public Player() {

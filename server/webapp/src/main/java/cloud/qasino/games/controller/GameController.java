@@ -1,4 +1,4 @@
-package cloud.qasino.games.resource;
+package cloud.qasino.games.controller;
 
 import cloud.qasino.games.database.entity.*;
 import cloud.qasino.games.database.entity.enums.game.Style;
@@ -21,7 +21,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import static cloud.qasino.games.configuration.Constants.BASE_PATH;
 import static cloud.qasino.games.configuration.Constants.DEFAULT_PAWN_SHIP_BOT;
+import static cloud.qasino.games.configuration.Constants.ENDPOINT_GAME;
 import static cloud.qasino.games.configuration.Constants.isNullOrEmpty;
 
 // basic path /qasino
@@ -35,7 +37,7 @@ import static cloud.qasino.games.configuration.Constants.isNullOrEmpty;
 // 500 - internal server error
 
 @RestController
-public class GamesResource {
+public class GameController {
 
     private VisitorRepository visitorRepository;
     private LeagueRepository leagueRepository;
@@ -45,7 +47,7 @@ public class GamesResource {
     private TurnRepository turnRepository;
 
     @Autowired
-    public GamesResource(
+    public GameController(
             VisitorRepository visitorRepository,
             LeagueRepository leagueRepository,
             GameRepository gameRepository,
@@ -61,15 +63,26 @@ public class GamesResource {
         this.turnRepository = turnRepository;
     }
 
-    // GamesResource - special POST and GET only for GAME - todo
+    // basic path /qasino
+    // basic header @RequestHeader(value "visitor", required = true) int visitorId" // else 400
+    //
+    // 200 - ok
+    // 201 - created
+    // 400 - bad request - error/reason "url ... not available"
+    // 404 - not found - error/message "invalid value x for y" + reason [missing]
+    // 412 - precondition failed = error/message - "violation of rule z"
+    // 500 - internal server error
+
+    // /api/game/{id} - GET, DELETE, PUT type, style, ante - rules apply!
 
     // todo HIGH make endpoints
-    // /api/games/{id}/ACCEPT -> PUT player fiches // PREPARED
-    // /api/games/{id}/WITHDRAW/bot -> DELETE players // PREPARED
-    // /api/games/{id}/WITHDRAW/visitor{id} -> DELETE players // PREPARED
+    // /api/game/{id}/ACCEPT -> PUT player fiches // PREPARED
+    // /api/game/{id}/WITHDRAW/bot -> DELETE players // PREPARED
+    // /api/game/{id}/WITHDRAW/visitor{id} -> DELETE players // PREPARED
 
-    // tested ok
-    @PostMapping(value = "/games/new/{type}")
+    // Game lifecycle events
+
+    @PostMapping(value = "/game/new/{type}")
     public ResponseEntity<Game> startGame(
             @PathVariable("type") String type,
             @RequestParam(name = "style", defaultValue = " ") String style,
@@ -103,11 +116,10 @@ public class GamesResource {
         }
     }
 
-    // tested
-    @PostMapping(value = "/games/new/{type}/visitors/{uId}")
+    @PostMapping(value = "/game/new/{type}/visitor/{visitorId}")
     public ResponseEntity<Game> setupInitGameWithVisitor(
             @PathVariable("type") String type,
-            @PathVariable("uId") String uId,
+            @PathVariable("visitorId") String uId,
             @RequestParam(name = "style", defaultValue = " ") String style,
             @RequestParam(name = "ante", defaultValue = "20") String ante,
             @RequestParam(name = "avatar", defaultValue = "elf") String avatar
@@ -161,11 +173,10 @@ public class GamesResource {
         return ResponseEntity.status(HttpStatus.CREATED).headers(headers).body(startedGame);
     }
 
-    // tested
-    @PostMapping(value = "/games/new/{type}/visitors/{uId}/players/{aiLevel}")
+    @PostMapping(value = "/game/new/{type}/visitor/{visitorId}/player/{aiLevel}")
     public ResponseEntity<Game> setupInitGameWithVisitorAndPlayer(
             @PathVariable("type") String type,
-            @PathVariable("uId") String uId,
+            @PathVariable("visitorId") String uId,
             @PathVariable("aiLevel") String aiLevel,
             @RequestParam(name = "style", defaultValue = " ") String style,
             @RequestParam(name = "ante", defaultValue = "20") String ante,
@@ -236,12 +247,11 @@ public class GamesResource {
         return ResponseEntity.status(HttpStatus.CREATED).headers(headers).body(startedGame);
     }
 
-    // tested
-    @PostMapping(value = "/games/new/{type}/league/{lId}/visitors/{uId}")
+    @PostMapping(value = "/game/new/{type}/league/{leagueId}/visitor/{visitorId}")
     public ResponseEntity<Game> setupInitGameInLeagueWithVisitor(
             @PathVariable("type") String type,
-            @PathVariable("uId") String uId,
-            @PathVariable("lId") String lId,
+            @PathVariable("visitorId") String uId,
+            @PathVariable("leagueId") String lId,
             @RequestParam(name = "style", defaultValue = " ") String style,
             @RequestParam(name = "ante", defaultValue = "20") String ante,
             @RequestParam(name = "avatar", defaultValue = "elf") String avatar
@@ -299,12 +309,11 @@ public class GamesResource {
         return ResponseEntity.status(HttpStatus.CREATED).headers(headers).body(startedGame);
     }
 
-    // tested
-    @PostMapping(value = "/games/new/{type}/league/{lId}/visitors/{uId}/players/{aiLevel}")
+    @PostMapping(value = "/game/new/{type}/league/{leagueId}/visitor/{visitorId}/player/{aiLevel}")
     public ResponseEntity<Game> setupInitGameInLEagueWithVisitorAndPlayer(
             @PathVariable("type") String type,
-            @PathVariable("uId") String uId,
-            @PathVariable("lId") String lId,
+            @PathVariable("visitorId") String uId,
+            @PathVariable("leagueId") String lId,
             @PathVariable("aiLevel") String aiLevel,
             @RequestParam(name = "style", defaultValue = " ") String style,
             @RequestParam(name = "ante", defaultValue = "20") String ante,
@@ -380,11 +389,11 @@ public class GamesResource {
         return ResponseEntity.status(HttpStatus.CREATED).headers(headers).body(startedGame);
     }
 
-    @PutMapping(value = "/games/{gid}/prepare/{type}/league/{lid}")
+    @PutMapping(value = "/game/{gameId}/prepare/{type}/league/{leagueId}")
     public ResponseEntity<Game> updateGameWithTypeLeagueStyleAnte(
-            @PathVariable("gid") String gid,
+            @PathVariable("gameId") String gid,
             @PathVariable("type") String type,
-            @PathVariable("lid") String lid,
+            @PathVariable("leagueId") String lid,
             @RequestParam(name = "style", defaultValue = "") String style,
             @RequestParam(name = "ante", defaultValue = "") String inputAnte
     ) {
@@ -434,7 +443,7 @@ public class GamesResource {
 
     }
 
-    @PostMapping(value = "/games/{gameId}/invite/visitors{visitorId}")
+    @PostMapping(value = "/game/{gameId}/invite/visitor{visitorId}")
     public ResponseEntity<Game> inviteHumanPLayerForGame(
             @PathVariable("gameId") String gId,
             @PathVariable("visitorId") String uId,
@@ -489,9 +498,9 @@ public class GamesResource {
         return ResponseEntity.ok().headers(headers).body(linkedGame);
     }
 
-    @PostMapping(value = "/games/{id}/invite/bot")
+    @PostMapping(value = "/game/{gameId}/invite/bot")
     public ResponseEntity<Game> inviteBotPLayerForGame(
-            @PathVariable("id") String id,
+            @PathVariable("gameId") String id,
             @RequestParam(name = "aiLevel", defaultValue = "average") String aiLevel,
             @RequestParam(name = "avatar", defaultValue = "elf") String avatar) {
 
@@ -543,7 +552,7 @@ public class GamesResource {
 
     }
 
-    @PostMapping(value = "/games/{gameId}/accept/players{playerId}")
+    @PostMapping(value = "/game/{gameId}/accept/player{playerId}")
     public ResponseEntity<Game> acceptHumanPLayerForGame(
             @PathVariable("gameId") String gid,
             @PathVariable("playerId") String pid,
@@ -603,7 +612,7 @@ public class GamesResource {
         return ResponseEntity.ok().headers(headers).body(linkedGame);
     }
 
-    @PostMapping(value = "/games/{gameId}/decline/players{playerId}")
+    @PostMapping(value = "/game/{gameId}/decline/player{playerId}")
     public ResponseEntity<Game> declineHumanPLayerForGame(
             @PathVariable("gameId") String gid,
             @PathVariable("playerId") String pid){
@@ -657,9 +666,52 @@ public class GamesResource {
         return ResponseEntity.ok().headers(headers).body(linkedGame);
     }
 
-    @PutMapping(value = "/games/{id}/play")
+
+//    @PostMapping(value = "/cards/game/{id}/jokers/{jokers}")
+//    public ResponseEntity setupGame(
+//            @PathVariable("id") String id,
+//            @PathVariable("jokers") String jokers
+//    ) {
+//
+//        // header in response
+//        URI uri = ServletUriComponentsBuilder.fromCurrentRequest()
+//                .path("")
+//                .query("")
+//                .buildAndExpand(id, jokers)
+//                .toUri();
+//        HttpHeaders headers = new HttpHeaders();
+//        headers.add("URI", String.valueOf(uri));
+//
+//        // validations
+//        if (!StringUtils.isNumeric(jokers) || !StringUtils.isNumeric(id)) {
+//            // 400
+//            return ResponseEntity.badRequest().headers(headers).build();
+//        }
+//        long gameId = Long.parseLong(id);
+//        int jokersCount = Integer.parseInt(jokers);
+//
+//        Optional<Game> foundGame = gameRepository.findById(gameId);
+//        Game linkedGame;
+//        if (!foundGame.isPresent()) {
+//            // 404
+//            return ResponseEntity.status(HttpStatus.NOT_FOUND).headers(headers).build();
+//        } else {
+//        }
+//        linkedGame = foundGame.get();
+//
+//        // logic
+//        List<Card> createdCards = linkedGame.getCards();
+//
+//        for (Card createdCard : createdCards) {
+//            cardRepository.save(createdCard);
+//        }
+//        return ResponseEntity.status(HttpStatus.CREATED).headers(headers).body(createdCards);
+//    }
+//
+
+    @PutMapping(value = "/game/{gameId}/play")
     public ResponseEntity<Game> updateGameState(
-            @PathVariable("id") String id
+            @PathVariable("gameId") String id
     ) {
 
         // header in response
@@ -692,6 +744,106 @@ public class GamesResource {
 
         return ResponseEntity.ok().headers(headers).body(updateGame);
     }
+
+    // Game crud actions
+    @GetMapping("/game/{gameId}")
+    public ResponseEntity<Optional<Game>> getGame(
+            @PathVariable("gameId") String id
+    ) {
+
+        // header in response
+        URI uri = ServletUriComponentsBuilder.fromCurrentRequest()
+                .path("")
+                .buildAndExpand()
+                .toUri();
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("URI", String.valueOf(uri));
+
+        // validations
+        if (!StringUtils.isNumeric(id)) {
+            return ResponseEntity.badRequest().headers(headers).build();
+        }
+
+        // logic
+        Optional<Game> foundGame = gameRepository.findById(Long.parseLong(id));
+        if (foundGame.isPresent()) {
+            return ResponseEntity.ok().headers(headers).body(foundGame);
+        } else {
+            return ResponseEntity.notFound().headers(headers).build();
+        }
+
+    }
+
+    // todo LOW work on all sqls, works for new
+    @PutMapping(value = "/game/{gameId}/state/{state}")
+    public ResponseEntity<Game> updateGameState(
+            @PathVariable("gameId") String id,
+            @PathVariable("state") String state
+    ) {
+        // todo make string and add fromLabelWithDefault
+
+        // header in response
+        URI uri = ServletUriComponentsBuilder.fromCurrentRequest()
+                .path("")
+                .query("")
+                .buildAndExpand(id, state)
+                .toUri();
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("URI", String.valueOf(uri));
+
+        // validations
+        if (!StringUtils.isNumeric(id)
+                || (GameState.fromLabelWithDefault(state) == GameState.ERROR)) {
+            // 400
+            return ResponseEntity.badRequest().headers(headers).build();}
+
+        long gameId = Long.parseLong(id);
+        Optional<Game> foundGame = gameRepository.findById(gameId);
+        if (!foundGame.isPresent()) {
+            // 404
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).headers(headers).build();
+        }
+
+        // logic
+        Game updateGame = foundGame.get();
+        updateGame.setState(GameState.fromLabelWithDefault(state));
+        gameRepository.save(updateGame);
+
+        return ResponseEntity.ok().headers(headers).body(updateGame);
+    }
+
+    // tested todo LOW work on constraint of players delete first
+    @DeleteMapping("/game/{gameId}")
+    public ResponseEntity<Game> deleteGame(
+            @PathVariable("gameId") String id
+    ) {
+
+        // header in response
+        URI uri = ServletUriComponentsBuilder.fromCurrentRequest()
+                .path("")
+                .buildAndExpand()
+                .toUri();
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("URI", String.valueOf(uri));
+
+        // validations
+        if (!StringUtils.isNumeric(id))
+            // 400
+            return ResponseEntity.badRequest().headers(headers).build();
+
+        long gameId = Long.parseLong(id);
+        Optional<Game> foundGame = gameRepository.findById(gameId);
+        if (!foundGame.isPresent()) {
+            // 404
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).headers(headers).build();
+        }
+
+        // logic
+        gameRepository.deleteById(gameId);
+        // delete 204
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).headers(headers).build();
+    }
+
 }
 
 

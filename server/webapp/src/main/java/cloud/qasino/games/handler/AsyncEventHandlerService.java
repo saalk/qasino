@@ -1,4 +1,4 @@
-package cloud.qasino.games.controller;
+package cloud.qasino.games.handler;
 
 import cloud.qasino.games.statemachine.configuration.QasinoAsyncConfiguration;
 import cloud.qasino.games.event.EventEnum;

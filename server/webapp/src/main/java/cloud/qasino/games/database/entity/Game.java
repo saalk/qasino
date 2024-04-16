@@ -75,7 +75,7 @@ public class Game {
     @Column(name = "style", length = 10, nullable = true)
     private String style;
 
-    // A mandatory stake made before the game begins
+    // A mandatory stake made before the "game" begins
     @Column(name = "ante")
     private int ante;
 

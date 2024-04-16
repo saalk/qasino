@@ -14,11 +14,11 @@ import java.util.List;
 public interface CardRepository extends JpaRepository<Card, Long> {
 
     public final static String FIND_CARDS_BY_GAME_ID =
-            "SELECT * FROM CARD " +
-                    "WHERE GAME_ID = :gameId ";
+            "SELECT * FROM \"card\" " +
+                    "WHERE game_id = :gameId ";
     public final static String COUNT_CARDS_BY_GAME_ID =
-            "SELECT count(*) FROM CARD  " +
-                    "WHERE GAME_ID = :gameId ";
+            "SELECT count(*) FROM \"card\"  " +
+                    "WHERE game_id = :gameId ";
 
     // counters
     Long countByGame(int gameId);
