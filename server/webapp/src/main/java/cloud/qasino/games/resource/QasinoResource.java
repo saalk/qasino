@@ -1,12 +1,14 @@
 package cloud.qasino.games.resource;
 
 import cloud.qasino.games.action.*;
+import cloud.qasino.games.configuration.WebConfiguration;
 import cloud.qasino.games.dto.QasinoFlowDTO;
 import cloud.qasino.games.event.EventOutput;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import io.swagger.annotations.Api;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -22,6 +24,7 @@ import java.util.Map;
 // 500 - internal server error
 
 @RestController
+@Api(tags = {WebConfiguration.QASINO_TAG})
 public class QasinoResource {
 
     EventOutput.Result output;

@@ -44,8 +44,8 @@
 		<!-- 5: readability -->
 		<checkstyle-maven-plugin.version>3.2.0</checkstyle-maven-plugin.version>
 		<plantuml-core.version>1.0.51</plantuml-core.version>
-		<swagger-codegen-maven-plugin>3.0.34</swagger-codegen-maven-plugin>
-		<version.swagger>2.2.19</version.swagger>
+		<swagger-codegen-maven-plugin>2.4.39</swagger-codegen-maven-plugin>
+		<version.swagger>2.3.1</version.swagger>
 
 		<!-- 6: logging -->
 		<org.slf4j.version>1.7.21</org.slf4j.version>
@@ -188,6 +188,21 @@
 		<!--		</dependency>-->
 
 		<!-- 5: readability -->
+<!--		<dependency>-->
+<!--			<groupId>io.springfox</groupId>-->
+<!--			<artifactId>springfox-swagger2</artifactId>-->
+<!--			<version>3.0.0</version>-->
+<!--		</dependency>-->
+		<dependency>
+			<groupId>io.springfox</groupId>
+			<artifactId>springfox-boot-starter</artifactId>
+			<version>3.0.0</version>
+		</dependency>
+		<dependency>
+			<groupId>io.springfox</groupId>
+			<artifactId>springfox-swagger-ui</artifactId>
+			<version>3.0.0</version>
+		</dependency>
 		<dependency>
 			<groupId>com.credibledoc</groupId>
 			<artifactId>plantuml-core</artifactId>
@@ -261,6 +276,25 @@
 <!--			</resource>-->
 <!--		</resources>-->
 		<plugins>
+<!--			<plugin>-->
+<!--				<groupId>io.swagger</groupId>-->
+<!--				<artifactId>swagger-codegen-maven-plugin</artifactId>-->
+<!--				<version>${swagger-codegen-maven-plugin}</version>-->
+<!--				<executions>-->
+<!--					<execution>-->
+<!--						<goals>-->
+<!--							<goal>generate</goal>-->
+<!--						</goals>-->
+<!--						<configuration>-->
+<!--							<inputSpec>${project.basedir}/src/main/resources/api.yaml</inputSpec>-->
+<!--							<language>java</language>-->
+<!--							<configOptions>-->
+<!--								<sourceFolder>src/gen/java/main</sourceFolder>-->
+<!--							</configOptions>-->
+<!--						</configuration>-->
+<!--					</execution>-->
+<!--				</executions>-->
+<!--			</plugin>-->
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>

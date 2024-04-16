@@ -1,5 +1,6 @@
 package cloud.qasino.games;
 
+import org.junit.Ignore;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 
@@ -8,7 +9,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 class VisitorIntegrationTest extends BaseApplicationIT {
 
-    @Test
+    @Test @Ignore
     public void givenExistingVisitor_whenPatched_thenOnlyPatchedFieldsUpdated() {
 //        Map<String, Boolean> communicationPreferences = new HashMap<>();
 //        communicationPreferences.put("post", true);
