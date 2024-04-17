@@ -6,7 +6,7 @@ import cloud.qasino.games.dto.statistics.Counter;
 import cloud.qasino.games.dto.statistics.SubTotalsGame;
 import cloud.qasino.games.dto.statistics.Total;
 import cloud.qasino.games.event.EventOutput;
-import cloud.qasino.games.statemachine.GameState;
+import cloud.qasino.games.database.entity.enums.game.GameState;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -39,11 +39,11 @@ public class CalculateHallOfFameAction implements Action<CalculateHallOfFameActi
 
         SubTotalsGame subTotalsGame = new SubTotalsGame();
         subTotalsGame.totalNewGames =
-                gameRepository.countByStates(GameState.cardGamesNewValues);
+                gameRepository.countByStates(GameState.setupGameStatesValues);
         subTotalsGame.totalStartedGames =
-                gameRepository.countByStates(GameState.cardGamesStartedValues);
+                gameRepository.countByStates(GameState.startedGameStatesValues);
         subTotalsGame.totalsFinishedGames =
-                gameRepository.countByStates(GameState.cardGamesFinishedValues);
+                gameRepository.countByStates(GameState.finishedGameStatesValues);
 
         Total totals = new Total();
         totals.setSubTotalsGames(subTotalsGame);

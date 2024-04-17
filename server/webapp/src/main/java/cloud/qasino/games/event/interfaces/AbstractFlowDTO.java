@@ -1,6 +1,6 @@
 package cloud.qasino.games.event.interfaces;
 
-import cloud.qasino.games.statemachine.GameState;
+import cloud.qasino.games.database.entity.enums.game.GameState;
 import cloud.qasino.games.orchestration.interfaces.EventHandlingResponse;
 import lombok.Getter;
 import lombok.Setter;

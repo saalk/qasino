@@ -7,20 +7,19 @@ import cloud.qasino.games.database.entity.enums.player.AiLevel;
 import cloud.qasino.games.database.entity.enums.player.Avatar;
 import cloud.qasino.games.database.entity.enums.player.Role;
 import cloud.qasino.games.database.repository.*;
-import cloud.qasino.games.statemachine.GameState;
+import cloud.qasino.games.database.entity.enums.game.GameState;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
-import org.springframework.core.env.Environment;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.PostConstruct;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
 
 @Component
 @Slf4j
@@ -61,39 +60,75 @@ public class QuickTestAtStartup implements ApplicationRunner {
     }
 
     public void tests() {
-        // A new VISITOR arrives
-        Visitor visitor = new Visitor("visitorNameName",1 , "a@b.c");
+
+        // A new visitor with 2 friends arrive
+        Visitor visitor = new Visitor("visitorName",1 , "a@a.c");
         int pawn = Visitor.pawnShipValue(0);
         visitor.pawnShip(pawn);
         visitor = visitorRepository.save(visitor);
 
-        // VISITOR starts a LEAGUE
-        League league = new League(visitor, "default", 1);
+        Visitor friend1 = new Visitor("friendName",1 , "a@b.c");
+        pawn = Visitor.pawnShipValue(0);
+        friend1.pawnShip(pawn);
+        friend1 = visitorRepository.save(visitor);
+
+        Visitor friend2 = new Visitor("friendName",2 , "b@b.c");
+        pawn = Visitor.pawnShipValue(0);
+        friend2.pawnShip(pawn);
+        friend2 = visitorRepository.save(visitor);
+
+        // The visitor starts a league
+        League league = new League(visitor, "defaultLeague", 1);
         league.endLeagueThisMonth();
         leagueRepository.save(league);
 
-        // The qasino starts a GAME
+        // The qasino starts a NEW game in the league initiated by the visitor
         Game game = new Game(league, "highlow", visitor.getVisitorId(), " ", 100);
         game.shuffleGame(0);
         game.setState(GameState.PLAYING);
         game = gameRepository.save(game);
-        cardRepository.saveAll(game.getCards());
+        cardRepository.saveAll(game.getCards()); // todo check this
 
-        // Add the VISITOR as a PLAYER to the GAME
-        List<Player> players = new ArrayList<>();
-        players.add(playerRepository.save(new Player(visitor, game, Role.INITIATOR,
+        // The visitor initiates a game adding a bot also
+        List<Player> visitorAndBot = new ArrayList<>();
+        // seat 1 - human visitor player with role initiator
+        visitorAndBot.add(playerRepository.save(new Player(visitor, game, Role.INITIATOR,
                 visitor.getBalance(), 1, Avatar.ELF, AiLevel.HUMAN)));
-        // Add a bot player to the game
-        players.add(playerRepository.save(new Player(null, game, Role.BOT, visitor.getBalance(), 2,
+        // seat 2 - bot player with same fiches as visitor
+        visitorAndBot.add(playerRepository.save(new Player(null, game, Role.BOT, visitor.getBalance(), 2,
                 Avatar.GOBLIN, AiLevel.AVERAGE)));
-        game.setPlayers(players);
+        game.setPlayers(visitorAndBot);
 
-        // VISITOR initiates a TURN for the GAME
-        Turn turn = new Turn(game, players.get(0).getPlayerId());
+        // The visitor invites 2 friends also
+        List<Player> friends = new ArrayList<>();
+        // seat 3 and 4 - Invite friend 1 and 2 to the game as player
+        visitorAndBot.add(playerRepository.save(new Player(friend1, game, Role.INVITED, friend1.getBalance(), 3,
+                Avatar.GOBLIN, AiLevel.HUMAN)));
+        visitorAndBot.add(playerRepository.save(new Player(friend2, game, Role.INVITED, friend2.getBalance(), 4,
+                Avatar.GOBLIN, AiLevel.HUMAN)));
+        game.setPlayers(friends);
+        game.setState(GameState.PENDING_INVITATIONS);
+
+        // friend 1 and 2 accept the invitation
+        List<Player> invites = new ArrayList<>();
+        Pageable pageable = PageRequest.of(0, 4,
+                Sort.by(
+                        Sort.Order.desc("created")));
+        invites = playerRepository.findAllPlayersInvitedForAGame(game.getGameId(), pageable);
+        for (Player invite : invites) {
+            if (invite.getRole().equals(Role.INVITED)) {
+                invite.setRole(Role.ACCEPTED);
+                playerRepository.save(invite);
+            }
+        }
+        game.setState(GameState.PREPARED);
+        gameRepository.save(game);
+
+        // The main player initiates a turn with round 1 player 1 and gets a card
+        Turn turn = new Turn(game, visitorAndBot.get(0).getPlayerId());
         turnRepository.save(turn);
-
-        // VISITOR gets a card CARDMOVE
-        CardMove cardMove = new CardMove(turn, players.get(0), 0, Move.DEAL,
+        Card card =
+        CardMove cardMove = new CardMove(turn, visitorAndBot.get(0), 0, Move.DEAL,
                 Location.HAND);
         cardMoveRepository.save(cardMove);
     }

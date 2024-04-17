@@ -10,7 +10,7 @@ import org.springframework.context.ApplicationContext;
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 
-import static cloud.qasino.games.statemachine.GameState.*;
+import static cloud.qasino.games.database.entity.enums.game.GameState.*;
 import static cloud.qasino.games.event.EventEnum.LIST;
 import static cloud.qasino.games.event.EventOutput.Result.FAILURE;
 import static cloud.qasino.games.event.EventOutput.Result.SUCCESS;

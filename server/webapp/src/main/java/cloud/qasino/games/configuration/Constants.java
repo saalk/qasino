@@ -1,7 +1,7 @@
 package cloud.qasino.games.configuration;
 
 import cloud.qasino.games.database.entity.enums.game.style.*;
-import cloud.qasino.games.statemachine.GameState;
+import cloud.qasino.games.database.entity.enums.game.GameState;
 import cloud.qasino.games.statemachine.GameTrigger;
 import cloud.qasino.games.database.entity.enums.move.Move;
 import cloud.qasino.games.database.entity.enums.game.Type;

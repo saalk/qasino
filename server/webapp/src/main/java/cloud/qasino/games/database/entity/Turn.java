@@ -84,7 +84,7 @@ public class Turn {
 
     // References
 
-    // L: A League can have more Games over time
+    // L: A turn can have many moves over time
     @OneToMany(mappedBy = "turn", cascade = CascadeType.DETACH)
     // just a reference, the actual fk column is in game not here !
     private List<CardMove> cardMoves = new ArrayList<>();

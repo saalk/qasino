@@ -2,7 +2,7 @@ package cloud.qasino.games.orchestration;
 
 import cloud.qasino.games.action.interfaces.Action;
 import cloud.qasino.games.action.interfaces.ActionOutput;
-import cloud.qasino.games.statemachine.GameState;
+import cloud.qasino.games.database.entity.enums.game.GameState;
 import cloud.qasino.games.event.interfaces.AbstractFlowDTO;
 import cloud.qasino.games.event.interfaces.Event;
 import lombok.extern.slf4j.Slf4j;

@@ -15,18 +15,20 @@ import java.util.Set;
 @Getter
 public enum EventState implements LabeledEnum {
 
-    // new
+    // SETUP,
+    INIT("init", "Game is in initialization"),
     NEW("new", "New Turn started"),
     DEALT("dealt", "PlayingCard dealt to player"),
 
+    // STARTED
     DREW("drew", "Player drew a playingcard"),
     DOUBLE("double", "Player doubled his playingcard"),
     HIGHER("higher", "Player decided higher"),
     LOWER("lower", "Player decided lower"),
 
-    ERROR("lower", "Player decided lower"),
-    FINISHED("finished", "Game finished"),
-    INIT("lower", "Game has not events yes");
+    // ENDED
+    ERROR("error", "Player has triggered error event"),
+    FINISHED("finished", "Game finished");
 
     /**
      * A static HashMap lookup with key + value is created to use in a getter

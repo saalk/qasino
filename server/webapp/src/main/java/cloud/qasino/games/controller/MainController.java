@@ -30,6 +30,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -38,6 +39,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -184,6 +186,88 @@ public class MainController {
         mapQasinoResponseFromRetrievedDataAction.perform(flowDTO);
         return ResponseEntity.ok().headers(flowDTO.getHeaders()).body(flowDTO.getQasino());
     }
+
+    // visitor financial actions
+
+    // Generic : pages, maxPerPage,
+    // Visitor : visitorName, email
+    // Player  : role, fiches, avatar, aiLevel
+    // Game    : trigger, gameStateGroup, type, style, ante, jokers
+    // League  : leagueName
+    // Play    : move, location, bet
+    @PutMapping(value = "/pawn/{pawnship}")
+    public ResponseEntity pawnship(
+            @RequestHeader Map<String, String> headerData,
+            @PathVariable Map<String, String> pathData,
+            @RequestParam Map<String, String> paramData
+    ) {
+        // validate
+        pathData = new HashMap<>();
+        pathData.put("pawnship", "true");
+        QasinoFlowDTO flowDTO = new QasinoFlowDTO();
+        flowDTO.setHeaderData(headerData);
+        flowDTO.setPathData(pathData);
+        flowDTO.setParamData(paramData);
+        flowDTO.setPayloadData(null);
+        boolean processOk = flowDTO.validateInput();
+        if (!processOk) {
+            return ResponseEntity.status(HttpStatus.valueOf(flowDTO.getHttpStatus())).headers(flowDTO.getHeaders()).build();
+        }
+
+        // actions
+        output = findAllEntitiesForInputAction.perform(flowDTO);
+        if (output == EventOutput.Result.FAILURE) {
+            return ResponseEntity.status(HttpStatus.valueOf(flowDTO.getHttpStatus())).headers(flowDTO.getHeaders()).build();
+        }
+        output = handleSecuredLoanAction.perform(flowDTO);
+        if (output == EventOutput.Result.FAILURE) {
+            return ResponseEntity.status(HttpStatus.valueOf(flowDTO.getHttpStatus())).headers(flowDTO.getHeaders()).build();
+        }
+        // build response
+        setStatusIndicatorsBaseOnRetrievedDataAction.perform(flowDTO);
+        calculateHallOfFameAction.perform(flowDTO);
+        mapQasinoResponseFromRetrievedDataAction.perform(flowDTO);
+        return ResponseEntity.ok().headers(flowDTO.getHeaders()).body(flowDTO.getQasino());
+    }
+
+    @PutMapping(value = "/visitor/repayloan")
+    public ResponseEntity repayloan(
+            @RequestHeader Map<String, String> headerData,
+            @PathVariable Map<String, String> pathData,
+            @RequestParam Map<String, String> paramData
+    ) {
+        // validate
+        pathData = new HashMap<>();
+        pathData.put("repayloan", "true");
+        QasinoFlowDTO flowDTO = new QasinoFlowDTO();
+        flowDTO.setHeaderData(headerData);
+        flowDTO.setPathData(pathData);
+        flowDTO.setParamData(paramData);
+        flowDTO.setPayloadData(null);
+        boolean processOk = flowDTO.validateInput();
+        if (!processOk) {
+            return ResponseEntity.status(HttpStatus.valueOf(flowDTO.getHttpStatus())).headers(flowDTO.getHeaders()).build();
+        }
+
+        // actions
+        output = findAllEntitiesForInputAction.perform(flowDTO);
+        if (output == EventOutput.Result.FAILURE) {
+            return ResponseEntity.status(HttpStatus.valueOf(flowDTO.getHttpStatus())).headers(flowDTO.getHeaders()).build();
+        }
+        output = handleSecuredLoanAction.perform(flowDTO);
+        if (output == EventOutput.Result.FAILURE) {
+            return ResponseEntity.status(HttpStatus.valueOf(flowDTO.getHttpStatus())).headers(flowDTO.getHeaders()).build();
+        }
+
+        // build response
+        setStatusIndicatorsBaseOnRetrievedDataAction.perform(flowDTO);
+        calculateHallOfFameAction.perform(flowDTO);
+        mapQasinoResponseFromRetrievedDataAction.perform(flowDTO);
+        return ResponseEntity.ok().headers(flowDTO.getHeaders()).body(flowDTO.getQasino());
+    }
+
+    // vistor CRUD
+    // /api/visitor/{visitorId} - GET, DELETE, PUT visitorName, email only
 
 
     @GetMapping(value = "/game/{state}/visitor/{visitorId}")

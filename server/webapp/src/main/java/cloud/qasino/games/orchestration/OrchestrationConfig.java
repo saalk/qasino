@@ -3,7 +3,7 @@ package cloud.qasino.games.orchestration;
 import cloud.qasino.games.action.interfaces.Action;
 import cloud.qasino.games.orchestration.interfaces.EventHandlingResponse;
 import cloud.qasino.games.orchestration.interfaces.Expression;
-import cloud.qasino.games.statemachine.GameState;
+import cloud.qasino.games.database.entity.enums.game.GameState;
 import cloud.qasino.games.event.EventEnum;
 import cloud.qasino.games.event.interfaces.Event;
 import lombok.extern.slf4j.Slf4j;

@@ -1,4 +1,4 @@
-package cloud.qasino.games.selectors;
+package cloud.qasino.games.database.entity.enums.game;
 
 import cloud.qasino.games.selectors.ing.AccountType;
 import cloud.qasino.games.selectors.ing.PortfolioCode;
@@ -24,7 +24,7 @@ import static cloud.qasino.games.selectors.ing.ProductType.PLATINUMCARD;
  * 100% or 5%min45e), <p>- atmFee (eg. € 4,50) etc <p> NB Repricing means sending one or more a
  * pricing programs to SIA to replace the current pricing programs.
  */
-public class GameTypeSelector {
+public class GameStyleSelector {
 
     public List<String> findAllForChangeRepayment(ProductType checkProductType, AccountType checkAccountType, Integer checkNewCreditLimit, PortfolioCode checkNewPortfolioCode) throws InvalidAttributeValueException {
 

@@ -48,27 +48,28 @@ public class QasinoFlowDTO //extends AbstractFlowDTO
     private Qasino qasino;
     private Counter counter;
 
-    // FRONTEND ID DATA
-    // frontend header
+
+    // FRONTEND path params
     private long suppliedVisitorId;
     private long suppliedGameId;
-    // frontend path ids
+
     private long suppliedLeagueId;
+
+    private long initiatingPlayerId;
     private long invitedPlayerId;
     private long acceptedPlayerId;
     private long suppliedTurnPlayerId;
-    // generic frontend path ids
-    private String suppliedEntity;      // todo
-    private long suppliedEntityId;       // todo
-    private String suppliedPathParam;   // todo
 
-    // FRONTEND PATH/PARAM DATA
-    // enums
+    // Triggers for the Game
     private GameTrigger suppliedTrigger;
     private GameStateGroup suppliedGameStateGroup;
+
+    // Triggers while playing a Game
     private Move suppliedMove;
     private List<Card> suppliedCards;   // todo
-    // frontend query params
+
+    // FRONTEND request and or main path params
+
     // paging
     private int suppliedPages = 0;
     private int suppliedMaxPerPage = 4;
@@ -80,14 +81,14 @@ public class QasinoFlowDTO //extends AbstractFlowDTO
     private String suppliedLeagueEnd;    // todo monthsEnd, thisMonday, x days.
     private Boolean suppliedLeagueClose; // todo null, or true/false
     // player
-    private Role suppliedRole;
+    private Role suppliedRole; // bot, initiator or guest
     private int suppliedFiches;
     private Avatar suppliedAvatar;
-    private AiLevel suppliedAiLevel;
+    private AiLevel suppliedAiLevel; // human or ai
     // game
-    private Type suppliedType;
-    private String suppliedStyle;
-    private int suppliedAnte;
+    private Type suppliedType; // highlow
+    private String suppliedStyle; // maxrounds etc
+    private int suppliedAnte; // inleg
     private int suppliedJokers;
     // cardMove
     private Location suppliedLocation;

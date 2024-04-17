@@ -59,13 +59,13 @@ public class Style {
 
         // todo change to char array with loop
         switch (len) {
-            case 6:
+            case 6: // 6th pos is turnsToWin
                 pos = label.charAt(5);
                 turnsToWin = TurnsToWin.fromLabelWithDefault(pos);
                 newPos = turnsToWin.getLabel().charAt(0);
                 newLabel.setCharAt(5, newPos);
 
-            case 5:
+            case 5: // 5th pos is roundsToWin
                 pos = label.charAt(4);
                 roundsToWin = RoundsToWin.fromLabelWithDefault(pos);
                 newPos = roundsToWin.getLabel().charAt(0);

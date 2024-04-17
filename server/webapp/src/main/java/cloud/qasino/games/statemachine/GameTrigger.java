@@ -13,24 +13,24 @@ import static java.util.EnumSet.of;
 @Getter
 public enum GameTrigger {
 
-    // new - initiated by user
+    // SETUP - initiated by user
     NEW("new"),        // may not have initial bets
     INVITE("invite"),
     ACCEPT("accept"),     // with initial bet above game minimal ante
     PREPARE("prepare"),    // do some updates and validate if playable
 
-    // playing
+    // PLAYING
     PLAY("play"),       // validate that initial bets are stated
 
-    // ended
+    // FINISHED
     WINNER("winner"),     // we have a winner
     LEAVE("leave"),      // User left - via GameController
 
-    // ended - initiated by system
+    // STATUS - initiated by system
     OK("ok"),         // result ok
     NOT_OK("not_ok"),     // result nok
 
-    // error
+    // ERROR
     ABANDON("abandon"),    // game is abandonned
     CRASH("crash"),       // error 500
     ERROR("error");    // bad label or null supplied
@@ -40,12 +40,12 @@ public enum GameTrigger {
     public static final Map<String, GameTrigger> gameTriggerMapNoError
             = new HashMap<>();
 
-    public static Set<GameTrigger> gamesTriggerNew = of(NEW, INVITE, ACCEPT, PREPARE);
-    public static Set<GameTrigger> gamesTriggerPlaying = of(PLAY);
-    public static Set<GameTrigger> gamesTriggerEnding = of(WINNER, LEAVE);
-    public static Set<GameTrigger> gamesTriggerError = of(ABANDON, CRASH);
+    public static Set<GameTrigger> setupGameTriggers = of(NEW, INVITE, ACCEPT, PREPARE);
+    public static Set<GameTrigger> playingGameTriggers = of(PLAY);
+    public static Set<GameTrigger> finishedGamesTriggers = of(WINNER, LEAVE);
+    public static Set<GameTrigger> errorGameTriggers = of(ABANDON, CRASH);
 
-    public static Set<GameTrigger> gameTriggers = EnumSet.of(NEW, INVITE, ACCEPT, PREPARE, PLAY, WINNER,
+    public static Set<GameTrigger> allGameTriggers = EnumSet.of(NEW, INVITE, ACCEPT, PREPARE, PLAY, WINNER,
             LEAVE, OK, NOT_OK, ABANDON, CRASH, ERROR);
 
     static {

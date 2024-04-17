@@ -1,6 +1,6 @@
 package cloud.qasino.games.database.repository;
 
-import cloud.qasino.games.statemachine.GameState;
+import cloud.qasino.games.database.entity.enums.game.GameState;
 import cloud.qasino.games.database.entity.Game;
 import cloud.qasino.games.database.entity.League;
 import org.springframework.data.domain.Pageable;
@@ -17,58 +17,61 @@ import java.util.List;
 public interface GameRepository extends JpaRepository<Game, Long> {
 
     // prepared queries
-    public final static String FIND_ALL = "SELECT * FROM \"game\" ORDER BY CREATED DESC";
-    public final static String COUNT_ALL = "SELECT count(*) FROM game";
+    public final static String FIND_ALL = "SELECT * FROM \"game\" ORDER BY \"created\" DESC";
+    public final static String COUNT_ALL = "SELECT count(*) FROM \"game\"";
+    public final static String FIND_STATES = "SELECT * FROM \"game\" g WHERE g.\"state\"IN :states";
+    public final static String COUNT_STATES = "SELECT count(*) FROM \"game\" g WHERE g.\"state\"IN (:states)";
     public final static String COUNT_TODAY =
             "SELECT count(*) FROM \"game\" g " +
-                    "WHERE g.YEAR = :year " +
-                    "AND g.MONTH = :month " +
-                    "AND g.WEEKDAY = :weekday ";
+                    "WHERE g.\"year\" = :year " +
+                    "AND g.\"month\" = :month " +
+                    "AND g.\"weekday\" = :weekday ";
     public final static String COUNT_WEEK =
             "SELECT count(*) FROM \"game\" g " +
-                    "WHERE g.YEAR = :year " +
-                    "AND g.WEEK = :week ";
+                    "WHERE g.\"year\" = :year " +
+                    "AND g.\"week\" = :week ";
     public final static String COUNT_MONTH =
             "SELECT count(*) FROM \"game\" g " +
-                    "WHERE g.YEAR = :year " +
-                    "AND g.MONTH = :month ";
+                    "WHERE g.\"year\" = :year " +
+                    "AND g.\"month\" = :month ";
 
     public final static String FIND_NEWGAMES_BY_VISITOR_ID =
             "SELECT * FROM \"game\" a JOIN \"player\" b " +
-                    "WHERE a.game_id = b.game_id " +
-                    "AND b.visitor_id = :visitorId " +
-                     "AND a.STATE IN ('NEW','PENDING_INVITATIONS','PREPARED') ";
+                    "WHERE a.\"game_id\" = b.\"game_id\" " +
+                    "AND b.\"visitor_id\" = :visitorId " +
+                     "AND a.\"state\" IN ('NEW','PENDING_INVITATIONS','PREPARED') ";
     public final static String COUNT_NEWGAMES_BY_VISITOR_ID =
-            "SELECT count(*) FROM \"game\" a JOIN Player b " +
-                    "WHERE a.game_id = b.game_id " +
-                    "AND b.visitor_id = :visitorId " +
-                    "AND a.STATE IN ('NEW','PENDING_INVITATIONS','PREPARED') ";
+            "SELECT count(*) FROM \"game\" a JOIN \"player\" b " +
+                    "WHERE a.\"game_id\" = b.\"game_id\" " +
+                    "AND b.\"visitor_id\" = :visitorId " +
+                    "AND a.\"state\" IN ('NEW','PENDING_INVITATIONS','PREPARED') ";
 
     public final static String FIND_STARTEDGAMES_BY_VISITOR_ID =
-            "SELECT * FROM \"game\" a JOIN Player b " +
-                    "WHERE a.game_id = b.game_id " +
-                    "AND b.visitor_id = :visitorId " +
-                    "AND a.STATE IN ('PLAYING') ";
+            "SELECT * FROM \"game\" a JOIN \"player\" b " +
+                    "WHERE a.\"game_id\" = b.\"game_id\" " +
+                    "AND b.\"visitor_id\" = :visitorId " +
+                    "AND a.\"state\" IN ('PLAYING') ";
     public final static String COUNT_STARTEDGAMES_BY_VISITOR_ID =
-            "SELECT count(*) FROM \"game\" a JOIN Player b " +
-                    "WHERE a.game_id = b.game_id " +
-                    "AND b.visitor_id = :visitorId " +
-                    "AND a.STATE IN ('PLAYING') ";
+            "SELECT count(*) FROM \"game\" a JOIN \"player\" b " +
+                    "WHERE a.\"game_id\" = b.\"game_id\" " +
+                    "AND b.\"visitor_id\" = :visitorId " +
+                    "AND a.\"state\" IN ('PLAYING') ";
 
     public final static String FIND_FINISHEDGAMES_BY_VISITOR_ID =
-            "SELECT * FROM \"game\" a JOIN Player b " +
-                    "WHERE a.game_id = b.game_id " +
-                    "AND b.visitor_id = :visitorId " +
-                    "AND a.STATE IN ('PLAYING') ";
+            "SELECT * FROM \"game\" a JOIN \"player\" b " +
+                    "WHERE a.\"game_id\" = b.\"game_id\" " +
+                    "AND b.\"visitor_id\" = :visitorId " +
+                    "AND a.\"state\" IN ('FINISHED','QUIT','CANCELLED','OLD') ";
     public final static String COUNT_FINISHEDGAMES_BY_VISITOR_ID =
-            "SELECT count(*) FROM \"game\" a JOIN Player b " +
-                    "WHERE a.game_id = b.game_id " +
-                    "AND b.visitor_id = :visitorId " +
-                    "AND a.STATE IN ('PLAYING') ";
+            "SELECT count(*) FROM \"game\" a JOIN \"player\" b " +
+                    "WHERE a.\"game_id\" = b.\"game_id\" " +
+                    "AND b.\"visitor_id\" = :visitorId " +
+                    "AND a.\"state\" IN ('FINISHED','QUIT','CANCELLED','OLD') ";
+
     // counts
     Integer countByLeague(League league);
 
-    @Query(value = "SELECT count(*) FROM \"game\" g WHERE g.\"state\"IN (:states)", nativeQuery = true)
+    @Query(value = COUNT_STATES, nativeQuery = true)
     Integer countByStates(@Param(value = "states") String[] states);
 
     @Query(value = COUNT_TODAY, nativeQuery = true)
@@ -80,17 +83,17 @@ public interface GameRepository extends JpaRepository<Game, Long> {
     @Query(value = COUNT_MONTH, nativeQuery = true)
     Integer countByThisMonth(String year, String month);
 
-
     // special finds
     List<Game> findGamesByLeague(League league);
-
-    @Query(value = "SELECT * FROM \"game\" g WHERE g.\"state\"IN :states", nativeQuery = true)
-    List<Game> findActiveGameNodeStates(@Param(value = "states") List<GameState> states);
-
 
     // list with paging
     @Query(value = FIND_ALL, countQuery = COUNT_ALL, nativeQuery = true)
     List<Game> findAllGamesWithPage(Pageable pageable);
+
+    @Query(value = FIND_STATES, countQuery = COUNT_STATES,nativeQuery = true)
+    List<Game> findActiveGameNodeStates(
+            @Param(value = "states") List<GameState> states,
+            Pageable pageable);
 
     @Query(value = FIND_NEWGAMES_BY_VISITOR_ID, countQuery = COUNT_NEWGAMES_BY_VISITOR_ID, nativeQuery = true)
     public List<Game> findAllNewGamesForVisitorWithPage(

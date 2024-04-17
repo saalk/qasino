@@ -1,6 +1,6 @@
 package cloud.qasino.games.controller;
 
-import cloud.qasino.games.statemachine.GameState;
+import cloud.qasino.games.database.entity.enums.game.GameState;
 import cloud.qasino.games.database.entity.Turn;
 import cloud.qasino.games.database.entity.Game;
 import cloud.qasino.games.database.entity.Player;
@@ -17,15 +17,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
 import java.util.Optional;
-
-import static cloud.qasino.games.configuration.Constants.BASE_PATH;
-import static cloud.qasino.games.configuration.Constants.ENDPOINT_PLAY;
 
 // basic path /qasino
 // basic header @RequestHeader(value "visitor", required = true) int visitorId" // else 400
@@ -63,8 +61,45 @@ public class PlayContoller {
         this.turnRepository = turnRepository;
     }
 
+
+    @PutMapping(value = "/play/game/{gameId}")
+    public ResponseEntity<Game> startPlayingAGame(
+            @PathVariable("gameId") String id
+    ) {
+
+        // header in response
+        URI uri = ServletUriComponentsBuilder.fromCurrentRequest()
+                .path("")
+                .query("")
+                .buildAndExpand(id)
+                .toUri();
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("URI", String.valueOf(uri));
+
+        // validations
+        if (!StringUtils.isNumeric(id)) {
+            // 400
+            return ResponseEntity.badRequest().headers(headers).build();}
+
+        long gameId = Long.parseLong(id);
+        Optional<Game> foundGame = gameRepository.findById(gameId);
+        if (!foundGame.isPresent()) {
+            // 404
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).headers(headers).build();
+        }
+
+        // todo HIGH make rules and validate
+
+        // logic
+        Game updateGame = foundGame.get();
+        updateGame.setState(GameState.PLAYING);
+        gameRepository.save(updateGame);
+
+        return ResponseEntity.ok().headers(headers).body(updateGame);
+    }
+
     @PostMapping(value = "/play/{suppliedMove}/game/{gameId}/player/{playerId}/location/{location}")
-    public ResponseEntity startGame(
+    public ResponseEntity playerMakesAMoveForAGame(
             @PathVariable("suppliedMove") String inputAction,
             @PathVariable("gameId") String gId,
             @PathVariable("playerId") String pId,

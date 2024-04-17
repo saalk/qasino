@@ -1,5 +1,6 @@
 package cloud.qasino.games.statemachine;
 
+import cloud.qasino.games.database.entity.enums.game.GameState;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -12,7 +13,7 @@ import java.util.Map;
 @NoArgsConstructor
 @Getter
 public enum GameStateGroup {
-    NEW("new"), STARTED("started"), FINISHED("finished"), ERROR("error");
+    SETUP("setup"), STARTED("started"), FINISHED("finished"), ERROR("error");
 
     private String label;
 
@@ -41,12 +42,12 @@ public enum GameStateGroup {
     public List<GameState> listGameStatesForGameStateGroup(GameStateGroup gameStateGroup) {
         //  todo loop gamestate group
         switch (gameStateGroup) {
-            case NEW:
-                return (List<GameState>) GameState.cardGamesNew;
+            case SETUP:
+                return (List<GameState>) GameState.setupGameStates;
             case STARTED:
-                return (List<GameState>) GameState.cardGamesStarted;
+                return (List<GameState>) GameState.startedGameStates;
             case FINISHED:
-                return (List<GameState>) GameState.cardGamesFinished;
+                return (List<GameState>) GameState.finishedGameStates;
             default:
                 return (List<GameState>) GameState.cardGamesError;
         }

@@ -1,6 +1,6 @@
 package cloud.qasino.games.dto.enums;
 
-import cloud.qasino.games.statemachine.GameState;
+import cloud.qasino.games.database.entity.enums.game.GameState;
 import cloud.qasino.games.database.entity.enums.game.Type;
 import lombok.Getter;
 

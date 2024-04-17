@@ -1,12 +1,7 @@
 package cloud.qasino.games.database.entity;
 
-import cloud.qasino.games.database.entity.enums.game.Style;
 import cloud.qasino.games.database.entity.enums.game.Type;
-import cloud.qasino.games.database.entity.enums.game.style.*;
-import cloud.qasino.games.database.entity.enums.player.AiLevel;
-import cloud.qasino.games.database.entity.enums.player.Role;
-import cloud.qasino.games.dto.enums.StyleEnums;
-import cloud.qasino.games.statemachine.GameState;
+import cloud.qasino.games.database.entity.enums.game.GameState;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
