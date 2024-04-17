@@ -3,22 +3,21 @@ package cloud.qasino.games.controller;
 import cloud.qasino.games.action.CalculateHallOfFameAction;
 import cloud.qasino.games.action.FindAllEntitiesForInputAction;
 import cloud.qasino.games.action.FindVisitorIdByVisitorNameAction;
+import cloud.qasino.games.action.HandleSecuredLoanAction;
 import cloud.qasino.games.action.MapQasinoResponseFromRetrievedDataAction;
 import cloud.qasino.games.action.SetStatusIndicatorsBaseOnRetrievedDataAction;
 import cloud.qasino.games.action.SignUpNewVisitorAction;
-import cloud.qasino.games.configuration.WebConfiguration;
 import cloud.qasino.games.database.entity.Game;
 import cloud.qasino.games.database.entity.Player;
 import cloud.qasino.games.database.repository.CardRepository;
 import cloud.qasino.games.database.repository.GameRepository;
-import cloud.qasino.games.database.repository.LeagueRepository;
 import cloud.qasino.games.database.repository.PlayerRepository;
 import cloud.qasino.games.database.repository.ResultsRepository;
 import cloud.qasino.games.database.repository.TurnRepository;
 import cloud.qasino.games.database.repository.VisitorRepository;
+import cloud.qasino.games.dto.Qasino;
 import cloud.qasino.games.dto.QasinoFlowDTO;
 import cloud.qasino.games.event.EventOutput;
-import io.swagger.annotations.Api;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
@@ -31,7 +30,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -41,10 +39,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
-
-import static cloud.qasino.games.configuration.Constants.BASE_PATH;
 
 // basic path /qasino
 // basic header @RequestHeader(value "visitor", required = true) int visitorId" // else 400
@@ -58,7 +53,7 @@ import static cloud.qasino.games.configuration.Constants.BASE_PATH;
 
 @RestController
 //@Api(tags = {WebConfiguration.QASINO_TAG})
-public class MainController {
+public class QasinoController {
 
     EventOutput.Result output;
 
@@ -75,6 +70,8 @@ public class MainController {
     @Autowired
     SignUpNewVisitorAction signUpNewVisitorAction;
     @Autowired
+    HandleSecuredLoanAction handleSecuredLoanAction;
+    @Autowired
     SetStatusIndicatorsBaseOnRetrievedDataAction setStatusIndicatorsBaseOnRetrievedDataAction;
     @Autowired
     CalculateHallOfFameAction calculateHallOfFameAction;
@@ -82,7 +79,7 @@ public class MainController {
     MapQasinoResponseFromRetrievedDataAction mapQasinoResponseFromRetrievedDataAction;
 
     @Autowired
-    public MainController(
+    public QasinoController(
             VisitorRepository visitorRepository,
             GameRepository gameRepository,
             PlayerRepository playerRepository,
@@ -96,19 +93,19 @@ public class MainController {
         this.turnRepository = turnRepository;
     }
 
-    @GetMapping(value = "/home")
-    public ResponseEntity home() {
+    @GetMapping(value = {"/home","/home/{visitorId}"} )
+    public ResponseEntity<Qasino> home(
+            @PathVariable("visitorId") Optional<String> id
+    ) {
         // validate
         QasinoFlowDTO flowDTO = new QasinoFlowDTO();
-        flowDTO.setHeaderData(null);
-        flowDTO.setPathData(null);
-        flowDTO.setParamData(null);
-        flowDTO.setPayloadData(null);
-        boolean processOk = flowDTO.validateInput();
-        if (!processOk) {
+        HashMap<String,String> pathData = new HashMap<>();
+        id.ifPresent(s -> pathData.put("visitorId", s));
+        flowDTO.setPathData(pathData);
+        if (!flowDTO.validateInput()) {
             return ResponseEntity.status(HttpStatus.valueOf(flowDTO.getHttpStatus())).headers(flowDTO.getHeaders()).build();
         }
-        // logic
+        // list - get Qasino either with or without visitor
         output = findAllEntitiesForInputAction.perform(flowDTO);
         if (output == EventOutput.Result.FAILURE) {
             return ResponseEntity.status(HttpStatus.valueOf(flowDTO.getHttpStatus())).headers(flowDTO.getHeaders()).build();
@@ -121,24 +118,18 @@ public class MainController {
     }
 
     @PostMapping(value = "/signup/{visitorName}")
-    public ResponseEntity signup(
-            @RequestHeader Map<String, String> headerData,
-            @PathVariable Map<String, String> pathData,
-            @RequestParam Map<String, String> paramData
+    public ResponseEntity<Qasino> signup(
+            @PathVariable("visitorName") String name
     ) {
-
-        // validations
+        // validate
         QasinoFlowDTO flowDTO = new QasinoFlowDTO();
-        flowDTO.setHeaderData(headerData);
+        HashMap<String,String> pathData = new HashMap<>();
+        pathData.put("visitorName",name);
         flowDTO.setPathData(pathData);
-        flowDTO.setParamData(paramData);
-        flowDTO.setPayloadData(null);
-        boolean processOk = flowDTO.validateInput();
-        if (!processOk) {
+        if (!flowDTO.validateInput()) {
             return ResponseEntity.status(HttpStatus.valueOf(flowDTO.getHttpStatus())).headers(flowDTO.getHeaders()).build();
         }
-
-        // logic
+        // signup - get Qasino with new visitor
         output = signUpNewVisitorAction.perform(flowDTO);
         if (output == EventOutput.Result.FAILURE) {
             return ResponseEntity.status(HttpStatus.valueOf(flowDTO.getHttpStatus())).headers(flowDTO.getHeaders()).build();
@@ -155,23 +146,18 @@ public class MainController {
     }
 
     @GetMapping(value = "/logon/{visitorName}")
-    public ResponseEntity logon(
-            @RequestHeader Map<String, String> headerData,
-            @PathVariable Map<String, String> pathData,
-            @RequestParam Map<String, String> paramData
+    public ResponseEntity<Qasino> logon(
+            @PathVariable("visitorName") String name
     ) {
-
-        // validations
+        // validate
         QasinoFlowDTO flowDTO = new QasinoFlowDTO();
-        flowDTO.setHeaderData(headerData);
+        HashMap<String,String> pathData = new HashMap<>();
+        pathData.put("visitorName",name);
         flowDTO.setPathData(pathData);
-        flowDTO.setParamData(paramData);
-        flowDTO.setPayloadData(null);
-        boolean processOk = flowDTO.validateInput();
-        if (!processOk) {
+        if (!flowDTO.validateInput()) {
             return ResponseEntity.status(HttpStatus.valueOf(flowDTO.getHttpStatus())).headers(flowDTO.getHeaders()).build();
         }
-        // logic
+        // logon - get Qasino and all games for visitor
         output = findVisitorIdByVisitorNameAction.perform(flowDTO);
         if (output == EventOutput.Result.FAILURE) {
             return ResponseEntity.status(HttpStatus.valueOf(flowDTO.getHttpStatus())).headers(flowDTO.getHeaders()).build();
@@ -184,7 +170,7 @@ public class MainController {
         setStatusIndicatorsBaseOnRetrievedDataAction.perform(flowDTO);
         calculateHallOfFameAction.perform(flowDTO);
         mapQasinoResponseFromRetrievedDataAction.perform(flowDTO);
-        return ResponseEntity.ok().headers(flowDTO.getHeaders()).body(flowDTO.getQasino());
+        return ResponseEntity.created(flowDTO.getUri()).headers(flowDTO.getHeaders()).body(flowDTO.getQasino());
     }
 
     // visitor financial actions
@@ -195,26 +181,19 @@ public class MainController {
     // Game    : trigger, gameStateGroup, type, style, ante, jokers
     // League  : leagueName
     // Play    : move, location, bet
-    @PutMapping(value = "/pawn/{pawnship}")
-    public ResponseEntity pawnship(
-            @RequestHeader Map<String, String> headerData,
-            @PathVariable Map<String, String> pathData,
-            @RequestParam Map<String, String> paramData
+    @PutMapping(value = "/pawn/{visitorId}")
+    public ResponseEntity<Qasino> visitorPawnsHisShip(
+            @PathVariable("visitorId") String id
     ) {
         // validate
-        pathData = new HashMap<>();
-        pathData.put("pawnship", "true");
         QasinoFlowDTO flowDTO = new QasinoFlowDTO();
-        flowDTO.setHeaderData(headerData);
+        HashMap<String,String> pathData = new HashMap<>();
+        pathData.put("visitorId",id);
         flowDTO.setPathData(pathData);
-        flowDTO.setParamData(paramData);
-        flowDTO.setPayloadData(null);
-        boolean processOk = flowDTO.validateInput();
-        if (!processOk) {
+        if (!flowDTO.validateInput()) {
             return ResponseEntity.status(HttpStatus.valueOf(flowDTO.getHttpStatus())).headers(flowDTO.getHeaders()).build();
         }
-
-        // actions
+        // pawn - get Qasino and all games for visitor with loan
         output = findAllEntitiesForInputAction.perform(flowDTO);
         if (output == EventOutput.Result.FAILURE) {
             return ResponseEntity.status(HttpStatus.valueOf(flowDTO.getHttpStatus())).headers(flowDTO.getHeaders()).build();
@@ -230,26 +209,19 @@ public class MainController {
         return ResponseEntity.ok().headers(flowDTO.getHeaders()).body(flowDTO.getQasino());
     }
 
-    @PutMapping(value = "/visitor/repayloan")
-    public ResponseEntity repayloan(
-            @RequestHeader Map<String, String> headerData,
-            @PathVariable Map<String, String> pathData,
-            @RequestParam Map<String, String> paramData
+    @PutMapping(value = "/repayloan/{visitorId}")
+    public ResponseEntity<Qasino> visitorRepaysHisLoan(
+            @PathVariable("visitorId") String id
     ) {
         // validate
-        pathData = new HashMap<>();
-        pathData.put("repayloan", "true");
         QasinoFlowDTO flowDTO = new QasinoFlowDTO();
-        flowDTO.setHeaderData(headerData);
+        HashMap<String,String> pathData = new HashMap<>();
+        pathData.put("visitorId",id);
         flowDTO.setPathData(pathData);
-        flowDTO.setParamData(paramData);
-        flowDTO.setPayloadData(null);
-        boolean processOk = flowDTO.validateInput();
-        if (!processOk) {
+        if (!flowDTO.validateInput()) {
             return ResponseEntity.status(HttpStatus.valueOf(flowDTO.getHttpStatus())).headers(flowDTO.getHeaders()).build();
         }
-
-        // actions
+        // repay - get Qasino and all games for visitor with repayed loan
         output = findAllEntitiesForInputAction.perform(flowDTO);
         if (output == EventOutput.Result.FAILURE) {
             return ResponseEntity.status(HttpStatus.valueOf(flowDTO.getHttpStatus())).headers(flowDTO.getHeaders()).build();
@@ -266,13 +238,14 @@ public class MainController {
         return ResponseEntity.ok().headers(flowDTO.getHeaders()).body(flowDTO.getQasino());
     }
 
+    // TODO move this all to get Qasino logic
     // vistor CRUD
-    // /api/visitor/{visitorId} - GET, DELETE, PUT visitorName, email only
+    // /api/visitor/{visitorId} - DELETE, PUT visitorName, email only
 
 
     @GetMapping(value = "/game/{state}/visitor/{visitorId}")
     public ResponseEntity listActiveGamesForVisitor(
-            @PathVariable("id") String id,
+            @PathVariable("visitorId") String id,
             @PathVariable("state") String state,
             @RequestParam(defaultValue = "0") String page,
             @RequestParam(defaultValue = "4") String max
@@ -302,8 +275,8 @@ public class MainController {
 
         // logic
         Pageable pageable = PageRequest.of(pages, maximum, Sort.by(
-                Sort.Order.asc("TYPE"),
-                Sort.Order.desc("CREATED")));
+                Sort.Order.asc("type"),
+                Sort.Order.desc("created")));
         List<Game> foundGames;
         switch (state) {
             case ("new"):
@@ -350,8 +323,8 @@ public class MainController {
 
         // logic
         Pageable pageable = PageRequest.of(pages, maximum, Sort.by(
-                Sort.Order.asc("VisitorName"),
-                Sort.Order.desc("VisitorName_SEQ")));
+                Sort.Order.asc("visitorName"),
+                Sort.Order.desc("visitorName_SEQ")));
 
         ArrayList visitors = (ArrayList) visitorRepository.findAllVisitorsWithPage(pageable);
 

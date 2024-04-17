@@ -73,12 +73,12 @@ public class GameController {
 
     // /api/game/{id} - GET, DELETE, PUT type, style, ante - rules apply!
 
-    // todo HIGH make endpoints
     // /api/game/{id}/ACCEPT -> PUT player fiches // PREPARED
     // /api/game/{id}/WITHDRAW/bot -> DELETE players // PREPARED
     // /api/game/{id}/WITHDRAW/visitor{id} -> DELETE players // PREPARED
 
     // Game lifecycle events
+
 
     @PostMapping(value = "/game/setup/{type}")
     public ResponseEntity<Game> setupGameWithoutPlayers(

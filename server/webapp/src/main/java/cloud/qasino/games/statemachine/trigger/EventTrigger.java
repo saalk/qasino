@@ -1,4 +1,4 @@
-package cloud.qasino.games.statemachine;
+package cloud.qasino.games.statemachine.trigger;
 
 import lombok.Getter;
 

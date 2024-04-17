@@ -1,4 +1,4 @@
-package cloud.qasino.games.statemachine;
+package cloud.qasino.games.database.entity.enums.game.gamestate;
 
 import cloud.qasino.games.database.entity.enums.game.GameState;
 import lombok.AllArgsConstructor;

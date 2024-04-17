@@ -25,9 +25,9 @@ public class SetStatusIndicatorsBaseOnRetrievedDataAction implements Action<SetS
         actionDto.setLeaguePresent(false);
         actionDto.setFriendsPresent(false);
 
-        if (!(actionDto.getGameVisitor() == null)) {
+        if (!(actionDto.getQasinoVisitor() == null)) {
             actionDto.setLoggedOn(true);
-            if (actionDto.getGameVisitor().getBalance() > 0) {
+            if (actionDto.getQasinoVisitor().getBalance() > 0) {
                 actionDto.setBalanceNotZero(true);
             }
         }
@@ -60,7 +60,7 @@ public class SetStatusIndicatorsBaseOnRetrievedDataAction implements Action<SetS
 
         // @formatter:off
         // Getters
-        Visitor getGameVisitor();
+        Visitor getQasinoVisitor();
         Player getInvitedPlayer();
         Player getAcceptedPlayer();
         Player getTurnPlayer();
@@ -72,9 +72,9 @@ public class SetStatusIndicatorsBaseOnRetrievedDataAction implements Action<SetS
         Game getQasinoGame();
         League getQasinoGameLeague();
         List<Player> getQasinoGamePlayers();
-        Turn getQasinoGameTurn();
-        List<Card> getQasinoGameCards();
-        List<CardMove> getQasinoGameCardMoves();
+        Turn getActiveTurn();
+        List<Card> getCardsInTheGame();
+        List<CardMove> getAllCardMovesForTheGame();
 
         void setLoggedOn(boolean bool);
         void setBalanceNotZero(boolean bool);

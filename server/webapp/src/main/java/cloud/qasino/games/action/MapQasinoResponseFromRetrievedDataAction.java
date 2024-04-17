@@ -41,10 +41,10 @@ public class MapQasinoResponseFromRetrievedDataAction implements Action<MapQasin
         navigationBarItem = new NavigationBarItem();
         navigationBarItem.setVisible(actionDto.isLoggedOn());
         if (actionDto.isLoggedOn()) {
-            navigationBarItem.setItemName(actionDto.getGameVisitor().getVisitorName());
-            navigationBarItem.setItemStats("Balance " + actionDto.getGameVisitor().getBalance());
+            navigationBarItem.setItemName(actionDto.getQasinoVisitor().getVisitorName());
+            navigationBarItem.setItemStats("Balance " + actionDto.getQasinoVisitor().getBalance());
             navigationVisitor.setHasLoggedOn(actionDto.isLoggedOn());
-            navigationVisitor.setVisitor(actionDto.getGameVisitor());
+            navigationVisitor.setVisitor(actionDto.getQasinoVisitor());
             navigationVisitor.setNewGames(actionDto.getNewGamesForVisitor());
             navigationVisitor.setPendingInvitation(null); //todo LOW pending invitations
             navigationVisitor.setAcceptedGames(null); // todo LOW accepted games
@@ -94,15 +94,15 @@ public class MapQasinoResponseFromRetrievedDataAction implements Action<MapQasin
                 navigationBarItem.setItemName("Qasinogame#" +
                         Integer.toHexString((int) actionDto.getQasinoGame().getGameId()) );
                 navigationQasino.setCurrentRound(
-                        (int) actionDto.getQasinoGameTurn().getCurrentRoundNumber());
+                        (int) actionDto.getActiveTurn().getCurrentRoundNumber());
                 navigationQasino.setCurrentMove(
-                        (int) actionDto.getQasinoGameTurn().getCurrentMoveNumber());
+                        (int) actionDto.getActiveTurn().getCurrentMoveNumber());
                 navigationBarItem.setItemStats(navigationQasino.getCurrentMove() + "/" +
                         navigationQasino.getCurrentRound() + " move/round");
 
                 navigationQasino.setPlayable(actionDto.isGamePlayable());
                 navigationQasino.setSelectedGame(actionDto.getQasinoGame());
-                navigationQasino.setActiveTurn(actionDto.getQasinoGameTurn());
+                navigationQasino.setActiveTurn(actionDto.getActiveTurn());
 
             }
         } else {
@@ -167,17 +167,17 @@ public class MapQasinoResponseFromRetrievedDataAction implements Action<MapQasin
         if (!(actionDto.getQasinoGame() == null)) {
 
             table.setSelectedGame(actionDto.getQasinoGame());
-            table.setLastTurn(actionDto.getQasinoGameTurn());
+            table.setLastTurn(actionDto.getActiveTurn());
             // todo HIGH new action for calc all possible moves
             // the statement below gives an error
             // table.setPossibleMoves(new ArrayList(Move.moveMapNoError.keySet()));
             List<Card> stockNotInHand =
-                    actionDto.getQasinoGameCards()
+                    actionDto.getCardsInTheGame()
                             .stream()
                             .filter(c -> c.getHand() == null)
                             .collect(Collectors.toList());
             table.setStockNotInHand(stockNotInHand);
-            table.setTotalVsStockCards(stockNotInHand.size() + "/" + actionDto.getQasinoGameCards().size() +
+            table.setTotalVsStockCards(stockNotInHand.size() + "/" + actionDto.getCardsInTheGame().size() +
                     " stock/total");
             table.setCardsLeft(stockNotInHand.size());
             table.setSeats(setSeats(actionDto));
@@ -192,7 +192,7 @@ public class MapQasinoResponseFromRetrievedDataAction implements Action<MapQasin
         for (Player player : actionDto.getQasinoGamePlayers()) {
             Seat seat = new Seat();
             seat.setSeatId(player.getSeat());
-            seat.setActive(player.getPlayerId() == actionDto.getQasinoGameTurn().getActivePlayerId());
+            seat.setActive(player.getPlayerId() == actionDto.getActiveTurn().getActivePlayerId());
             seat.setBot(!player.isHuman());
 
             seat.setPlayerId(player.getPlayerId());
@@ -241,7 +241,7 @@ public class MapQasinoResponseFromRetrievedDataAction implements Action<MapQasin
         boolean isLeaguePresent();
         boolean isFriendsPresent();
 
-        Visitor getGameVisitor();
+        Visitor getQasinoVisitor();
         Player getInvitedPlayer();
         Player getAcceptedPlayer();
         List<League> getLeaguesForVisitor();
@@ -254,9 +254,9 @@ public class MapQasinoResponseFromRetrievedDataAction implements Action<MapQasin
         Game getQasinoGame();
         League getQasinoGameLeague();
         List<Player> getQasinoGamePlayers();
-        Turn getQasinoGameTurn();
-        List<Card> getQasinoGameCards();
-        List<CardMove> getQasinoGameCardMoves();
+        Turn getActiveTurn();
+        List<Card> getCardsInTheGame();
+        List<CardMove> getAllCardMovesForTheGame();
 
         // Setters
         void setQasino(Qasino qasino);

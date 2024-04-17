@@ -11,8 +11,8 @@ import cloud.qasino.games.database.entity.enums.move.Move;
 import cloud.qasino.games.database.entity.enums.player.AiLevel;
 import cloud.qasino.games.database.entity.enums.player.Avatar;
 import cloud.qasino.games.database.entity.enums.player.Role;
-import cloud.qasino.games.statemachine.GameStateGroup;
-import cloud.qasino.games.statemachine.GameTrigger;
+import cloud.qasino.games.database.entity.enums.game.gamestate.GameStateGroup;
+import cloud.qasino.games.statemachine.trigger.GameTrigger;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
@@ -95,34 +95,41 @@ public class QasinoFlowDTO //extends AbstractFlowDTO
     private int suppliedBet;
 
     // pawn or repay
-    private boolean requestingToRepay = false;
-    private boolean offeringShipForPawn = false;
+    public boolean requestingToRepay = false;
+    public boolean offeringShipForPawn = false;
 
     // RETRIEVED DATA BASED ON FRONTEND ID's
-    // in game data
-    private Visitor gameVisitor;
-    private Player invitedPlayer;
-    private Player acceptedPlayer;
-    private Player turnPlayer;
+
+    // the game
+    private Game qasinoGame;
+    private List<Player> qasinoGamePlayers;
+
+    // during game state changes
+    private Visitor qasinoVisitor;
+    private List<Visitor> friends;
 
     private List<Game> newGamesForVisitor;
     private List<Game> startedGamesForVisitor;
     private List<Game> finishedGamesForVisitor;
 
-    private Game qasinoGame;
-    private List<Player> qasinoGamePlayers;
-    private Turn qasinoGameTurn;
-    private List<Card> qasinoGameCards;
-    private List<CardMove> qasinoGameCardMoves;
+    private Player invitedPlayer;
+    private Player acceptedPlayer;
+    private Player initiatingPlayer;
 
     private League qasinoGameLeague;
     private List<League> leaguesForVisitor;
+
     private Result gameResult;
     private List<Result> resultsForLeague;
-    // todo
-    private List<Visitor> friends;
+
+    // during cardmove in turn
+    private Player turnPlayer;
+    private Turn activeTurn;
+    private List<Card> cardsInTheGame;
+    private List<CardMove> allCardMovesForTheGame;
 
     // STATS based on RETRIEVED DATA
+
     // stats
     public boolean loggedOn;     // icon is spaceShip -> logon to enable nav-visitor
     public boolean balanceNotZero;      // icon is cards -> select/start game to enable nav-game
@@ -137,13 +144,26 @@ public class QasinoFlowDTO //extends AbstractFlowDTO
     private String errorMessage;
     private HttpHeaders headers;
 
-    private Map<String, String> headerData;
+
+    // PROCESS AND VALIDATE INPUT
+
     private Map<String, String> pathData;
     private Map<String, String> paramData;
     private Object payloadData;
     private URI uri;
 
+    public boolean validateInput() {
 
+        setUriAndHeaders();
+
+        if (!processPathData(this.pathData)
+            | !processParamData(this.paramData)) {
+            headers.add(this.getErrorKey(), this.getErrorValue());
+            headers.add("Error", this.getErrorMessage());
+            return false;
+        }
+        return true;
+    }
     public void setUriAndHeaders() {
         this.uri = ServletUriComponentsBuilder.fromCurrentRequest()
                 .path("")
@@ -152,65 +172,6 @@ public class QasinoFlowDTO //extends AbstractFlowDTO
         this.headers = new HttpHeaders();
         headers.add("URI", String.valueOf(this.getUri()));
 
-        if (!StringUtils.isEmpty(this.getErrorKey())) {
-            headers.add(this.getErrorKey(), this.getErrorValue());
-            headers.add("Error", this.getErrorMessage());
-        }
-    }
-
-    // PROCESS AND VALIDATE INPUT
-    public boolean validateInput() {
-
-        // header in response
-/*
-        uri = ServletUriComponentsBuilder.fromCurrentRequest()
-                .path("")
-                .buildAndExpand(this.pathData, this.paramData)
-                .toUri();
-        this.headers = new HttpHeaders();
-        headers.add("URI", String.valueOf(uri));
-*/
-
-        if (!processHeader(this.headerData)
-            | !processPathData(this.pathData)
-            | !processParamData(this.paramData)) {
-/*
-            headers.add(this.getErrorKey(), this.getErrorValue());
-            headers.add("Error", this.getErrorMessage());
-*/
-            setUriAndHeaders();
-            return false;
-        }
-        setUriAndHeaders();
-        return true;
-    }
-    boolean processHeader(Map<String, String> headerData) {
-        String key;
-        String dataName = "headerData";
-        String headerDataString = StringUtils.join(headerData);
-//        log.info(this.getClass().getName() + ": " + dataName + " is " + headerDataString);
-
-        if (headerData==null) return true;
-
-        key = "gameid"; // todo why is this lower if passed is upper
-        if (headerData.containsKey(key)) {
-            if (isValueForIntKeyValid(key, headerData.get(key), dataName, headerDataString)) {
-                this.suppliedGameId = Long.parseLong(headerData.get(key));
-            } else {
-                return false;
-            }
-        }
-
-        key = "visitorid";
-        if (headerData.containsKey(key)) {
-            if (isValueForIntKeyValid(key, headerData.get(key), dataName, headerDataString)) {
-                this.suppliedVisitorId = Long.parseLong(headerData.get(key));
-            } else {
-                return false;
-            }
-        }
-
-        return true;
     }
     boolean processPathData(Map<String, String> pathData) {
         String key;
@@ -220,19 +181,27 @@ public class QasinoFlowDTO //extends AbstractFlowDTO
 
         if (pathData==null) return true;
 
-        // visitor repay or pawn
-        key = "pawnship";
+        key = "gameId";
         if (pathData.containsKey(key)) {
-            this.offeringShipForPawn = true;
+            if (isValueForPrimaryKeyValid(key, pathData.get(key), dataName, pathDataString)) {
+                this.suppliedGameId = Long.parseLong(pathData.get(key));
+            } else {
+                return false;
+            }
         }
-        key = "repayloan";
+
+        key = "visitorId";
         if (pathData.containsKey(key)) {
-            this.requestingToRepay = true;
+            if (isValueForPrimaryKeyValid(key, pathData.get(key), dataName, pathDataString)) {
+                this.suppliedVisitorId = Long.parseLong(pathData.get(key));
+            } else {
+                return false;
+            }
         }
 
         key = "leagueId";
         if (pathData.containsKey(key)) {
-            if (isValueForIntKeyValid(key, pathData.get(key), dataName, pathDataString)) {
+            if (isValueForPrimaryKeyValid(key, pathData.get(key), dataName, pathDataString)) {
                 this.suppliedLeagueId = Long.parseLong(pathData.get(key));
             } else {
                 return false;
@@ -240,7 +209,7 @@ public class QasinoFlowDTO //extends AbstractFlowDTO
         }
         key = "invitedPlayerId";
         if (pathData.containsKey(key)) {
-            if (isValueForIntKeyValid(key, pathData.get(key), dataName, pathDataString)) {
+            if (isValueForPrimaryKeyValid(key, pathData.get(key), dataName, pathDataString)) {
                 this.invitedPlayerId = Long.parseLong(pathData.get(key));
             } else {
                 return false;
@@ -248,7 +217,7 @@ public class QasinoFlowDTO //extends AbstractFlowDTO
         }
         key = "acceptedPlayerId";
         if (pathData.containsKey(key)) {
-            if (isValueForIntKeyValid(key, pathData.get(key), dataName, pathDataString)) {
+            if (isValueForPrimaryKeyValid(key, pathData.get(key), dataName, pathDataString)) {
                 this.suppliedLeagueId = Long.parseLong(pathData.get(key));
             } else {
                 return false;
@@ -256,7 +225,7 @@ public class QasinoFlowDTO //extends AbstractFlowDTO
         }
         key = "turnPlayerId";
         if (pathData.containsKey(key)) {
-            if (isValueForIntKeyValid(key, pathData.get(key), dataName, pathDataString)) {
+            if (isValueForPrimaryKeyValid(key, pathData.get(key), dataName, pathDataString)) {
                 this.suppliedTurnPlayerId = Long.parseLong(pathData.get(key));
             } else {
                 return false;
@@ -428,6 +397,20 @@ public class QasinoFlowDTO //extends AbstractFlowDTO
         }
         return true;
     }
+    boolean isValueForPrimaryKeyValid(String key, String value, String dataName, String dataToValidate) {
+        if (isValueForIntKeyValid(key, value, dataName, dataToValidate)) {
+            if (Long.parseLong(value) == 0) {
+                // 404 - not found
+                this.setHttpStatus(404);
+                this.setErrorKey(key);
+                this.setErrorValue(value);
+                this.setErrorMessage("Value for " + key + " is zero");
+                return false;
+            }
+            return true;
+        }
+        return false;
+    }
     boolean isValueForIntKeyValid(String key, String value, String dataName, String dataToValidate) {
         if (!StringUtils.isNumeric(value)) {
             // 400 - bad request
@@ -459,7 +442,7 @@ public class QasinoFlowDTO //extends AbstractFlowDTO
                     return true;
                 }
                 break;
-            case "trigger":
+            case "gameTrigger":
                 if (!(GameTrigger.fromLabelWithDefault(key) == GameTrigger.ERROR)) {
                     return true;
                 }

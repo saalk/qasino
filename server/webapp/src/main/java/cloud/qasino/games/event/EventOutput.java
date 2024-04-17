@@ -1,6 +1,6 @@
 package cloud.qasino.games.event;
 
-import cloud.qasino.games.statemachine.GameTrigger;
+import cloud.qasino.games.statemachine.trigger.GameTrigger;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 

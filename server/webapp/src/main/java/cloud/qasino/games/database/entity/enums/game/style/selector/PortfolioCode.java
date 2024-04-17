@@ -1,4 +1,4 @@
-package cloud.qasino.games.selectors.ing;
+package cloud.qasino.games.database.entity.enums.game.style.selector;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

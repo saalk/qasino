@@ -49,6 +49,7 @@ public class CardController {
         this.cardRepository = cardRepository;
     }
 
+    // TODO this is not needed
     @GetMapping(value = "/card/{cardId}")
     public ResponseEntity getPlayingCardByCard(
             @PathVariable("cardId") String card
@@ -70,6 +71,7 @@ public class CardController {
 
     }
 
+    // todo check if this is needed
     @DeleteMapping("/card/{cardId}/game/{gameId}")
     public ResponseEntity deletePlayingCardByCard(
             @PathVariable("gameId") String id,

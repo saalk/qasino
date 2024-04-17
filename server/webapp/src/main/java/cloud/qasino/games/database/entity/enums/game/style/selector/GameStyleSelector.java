@@ -1,8 +1,5 @@
-package cloud.qasino.games.database.entity.enums.game;
+package cloud.qasino.games.database.entity.enums.game.style.selector;
 
-import cloud.qasino.games.selectors.ing.AccountType;
-import cloud.qasino.games.selectors.ing.PortfolioCode;
-import cloud.qasino.games.selectors.ing.ProductType;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -10,10 +7,10 @@ import javax.management.InvalidAttributeValueException;
 import java.util.ArrayList;
 import java.util.List;
 
-import static cloud.qasino.games.selectors.ing.AccountType.*;
-import static cloud.qasino.games.selectors.ing.PortfolioCode.*;
-import static cloud.qasino.games.selectors.ing.ProductType.CREDITCARD;
-import static cloud.qasino.games.selectors.ing.ProductType.PLATINUMCARD;
+import static cloud.qasino.games.database.entity.enums.game.style.selector.AccountType.*;
+import static cloud.qasino.games.database.entity.enums.game.style.selector.PortfolioCode.*;
+import static cloud.qasino.games.database.entity.enums.game.style.selector.ProductType.CREDITCARD;
+import static cloud.qasino.games.database.entity.enums.game.style.selector.ProductType.PLATINUMCARD;
 
 
 /**

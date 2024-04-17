@@ -13,11 +13,11 @@ import java.util.List;
 public interface LeagueRepository extends JpaRepository<League, Long> {
 
     public final static String FIND_ACTIVE_LEAGUE_BY_VISITOR_ID =
-            "SELECT * FROM \"league\" a WHERE a.visitor_id = :visitorId " +
-                    "AND a.is_active = 'TRUE' ";
+            "SELECT * FROM \"league\" a WHERE a.\"visitor_id\" = :visitorId " +
+                    "AND a.\"is_active\" = CAST('true' AS BOOLEAN) ";
     public final static String COUNT_ACTIVE_LEAGUE_BY_VISITOR_ID =
-            "SELECT count(*) FROM \"league\" a WHERE a.visitor_id = :visitorId " +
-                    "AND a.is_active = 'TRUE' ";
+            "SELECT count(*) FROM \"league\" a WHERE a.\"visitor_id\" = :visitorId " +
+                    "AND a.\"is_active\" = CAST('true' AS BOOLEAN) ";
 
     @Query(value = FIND_ACTIVE_LEAGUE_BY_VISITOR_ID, countQuery = COUNT_ACTIVE_LEAGUE_BY_VISITOR_ID, nativeQuery = true)
     public List<League> findAllActiveLeagueForVisitorWithPage(

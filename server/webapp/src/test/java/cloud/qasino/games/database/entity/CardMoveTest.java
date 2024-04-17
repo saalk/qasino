@@ -3,11 +3,7 @@ package cloud.qasino.games.database.entity;
 import cloud.qasino.games.database.entity.enums.card.Face;
 import cloud.qasino.games.database.entity.enums.card.Location;
 import cloud.qasino.games.database.entity.enums.move.Move;
-import cloud.qasino.games.statemachine.EventTrigger;
-import cloud.qasino.games.statemachine.GameTrigger;
 import org.junit.jupiter.api.Test;
-
-import java.util.Set;
 
 import static java.util.EnumSet.of;
 import static org.assertj.core.api.Assertions.assertThat;

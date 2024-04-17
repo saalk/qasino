@@ -15,7 +15,7 @@ import static cloud.qasino.games.event.EventEnum.LIST;
 import static cloud.qasino.games.event.EventOutput.Result.FAILURE;
 import static cloud.qasino.games.event.EventOutput.Result.SUCCESS;
 
-public class QasinoStateMachine { // implements QasinoAsyncConfiguration.ASyncEventHandler {
+public class GameStateMachine { // implements QasinoAsyncConfiguration.ASyncEventHandler {
 
     public static final OrchestrationConfig qasinoConfiguration = new OrchestrationConfig();
 

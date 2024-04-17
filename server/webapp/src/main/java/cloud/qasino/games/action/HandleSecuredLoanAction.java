@@ -24,18 +24,18 @@ public class HandleSecuredLoanAction implements Action<HandleSecuredLoanAction.H
         log.debug("Action: HandleSecuredLoanAction");
 
         EventOutput.Result result = EventOutput.Result.FAILURE;
-        Visitor updateVisitor = actionDto.getGameVisitor();
+        Visitor updateVisitor = actionDto.getQasinoVisitor();
 
         if (actionDto.isRequestingToRepay()) {
-            Systemout.handleSecuredLoanActionFlow(actionDto); //todo delete
+//            Systemout.handleSecuredLoanActionFlow(actionDto); //todo delete
             if (!updateVisitor.repayLoan()) {
-                Systemout.handleSecuredLoanActionFlow(actionDto); //todo delete
+//                Systemout.handleSecuredLoanActionFlow(actionDto); //todo delete
 
                 setErrorMessagConflict(actionDto, "isRequestingToRepay", "true");
                 return EventOutput.Result.FAILURE;
             }
-            actionDto.setGameVisitor(visitorRepository.save(updateVisitor));
-            Systemout.handleSecuredLoanActionFlow(actionDto); //todo delete
+            actionDto.setQasinoVisitor(visitorRepository.save(updateVisitor));
+//            Systemout.handleSecuredLoanActionFlow(actionDto); //todo delete
 
             result = EventOutput.Result.SUCCESS;
         }
@@ -43,17 +43,18 @@ public class HandleSecuredLoanAction implements Action<HandleSecuredLoanAction.H
         if (actionDto.isOfferingShipForPawn()) {
             Random random = new Random();
             int randomNumber = random.nextInt(1001);
-            Systemout.handleSecuredLoanActionFlow(actionDto); //todo delete
+//            Systemout.handleSecuredLoanActionFlow(actionDto); //todo delete
             if (!updateVisitor.pawnShip(randomNumber)) {
-                Systemout.handleSecuredLoanActionFlow(actionDto); //todo delete
+//                Systemout.handleSecuredLoanActionFlow(actionDto); //todo delete
                 setErrorMessagConflict(actionDto,"isOfferingShipForPawn", "true");
                 return EventOutput.Result.FAILURE;
             }
-            actionDto.setGameVisitor(visitorRepository.save(updateVisitor));
-            Systemout.handleSecuredLoanActionFlow(actionDto); //todo delete
+            actionDto.setQasinoVisitor(visitorRepository.save(updateVisitor));
+//            Systemout.handleSecuredLoanActionFlow(actionDto); //todo delete
 
             result = EventOutput.Result.SUCCESS;
         }
+        // todo should be 500
         if (result == EventOutput.Result.FAILURE) {
             setErrorMessageBadRequest(actionDto, "<HandleSecuredLoanAction>", "true");
         }
@@ -83,10 +84,10 @@ public class HandleSecuredLoanAction implements Action<HandleSecuredLoanAction.H
 
         boolean isRequestingToRepay();
         boolean isOfferingShipForPawn();
-        Visitor getGameVisitor();
+        Visitor getQasinoVisitor();
 
         // Setters
-        void setGameVisitor(Visitor visitor);
+        void setQasinoVisitor(Visitor visitor);
 
         // error setters
         void setHttpStatus(int status);

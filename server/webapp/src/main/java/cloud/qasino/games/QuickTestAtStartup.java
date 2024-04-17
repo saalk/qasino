@@ -111,9 +111,10 @@ public class QuickTestAtStartup implements ApplicationRunner {
 
         // friend 1 and 2 accept the invitation
         List<Player> invites = new ArrayList<>();
-        Pageable pageable = PageRequest.of(0, 4,
-                Sort.by(
-                        Sort.Order.desc("created")));
+        Pageable pageable = PageRequest.of(0, 4
+//                Sort.by(
+//                        Sort.Order.desc("created"))
+        );
         invites = playerRepository.findAllPlayersInvitedForAGame(game.getGameId(), pageable);
         for (Player invite : invites) {
             if (invite.getRole().equals(Role.INVITED)) {
@@ -127,7 +128,6 @@ public class QuickTestAtStartup implements ApplicationRunner {
         // The main player initiates a turn with round 1 player 1 and gets a card
         Turn turn = new Turn(game, visitorAndBot.get(0).getPlayerId());
         turnRepository.save(turn);
-        Card card =
         CardMove cardMove = new CardMove(turn, visitorAndBot.get(0), 0, Move.DEAL,
                 Location.HAND);
         cardMoveRepository.save(cardMove);

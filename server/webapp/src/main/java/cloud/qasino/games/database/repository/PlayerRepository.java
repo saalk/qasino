@@ -27,7 +27,7 @@ public interface PlayerRepository extends JpaRepository<Player, Long> {
     //@Query("SELECT * FROM playerS p WHERE p.game_id = ?1")
     List<Player> findByGameOrderBySeatAsc(Game game);
 
-    //@Query("SELECT * FROM playerS p ORDER BY CREATED desc WHERE p.visitor_id = ?1")
+    //@Query("SELECT * FROM player p ORDER BY /"created/" desc WHERE p.visitor_id = ?1")
     List<Player> findByGameOrderByCreatedDesc(Game game);
 
 
@@ -42,7 +42,10 @@ public interface PlayerRepository extends JpaRepository<Player, Long> {
             nativeQuery = true)
     Page<Player> findAllPlayersWithPage(Pageable pageable);
 
-    @Query(value = FIND_PLAYERS_INVITED_FOR_A_GAME, countQuery = COUNT_PLAYERS_INVITED_FOR_A_GAME, nativeQuery = true)
+    @Query(
+            value = FIND_PLAYERS_INVITED_FOR_A_GAME,
+            countQuery = COUNT_PLAYERS_INVITED_FOR_A_GAME,
+            nativeQuery = true)
     public List<Player> findAllPlayersInvitedForAGame(
             @Param("gameId") long gameId,
             Pageable pageable);
