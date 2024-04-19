@@ -50,7 +50,7 @@ if [ -z ${ENV} ]; then
 fi
 
 BASE_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
-LIB_DIR="${BASE_DIR}/lib"
+LIB_DIR="${BASE_DIR}/../lib"
 
 ###### Setup session to call though gateway
 SESSION="$("${LIB_DIR}"/createGatewaySession.sh -e "${ENV}" -p "${CUSTOMER}" -a "${PROFILE}" -i "${ISSUER}")"

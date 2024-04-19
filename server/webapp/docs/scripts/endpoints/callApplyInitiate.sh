@@ -24,9 +24,9 @@ PERSON_ID="${2}"
 PROFILE_ID="${3}"
 REQUEST='{"ibanUuid":"'"${4}"'"}'
 BASE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" >/dev/null 2>&1 && pwd)"
-LIB_DIR="${BASE_DIR}/lib"
-TST_CERTS_PATH="${BASE_DIR}/tst/"
-ACC_CERTS_PATH="${BASE_DIR}/acc/"
+LIB_DIR="${BASE_DIR}/../lib"
+TST_CERTS_PATH="${BASE_DIR}/../tst/"
+ACC_CERTS_PATH="${BASE_DIR}/../acc/"
 
 function callRequestExampleInitiate() {
   CERTS_BASE_DIR="${1}"

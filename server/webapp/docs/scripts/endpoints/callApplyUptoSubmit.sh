@@ -3,12 +3,12 @@
 PORT="15125"
 HOST=localhost:"${PORT}"
 
-if [ $# -ne 6 ]; then
+if [ $# -ne 5 ]; then
     LOGIN_USER=$(echo "${USER}" | tr '[:upper:]' '[:lower:]')
     echo
-    echo "Script that allows a call to the CreditCardsApplyCardService endpoint for \"consumer-credit-cards/requests/apply-card/initiate\" and the endpoints after it
+    echo "Script that allows a call to the CreditCardsApplyCardService endpoint for \"consumer-credit-cards/requests/apply-card/initiate\"
     Usage:
-            $(tput setaf 2)${0} [tst|acc|prd] [personId (UUID)] [profileId (UUID)] [ibanId (UUID)] [cardType (Creditcard/Platinumcard/Studentencard)] [limit]$(tput sgr0)
+            $(tput setaf 2)${0} [tst|acc|prd] [personId (UUID)] [profileId (UUID)] [ibanId (UUID)] [cardType (Creditcard/Platinumcard/Studentencard)] [limit] $(tput sgr0)
 
     $(tput setaf 9)!! Tunnel required !!!$(tput sgr0). Currently set on: ${HOST}.
         $(tput setaf 3) Test: $(tput sgr0)
@@ -22,16 +22,13 @@ fi
 ENV="${1}"
 PERSON_ID="${2}"
 PROFILE_ID="${3}"
-IBAN_ID="${4}"
-CARD_TYPE="${5}"
-LIMIT="${6}"
 
 BASE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" >/dev/null 2>&1 && pwd)"
-LIB_DIR="${BASE_DIR}/lib"
-TST_CERTS_PATH="${BASE_DIR}/tst/"
-ACC_CERTS_PATH="${BASE_DIR}/acc/"
+LIB_DIR="${BASE_DIR}/../lib"
+TST_CERTS_PATH="${BASE_DIR}/../tst/"
+ACC_CERTS_PATH="${BASE_DIR}/../acc/"
 
-function callRequestExampleMultiple() {
+function callApplyUptoSubmit() {
   CERTS_BASE_DIR="${1}"
 
   LOCATION_CERT_TLS_KEY="${CERTS_BASE_DIR}/$(ls "${CERTS_BASE_DIR}" | grep .key)"
@@ -49,7 +46,7 @@ function callRequestExampleMultiple() {
   PEER_TOKEN="$("${LIB_DIR}"/getPeerToken.sh "${ENV}")"
   ACCESS_TOKEN="$("${LIB_DIR}"/getAccessToken.sh -e "${ENV}" -p "${PERSON_ID}" -a "${PROFILE_ID}" | jq -r '.[] | .unencrypted_access_token')"
 
-  REQUEST='{"ibanUuid":"'"${IBAN_ID}"'"}'
+  REQUEST='{"ibanUuid":"'"${4}"'"}'
   echo "calling: https://${HOST}/consumer-credit-cards/requests/apply-card/initiate" >&2
   ANSWER="$(curl -k -X POST --cert "${LOCATION_CERT_TLS_PUBLIC}" --key "${LOCATION_CERT_TLS_KEY}" --cacert "${LOCATION_CERT_TRUST}" \
     "https://${HOST}/consumer-credit-cards/requests/apply-card/initiate" \
@@ -70,47 +67,47 @@ function callRequestExampleMultiple() {
       exit 1
   fi
 
-    REQUEST='{"cardType":"'"${CARD_TYPE}"'"}'
-    echo "calling: https://${HOST}/consumer-credit-cards/requests/apply-card/select-card-type" >&2
-    ANSWER="$(curl -k -X PUT --cert "${LOCATION_CERT_TLS_PUBLIC}" --key "${LOCATION_CERT_TLS_KEY}" --cacert "${LOCATION_CERT_TRUST}" \
-      "https://${HOST}/consumer-credit-cards/requests/apply-card/initiate" \
-          --header "Content-Type: application/json" \
-          --header "X-ING-PeerToken: ${PEER_TOKEN}" \
-          --header "X-ING-AccessToken: ${ACCESS_TOKEN}" \
-          --header "Host: api.qasino.cloud" \
-          -d "${REQUEST}")"
-    echo
-    echo "$(tput setaf 2) response of select card type: ${ANSWER} $(tput sgr0)"
+  REQUEST='{"cardType":"'"${5}"'"}'
+  echo "calling: https://${HOST}/consumer-credit-cards/requests/apply-card/select-card-type" >&2
+  ANSWER="$(curl -k -X PUT --cert "${LOCATION_CERT_TLS_PUBLIC}" --key "${LOCATION_CERT_TLS_KEY}" --cacert "${LOCATION_CERT_TRUST}" \
+    "https://${HOST}/consumer-credit-cards/requests/apply-card/initiate" \
+        --header "Content-Type: application/json" \
+        --header "X-ING-PeerToken: ${PEER_TOKEN}" \
+        --header "X-ING-AccessToken: ${ACCESS_TOKEN}" \
+        --header "Host: api.qasino.cloud" \
+        -d "${REQUEST}")"
+  echo
+  echo "$(tput setaf 2) response of select card type: ${ANSWER} $(tput sgr0)"
 
-    # null if not present
-    REQUEST_ID=$(echo "${ANSWER}" | jq -r '.requestId')
-    ERROR_CODE=$(echo "${ANSWER}" | jq -r '.errorCode')
-    if [ "${REQUEST_ID}" == null ] || [ "${ERROR_CODE}" != null ]; then
-      echo "Not continuing next call due to missing requestId or present errorCode
-      $(tput setaf 9)Exiting Now!$(tput sgr0)" >&2
-        exit 1
-    fi
+  # null if not present
+  REQUEST_ID=$(echo "${ANSWER}" | jq -r '.requestId')
+  ERROR_CODE=$(echo "${ANSWER}" | jq -r '.errorCode')
+  if [ "${REQUEST_ID}" == null ] || [ "${ERROR_CODE}" != null ]; then
+    echo "Not continuing next call due to missing requestId or present errorCode
+    $(tput setaf 9)Exiting Now!$(tput sgr0)" >&2
+      exit 1
+  fi
 
-    echo "calling: https://${HOST}/consumer-credit-cards/requests/apply-card/credit-score" >&2
-    ANSWER="$(curl -k -X PUT --cert "${LOCATION_CERT_TLS_PUBLIC}" --key "${LOCATION_CERT_TLS_KEY}" --cacert "${LOCATION_CERT_TRUST}" \
-      "https://${HOST}/consumer-credit-cards/requests/apply-card/credit-score" \
-          --header "Content-Type: application/json" \
-          --header "X-ING-PeerToken: ${PEER_TOKEN}" \
-          --header "X-ING-AccessToken: ${ACCESS_TOKEN}" \
-          --header "Host: api.qasino.cloud")"
-    echo
-    echo "$(tput setaf 2) response of credit score: ${ANSWER} $(tput sgr0)"
+  echo "calling: https://${HOST}/consumer-credit-cards/requests/apply-card/credit-score" >&2
+  ANSWER="$(curl -k -X PUT --cert "${LOCATION_CERT_TLS_PUBLIC}" --key "${LOCATION_CERT_TLS_KEY}" --cacert "${LOCATION_CERT_TRUST}" \
+    "https://${HOST}/consumer-credit-cards/requests/apply-card/credit-score" \
+        --header "Content-Type: application/json" \
+        --header "X-ING-PeerToken: ${PEER_TOKEN}" \
+        --header "X-ING-AccessToken: ${ACCESS_TOKEN}" \
+        --header "Host: api.qasino.cloud")"
+  echo
+  echo "$(tput setaf 2) response of credit score: ${ANSWER} $(tput sgr0)"
 
-    # null if not present
-    REQUEST_ID=$(echo "${ANSWER}" | jq -r '.requestId')
-    ERROR_CODE=$(echo "${ANSWER}" | jq -r '.errorCode')
-    if [ "${REQUEST_ID}" == null ] || [ "${ERROR_CODE}" != null ]; then
-      echo "Not continuing next call due to missing requestId or present errorCode
-      $(tput setaf 9)Exiting Now!$(tput sgr0)" >&2
-        exit 1
-    fi
+  # null if not present
+  REQUEST_ID=$(echo "${ANSWER}" | jq -r '.requestId')
+  ERROR_CODE=$(echo "${ANSWER}" | jq -r '.errorCode')
+  if [ "${REQUEST_ID}" == null ] || [ "${ERROR_CODE}" != null ]; then
+    echo "Not continuing next call due to missing requestId or present errorCode
+    $(tput setaf 9)Exiting Now!$(tput sgr0)" >&2
+      exit 1
+  fi
 
-    REQUEST='{"requestedCreditLimit":"'"${LIMIT}"'"}'
+    REQUEST='{"requestedCreditLimit":"'"${6}"'"}'
     echo "calling: https://${HOST}/consumer-credit-cards/requests/apply-card/credit-limit" >&2
     ANSWER="$(curl -k -X PUT --cert "${LOCATION_CERT_TLS_PUBLIC}" --key "${LOCATION_CERT_TLS_KEY}" --cacert "${LOCATION_CERT_TRUST}" \
       "https://${HOST}/consumer-credit-cards/requests/apply-card/credit-limit" \
@@ -131,7 +128,6 @@ function callRequestExampleMultiple() {
         exit 1
     fi
 
-  echo
   echo "calling: https://${HOST}/consumer-credit-cards/requests/apply-card/${REQUEST_ID}/submit" >&2
   ANSWER="$(curl -k -X PUT --cert "${LOCATION_CERT_TLS_PUBLIC}" --key "${LOCATION_CERT_TLS_KEY}" --cacert "${LOCATION_CERT_TRUST}" \
     "https://${HOST}/consumer-credit-cards/requests/apply-card/${REQUEST_ID}/submit" \
@@ -142,24 +138,14 @@ function callRequestExampleMultiple() {
     echo
     echo "$(tput setaf 2) response of submit: ${ANSWER} $(tput sgr0)"
 
-  REQUEST_ID=$(echo "${ANSWER}" | jq -r '.requestId')
-  REFERENCE_ID=$(echo "${ANSWER}" | jq -r '.externalId')
-  if [ "${REQUEST_ID}" == null ] || [ "${REFERENCE_ID}" == null ]; then
-    echo "Not continuing next call due empty response or empty referenceId
-    $(tput setaf 9)Exiting Now!$(tput sgr0)" >&2
-      exit 1
-  fi
-
-  sh callApplyCallback.sh -e "${ENV}" -p "${PERSON_ID}" -a "${PROFILE_ID}" -r "${REQUEST_ID}"
-
 }
 
 
 
 # Execute call.
 case "${ENV}" in
-    [tst]*) callRequestExampleMultiple "${TST_CERTS_PATH}" ;;
-    [acc]*) callRequestExampleMultiple "${ACC_CERTS_PATH}" ;;
+    [tst]*) callApplyUptoSubmit "${TST_CERTS_PATH}" ;;
+    [acc]*) callApplyUptoSubmit "${ACC_CERTS_PATH}" ;;
     [prd]*) echo "only test and acc for now" ;;
     *) echo "Invalid environment provided. Should be [tst|acc|prd]" ;;
 esac
