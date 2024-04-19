@@ -64,7 +64,7 @@ public class PlayerController {
     // /api/league/{id} - GET, DELETE, PUT name enddate or close direct - rules apply
     // /api/result/{id} - GET, DELETE, PUT name - rules apply
 
-   @GetMapping("/player/{playerId}")
+   // @GetMapping("/player/{playerId}")
     public ResponseEntity<Optional<Player>> getPlayer(
             @PathVariable("playerId") String id
     ) {
@@ -92,7 +92,7 @@ public class PlayerController {
     }
 
     // tested
-    @PutMapping(value = "/player/{playerId}")
+    // @PutMapping(value = "/player/{playerId}")
     public ResponseEntity<Player> updatePlayer(
             @PathVariable("playerId") String id,
             @RequestParam(name = "avatar", defaultValue = "") String avatar,
@@ -138,7 +138,7 @@ public class PlayerController {
     }
 
     // todo LOW does not work
-    @PutMapping(value = "/player/{playerId}/{order}")
+    // @PutMapping(value = "/player/{playerId}/{order}")
     public ResponseEntity<Game> updateSequence(
             @PathVariable("playerId") String id,
             @PathVariable("order") String order
@@ -186,7 +186,7 @@ public class PlayerController {
     }
 
     // tested
-    @DeleteMapping("/player/{playerId}")
+    // @DeleteMapping("/player/{playerId}")
     public ResponseEntity<Player> deletePlayer(
             @PathVariable("playerId") String id
     ) {

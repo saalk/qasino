@@ -62,7 +62,7 @@ public class PlayContoller {
     }
 
 
-    @PutMapping(value = "/play/game/{gameId}")
+    // @PutMapping(value = "/play/game/{gameId}")
     public ResponseEntity<Game> startPlayingAGame(
             @PathVariable("gameId") String id
     ) {
@@ -98,7 +98,7 @@ public class PlayContoller {
         return ResponseEntity.ok().headers(headers).body(updateGame);
     }
 
-    @PostMapping(value = "/play/{suppliedMove}/game/{gameId}/player/{playerId}/location/{location}")
+    // @PostMapping(value = "/play/{suppliedMove}/game/{gameId}/player/{playerId}/location/{location}")
     public ResponseEntity playerMakesAMoveForAGame(
             @PathVariable("suppliedMove") String inputAction,
             @PathVariable("gameId") String gId,

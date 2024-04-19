@@ -35,7 +35,7 @@ class QasinoFlowDTOTest {
         tester.put("repayloan", "true");
 
         QasinoFlowDTO flow = new QasinoFlowDTO();
-        flow.setParamData(tester);
+        flow.setRequestParams(tester);
         boolean result = flow.validateInput();
 
         assertThat(result);

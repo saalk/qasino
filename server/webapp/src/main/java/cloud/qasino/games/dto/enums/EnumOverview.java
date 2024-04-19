@@ -8,7 +8,7 @@ import lombok.Setter;
 @Setter
 //@JsonIdentityInfo(generator = JSOGGenerator.class)
 //@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
-public class Enums {
+public class EnumOverview {
 
     @JsonProperty("GameEnums")
     private GameEnums game = new GameEnums();
@@ -19,7 +19,7 @@ public class Enums {
     @JsonProperty("TurnEnums")
     private TurnEnums turn = new TurnEnums();
 
-    public Enums() {
+    public EnumOverview() {
 
     }
 }

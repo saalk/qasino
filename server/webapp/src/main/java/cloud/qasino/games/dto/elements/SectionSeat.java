@@ -1,4 +1,4 @@
-package cloud.qasino.games.dto;
+package cloud.qasino.games.dto.elements;
 
 import cloud.qasino.games.database.entity.Card;
 import cloud.qasino.games.database.entity.enums.player.AiLevel;
@@ -16,7 +16,7 @@ import java.util.List;
 @Setter
 @JsonIdentityInfo(generator = JSOGGenerator.class)
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
-public class Seat {
+public class SectionSeat {
 
     private int seatId;
     private boolean isActive;

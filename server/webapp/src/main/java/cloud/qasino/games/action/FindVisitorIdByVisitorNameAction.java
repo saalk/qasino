@@ -56,7 +56,7 @@ public class FindVisitorIdByVisitorNameAction implements Action<FindVisitorIdByV
         actionDto.setErrorKey(id);
         actionDto.setErrorValue(value);
         actionDto.setErrorMessage(id + " not found for supplied value [" + value + "]");
-        actionDto.setUriAndHeaders();
+        actionDto.prepareResponseHeaders();
     }
 
     private void setErrorMessageBadRequest(FindVisitorIdByVisitorNameActionDTO actionDto, String id,
@@ -65,7 +65,7 @@ public class FindVisitorIdByVisitorNameAction implements Action<FindVisitorIdByV
         actionDto.setErrorKey(id);
         actionDto.setErrorValue(value);
         actionDto.setErrorMessage("Supplied value " + id + " is empty");
-        actionDto.setUriAndHeaders();
+        actionDto.prepareResponseHeaders();
     }
 
 
@@ -76,7 +76,7 @@ public class FindVisitorIdByVisitorNameAction implements Action<FindVisitorIdByV
         actionDto.setErrorValue(value);
         actionDto.setErrorMessage("Multiple " + id + " found for supplied value [" + value +
                 "]");
-        actionDto.setUriAndHeaders();
+        actionDto.prepareResponseHeaders();
     }
 
     public interface FindVisitorIdByVisitorNameActionDTO {
@@ -93,7 +93,7 @@ public class FindVisitorIdByVisitorNameAction implements Action<FindVisitorIdByV
         void setErrorKey(String key);
         void setErrorValue(String value);
         void setErrorMessage(String key);
-        void setUriAndHeaders();
+        void prepareResponseHeaders();
         // @formatter:on
     }
 }

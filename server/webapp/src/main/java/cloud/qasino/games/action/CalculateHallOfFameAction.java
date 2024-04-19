@@ -66,7 +66,7 @@ public class CalculateHallOfFameAction implements Action<CalculateHallOfFameActi
         actionDto.setErrorKey(id);
         actionDto.setErrorValue(value);
         actionDto.setErrorMessage("Entity not found for key" + id);
-        actionDto.setUriAndHeaders();
+        actionDto.prepareResponseHeaders();
     }
 
     public interface CalculateHallOfFameActionDTO {
@@ -82,7 +82,7 @@ public class CalculateHallOfFameAction implements Action<CalculateHallOfFameActi
 
         void setErrorMessage(String key);
 
-        void setUriAndHeaders();
+        void prepareResponseHeaders();
         // @formatter:on
     }
 }

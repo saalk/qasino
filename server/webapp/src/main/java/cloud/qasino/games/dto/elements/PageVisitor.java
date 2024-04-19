@@ -1,4 +1,4 @@
-package cloud.qasino.games.dto.navigation;
+package cloud.qasino.games.dto.elements;
 
 import cloud.qasino.games.database.entity.Visitor;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -13,16 +13,23 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class NavigationFriends {
+public class PageVisitor {
 
-    @JsonProperty("SearchFriend")
+    private boolean visitorIsLoggedOn;
+
+    @JsonProperty("You")
     private Visitor visitor;
 
-    private int totalFriends;
-    private int pendingInvites;
+    private int totalAcceptedInvitations;
+    private int totalPendingInvitations;
+
+    public int totalNewGames;
+    public int totalStartedGames;
+    public int totalsFinishedGames;
+
 
     @JsonProperty("Friends")
-    private List<Visitor> acceptedFriends;
+    private List<Visitor> acceptedInvitations;
 
     @JsonProperty("PendingInvitation")
     private List<Visitor> pendingInvitations;

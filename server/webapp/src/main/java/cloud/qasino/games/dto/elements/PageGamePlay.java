@@ -1,4 +1,4 @@
-package cloud.qasino.games.dto.navigation;
+package cloud.qasino.games.dto.elements;
 
 import cloud.qasino.games.database.entity.Game;
 import cloud.qasino.games.database.entity.Turn;
@@ -12,12 +12,12 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class NavigationQasino {
+public class PageGamePlay {
 
     private boolean isPlayable;      // icon is fiches -> playable game to enable nav-qasino
 
-    @JsonProperty("SelectedGame")
-    private Game selectedGame; // including a list of players
+    @JsonProperty("ActiveGame")
+    private Game selectedGame; // including a list of players - max one can be active
 
     @JsonProperty("gameName")
     private String gameName; // game type and gameId concat
@@ -27,5 +27,7 @@ public class NavigationQasino {
 
     private Turn activeTurn;
 
+    @JsonProperty("Table")
+    private SectionTable table;
 
 }

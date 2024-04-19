@@ -22,6 +22,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -144,253 +145,257 @@ public class QasinoFlowDTO //extends AbstractFlowDTO
     private String errorMessage;
     private HttpHeaders headers;
 
-
     // PROCESS AND VALIDATE INPUT
 
-    private Map<String, String> pathData;
-    private Map<String, String> paramData;
+    private Map<String, String> pathVariables = new HashMap<>();
+    public void setPathVariables(String... pathVariables) {
+        if (pathVariables == null) return;
+        if (pathVariables.length % 2 != 0) return;
+        for (int i=0 ; i< pathVariables.length ; i=i+2) {
+            this.pathVariables.put(pathVariables[i],pathVariables[i+1]);
+        }
+    }
+    private Map<String, String> requestParams = new HashMap<>();
+
     private Object payloadData;
     private URI uri;
-
     public boolean validateInput() {
-
-        setUriAndHeaders();
-
-        if (!processPathData(this.pathData)
-            | !processParamData(this.paramData)) {
+        prepareResponseHeaders();
+        if (!validatePathVariables(this.pathVariables)
+            | !validateRequestParams(this.requestParams)) {
             headers.add(this.getErrorKey(), this.getErrorValue());
             headers.add("Error", this.getErrorMessage());
             return false;
         }
         return true;
     }
-    public void setUriAndHeaders() {
+    public void prepareResponseHeaders() {
         this.uri = ServletUriComponentsBuilder.fromCurrentRequest()
                 .path("")
-                .buildAndExpand(this.pathData, this.paramData)
+                .buildAndExpand(this.pathVariables, this.requestParams)
                 .toUri();
         this.headers = new HttpHeaders();
         headers.add("URI", String.valueOf(this.getUri()));
 
     }
-    boolean processPathData(Map<String, String> pathData) {
+    boolean validatePathVariables(Map<String, String> pathVariables) {
         String key;
-        String dataName = "pathData";
-        String pathDataString = StringUtils.join(pathData);
+        String dataName = "pathVariables";
+        String pathDataString = StringUtils.join(pathVariables);
 //        log.info(this.getClass().getName() + ": " + dataName + " is " + pathDataString);
 
-        if (pathData==null) return true;
+        if (pathVariables==null) return true;
 
         key = "gameId";
-        if (pathData.containsKey(key)) {
-            if (isValueForPrimaryKeyValid(key, pathData.get(key), dataName, pathDataString)) {
-                this.suppliedGameId = Long.parseLong(pathData.get(key));
+        if (pathVariables.containsKey(key)) {
+            if (isValueForPrimaryKeyValid(key, pathVariables.get(key), dataName, pathDataString)) {
+                this.suppliedGameId = Long.parseLong(pathVariables.get(key));
             } else {
                 return false;
             }
         }
 
         key = "visitorId";
-        if (pathData.containsKey(key)) {
-            if (isValueForPrimaryKeyValid(key, pathData.get(key), dataName, pathDataString)) {
-                this.suppliedVisitorId = Long.parseLong(pathData.get(key));
+        if (pathVariables.containsKey(key)) {
+            if (isValueForPrimaryKeyValid(key, pathVariables.get(key), dataName, pathDataString)) {
+                this.suppliedVisitorId = Long.parseLong(pathVariables.get(key));
             } else {
                 return false;
             }
         }
 
         key = "leagueId";
-        if (pathData.containsKey(key)) {
-            if (isValueForPrimaryKeyValid(key, pathData.get(key), dataName, pathDataString)) {
-                this.suppliedLeagueId = Long.parseLong(pathData.get(key));
+        if (pathVariables.containsKey(key)) {
+            if (isValueForPrimaryKeyValid(key, pathVariables.get(key), dataName, pathDataString)) {
+                this.suppliedLeagueId = Long.parseLong(pathVariables.get(key));
             } else {
                 return false;
             }
         }
         key = "invitedPlayerId";
-        if (pathData.containsKey(key)) {
-            if (isValueForPrimaryKeyValid(key, pathData.get(key), dataName, pathDataString)) {
-                this.invitedPlayerId = Long.parseLong(pathData.get(key));
+        if (pathVariables.containsKey(key)) {
+            if (isValueForPrimaryKeyValid(key, pathVariables.get(key), dataName, pathDataString)) {
+                this.invitedPlayerId = Long.parseLong(pathVariables.get(key));
             } else {
                 return false;
             }
         }
         key = "acceptedPlayerId";
-        if (pathData.containsKey(key)) {
-            if (isValueForPrimaryKeyValid(key, pathData.get(key), dataName, pathDataString)) {
-                this.suppliedLeagueId = Long.parseLong(pathData.get(key));
+        if (pathVariables.containsKey(key)) {
+            if (isValueForPrimaryKeyValid(key, pathVariables.get(key), dataName, pathDataString)) {
+                this.suppliedLeagueId = Long.parseLong(pathVariables.get(key));
             } else {
                 return false;
             }
         }
         key = "turnPlayerId";
-        if (pathData.containsKey(key)) {
-            if (isValueForPrimaryKeyValid(key, pathData.get(key), dataName, pathDataString)) {
-                this.suppliedTurnPlayerId = Long.parseLong(pathData.get(key));
+        if (pathVariables.containsKey(key)) {
+            if (isValueForPrimaryKeyValid(key, pathVariables.get(key), dataName, pathDataString)) {
+                this.suppliedTurnPlayerId = Long.parseLong(pathVariables.get(key));
             } else {
                 return false;
             }
         }
 
         // call param data with path data to be sure
-        return processParamData(pathData);
+        return validateRequestParams(pathVariables);
 
     }
-    boolean processParamData(Map<String, String> paramData) {
+    boolean validateRequestParams(Map<String, String> requestParam) {
 
         String key;
-        String dataName = "paramData";
-        String paramDataString = StringUtils.join(paramData);
+        String dataName = "requestParam";
+        String paramDataString = StringUtils.join(requestParam);
 //        log.info(this.getClass().getName() + ": " + dataName + " is " + paramDataString);
 
-        if (paramData==null) return true;
+        if (requestParam==null) return true;
 
         // paging
         key = "pages";
-        if (paramData.containsKey(key)) {
-            if (isValueForIntKeyValid(key, paramData.get(key), dataName, paramDataString)) {
-                this.suppliedPages = Integer.parseInt(paramData.get(key));
+        if (requestParam.containsKey(key)) {
+            if (isValueForIntKeyValid(key, requestParam.get(key), dataName, paramDataString)) {
+                this.suppliedPages = Integer.parseInt(requestParam.get(key));
             } else {
                 return false;
             }
         }
         key = "maxPerPage";
-        if (paramData.containsKey(key)) {
-            if (isValueForIntKeyValid(key, paramData.get(key), dataName, paramDataString)) {
-                this.suppliedMaxPerPage = Integer.parseInt(paramData.get(key));
+        if (requestParam.containsKey(key)) {
+            if (isValueForIntKeyValid(key, requestParam.get(key), dataName, paramDataString)) {
+                this.suppliedMaxPerPage = Integer.parseInt(requestParam.get(key));
             } else {
                 return false;
             }
         }
         // visitor
         key = "visitorName";
-        if (paramData.containsKey(key)) {
-            this.suppliedVisitorName = (paramData.get("visitorName"));
+        if (requestParam.containsKey(key)) {
+            this.suppliedVisitorName = (requestParam.get("visitorName"));
         }
         key = "email";
-        if (paramData.containsKey(key)) {
-            this.suppliedEmail = (paramData.get("email"));
+        if (requestParam.containsKey(key)) {
+            this.suppliedEmail = (requestParam.get("email"));
         }
         // player
         key = "role";
-        if (paramData.containsKey(key)) {
-            if (isValueForEnumKeyValid(key, paramData.get(
+        if (requestParam.containsKey(key)) {
+            if (isValueForEnumKeyValid(key, requestParam.get(
                     key), dataName,
                     paramDataString)) {
-                this.suppliedRole = Role.fromLabel(paramData.get(key));
+                this.suppliedRole = Role.fromLabel(requestParam.get(key));
             } else {
                 return false;
             }
         }
         key = "fiches";
-        if (paramData.containsKey(key)) {
-            if (isValueForIntKeyValid(key, paramData.get(key), dataName, paramDataString)) {
-                this.suppliedFiches = Integer.parseInt(paramData.get(key));
+        if (requestParam.containsKey(key)) {
+            if (isValueForIntKeyValid(key, requestParam.get(key), dataName, paramDataString)) {
+                this.suppliedFiches = Integer.parseInt(requestParam.get(key));
             } else {
                 return false;
             }
         }
         key = "avatar";
-        if (paramData.containsKey(key)) {
-            if (isValueForEnumKeyValid(key, paramData.get(
+        if (requestParam.containsKey(key)) {
+            if (isValueForEnumKeyValid(key, requestParam.get(
                     key), dataName,
                     paramDataString)) {
-                this.suppliedAvatar = Avatar.fromLabel(paramData.get(key));
+                this.suppliedAvatar = Avatar.fromLabel(requestParam.get(key));
             } else {
                 return false;
             }
         }
         key = "aiLevel";
-        if (paramData.containsKey(key)) {
-            if (isValueForEnumKeyValid(key, paramData.get(
+        if (requestParam.containsKey(key)) {
+            if (isValueForEnumKeyValid(key, requestParam.get(
                     key), dataName,
                     paramDataString)) {
-                this.suppliedAiLevel = AiLevel.fromLabel(paramData.get(key));
+                this.suppliedAiLevel = AiLevel.fromLabel(requestParam.get(key));
             } else {
                 return false;
             }
         }
         // game
         key = "trigger";
-        if (paramData.containsKey(key)) {
-            if (isValueForEnumKeyValid(key, paramData.get(
+        if (requestParam.containsKey(key)) {
+            if (isValueForEnumKeyValid(key, requestParam.get(
                     key), dataName,
                     paramDataString)) {
-                this.suppliedTrigger = GameTrigger.valueOf(paramData.get(key));
+                this.suppliedTrigger = GameTrigger.valueOf(requestParam.get(key));
             } else {
                 return false;
             }
         }
         key = "gameStateGroup";
-        if (paramData.containsKey(key)) {
-            if (isValueForEnumKeyValid(key, paramData.get(
+        if (requestParam.containsKey(key)) {
+            if (isValueForEnumKeyValid(key, requestParam.get(
                     key), dataName,
                     paramDataString)) {
-                this.suppliedGameStateGroup = GameStateGroup.valueOf(paramData.get(key));
+                this.suppliedGameStateGroup = GameStateGroup.valueOf(requestParam.get(key));
             } else {
                 return false;
             }
         }
         key = "type";
-        if (paramData.containsKey(key)) {
-            if (isValueForEnumKeyValid(key, paramData.get(
+        if (requestParam.containsKey(key)) {
+            if (isValueForEnumKeyValid(key, requestParam.get(
                     key), dataName,
                     paramDataString)) {
-                this.suppliedType = Type.fromLabel(paramData.get(key));
+                this.suppliedType = Type.fromLabel(requestParam.get(key));
             } else {
                 return false;
             }
         }
         key = "style";
-        if (paramData.containsKey(key)) {
-            this.suppliedStyle = (paramData.get("style"));
+        if (requestParam.containsKey(key)) {
+            this.suppliedStyle = (requestParam.get("style"));
         }
         key = "ante";
-        if (paramData.containsKey(key)) {
-            if (isValueForIntKeyValid(key, paramData.get(key), dataName, paramDataString)) {
-                this.suppliedAnte = Integer.parseInt(paramData.get(key));
+        if (requestParam.containsKey(key)) {
+            if (isValueForIntKeyValid(key, requestParam.get(key), dataName, paramDataString)) {
+                this.suppliedAnte = Integer.parseInt(requestParam.get(key));
             } else {
                 return false;
             }
         }
         key = "jokers";
-        if (paramData.containsKey(key)) {
-            if (isValueForIntKeyValid(key, paramData.get(key), dataName, paramDataString)) {
-                this.suppliedJokers = Integer.parseInt(paramData.get(key));
+        if (requestParam.containsKey(key)) {
+            if (isValueForIntKeyValid(key, requestParam.get(key), dataName, paramDataString)) {
+                this.suppliedJokers = Integer.parseInt(requestParam.get(key));
             } else {
                 return false;
             }
         }
         // league
         key = "leagueName";
-        if (paramData.containsKey(key)) {
-            this.suppliedLeagueName = (paramData.get("leagueName"));
+        if (requestParam.containsKey(key)) {
+            this.suppliedLeagueName = (requestParam.get("leagueName"));
         }
         // cardmove
         key = "move";
-        if (paramData.containsKey(key)) {
-            if (isValueForEnumKeyValid(key, paramData.get(
+        if (requestParam.containsKey(key)) {
+            if (isValueForEnumKeyValid(key, requestParam.get(
                     key), dataName,
                     paramDataString)) {
-                this.suppliedMove = Move.fromLabel(paramData.get(key));
+                this.suppliedMove = Move.fromLabel(requestParam.get(key));
             } else {
                 return false;
             }
         }
         key = "location";
-        if (paramData.containsKey(key)) {
-            if (isValueForEnumKeyValid(key, paramData.get(
+        if (requestParam.containsKey(key)) {
+            if (isValueForEnumKeyValid(key, requestParam.get(
                     key), dataName,
                     paramDataString)) {
-                this.suppliedLocation = Location.fromLabel(paramData.get(key));
+                this.suppliedLocation = Location.fromLabel(requestParam.get(key));
             } else {
                 return false;
             }
         }
         key = "bet";
-        if (paramData.containsKey(key)) {
-            if (isValueForIntKeyValid(key, paramData.get(key), dataName, paramDataString)) {
-                this.suppliedBet = Integer.parseInt(paramData.get(key));
+        if (requestParam.containsKey(key)) {
+            if (isValueForIntKeyValid(key, requestParam.get(key), dataName, paramDataString)) {
+                this.suppliedBet = Integer.parseInt(requestParam.get(key));
             } else {
                 return false;
             }

@@ -1,4 +1,4 @@
-package cloud.qasino.games.dto.navigation;
+package cloud.qasino.games.dto.elements;
 
 import cloud.qasino.games.database.entity.Game;
 import cloud.qasino.games.database.entity.League;
@@ -16,22 +16,22 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class NavigationGame {
+public class PageGameConfigurator {
 
-    private boolean hasBalance;      // icon is cards -> select/start game to enable nav-game
-    // creating / selecting  only possible when <hasBalance = true>
+    private boolean initiatedByYou;
 
-    @JsonProperty("Game")
-    private Game game; // including a list of players + intiator
-
-    @JsonProperty("Friends")
-    private List<Visitor> friends; // todo friends
-
-    @JsonProperty("Leagues")
-    private List<League> leagues;
-
+    @JsonProperty("SelectedGame")
+    private Game selectedGame;
+    private boolean hasBalance;
     private int totalVisitors;
     private int totalBots;
+
+    @JsonProperty("Friends")
+    private List<Visitor> visitorsToInvite; // todo friends
+
+    @JsonProperty("Leagues")
+    private List<League> leaguesToSelect;
+
     // selections
     private AnteToWin anteToWin;
     private BettingStrategy bettingStrategy;
@@ -39,5 +39,6 @@ public class NavigationGame {
     private InsuranceCost insuranceCost;
     private RoundsToWin roundsToWin;
     private TurnsToWin turnsToWin;
+
 }
 

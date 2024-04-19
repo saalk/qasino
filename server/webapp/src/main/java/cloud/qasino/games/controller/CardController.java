@@ -50,7 +50,7 @@ public class CardController {
     }
 
     // TODO this is not needed
-    @GetMapping(value = "/card/{cardId}")
+    // @GetMapping(value = "/card/{cardId}")
     public ResponseEntity getPlayingCardByCard(
             @PathVariable("cardId") String card
     ) {
@@ -72,7 +72,7 @@ public class CardController {
     }
 
     // todo check if this is needed
-    @DeleteMapping("/card/{cardId}/game/{gameId}")
+    // @DeleteMapping("/card/{cardId}/game/{gameId}")
     public ResponseEntity deletePlayingCardByCard(
             @PathVariable("gameId") String id,
             @PathVariable("cardId") String card
@@ -111,7 +111,7 @@ public class CardController {
         return ResponseEntity.status(HttpStatus.NO_CONTENT).headers(headers).build();
     }
 
-    @DeleteMapping("/card/{cardId}")
+    // @DeleteMapping("/card/{cardId}")
     public ResponseEntity<Card> deletePlayingCardById(
             @PathVariable("cardId") String id
     ) {
@@ -143,10 +143,10 @@ public class CardController {
     }
 
 
-    @GetMapping(
-            value = "/card/{cardId}/image",
-            produces = MediaType.IMAGE_JPEG_VALUE
-    )
+    // @GetMapping(
+//            value = "/card/{cardId}/image",
+//            produces = MediaType.IMAGE_JPEG_VALUE
+//    )
     public @ResponseBody
     byte[] getPlayingCardImageWithMediaType(@PathVariable("cardId") String card) throws IOException {
         InputStream in = getClass()

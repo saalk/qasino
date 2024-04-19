@@ -1,7 +1,7 @@
 package cloud.qasino.games.dto;
 
-import cloud.qasino.games.dto.enums.Enums;
-import cloud.qasino.games.dto.navigation.*;
+import cloud.qasino.games.dto.enums.EnumOverview;
+import cloud.qasino.games.dto.elements.*;
 import cloud.qasino.games.dto.statistics.Counter;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
@@ -20,25 +20,26 @@ public class Qasino {
     @JsonProperty("NavBarItems")
     private List<NavigationBarItem> navBarItems;
 
-    @JsonProperty("VisitorData")
-    private NavigationVisitor visitorData;
-    @JsonProperty("GameData")
-    private NavigationGame gameData;
-    @JsonProperty("QasinoData")
-    private NavigationQasino qasinoData;
-    @JsonProperty("LeagueData")
-    private NavigationLeague leagueData;
-    @JsonProperty("FriendsData")
-    private NavigationFriends friendsData;
+    @JsonProperty("You")
+    private PageVisitor pageVisitor;
 
-    @JsonProperty("Table")
-    private Table table;
+    @JsonProperty("GameConfigurator")
+    private PageGameConfigurator pageGameConfigurator;
+
+    @JsonProperty("GamePlay")
+    private PageGamePlay pageGamePlay;
+
+    @JsonProperty("PendingGames")
+    private PagePendingGames pagePendingGames;
+
+    @JsonProperty("Leagues")
+    private PageLeagues pageLeagues;
 
     // extra
     @JsonProperty("Enums")
-    Enums enums = new Enums();
-    @JsonProperty("Counters")
-    Counter counter =new Counter();
+    EnumOverview enumOverview = new EnumOverview();
+    @JsonProperty("Statistics")
+    Counter counter = new Counter();
 
 
 }

@@ -50,7 +50,7 @@ public class SignUpNewVisitorAction implements Action<SignUpNewVisitorAction.Sig
         actionDto.setErrorKey(id);
         actionDto.setErrorValue(value);
         actionDto.setErrorMessage("Supplied value for visitorName is empty");
-        actionDto.setUriAndHeaders();
+        actionDto.prepareResponseHeaders();
     }
 
 
@@ -60,7 +60,7 @@ public class SignUpNewVisitorAction implements Action<SignUpNewVisitorAction.Sig
         actionDto.setErrorKey(id);
         actionDto.setErrorValue(value);
         actionDto.setErrorMessage("VisitorName [" + value + "] not available any more");
-        actionDto.setUriAndHeaders();
+        actionDto.prepareResponseHeaders();
     }
 
     private void setErrorMessageInternalServerError(SignUpNewVisitorActionDTO actionDto, String id,
@@ -69,7 +69,7 @@ public class SignUpNewVisitorAction implements Action<SignUpNewVisitorAction.Sig
         actionDto.setErrorKey(id);
         actionDto.setErrorValue(value);
         actionDto.setErrorMessage("Crash while signing up a new visitor");
-        actionDto.setUriAndHeaders();
+        actionDto.prepareResponseHeaders();
     }
 
     public interface SignUpNewVisitorActionDTO {
@@ -87,7 +87,7 @@ public class SignUpNewVisitorAction implements Action<SignUpNewVisitorAction.Sig
         void setErrorKey(String key);
         void setErrorValue(String value);
         void setErrorMessage(String key);
-        void setUriAndHeaders();
+        void prepareResponseHeaders();
         // @formatter:on
     }
 }

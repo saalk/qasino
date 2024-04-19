@@ -61,7 +61,7 @@ public class VisitorController {
     }
 
 
-    @GetMapping("/visitor/{visitorId}")
+    // @GetMapping("/visitor/{visitorId}")
     public ResponseEntity<Optional<Visitor>> getVisitor(
             @PathVariable("visitorId") String id
     ) {
@@ -90,7 +90,7 @@ public class VisitorController {
     }
 
     // tested
-    @PutMapping(value = "/visitor/{visitorId}")
+    // @PutMapping(value = "/visitor/{visitorId}")
     public ResponseEntity<Visitor> updateVisitor(
             @PathVariable("visitorId") String id,
             @RequestParam(name = "visitorName", defaultValue = "") String visitorName,
@@ -134,7 +134,7 @@ public class VisitorController {
     }
 
     // tested
-    @DeleteMapping("/visitor/{visitorId}")
+    // @DeleteMapping("/visitor/{visitorId}")
     public ResponseEntity<Visitor> deleteVisitor(
             @PathVariable("visitorId") String id
     ) {

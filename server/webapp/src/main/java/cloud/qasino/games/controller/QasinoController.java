@@ -9,6 +9,7 @@ import cloud.qasino.games.action.SetStatusIndicatorsBaseOnRetrievedDataAction;
 import cloud.qasino.games.action.SignUpNewVisitorAction;
 import cloud.qasino.games.database.entity.Game;
 import cloud.qasino.games.database.entity.Player;
+import cloud.qasino.games.database.entity.Visitor;
 import cloud.qasino.games.database.repository.CardRepository;
 import cloud.qasino.games.database.repository.GameRepository;
 import cloud.qasino.games.database.repository.PlayerRepository;
@@ -29,14 +30,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
@@ -99,9 +98,7 @@ public class QasinoController {
     ) {
         // validate
         QasinoFlowDTO flowDTO = new QasinoFlowDTO();
-        HashMap<String,String> pathData = new HashMap<>();
-        id.ifPresent(s -> pathData.put("visitorId", s));
-        flowDTO.setPathData(pathData);
+        if (id.isPresent()) flowDTO.setPathVariables("visitorId",id.get());
         if (!flowDTO.validateInput()) {
             return ResponseEntity.status(HttpStatus.valueOf(flowDTO.getHttpStatus())).headers(flowDTO.getHeaders()).build();
         }
@@ -119,13 +116,13 @@ public class QasinoController {
 
     @PostMapping(value = "/signup/{visitorName}")
     public ResponseEntity<Qasino> signup(
-            @PathVariable("visitorName") String name
+            @PathVariable("visitorName") String name,
+            @RequestParam(name = "email", defaultValue = "") String email
+
     ) {
         // validate
         QasinoFlowDTO flowDTO = new QasinoFlowDTO();
-        HashMap<String,String> pathData = new HashMap<>();
-        pathData.put("visitorName",name);
-        flowDTO.setPathData(pathData);
+        flowDTO.setPathVariables("visitorName",name, "email", "value2");
         if (!flowDTO.validateInput()) {
             return ResponseEntity.status(HttpStatus.valueOf(flowDTO.getHttpStatus())).headers(flowDTO.getHeaders()).build();
         }
@@ -145,15 +142,14 @@ public class QasinoController {
         return ResponseEntity.created(flowDTO.getUri()).headers(flowDTO.getHeaders()).body(flowDTO.getQasino());
     }
 
-    @GetMapping(value = "/logon/{visitorName}")
+     @GetMapping(value = "/logon/{visitorName}")
     public ResponseEntity<Qasino> logon(
             @PathVariable("visitorName") String name
     ) {
         // validate
-        QasinoFlowDTO flowDTO = new QasinoFlowDTO();
-        HashMap<String,String> pathData = new HashMap<>();
-        pathData.put("visitorName",name);
-        flowDTO.setPathData(pathData);
+         // validate
+         QasinoFlowDTO flowDTO = new QasinoFlowDTO();
+         flowDTO.setPathVariables("visitorName",name);
         if (!flowDTO.validateInput()) {
             return ResponseEntity.status(HttpStatus.valueOf(flowDTO.getHttpStatus())).headers(flowDTO.getHeaders()).build();
         }
@@ -181,15 +177,13 @@ public class QasinoController {
     // Game    : trigger, gameStateGroup, type, style, ante, jokers
     // League  : leagueName
     // Play    : move, location, bet
-    @PutMapping(value = "/pawn/{visitorId}")
+    // @PutMapping(value = "/pawn/{visitorId}")
     public ResponseEntity<Qasino> visitorPawnsHisShip(
             @PathVariable("visitorId") String id
     ) {
         // validate
         QasinoFlowDTO flowDTO = new QasinoFlowDTO();
-        HashMap<String,String> pathData = new HashMap<>();
-        pathData.put("visitorId",id);
-        flowDTO.setPathData(pathData);
+        flowDTO.setPathVariables("visitorId",id);
         if (!flowDTO.validateInput()) {
             return ResponseEntity.status(HttpStatus.valueOf(flowDTO.getHttpStatus())).headers(flowDTO.getHeaders()).build();
         }
@@ -209,15 +203,13 @@ public class QasinoController {
         return ResponseEntity.ok().headers(flowDTO.getHeaders()).body(flowDTO.getQasino());
     }
 
-    @PutMapping(value = "/repayloan/{visitorId}")
+    // @PutMapping(value = "/repayloan/{visitorId}")
     public ResponseEntity<Qasino> visitorRepaysHisLoan(
             @PathVariable("visitorId") String id
     ) {
         // validate
         QasinoFlowDTO flowDTO = new QasinoFlowDTO();
-        HashMap<String,String> pathData = new HashMap<>();
-        pathData.put("visitorId",id);
-        flowDTO.setPathData(pathData);
+        flowDTO.setPathVariables("visitorId",id);
         if (!flowDTO.validateInput()) {
             return ResponseEntity.status(HttpStatus.valueOf(flowDTO.getHttpStatus())).headers(flowDTO.getHeaders()).build();
         }
@@ -238,103 +230,30 @@ public class QasinoController {
         return ResponseEntity.ok().headers(flowDTO.getHeaders()).body(flowDTO.getQasino());
     }
 
-    // TODO move this all to get Qasino logic
-    // vistor CRUD
-    // /api/visitor/{visitorId} - DELETE, PUT visitorName, email only
-
-
-    @GetMapping(value = "/game/{state}/visitor/{visitorId}")
-    public ResponseEntity listActiveGamesForVisitor(
-            @PathVariable("visitorId") String id,
-            @PathVariable("state") String state,
-            @RequestParam(defaultValue = "0") String page,
-            @RequestParam(defaultValue = "4") String max
-    ) {
-
-        // header in response
-        URI uri = ServletUriComponentsBuilder.fromCurrentRequest()
-                .path("")
-                .query("")
-                .buildAndExpand(id, state, page, max)
-                .toUri();
-        HttpHeaders headers = new HttpHeaders();
-        headers.add("URI", String.valueOf(uri));
-
-        // validations
-        String[] states = new String[]{"new", "started", "finished", "error"};
-        if (!StringUtils.isNumeric(page)
-                || !StringUtils.isNumeric(max)
-                || !StringUtils.isNumeric(id)
-                || !Arrays.asList(states).contains(state)
-        ) {
-            return ResponseEntity.badRequest().headers(headers).build();
-        }
-        int maximum = Integer.parseInt(max);
-        int pages = Integer.parseInt(page);
-        long visitorId = Long.parseLong(id);
-
-        // logic
-        Pageable pageable = PageRequest.of(pages, maximum, Sort.by(
-                Sort.Order.asc("type"),
-                Sort.Order.desc("created")));
-        List<Game> foundGames;
-        switch (state) {
-            case ("new"):
-            default:
-                foundGames = gameRepository.findAllNewGamesForVisitorWithPage(visitorId, pageable);
-                break;
-            // todo LOW finish the other states
-/*            case("started"):
-                foundGames = gameRepository.findAllStartedGamesForVisitorWithPage(visitorId, pageable);
-                break;
-            case("finished"):
-                foundGames = gameRepository.findAllFinishedGamesForVisitorWithPage(visitorId, pageable);
-                break;
-            default:
-                foundGames = gameRepository.findAllErrorGamesForVisitorWithPage(visitorId, pageable);
-                break;*/
-        }
-        if (!(foundGames.size() > 0)) {
-            return ResponseEntity.notFound().headers(headers).build();
-        }
-        return ResponseEntity.ok().headers(headers).body(foundGames);
-
-    }
-    @GetMapping(value = "/visitor/showall")
+    @GetMapping(value = "/admin/visitors")
     public ResponseEntity listVisitorsWithPaging(
-            @RequestParam(defaultValue = "0") String page,
-            @RequestParam(defaultValue = "4") String max
+            @RequestParam(name = "pages", defaultValue = "0") String page,
+            @RequestParam(name = "maxPerPage", defaultValue = "4") String max
     ) {
-
-        // header in response
-        URI uri = ServletUriComponentsBuilder.fromCurrentRequest()
-                .path("")
-                .query("")
-                .buildAndExpand(page, max)
-                .toUri();
-        HttpHeaders headers = new HttpHeaders();
-        headers.add("URI", String.valueOf(uri));
-
-        // validations
-        if (!StringUtils.isNumeric(page) || !StringUtils.isNumeric(max))
-            return ResponseEntity.badRequest().headers(headers).build();
-        int maximum = Integer.parseInt(max);
-        int pages = Integer.parseInt(page);
+        // validate
+         QasinoFlowDTO flowDTO = new QasinoFlowDTO();
+         flowDTO.setPathVariables("pages",page,"maxPerPage",max);
+         if (!flowDTO.validateInput()) {
+             return ResponseEntity.status(HttpStatus.valueOf(flowDTO.getHttpStatus())).headers(flowDTO.getHeaders()).build();
+         }
 
         // logic
-        Pageable pageable = PageRequest.of(pages, maximum, Sort.by(
-                Sort.Order.asc("visitorName"),
-                Sort.Order.desc("visitorName_SEQ")));
+        Pageable pageable = PageRequest.of(flowDTO.getSuppliedPages(), flowDTO.getSuppliedMaxPerPage(), Sort.by(
+                Sort.Order.asc("\"visitor_name\""),
+                Sort.Order.desc("\"visitor_name_seq\"")
+                ));
+        List<Visitor> visitors = visitorRepository.findAllVisitorsWithPage(pageable);
+        return ResponseEntity.ok().headers(flowDTO.getHeaders()).body(visitors);
 
-        ArrayList visitors = (ArrayList) visitorRepository.findAllVisitorsWithPage(pageable);
-
-        return ResponseEntity.ok()
-                .headers(headers)
-                .body(visitors);
     }
 
     // tested - get only the list of players for a game
-    @GetMapping(value = "/player/all/game/{id}")
+    // @GetMapping(value = "/player/all/game/{id}")
     public ResponseEntity getPlayersByGame(
             @PathVariable("id") String id) {
 
@@ -362,7 +281,7 @@ public class QasinoController {
     }
 
     // todo LOW test
-    @GetMapping(value = "/playingcard/all/game/{id}")
+    // @GetMapping(value = "/playingcard/all/game/{id}")
     public ResponseEntity getPlayingCardByGame(
             @PathVariable("id") String id,
             @RequestParam(defaultValue = "0") String page,
@@ -413,7 +332,7 @@ public class QasinoController {
     }
 
     // todo HIGH test
-    @GetMapping(value = "/events/all/game/{id}")
+    // @GetMapping(value = "/events/all/game/{id}")
     public ResponseEntity getEventsByGame(
             @PathVariable("id") String id
     ) {

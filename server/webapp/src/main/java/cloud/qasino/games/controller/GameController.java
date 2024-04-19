@@ -80,7 +80,7 @@ public class GameController {
     // Game lifecycle events
 
 
-    @PostMapping(value = "/game/setup/{type}")
+    // @PostMapping(value = "/game/setup/{type}")
     public ResponseEntity<Game> setupGameWithoutPlayers(
             @PathVariable("type") String type,
             @RequestParam(name = "style", defaultValue = " ") String style,
@@ -114,7 +114,7 @@ public class GameController {
         }
     }
 
-    @PostMapping(value = "/game/setup/{type}/visitor/{visitorId}")
+    // @PostMapping(value = "/game/setup/{type}/visitor/{visitorId}")
     public ResponseEntity<Game> setupGameWithVisitorPlayer(
             @PathVariable("type") String type,
             @PathVariable("visitorId") String uId,
@@ -172,7 +172,7 @@ public class GameController {
         return ResponseEntity.status(HttpStatus.CREATED).headers(headers).body(startedGame);
     }
 
-    @PostMapping(value = "/game/setup/{type}/visitor/{visitorId}/bot/{aiLevel}")
+    // @PostMapping(value = "/game/setup/{type}/visitor/{visitorId}/bot/{aiLevel}")
     public ResponseEntity<Game> setupGameWithVisitorPlayerAndBot(
             @PathVariable("type") String type,
             @PathVariable("visitorId") String uId,
@@ -246,7 +246,7 @@ public class GameController {
         return ResponseEntity.status(HttpStatus.CREATED).headers(headers).body(startedGame);
     }
 
-    @PostMapping(value = "/game/setup/{type}/league/{leagueId}/visitor/{visitorId}")
+    // @PostMapping(value = "/game/setup/{type}/league/{leagueId}/visitor/{visitorId}")
     public ResponseEntity<Game> setupGameInLeagueWithVisitorPlayer(
             @PathVariable("type") String type,
             @PathVariable("visitorId") String uId,
@@ -308,7 +308,7 @@ public class GameController {
         return ResponseEntity.status(HttpStatus.CREATED).headers(headers).body(startedGame);
     }
 
-    @PostMapping(value = "/game/setup/{type}/league/{leagueId}/visitor/{visitorId}/bot/{aiLevel}")
+    // @PostMapping(value = "/game/setup/{type}/league/{leagueId}/visitor/{visitorId}/bot/{aiLevel}")
     public ResponseEntity<Game> setupGameInLeagueWithVisitorPlayerAndBot(
             @PathVariable("type") String type,
             @PathVariable("visitorId") String uId,
@@ -388,7 +388,7 @@ public class GameController {
         return ResponseEntity.status(HttpStatus.CREATED).headers(headers).body(startedGame);
     }
 
-    @PutMapping(value = "/game/{gameId}/prepare/{type}/league/{leagueId}")
+    // @PutMapping(value = "/game/{gameId}/prepare/{type}/league/{leagueId}")
     public ResponseEntity<Game> prepareGameWithTypeLeagueStyleAnte(
             @PathVariable("gameId") String gid,
             @PathVariable("type") String type,
@@ -442,7 +442,7 @@ public class GameController {
 
     }
 
-    @PutMapping(value = "/game/{gameId}/invite/visitor{visitorId}")
+    // @PutMapping(value = "/game/{gameId}/invite/visitor{visitorId}")
     public ResponseEntity<Game> inviteVisitorForAGame(
             @PathVariable("gameId") String gId,
             @PathVariable("visitorId") String uId,
@@ -497,7 +497,7 @@ public class GameController {
         return ResponseEntity.ok().headers(headers).body(linkedGame);
     }
 
-    @PutMapping(value = "/game/{gameId}/add/bot")
+    // @PutMapping(value = "/game/{gameId}/add/bot")
     public ResponseEntity<Game> addBotPLayerForAGame(
             @PathVariable("gameId") String id,
             @RequestParam(name = "aiLevel", defaultValue = "average") String aiLevel,
@@ -551,7 +551,7 @@ public class GameController {
 
     }
 
-    @PutMapping(value = "/game/{gameId}/accept/player{playerId}")
+    // @PutMapping(value = "/game/{gameId}/accept/player{playerId}")
     public ResponseEntity<Game> acceptInvitationForAGame(
             @PathVariable("gameId") String gid,
             @PathVariable("playerId") String pid,
@@ -611,7 +611,7 @@ public class GameController {
         return ResponseEntity.ok().headers(headers).body(linkedGame);
     }
 
-    @PutMapping(value = "/game/{gameId}/decline/player{playerId}")
+    // @PutMapping(value = "/game/{gameId}/decline/player{playerId}")
     public ResponseEntity<Game> declineInvitationForAGame(
             @PathVariable("gameId") String gid,
             @PathVariable("playerId") String pid){
@@ -666,7 +666,7 @@ public class GameController {
     }
 
 
-//    @PostMapping(value = "/cards/game/{id}/jokers/{jokers}")
+//    // @PostMapping(value = "/cards/game/{id}/jokers/{jokers}")
 //    public ResponseEntity setupGame(
 //            @PathVariable("id") String id,
 //            @PathVariable("jokers") String jokers
@@ -709,7 +709,7 @@ public class GameController {
 //
 
     // Game crud actions
-    @GetMapping("/game/{gameId}")
+    // @GetMapping("/game/{gameId}")
     public ResponseEntity<Optional<Game>> getGame(
             @PathVariable("gameId") String id
     ) {
@@ -738,7 +738,7 @@ public class GameController {
     }
 
     // todo LOW work on all sqls, works for new
-    @PutMapping(value = "/game/{gameId}/state/{state}")
+    // @PutMapping(value = "/game/{gameId}/state/{state}")
     public ResponseEntity<Game> updateGameState(
             @PathVariable("gameId") String id,
             @PathVariable("state") String state
@@ -776,7 +776,7 @@ public class GameController {
     }
 
     // tested todo LOW work on constraint of players delete first
-    @DeleteMapping("/game/{gameId}")
+    // @DeleteMapping("/game/{gameId}")
     public ResponseEntity<Game> deleteGame(
             @PathVariable("gameId") String id
     ) {

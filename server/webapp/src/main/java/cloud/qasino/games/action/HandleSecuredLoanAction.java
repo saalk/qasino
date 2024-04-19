@@ -67,7 +67,7 @@ public class HandleSecuredLoanAction implements Action<HandleSecuredLoanAction.H
         actionDto.setErrorKey(id);
         actionDto.setErrorValue(value);
         actionDto.setErrorMessage("Action " + id + " not valid");
-        actionDto.setUriAndHeaders();
+        actionDto.prepareResponseHeaders();
     }
     private void setErrorMessageBadRequest(HandleSecuredLoanActionDTO actionDto, String id,
                                            String value) {
@@ -75,7 +75,7 @@ public class HandleSecuredLoanAction implements Action<HandleSecuredLoanAction.H
         actionDto.setErrorKey(id);
         actionDto.setErrorValue(value);
         actionDto.setErrorMessage("Supplied value " + id + " is not available");
-        actionDto.setUriAndHeaders();
+        actionDto.prepareResponseHeaders();
     }
     public interface HandleSecuredLoanActionDTO {
 
@@ -94,7 +94,7 @@ public class HandleSecuredLoanAction implements Action<HandleSecuredLoanAction.H
         void setErrorKey(String key);
         void setErrorValue(String value);
         void setErrorMessage(String key);
-        void setUriAndHeaders();
+        void prepareResponseHeaders();
         // @formatter:on
     }
 }

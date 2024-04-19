@@ -62,11 +62,10 @@ public class FindAllEntitiesForInputAction implements Action<FindAllEntitiesForI
             // todo LOW select if one Game is active
             actionDto.setFinishedGamesForVisitor(gameRepository.findAllFinishedGamesForVisitorWithPage(id,
                     pageable));
-            pageable = PageRequest.of(actionDto.getSuppliedPages(), actionDto.getSuppliedMaxPerPage()
 //                    ,
 //                    Sort.by(
 //                            Sort.Order.desc("a.\"created\""))
-            );
+//            );
             actionDto.setLeaguesForVisitor(leagueRepository.findAllActiveLeagueForVisitorWithPage(id, pageable));
             // todo LOW select if one league is active
         }
@@ -140,7 +139,7 @@ public class FindAllEntitiesForInputAction implements Action<FindAllEntitiesForI
         actionDto.setErrorKey(id);
         actionDto.setErrorValue(value);
         actionDto.setErrorMessage("Entity not found for key" + value);
-        actionDto.setUriAndHeaders();
+        actionDto.prepareResponseHeaders();
     }
 
     public interface FindAllEntitiesForInputActionDTO {
@@ -185,7 +184,7 @@ public class FindAllEntitiesForInputAction implements Action<FindAllEntitiesForI
         void setErrorKey(String key);
         void setErrorValue(String value);
         void setErrorMessage(String key);
-        void setUriAndHeaders();
+        void prepareResponseHeaders();
         // @formatter:on
     }
 }
