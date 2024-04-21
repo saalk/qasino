@@ -59,7 +59,7 @@ public class SignUpNewVisitorAction implements Action<SignUpNewVisitorAction.Sig
         actionDto.setHttpStatus(409);
         actionDto.setErrorKey(id);
         actionDto.setErrorValue(value);
-        actionDto.setErrorMessage("VisitorName [" + value + "] not available any more");
+        actionDto.setErrorMessage("visitorName [" + value + "] not available any more");
         actionDto.prepareResponseHeaders();
     }
 

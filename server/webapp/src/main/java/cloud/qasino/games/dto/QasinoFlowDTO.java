@@ -177,6 +177,11 @@ public class QasinoFlowDTO //extends AbstractFlowDTO
         this.headers = new HttpHeaders();
         headers.add("URI", String.valueOf(this.getUri()));
 
+        if (this.httpStatus > 299) {
+            headers.add(this.getErrorKey(), this.getErrorValue());
+            headers.add("Error", this.getErrorMessage());
+        }
+
     }
     boolean validatePathVariables(Map<String, String> pathVariables) {
         String key;

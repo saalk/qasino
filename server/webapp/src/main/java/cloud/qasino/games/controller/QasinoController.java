@@ -21,6 +21,7 @@ import cloud.qasino.games.dto.QasinoFlowDTO;
 import cloud.qasino.games.event.EventOutput;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -28,6 +29,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -111,11 +113,13 @@ public class QasinoController {
         setStatusIndicatorsBaseOnRetrievedDataAction.perform(flowDTO);
         calculateHallOfFameAction.perform(flowDTO);
         mapQasinoResponseFromRetrievedDataAction.perform(flowDTO);
+
+        flowDTO.prepareResponseHeaders();
         return ResponseEntity.ok().headers(flowDTO.getHeaders()).body(flowDTO.getQasino());
     }
 
     @PostMapping(value = "/signup/{visitorName}")
-    public ResponseEntity<Qasino> signup(
+    public ResponseEntity<Qasino> visitorSignup(
             @PathVariable("visitorName") String name,
             @RequestParam(name = "email", defaultValue = "") String email
 
@@ -139,11 +143,13 @@ public class QasinoController {
         setStatusIndicatorsBaseOnRetrievedDataAction.perform(flowDTO);
         calculateHallOfFameAction.perform(flowDTO);
         mapQasinoResponseFromRetrievedDataAction.perform(flowDTO);
+
+        flowDTO.prepareResponseHeaders();
         return ResponseEntity.created(flowDTO.getUri()).headers(flowDTO.getHeaders()).body(flowDTO.getQasino());
     }
 
-     @GetMapping(value = "/logon/{visitorName}")
-    public ResponseEntity<Qasino> logon(
+    @GetMapping(value = "/logon/{visitorName}")
+    public ResponseEntity<Qasino> visitorLogon(
             @PathVariable("visitorName") String name
     ) {
         // validate
@@ -166,19 +172,13 @@ public class QasinoController {
         setStatusIndicatorsBaseOnRetrievedDataAction.perform(flowDTO);
         calculateHallOfFameAction.perform(flowDTO);
         mapQasinoResponseFromRetrievedDataAction.perform(flowDTO);
+
+        flowDTO.prepareResponseHeaders();
         return ResponseEntity.created(flowDTO.getUri()).headers(flowDTO.getHeaders()).body(flowDTO.getQasino());
     }
 
-    // visitor financial actions
-
-    // Generic : pages, maxPerPage,
-    // Visitor : visitorName, email
-    // Player  : role, fiches, avatar, aiLevel
-    // Game    : trigger, gameStateGroup, type, style, ante, jokers
-    // League  : leagueName
-    // Play    : move, location, bet
-    // @PutMapping(value = "/pawn/{visitorId}")
-    public ResponseEntity<Qasino> visitorPawnsHisShip(
+    @GetMapping(value = "/pawn/{visitorId}")
+    public ResponseEntity<Qasino> visitorPawnsShip(
             @PathVariable("visitorId") String id
     ) {
         // validate
@@ -200,11 +200,13 @@ public class QasinoController {
         setStatusIndicatorsBaseOnRetrievedDataAction.perform(flowDTO);
         calculateHallOfFameAction.perform(flowDTO);
         mapQasinoResponseFromRetrievedDataAction.perform(flowDTO);
+
+        flowDTO.prepareResponseHeaders();
         return ResponseEntity.ok().headers(flowDTO.getHeaders()).body(flowDTO.getQasino());
     }
 
-    // @PutMapping(value = "/repayloan/{visitorId}")
-    public ResponseEntity<Qasino> visitorRepaysHisLoan(
+    @PutMapping(value = "/repay/{visitorId}")
+    public ResponseEntity<Qasino> visitorRepaysLoan(
             @PathVariable("visitorId") String id
     ) {
         // validate
@@ -227,143 +229,34 @@ public class QasinoController {
         setStatusIndicatorsBaseOnRetrievedDataAction.perform(flowDTO);
         calculateHallOfFameAction.perform(flowDTO);
         mapQasinoResponseFromRetrievedDataAction.perform(flowDTO);
+
+        flowDTO.prepareResponseHeaders();
         return ResponseEntity.ok().headers(flowDTO.getHeaders()).body(flowDTO.getQasino());
     }
 
     @GetMapping(value = "/admin/visitors")
-    public ResponseEntity listVisitorsWithPaging(
-            @RequestParam(name = "pages", defaultValue = "0") String page,
+    public ResponseEntity listAllVisitorsWithPaging(
+            @RequestParam(name = "pages", defaultValue = "0") String pages,
             @RequestParam(name = "maxPerPage", defaultValue = "4") String max
     ) {
         // validate
          QasinoFlowDTO flowDTO = new QasinoFlowDTO();
-         flowDTO.setPathVariables("pages",page,"maxPerPage",max);
+         flowDTO.setPathVariables("pages",pages,"maxPerPage",max);
          if (!flowDTO.validateInput()) {
              return ResponseEntity.status(HttpStatus.valueOf(flowDTO.getHttpStatus())).headers(flowDTO.getHeaders()).build();
          }
 
-        // logic
-        Pageable pageable = PageRequest.of(flowDTO.getSuppliedPages(), flowDTO.getSuppliedMaxPerPage(), Sort.by(
-                Sort.Order.asc("\"visitor_name\""),
-                Sort.Order.desc("\"visitor_name_seq\"")
-                ));
-        List<Visitor> visitors = visitorRepository.findAllVisitorsWithPage(pageable);
-        return ResponseEntity.ok().headers(flowDTO.getHeaders()).body(visitors);
+        // TODO build response in action
+//        Sort sort = Sort.by(
+//                Sort.Order.asc("\"visitor_name\"")
+//                ,Sort.Order.desc("\"visitor_name_seq\"")
+//        );
+        Page<Visitor> allVisitorsWithPage = visitorRepository.findAllVisitorsWithPage(PageRequest.of(
+                flowDTO.getSuppliedPages(),
+                flowDTO.getSuppliedMaxPerPage()));
+//                sort));
 
+        flowDTO.prepareResponseHeaders();
+        return ResponseEntity.ok().headers(flowDTO.getHeaders()).body(allVisitorsWithPage);
     }
-
-    // tested - get only the list of players for a game
-    // @GetMapping(value = "/player/all/game/{id}")
-    public ResponseEntity getPlayersByGame(
-            @PathVariable("id") String id) {
-
-        // header in response
-        URI uri = ServletUriComponentsBuilder.fromCurrentRequest()
-                .path("")
-                .buildAndExpand(id)
-                .toUri();
-        HttpHeaders headers = new HttpHeaders();
-        headers.add("URI", String.valueOf(uri));
-
-        // validations
-        if (!StringUtils.isNumeric(id)) {
-            return ResponseEntity.badRequest().headers(headers).build();
-        }
-        long gameId = Long.parseLong(id);
-
-        // logic
-        Optional<Game> foundGame = gameRepository.findById(gameId);
-        if (!foundGame.isPresent()) {
-            return ResponseEntity.notFound().headers(headers).build();
-        }
-        List<Player> players = playerRepository.findByGameOrderBySeatAsc(foundGame.get());
-        return ResponseEntity.ok().headers(headers).body(players);
-    }
-
-    // todo LOW test
-    // @GetMapping(value = "/playingcard/all/game/{id}")
-    public ResponseEntity getPlayingCardByGame(
-            @PathVariable("id") String id,
-            @RequestParam(defaultValue = "0") String page,
-            @RequestParam(defaultValue = "4") String max
-    ) {
-
-        // header in response
-        URI uri = ServletUriComponentsBuilder.fromCurrentRequest()
-                .path("")
-                .buildAndExpand(id)
-                .toUri();
-        HttpHeaders headers = new HttpHeaders();
-        headers.add("URI", String.valueOf(uri));
-
-        // validations
-        if (!StringUtils.isNumeric(id)) {
-            // 400
-            return ResponseEntity.badRequest().headers(headers).build();
-        }
-        long gameId = Long.parseLong(id);
-
-        Optional<Game> foundGame = gameRepository.findById(gameId);
-        Game linkedGame;
-        if (!foundGame.isPresent()) {
-            // 404
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).headers(headers).build();
-        }
-        linkedGame = foundGame.get();
-
-        // validations
-        if (!StringUtils.isNumeric(page) || !StringUtils.isNumeric(max))
-            return ResponseEntity.badRequest().headers(headers).build();
-        int maximum = Integer.parseInt(max);
-        int pages = Integer.parseInt(page);
-
-        // logic
-        Pageable pageable = PageRequest.of(pages, maximum, Sort.by(
-                Sort.Order.asc("LOCATION"),
-                Sort.Order.asc("SEQUENCE")));
-
-        ArrayList playingCards =
-                (ArrayList) cardRepository.findAllCardsByGameWithPage(linkedGame.getGameId(),
-                        pageable);
-
-        return ResponseEntity.ok()
-                .headers(headers)
-                .body(playingCards);
-    }
-
-    // todo HIGH test
-    // @GetMapping(value = "/events/all/game/{id}")
-    public ResponseEntity getEventsByGame(
-            @PathVariable("id") String id
-    ) {
-
-        // header in response
-        URI uri = ServletUriComponentsBuilder.fromCurrentRequest()
-                .path("")
-                .buildAndExpand(id)
-                .toUri();
-        HttpHeaders headers = new HttpHeaders();
-        headers.add("URI", String.valueOf(uri));
-
-        // validations
-        if (!StringUtils.isNumeric(id)) {
-            // 400
-            return ResponseEntity.badRequest().headers(headers).build();
-        }
-        long gameId = Long.parseLong(id);
-
-        Optional<Game> foundGame = gameRepository.findById(gameId);
-        if (!foundGame.isPresent()) {
-            // 404
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).headers(headers).build();
-        }
-
-        ArrayList playingCards = (ArrayList) turnRepository.findByGame(foundGame.get());
-
-        return ResponseEntity.ok()
-                .headers(headers)
-                .body(playingCards);
-    }
-
-
 }
