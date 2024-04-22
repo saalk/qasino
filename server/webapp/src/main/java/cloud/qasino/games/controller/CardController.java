@@ -2,7 +2,8 @@ package cloud.qasino.games.controller;
 
 import cloud.qasino.games.database.entity.Card;
 import cloud.qasino.games.database.entity.Game;
-import cloud.qasino.games.database.repository.*;
+import cloud.qasino.games.database.repository.CardRepository;
+import cloud.qasino.games.database.repository.GameRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -11,7 +12,11 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.io.IOException;
@@ -19,19 +24,6 @@ import java.io.InputStream;
 import java.net.URI;
 import java.util.List;
 import java.util.Optional;
-
-import static cloud.qasino.games.configuration.Constants.BASE_PATH;
-import static cloud.qasino.games.configuration.Constants.ENDPOINT_CARD;
-
-// basic path /qasino
-// basic header @RequestHeader(value "visitor", required = true) int visitorId" // else 400
-//
-// 200 - ok
-// 201 - created
-// 400 - bad request - error/reason "url ... not available"
-// 404 - not found - error/message "invalid value x for y" + reason [missing]
-// 412 - precondition failed = error/message - "violation of rule z"
-// 500 - internal server error
 
 @Slf4j
 @RestController
@@ -49,30 +41,7 @@ public class CardController {
         this.cardRepository = cardRepository;
     }
 
-    // TODO this is not needed
-    // @GetMapping(value = "/card/{cardId}")
-    public ResponseEntity getPlayingCardByCard(
-            @PathVariable("cardId") String card
-    ) {
-
-        // header in response
-        URI uri = ServletUriComponentsBuilder.fromCurrentRequest()
-                .path("")
-                .buildAndExpand()
-                .toUri();
-        HttpHeaders headers = new HttpHeaders();
-        headers.add("URI", String.valueOf(uri));
-
-        // validations
-
-        // logic
-        List<Card> foundCards = cardRepository.findByCard(card);
-        return ResponseEntity.ok().headers(headers).body(foundCards);
-
-    }
-
-    // todo check if this is needed
-    // @DeleteMapping("/card/{cardId}/game/{gameId}")
+    @DeleteMapping("/card/{cardId}/game/{gameId}")
     public ResponseEntity deletePlayingCardByCard(
             @PathVariable("gameId") String id,
             @PathVariable("cardId") String card
@@ -111,7 +80,7 @@ public class CardController {
         return ResponseEntity.status(HttpStatus.NO_CONTENT).headers(headers).build();
     }
 
-    // @DeleteMapping("/card/{cardId}")
+    @DeleteMapping("/card/{cardId}")
     public ResponseEntity<Card> deletePlayingCardById(
             @PathVariable("cardId") String id
     ) {
@@ -142,16 +111,14 @@ public class CardController {
         return ResponseEntity.status(HttpStatus.NO_CONTENT).headers(headers).build();
     }
 
-
-    // @GetMapping(
-//            value = "/card/{cardId}/image",
-//            produces = MediaType.IMAGE_JPEG_VALUE
-//    )
+    @GetMapping(
+            value = "/card/{cardId}/image",
+            produces = MediaType.IMAGE_JPEG_VALUE
+    )
     public @ResponseBody
     byte[] getPlayingCardImageWithMediaType(@PathVariable("cardId") String card) throws IOException {
         InputStream in = getClass()
                 .getResourceAsStream("/resources/images/playingcard/svg/diamonds-ten.svg");
         return IOUtils.toByteArray(in);
     }
-
 }

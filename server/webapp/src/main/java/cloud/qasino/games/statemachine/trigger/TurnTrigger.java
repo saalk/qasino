@@ -1,0 +1,67 @@
+package cloud.qasino.games.statemachine.trigger;
+
+import lombok.Getter;
+
+import javax.persistence.Transient;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
+
+import static java.util.EnumSet.of;
+
+@Getter
+public enum TurnTrigger {
+
+    // highlow
+    HIGHER("higher"),
+    LOWER("lower"),
+    PASS("pass"),
+    NEXT("next"),
+
+    // blackjack
+    DEAL("deal"),
+    SPLIT("split"),
+
+    // all
+    STOP("stop"),
+
+    ERROR("error"),
+    WINNER("winner"),
+    NO_CARDS_LEFT("no_cards_left"),; // system events
+
+    public static final Set<TurnTrigger> blackJackTurn = of(DEAL, SPLIT, STOP);
+    public static final Set<TurnTrigger> highLowTurn = of(HIGHER, LOWER, PASS, STOP, NEXT);
+    public static final Set<TurnTrigger> systemTurn = of(WINNER, NO_CARDS_LEFT);
+
+    public static final Map<String, TurnTrigger> lookup
+            = new HashMap<>();
+
+    public static TurnTrigger fromLabel(String inputLabel) {
+        return lookup.get(inputLabel.toLowerCase());
+    }
+
+    @Transient
+    private String label;
+
+    TurnTrigger() {
+        this.label = "error";
+    }
+
+    TurnTrigger(String label) {
+        this();
+        this.label = label;
+    }
+    public static TurnTrigger fromLabel(char character) {
+        return fromLabel(Character.toString(character));
+    }
+
+    public static TurnTrigger fromLabelWithDefault(String label) {
+        TurnTrigger turnTrigger = fromLabel(label);
+        if (turnTrigger == null) return TurnTrigger.ERROR;
+        return turnTrigger;
+    }
+
+    public static TurnTrigger fromLabelWithDefault(char character) {
+        return fromLabelWithDefault(Character.toString(character));
+    }
+}

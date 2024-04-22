@@ -33,7 +33,7 @@ public class SetStatusIndicatorsBaseOnRetrievedDataAction implements Action<SetS
         }
         if (!(actionDto.getQasinoGame() == null)) {
             if (
-                    actionDto.getQasinoGame().getState() == GameState.PLAYING ||
+                    actionDto.getQasinoGame().getState() == GameState.INITIALIZED ||
                             actionDto.getQasinoGame().getState() == GameState.PREPARED) {
                 actionDto.setShowGamePlay(true);
             }

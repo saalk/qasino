@@ -13,6 +13,7 @@ import cloud.qasino.games.database.entity.enums.player.Avatar;
 import cloud.qasino.games.database.entity.enums.player.Role;
 import cloud.qasino.games.database.entity.enums.game.gamestate.GameStateGroup;
 import cloud.qasino.games.statemachine.trigger.GameTrigger;
+import cloud.qasino.games.statemachine.trigger.TurnTrigger;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
@@ -464,6 +465,11 @@ public class QasinoFlowDTO //extends AbstractFlowDTO
                 break;
             case "gameTrigger":
                 if (!(GameTrigger.fromLabelWithDefault(value) == GameTrigger.ERROR)) {
+                    return true;
+                }
+                break;
+            case "turnTrigger":
+                if (!(TurnTrigger.fromLabelWithDefault(value) == TurnTrigger.ERROR)) {
                     return true;
                 }
                 break;

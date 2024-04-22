@@ -123,7 +123,7 @@ public class Game {
 
     public Game() {
         setUpdated();
-        this.state = GameState.NEW;
+        this.state = GameState.INITIALIZED;
         this.type = Type.HIGHLOW;
         this.style = new Style().getLabel();
         this.ante = 20;

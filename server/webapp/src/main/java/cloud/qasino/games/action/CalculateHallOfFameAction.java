@@ -38,8 +38,9 @@ public class CalculateHallOfFameAction implements Action<CalculateHallOfFameActi
         SubTotalsGame subTotalsGame = new SubTotalsGame();
         subTotalsGame.totalNewGames =
                 gameRepository.countByStates(GameState.setupGameStatesValues);
+        // TODO diff for other games
         subTotalsGame.totalStartedGames =
-                gameRepository.countByStates(GameState.startedGameStatesValues);
+                gameRepository.countByStates(GameState.highlowGameStatesValues);
         subTotalsGame.totalsFinishedGames =
                 gameRepository.countByStates(GameState.finishedGameStatesValues);
 

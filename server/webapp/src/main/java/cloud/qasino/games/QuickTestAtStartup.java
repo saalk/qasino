@@ -15,7 +15,6 @@ import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -85,7 +84,7 @@ public class QuickTestAtStartup implements ApplicationRunner {
         // The qasino starts a NEW game in the league initiated by the visitor
         Game game = new Game(league, "highlow", visitor.getVisitorId(), " ", 100);
         game.shuffleGame(0);
-        game.setState(GameState.PLAYING);
+        game.setState(GameState.INITIALIZED);
         game = gameRepository.save(game);
         cardRepository.saveAll(game.getCards()); // todo check this
 

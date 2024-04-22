@@ -28,7 +28,7 @@ public class GameStateMachine { // implements QasinoAsyncConfiguration.ASyncEven
                 .rethrowExceptions();
 
         qasinoConfiguration
-                .onState(NEW)
+                .onState(INITIALIZED)
                 .onEvent(LIST)
                 .perform(FindAllEntitiesForInputAction.class)
                 .onResult(FAILURE, ERROR)   //Move catches RunTime Exceptions. So we need this.

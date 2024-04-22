@@ -14,14 +14,15 @@ import static java.util.EnumSet.of;
 public enum GameTrigger {
 
     // SETUP - initiated by user
-    NEW("new"),        // may not have initial bets
+    SETUP("setup"),        // may not have initial bets
     INVITE("invite"),
     ACCEPT("accept"),     // with initial bet above game minimal ante
     PREPARE("prepare"),    // do some updates and validate if playable
 
-    // PLAYING
+    // START
     PLAY("play"),       // deck, ante and a player is needed
 
+    // specific triggers are with the event trigger
     // FINISHED
     WINNER("winner"),     // we have a winner
     LEAVE("leave"),      // User left - via GameController
@@ -40,12 +41,12 @@ public enum GameTrigger {
     public static final Map<String, GameTrigger> gameTriggerMapNoError
             = new HashMap<>();
 
-    public static Set<GameTrigger> setupGameTriggers = of(NEW, INVITE, ACCEPT, PREPARE);
-    public static Set<GameTrigger> playingGameTriggers = of(PLAY);
-    public static Set<GameTrigger> finishedGamesTriggers = of(WINNER, LEAVE);
-    public static Set<GameTrigger> errorGameTriggers = of(ABANDON, CRASH);
+    public static final Set<GameTrigger> setupGameTriggers = of(SETUP, INVITE, ACCEPT, PREPARE);
+    public static final Set<GameTrigger> playingGameTriggers = of(PLAY);
+    public static final Set<GameTrigger> finishedGamesTriggers = of(WINNER, LEAVE);
+    public static final Set<GameTrigger> errorGameTriggers = of(ABANDON, CRASH);
 
-    public static Set<GameTrigger> allGameTriggers = EnumSet.of(NEW, INVITE, ACCEPT, PREPARE, PLAY, WINNER,
+    public static final Set<GameTrigger> allGameTriggers = EnumSet.of(SETUP, INVITE, ACCEPT, PREPARE, PLAY, WINNER,
             LEAVE, OK, NOT_OK, ABANDON, CRASH, ERROR);
 
     static {
@@ -55,7 +56,7 @@ public enum GameTrigger {
 
     static {
         for (GameTrigger gameTrigger : EnumSet.allOf(GameTrigger.class))
-            if (!gameTrigger.getLabel().toLowerCase().equals("error"))
+            if (!gameTrigger.getLabel().equalsIgnoreCase("error"))
                 gameTriggerMapNoError.put(gameTrigger.getLabel(), gameTrigger);
     }
 

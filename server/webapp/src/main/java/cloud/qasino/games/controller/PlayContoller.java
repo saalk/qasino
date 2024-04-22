@@ -1,15 +1,23 @@
 package cloud.qasino.games.controller;
 
+import cloud.qasino.games.action.CalculateHallOfFameAction;
+import cloud.qasino.games.action.FindAllEntitiesForInputAction;
+import cloud.qasino.games.action.MapQasinoResponseFromRetrievedDataAction;
+import cloud.qasino.games.action.SetStatusIndicatorsBaseOnRetrievedDataAction;
 import cloud.qasino.games.database.entity.enums.game.GameState;
 import cloud.qasino.games.database.entity.Turn;
 import cloud.qasino.games.database.entity.Game;
 import cloud.qasino.games.database.entity.Player;
 import cloud.qasino.games.database.entity.enums.move.Move;
 import cloud.qasino.games.database.entity.enums.card.Location;
+import cloud.qasino.games.database.repository.CardMoveRepository;
 import cloud.qasino.games.database.repository.CardRepository;
 import cloud.qasino.games.database.repository.TurnRepository;
 import cloud.qasino.games.database.repository.GameRepository;
 import cloud.qasino.games.database.repository.PlayerRepository;
+import cloud.qasino.games.dto.Qasino;
+import cloud.qasino.games.dto.QasinoFlowDTO;
+import cloud.qasino.games.event.EventOutput;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -25,147 +33,106 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import java.net.URI;
 import java.util.Optional;
 
-// basic path /qasino
-// basic header @RequestHeader(value "visitor", required = true) int visitorId" // else 400
-//
-// 200 - ok
-// 201 - created
-// 400 - bad request - error/reason "url ... not available"
-// 404 - not found - error/message "invalid value x for y" + reason [missing]
-// 412 - precondition failed = error/message - "violation of rule z"
-// 500 - internal server error
-
 @RestController
 public class PlayContoller {
 
-    // TurnResource - special POST for GAME, PLAYINGCARD, EVENT and RESULT has state machine
-    // /api/move/game/{id}/DEAL first -> POST add jokers and update state // PLAYING
-    // /api/move/game/{id}/HIGER|LOWER|PASS/power -> only for visitor self // PLAYING, FINSHED
-    // /api/move/game/{id}/NEXT/player/{id} -> only for bot // PLAYING, FINISHED
+    EventOutput.Result output;
 
-    GameRepository gameRepository;
-    PlayerRepository playerRepository;
-    CardRepository cardRepository;
-    TurnRepository turnRepository;
+    @Autowired
+    FindAllEntitiesForInputAction findAllEntitiesForInputAction;
+    @Autowired
+    SetStatusIndicatorsBaseOnRetrievedDataAction setStatusIndicatorsBaseOnRetrievedDataAction;
+    @Autowired
+    CalculateHallOfFameAction calculateHallOfFameAction;
+    @Autowired
+    MapQasinoResponseFromRetrievedDataAction mapQasinoResponseFromRetrievedDataAction;
+
+    private GameRepository gameRepository;
+    private PlayerRepository playerRepository;
+    private CardRepository cardRepository;
+    private TurnRepository turnRepository;
+    private CardMoveRepository cardMoveRepository;
 
     @Autowired
     public PlayContoller(
             GameRepository gameRepository,
             PlayerRepository playerRepository,
             CardRepository cardRepository,
-            TurnRepository turnRepository
+            TurnRepository turnRepository,
+            CardMoveRepository cardMoveRepository
     ) {
         this.gameRepository = gameRepository;
         this.playerRepository = playerRepository;
         this.cardRepository = cardRepository;
         this.turnRepository = turnRepository;
+        this.cardMoveRepository = cardMoveRepository;
     }
 
 
-    // @PutMapping(value = "/play/game/{gameId}")
-    public ResponseEntity<Game> startPlayingAGame(
+    // POST - gametrigger PLAY add cards
+    // -> gamestate STARTED
+    @PostMapping(value = "/game/play/{gameId}/")
+    public ResponseEntity<Qasino> startPlayingAGame(
             @PathVariable("gameId") String id
     ) {
-
-        // header in response
-        URI uri = ServletUriComponentsBuilder.fromCurrentRequest()
-                .path("")
-                .query("")
-                .buildAndExpand(id)
-                .toUri();
-        HttpHeaders headers = new HttpHeaders();
-        headers.add("URI", String.valueOf(uri));
-
-        // validations
-        if (!StringUtils.isNumeric(id)) {
-            // 400
-            return ResponseEntity.badRequest().headers(headers).build();}
-
-        long gameId = Long.parseLong(id);
-        Optional<Game> foundGame = gameRepository.findById(gameId);
-        if (!foundGame.isPresent()) {
-            // 404
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).headers(headers).build();
+        // validate
+        QasinoFlowDTO flowDTO = new QasinoFlowDTO();
+        flowDTO.setPathVariables("gameId", id, "gameTrigger", "play");
+        if (!flowDTO.validateInput()) {
+            flowDTO.prepareResponseHeaders();
+            return ResponseEntity.status(HttpStatus.valueOf(flowDTO.getHttpStatus())).headers(flowDTO.getHeaders()).build();
+        }
+        // get all entities
+        output = findAllEntitiesForInputAction.perform(flowDTO);
+        if (output == EventOutput.Result.FAILURE) {
+            flowDTO.prepareResponseHeaders();
+            return ResponseEntity.status(HttpStatus.valueOf(flowDTO.getHttpStatus())).headers(flowDTO.getHeaders()).build();
         }
 
-        // todo HIGH make rules and validate
-
         // logic
-        Game updateGame = foundGame.get();
-        updateGame.setState(GameState.PLAYING);
-        gameRepository.save(updateGame);
+        // TODO make action with gametrigger play for highlow
 
-        return ResponseEntity.ok().headers(headers).body(updateGame);
+        // build response
+        findAllEntitiesForInputAction.perform(flowDTO);
+        setStatusIndicatorsBaseOnRetrievedDataAction.perform(flowDTO);
+        calculateHallOfFameAction.perform(flowDTO);
+        mapQasinoResponseFromRetrievedDataAction.perform(flowDTO);
+        flowDTO.prepareResponseHeaders();
+        return ResponseEntity.status(HttpStatus.valueOf(201)).headers(flowDTO.getHeaders()).body(flowDTO.getQasino());
     }
 
-    // @PostMapping(value = "/play/{suppliedMove}/game/{gameId}/player/{playerId}/location/{location}")
-    public ResponseEntity playerMakesAMoveForAGame(
-            @PathVariable("suppliedMove") String inputAction,
-            @PathVariable("gameId") String gId,
-            @PathVariable("playerId") String pId,
-            @PathVariable("location") String inputLocation,
-
-            @RequestParam(value = "cardId", required = false) String cardId,
-            @RequestParam(value = "roundNumber", required = false) String inputRoundNumber,
-            @RequestParam(value = "moveNumber", required = false) String inputMoveNumber,
-            @RequestParam(value = "bet", required = false) String inputBet){
-
-        // header in response
-        URI uri = ServletUriComponentsBuilder.fromCurrentRequest()
-                .path("")
-                .query("")
-                .buildAndExpand(inputAction, gId,pId,inputLocation,cardId, inputRoundNumber,
-                        inputMoveNumber, inputBet)
-                .toUri();
-        HttpHeaders headers = new HttpHeaders();
-        headers.add("URI", String.valueOf(uri));
-
-        // validations
-        if (!StringUtils.isNumeric(gId)
-                || !StringUtils.isNumeric(pId)
-                || (Location.fromLabelWithDefault(inputLocation) == Location.ERROR)
-                || (Move.fromLabelWithDefault(inputAction) == Move.ERROR)
-        //        || !StringUtils.isNumeric(inputRoundNumber)
-        //        || !StringUtils.isNumeric(inputMoveNumber)
-        //        || !StringUtils.isNumeric(inputBet)
-                )
-            // 400
-            return ResponseEntity.badRequest().headers(headers).build();
-
-        long gameId = Long.parseLong(gId);
-        long playerId = Long.parseLong(pId);
-        Move move = Move.fromLabelWithDefault(inputAction);
-        Location location = Location.fromLabelWithDefault(inputLocation);
-        //int roundNumber = Integer.parseInt(inputRoundNumber);
-        //int moveNumber = Integer.parseInt(inputMoveNumber);
-        //int bet = Integer.parseInt(inputBet);
-
-        Optional<Game> foundGame = gameRepository.findById(gameId);
-        Optional<Player> foundPlayer = playerRepository.findById(playerId);
-        if (!foundGame.isPresent() || !foundPlayer.isPresent()
-        //        || !PlayingCard.isValidCardId(cardId)
-        ) {
-            // 404
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).headers(headers).build();
+    // POST - turntrigger HIGER|LOWER|PASS for visitor
+    // -> gamestate CASHED
+    // POST - turntrigger NEXT for bot
+    // -> gamestate CASHED
+    @PostMapping(value = "/game/{gameId}/turn/{turnTrigger}")
+    public ResponseEntity<Qasino> playerMakesAMoveForAGame(
+            @PathVariable("gameId") String id,
+            @PathVariable("turnTrigger") String trigger) {
+        // validate
+        QasinoFlowDTO flowDTO = new QasinoFlowDTO();
+        flowDTO.setPathVariables("gameId", id, "turnTrigger", trigger);
+        if (!flowDTO.validateInput()) {
+            flowDTO.prepareResponseHeaders();
+            return ResponseEntity.status(HttpStatus.valueOf(flowDTO.getHttpStatus())).headers(flowDTO.getHeaders()).build();
         }
-
-        // rules - GameState must be PLAYING
-        if (!   (foundGame.get().getState() == GameState.PLAYING )  ) {
-            return ResponseEntity.status(HttpStatus.CONFLICT).headers(headers).build();
+        // get all entities
+        output = findAllEntitiesForInputAction.perform(flowDTO);
+        if (output == EventOutput.Result.FAILURE) {
+            flowDTO.prepareResponseHeaders();
+            return ResponseEntity.status(HttpStatus.valueOf(flowDTO.getHttpStatus())).headers(flowDTO.getHeaders()).build();
         }
 
         // logic
+        // TODO make action with gametrigger turn for highlow
 
-        Turn turn = new Turn(foundGame.get(), foundPlayer.get().getPlayerId());
-        //move.setRoundNumber(roundNumber);
-        //move.setMoveNumber(moveNumber);
-        // turn.setLocation(Location.fromLabelWithDefault(inputLocation));
-        //move.setBet(bet);
-        // todo go with move to the game engine
-
-        turnRepository.save(turn);
-        return ResponseEntity.status(HttpStatus.CREATED).headers(headers).body(turn);
-
+        // build response
+        findAllEntitiesForInputAction.perform(flowDTO);
+        setStatusIndicatorsBaseOnRetrievedDataAction.perform(flowDTO);
+        calculateHallOfFameAction.perform(flowDTO);
+        mapQasinoResponseFromRetrievedDataAction.perform(flowDTO);
+        flowDTO.prepareResponseHeaders();
+        return ResponseEntity.status(HttpStatus.valueOf(201)).headers(flowDTO.getHeaders()).body(flowDTO.getQasino());
     }
 }
 

@@ -99,7 +99,7 @@ public class GameController {
                 "style", style,
                 "ante", ante,
                 "avatar", avatar,
-                "trigger", "new"
+                "gameTrigger", "setup"
         );
         if (!flowDTO.validateInput()) {
             flowDTO.prepareResponseHeaders();
@@ -131,6 +131,7 @@ public class GameController {
                 AiLevel.HUMAN);
         flowDTO.setInitiatingPlayer(playerRepository.save(createdHuman));
         // build response
+        findAllEntitiesForInputAction.perform(flowDTO);
         setStatusIndicatorsBaseOnRetrievedDataAction.perform(flowDTO);
         calculateHallOfFameAction.perform(flowDTO);
         mapQasinoResponseFromRetrievedDataAction.perform(flowDTO);
@@ -156,7 +157,7 @@ public class GameController {
                 "style", style,
                 "ante", ante,
                 "avatar", avatar,
-                "trigger", "new"
+                "gameTrigger", "setup"
         );
         if (!flowDTO.validateInput()) {
             flowDTO.prepareResponseHeaders();
@@ -198,7 +199,10 @@ public class GameController {
                 2,
                 flowDTO.getSuppliedAvatar(),
                 flowDTO.getSuppliedAiLevel());
+        playerRepository.save(createdAi);
+
         // build response
+        findAllEntitiesForInputAction.perform(flowDTO);
         setStatusIndicatorsBaseOnRetrievedDataAction.perform(flowDTO);
         calculateHallOfFameAction.perform(flowDTO);
         mapQasinoResponseFromRetrievedDataAction.perform(flowDTO);
@@ -224,7 +228,7 @@ public class GameController {
                 "style", style,
                 "ante", ante,
                 "avatar", avatar,
-                "trigger", "new"
+                "gameTrigger", "setup"
         );
         if (!flowDTO.validateInput()) {
             flowDTO.prepareResponseHeaders();
@@ -256,6 +260,7 @@ public class GameController {
                 AiLevel.HUMAN);
         flowDTO.setInitiatingPlayer(playerRepository.save(createdHuman));
         // build response
+        findAllEntitiesForInputAction.perform(flowDTO);
         setStatusIndicatorsBaseOnRetrievedDataAction.perform(flowDTO);
         calculateHallOfFameAction.perform(flowDTO);
         mapQasinoResponseFromRetrievedDataAction.perform(flowDTO);
@@ -321,15 +326,16 @@ public class GameController {
         }
         // create bot
         int fiches = (int) (Math.random() * DEFAULT_PAWN_SHIP_BOT + 1);
-        Player createdAi = new Player(
+        playerRepository.save(new Player(
                 flowDTO.getQasinoVisitor(),
                 flowDTO.getQasinoGame(),
                 Role.BOT,
                 fiches,
                 2,
                 flowDTO.getSuppliedAvatar(),
-                flowDTO.getSuppliedAiLevel());
+                flowDTO.getSuppliedAiLevel()));
         // build response
+        findAllEntitiesForInputAction.perform(flowDTO);
         setStatusIndicatorsBaseOnRetrievedDataAction.perform(flowDTO);
         calculateHallOfFameAction.perform(flowDTO);
         mapQasinoResponseFromRetrievedDataAction.perform(flowDTO);
@@ -388,7 +394,7 @@ public class GameController {
         flowDTO.getQasinoGame().setState(GameState.PREPARED);
         gameRepository.save(flowDTO.getQasinoGame());
         // get all (updated) entities
-        output = findAllEntitiesForInputAction.perform(flowDTO);
+        findAllEntitiesForInputAction.perform(flowDTO);
         setStatusIndicatorsBaseOnRetrievedDataAction.perform(flowDTO);
         calculateHallOfFameAction.perform(flowDTO);
         mapQasinoResponseFromRetrievedDataAction.perform(flowDTO);
@@ -751,6 +757,7 @@ public class GameController {
         gameRepository.deleteById(flowDTO.getSuppliedGameId());
         flowDTO.setQasinoGame(null);
         // build response
+        findAllEntitiesForInputAction.perform(flowDTO);
         setStatusIndicatorsBaseOnRetrievedDataAction.perform(flowDTO);
         calculateHallOfFameAction.perform(flowDTO);
         mapQasinoResponseFromRetrievedDataAction.perform(flowDTO);

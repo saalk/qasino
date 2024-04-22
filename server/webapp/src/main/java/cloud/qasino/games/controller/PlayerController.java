@@ -1,30 +1,29 @@
 package cloud.qasino.games.controller;
 
-import cloud.qasino.games.database.entity.Card;
 import cloud.qasino.games.database.entity.Game;
 import cloud.qasino.games.database.entity.Player;
 import cloud.qasino.games.database.entity.enums.player.AiLevel;
 import cloud.qasino.games.database.entity.enums.player.Avatar;
+import cloud.qasino.games.database.repository.CardRepository;
 import cloud.qasino.games.database.repository.GameRepository;
 import cloud.qasino.games.database.repository.PlayerRepository;
-import cloud.qasino.games.database.repository.CardRepository;
-import cloud.qasino.games.database.repository.VisitorRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
 import java.util.Arrays;
-import java.util.List;
 import java.util.Optional;
-
-import static cloud.qasino.games.configuration.Constants.BASE_PATH;
-import static cloud.qasino.games.configuration.Constants.ENDPOINT_PLAYER;
 
 @Slf4j
 @RestController
@@ -45,15 +44,7 @@ public class PlayerController {
         this.playerRepository = playerRepository;
     }
 
-    // CREATE, GET, PUT, DELETE for single entities
-    // /api/player/{id} - GET, DELETE, PUT sequence, PUT avatar, ailevel - rules apply
-
-    // todo LOW - make endpoints
-    // /api/playingcard/{id} - GET, DELETE only - rules apply
-    // /api/league/{id} - GET, DELETE, PUT name enddate or close direct - rules apply
-    // /api/result/{id} - GET, DELETE, PUT name - rules apply
-
-   // @GetMapping("/player/{playerId}")
+    @GetMapping("/player/{playerId}")
     public ResponseEntity<Optional<Player>> getPlayer(
             @PathVariable("playerId") String id
     ) {
@@ -80,8 +71,7 @@ public class PlayerController {
         }
     }
 
-    // tested
-    // @PutMapping(value = "/player/{playerId}")
+    @PutMapping(value = "/player/{playerId}")
     public ResponseEntity<Player> updatePlayer(
             @PathVariable("playerId") String id,
             @RequestParam(name = "avatar", defaultValue = "") String avatar,
@@ -126,8 +116,7 @@ public class PlayerController {
         return ResponseEntity.ok().headers(headers).body(updatedPlayer);
     }
 
-    // todo LOW does not work
-    // @PutMapping(value = "/player/{playerId}/{order}")
+    @PutMapping(value = "/player/{playerId}/{order}")
     public ResponseEntity<Game> updateSequence(
             @PathVariable("playerId") String id,
             @PathVariable("order") String order
@@ -145,8 +134,7 @@ public class PlayerController {
         String[] orders = new String[]{"up", "down"};
         if (!StringUtils.isNumeric(id)
                 || !StringUtils.isNumeric(id)
-                || !Arrays.asList(orders).contains(order))
-        {
+                || !Arrays.asList(orders).contains(order)) {
             // 400
             return ResponseEntity.badRequest().headers(headers).build();
         }
@@ -161,7 +149,7 @@ public class PlayerController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).headers(headers).build();
         }
         Optional<Game> updatedGame = gameRepository.findById(foundPlayer.get().getGame().getGameId());
-        if (order == "up" ) {
+        if (order == "up") {
             // todo LOW ordering does not work
             updatedGame.get().switchPlayers(-1, -1);
             gameRepository.save(updatedGame.get());
@@ -174,8 +162,7 @@ public class PlayerController {
         //return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).headers(headers).build();
     }
 
-    // tested
-    // @DeleteMapping("/player/{playerId}")
+    @DeleteMapping("/player/{playerId}")
     public ResponseEntity<Player> deletePlayer(
             @PathVariable("playerId") String id
     ) {
@@ -199,12 +186,9 @@ public class PlayerController {
             // 404
             return ResponseEntity.status(HttpStatus.NOT_FOUND).headers(headers).build();
         }
-
         // logic
         playerRepository.deleteById(playerId);
         // delete 204
         return ResponseEntity.status(HttpStatus.NO_CONTENT).headers(headers).build();
-
     }
-
 }

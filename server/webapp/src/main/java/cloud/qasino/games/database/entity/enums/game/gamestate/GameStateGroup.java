@@ -45,7 +45,7 @@ public enum GameStateGroup {
             case SETUP:
                 return (List<GameState>) GameState.setupGameStates;
             case STARTED:
-                return (List<GameState>) GameState.startedGameStates;
+                return (List<GameState>) GameState.highlowGameStates;
             case FINISHED:
                 return (List<GameState>) GameState.finishedGameStates;
             default:

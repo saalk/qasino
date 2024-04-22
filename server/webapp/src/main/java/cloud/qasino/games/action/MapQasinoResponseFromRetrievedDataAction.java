@@ -108,7 +108,7 @@ public class MapQasinoResponseFromRetrievedDataAction implements Action<MapQasin
         // 3: GamePlay
         navigationBarItem = new NavigationBarItem();
         if (actionDto.getQasinoGame() != null
-                && !setupGameStates.contains(actionDto.getQasinoGame().getState())
+                && !(setupGameStates.contains(actionDto.getQasinoGame().getState()))
         ) {
             actionDto.setShowGamePlay(true);
         }
@@ -121,14 +121,16 @@ public class MapQasinoResponseFromRetrievedDataAction implements Action<MapQasin
                 navigationBarItem.setItemStats(pageGamePlay.getCurrentMove() + "/" +
                         pageGamePlay.getCurrentRound() + " move/round");
                 // set the content
-                pageGamePlay.setTable(setTable(actionDto));
-                pageGamePlay.setCurrentRound(
-                        (int) actionDto.getActiveTurn().getCurrentRoundNumber());
-                pageGamePlay.setCurrentMove(
-                        (int) actionDto.getActiveTurn().getCurrentMoveNumber());
+                if (!(actionDto.getActiveTurn() == null)) {
+                    pageGamePlay.setActiveTurn(actionDto.getActiveTurn());
+                    pageGamePlay.setTable(setTable(actionDto));
+                    pageGamePlay.setCurrentRound(
+                            (int) actionDto.getActiveTurn().getCurrentRoundNumber());
+                    pageGamePlay.setCurrentMove(
+                            (int) actionDto.getActiveTurn().getCurrentMoveNumber());
+                }
                 pageGamePlay.setVisitorPlaysAGame(actionDto.isShowGamePlay());
                 pageGamePlay.setSelectedGame(actionDto.getQasinoGame());
-                pageGamePlay.setActiveTurn(actionDto.getActiveTurn());
             }
         } else {
             navigationBarItem.setItemName("Qasinogame #-");
@@ -197,7 +199,7 @@ public class MapQasinoResponseFromRetrievedDataAction implements Action<MapQasin
 
     private SectionTable setTable(MapQasinoResponseFromRetrievedDataDTO actionDto) {
         SectionTable table = new SectionTable();
-        if (!(actionDto.getQasinoGame() == null)) {
+        if (!(actionDto.getActiveTurn() == null)) {
 //            table.setSelectedGame(actionDto.getQasinoGame());
             table.setCurrentTurn(actionDto.getActiveTurn());
             // todo HIGH new action for calc all possible moves
