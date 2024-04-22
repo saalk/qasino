@@ -79,7 +79,6 @@ public class CalculateHallOfFameAction implements Action<CalculateHallOfFameActi
 
         void setErrorMessage(String key);
 
-        void prepareResponseHeaders();
         // @formatter:on
     }
 }

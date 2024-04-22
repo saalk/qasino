@@ -16,7 +16,7 @@ import java.util.Set;
 public enum GameState implements LabeledEnum {
 
     // SETUP
-    NEW("new", "New games may or may not have PlayingCards, Leagues, Players","SETUP"),
+    NEW("new", "New games may or may not have ante, cards, leagues or players","SETUP"),
     PENDING_INVITATIONS("invite", "Game has Player(s) with pending invitation","SETUP"),
     PREPARED("accept", "Game is valid for playing","SETUP"),
 

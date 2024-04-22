@@ -20,8 +20,6 @@ public class SignUpNewVisitorAction implements Action<SignUpNewVisitorAction.Sig
     @Override
     public EventOutput.Result perform(SignUpNewVisitorActionDTO actionDto) {
 
-        log.debug("Action: SignUpNewVisitorAction");
-
         if (!(StringUtils.isEmpty(actionDto.getSuppliedVisitorName()))) {
             int sequence = Math.toIntExact(visitorRepository.countByVisitorName(actionDto.getSuppliedVisitorName()));
             if (sequence != 0) {
@@ -36,7 +34,6 @@ public class SignUpNewVisitorAction implements Action<SignUpNewVisitorAction.Sig
                 return EventOutput.Result.FAILURE;
             }
             actionDto.setSuppliedVisitorId(createdVisitor.getVisitorId());
-            // call FindAllEntitiesForInputAction after this to do the actual retrieval
         } else {
             setErrorMessageBadRequest(actionDto, "visitorName", String.valueOf(actionDto.getSuppliedVisitorName()));
             return EventOutput.Result.FAILURE;
@@ -50,7 +47,6 @@ public class SignUpNewVisitorAction implements Action<SignUpNewVisitorAction.Sig
         actionDto.setKey(id);
         actionDto.setValue(value);
         actionDto.setErrorMessage("Supplied value for visitorName is empty");
-        actionDto.prepareResponseHeaders();
     }
 
 
@@ -60,7 +56,6 @@ public class SignUpNewVisitorAction implements Action<SignUpNewVisitorAction.Sig
         actionDto.setKey(id);
         actionDto.setValue(value);
         actionDto.setErrorMessage("visitorName [" + value + "] not available any more");
-        actionDto.prepareResponseHeaders();
     }
 
     private void setErrorMessageInternalServerError(SignUpNewVisitorActionDTO actionDto, String id,
@@ -69,7 +64,6 @@ public class SignUpNewVisitorAction implements Action<SignUpNewVisitorAction.Sig
         actionDto.setKey(id);
         actionDto.setValue(value);
         actionDto.setErrorMessage("Crash while signing up a new visitor");
-        actionDto.prepareResponseHeaders();
     }
 
     public interface SignUpNewVisitorActionDTO {
@@ -87,7 +81,6 @@ public class SignUpNewVisitorAction implements Action<SignUpNewVisitorAction.Sig
         void setKey(String key);
         void setValue(String value);
         void setErrorMessage(String key);
-        void prepareResponseHeaders();
         // @formatter:on
     }
 }

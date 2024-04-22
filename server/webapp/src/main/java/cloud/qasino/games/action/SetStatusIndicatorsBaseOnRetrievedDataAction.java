@@ -53,7 +53,6 @@ public class SetStatusIndicatorsBaseOnRetrievedDataAction implements Action<SetS
         actionDto.setKey(id);
         actionDto.setValue(value);
         actionDto.setErrorMessage("Entity not found for key" + id);
-        actionDto.prepareResponseHeaders();
     }
 
     public interface SetStatusIndicatorsBaseOnRetrievedDataDTO {
@@ -87,7 +86,6 @@ public class SetStatusIndicatorsBaseOnRetrievedDataAction implements Action<SetS
         void setKey(String key);
         void setValue(String value);
         void setErrorMessage(String key);
-        void prepareResponseHeaders();
         // @formatter:on
     }
 }

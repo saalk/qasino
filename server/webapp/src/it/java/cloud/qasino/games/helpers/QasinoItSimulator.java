@@ -1,17 +1,24 @@
 package cloud.qasino.games.helpers;
 
-import cloud.qasino.games.database.entity.*;
+import cloud.qasino.games.database.entity.Game;
+import cloud.qasino.games.database.entity.League;
+import cloud.qasino.games.database.entity.Visitor;
 import cloud.qasino.games.database.entity.enums.game.Style;
 import cloud.qasino.games.database.entity.enums.game.Type;
-import cloud.qasino.games.database.entity.enums.game.style.*;
+import cloud.qasino.games.database.entity.enums.game.style.AnteToWin;
+import cloud.qasino.games.database.entity.enums.game.style.BettingStrategy;
+import cloud.qasino.games.database.entity.enums.game.style.Deck;
+import cloud.qasino.games.database.entity.enums.game.style.InsuranceCost;
+import cloud.qasino.games.database.entity.enums.game.style.RoundsToWin;
+import cloud.qasino.games.database.entity.enums.game.style.TurnsToWin;
 import cloud.qasino.games.database.entity.enums.move.Move;
-import cloud.qasino.games.database.entity.enums.player.AiLevel;
-import cloud.qasino.games.database.entity.enums.player.Role;
 
 import java.util.EnumSet;
 import java.util.Set;
 
-import static cloud.qasino.games.database.entity.enums.move.Move.*;
+import static cloud.qasino.games.database.entity.enums.move.Move.HIGHER;
+import static cloud.qasino.games.database.entity.enums.move.Move.LOWER;
+import static cloud.qasino.games.database.entity.enums.move.Move.PASS;
 
 public abstract class QasinoItSimulator {
 

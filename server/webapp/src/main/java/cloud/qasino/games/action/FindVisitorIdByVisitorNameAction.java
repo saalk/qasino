@@ -73,7 +73,6 @@ public class FindVisitorIdByVisitorNameAction implements Action<FindVisitorIdByV
         actionDto.setValue(value);
         actionDto.setErrorMessage("Multiple " + id + " found for supplied value [" + value +
                 "]");
-        actionDto.prepareResponseHeaders();
     }
 
     public interface FindVisitorIdByVisitorNameActionDTO {
@@ -90,7 +89,6 @@ public class FindVisitorIdByVisitorNameAction implements Action<FindVisitorIdByV
         void setKey(String key);
         void setValue(String value);
         void setErrorMessage(String key);
-        void prepareResponseHeaders();
         // @formatter:on
     }
 }

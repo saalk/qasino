@@ -34,6 +34,7 @@ public class QasinoFlowDTO //extends AbstractFlowDTO
         implements
         FindVisitorIdByVisitorNameAction.FindVisitorIdByVisitorNameActionDTO,
         SignUpNewVisitorAction.SignUpNewVisitorActionDTO,
+        CreateNewLeagueAction.CreateNewLeagueActionDTO,
         FindAllEntitiesForInputAction.FindAllEntitiesForInputActionDTO,
         CalculateHallOfFameAction.CalculateHallOfFameActionDTO,
         HandleSecuredLoanAction.HandleSecuredLoanActionDTO,
@@ -159,7 +160,20 @@ public class QasinoFlowDTO //extends AbstractFlowDTO
                 .buildAndExpand(this.pathVariables, this.requestParams)
                 .toUri();
         this.headers.add("URI", String.valueOf(this.getUri()));
+        if (qasinoVisitor != null) {
+            this.headers.add("visitorId", String.valueOf(qasinoVisitor.getVisitorId()));
+        }
+        if (qasinoGame != null) {
+            this.headers.add("gameId", String.valueOf(qasinoGame.getGameId()));
+        }
+        if (qasinoGameLeague != null) {
+            this.headers.add("leagueId", String.valueOf(qasinoGameLeague.getLeagueId()));
+        }
+        if (activeTurn != null) {
+            this.headers.add("turnId", String.valueOf(activeTurn.getTurnId()));
+        }
         if (this.httpStatus > 299) {
+            // also add error to header
             addKeyValueToHeader(this.getKey(), this.getValue());
             addKeyValueToHeader("Error", this.getErrorMessage());
         }
@@ -322,7 +336,7 @@ public class QasinoFlowDTO //extends AbstractFlowDTO
             if (isValueForEnumKeyValid(key, requestParam.get(
                     key), dataName,
                     paramDataString)) {
-                this.suppliedTrigger = GameTrigger.valueOf(requestParam.get(key));
+                this.suppliedTrigger = GameTrigger.fromLabel(requestParam.get(key));
             } else {
                 return false;
             }
@@ -494,4 +508,5 @@ public class QasinoFlowDTO //extends AbstractFlowDTO
 
         return false;
     }
+
 }

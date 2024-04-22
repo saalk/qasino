@@ -32,59 +32,31 @@ public class FindAllEntitiesForInputAction implements Action<FindAllEntitiesForI
     @Resource
     ResultsRepository resultsRepository;
 
+    long leagueId;
+    long gameId;
+    long visitorId;
+
     @Override
     public EventOutput.Result perform(FindAllEntitiesForInputActionDTO actionDto) {
 
-        long id;
-        Pageable pageable = PageRequest.of(actionDto.getSuppliedPage(), actionDto.getSuppliedMaxPerPage());
+        leagueId = actionDto.getSuppliedLeagueId();
+        gameId = actionDto.getSuppliedGameId();
+        visitorId = actionDto.getSuppliedVisitorId();
 
-        id = actionDto.getSuppliedVisitorId();
-        if (!(id == 0)) {
-            Optional<Visitor> foundVisitor = visitorRepository.findById(Long.parseLong(String.valueOf(id)));
-            if (foundVisitor.isPresent()) {
-                actionDto.setQasinoVisitor(foundVisitor.get());
-                actionDto.addKeyValueToHeader("visitorId", String.valueOf(foundVisitor.get().getVisitorId()));
-            } else {
-                setErrorMessageNotFound(actionDto, "visitorId", String.valueOf(id));
-                return EventOutput.Result.FAILURE;
-            }
-            pageable = PageRequest.of(actionDto.getSuppliedPage(), actionDto.getSuppliedMaxPerPage()
-//                    ,
-//                    Sort.by(
-//                    Sort.Order.asc("a.\"type\""),
-//                    Sort.Order.desc("a.\"updated\""))
-            );
-            actionDto.setNewGamesForVisitor(gameRepository.findAllNewGamesForVisitorWithPage(id,
-                    pageable));
-            actionDto.setStartedGamesForVisitor(gameRepository.findAllStartedGamesForVisitorWithPage(id,
-                    pageable));
-            // todo LOW select if one Game is active
-            actionDto.setFinishedGamesForVisitor(gameRepository.findAllFinishedGamesForVisitorWithPage(id,
-                    pageable));
-//                    ,
-//                    Sort.by(
-//                            Sort.Order.desc("a.\"created\""))
-//            );
-            actionDto.setLeaguesForVisitor(leagueRepository.findAllActiveLeagueForVisitorWithPage(id, pageable));
-            // todo LOW select if one league is active
+        if (!(leagueId == 0)) {
+            EventOutput.Result response = getLeagueResult(actionDto, leagueId);
+            if (response.equals(EventOutput.Result.FAILURE)) return response;
         }
-        id = actionDto.getSuppliedGameId();
-        if (!(id == 0)) {
-            Optional<Game> foundGame = gameRepository.findById(Long.parseLong(String.valueOf(id)));
-            if (foundGame.isPresent()) {
-                actionDto.setQasinoGame(foundGame.get());
-                actionDto.setQasinoGamePlayers(foundGame.get().getPlayers());
-                actionDto.setActiveTurn(foundGame.get().getTurn());
-                actionDto.setCardsInTheGame(foundGame.get().getCards());
-                actionDto.setAllCardMovesForTheGame(foundGame.get().getTurn().getCardMoves());
-                actionDto.addKeyValueToHeader("gameId", String.valueOf(foundGame.get().getGameId()));
+        if (!(gameId == 0)) {
+            EventOutput.Result response = getGameResult(actionDto, gameId);
+            if (response.equals(EventOutput.Result.FAILURE)) return response;
+        }
+        if (!(visitorId == 0)) {
+            EventOutput.Result response = getVisitorResult(actionDto, visitorId);
+            if (response.equals(EventOutput.Result.FAILURE)) return response;
+        }
 
-            } else {
-                setErrorMessageNotFound(actionDto, "gameId", String.valueOf(id));
-                return EventOutput.Result.FAILURE;
-            }
-        }
-        id = actionDto.getAcceptedPlayerId();
+        Long id = actionDto.getAcceptedPlayerId();
         if (!(id == 0)) {
             Optional<Player> foundPlayer = playerRepository.findById(Long.parseLong(String.valueOf(id)));
             if (foundPlayer.isPresent()) {
@@ -94,6 +66,7 @@ public class FindAllEntitiesForInputAction implements Action<FindAllEntitiesForI
                 return EventOutput.Result.FAILURE;
             }
         }
+
         id = actionDto.getInvitedPlayerId();
         if (!(id == 0)) {
             Optional<Player> foundPlayer = playerRepository.findById(Long.parseLong(String.valueOf(id)));
@@ -104,6 +77,7 @@ public class FindAllEntitiesForInputAction implements Action<FindAllEntitiesForI
                 return EventOutput.Result.FAILURE;
             }
         }
+
         id = actionDto.getSuppliedTurnPlayerId();
         if (!(id == 0)) {
             Optional<Player> foundPlayer = playerRepository.findById(Long.parseLong(String.valueOf(id)));
@@ -114,36 +88,83 @@ public class FindAllEntitiesForInputAction implements Action<FindAllEntitiesForI
                 return EventOutput.Result.FAILURE;
             }
         }
-        id = actionDto.getSuppliedLeagueId();
-        if (!(id == 0)) {
-            Optional<League> foundLeague =
-                    leagueRepository.findById(Long.parseLong(String.valueOf(id)));
-            if (foundLeague.isPresent()) {
-                actionDto.setQasinoGameLeague(foundLeague.get());
-                actionDto.addKeyValueToHeader("leagueId", String.valueOf(foundLeague.get().getLeagueId()));
-                pageable = PageRequest.of(actionDto.getSuppliedPage(), actionDto.getSuppliedMaxPerPage()
-//                        ,
-//                        Sort.by(Sort.Order.desc("\"created\""))
-                );
-                actionDto.setResultsForLeague(resultsRepository.findAllResultForLeagueWithPage(id,
-                        pageable));
-            } else {
-                setErrorMessageNotFound(actionDto, "leagueId", String.valueOf(id));
-                return EventOutput.Result.FAILURE;
-            }
-        }
         return EventOutput.Result.SUCCESS;
     }
 
+    private EventOutput.Result getLeagueResult(FindAllEntitiesForInputActionDTO actionDto, long id) {
+        Pageable pageable;
+        Optional<League> foundLeague =
+                leagueRepository.findById(Long.parseLong(String.valueOf(id)));
+        if (foundLeague.isPresent()) {
+            visitorId = (foundLeague.get().getVisitor().getVisitorId());
+
+            actionDto.setQasinoGameLeague(foundLeague.get());
+            pageable = PageRequest.of(actionDto.getSuppliedPage(), actionDto.getSuppliedMaxPerPage()
+//                        ,
+//                        Sort.by(Sort.Order.desc("\"created\""))
+            );
+            actionDto.setResultsForLeague(resultsRepository.findAllResultForLeagueWithPage(id,
+                    pageable));
+        } else {
+            setErrorMessageNotFound(actionDto, "leagueId", String.valueOf(id));
+            return EventOutput.Result.FAILURE;
+        }
+        return EventOutput.Result.SUCCESS;
+    }
+    private EventOutput.Result getGameResult(FindAllEntitiesForInputActionDTO actionDto, long id) {
+        Optional<Game> foundGame = gameRepository.findById(Long.parseLong(String.valueOf(id)));
+        if (foundGame.isPresent()) {
+            visitorId = (foundGame.get().getInitiator());
+
+            actionDto.setQasinoGame(foundGame.get());
+            actionDto.setQasinoGamePlayers(foundGame.get().getPlayers());
+            actionDto.setCardsInTheGame(foundGame.get().getCards());
+            actionDto.setActiveTurn(foundGame.get().getTurn());
+            if (actionDto.getActiveTurn() != null) {
+                actionDto.setAllCardMovesForTheGame(foundGame.get().getTurn().getCardMoves());
+            }
+
+        } else {
+            setErrorMessageNotFound(actionDto, "gameId", String.valueOf(id));
+            return EventOutput.Result.FAILURE;
+        }
+        return EventOutput.Result.SUCCESS;
+    }
+    private EventOutput.Result getVisitorResult(FindAllEntitiesForInputActionDTO actionDto, long id) {
+        Pageable pageable;
+        Optional<Visitor> foundVisitor = visitorRepository.findById(Long.parseLong(String.valueOf(id)));
+        if (foundVisitor.isPresent()) {
+            actionDto.setQasinoVisitor(foundVisitor.get());
+        } else {
+            setErrorMessageNotFound(actionDto, "visitorId", String.valueOf(id));
+            return EventOutput.Result.FAILURE;
+        }
+        pageable = PageRequest.of(actionDto.getSuppliedPage(), actionDto.getSuppliedMaxPerPage()
+//                    ,
+//                    Sort.by(
+//                    Sort.Order.asc("a.\"type\""),
+//                    Sort.Order.desc("a.\"updated\""))
+        );
+        actionDto.setNewGamesForVisitor(gameRepository.findAllNewGamesForVisitorWithPage(id,
+                pageable));
+        actionDto.setStartedGamesForVisitor(gameRepository.findAllStartedGamesForVisitorWithPage(id,
+                pageable));
+        actionDto.setFinishedGamesForVisitor(gameRepository.findAllFinishedGamesForVisitorWithPage(id,
+                pageable));
+//                    ,
+//                    Sort.by(
+//                            Sort.Order.desc("a.\"created\""))
+//            );
+        actionDto.setLeaguesForVisitor(leagueRepository.findLeaguesForVisitorWithPage(id, pageable));
+        return EventOutput.Result.SUCCESS;
+    }
     private void setErrorMessageNotFound(FindAllEntitiesForInputActionDTO actionDto, String id,
                                          String value) {
         actionDto.setHttpStatus(404);
         actionDto.setKey(id);
         actionDto.setValue(value);
         actionDto.setErrorMessage("Entity not found for key" + value);
-
     }
-
     public interface FindAllEntitiesForInputActionDTO {
 
         // @formatter:off
@@ -158,8 +179,9 @@ public class FindAllEntitiesForInputAction implements Action<FindAllEntitiesForI
         long getSuppliedTurnPlayerId();
 
         List<League> getLeaguesForVisitor();
+        Turn getActiveTurn();
 
-        // Setter
+        // Setters
         void setQasinoVisitor(Visitor visitor);
         void setInvitedPlayer(Player player);
         void setAcceptedPlayer(Player player);
@@ -182,12 +204,10 @@ public class FindAllEntitiesForInputAction implements Action<FindAllEntitiesForI
         void setFriends(List<Visitor> visitors);
 
         // error and response setters
-        void addKeyValueToHeader(String key, String value);
         void setHttpStatus(int status);
         void setKey(String key);
         void setValue(String value);
         void setErrorMessage(String key);
-        void prepareResponseHeaders();
         // @formatter:on
     }
 }

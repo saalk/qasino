@@ -167,8 +167,13 @@ public class MapQasinoResponseFromRetrievedDataAction implements Action<MapQasin
         navigationBarItem.setVisible(actionDto.isShowLeagues());
         if (actionDto.isShowLeagues()) {
             if (!(actionDto.getLeaguesForVisitor() == null)) {
+                // set the nav bar
                 navigationBarItem.setItemName("0 leagues");
+                navigationBarItem.setItemStats("calculate");
+                // set the content
+                pageLeagues.setSelectedLeague(actionDto.getQasinoGameLeague());
                 pageLeagues.setActiveLeagues(actionDto.getLeaguesForVisitor());
+                pageLeagues.setResultsForLeague(actionDto.getResultsForLeague());
             }
         } else {
             navigationBarItem.setItemName("0 leagues");
@@ -250,7 +255,6 @@ public class MapQasinoResponseFromRetrievedDataAction implements Action<MapQasin
         actionDto.setKey(id);
         actionDto.setValue(value);
         actionDto.setErrorMessage("Entity not found for key" + id);
-        actionDto.prepareResponseHeaders();
     }
 
     public interface MapQasinoResponseFromRetrievedDataDTO {
@@ -276,7 +280,10 @@ public class MapQasinoResponseFromRetrievedDataAction implements Action<MapQasin
 
         List<Game> getFinishedGamesForVisitor();
         Game getQasinoGame();
+
         League getQasinoGameLeague();
+        List<Result> getResultsForLeague();
+
         List<Player> getQasinoGamePlayers();
         Turn getActiveTurn();
         List<Card> getCardsInTheGame();
@@ -296,7 +303,6 @@ public class MapQasinoResponseFromRetrievedDataAction implements Action<MapQasin
         void setKey(String key);
         void setValue(String value);
         void setErrorMessage(String key);
-        void prepareResponseHeaders();
         // @formatter:on
     }
 }

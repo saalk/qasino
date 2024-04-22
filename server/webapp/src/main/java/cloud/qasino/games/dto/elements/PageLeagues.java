@@ -1,7 +1,8 @@
 package cloud.qasino.games.dto.elements;
 
+import cloud.qasino.games.database.entity.Game;
 import cloud.qasino.games.database.entity.League;
-import cloud.qasino.games.database.entity.Visitor;
+import cloud.qasino.games.database.entity.Result;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -18,14 +19,17 @@ public class PageLeagues {
 
     private boolean visitorHasActiveLeagues;
 
-    @JsonProperty("League")
-    private League selectedLeague;
-
-    @JsonProperty("ActiveLeagues")
+    @JsonProperty("ActiveLeaguesForVisitor")
     private List<League> activeLeagues;
 
-    @JsonProperty("VisitorForLeagues")
-    private List<Visitor> leagueVisitors;
+    @JsonProperty("SelectedLeague")
+    private League selectedLeague;
+
+    @JsonProperty("ResultsForSelectedLeague")
+    private List<Result> resultsForLeague;
+
+    @JsonProperty("AllGamesForLeague")
+    private List<Game> leagueGames;
 
 
 }

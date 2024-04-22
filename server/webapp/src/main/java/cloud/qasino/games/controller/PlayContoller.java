@@ -149,7 +149,7 @@ public class PlayContoller {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).headers(headers).build();
         }
 
-        // rules
+        // rules - GameState must be PLAYING
         if (!   (foundGame.get().getState() == GameState.PLAYING )  ) {
             return ResponseEntity.status(HttpStatus.CONFLICT).headers(headers).build();
         }

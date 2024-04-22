@@ -20,7 +20,7 @@ public enum GameTrigger {
     PREPARE("prepare"),    // do some updates and validate if playable
 
     // PLAYING
-    PLAY("play"),       // validate that initial bets are stated
+    PLAY("play"),       // deck, ante and a player is needed
 
     // FINISHED
     WINNER("winner"),     // we have a winner

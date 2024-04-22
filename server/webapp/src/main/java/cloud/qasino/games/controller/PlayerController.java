@@ -26,17 +26,6 @@ import java.util.Optional;
 import static cloud.qasino.games.configuration.Constants.BASE_PATH;
 import static cloud.qasino.games.configuration.Constants.ENDPOINT_PLAYER;
 
-// basic path /qasino
-// basic header @RequestHeader(value "visitor", required = true) long visitorId" // else 400
-//
-// 200 - ok
-// 201 - created
-// 204 - no content - for deleted
-// 400 - bad request - error/reason "url ... not available"
-// 404 - not found - error/message "invalid value x for y" + reason [missing]
-// 412 - precondition failed = error/message - "violation of rule z"
-// 500 - internal server error
-
 @Slf4j
 @RestController
 public class PlayerController {
