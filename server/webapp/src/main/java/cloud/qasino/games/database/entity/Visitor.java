@@ -112,18 +112,14 @@ public class Visitor {
         this.email = email;
     }
 
-
     public boolean repayLoan() {
-        int loan = this.securedLoan;
-        int pay = this.balance;
-        if (pay >= loan &
-                loan > 0) {
-            this.balance = pay - loan;
+        if (this.securedLoan <= 0) return true; // nothing to repay
+        if (this.balance >= this.securedLoan) {
+            this.balance = this.balance - this.securedLoan;
             this.securedLoan = 0;
             return true;
         }
-        return false;
-
+        return false; // not enough balance to repay all
     }
 
     public boolean pawnShip(int pawnShipValue) {

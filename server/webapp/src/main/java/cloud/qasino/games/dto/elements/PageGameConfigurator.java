@@ -18,11 +18,11 @@ import java.util.List;
 @AllArgsConstructor
 public class PageGameConfigurator {
 
-    private boolean initiatedByYou;
+    private boolean visitorConfiguresAGame;
 
-    @JsonProperty("SelectedGame")
+    @JsonProperty("GameToConfigure")
     private Game selectedGame;
-    private boolean hasBalance;
+    private boolean hasAnte;
     private int totalVisitors;
     private int totalBots;
 

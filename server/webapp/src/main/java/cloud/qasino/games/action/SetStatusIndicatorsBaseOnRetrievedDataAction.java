@@ -19,30 +19,30 @@ public class SetStatusIndicatorsBaseOnRetrievedDataAction implements Action<SetS
 
         log.debug("Action: SetStatusIndicatorsBaseOnRetrievedDataAction");
 
-        actionDto.setLoggedOn(false);
-        actionDto.setBalanceNotZero(false);
-        actionDto.setGamePlayable(false);
-        actionDto.setLeaguePresent(false);
-        actionDto.setFriendsPresent(false);
+        actionDto.setShowVisitorPage(false);
+        actionDto.setShowGameConfigurator(false);
+        actionDto.setShowGamePlay(false);
+        actionDto.setShowLeagues(false);
+        actionDto.setShowPendingGames(false);
 
         if (!(actionDto.getQasinoVisitor() == null)) {
-            actionDto.setLoggedOn(true);
+            actionDto.setShowVisitorPage(true);
             if (actionDto.getQasinoVisitor().getBalance() > 0) {
-                actionDto.setBalanceNotZero(true);
+                actionDto.setShowGameConfigurator(true);
             }
         }
         if (!(actionDto.getQasinoGame() == null)) {
             if (
                     actionDto.getQasinoGame().getState() == GameState.PLAYING ||
                             actionDto.getQasinoGame().getState() == GameState.PREPARED) {
-                actionDto.setGamePlayable(true);
+                actionDto.setShowGamePlay(true);
             }
         }
         if (!(actionDto.getQasinoGameLeague() == null)) {
-            actionDto.setLeaguePresent(true);
+            actionDto.setShowLeagues(true);
         }
         // todo implement friends
-        actionDto.setFriendsPresent(false);
+        actionDto.setShowPendingGames(false);
 
         return EventOutput.Result.SUCCESS;
     }
@@ -50,8 +50,8 @@ public class SetStatusIndicatorsBaseOnRetrievedDataAction implements Action<SetS
     private void setErrorMessageCrash(SetStatusIndicatorsBaseOnRetrievedDataDTO actionDto, String id,
                                          String value) {
         actionDto.setHttpStatus(500);
-        actionDto.setErrorKey(id);
-        actionDto.setErrorValue(value);
+        actionDto.setKey(id);
+        actionDto.setValue(value);
         actionDto.setErrorMessage("Entity not found for key" + id);
         actionDto.prepareResponseHeaders();
     }
@@ -76,16 +76,16 @@ public class SetStatusIndicatorsBaseOnRetrievedDataAction implements Action<SetS
         List<Card> getCardsInTheGame();
         List<CardMove> getAllCardMovesForTheGame();
 
-        void setLoggedOn(boolean bool);
-        void setBalanceNotZero(boolean bool);
-        void setGamePlayable(boolean bool);
-        void setLeaguePresent(boolean bool);
-        void setFriendsPresent(boolean bool);
+        void setShowVisitorPage(boolean bool);
+        void setShowGameConfigurator(boolean bool);
+        void setShowGamePlay(boolean bool);
+        void setShowPendingGames(boolean bool);
+        void setShowLeagues(boolean bool);
 
         // error setters
         void setHttpStatus(int status);
-        void setErrorKey(String key);
-        void setErrorValue(String value);
+        void setKey(String key);
+        void setValue(String value);
         void setErrorMessage(String key);
         void prepareResponseHeaders();
         // @formatter:on

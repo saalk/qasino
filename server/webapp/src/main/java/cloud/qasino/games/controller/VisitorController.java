@@ -6,6 +6,7 @@ import cloud.qasino.games.database.repository.CardRepository;
 import cloud.qasino.games.database.repository.GameRepository;
 import cloud.qasino.games.database.repository.PlayerRepository;
 import cloud.qasino.games.database.repository.VisitorRepository;
+import cloud.qasino.games.dto.Qasino;
 import cloud.qasino.games.dto.QasinoFlowDTO;
 import cloud.qasino.games.event.EventOutput;
 import org.apache.commons.lang3.StringUtils;
@@ -23,7 +24,6 @@ import java.util.Optional;
 
 import static cloud.qasino.games.configuration.Constants.BASE_PATH;
 import static cloud.qasino.games.configuration.Constants.ENDPOINT_VISITOR;
-
 
 @RestController
 public class VisitorController {
@@ -43,125 +43,102 @@ public class VisitorController {
     @Autowired
     MapQasinoResponseFromRetrievedDataAction mapQasinoResponseFromRetrievedDataAction;
 
-    // basic path /qasino
-    // basic header @RequestHeader(value "visitor", required = true) int visitorId" // else 400
-    //
-    // 200 - ok
-    // 201 - created
-    // 400 - bad request - error/reason "url ... not available"
-    // 404 - not found - error/message "invalid value x for y" + reason [missing]
-    // 412 - precondition failed = error/message - "violation of rule z"
-    // 500 - internal server error
-
     @Autowired
     public VisitorController(
             VisitorRepository visitorRepository) {
         this.visitorRepository = visitorRepository;
-
     }
 
-
-    // @GetMapping("/visitor/{visitorId}")
-    public ResponseEntity<Optional<Visitor>> getVisitor(
+    @GetMapping("/visitor/{visitorId}")
+    public ResponseEntity<Qasino> getVisitor(
             @PathVariable("visitorId") String id
     ) {
-
-        // header in response
-        URI uri = ServletUriComponentsBuilder.fromCurrentRequest()
-                .path("")
-                .buildAndExpand()
-                .toUri();
-        HttpHeaders headers = new HttpHeaders();
-        headers.add("URI", String.valueOf(uri));
-
-        // validations
-        if (!StringUtils.isNumeric(id)) {
-            return ResponseEntity.badRequest().headers(headers).build();
+        // validate
+        QasinoFlowDTO flowDTO = new QasinoFlowDTO();
+        flowDTO.setPathVariables("visitorId", id);
+        if (!flowDTO.validateInput()) {
+            flowDTO.prepareResponseHeaders();
+            return ResponseEntity.status(HttpStatus.valueOf(flowDTO.getHttpStatus())).headers(flowDTO.getHeaders()).build();
         }
-
-        // CRUD
-        Optional<Visitor> foundVisitor = visitorRepository.findById(Long.parseLong(id));
-        if (foundVisitor.isPresent()) {
-            return ResponseEntity.ok().headers(headers).body(foundVisitor);
-        } else {
-            return ResponseEntity.notFound().headers(headers).build();
+        // get all entities
+        output = findAllEntitiesForInputAction.perform(flowDTO);
+        if (output == EventOutput.Result.FAILURE) {
+            flowDTO.prepareResponseHeaders();
+            return ResponseEntity.status(HttpStatus.valueOf(flowDTO.getHttpStatus())).headers(flowDTO.getHeaders()).build();
         }
-
+        // build response
+        setStatusIndicatorsBaseOnRetrievedDataAction.perform(flowDTO);
+        calculateHallOfFameAction.perform(flowDTO);
+        mapQasinoResponseFromRetrievedDataAction.perform(flowDTO);
+        flowDTO.prepareResponseHeaders();
+        return ResponseEntity.ok().headers(flowDTO.getHeaders()).body(flowDTO.getQasino());
     }
 
-    // tested
-    // @PutMapping(value = "/visitor/{visitorId}")
-    public ResponseEntity<Visitor> updateVisitor(
+    @PutMapping(value = "/visitor/{visitorId}")
+    public ResponseEntity<Qasino> updateVisitor(
             @PathVariable("visitorId") String id,
             @RequestParam(name = "visitorName", defaultValue = "") String visitorName,
             @RequestParam(name = "email", defaultValue = "") String email
     ) {
-
-        // header in response
-        URI uri = ServletUriComponentsBuilder.fromCurrentRequest()
-                .path("")
-                .query("")
-                .buildAndExpand(visitorName, email)
-                .toUri();
-        HttpHeaders headers = new HttpHeaders();
-        headers.add("URI", String.valueOf(uri));
-
-        // validations
-        if (!StringUtils.isNumeric(id))
-            // 400
-            return ResponseEntity.badRequest().headers(headers).build();
-        long visitorId = Long.parseLong(id);
-        Optional<Visitor> foundVisitor = visitorRepository.findById(visitorId);
-        if (!foundVisitor.isPresent()) {
-            // 404
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).headers(headers).build();
+        // validate
+        QasinoFlowDTO flowDTO = new QasinoFlowDTO();
+       flowDTO.setPathVariables("visitorId", id);
+        if (!flowDTO.validateInput()) {
+            flowDTO.prepareResponseHeaders();
+            return ResponseEntity.status(HttpStatus.valueOf(flowDTO.getHttpStatus())).headers(flowDTO.getHeaders()).build();
         }
-
-        // CRUD
-        Visitor updatedVisitor = foundVisitor.get();
-        if (!StringUtils.isEmpty(visitorName)) {
+        // get all entities
+        output = findAllEntitiesForInputAction.perform(flowDTO);
+        if (output == EventOutput.Result.FAILURE) {
+            flowDTO.prepareResponseHeaders();
+            return ResponseEntity.status(HttpStatus.valueOf(flowDTO.getHttpStatus())).headers(flowDTO.getHeaders()).build();
+        }
+        // update
+        if (!StringUtils.isEmpty(flowDTO.getSuppliedVisitorName())) {
             int sequence = (int) (visitorRepository.countByVisitorName(visitorName) + 1);
-            updatedVisitor.setVisitorName(visitorName);
-            updatedVisitor.setVisitorNameSequence(sequence);
+            flowDTO.getQasinoVisitor().setVisitorName(visitorName);
+            flowDTO.getQasinoVisitor().setVisitorNameSequence(sequence);
         }
-        if (!StringUtils.isEmpty(email)) {
-            updatedVisitor.setEmail(email);
+        if (!StringUtils.isEmpty(flowDTO.getSuppliedEmail())) {
+            flowDTO.getQasinoVisitor().setEmail(email);
         }
-        updatedVisitor = visitorRepository.save(updatedVisitor);
-
-        // 200
-        return ResponseEntity.ok().headers(headers).body(updatedVisitor);
+        visitorRepository.save(flowDTO.getQasinoVisitor());
+        // build response
+        setStatusIndicatorsBaseOnRetrievedDataAction.perform(flowDTO);
+        calculateHallOfFameAction.perform(flowDTO);
+        mapQasinoResponseFromRetrievedDataAction.perform(flowDTO);
+        flowDTO.prepareResponseHeaders();
+        return ResponseEntity.ok().headers(flowDTO.getHeaders()).body(flowDTO.getQasino());
     }
 
-    // tested
-    // @DeleteMapping("/visitor/{visitorId}")
-    public ResponseEntity<Visitor> deleteVisitor(
+    @DeleteMapping("/visitor/{visitorId}")
+    public ResponseEntity<Qasino> deleteVisitor(
             @PathVariable("visitorId") String id
     ) {
-
-        // header in response
-        URI uri = ServletUriComponentsBuilder.fromCurrentRequest()
-                .path("")
-                .buildAndExpand()
-                .toUri();
-        HttpHeaders headers = new HttpHeaders();
-        headers.add("URI", String.valueOf(uri));
-
-        // validations
-        if (!StringUtils.isNumeric(id))
-            // 400
-            return ResponseEntity.badRequest().headers(headers).build();
-        long visitorId = Long.parseLong(id);
-        Optional<Visitor> foundVisitor = visitorRepository.findById(visitorId);
-        if (!foundVisitor.isPresent()) {
-            // 404
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).headers(headers).build();
+        // validate
+        QasinoFlowDTO flowDTO = new QasinoFlowDTO();
+        flowDTO.setPathVariables("visitorId", id);
+        if (!flowDTO.validateInput()) {
+            flowDTO.prepareResponseHeaders();
+            return ResponseEntity.status(HttpStatus.valueOf(flowDTO.getHttpStatus())).headers(flowDTO.getHeaders()).build();
         }
-
-        // CRUD
-        visitorRepository.deleteById(visitorId);
-        // delete 204
-        return ResponseEntity.status(HttpStatus.NO_CONTENT).headers(headers).build();
+        // get all entities
+        output = findAllEntitiesForInputAction.perform(flowDTO);
+        if (output == EventOutput.Result.FAILURE) {
+            flowDTO.prepareResponseHeaders();
+            return ResponseEntity.status(HttpStatus.valueOf(flowDTO.getHttpStatus())).headers(flowDTO.getHeaders()).build();
+        }
+        // delete
+        visitorRepository.deleteById(flowDTO.getSuppliedVisitorId());
+        flowDTO.setSuppliedVisitorId(0);
+        flowDTO.setQasinoVisitor(null);
+        // build response
+        setStatusIndicatorsBaseOnRetrievedDataAction.perform(flowDTO);
+        calculateHallOfFameAction.perform(flowDTO);
+        mapQasinoResponseFromRetrievedDataAction.perform(flowDTO);
+        flowDTO.prepareResponseHeaders();
+        // delete 204 -> 200 otherwise no content in response body
+        return ResponseEntity.status(HttpStatus.OK).headers(flowDTO.getHeaders()).body(flowDTO.getQasino());
     }
 
 }

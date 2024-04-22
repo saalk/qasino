@@ -2,12 +2,13 @@ package cloud.qasino.games.action;
 
 import cloud.qasino.games.action.interfaces.Action;
 import cloud.qasino.games.database.entity.*;
+import cloud.qasino.games.database.entity.enums.game.GameState;
 import cloud.qasino.games.dto.elements.NavigationBarItem;
 import cloud.qasino.games.dto.Qasino;
 import cloud.qasino.games.dto.elements.SectionSeat;
 import cloud.qasino.games.dto.elements.SectionTable;
 import cloud.qasino.games.dto.elements.*;
-import cloud.qasino.games.dto.statistics.Counter;
+import cloud.qasino.games.dto.statistics.Statistics;
 import cloud.qasino.games.database.entity.enums.game.Style;
 import cloud.qasino.games.database.entity.enums.player.Role;
 import cloud.qasino.games.event.EventOutput;
@@ -18,6 +19,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static cloud.qasino.games.database.entity.enums.game.GameState.setupGameStates;
+
 @Slf4j
 @Component
 public class MapQasinoResponseFromRetrievedDataAction implements Action<MapQasinoResponseFromRetrievedDataAction.MapQasinoResponseFromRetrievedDataDTO, EventOutput.Result> {
@@ -26,50 +29,65 @@ public class MapQasinoResponseFromRetrievedDataAction implements Action<MapQasin
     @Override
     public EventOutput.Result perform(MapQasinoResponseFromRetrievedDataDTO actionDto) {
 
-        log.debug("Action: MapQasinoResponseFromRetrievedDataAction");
-
-        PagePendingGames pageGamesOverview = new PagePendingGames();
+        PageVisitor pageVisitor = new PageVisitor();
         PageGameConfigurator pageGameConfigurator = new PageGameConfigurator();
         PageGamePlay pageGamePlay = new PageGamePlay();
+        PagePendingGames pageGamesOverview = new PagePendingGames();
         PageLeagues pageLeagues = new PageLeagues();
-        PageVisitor pageVisitor = new PageVisitor();
+
         SectionTable table = new SectionTable();
 
         // Make the navigation bar
         List<NavigationBarItem> navigationBarItems = new ArrayList<>();
 
-        // 1: you
+        // 1: PageVisitor
         NavigationBarItem navigationBarItem = new NavigationBarItem();
-        navigationBarItem.setVisible(actionDto.isLoggedOn());
-        if (actionDto.isLoggedOn()) {
+        if (actionDto.getQasinoVisitor() != null) {
+            actionDto.setShowVisitorPage(true);
+        }
+        navigationBarItem.setVisible(actionDto.isShowVisitorPage());
+        if (actionDto.isShowVisitorPage()) {
+            // set the nav bar
             navigationBarItem.setItemName(actionDto.getQasinoVisitor().getVisitorName());
             navigationBarItem.setItemStats("Balance " + actionDto.getQasinoVisitor().getBalance());
-//            pageGamesOverview.setHasLoggedOn(actionDto.isLoggedOn());
-//            pageGamesOverview.setVisitor(actionDto.getQasinoVisitor());
-            pageGamesOverview.setGamesInitiated(actionDto.getNewGamesForVisitor());
-            pageGamesOverview.setGamesWaitingForYouToAccept(null); //todo LOW pending invitations
-            pageGamesOverview.setGamesPlayableYouInitiated(null); // todo LOW accepted games
-            pageGamesOverview.setGamesYouAccepted(actionDto.getStartedGamesForVisitor());
+            // set the content
+            pageVisitor.setSelectedVisitor(actionDto.getQasinoVisitor());
+            pageVisitor.setTotalAcceptedInvitations(0);
+            pageVisitor.setTotalPendingInvitations(0);
+            pageVisitor.setTotalNewGames(0);
+            pageVisitor.setTotalStartedGames(0);
+            pageVisitor.setTotalsFinishedGames(0);
+            pageVisitor.setAcceptedInvitations(null);
+            pageVisitor.setPendingInvitations(null);
         } else {
             navigationBarItem.setItemName("You");
-            navigationBarItem.setItemStats("0");
+            navigationBarItem.setItemStats("Balance 0");
         }
         navigationBarItems.add(navigationBarItem);
 
-        // game
+        // 2: GameConfigurator
         navigationBarItem = new NavigationBarItem();
-        navigationBarItem.setVisible(actionDto.isBalanceNotZero());
-        if (actionDto.isBalanceNotZero()) {
+        if (actionDto.getQasinoGame() != null) {
+            actionDto.setShowGameConfigurator(true);
+        }
+        navigationBarItem.setVisible(actionDto.isShowGameConfigurator());
+        if (actionDto.isShowGameConfigurator()) {
             if (!(actionDto.getQasinoGame() == null)) {
+                // set the nav bar
                 navigationBarItem.setItemName("Type " +
                         actionDto.getQasinoGame().getType().getLabel());
-                pageGameConfigurator.setTotalBots(
-                        (int) actionDto.getQasinoGamePlayers().stream().filter(c -> !c.isHuman()).count());
-                long all = actionDto.getQasinoGamePlayers().size();
-                pageGameConfigurator.setTotalVisitors((int) (all - pageGameConfigurator.getTotalBots()));
+                long all = 0;
+                if (actionDto.getQasinoGamePlayers() != null) {
+                    pageGameConfigurator.setTotalBots(
+                            (int) actionDto.getQasinoGamePlayers().stream().filter(c -> !c.isHuman()).count());
+                    all = actionDto.getQasinoGamePlayers().size();
+                } else {
+                    pageGameConfigurator.setTotalBots(0);
+                }
                 navigationBarItem.setItemStats(pageGameConfigurator.getTotalBots() + "/" + all + " bots/total");
-
-                pageGameConfigurator.setHasBalance(actionDto.isBalanceNotZero());
+                // set the content
+                pageGameConfigurator.setTotalVisitors((int) (all - pageGameConfigurator.getTotalBots()));
+                pageGameConfigurator.setHasAnte(actionDto.getQasinoGame().getAnte()>0);
                 pageGameConfigurator.setSelectedGame(actionDto.getQasinoGame());
                 pageGameConfigurator.setLeaguesToSelect(actionDto.getLeaguesForVisitor());
 
@@ -82,29 +100,35 @@ public class MapQasinoResponseFromRetrievedDataAction implements Action<MapQasin
                 pageGameConfigurator.setTurnsToWin(style.getTurnsToWin());
             }
         } else {
-            navigationBarItem.setItemName("Type -");
-            navigationBarItem.setItemStats("0/- bots");
+            navigationBarItem.setItemName("Type na");
+            navigationBarItem.setItemStats("0/0 bots/total");
         }
         navigationBarItems.add(navigationBarItem);
 
-        // qasino
+        // 3: GamePlay
         navigationBarItem = new NavigationBarItem();
-        navigationBarItem.setVisible(actionDto.isGamePlayable());
-        if (actionDto.isGamePlayable()) {
+        if (actionDto.getQasinoGame() != null
+                && !setupGameStates.contains(actionDto.getQasinoGame().getState())
+        ) {
+            actionDto.setShowGamePlay(true);
+        }
+        navigationBarItem.setVisible(actionDto.isShowGamePlay());
+        if (actionDto.isShowGamePlay()) {
             if (!(actionDto.getQasinoGame() == null)) {
+                // set the nav bar
                 navigationBarItem.setItemName("Qasinogame#" +
                         Integer.toHexString((int) actionDto.getQasinoGame().getGameId()) );
+                navigationBarItem.setItemStats(pageGamePlay.getCurrentMove() + "/" +
+                        pageGamePlay.getCurrentRound() + " move/round");
+                // set the content
+                pageGamePlay.setTable(setTable(actionDto));
                 pageGamePlay.setCurrentRound(
                         (int) actionDto.getActiveTurn().getCurrentRoundNumber());
                 pageGamePlay.setCurrentMove(
                         (int) actionDto.getActiveTurn().getCurrentMoveNumber());
-                navigationBarItem.setItemStats(pageGamePlay.getCurrentMove() + "/" +
-                        pageGamePlay.getCurrentRound() + " move/round");
-
-                pageGamePlay.setPlayable(actionDto.isGamePlayable());
+                pageGamePlay.setVisitorPlaysAGame(actionDto.isShowGamePlay());
                 pageGamePlay.setSelectedGame(actionDto.getQasinoGame());
                 pageGamePlay.setActiveTurn(actionDto.getActiveTurn());
-
             }
         } else {
             navigationBarItem.setItemName("Qasinogame #-");
@@ -112,61 +136,63 @@ public class MapQasinoResponseFromRetrievedDataAction implements Action<MapQasin
         }
         navigationBarItems.add(navigationBarItem);
 
-        // league
+        // 4: PendingGames
         navigationBarItem = new NavigationBarItem();
-        navigationBarItem.setVisible(actionDto.isLeaguePresent());
-        if (actionDto.isLeaguePresent()) {
+        if (actionDto.getQasinoGame() != null) {
+            actionDto.setShowPendingGames(true);
+        }
+        navigationBarItem.setVisible(actionDto.isShowPendingGames());
+        if (actionDto.isShowPendingGames()) {
             if (!(actionDto.getLeaguesForVisitor() == null)) {
-                navigationBarItem.setItemName( "League " +
-                        actionDto.getQasinoGameLeague().getName());
-                navigationBarItem.setItemStats(actionDto.getQasinoGameLeague().getEnded() + " enddate");
-
-                pageLeagues.setActiveLeagues(actionDto.getLeaguesForVisitor());
+                // set the nav bar
+                navigationBarItem.setItemName( "Pending Games");
+                navigationBarItem.setItemStats("calculate");
+                // set the content
+                pageGamesOverview.setGamesInitiated(actionDto.getNewGamesForVisitor());
+                pageGamesOverview.setGamesWaitingForYouToAccept(null); //todo LOW pending invitations
+                pageGamesOverview.setGamesPlayableYouInitiated(null); // todo LOW accepted games
+                pageGamesOverview.setGamesYouAccepted(actionDto.getStartedGamesForVisitor());
             }
         } else {
-            navigationBarItem.setItemName("League - ");
+            navigationBarItem.setItemName("Pending - 0");
             navigationBarItem.setItemStats("- enddate");
         }
         navigationBarItems.add(navigationBarItem);
 
-        // friends
+        // 5: Leagues
         navigationBarItem = new NavigationBarItem();
-        navigationBarItem.setVisible(actionDto.isFriendsPresent());
-        if (actionDto.isFriendsPresent()) {
+        if (actionDto.getQasinoGameLeague() != null) {
+            actionDto.setShowLeagues(true);
+        }
+        navigationBarItem.setVisible(actionDto.isShowLeagues());
+        if (actionDto.isShowLeagues()) {
             if (!(actionDto.getLeaguesForVisitor() == null)) {
-                navigationBarItem.setItemName("0 friends");
-                pageVisitor.setTotalAcceptedInvitations(0);
-//                pageVisitor.setPendingInvites(0);
-                pageVisitor.setAcceptedInvitations(null);
-                pageVisitor.setPendingInvitations(null);
+                navigationBarItem.setItemName("0 leagues");
+                pageLeagues.setActiveLeagues(actionDto.getLeaguesForVisitor());
             }
         } else {
-            navigationBarItem.setItemName("0 friends");
+            navigationBarItem.setItemName("0 leagues");
             navigationBarItem.setItemStats("0/0 pending/total");
         }
         navigationBarItems.add(navigationBarItem);
 
         Qasino qasino = new Qasino();
         qasino.setNavBarItems(navigationBarItems);
-        qasino.setPagePendingGames(pageGamesOverview);
+
+        qasino.setPageVisitor(pageVisitor);
         qasino.setPageGameConfigurator(pageGameConfigurator);
         qasino.setPageGamePlay(pageGamePlay);
+        qasino.setPagePendingGames(pageGamesOverview);
         qasino.setPageLeagues(pageLeagues);
-        qasino.setPageVisitor(pageVisitor);
-//        qasino.setTable(setTable(actionDto));
-        qasino.setCounter(actionDto.getCounter());
+        qasino.setStatistics(actionDto.getStatistics());
 
         actionDto.setQasino(qasino);
-        //
         return EventOutput.Result.SUCCESS;
     }
 
     private SectionTable setTable(MapQasinoResponseFromRetrievedDataDTO actionDto) {
-
         SectionTable table = new SectionTable();
-
         if (!(actionDto.getQasinoGame() == null)) {
-
 //            table.setSelectedGame(actionDto.getQasinoGame());
             table.setCurrentTurn(actionDto.getActiveTurn());
             // todo HIGH new action for calc all possible moves
@@ -185,7 +211,6 @@ public class MapQasinoResponseFromRetrievedDataAction implements Action<MapQasin
         }
         return table;
     }
-
     private List<SectionSeat> setSeats(MapQasinoResponseFromRetrievedDataDTO actionDto) {
 
         List<SectionSeat> seats = new ArrayList<>();
@@ -220,12 +245,10 @@ public class MapQasinoResponseFromRetrievedDataAction implements Action<MapQasin
         }
         return seats;
     }
-
-    private void setErrorMessageCrash(MapQasinoResponseFromRetrievedDataDTO actionDto, String id,
-                                         String value) {
+    private void setErrorMessageCrash(MapQasinoResponseFromRetrievedDataDTO actionDto, String id, String value) {
         actionDto.setHttpStatus(500);
-        actionDto.setErrorKey(id);
-        actionDto.setErrorValue(value);
+        actionDto.setKey(id);
+        actionDto.setValue(value);
         actionDto.setErrorMessage("Entity not found for key" + id);
         actionDto.prepareResponseHeaders();
     }
@@ -234,13 +257,13 @@ public class MapQasinoResponseFromRetrievedDataAction implements Action<MapQasin
 
         // @formatter:off
         // Getters
-        Counter getCounter();
+        Statistics getStatistics();
 
-        boolean isLoggedOn();
-        boolean isBalanceNotZero();
-        boolean isGamePlayable();
-        boolean isLeaguePresent();
-        boolean isFriendsPresent();
+        boolean isShowVisitorPage();
+        boolean isShowGameConfigurator();
+        boolean isShowGamePlay();
+        boolean isShowLeagues();
+        boolean isShowPendingGames();
 
         Visitor getQasinoVisitor();
         Player getInvitedPlayer();
@@ -262,10 +285,16 @@ public class MapQasinoResponseFromRetrievedDataAction implements Action<MapQasin
         // Setters
         void setQasino(Qasino qasino);
 
+        void setShowVisitorPage(boolean bool);
+        void setShowGameConfigurator(boolean bool);
+        void setShowGamePlay(boolean bool);
+        void setShowPendingGames(boolean bool);
+        void setShowLeagues(boolean bool);
+
         // error setters
         void setHttpStatus(int status);
-        void setErrorKey(String key);
-        void setErrorValue(String value);
+        void setKey(String key);
+        void setValue(String value);
         void setErrorMessage(String key);
         void prepareResponseHeaders();
         // @formatter:on

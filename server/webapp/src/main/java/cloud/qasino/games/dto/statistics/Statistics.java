@@ -12,7 +12,7 @@ import java.util.List;
 @AllArgsConstructor
 //@JsonIdentityInfo(generator = JSOGGenerator.class)
 //@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
-public class Counter {
+public class Statistics {
 
     @JsonProperty("Totals")
     private List<Total> totals;

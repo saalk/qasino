@@ -17,13 +17,13 @@ public class PagePendingGames {
 
     private boolean visitorHasPendingGames;
 
-    @JsonProperty("YourInitiatedGames")
+    @JsonProperty("InitiatedGames")
     private List<Game> gamesInitiated;
 
-    @JsonProperty("YourGamesWithPendingInvitations")
+    @JsonProperty("GamesWithPendingInvitations")
     private List<Game> gamesPendingInvitations;
 
-    @JsonProperty("YourGamesWaitingToPlay")
+    @JsonProperty("GamesWaitingToPlay")
     private List<Game> gamesPlayableYouInitiated;
 
     @JsonProperty("GamesWaitingForYou")

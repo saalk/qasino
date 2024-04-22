@@ -14,10 +14,10 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class PageGamePlay {
 
-    private boolean isPlayable;      // icon is fiches -> playable game to enable nav-qasino
+    private boolean visitorPlaysAGame;
 
     @JsonProperty("ActiveGame")
-    private Game selectedGame; // including a list of players - max one can be active
+    private Game selectedGame;
 
     @JsonProperty("gameName")
     private String gameName; // game type and gameId concat

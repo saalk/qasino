@@ -38,13 +38,12 @@ public class FindVisitorIdByVisitorNameAction implements Action<FindVisitorIdByV
             Optional<Visitor> foundVisitor = visitorRepository.findVisitorByVisitorNameAndVisitorNameSequence(actionDto.getSuppliedVisitorName(), 1);
             if (foundVisitor.isPresent()) {
                 actionDto.setSuppliedVisitorId(foundVisitor.get().getVisitorId());
-                // call FindAllEntitiesForInputAction after this to do the actual retrieval
             } else {
                 setErrorMessageNotFound(actionDto, "visitorId", actionDto.getSuppliedVisitorName());
                 return EventOutput.Result.FAILURE;
             }
         } else {
-            setErrorMessageBadRequest(actionDto, "visitorName", String.valueOf(actionDto.getSuppliedVisitorName()));
+            setErrorMessageBadRequest(actionDto, "Visitor", String.valueOf(actionDto.getSuppliedVisitorName()));
             return EventOutput.Result.FAILURE;
         }
         return EventOutput.Result.SUCCESS;
@@ -53,27 +52,25 @@ public class FindVisitorIdByVisitorNameAction implements Action<FindVisitorIdByV
     private void setErrorMessageNotFound(FindVisitorIdByVisitorNameActionDTO actionDto, String id,
                                          String value) {
         actionDto.setHttpStatus(404);
-        actionDto.setErrorKey(id);
-        actionDto.setErrorValue(value);
+        actionDto.setKey(id);
+        actionDto.setValue(value);
         actionDto.setErrorMessage(id + " not found for supplied value [" + value + "]");
-        actionDto.prepareResponseHeaders();
     }
 
     private void setErrorMessageBadRequest(FindVisitorIdByVisitorNameActionDTO actionDto, String id,
                                            String value) {
         actionDto.setHttpStatus(400);
-        actionDto.setErrorKey(id);
-        actionDto.setErrorValue(value);
+        actionDto.setKey(id);
+        actionDto.setValue(value);
         actionDto.setErrorMessage("Supplied value " + id + " is empty");
-        actionDto.prepareResponseHeaders();
     }
 
 
     private void setErrorMessageConflict(FindVisitorIdByVisitorNameActionDTO actionDto, String id,
                                          String value) {
         actionDto.setHttpStatus(409);
-        actionDto.setErrorKey(id);
-        actionDto.setErrorValue(value);
+        actionDto.setKey(id);
+        actionDto.setValue(value);
         actionDto.setErrorMessage("Multiple " + id + " found for supplied value [" + value +
                 "]");
         actionDto.prepareResponseHeaders();
@@ -90,8 +87,8 @@ public class FindVisitorIdByVisitorNameAction implements Action<FindVisitorIdByV
 
         // error setters
         void setHttpStatus(int status);
-        void setErrorKey(String key);
-        void setErrorValue(String value);
+        void setKey(String key);
+        void setValue(String value);
         void setErrorMessage(String key);
         void prepareResponseHeaders();
         // @formatter:on

@@ -47,8 +47,8 @@ public class SignUpNewVisitorAction implements Action<SignUpNewVisitorAction.Sig
     private void setErrorMessageBadRequest(SignUpNewVisitorActionDTO actionDto, String id,
                                            String value) {
         actionDto.setHttpStatus(400);
-        actionDto.setErrorKey(id);
-        actionDto.setErrorValue(value);
+        actionDto.setKey(id);
+        actionDto.setValue(value);
         actionDto.setErrorMessage("Supplied value for visitorName is empty");
         actionDto.prepareResponseHeaders();
     }
@@ -57,8 +57,8 @@ public class SignUpNewVisitorAction implements Action<SignUpNewVisitorAction.Sig
     private void setErrorMessageConflict(SignUpNewVisitorActionDTO actionDto, String id,
                                          String value) {
         actionDto.setHttpStatus(409);
-        actionDto.setErrorKey(id);
-        actionDto.setErrorValue(value);
+        actionDto.setKey(id);
+        actionDto.setValue(value);
         actionDto.setErrorMessage("visitorName [" + value + "] not available any more");
         actionDto.prepareResponseHeaders();
     }
@@ -66,8 +66,8 @@ public class SignUpNewVisitorAction implements Action<SignUpNewVisitorAction.Sig
     private void setErrorMessageInternalServerError(SignUpNewVisitorActionDTO actionDto, String id,
                                                     String value) {
         actionDto.setHttpStatus(500);
-        actionDto.setErrorKey(id);
-        actionDto.setErrorValue(value);
+        actionDto.setKey(id);
+        actionDto.setValue(value);
         actionDto.setErrorMessage("Crash while signing up a new visitor");
         actionDto.prepareResponseHeaders();
     }
@@ -84,8 +84,8 @@ public class SignUpNewVisitorAction implements Action<SignUpNewVisitorAction.Sig
 
         // error setters
         void setHttpStatus(int status);
-        void setErrorKey(String key);
-        void setErrorValue(String value);
+        void setKey(String key);
+        void setValue(String value);
         void setErrorMessage(String key);
         void prepareResponseHeaders();
         // @formatter:on

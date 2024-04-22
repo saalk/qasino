@@ -1,0 +1,170 @@
+{
+	"info": {
+		"_postman_id": "e08137f7-b04d-49bc-a116-21dd6a8cbd37",
+		"name": "PlayControler",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "439257",
+		"_collection_link": "https://qasino.postman.co/workspace/Qasino~4634f2dd-4487-4c9b-9d29-607ac0ed86c8/collection/439257-e08137f7-b04d-49bc-a116-21dd6a8cbd37?action=share&source=collection_link&creator=439257"
+	},
+	"item": [
+		{
+			"name": "UsersGamesPlayers-C1",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"url": {
+					"raw": "{{url}}/qasino/users/1/games/HIGHLOW/players/DUMB?ante=20&style=a&avatar=ELF",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"qasino",
+						"users",
+						"1",
+						"games",
+						"HIGHLOW",
+						"players",
+						"DUMB"
+					],
+					"query": [
+						{
+							"key": "ante",
+							"value": "20"
+						},
+						{
+							"key": "style",
+							"value": "a"
+						},
+						{
+							"key": "avatar",
+							"value": "ELF"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Games-C-1",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"url": {
+					"raw": "{{url}}/qasino/games/HIGHLOW?style=qwe&ante=30",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"qasino",
+						"games",
+						"HIGHLOW"
+					],
+					"query": [
+						{
+							"key": "style",
+							"value": "qwe"
+						},
+						{
+							"key": "ante",
+							"value": "30"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "PlayersGames-C-",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"url": {
+					"raw": "{{url}}/qasino/players/games/5",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"qasino",
+						"players",
+						"games",
+						"5"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "PlayersGamesUsers-C-1",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"url": {
+					"raw": "{{url}}/qasino/players/MEDIUM/games/5/users/1?avatar=ELF",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"qasino",
+						"players",
+						"MEDIUM",
+						"games",
+						"5",
+						"users",
+						"1"
+					],
+					"query": [
+						{
+							"key": "avatar",
+							"value": "ELF"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	]
+}

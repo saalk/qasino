@@ -2,7 +2,7 @@ package cloud.qasino.games.dto;
 
 import cloud.qasino.games.action.*;
 import cloud.qasino.games.database.entity.*;
-import cloud.qasino.games.dto.statistics.Counter;
+import cloud.qasino.games.dto.statistics.Statistics;
 import cloud.qasino.games.database.entity.enums.card.Face;
 import cloud.qasino.games.database.entity.enums.card.Location;
 import cloud.qasino.games.database.entity.enums.card.Position;
@@ -39,7 +39,6 @@ public class QasinoFlowDTO //extends AbstractFlowDTO
         HandleSecuredLoanAction.HandleSecuredLoanActionDTO,
         SetStatusIndicatorsBaseOnRetrievedDataAction.SetStatusIndicatorsBaseOnRetrievedDataDTO,
         MapQasinoResponseFromRetrievedDataAction.MapQasinoResponseFromRetrievedDataDTO
-
 {
     // suppress lombok setter for these fixed values
     @Setter(AccessLevel.NONE)
@@ -47,36 +46,33 @@ public class QasinoFlowDTO //extends AbstractFlowDTO
 
     // gui
     private Qasino qasino;
-    private Counter counter;
+    private Statistics statistics;
 
-
-    // FRONTEND path params
+    // FRONTEND
+    // path params
     private long suppliedVisitorId;
     private long suppliedGameId;
-
     private long suppliedLeagueId;
-
     private long initiatingPlayerId;
     private long invitedPlayerId;
     private long acceptedPlayerId;
     private long suppliedTurnPlayerId;
-
-    // Triggers for the Game
+    // triggers for the Game
     private GameTrigger suppliedTrigger;
     private GameStateGroup suppliedGameStateGroup;
-
-    // Triggers while playing a Game
+    // Triggers for playing a Game
     private Move suppliedMove;
     private List<Card> suppliedCards;   // todo
 
-    // FRONTEND request and or main path params
-
+    // FRONTEND request params
     // paging
-    private int suppliedPages = 0;
+    private int suppliedPage = 1;
     private int suppliedMaxPerPage = 4;
     // visitor
     private String suppliedVisitorName;
     private String suppliedEmail;
+    public boolean requestingToRepay = false;
+    public boolean offeringShipForPawn = false;
     // league
     private String suppliedLeagueName;
     private String suppliedLeagueEnd;    // todo monthsEnd, thisMonday, x days.
@@ -95,58 +91,50 @@ public class QasinoFlowDTO //extends AbstractFlowDTO
     private Location suppliedLocation;
     private int suppliedBet;
 
-    // pawn or repay
-    public boolean requestingToRepay = false;
-    public boolean offeringShipForPawn = false;
-
     // RETRIEVED DATA BASED ON FRONTEND ID's
-
-    // the game
-    private Game qasinoGame;
-    private List<Player> qasinoGamePlayers;
-
-    // during game state changes
+    // the logged on visitor
     private Visitor qasinoVisitor;
     private List<Visitor> friends;
-
+    // the game and players
+    private Game qasinoGame;
+    private List<Player> qasinoGamePlayers;
     private List<Game> newGamesForVisitor;
     private List<Game> startedGamesForVisitor;
     private List<Game> finishedGamesForVisitor;
-
+    // the individual player
     private Player invitedPlayer;
     private Player acceptedPlayer;
     private Player initiatingPlayer;
-
+    // the league and list of leagues the visitor created
     private League qasinoGameLeague;
     private List<League> leaguesForVisitor;
-
+    // the game results
     private Result gameResult;
     private List<Result> resultsForLeague;
-
-    // during cardmove in turn
+    // during cardmoves in a turn
     private Player turnPlayer;
     private Turn activeTurn;
     private List<Card> cardsInTheGame;
     private List<CardMove> allCardMovesForTheGame;
 
-    // STATS based on RETRIEVED DATA
-
-    // stats
-    public boolean loggedOn;     // icon is spaceShip -> logon to enable nav-visitor
-    public boolean balanceNotZero;      // icon is cards -> select/start game to enable nav-game
-    public boolean gamePlayable;      // icon is fiches -> playable game to enable nav-qasino
-    public boolean leaguePresent;       // icon is hallOfFame -> position in league or no league
-    public boolean friendsPresent;      // icon is chat -> chats and relations
+    // NAVIGATION based on RETRIEVED DATA
+    public boolean showVisitorPage;       // spaceShip - nav-visitor
+    public boolean showGameConfigurator;  // cards - nav-game
+    public boolean showGamePlay;          // fiches - nav-qasino
+    public boolean showPendingGames;      // chat - nav-chat
+    public boolean showLeagues;           // hallOfFame - nav-fame
 
     // ERROR DATA
-    private int httpStatus;
-    private String errorKey;
-    private String errorValue;
-    private String errorMessage;
-    private HttpHeaders headers;
+    private int httpStatus = 200;
+    private String key = "Key";
+    private String value = "Value";
+    private String errorMessage = "No error";
+    private HttpHeaders headers = new HttpHeaders();
+    public void addKeyValueToHeader(String key, String value) {
+        this.headers.add(key, value);
+    }
 
-    // PROCESS AND VALIDATE INPUT
-
+    // todo PROCESS AND VALIDATE INPUT
     private Map<String, String> pathVariables = new HashMap<>();
     public void setPathVariables(String... pathVariables) {
         if (pathVariables == null) return;
@@ -156,15 +144,11 @@ public class QasinoFlowDTO //extends AbstractFlowDTO
         }
     }
     private Map<String, String> requestParams = new HashMap<>();
-
     private Object payloadData;
     private URI uri;
     public boolean validateInput() {
-        prepareResponseHeaders();
         if (!validatePathVariables(this.pathVariables)
             | !validateRequestParams(this.requestParams)) {
-            headers.add(this.getErrorKey(), this.getErrorValue());
-            headers.add("Error", this.getErrorMessage());
             return false;
         }
         return true;
@@ -174,14 +158,11 @@ public class QasinoFlowDTO //extends AbstractFlowDTO
                 .path("")
                 .buildAndExpand(this.pathVariables, this.requestParams)
                 .toUri();
-        this.headers = new HttpHeaders();
-        headers.add("URI", String.valueOf(this.getUri()));
-
+        this.headers.add("URI", String.valueOf(this.getUri()));
         if (this.httpStatus > 299) {
-            headers.add(this.getErrorKey(), this.getErrorValue());
-            headers.add("Error", this.getErrorMessage());
+            addKeyValueToHeader(this.getKey(), this.getValue());
+            addKeyValueToHeader("Error", this.getErrorMessage());
         }
-
     }
     boolean validatePathVariables(Map<String, String> pathVariables) {
         String key;
@@ -256,15 +237,22 @@ public class QasinoFlowDTO //extends AbstractFlowDTO
         if (requestParam==null) return true;
 
         // paging
-        key = "pages";
+        key = "pageNumber";
         if (requestParam.containsKey(key)) {
             if (isValueForIntKeyValid(key, requestParam.get(key), dataName, paramDataString)) {
-                this.suppliedPages = Integer.parseInt(requestParam.get(key));
+                if (Integer.parseInt(requestParam.get(key)) < 1) {
+                    this.setHttpStatus(400);
+                    this.setKey(key);
+                    this.setValue(value);
+                    this.setErrorMessage("Value for [" + key + "] is less than 1");
+                    return false;
+                }
+                this.suppliedPage = Integer.parseInt(requestParam.get(key));
             } else {
                 return false;
             }
         }
-        key = "maxPerPage";
+        key = "pageSize";
         if (requestParam.containsKey(key)) {
             if (isValueForIntKeyValid(key, requestParam.get(key), dataName, paramDataString)) {
                 this.suppliedMaxPerPage = Integer.parseInt(requestParam.get(key));
@@ -280,6 +268,14 @@ public class QasinoFlowDTO //extends AbstractFlowDTO
         key = "email";
         if (requestParam.containsKey(key)) {
             this.suppliedEmail = (requestParam.get("email"));
+        }
+        key = "pawn";
+        if (requestParam.containsKey(key)) {
+            this.offeringShipForPawn = true;
+        }
+        key = "repay";
+        if (requestParam.containsKey(key)) {
+            this.requestingToRepay = true;
         }
         // player
         key = "role";
@@ -412,9 +408,9 @@ public class QasinoFlowDTO //extends AbstractFlowDTO
             if (Long.parseLong(value) == 0) {
                 // 404 - not found
                 this.setHttpStatus(404);
-                this.setErrorKey(key);
-                this.setErrorValue(value);
-                this.setErrorMessage("Value for " + key + " is zero");
+                this.setKey(key);
+                this.setValue(value);
+                this.setErrorMessage("Value for [" + key + "] is zero");
                 return false;
             }
             return true;
@@ -425,9 +421,9 @@ public class QasinoFlowDTO //extends AbstractFlowDTO
         if (!StringUtils.isNumeric(value)) {
             // 400 - bad request
             this.setHttpStatus(400);
-            this.setErrorKey(key);
-            this.setErrorValue(value);
-            this.setErrorMessage("Invalid int value for" + key);
+            this.setKey(key);
+            this.setValue(value);
+            this.setErrorMessage("Invalid numeric value for [" + key + "]");
             return false;
         }
         return true;
@@ -438,53 +434,53 @@ public class QasinoFlowDTO //extends AbstractFlowDTO
         switch (key) {
 
             case "role":
-                if (!(Role.fromLabelWithDefault(key) == Role.ERROR)) {
+                if (!(Role.fromLabelWithDefault(value) == Role.ERROR)) {
                     return true;
                 }
                 break;
             case "avatar":
-                if (!(Avatar.fromLabelWithDefault(key) == Avatar.ERROR)) {
+                if (!(Avatar.fromLabelWithDefault(value) == Avatar.ERROR)) {
                     return true;
                 }
                 break;
             case "aiLevel":
-                if (!(AiLevel.fromLabelWithDefault(key) == AiLevel.ERROR)) {
+                if (!(AiLevel.fromLabelWithDefault(value) == AiLevel.ERROR)) {
                     return true;
                 }
                 break;
             case "gameTrigger":
-                if (!(GameTrigger.fromLabelWithDefault(key) == GameTrigger.ERROR)) {
+                if (!(GameTrigger.fromLabelWithDefault(value) == GameTrigger.ERROR)) {
                     return true;
                 }
                 break;
             case "gameStateGroup":
-                if (!(GameStateGroup.fromLabelWithDefault(key) == GameStateGroup.ERROR)) {
+                if (!(GameStateGroup.fromLabelWithDefault(value) == GameStateGroup.ERROR)) {
                     // todo ERROR can be a valid state but for now is bad request coming from client
                     return true;
                 }
                 break;
             case "type":
-                if (!(Type.fromLabelWithDefault(key) == Type.ERROR)) {
+                if (!(Type.fromLabelWithDefault(value) == Type.ERROR)) {
                     return true;
                 }
                 break;
             case "move":
-                if (!(Move.fromLabelWithDefault(key) == Move.ERROR)) {
+                if (!(Move.fromLabelWithDefault(value) == Move.ERROR)) {
                     return true;
                 }
                 break;
             case "location":
-                if (!(Location.fromLabelWithDefault(key) == Location.ERROR)) {
+                if (!(Location.fromLabelWithDefault(value) == Location.ERROR)) {
                     return true;
                 }
                 break;
             case "position":
-                if (!(Position.fromLabelWithDefault(key) == Position.ERROR)) {
+                if (!(Position.fromLabelWithDefault(value) == Position.ERROR)) {
                     return true;
                 }
                 break;
             case "face":
-                if (!(Face.fromLabelWithDefault(key) == Face.ERROR)) {
+                if (!(Face.fromLabelWithDefault(value) == Face.ERROR)) {
                     return true;
                 }
                 break;
@@ -492,9 +488,9 @@ public class QasinoFlowDTO //extends AbstractFlowDTO
 
         // 400 - bad request
         this.setHttpStatus(400);
-        this.setErrorKey(key);
-        this.setErrorValue("in error");
-        this.setErrorMessage("Invalid enum value for" + key);
+        this.setKey(key);
+        this.setValue(value);
+        this.setErrorMessage("Invalid enum value for [" + key + "]");
 
         return false;
     }

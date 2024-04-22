@@ -17,8 +17,8 @@ public class PageVisitor {
 
     private boolean visitorIsLoggedOn;
 
-    @JsonProperty("You")
-    private Visitor visitor;
+    @JsonProperty("Visitor")
+    private Visitor selectedVisitor;
 
     private int totalAcceptedInvitations;
     private int totalPendingInvitations;
@@ -28,7 +28,7 @@ public class PageVisitor {
     public int totalsFinishedGames;
 
 
-    @JsonProperty("Friends")
+    @JsonProperty("acceptedInvitations")
     private List<Visitor> acceptedInvitations;
 
     @JsonProperty("PendingInvitation")

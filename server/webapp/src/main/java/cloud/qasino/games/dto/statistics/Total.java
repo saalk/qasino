@@ -14,11 +14,10 @@ public class Total {
 
     public int totalVisitors;
     public int totalGames;
+    @JsonProperty("SubTotalsGame")
+    private SubTotalsGame subTotalsGames;
     public int totalPlayers;
     public int totalLeagues;
     public int totalCards;
-
-    @JsonProperty("SubTotalsGame")
-    private SubTotalsGame subTotalsGames;
 
 }

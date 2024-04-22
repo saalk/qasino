@@ -2,7 +2,7 @@ package cloud.qasino.games.action;
 
 import cloud.qasino.games.action.interfaces.Action;
 import cloud.qasino.games.database.repository.*;
-import cloud.qasino.games.dto.statistics.Counter;
+import cloud.qasino.games.dto.statistics.Statistics;
 import cloud.qasino.games.dto.statistics.SubTotalsGame;
 import cloud.qasino.games.dto.statistics.Total;
 import cloud.qasino.games.event.EventOutput;
@@ -35,8 +35,6 @@ public class CalculateHallOfFameAction implements Action<CalculateHallOfFameActi
     @Override
     public EventOutput.Result perform(CalculateHallOfFameActionDTO actionDto) {
 
-        log.debug("Action: CalculateHallOfFameAction");
-
         SubTotalsGame subTotalsGame = new SubTotalsGame();
         subTotalsGame.totalNewGames =
                 gameRepository.countByStates(GameState.setupGameStatesValues);
@@ -53,9 +51,9 @@ public class CalculateHallOfFameAction implements Action<CalculateHallOfFameActi
         totals.totalPlayers = ((int) playerRepository.count());
         totals.totalCards = ((int) cardRepository.count());
 
-        Counter counters = new Counter();
+        Statistics counters = new Statistics();
         counters.setTotals(Collections.singletonList(totals));
-        actionDto.setCounter(counters);
+        actionDto.setStatistics(counters);
 
         return EventOutput.Result.SUCCESS;
     }
@@ -63,22 +61,21 @@ public class CalculateHallOfFameAction implements Action<CalculateHallOfFameActi
     private void setErrorMessageNotFound(SetStatusIndicatorsBaseOnRetrievedDataAction.SetStatusIndicatorsBaseOnRetrievedDataDTO actionDto, String id,
                                          String value) {
         actionDto.setHttpStatus(500);
-        actionDto.setErrorKey(id);
-        actionDto.setErrorValue(value);
+        actionDto.setKey(id);
+        actionDto.setValue(value);
         actionDto.setErrorMessage("Entity not found for key" + id);
-        actionDto.prepareResponseHeaders();
     }
 
     public interface CalculateHallOfFameActionDTO {
 
-        void setCounter(Counter counter);
+        void setStatistics(Statistics statistics);
 
         // error setters
         void setHttpStatus(int status);
 
-        void setErrorKey(String key);
+        void setKey(String key);
 
-        void setErrorValue(String value);
+        void setValue(String value);
 
         void setErrorMessage(String key);
 

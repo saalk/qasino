@@ -2,7 +2,7 @@ package cloud.qasino.games.dto;
 
 import cloud.qasino.games.dto.enums.EnumOverview;
 import cloud.qasino.games.dto.elements.*;
-import cloud.qasino.games.dto.statistics.Counter;
+import cloud.qasino.games.dto.statistics.Statistics;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -19,6 +19,7 @@ public class Qasino {
 
     @JsonProperty("NavBarItems")
     private List<NavigationBarItem> navBarItems;
+
 
     @JsonProperty("You")
     private PageVisitor pageVisitor;
@@ -39,7 +40,7 @@ public class Qasino {
     @JsonProperty("Enums")
     EnumOverview enumOverview = new EnumOverview();
     @JsonProperty("Statistics")
-    Counter counter = new Counter();
+    Statistics statistics = new Statistics();
 
 
 }

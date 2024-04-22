@@ -18,7 +18,7 @@ public class PageLeagues {
 
     private boolean visitorHasActiveLeagues;
 
-    @JsonProperty("SelectedLeague")
+    @JsonProperty("League")
     private League selectedLeague;
 
     @JsonProperty("ActiveLeagues")

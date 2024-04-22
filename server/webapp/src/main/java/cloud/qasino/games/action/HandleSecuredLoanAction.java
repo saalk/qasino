@@ -4,7 +4,6 @@ import cloud.qasino.games.action.interfaces.Action;
 import cloud.qasino.games.database.entity.Visitor;
 import cloud.qasino.games.event.EventOutput;
 import cloud.qasino.games.database.repository.VisitorRepository;
-import cloud.qasino.games.util.Systemout;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
@@ -21,61 +20,50 @@ public class HandleSecuredLoanAction implements Action<HandleSecuredLoanAction.H
     @Override
     public EventOutput.Result perform(HandleSecuredLoanActionDTO actionDto) {
 
-        log.debug("Action: HandleSecuredLoanAction");
-
-        EventOutput.Result result = EventOutput.Result.FAILURE;
         Visitor updateVisitor = actionDto.getQasinoVisitor();
 
         if (actionDto.isRequestingToRepay()) {
-//            Systemout.handleSecuredLoanActionFlow(actionDto); //todo delete
-            if (!updateVisitor.repayLoan()) {
-//                Systemout.handleSecuredLoanActionFlow(actionDto); //todo delete
-
-                setErrorMessagConflict(actionDto, "isRequestingToRepay", "true");
+            boolean repayOk = updateVisitor.repayLoan();
+            if (!repayOk) {
+                log.info("!repayOk");
+                setErrorMessageConflict(actionDto, "Repay", "Repay loan with balance not possible, balance too low");
                 return EventOutput.Result.FAILURE;
             }
             actionDto.setQasinoVisitor(visitorRepository.save(updateVisitor));
-//            Systemout.handleSecuredLoanActionFlow(actionDto); //todo delete
-
-            result = EventOutput.Result.SUCCESS;
+            return EventOutput.Result.SUCCESS;
         }
 
         if (actionDto.isOfferingShipForPawn()) {
             Random random = new Random();
             int randomNumber = random.nextInt(1001);
-//            Systemout.handleSecuredLoanActionFlow(actionDto); //todo delete
-            if (!updateVisitor.pawnShip(randomNumber)) {
-//                Systemout.handleSecuredLoanActionFlow(actionDto); //todo delete
-                setErrorMessagConflict(actionDto,"isOfferingShipForPawn", "true");
+            boolean pawnOk = updateVisitor.pawnShip(randomNumber);
+            if (!pawnOk) {
+                log.info("!pawnOk");
+                setErrorMessageConflict(actionDto, "Pawn", "Ship already pawned, repay first");
                 return EventOutput.Result.FAILURE;
             }
             actionDto.setQasinoVisitor(visitorRepository.save(updateVisitor));
-//            Systemout.handleSecuredLoanActionFlow(actionDto); //todo delete
-
-            result = EventOutput.Result.SUCCESS;
+            return EventOutput.Result.SUCCESS;
         }
-        // todo should be 500
-        if (result == EventOutput.Result.FAILURE) {
-            setErrorMessageBadRequest(actionDto, "<HandleSecuredLoanAction>", "true");
-        }
-        return result;
+        setErrorMessageBadRequest(actionDto, "Pawn or Repay", "Nothing to process");
+        return EventOutput.Result.FAILURE;
     }
 
-    private void setErrorMessagConflict(HandleSecuredLoanActionDTO actionDto, String id,
+    void setErrorMessageConflict(HandleSecuredLoanActionDTO actionDto, String id,
                                         String value) {
         actionDto.setHttpStatus(409);
-        actionDto.setErrorKey(id);
-        actionDto.setErrorValue(value);
-        actionDto.setErrorMessage("Action " + id + " not valid");
-        actionDto.prepareResponseHeaders();
+        actionDto.setKey(id);
+        actionDto.setValue(value);
+        actionDto.setErrorMessage("Action [" + id + "] invalid");
+
     }
     private void setErrorMessageBadRequest(HandleSecuredLoanActionDTO actionDto, String id,
                                            String value) {
-        actionDto.setHttpStatus(400);
-        actionDto.setErrorKey(id);
-        actionDto.setErrorValue(value);
-        actionDto.setErrorMessage("Supplied value " + id + " is not available");
-        actionDto.prepareResponseHeaders();
+        actionDto.setHttpStatus(500);
+        actionDto.setKey(id);
+        actionDto.setValue(value);
+        actionDto.setErrorMessage("Action [" + id + "] invalid");
+
     }
     public interface HandleSecuredLoanActionDTO {
 
@@ -91,10 +79,9 @@ public class HandleSecuredLoanAction implements Action<HandleSecuredLoanAction.H
 
         // error setters
         void setHttpStatus(int status);
-        void setErrorKey(String key);
-        void setErrorValue(String value);
+        void setKey(String key);
+        void setValue(String value);
         void setErrorMessage(String key);
-        void prepareResponseHeaders();
         // @formatter:on
     }
 }

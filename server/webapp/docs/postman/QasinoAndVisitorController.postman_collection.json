@@ -1,0 +1,529 @@
+{
+	"info": {
+		"_postman_id": "916174ba-779c-42f3-ac95-65c17797c70a",
+		"name": "QasinoAndVisitorController",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "439257",
+		"_collection_link": "https://qasino.postman.co/workspace/Qasino~4634f2dd-4487-4c9b-9d29-607ac0ed86c8/collection/439257-916174ba-779c-42f3-ac95-65c17797c70a?action=share&source=collection_link&creator=439257"
+	},
+	"item": [
+		{
+			"name": "signup/saalk",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const jsonData = pm.response.json();\r",
+							"pm.test(\"Successful POST request for signup should be returned\", () => {\r",
+							"  pm.expect(pm.response.code).to.be.oneOf([200, 201]);\r",
+							"});\r",
+							"pm.test(\"Body should return with NavBarItems property\", () => {\r",
+							"  pm.expect(jsonData).to.have.property('NavBarItems');\r",
+							"});\r",
+							"pm.test(\"Header should contain the vistorId\", () => {\r",
+							"    pm.response.to.have.header(\"visitorId\");\r",
+							"});\r",
+							"\r",
+							"// store all the ids in the header\r",
+							"pm.test( pm.response.headers.get(\"visitorId\").split(\"=\"), () => {\r",
+							"    pm.environment.set(\"visitorId\", pm.response.headers.get(\"visitorId\").split(\"=\"));\r",
+							"});\r",
+							"// pm.test( pm.response.headers.get(\"gameId\").split(\"=\"), () => {\r",
+							"//     pm.environment.set(\"gameId\", pm.response.headers.get(\"gameId\").split(\"=\"));\r",
+							"// });\r",
+							"// pm.test( pm.response.headers.get(\"leagueId\").split(\"=\"), () => {\r",
+							"//     pm.environment.set(\"leagueId\", pm.response.headers.get(\"leagueId\").split(\"=\"));\r",
+							"// });"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "{{host}}/signup/{{visitorName}}?email={{email}}",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"signup",
+						"{{visitorName}}"
+					],
+					"query": [
+						{
+							"key": "email",
+							"value": "{{email}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "logon/saalk",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const jsonData = pm.response.json();\r",
+							"pm.test(\"Successful GET request for logon should be returned\", () => {\r",
+							"    pm.expect(pm.response.code).to.be.oneOf([200, 201]);\r",
+							"});\r",
+							"pm.test(\"Body should return with NavBarItems property\", () => {\r",
+							"  pm.expect(jsonData).to.have.property('NavBarItems');\r",
+							"});\r",
+							"pm.test(\"Header should contain the vistorId\", () => {\r",
+							"    pm.response.to.have.header(\"visitorId\");\r",
+							"});\r",
+							"\r",
+							"// store all the ids in the header\r",
+							"pm.test( pm.response.headers.get(\"visitorId\").split(\"=\"), () => {\r",
+							"    pm.environment.set(\"visitorId\", pm.response.headers.get(\"visitorId\").split(\"=\"));\r",
+							"});\r",
+							"// pm.test( pm.response.headers.get(\"gameId\").split(\"=\"), () => {\r",
+							"//     pm.environment.set(\"gameId\", pm.response.headers.get(\"gameId\").split(\"=\"));\r",
+							"// });\r",
+							"// pm.test( pm.response.headers.get(\"leagueId\").split(\"=\"), () => {\r",
+							"//     pm.environment.set(\"leagueId\", pm.response.headers.get(\"leagueId\").split(\"=\"));\r",
+							"// });"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{host}}/logon/{{visitorName}}",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"logon",
+						"{{visitorName}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "home/{visitorId}",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const jsonData = pm.response.json();\r",
+							"pm.test(\"Successful GET request should be returned\", () => {\r",
+							"  pm.expect(pm.response.code).to.be.oneOf([200, 201]);\r",
+							"});\r",
+							"pm.test(\"Body should return with NavBarItems property\", () => {\r",
+							"  pm.expect(jsonData).to.have.property('NavBarItems');\r",
+							"});\r",
+							"pm.test(\"Header should contain the vistorId\", () => {\r",
+							"    pm.response.to.have.header(\"visitorId\");\r",
+							"});\r",
+							"\r",
+							"// store all the ids in the header\r",
+							"pm.test( pm.response.headers.get(\"visitorId\").split(\"=\"), () => {\r",
+							"    pm.environment.set(\"visitorId\", pm.response.headers.get(\"visitorId\").split(\"=\"));\r",
+							"});\r",
+							"// pm.test( pm.response.headers.get(\"gameId\").split(\"=\"), () => {\r",
+							"//     pm.environment.set(\"gameId\", pm.response.headers.get(\"gameId\").split(\"=\"));\r",
+							"// });\r",
+							"// pm.test( pm.response.headers.get(\"leagueId\").split(\"=\"), () => {\r",
+							"//     pm.environment.set(\"leagueId\", pm.response.headers.get(\"leagueId\").split(\"=\"));\r",
+							"// });\r",
+							"\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{host}}/home/{{visitorId}}",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"home",
+						"{{visitorId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "visitor/{visitorId}",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const jsonData = pm.response.json();\r",
+							"pm.test(\"Successful GET request should be returned\", () => {\r",
+							"  pm.expect(pm.response.code).to.be.oneOf([200, 201]);\r",
+							"});\r",
+							"pm.test(\"Body should return with NavBarItems property\", () => {\r",
+							"  pm.expect(jsonData).to.have.property('NavBarItems');\r",
+							"});\r",
+							"pm.test(\"Header should contain the vistorId\", () => {\r",
+							"    pm.response.to.have.header(\"visitorId\");\r",
+							"});\r",
+							"\r",
+							"// store all the ids in the header\r",
+							"pm.test( pm.response.headers.get(\"visitorId\").split(\"=\"), () => {\r",
+							"    pm.environment.set(\"visitorId\", pm.response.headers.get(\"visitorId\").split(\"=\"));\r",
+							"});\r",
+							"// pm.test( pm.response.headers.get(\"gameId\").split(\"=\"), () => {\r",
+							"//     pm.environment.set(\"gameId\", pm.response.headers.get(\"gameId\").split(\"=\"));\r",
+							"// });\r",
+							"// pm.test( pm.response.headers.get(\"leagueId\").split(\"=\"), () => {\r",
+							"//     pm.environment.set(\"leagueId\", pm.response.headers.get(\"leagueId\").split(\"=\"));\r",
+							"// });"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"url": {
+					"raw": "{{host}}/visitor/{{visitorId}}",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"visitor",
+						"{{visitorId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "pawn/{visitorId}",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const jsonData = pm.response.json();\r",
+							"pm.test(\"Successful PUT request for pawn should be returned\", () => {\r",
+							"  pm.expect(pm.response.code).to.be.oneOf([200, 201]);\r",
+							"});\r",
+							"pm.test(\"Body should return with NavBarItems property\", () => {\r",
+							"  pm.expect(jsonData).to.have.property('NavBarItems');\r",
+							"})\r",
+							"pm.test(\"Header should contain the vistorId\", () => {\r",
+							"    pm.response.to.have.header(\"visitorId\");\r",
+							"});\r",
+							"\r",
+							"// store all the ids in the header\r",
+							"pm.test( pm.response.headers.get(\"visitorId\").split(\"=\"), () => {\r",
+							"    pm.environment.set(\"visitorId\", pm.response.headers.get(\"visitorId\").split(\"=\"));\r",
+							"});\r",
+							"// pm.test( pm.response.headers.get(\"gameId\").split(\"=\"), () => {\r",
+							"//     pm.environment.set(\"gameId\", pm.response.headers.get(\"gameId\").split(\"=\"));\r",
+							"// });\r",
+							"// pm.test( pm.response.headers.get(\"leagueId\").split(\"=\"), () => {\r",
+							"//     pm.environment.set(\"leagueId\", pm.response.headers.get(\"leagueId\").split(\"=\"));\r",
+							"// });"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"url": {
+					"raw": "{{host}}/pawn/{{visitorId}}",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"pawn",
+						"{{visitorId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "repay/{visitorId}",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const jsonData = pm.response.json();\r",
+							"pm.test(\"Successful PUT request for repay after pawn should be returned\", () => {\r",
+							"  pm.expect(pm.response.code).to.be.oneOf([200, 201]);\r",
+							"});\r",
+							"pm.test(\"Body should return with NavBarItems property\", () => {\r",
+							"  pm.expect(jsonData).to.have.property('NavBarItems');\r",
+							"})\r",
+							"pm.test(\"Header should contain the vistorId\", () => {\r",
+							"    pm.response.to.have.header(\"visitorId\");\r",
+							"});\r",
+							"\r",
+							"// store all the ids in the header\r",
+							"pm.test( pm.response.headers.get(\"visitorId\").split(\"=\"), () => {\r",
+							"    pm.environment.set(\"visitorId\", pm.response.headers.get(\"visitorId\").split(\"=\"));\r",
+							"});\r",
+							"// pm.test( pm.response.headers.get(\"gameId\").split(\"=\"), () => {\r",
+							"//     pm.environment.set(\"gameId\", pm.response.headers.get(\"gameId\").split(\"=\"));\r",
+							"// });\r",
+							"// pm.test( pm.response.headers.get(\"leagueId\").split(\"=\"), () => {\r",
+							"//     pm.environment.set(\"leagueId\", pm.response.headers.get(\"leagueId\").split(\"=\"));\r",
+							"// });"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"url": {
+					"raw": "{{host}}/repay/{{visitorId}}",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"repay",
+						"{{visitorId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "visitor/{visitorId}",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const jsonData = pm.response.json();\r",
+							"pm.test(\"Successful PUT request for update be returned\", () => {\r",
+							"  pm.expect(pm.response.code).to.be.oneOf([200, 201]);\r",
+							"});\r",
+							"pm.test(\"Body should return with NavBarItems property\", () => {\r",
+							"  pm.expect(jsonData).to.have.property('NavBarItems');\r",
+							"})\r",
+							"pm.test(\"Header should contain the vistorId\", () => {\r",
+							"    pm.response.to.have.header(\"visitorId\");\r",
+							"});\r",
+							"\r",
+							"// store all the ids in the header\r",
+							"pm.test( pm.response.headers.get(\"visitorId\").split(\"=\"), () => {\r",
+							"    pm.environment.set(\"visitorId\", pm.response.headers.get(\"visitorId\").split(\"=\"));\r",
+							"});\r",
+							"// pm.test( pm.response.headers.get(\"gameId\").split(\"=\"), () => {\r",
+							"//     pm.environment.set(\"gameId\", pm.response.headers.get(\"gameId\").split(\"=\"));\r",
+							"// });\r",
+							"// pm.test( pm.response.headers.get(\"leagueId\").split(\"=\"), () => {\r",
+							"//     pm.environment.set(\"leagueId\", pm.response.headers.get(\"leagueId\").split(\"=\"));\r",
+							"// });"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"url": {
+					"raw": "{{host}}/visitor/{{visitorId}}?email=test@email.nl",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"visitor",
+						"{{visitorId}}"
+					],
+					"query": [
+						{
+							"key": "email",
+							"value": "test@email.nl"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "visitor/{visitorId}",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const jsonData = pm.response.json();\r",
+							"pm.test(\"Successful DELETE request for update be returned\", () => {\r",
+							"  pm.expect(pm.response.code).to.be.oneOf([200, 201, 204]);\r",
+							"});\r",
+							"pm.test(\"Body should return with NavBarItems property\", () => {\r",
+							"  pm.expect(jsonData).to.have.property('NavBarItems');\r",
+							"})\r",
+							"// pm.test(\"Header should not contain the vistorId\", () => {\r",
+							"//     pm.response.not.to.have.header(\"visitorId\");\r",
+							"// });\r",
+							"\r",
+							"// store all the ids in the header\r",
+							"pm.test( pm.response.headers.get(\"visitorId\").split(\"=\"), () => {\r",
+							"    pm.environment.set(\"visitorId\", pm.response.headers.get(\"visitorId\").split(\"=\"));\r",
+							"});\r",
+							"// pm.test( pm.response.headers.get(\"gameId\").split(\"=\"), () => {\r",
+							"//     pm.environment.set(\"gameId\", pm.response.headers.get(\"gameId\").split(\"=\"));\r",
+							"// });\r",
+							"// pm.test( pm.response.headers.get(\"leagueId\").split(\"=\"), () => {\r",
+							"//     pm.environment.set(\"leagueId\", pm.response.headers.get(\"leagueId\").split(\"=\"));\r",
+							"// });"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"url": {
+					"raw": "{{host}}/visitor/{{visitorId}}",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"visitor",
+						"{{visitorId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "paging/visitors",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const jsonData = pm.response.json();\r",
+							"pm.test(\"Successful GET request visitors list should be returned\", () => {\r",
+							"  pm.expect(pm.response.code).to.be.oneOf([200, 201]);\r",
+							"});\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{host}}/paging/visitors?pageNumber={{pageNumber}}&pageSize={{pageSize}}",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"paging",
+						"visitors"
+					],
+					"query": [
+						{
+							"key": "pageNumber",
+							"value": "{{pageNumber}}"
+						},
+						{
+							"key": "pageSize",
+							"value": "{{pageSize}}"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

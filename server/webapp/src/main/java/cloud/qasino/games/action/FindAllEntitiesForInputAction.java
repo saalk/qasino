@@ -7,7 +7,6 @@ import cloud.qasino.games.event.EventOutput;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
@@ -36,20 +35,20 @@ public class FindAllEntitiesForInputAction implements Action<FindAllEntitiesForI
     @Override
     public EventOutput.Result perform(FindAllEntitiesForInputActionDTO actionDto) {
 
-        log.debug("Action: FindAllEntitiesForInputAction");
         long id;
-        Pageable pageable = PageRequest.of(actionDto.getSuppliedPages(), actionDto.getSuppliedMaxPerPage());
+        Pageable pageable = PageRequest.of(actionDto.getSuppliedPage(), actionDto.getSuppliedMaxPerPage());
 
         id = actionDto.getSuppliedVisitorId();
         if (!(id == 0)) {
             Optional<Visitor> foundVisitor = visitorRepository.findById(Long.parseLong(String.valueOf(id)));
             if (foundVisitor.isPresent()) {
                 actionDto.setQasinoVisitor(foundVisitor.get());
+                actionDto.addKeyValueToHeader("visitorId", String.valueOf(foundVisitor.get().getVisitorId()));
             } else {
                 setErrorMessageNotFound(actionDto, "visitorId", String.valueOf(id));
                 return EventOutput.Result.FAILURE;
             }
-            pageable = PageRequest.of(actionDto.getSuppliedPages(), actionDto.getSuppliedMaxPerPage()
+            pageable = PageRequest.of(actionDto.getSuppliedPage(), actionDto.getSuppliedMaxPerPage()
 //                    ,
 //                    Sort.by(
 //                    Sort.Order.asc("a.\"type\""),
@@ -78,6 +77,8 @@ public class FindAllEntitiesForInputAction implements Action<FindAllEntitiesForI
                 actionDto.setActiveTurn(foundGame.get().getTurn());
                 actionDto.setCardsInTheGame(foundGame.get().getCards());
                 actionDto.setAllCardMovesForTheGame(foundGame.get().getTurn().getCardMoves());
+                actionDto.addKeyValueToHeader("gameId", String.valueOf(foundGame.get().getGameId()));
+
             } else {
                 setErrorMessageNotFound(actionDto, "gameId", String.valueOf(id));
                 return EventOutput.Result.FAILURE;
@@ -119,7 +120,8 @@ public class FindAllEntitiesForInputAction implements Action<FindAllEntitiesForI
                     leagueRepository.findById(Long.parseLong(String.valueOf(id)));
             if (foundLeague.isPresent()) {
                 actionDto.setQasinoGameLeague(foundLeague.get());
-                pageable = PageRequest.of(actionDto.getSuppliedPages(), actionDto.getSuppliedMaxPerPage()
+                actionDto.addKeyValueToHeader("leagueId", String.valueOf(foundLeague.get().getLeagueId()));
+                pageable = PageRequest.of(actionDto.getSuppliedPage(), actionDto.getSuppliedMaxPerPage()
 //                        ,
 //                        Sort.by(Sort.Order.desc("\"created\""))
                 );
@@ -136,17 +138,17 @@ public class FindAllEntitiesForInputAction implements Action<FindAllEntitiesForI
     private void setErrorMessageNotFound(FindAllEntitiesForInputActionDTO actionDto, String id,
                                          String value) {
         actionDto.setHttpStatus(404);
-        actionDto.setErrorKey(id);
-        actionDto.setErrorValue(value);
+        actionDto.setKey(id);
+        actionDto.setValue(value);
         actionDto.setErrorMessage("Entity not found for key" + value);
-        actionDto.prepareResponseHeaders();
+
     }
 
     public interface FindAllEntitiesForInputActionDTO {
 
         // @formatter:off
         // Getters
-        int getSuppliedPages();
+        int getSuppliedPage();
         int getSuppliedMaxPerPage();
         long getSuppliedVisitorId();
         long getSuppliedGameId();
@@ -179,10 +181,11 @@ public class FindAllEntitiesForInputAction implements Action<FindAllEntitiesForI
 
         void setFriends(List<Visitor> visitors);
 
-        // error setters
+        // error and response setters
+        void addKeyValueToHeader(String key, String value);
         void setHttpStatus(int status);
-        void setErrorKey(String key);
-        void setErrorValue(String value);
+        void setKey(String key);
+        void setValue(String value);
         void setErrorMessage(String key);
         void prepareResponseHeaders();
         // @formatter:on
