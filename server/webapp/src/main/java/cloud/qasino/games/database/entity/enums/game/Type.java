@@ -36,7 +36,9 @@ public enum Type implements LabeledEnum, ContextType {
      * BALANCE_UPDATED
      */
     @Column(name = "type", length = 25)
-    HIGHLOW("highlow"), BLACKJACK("blackjack"), ERROR("error");
+    HIGHLOW("highlow"),
+    BLACKJACK("blackjack"),
+    ERROR("error");
 
     /**
      * A static HashMap lookup with key + value is created to use in a getter

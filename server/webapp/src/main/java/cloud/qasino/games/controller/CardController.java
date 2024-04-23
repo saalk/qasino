@@ -15,6 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -43,6 +44,7 @@ public class CardController {
 
     @DeleteMapping("/card/{cardId}/game/{gameId}")
     public ResponseEntity deletePlayingCardByCard(
+            @RequestHeader("visitorId") String vId,
             @PathVariable("gameId") String id,
             @PathVariable("cardId") String card
     ) {
@@ -82,6 +84,7 @@ public class CardController {
 
     @DeleteMapping("/card/{cardId}")
     public ResponseEntity<Card> deletePlayingCardById(
+            @RequestHeader("visitorId") String vId,
             @PathVariable("cardId") String id
     ) {
 
@@ -116,7 +119,9 @@ public class CardController {
             produces = MediaType.IMAGE_JPEG_VALUE
     )
     public @ResponseBody
-    byte[] getPlayingCardImageWithMediaType(@PathVariable("cardId") String card) throws IOException {
+    byte[] getPlayingCardImageWithMediaType(
+            @PathVariable("cardId") String card
+    ) throws IOException {
         InputStream in = getClass()
                 .getResourceAsStream("/resources/images/playingcard/svg/diamonds-ten.svg");
         return IOUtils.toByteArray(in);

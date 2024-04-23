@@ -29,6 +29,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -288,7 +289,7 @@ public class GameController {
                 "style", style,
                 "ante", ante,
                 "avatar", avatar,
-                "trigger", "new"
+                "gameTrigger", "setup"
         );
         if (!flowDTO.validateInput()) {
             flowDTO.prepareResponseHeaders();
@@ -345,6 +346,7 @@ public class GameController {
 
     @PutMapping(value = "/game/{gameId}/prepare/{type}/league/{leagueId}")
     public ResponseEntity<Qasino> prepareGameWithTypeLeagueStyleAnte(
+            @RequestHeader("visitorId") String vId,
             @PathVariable("gameId") String gid,
             @PathVariable("type") String type,
             @PathVariable("leagueId") Optional<String> lid,
@@ -355,11 +357,13 @@ public class GameController {
         QasinoFlowDTO flowDTO = new QasinoFlowDTO();
         if (lid.isPresent()) flowDTO.setPathVariables("leagueId", lid.get());
         flowDTO.setPathVariables(
+                "visitorId", vId,
                 "gameId", gid,
                 "type", type,
                 "style", style,
                 "ante", ante,
-                "trigger", "prepare"
+                "gameTrigger", "prepare"
+
         );
         if (!flowDTO.validateInput()) {
             flowDTO.prepareResponseHeaders();
@@ -459,6 +463,7 @@ public class GameController {
 
     // @PutMapping(value = "/game/{gameId}/add/bot")
     public ResponseEntity<Game> addBotPLayerForAGame(
+            @RequestHeader("visitorId") String vId,
             @PathVariable("gameId") String id,
             @RequestParam(name = "aiLevel", defaultValue = "average") String aiLevel,
             @RequestParam(name = "avatar", defaultValue = "elf") String avatar) {
@@ -513,6 +518,7 @@ public class GameController {
 
     // @PutMapping(value = "/game/{gameId}/accept/player{playerId}")
     public ResponseEntity<Game> acceptInvitationForAGame(
+            @RequestHeader("visitorId") String vId,
             @PathVariable("gameId") String gid,
             @PathVariable("playerId") String pid,
             @RequestParam(name = "fiches", defaultValue = "0") String fichesInput) {
@@ -628,6 +634,7 @@ public class GameController {
 
 //    // @PostMapping(value = "/cards/game/{id}/jokers/{jokers}")
 //    public ResponseEntity setupGame(
+//@RequestHeader("visitorId") String vId,
 //            @PathVariable("id") String id,
 //            @PathVariable("jokers") String jokers
 //    ) {
@@ -671,6 +678,7 @@ public class GameController {
     // Game crud actions
     // @GetMapping("/game/{gameId}")
     public ResponseEntity<Optional<Game>> getGame(
+            @RequestHeader("visitorId") String vId,
             @PathVariable("gameId") String id
     ) {
 
@@ -700,6 +708,7 @@ public class GameController {
     // todo LOW work on all sqls, works for new
     // @PutMapping(value = "/game/{gameId}/state/{state}")
     public ResponseEntity<Game> updateGameState(
+            @RequestHeader("visitorId") String vId,
             @PathVariable("gameId") String id,
             @PathVariable("state") String state
     ) {
@@ -738,11 +747,12 @@ public class GameController {
 
     @DeleteMapping("/game/{gameId}")
     public ResponseEntity<Qasino> deleteGame(
+            @RequestHeader("visitorId") String vId,
             @PathVariable("gameId") String id
     ) {
         // validate
         QasinoFlowDTO flowDTO = new QasinoFlowDTO();
-        flowDTO.setPathVariables("gameId", id);
+        flowDTO.setPathVariables("visitorId",vId,"gameId", id);
         if (!flowDTO.validateInput()) {
             flowDTO.prepareResponseHeaders();
             return ResponseEntity.status(HttpStatus.valueOf(flowDTO.getHttpStatus())).headers(flowDTO.getHeaders()).build();

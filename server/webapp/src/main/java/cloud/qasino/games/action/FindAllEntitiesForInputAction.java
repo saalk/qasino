@@ -34,6 +34,7 @@ public class FindAllEntitiesForInputAction implements Action<FindAllEntitiesForI
 
     long leagueId;
     long gameId;
+    long turnPlayerId;
     long visitorId;
 
     @Override
@@ -41,6 +42,7 @@ public class FindAllEntitiesForInputAction implements Action<FindAllEntitiesForI
 
         leagueId = actionDto.getSuppliedLeagueId();
         gameId = actionDto.getSuppliedGameId();
+        turnPlayerId = actionDto.getSuppliedTurnPlayerId();
         visitorId = actionDto.getSuppliedVisitorId();
 
         if (!(leagueId == 0)) {
@@ -56,38 +58,30 @@ public class FindAllEntitiesForInputAction implements Action<FindAllEntitiesForI
             if (response.equals(EventOutput.Result.FAILURE)) return response;
         }
 
-        Long id = actionDto.getAcceptedPlayerId();
-        if (!(id == 0)) {
-            Optional<Player> foundPlayer = playerRepository.findById(Long.parseLong(String.valueOf(id)));
-            if (foundPlayer.isPresent()) {
-                actionDto.setAcceptedPlayer(foundPlayer.get());
-            } else {
-                setErrorMessageNotFound(actionDto, "acceptedPlayerId", String.valueOf(id));
-                return EventOutput.Result.FAILURE;
-            }
+        if (!(turnPlayerId == 0)) {
+            EventOutput.Result response = getTurnPlayerResult(actionDto, turnPlayerId);
+            if (response.equals(EventOutput.Result.FAILURE)) return response;
         }
-
-        id = actionDto.getInvitedPlayerId();
-        if (!(id == 0)) {
-            Optional<Player> foundPlayer = playerRepository.findById(Long.parseLong(String.valueOf(id)));
-            if (foundPlayer.isPresent()) {
-                actionDto.setInvitedPlayer(foundPlayer.get());
-            } else {
-                setErrorMessageNotFound(actionDto, "invitedPlayerId", String.valueOf(id));
-                return EventOutput.Result.FAILURE;
-            }
-        }
-
-        id = actionDto.getSuppliedTurnPlayerId();
-        if (!(id == 0)) {
-            Optional<Player> foundPlayer = playerRepository.findById(Long.parseLong(String.valueOf(id)));
-            if (foundPlayer.isPresent()) {
-                actionDto.setTurnPlayer(foundPlayer.get());
-            } else {
-                setErrorMessageNotFound(actionDto, "turnPlayerId", String.valueOf(id));
-                return EventOutput.Result.FAILURE;
-            }
-        }
+//        Long id = actionDto.getAcceptedPlayerId();
+//        if (!(id == 0)) {
+//            Optional<Player> foundPlayer = playerRepository.findById(Long.parseLong(String.valueOf(id)));
+//            if (foundPlayer.isPresent()) {
+//                actionDto.setAcceptedPlayer(foundPlayer.get());
+//            } else {
+//                setErrorMessageNotFound(actionDto, "acceptedPlayerId", String.valueOf(id));
+//                return EventOutput.Result.FAILURE;
+//            }
+//        }
+//        id = actionDto.getInvitedPlayerId();
+//        if (!(id == 0)) {
+//            Optional<Player> foundPlayer = playerRepository.findById(Long.parseLong(String.valueOf(id)));
+//            if (foundPlayer.isPresent()) {
+//                actionDto.setInvitedPlayer(foundPlayer.get());
+//            } else {
+//                setErrorMessageNotFound(actionDto, "invitedPlayerId", String.valueOf(id));
+//                return EventOutput.Result.FAILURE;
+//            }
+//        }
         return EventOutput.Result.SUCCESS;
     }
 
@@ -96,8 +90,6 @@ public class FindAllEntitiesForInputAction implements Action<FindAllEntitiesForI
         Optional<League> foundLeague =
                 leagueRepository.findById(Long.parseLong(String.valueOf(id)));
         if (foundLeague.isPresent()) {
-            visitorId = (foundLeague.get().getVisitor().getVisitorId());
-
             actionDto.setQasinoGameLeague(foundLeague.get());
             pageable = PageRequest.of(actionDto.getSuppliedPage(), actionDto.getSuppliedMaxPerPage()
 //                        ,
@@ -111,11 +103,20 @@ public class FindAllEntitiesForInputAction implements Action<FindAllEntitiesForI
         }
         return EventOutput.Result.SUCCESS;
     }
+    private EventOutput.Result getTurnPlayerResult(FindAllEntitiesForInputActionDTO actionDto, long id) {
+        Optional<Player> foundPlayer = playerRepository.findById(Long.parseLong(String.valueOf(id)));
+        if (foundPlayer.isPresent()) {
+            gameId = (foundPlayer.get().getGame().getGameId());
+            actionDto.setTurnPlayer(foundPlayer.get());
+        } else {
+            setErrorMessageNotFound(actionDto, "turnPlayerId", String.valueOf(id));
+            return EventOutput.Result.FAILURE;
+        }
+        return EventOutput.Result.SUCCESS;
+    }
     private EventOutput.Result getGameResult(FindAllEntitiesForInputActionDTO actionDto, long id) {
         Optional<Game> foundGame = gameRepository.findById(Long.parseLong(String.valueOf(id)));
         if (foundGame.isPresent()) {
-            visitorId = (foundGame.get().getInitiator());
-
             actionDto.setQasinoGame(foundGame.get());
             actionDto.setQasinoGamePlayers(foundGame.get().getPlayers());
             actionDto.setCardsInTheGame(foundGame.get().getCards());

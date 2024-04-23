@@ -27,6 +27,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -223,12 +224,13 @@ public class QasinoController {
 
     @GetMapping(value = "/paging/visitors")
     public ResponseEntity listAllVisitorsWithPaging(
+            @RequestHeader("visitorId") String vId,
             @RequestParam(name = "pageNumber", defaultValue = "0") String page,
             @RequestParam(name = "pageSize", defaultValue = "4") String max
     ) {
         // validate
         QasinoFlowDTO flowDTO = new QasinoFlowDTO();
-        flowDTO.setPathVariables("pageNumber", page, "pageSize", max);
+        flowDTO.setPathVariables("visitorId",vId,"pageNumber", page, "pageSize", max);
         if (!flowDTO.validateInput()) {
             flowDTO.prepareResponseHeaders();
             return ResponseEntity.status(HttpStatus.valueOf(flowDTO.getHttpStatus())).headers(flowDTO.getHeaders()).build();

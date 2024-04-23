@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -46,6 +47,7 @@ public class PlayerController {
 
     @GetMapping("/player/{playerId}")
     public ResponseEntity<Optional<Player>> getPlayer(
+            @RequestHeader("visitorId") String vId,
             @PathVariable("playerId") String id
     ) {
 
@@ -73,6 +75,7 @@ public class PlayerController {
 
     @PutMapping(value = "/player/{playerId}")
     public ResponseEntity<Player> updatePlayer(
+            @RequestHeader("visitorId") String vId,
             @PathVariable("playerId") String id,
             @RequestParam(name = "avatar", defaultValue = "") String avatar,
             @RequestParam(name = "aiLevel", defaultValue = "") String aiLevel
@@ -118,6 +121,7 @@ public class PlayerController {
 
     @PutMapping(value = "/player/{playerId}/{order}")
     public ResponseEntity<Game> updateSequence(
+            @RequestHeader("visitorId") String vId,
             @PathVariable("playerId") String id,
             @PathVariable("order") String order
     ) {
@@ -164,6 +168,7 @@ public class PlayerController {
 
     @DeleteMapping("/player/{playerId}")
     public ResponseEntity<Player> deletePlayer(
+            @RequestHeader("visitorId") String vId,
             @PathVariable("playerId") String id
     ) {
 

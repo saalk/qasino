@@ -40,7 +40,17 @@ public class QasinoFlowDTO //extends AbstractFlowDTO
         CalculateHallOfFameAction.CalculateHallOfFameActionDTO,
         HandleSecuredLoanAction.HandleSecuredLoanActionDTO,
         SetStatusIndicatorsBaseOnRetrievedDataAction.SetStatusIndicatorsBaseOnRetrievedDataDTO,
-        MapQasinoResponseFromRetrievedDataAction.MapQasinoResponseFromRetrievedDataDTO
+        MapQasinoResponseFromRetrievedDataAction.MapQasinoResponseFromRetrievedDataDTO,
+        IsGameConsistentForGameTrigger.IsGameConsistentForGameTriggerDTO,
+        IsTurnConsistentForGameTrigger.IsTurnConsistentForGameTriggerDTO,
+        ProgressCardMovesForTurnTrigger.ProgressCardMovesForTurnTriggerDTO,
+        UpdateTurnForGameType.UpdateTurnForGameTypeDTO,
+        IsGameFinished.IsGameFinishedDTO,
+        MakeGamePlayableForGameType.MakeGamePlayableForGameTypeDTO,
+        SetupTurnAndInitialCardMovesForGameType.SetupTurnAndInitialCardMovesForGameTypeDTO,
+        MapTableAndSeatsForGame.MapTableAndSeatsForGameDTO
+
+
 {
     // suppress lombok setter for these fixed values
     @Setter(AccessLevel.NONE)
@@ -60,7 +70,8 @@ public class QasinoFlowDTO //extends AbstractFlowDTO
     private long acceptedPlayerId;
     private long suppliedTurnPlayerId;
     // triggers for the Game
-    private GameTrigger suppliedTrigger;
+    private GameTrigger suppliedGameTrigger;
+    private TurnTrigger suppliedTurnTrigger;
     private GameStateGroup suppliedGameStateGroup;
     // Triggers for playing a Game
     private Move suppliedMove;
@@ -169,6 +180,9 @@ public class QasinoFlowDTO //extends AbstractFlowDTO
         }
         if (qasinoGameLeague != null) {
             this.headers.add("leagueId", String.valueOf(qasinoGameLeague.getLeagueId()));
+        }
+        if (turnPlayer != null) {
+            this.headers.add("turnPlayerId", String.valueOf(turnPlayer.getPlayerId()));
         }
         if (activeTurn != null) {
             this.headers.add("turnId", String.valueOf(activeTurn.getTurnId()));
@@ -332,12 +346,23 @@ public class QasinoFlowDTO //extends AbstractFlowDTO
             }
         }
         // game
-        key = "trigger";
+        key = "gameTrigger";
         if (requestParam.containsKey(key)) {
             if (isValueForEnumKeyValid(key, requestParam.get(
                     key), dataName,
                     paramDataString)) {
-                this.suppliedTrigger = GameTrigger.fromLabel(requestParam.get(key));
+                this.suppliedGameTrigger = GameTrigger.fromLabel(requestParam.get(key));
+            } else {
+                return false;
+            }
+        }
+        // turn
+        key = "turnTrigger";
+        if (requestParam.containsKey(key)) {
+            if (isValueForEnumKeyValid(key, requestParam.get(
+                            key), dataName,
+                    paramDataString)) {
+                this.suppliedTurnTrigger = TurnTrigger.fromLabel(requestParam.get(key));
             } else {
                 return false;
             }

@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -49,11 +50,12 @@ public class LeagueController {
 
     @GetMapping("/league/{leagueId}")
     public ResponseEntity<Qasino> getLeague(
+            @RequestHeader("visitorId") String vId,
             @PathVariable("leagueId") String id
     ) {
         // validate
         QasinoFlowDTO flowDTO = new QasinoFlowDTO();
-        flowDTO.setPathVariables("leagueId", id);
+        flowDTO.setPathVariables("vistiorId",vId,"leagueId", id);
         if (!flowDTO.validateInput()) {
             flowDTO.prepareResponseHeaders();
             return ResponseEntity.status(HttpStatus.valueOf(flowDTO.getHttpStatus())).headers(flowDTO.getHeaders()).build();
@@ -107,12 +109,13 @@ public class LeagueController {
 
     @PutMapping(value = "/league/{leagueId}")
     public ResponseEntity<Qasino> updateLeague(
+            @RequestHeader("visitorId") String vId,
             @PathVariable("leagueId") String id,
             @RequestParam(name = "leagueName", defaultValue = "") String leagueName
     ) {
         // validate
         QasinoFlowDTO flowDTO = new QasinoFlowDTO();
-        flowDTO.setPathVariables("leagueId", id,"leagueName",leagueName );
+        flowDTO.setPathVariables("visitorId",vId,"leagueId", id,"leagueName",leagueName );
         if (!flowDTO.validateInput()) {
             flowDTO.prepareResponseHeaders();
             return ResponseEntity.status(HttpStatus.valueOf(flowDTO.getHttpStatus())).headers(flowDTO.getHeaders()).build();
@@ -140,11 +143,12 @@ public class LeagueController {
 
     @DeleteMapping("/league/{leagueId}")
     public ResponseEntity<Qasino> deleteLeague(
+            @RequestHeader("visitorId") String vId,
             @PathVariable("leagueId") String id
     ) {
         // validate
         QasinoFlowDTO flowDTO = new QasinoFlowDTO();
-        flowDTO.setPathVariables("leagueId", id);
+        flowDTO.setPathVariables("visitorId",vId,"leagueId", id);
         if (!flowDTO.validateInput()) {
             flowDTO.prepareResponseHeaders();
             return ResponseEntity.status(HttpStatus.valueOf(flowDTO.getHttpStatus())).headers(flowDTO.getHeaders()).build();
