@@ -40,7 +40,7 @@ public class QasinoFlowDTO //extends AbstractFlowDTO
         CalculateHallOfFameAction.CalculateHallOfFameActionDTO,
         HandleSecuredLoanAction.HandleSecuredLoanActionDTO,
         SetStatusIndicatorsBaseOnRetrievedDataAction.SetStatusIndicatorsBaseOnRetrievedDataDTO,
-        MapQasinoResponseFromRetrievedDataAction.MapQasinoResponseFromRetrievedDataDTO,
+        MapQasinoResponseFromRetrievedDataAction.Dto,
         IsGameConsistentForGameTrigger.IsGameConsistentForGameTriggerDTO,
         IsTurnConsistentForGameTrigger.IsTurnConsistentForGameTriggerDTO,
         ProgressCardMovesForTurnTrigger.ProgressCardMovesForTurnTriggerDTO,

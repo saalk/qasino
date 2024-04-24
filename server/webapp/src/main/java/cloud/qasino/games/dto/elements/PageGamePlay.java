@@ -14,19 +14,15 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class PageGamePlay {
 
-    private boolean visitorPlaysAGame;
-
+    // Main and stats
     @JsonProperty("ActiveGame")
     private Game selectedGame;
-
     @JsonProperty("gameName")
     private String gameName; // game type and gameId concat
-
+    private int currentTurn;
     private int currentRound;
-    private int currentMove;
-
+    // Pending actions
     private Turn activeTurn;
-
     @JsonProperty("Table")
     private SectionTable table;
 

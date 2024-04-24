@@ -1,6 +1,8 @@
 package cloud.qasino.games.dto.elements;
 
+import cloud.qasino.games.database.entity.Player;
 import cloud.qasino.games.database.entity.Visitor;
+import cloud.qasino.games.database.entity.enums.game.GameState;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -8,6 +10,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.List;
+import java.util.Map;
 
 @Data
 @Builder
@@ -15,25 +18,15 @@ import java.util.List;
 @AllArgsConstructor
 public class PageVisitor {
 
-    private boolean visitorIsLoggedOn;
-
+    // Main
     @JsonProperty("Visitor")
     private Visitor selectedVisitor;
-
-    private int totalAcceptedInvitations;
-    private int totalPendingInvitations;
-
-    public int totalNewGames;
-    public int totalStartedGames;
-    public int totalsFinishedGames;
-
-
-    @JsonProperty("acceptedInvitations")
-    private List<Visitor> acceptedInvitations;
-
+    // Stats
+    private int gamesPlayed;
+    private int gamesWon;
+    @JsonProperty("initiatedGamesPerGame")
+    private Map<GameState, Integer> gamesPerState;
+    // Pending actions
     @JsonProperty("PendingInvitation")
-    private List<Visitor> pendingInvitations;
-
-    //private List<Chat> chats;
-    // list of chats per Friend
+    private List<Player> pendingInvitations;
 }
