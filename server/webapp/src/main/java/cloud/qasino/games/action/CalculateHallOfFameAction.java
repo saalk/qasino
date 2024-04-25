@@ -62,8 +62,8 @@ public class CalculateHallOfFameAction implements Action<CalculateHallOfFameActi
     private void setErrorMessageNotFound(SetStatusIndicatorsBaseOnRetrievedDataAction.SetStatusIndicatorsBaseOnRetrievedDataDTO actionDto, String id,
                                          String value) {
         actionDto.setHttpStatus(500);
-        actionDto.setKey(id);
-        actionDto.setValue(value);
+        actionDto.setErrorKey(id);
+        actionDto.setErrorValue(value);
         actionDto.setErrorMessage("Entity not found for key" + id);
     }
 
@@ -74,9 +74,9 @@ public class CalculateHallOfFameAction implements Action<CalculateHallOfFameActi
         // error setters
         void setHttpStatus(int status);
 
-        void setKey(String key);
+        void setErrorKey(String errorKey);
 
-        void setValue(String value);
+        void setErrorValue(String errorValue);
 
         void setErrorMessage(String key);
 

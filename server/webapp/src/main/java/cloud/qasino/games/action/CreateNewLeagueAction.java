@@ -47,8 +47,8 @@ public class CreateNewLeagueAction implements Action<CreateNewLeagueAction.Creat
     private void setErrorMessageBadRequest(CreateNewLeagueActionDTO actionDto, String id,
                                            String value) {
         actionDto.setHttpStatus(400);
-        actionDto.setKey(id);
-        actionDto.setValue(value);
+        actionDto.setErrorKey(id);
+        actionDto.setErrorValue(value);
         actionDto.setErrorMessage("Supplied value for leagueName is empty");
     }
 
@@ -56,16 +56,16 @@ public class CreateNewLeagueAction implements Action<CreateNewLeagueAction.Creat
     private void setErrorMessageConflict(CreateNewLeagueActionDTO actionDto, String id,
                                          String value) {
         actionDto.setHttpStatus(409);
-        actionDto.setKey(id);
-        actionDto.setValue(value);
+        actionDto.setErrorKey(id);
+        actionDto.setErrorValue(value);
         actionDto.setErrorMessage("leagueName [" + value + "] not available any more");
     }
 
     private void setErrorMessageInternalServerError(CreateNewLeagueActionDTO actionDto, String id,
                                                     String value) {
         actionDto.setHttpStatus(500);
-        actionDto.setKey(id);
-        actionDto.setValue(value);
+        actionDto.setErrorKey(id);
+        actionDto.setErrorValue(value);
         actionDto.setErrorMessage("Crash while creating a new league");
     }
 
@@ -81,8 +81,8 @@ public class CreateNewLeagueAction implements Action<CreateNewLeagueAction.Creat
 
         // error setters
         void setHttpStatus(int status);
-        void setKey(String key);
-        void setValue(String value);
+        void setErrorKey(String errorKey);
+        void setErrorValue(String errorValue);
         void setErrorMessage(String key);
         // @formatter:on
     }

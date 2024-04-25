@@ -50,8 +50,8 @@ public class SetStatusIndicatorsBaseOnRetrievedDataAction implements Action<SetS
     private void setErrorMessageCrash(SetStatusIndicatorsBaseOnRetrievedDataDTO actionDto, String id,
                                          String value) {
         actionDto.setHttpStatus(500);
-        actionDto.setKey(id);
-        actionDto.setValue(value);
+        actionDto.setErrorKey(id);
+        actionDto.setErrorValue(value);
         actionDto.setErrorMessage("Entity not found for key" + id);
     }
 
@@ -83,8 +83,8 @@ public class SetStatusIndicatorsBaseOnRetrievedDataAction implements Action<SetS
 
         // error setters
         void setHttpStatus(int status);
-        void setKey(String key);
-        void setValue(String value);
+        void setErrorKey(String errorKey);
+        void setErrorValue(String errorValue);
         void setErrorMessage(String key);
         // @formatter:on
     }

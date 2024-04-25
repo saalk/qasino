@@ -52,16 +52,16 @@ public class FindVisitorIdByVisitorNameAction implements Action<FindVisitorIdByV
     private void setErrorMessageNotFound(FindVisitorIdByVisitorNameActionDTO actionDto, String id,
                                          String value) {
         actionDto.setHttpStatus(404);
-        actionDto.setKey(id);
-        actionDto.setValue(value);
+        actionDto.setErrorKey(id);
+        actionDto.setErrorValue(value);
         actionDto.setErrorMessage(id + " not found for supplied value [" + value + "]");
     }
 
     private void setErrorMessageBadRequest(FindVisitorIdByVisitorNameActionDTO actionDto, String id,
                                            String value) {
         actionDto.setHttpStatus(400);
-        actionDto.setKey(id);
-        actionDto.setValue(value);
+        actionDto.setErrorKey(id);
+        actionDto.setErrorValue(value);
         actionDto.setErrorMessage("Supplied value " + id + " is empty");
     }
 
@@ -69,8 +69,8 @@ public class FindVisitorIdByVisitorNameAction implements Action<FindVisitorIdByV
     private void setErrorMessageConflict(FindVisitorIdByVisitorNameActionDTO actionDto, String id,
                                          String value) {
         actionDto.setHttpStatus(409);
-        actionDto.setKey(id);
-        actionDto.setValue(value);
+        actionDto.setErrorKey(id);
+        actionDto.setErrorValue(value);
         actionDto.setErrorMessage("Multiple " + id + " found for supplied value [" + value +
                 "]");
     }
@@ -86,8 +86,8 @@ public class FindVisitorIdByVisitorNameAction implements Action<FindVisitorIdByV
 
         // error setters
         void setHttpStatus(int status);
-        void setKey(String key);
-        void setValue(String value);
+        void setErrorKey(String errorKey);
+        void setErrorValue(String errorValue);
         void setErrorMessage(String key);
         // @formatter:on
     }

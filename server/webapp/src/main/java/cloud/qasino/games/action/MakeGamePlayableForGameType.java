@@ -1,14 +1,15 @@
 package cloud.qasino.games.action;
 
 import cloud.qasino.games.action.interfaces.Action;
+import cloud.qasino.games.database.entity.Game;
 import cloud.qasino.games.database.entity.Visitor;
 import cloud.qasino.games.database.repository.VisitorRepository;
 import cloud.qasino.games.event.EventOutput;
+import cloud.qasino.games.statemachine.trigger.GameTrigger;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
-import java.util.Random;
 
 @Slf4j
 @Component
@@ -20,67 +21,31 @@ public class MakeGamePlayableForGameType implements Action<MakeGamePlayableForGa
     @Override
     public EventOutput.Result perform(MakeGamePlayableForGameTypeDTO actionDto) {
 
-        Visitor updateVisitor = actionDto.getQasinoVisitor();
-
-        if (actionDto.isRequestingToRepay()) {
-            boolean repayOk = updateVisitor.repayLoan();
-            if (!repayOk) {
-                log.info("!repayOk");
-                setErrorMessageConflict(actionDto, "Repay", "Repay loan with balance not possible, balance too low");
-                return EventOutput.Result.FAILURE;
-            }
-            actionDto.setQasinoVisitor(visitorRepository.save(updateVisitor));
-            return EventOutput.Result.SUCCESS;
-        }
-
-        if (actionDto.isOfferingShipForPawn()) {
-            Random random = new Random();
-            int randomNumber = random.nextInt(1001);
-            boolean pawnOk = updateVisitor.pawnShip(randomNumber);
-            if (!pawnOk) {
-                log.info("!pawnOk");
-                setErrorMessageConflict(actionDto, "Pawn", "Ship already pawned, repay first");
-                return EventOutput.Result.FAILURE;
-            }
-            actionDto.setQasinoVisitor(visitorRepository.save(updateVisitor));
-            return EventOutput.Result.SUCCESS;
-        }
-        setErrorMessageBadRequest(actionDto, "Pawn or Repay", "Nothing to process");
+        Game updateGame = actionDto.getQasinoGame();
+//        boolean repayOk = updateGame.;
         return EventOutput.Result.FAILURE;
     }
 
-    void setErrorMessageConflict(MakeGamePlayableForGameTypeDTO actionDto, String id,
-                                 String value) {
-        actionDto.setHttpStatus(409);
-        actionDto.setKey(id);
-        actionDto.setValue(value);
-        actionDto.setErrorMessage("Action [" + id + "] invalid");
-
-    }
     private void setErrorMessageBadRequest(MakeGamePlayableForGameTypeDTO actionDto, String id,
                                            String value) {
         actionDto.setHttpStatus(500);
-        actionDto.setKey(id);
-        actionDto.setValue(value);
+        actionDto.setErrorKey(id);
+        actionDto.setErrorValue(value);
         actionDto.setErrorMessage("Action [" + id + "] invalid");
-
     }
+
     public interface MakeGamePlayableForGameTypeDTO {
 
         // @formatter:off
         // Getters
-
-        boolean isRequestingToRepay();
-        boolean isOfferingShipForPawn();
-        Visitor getQasinoVisitor();
-
-        // Setters
-        void setQasinoVisitor(Visitor visitor);
+        Visitor getQasinoGamePlayers();
+        GameTrigger getSuppliedGameTrigger();
+        Game getQasinoGame();
 
         // error setters
         void setHttpStatus(int status);
-        void setKey(String key);
-        void setValue(String value);
+        void setErrorKey(String errorKey);
+        void setErrorValue(String errorValue);
         void setErrorMessage(String key);
         // @formatter:on
     }

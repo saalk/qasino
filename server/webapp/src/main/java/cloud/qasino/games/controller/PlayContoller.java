@@ -115,12 +115,12 @@ public class PlayContoller {
             return ResponseEntity.status(HttpStatus.valueOf(flowDTO.getHttpStatus())).headers(flowDTO.getHeaders()).build();
         }
         // logic
-//        output = isGameConsistentForGameTrigger.perform(flowDTO);
-//        if (output == EventOutput.Result.FAILURE) {
-//            flowDTO.prepareResponseHeaders();
-//            return ResponseEntity.status(HttpStatus.valueOf(flowDTO.getHttpStatus())).headers(flowDTO.getHeaders()).build();
-//        }
-//        makeGamePlayableForGameType.perform(flowDTO);
+        output = isGameConsistentForGameTrigger.perform(flowDTO);
+        if (output == EventOutput.Result.FAILURE) {
+            flowDTO.prepareResponseHeaders();
+            return ResponseEntity.status(HttpStatus.valueOf(flowDTO.getHttpStatus())).headers(flowDTO.getHeaders()).build();
+        }
+        makeGamePlayableForGameType.perform(flowDTO);
 //        setupTurnAndInitialCardMovesForGameType.perform(flowDTO);
 //        mapTableAndSeatsForGame.perform(flowDTO);
         // build response

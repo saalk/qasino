@@ -1,9 +1,12 @@
 package cloud.qasino.games.action;
 
 import cloud.qasino.games.action.interfaces.Action;
+import cloud.qasino.games.database.entity.Game;
 import cloud.qasino.games.database.entity.Visitor;
+import cloud.qasino.games.database.entity.enums.game.GameState;
 import cloud.qasino.games.database.repository.VisitorRepository;
 import cloud.qasino.games.event.EventOutput;
+import cloud.qasino.games.statemachine.trigger.GameTrigger;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
@@ -12,76 +15,48 @@ import java.util.Random;
 
 @Slf4j
 @Component
-public class IsGameConsistentForGameTrigger implements Action<IsGameConsistentForGameTrigger.IsGameConsistentForGameTriggerDTO, EventOutput.Result> {
+public class IsGameConsistentForGameTrigger implements Action<IsGameConsistentForGameTrigger.Dto, EventOutput.Result> {
 
     @Resource
     VisitorRepository visitorRepository;
 
     @Override
-    public EventOutput.Result perform(IsGameConsistentForGameTriggerDTO actionDto) {
+    public EventOutput.Result perform(Dto actionDto) {
 
-        Visitor updateVisitor = actionDto.getQasinoVisitor();
+        actionDto.setErrorKey("GameTrigger");
+        actionDto.setErrorValue(actionDto.getSuppliedGameTrigger().getLabel());
 
-        if (actionDto.isRequestingToRepay()) {
-            boolean repayOk = updateVisitor.repayLoan();
-            if (!repayOk) {
-                log.info("!repayOk");
-                setErrorMessageConflict(actionDto, "Repay", "Repay loan with balance not possible, balance too low");
-                return EventOutput.Result.FAILURE;
-            }
-            actionDto.setQasinoVisitor(visitorRepository.save(updateVisitor));
-            return EventOutput.Result.SUCCESS;
+        if (actionDto.getQasinoGamePlayers() == null) {
+            log.info("!players");
+            actionDto.setHttpStatus(422);
+            actionDto.setErrorMessage("Action [" + actionDto.getSuppliedGameTrigger() + "] invalid - game has no players");
+            return EventOutput.Result.FAILURE;
         }
-
-        if (actionDto.isOfferingShipForPawn()) {
-            Random random = new Random();
-            int randomNumber = random.nextInt(1001);
-            boolean pawnOk = updateVisitor.pawnShip(randomNumber);
-            if (!pawnOk) {
-                log.info("!pawnOk");
-                setErrorMessageConflict(actionDto, "Pawn", "Ship already pawned, repay first");
-                return EventOutput.Result.FAILURE;
-            }
-            actionDto.setQasinoVisitor(visitorRepository.save(updateVisitor));
-            return EventOutput.Result.SUCCESS;
+        if (actionDto.getQasinoGame().getState() != GameState.PREPARED) {
+            log.info("!state");
+            actionDto.setHttpStatus(422);
+            actionDto.setErrorMessage("Action [" + actionDto.getSuppliedGameTrigger() + "] invalid - game is not in prepared state");
+            return EventOutput.Result.FAILURE;
         }
-        setErrorMessageBadRequest(actionDto, "Pawn or Repay", "Nothing to process");
-        return EventOutput.Result.FAILURE;
+        return EventOutput.Result.SUCCESS;
     }
 
-    void setErrorMessageConflict(IsGameConsistentForGameTriggerDTO actionDto, String id,
-                                 String value) {
-        actionDto.setHttpStatus(409);
-        actionDto.setKey(id);
-        actionDto.setValue(value);
-        actionDto.setErrorMessage("Action [" + id + "] invalid");
-
-    }
-    private void setErrorMessageBadRequest(IsGameConsistentForGameTriggerDTO actionDto, String id,
-                                           String value) {
-        actionDto.setHttpStatus(500);
-        actionDto.setKey(id);
-        actionDto.setValue(value);
-        actionDto.setErrorMessage("Action [" + id + "] invalid");
-
-    }
-    public interface IsGameConsistentForGameTriggerDTO {
+    public interface Dto {
 
         // @formatter:off
         // Getters
+        Visitor getQasinoGamePlayers();
+        GameTrigger getSuppliedGameTrigger();
+        Game getQasinoGame();
 
-        boolean isRequestingToRepay();
-        boolean isOfferingShipForPawn();
-        Visitor getQasinoVisitor();
-
-        // Setters
-        void setQasinoVisitor(Visitor visitor);
-
-        // error setters
+        // error setters and getters
         void setHttpStatus(int status);
-        void setKey(String key);
-        void setValue(String value);
-        void setErrorMessage(String key);
+        int getHttpStatus();
+        void setErrorKey(String errorKey);
+        String getErrorKey();
+        void setErrorValue(String errorValue);
+        String getErrorValue();
+        void setErrorMessage(String message);
         // @formatter:on
     }
 }

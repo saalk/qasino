@@ -41,7 +41,7 @@ public class QasinoFlowDTO //extends AbstractFlowDTO
         HandleSecuredLoanAction.HandleSecuredLoanActionDTO,
         SetStatusIndicatorsBaseOnRetrievedDataAction.SetStatusIndicatorsBaseOnRetrievedDataDTO,
         MapQasinoResponseFromRetrievedDataAction.Dto,
-        IsGameConsistentForGameTrigger.IsGameConsistentForGameTriggerDTO,
+        IsGameConsistentForGameTrigger.Dto,
         IsTurnConsistentForGameTrigger.IsTurnConsistentForGameTriggerDTO,
         ProgressCardMovesForTurnTrigger.ProgressCardMovesForTurnTriggerDTO,
         UpdateTurnForGameType.UpdateTurnForGameTypeDTO,
@@ -139,8 +139,8 @@ public class QasinoFlowDTO //extends AbstractFlowDTO
 
     // ERROR DATA
     private int httpStatus = 200;
-    private String key = "Key";
-    private String value = "Value";
+    private String errorKey = "Key";
+    private String errorValue = "Value";
     private String errorMessage = "No error";
     private HttpHeaders headers = new HttpHeaders();
     public void addKeyValueToHeader(String key, String value) {
@@ -189,7 +189,7 @@ public class QasinoFlowDTO //extends AbstractFlowDTO
         }
         if (this.httpStatus > 299) {
             // also add error to header
-            addKeyValueToHeader(this.getKey(), this.getValue());
+            addKeyValueToHeader(this.getErrorKey(), this.getErrorValue());
             addKeyValueToHeader("Error", this.getErrorMessage());
         }
     }
@@ -271,8 +271,8 @@ public class QasinoFlowDTO //extends AbstractFlowDTO
             if (isValueForIntKeyValid(key, requestParam.get(key), dataName, paramDataString)) {
                 if (Integer.parseInt(requestParam.get(key)) < 1) {
                     this.setHttpStatus(400);
-                    this.setKey(key);
-                    this.setValue(value);
+                    this.setErrorKey(key);
+                    this.setErrorValue(errorValue);
                     this.setErrorMessage("Value for [" + key + "] is less than 1");
                     return false;
                 }
@@ -448,8 +448,8 @@ public class QasinoFlowDTO //extends AbstractFlowDTO
             if (Long.parseLong(value) == 0) {
                 // 404 - not found
                 this.setHttpStatus(404);
-                this.setKey(key);
-                this.setValue(value);
+                this.setErrorKey(key);
+                this.setErrorValue(value);
                 this.setErrorMessage("Value for [" + key + "] is zero");
                 return false;
             }
@@ -461,8 +461,8 @@ public class QasinoFlowDTO //extends AbstractFlowDTO
         if (!StringUtils.isNumeric(value)) {
             // 400 - bad request
             this.setHttpStatus(400);
-            this.setKey(key);
-            this.setValue(value);
+            this.setErrorKey(key);
+            this.setErrorValue(value);
             this.setErrorMessage("Invalid numeric value for [" + key + "]");
             return false;
         }
@@ -533,8 +533,8 @@ public class QasinoFlowDTO //extends AbstractFlowDTO
 
         // 400 - bad request
         this.setHttpStatus(400);
-        this.setKey(key);
-        this.setValue(value);
+        this.setErrorKey(key);
+        this.setErrorValue(value);
         this.setErrorMessage("Invalid enum value for [" + key + "]");
 
         return false;

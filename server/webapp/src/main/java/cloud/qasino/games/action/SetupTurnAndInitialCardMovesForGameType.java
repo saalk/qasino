@@ -52,16 +52,16 @@ public class SetupTurnAndInitialCardMovesForGameType implements Action<SetupTurn
     void setErrorMessageConflict(SetupTurnAndInitialCardMovesForGameTypeDTO actionDto, String id,
                                  String value) {
         actionDto.setHttpStatus(409);
-        actionDto.setKey(id);
-        actionDto.setValue(value);
+        actionDto.setErrorKey(id);
+        actionDto.setErrorValue(value);
         actionDto.setErrorMessage("Action [" + id + "] invalid");
 
     }
     private void setErrorMessageBadRequest(SetupTurnAndInitialCardMovesForGameTypeDTO actionDto, String id,
                                            String value) {
         actionDto.setHttpStatus(500);
-        actionDto.setKey(id);
-        actionDto.setValue(value);
+        actionDto.setErrorKey(id);
+        actionDto.setErrorValue(value);
         actionDto.setErrorMessage("Action [" + id + "] invalid");
 
     }
@@ -79,8 +79,8 @@ public class SetupTurnAndInitialCardMovesForGameType implements Action<SetupTurn
 
         // error setters
         void setHttpStatus(int status);
-        void setKey(String key);
-        void setValue(String value);
+        void setErrorKey(String errorKey);
+        void setErrorValue(String errorValue);
         void setErrorMessage(String key);
         // @formatter:on
     }

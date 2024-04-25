@@ -44,8 +44,8 @@ public class SignUpNewVisitorAction implements Action<SignUpNewVisitorAction.Sig
     private void setErrorMessageBadRequest(SignUpNewVisitorActionDTO actionDto, String id,
                                            String value) {
         actionDto.setHttpStatus(400);
-        actionDto.setKey(id);
-        actionDto.setValue(value);
+        actionDto.setErrorKey(id);
+        actionDto.setErrorValue(value);
         actionDto.setErrorMessage("Supplied value for visitorName is empty");
     }
 
@@ -53,16 +53,16 @@ public class SignUpNewVisitorAction implements Action<SignUpNewVisitorAction.Sig
     private void setErrorMessageConflict(SignUpNewVisitorActionDTO actionDto, String id,
                                          String value) {
         actionDto.setHttpStatus(409);
-        actionDto.setKey(id);
-        actionDto.setValue(value);
+        actionDto.setErrorKey(id);
+        actionDto.setErrorValue(value);
         actionDto.setErrorMessage("visitorName [" + value + "] not available any more");
     }
 
     private void setErrorMessageInternalServerError(SignUpNewVisitorActionDTO actionDto, String id,
                                                     String value) {
         actionDto.setHttpStatus(500);
-        actionDto.setKey(id);
-        actionDto.setValue(value);
+        actionDto.setErrorKey(id);
+        actionDto.setErrorValue(value);
         actionDto.setErrorMessage("Crash while signing up a new visitor");
     }
 
@@ -78,8 +78,8 @@ public class SignUpNewVisitorAction implements Action<SignUpNewVisitorAction.Sig
 
         // error setters
         void setHttpStatus(int status);
-        void setKey(String key);
-        void setValue(String value);
+        void setErrorKey(String errorKey);
+        void setErrorValue(String errorValue);
         void setErrorMessage(String key);
         // @formatter:on
     }
