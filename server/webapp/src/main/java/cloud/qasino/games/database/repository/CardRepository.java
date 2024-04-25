@@ -33,4 +33,5 @@ public interface CardRepository extends JpaRepository<Card, Long> {
     List<Card> findAllCardsByGameWithPage(@Param("gameId") long gameId, Pageable pageable);
 
     List<Card> findByGameOrderByLocationAscSequenceAsc(Game game);
+    List<Card> findByGameOrderBySequenceAsc(Long gameId);
 }

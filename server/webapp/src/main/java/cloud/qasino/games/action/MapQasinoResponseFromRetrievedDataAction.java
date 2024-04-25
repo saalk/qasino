@@ -24,7 +24,6 @@ import static cloud.qasino.games.database.entity.enums.game.GameState.setupGameS
 @Component
 public class MapQasinoResponseFromRetrievedDataAction implements Action<MapQasinoResponseFromRetrievedDataAction.Dto, EventOutput.Result> {
 
-
     @Override
     public EventOutput.Result perform(Dto actionDto) {
 
@@ -50,7 +49,6 @@ public class MapQasinoResponseFromRetrievedDataAction implements Action<MapQasin
         }
         navigationBarItems.add(navigationBarItem);
         qasino.setPageVisitor(pageVisitor);
-
 
         // 2: GameConfigurator
         navigationBarItem = new NavigationBarItem();
@@ -105,7 +103,6 @@ public class MapQasinoResponseFromRetrievedDataAction implements Action<MapQasin
         }
         navigationBarItems.add(navigationBarItem);
         qasino.setPageLeagues(pageLeagues);
-
 
         qasino.setNavBarItems(navigationBarItems);
         qasino.setStatistics(actionDto.getStatistics());
@@ -178,12 +175,12 @@ public class MapQasinoResponseFromRetrievedDataAction implements Action<MapQasin
             // the statement below gives an error
             // table.setPossibleMoves(new ArrayList(Move.moveMapNoError.keySet()));
             List<Card> stockNotInHand =
-                    actionDto.getCardsInTheGame()
+                    actionDto.getCardsInTheGameSorted()
                             .stream()
                             .filter(c -> c.getHand() == null)
                             .collect(Collectors.toList());
             table.setStockNotInHand(stockNotInHand);
-            table.setTotalVsStockCards(stockNotInHand.size() + "/" + actionDto.getCardsInTheGame().size() +
+            table.setTotalVsStockCards(stockNotInHand.size() + "/" + actionDto.getCardsInTheGameSorted().size() +
                     " stock/total");
             table.setCardsLeft(stockNotInHand.size());
             table.setSeats(setSeats(actionDto));
@@ -272,7 +269,7 @@ public class MapQasinoResponseFromRetrievedDataAction implements Action<MapQasin
 
         List<Player> getQasinoGamePlayers();
         Turn getActiveTurn();
-        List<Card> getCardsInTheGame();
+        List<Card> getCardsInTheGameSorted();
 
         // Setters
         void setQasino(Qasino qasino);

@@ -47,10 +47,7 @@ public class QasinoFlowDTO //extends AbstractFlowDTO
         UpdateTurnForGameType.UpdateTurnForGameTypeDTO,
         IsGameFinished.IsGameFinishedDTO,
         MakeGamePlayableForGameType.Dto,
-        SetupTurnAndInitialCardMovesForGameType.SetupTurnAndInitialCardMovesForGameTypeDTO,
-        MapTableAndSeatsForGame.MapTableAndSeatsForGameDTO
-
-
+        SetupTurnAndInitialCardMovesForGameType.Dto
 {
     // suppress lombok setter for these fixed values
     @Setter(AccessLevel.NONE)
@@ -127,7 +124,7 @@ public class QasinoFlowDTO //extends AbstractFlowDTO
     // during cardmoves in a turn
     private Player turnPlayer;
     private Turn activeTurn;
-    private List<Card> cardsInTheGame;
+    private List<Card> cardsInTheGameSorted;
     private List<CardMove> allCardMovesForTheGame;
 
     // NAVIGATION based on RETRIEVED DATA

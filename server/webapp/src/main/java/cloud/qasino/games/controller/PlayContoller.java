@@ -7,17 +7,10 @@ import cloud.qasino.games.action.IsGameFinished;
 import cloud.qasino.games.action.IsTurnConsistentForGameTrigger;
 import cloud.qasino.games.action.MakeGamePlayableForGameType;
 import cloud.qasino.games.action.MapQasinoResponseFromRetrievedDataAction;
-import cloud.qasino.games.action.MapTableAndSeatsForGame;
 import cloud.qasino.games.action.ProgressCardMovesForTurnTrigger;
 import cloud.qasino.games.action.SetStatusIndicatorsBaseOnRetrievedDataAction;
 import cloud.qasino.games.action.SetupTurnAndInitialCardMovesForGameType;
 import cloud.qasino.games.action.UpdateTurnForGameType;
-import cloud.qasino.games.database.entity.enums.game.GameState;
-import cloud.qasino.games.database.entity.Turn;
-import cloud.qasino.games.database.entity.Game;
-import cloud.qasino.games.database.entity.Player;
-import cloud.qasino.games.database.entity.enums.move.Move;
-import cloud.qasino.games.database.entity.enums.card.Location;
 import cloud.qasino.games.database.repository.CardMoveRepository;
 import cloud.qasino.games.database.repository.CardRepository;
 import cloud.qasino.games.database.repository.TurnRepository;
@@ -26,21 +19,13 @@ import cloud.qasino.games.database.repository.PlayerRepository;
 import cloud.qasino.games.dto.Qasino;
 import cloud.qasino.games.dto.QasinoFlowDTO;
 import cloud.qasino.games.event.EventOutput;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
-
-import java.net.URI;
-import java.util.Optional;
 
 @RestController
 public class PlayContoller {
@@ -61,8 +46,6 @@ public class PlayContoller {
     MakeGamePlayableForGameType makeGamePlayableForGameType;
     @Autowired
     SetupTurnAndInitialCardMovesForGameType setupTurnAndInitialCardMovesForGameType;
-    @Autowired
-    MapTableAndSeatsForGame mapTableAndSeatsForGame;
     @Autowired
     FindAllEntitiesForInputAction findAllEntitiesForInputAction;
     @Autowired
@@ -121,8 +104,7 @@ public class PlayContoller {
             return ResponseEntity.status(HttpStatus.valueOf(flowDTO.getHttpStatus())).headers(flowDTO.getHeaders()).build();
         }
         makeGamePlayableForGameType.perform(flowDTO);
-//        setupTurnAndInitialCardMovesForGameType.perform(flowDTO);
-//        mapTableAndSeatsForGame.perform(flowDTO);
+        setupTurnAndInitialCardMovesForGameType.perform(flowDTO);
         // build response
         findAllEntitiesForInputAction.perform(flowDTO);
         setStatusIndicatorsBaseOnRetrievedDataAction.perform(flowDTO);
@@ -161,16 +143,17 @@ public class PlayContoller {
 //            flowDTO.prepareResponseHeaders();
 //            return ResponseEntity.status(HttpStatus.valueOf(flowDTO.getHttpStatus())).headers(flowDTO.getHeaders()).build();
 //        }
-//        makeGamePlayableForGameType.perform(flowDTO);
-//        setupTurnAndInitialCardMovesForGameType.perform(flowDTO);
-//        mapTableAndSeatsForGame.perform(flowDTO);
+//        output = canPlayerStillPlay.perform(flowDTO);
+//        playNextTurnAndCardMovesForGameType.perform(flowDTO);
+//        updateBalanceForPlayer.perform(flowDTO);
+//        isLastCardInGamePlayed.perform(flowDTO);
+//        -> createWinner.perform(flowDTO);
         // logic
         isTurnConsistentForTurnTrigger.perform(flowDTO);
         isGameFinished.perform(flowDTO);
                 //-> CalculateResultsForGame -> StopPlayableGame
         updateTurnForGameType.perform(flowDTO);
         progressCardMovesForTurnTrigger.perform(flowDTO);
-        mapTableAndSeatsForGame.perform(flowDTO);
         // build response
         findAllEntitiesForInputAction.perform(flowDTO);
         setStatusIndicatorsBaseOnRetrievedDataAction.perform(flowDTO);

@@ -121,7 +121,7 @@ public class FindAllEntitiesForInputAction implements Action<FindAllEntitiesForI
             actionDto.setQasinoGamePlayers(playerRepository.findByGameId(Long.parseLong(String.valueOf(id))));
             // TODO dont know why this is needed
             actionDto.getQasinoGame().setPlayers(actionDto.getQasinoGamePlayers());
-            actionDto.setCardsInTheGame(foundGame.get().getCards());
+            actionDto.setCardsInTheGameSorted(cardRepository.findByGameOrderBySequenceAsc(actionDto.getQasinoGame().getGameId()));
             actionDto.setActiveTurn(foundGame.get().getTurn());
             if (actionDto.getActiveTurn() != null) {
                 actionDto.setAllCardMovesForTheGame(foundGame.get().getTurn().getCardMoves());
@@ -200,7 +200,7 @@ public class FindAllEntitiesForInputAction implements Action<FindAllEntitiesForI
         void setQasinoGame(Game game);
         void setQasinoGamePlayers(List<Player> players);
         void setActiveTurn(Turn turn);
-        void setCardsInTheGame(List<Card> cards);
+        void setCardsInTheGameSorted(List<Card> cards);
         void setAllCardMovesForTheGame(List<CardMove> cardMoves);
 
         void setQasinoGameLeague(League league);

@@ -1,81 +1,88 @@
 package cloud.qasino.games.action;
 
 import cloud.qasino.games.action.interfaces.Action;
+import cloud.qasino.games.database.entity.Card;
+import cloud.qasino.games.database.entity.CardMove;
+import cloud.qasino.games.database.entity.Game;
+import cloud.qasino.games.database.entity.Player;
+import cloud.qasino.games.database.entity.Turn;
 import cloud.qasino.games.database.entity.Visitor;
-import cloud.qasino.games.database.repository.VisitorRepository;
+import cloud.qasino.games.database.entity.enums.card.Face;
+import cloud.qasino.games.database.entity.enums.card.Location;
+import cloud.qasino.games.database.entity.enums.card.Position;
+import cloud.qasino.games.database.entity.enums.game.GameState;
+import cloud.qasino.games.database.entity.enums.game.Style;
+import cloud.qasino.games.database.entity.enums.move.Move;
+import cloud.qasino.games.database.repository.CardMoveRepository;
+import cloud.qasino.games.database.repository.CardRepository;
+import cloud.qasino.games.database.repository.GameRepository;
+import cloud.qasino.games.database.repository.TurnRepository;
 import cloud.qasino.games.event.EventOutput;
+import cloud.qasino.games.statemachine.trigger.GameTrigger;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
-import java.util.Random;
+import java.util.List;
+import java.util.Optional;
 
 @Slf4j
 @Component
-public class SetupTurnAndInitialCardMovesForGameType implements Action<SetupTurnAndInitialCardMovesForGameType.SetupTurnAndInitialCardMovesForGameTypeDTO, EventOutput.Result> {
+public class SetupTurnAndInitialCardMovesForGameType implements Action<SetupTurnAndInitialCardMovesForGameType.Dto, EventOutput.Result> {
 
     @Resource
-    VisitorRepository visitorRepository;
+    CardRepository cardRepository;
+    TurnRepository turnRepository;
+    CardMoveRepository cardMoveRepository;
 
     @Override
-    public EventOutput.Result perform(SetupTurnAndInitialCardMovesForGameTypeDTO actionDto) {
+    public EventOutput.Result perform(Dto actionDto) {
 
-        Visitor updateVisitor = actionDto.getQasinoVisitor();
-
-        if (actionDto.isRequestingToRepay()) {
-            boolean repayOk = updateVisitor.repayLoan();
-            if (!repayOk) {
-                log.info("!repayOk");
-                setErrorMessageConflict(actionDto, "Repay", "Repay loan with balance not possible, balance too low");
-                return EventOutput.Result.FAILURE;
-            }
-            actionDto.setQasinoVisitor(visitorRepository.save(updateVisitor));
-            return EventOutput.Result.SUCCESS;
+        Optional<Player> player1 =
+                actionDto.getQasinoGamePlayers()
+                        .stream()
+                        .filter(p -> p.getSeat() == 1)
+                        .findFirst();
+        if (player1.isEmpty()) {
+            setErrorMessageInternalServerError(actionDto, "Qasino.Player(s).seat", String.valueOf(actionDto.getQasinoGame().getSeats()));
+            return EventOutput.Result.FAILURE;
         }
+        actionDto.setActiveTurn(new Turn(
+                actionDto.getQasinoGame(),
+                player1.get().getPlayerId()));
+        turnRepository.save(actionDto.getActiveTurn());
 
-        if (actionDto.isOfferingShipForPawn()) {
-            Random random = new Random();
-            int randomNumber = random.nextInt(1001);
-            boolean pawnOk = updateVisitor.pawnShip(randomNumber);
-            if (!pawnOk) {
-                log.info("!pawnOk");
-                setErrorMessageConflict(actionDto, "Pawn", "Ship already pawned, repay first");
-                return EventOutput.Result.FAILURE;
-            }
-            actionDto.setQasinoVisitor(visitorRepository.save(updateVisitor));
-            return EventOutput.Result.SUCCESS;
-        }
-        setErrorMessageBadRequest(actionDto, "Pawn or Repay", "Nothing to process");
-        return EventOutput.Result.FAILURE;
+        CardMove cardMove = new CardMove(actionDto.getActiveTurn(), actionDto.getTurnPlayer(), 0, Move.DEAL,
+                Location.HAND);
+        cardMoveRepository.save(cardMove);
+        Card firstCard = actionDto.getCardsInTheGameSorted().get(0);
+        firstCard.setLocation(Location.HAND);
+        firstCard.setFace(Face.UP);
+        firstCard.setHand(player1.get());
+        cardRepository.save(firstCard);
+        return EventOutput.Result.SUCCESS;
     }
 
-    void setErrorMessageConflict(SetupTurnAndInitialCardMovesForGameTypeDTO actionDto, String id,
-                                 String value) {
-        actionDto.setHttpStatus(409);
-        actionDto.setErrorKey(id);
-        actionDto.setErrorValue(value);
-        actionDto.setErrorMessage("Action [" + id + "] invalid");
-
-    }
-    private void setErrorMessageBadRequest(SetupTurnAndInitialCardMovesForGameTypeDTO actionDto, String id,
-                                           String value) {
+    private void setErrorMessageInternalServerError(Dto actionDto, String id,
+                                                    String value) {
         actionDto.setHttpStatus(500);
         actionDto.setErrorKey(id);
         actionDto.setErrorValue(value);
-        actionDto.setErrorMessage("Action [" + id + "] invalid");
-
+        actionDto.setErrorMessage("Action [" + id + "] invalid - no seat with 1");
     }
-    public interface SetupTurnAndInitialCardMovesForGameTypeDTO {
+
+    public interface Dto {
 
         // @formatter:off
         // Getters
+        List<Player> getQasinoGamePlayers();
+        Game getQasinoGame();
 
-        boolean isRequestingToRepay();
-        boolean isOfferingShipForPawn();
-        Visitor getQasinoVisitor();
-
-        // Setters
-        void setQasinoVisitor(Visitor visitor);
+        void setQasinoGame(Game game);
+        void setActiveTurn(Turn turn);
+        Turn getActiveTurn();
+        Player getTurnPlayer();
+        List<Card> getCardsInTheGameSorted();
 
         // error setters
         void setHttpStatus(int status);

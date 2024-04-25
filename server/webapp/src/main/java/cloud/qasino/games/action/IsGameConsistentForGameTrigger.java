@@ -1,9 +1,13 @@
 package cloud.qasino.games.action;
 
 import cloud.qasino.games.action.interfaces.Action;
+import cloud.qasino.games.database.entity.Card;
 import cloud.qasino.games.database.entity.Game;
 import cloud.qasino.games.database.entity.Player;
+import cloud.qasino.games.database.entity.Result;
+import cloud.qasino.games.database.entity.Turn;
 import cloud.qasino.games.database.entity.enums.game.GameState;
+import cloud.qasino.games.database.entity.enums.game.gamestate.GameStateGroup;
 import cloud.qasino.games.database.repository.VisitorRepository;
 import cloud.qasino.games.event.EventOutput;
 import cloud.qasino.games.statemachine.trigger.GameTrigger;
@@ -13,6 +17,8 @@ import org.springframework.stereotype.Component;
 import javax.annotation.Resource;
 import java.util.List;
 import java.util.Optional;
+
+import static cloud.qasino.games.database.entity.enums.game.gamestate.GameStateGroup.listGameStatesForGameStateGroup;
 
 @Slf4j
 @Component
@@ -26,15 +32,48 @@ public class IsGameConsistentForGameTrigger implements Action<IsGameConsistentFo
 
         actionDto.setErrorKey("GameTrigger");
         actionDto.setErrorValue(actionDto.getSuppliedGameTrigger().getLabel());
-
+        boolean noError = true;
         switch (actionDto.getSuppliedGameTrigger()) {
 
+            case WINNER -> {
+                noError = gameShouldHaveAResult(actionDto);
+            }
+            case PLAY -> {
+            }
+            case LEAVE -> {
+                noError = gameShouldHaveStateInCorrectGameStateGroup(actionDto, GameStateGroup.STARTED);
+                noError = gameShouldHaveCardsAndTurn(actionDto);
+                break;
+            }
+            case PREPARE -> {
+                noError = gameShouldHaveAnte(actionDto);
+                noError = gameShouldHaveInitiator(actionDto);
+                noError = gameShouldHavePlayersWithFiches(actionDto);
+            }
+            case ACCEPT -> {
+                noError = playersShouldHaveSeats(actionDto);
+            }
+            case INVITE -> {
+                noError = gameShouldHavePlayers(actionDto);
+            }
+            case SETUP -> {
+                noError = gameShouldHaveStateInCorrectGameStateGroup(actionDto, GameStateGroup.SETUP);
+                break;
+            }
         }
-//        EventOutput.Result failure = gameShouldHavePlayers(actionDto);
-//        if (failure != null) return failure;
-        int size = actionDto.getQasinoGamePlayers().size();
-        List<Integer> order = actionDto.getQasinoGame().getSeats();
+        return noError ? EventOutput.Result.SUCCESS : EventOutput.Result.FAILURE;
+    }
 
+    private boolean gameShouldHavePlayers(Dto actionDto) {
+        if (actionDto.getQasinoGamePlayers() == null) {
+            log.info("!players");
+            actionDto.setHttpStatus(422);
+            actionDto.setErrorMessage("Action [" + actionDto.getSuppliedGameTrigger() + "] invalid - game has no players");
+            return false;
+        }
+        return true;
+    }
+    private boolean playersShouldHaveSeats(Dto actionDto) {
         Optional<Player> player =
                 actionDto.getQasinoGamePlayers()
                         .stream()
@@ -43,25 +82,95 @@ public class IsGameConsistentForGameTrigger implements Action<IsGameConsistentFo
         if (player.isEmpty()) {
             log.info("!seats");
             actionDto.setHttpStatus(422);
-            actionDto.setErrorMessage("Action [" + actionDto.getSuppliedGameTrigger() + "] invalid - game no correct seat list for player(s)");
-            return EventOutput.Result.FAILURE;
+            actionDto.setErrorMessage("Action [" + actionDto.getSuppliedGameTrigger() + "] invalid - no correct seat order for player(s)");
+            return false;
         }
-
-
-        if (actionDto.getQasinoGame().getState() != GameState.PREPARED) {
+        return true;
+    }
+    private boolean gameShouldHaveStateInCorrectGameStateGroup(Dto actionDto, GameStateGroup gameStateGroup) {
+        List<GameState> correctGameStates = listGameStatesForGameStateGroup(gameStateGroup);
+        if (!correctGameStates.contains(actionDto.getQasinoGame().getState())) {
             log.info("!state");
             actionDto.setHttpStatus(422);
-            actionDto.setErrorMessage("Action [" + actionDto.getSuppliedGameTrigger() + "] invalid - game is not in prepared state");
-            return EventOutput.Result.FAILURE;
+            actionDto.setErrorMessage(
+                    "Action [" +
+                            actionDto.getSuppliedGameTrigger() +
+                            "] invalid - game is not in correct game state group" +
+                            gameStateGroup.getLabel()
+            );
+            return false;
         }
-        return EventOutput.Result.SUCCESS;
+        return true;
     }
-
-    private boolean gameShouldHavePlayers(Dto actionDto) {
-        if (actionDto.getQasinoGamePlayers() == null) {
-            log.info("!players");
+    private boolean gameShouldHaveAnte(Dto actionDto) {
+        if (actionDto.getQasinoGame().getAnte() <= 0) {
+            log.info("!ante");
             actionDto.setHttpStatus(422);
-            actionDto.setErrorMessage("Action [" + actionDto.getSuppliedGameTrigger() + "] invalid - game has no players");
+            actionDto.setErrorMessage(
+                    "Action [" +
+                            actionDto.getSuppliedGameTrigger() +
+                            "] invalid - game has incorrect ante of " +
+                            actionDto.getQasinoGame().getAnte()
+            );
+            return false;
+        }
+        return true;
+    }
+    private boolean gameShouldHaveInitiator(Dto actionDto) {
+        if (actionDto.getQasinoGame().getInitiator() == 0) {
+            log.info("!initiator");
+            actionDto.setHttpStatus(422);
+            actionDto.setErrorMessage(
+                    "Action [" +
+                            actionDto.getSuppliedGameTrigger() +
+                            "] invalid - game has no initiator "
+            );
+            return false;
+        }
+        return true;
+    }
+    private boolean gameShouldHavePlayersWithFiches(Dto actionDto) {
+        for (Player player : actionDto.getQasinoGamePlayers()) {
+            if (player.getFiches() == 0) {
+                log.info("!fiches");
+                actionDto.setHttpStatus(422);
+                actionDto.setErrorMessage(
+                        "Action [" +
+                                actionDto.getSuppliedGameTrigger() +
+                                "] invalid - this player has no fiches " +
+                                player.getPlayerId()
+
+                );
+                return false;
+            }
+        }
+        return true;
+    }
+    private boolean gameShouldHaveCardsAndTurn(Dto actionDto) {
+        if (actionDto.getActiveTurn() == null ||
+                actionDto.getCardsInTheGameSorted() == null) {
+            log.info("!turn and/or cards");
+            actionDto.setHttpStatus(422);
+            actionDto.setErrorMessage(
+                    "Action [" +
+                            actionDto.getSuppliedGameTrigger() +
+                            "] invalid - game has no cards and or a turn"
+
+            );
+            return false;
+        }
+        return true;
+    }
+    private boolean gameShouldHaveAResult(Dto actionDto) {
+        if (actionDto.getGameResult() == null) {
+            log.info("!turn and/or cards");
+            actionDto.setHttpStatus(422);
+            actionDto.setErrorMessage(
+                    "Action [" +
+                            actionDto.getSuppliedGameTrigger() +
+                            "] invalid - game has no result"
+
+            );
             return false;
         }
         return true;
@@ -74,6 +183,9 @@ public class IsGameConsistentForGameTrigger implements Action<IsGameConsistentFo
         List<Player> getQasinoGamePlayers();
         GameTrigger getSuppliedGameTrigger();
         Game getQasinoGame();
+        Turn getActiveTurn();
+        List<Card> getCardsInTheGameSorted();
+        Result getGameResult();
 
         // error setters and getters
         void setHttpStatus(int status);

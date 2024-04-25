@@ -39,7 +39,7 @@ public enum GameStateGroup {
         return fromLabelWithDefault(Character.toString(character));
     }
 
-    public List<GameState> listGameStatesForGameStateGroup(GameStateGroup gameStateGroup) {
+    public  static List<GameState> listGameStatesForGameStateGroup(GameStateGroup gameStateGroup) {
         //  todo loop gamestate group
         switch (gameStateGroup) {
             case SETUP:

@@ -61,29 +61,10 @@ public class MakeGamePlayableForGameType implements Action<MakeGamePlayableForGa
         // update Game, create Cards for game, create Turn, create CardMove
         actionDto.getQasinoGame().shuffleGame(jokers);
         actionDto.getQasinoGame().setState(GameState.INITIALIZED);
-
-        Optional<Player> player =
-                actionDto.getQasinoGamePlayers()
-                        .stream()
-                        .filter(p -> p.getSeat() == 1)
-                        .findFirst();
-        if (player.isEmpty()) {
-            setErrorMessageInternalServerError(actionDto, "Qasino.Player(s).seat", String.valueOf(actionDto.getQasinoGame().getSeats()));
-            return EventOutput.Result.FAILURE;
-        }
         gameRepository.save(actionDto.getQasinoGame());
         cardRepository.saveAll(actionDto.getQasinoGame().getCards());
-        actionDto.setActiveTurn(new Turn(
-                actionDto.getQasinoGame(),
-                player.get().getPlayerId()));
-        turnRepository.save(actionDto.getActiveTurn());
 
-        CardMove cardMove = new CardMove(actionDto.getActiveTurn(), actionDto.getTurnPlayer(), 0, Move.DEAL,
-                Location.HAND);
-        cardMoveRepository.save(cardMove);
-        // todo card
-
-        return EventOutput.Result.FAILURE;
+        return EventOutput.Result.SUCCESS;
     }
 
     private void setErrorMessageInternalServerError(Dto actionDto, String id,
@@ -103,10 +84,6 @@ public class MakeGamePlayableForGameType implements Action<MakeGamePlayableForGa
         Game getQasinoGame();
 
         void setQasinoGame(Game game);
-        void setActiveTurn(Turn turn);
-        Turn getActiveTurn();
-        Player getTurnPlayer();
-        void setTurnPlayer(Player player);
 
         // error setters
         void setHttpStatus(int status);

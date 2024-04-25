@@ -72,7 +72,7 @@ public class SetStatusIndicatorsBaseOnRetrievedDataAction implements Action<SetS
         League getQasinoGameLeague();
         List<Player> getQasinoGamePlayers();
         Turn getActiveTurn();
-        List<Card> getCardsInTheGame();
+        List<Card> getCardsInTheGameSorted();
         List<CardMove> getAllCardMovesForTheGame();
 
         void setShowVisitorPage(boolean bool);
