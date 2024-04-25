@@ -2,7 +2,7 @@ package cloud.qasino.games.action;
 
 import cloud.qasino.games.action.interfaces.Action;
 import cloud.qasino.games.database.entity.Game;
-import cloud.qasino.games.database.entity.Visitor;
+import cloud.qasino.games.database.entity.Player;
 import cloud.qasino.games.database.entity.enums.game.GameState;
 import cloud.qasino.games.database.repository.VisitorRepository;
 import cloud.qasino.games.event.EventOutput;
@@ -11,7 +11,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
-import java.util.Random;
+import java.util.List;
+import java.util.Optional;
 
 @Slf4j
 @Component
@@ -26,12 +27,27 @@ public class IsGameConsistentForGameTrigger implements Action<IsGameConsistentFo
         actionDto.setErrorKey("GameTrigger");
         actionDto.setErrorValue(actionDto.getSuppliedGameTrigger().getLabel());
 
-        if (actionDto.getQasinoGamePlayers() == null) {
-            log.info("!players");
+        switch (actionDto.getSuppliedGameTrigger()) {
+
+        }
+//        EventOutput.Result failure = gameShouldHavePlayers(actionDto);
+//        if (failure != null) return failure;
+        int size = actionDto.getQasinoGamePlayers().size();
+        List<Integer> order = actionDto.getQasinoGame().getSeats();
+
+        Optional<Player> player =
+                actionDto.getQasinoGamePlayers()
+                        .stream()
+                        .filter(p -> p.getSeat() == 1)
+                        .findFirst();
+        if (player.isEmpty()) {
+            log.info("!seats");
             actionDto.setHttpStatus(422);
-            actionDto.setErrorMessage("Action [" + actionDto.getSuppliedGameTrigger() + "] invalid - game has no players");
+            actionDto.setErrorMessage("Action [" + actionDto.getSuppliedGameTrigger() + "] invalid - game no correct seat list for player(s)");
             return EventOutput.Result.FAILURE;
         }
+
+
         if (actionDto.getQasinoGame().getState() != GameState.PREPARED) {
             log.info("!state");
             actionDto.setHttpStatus(422);
@@ -41,11 +57,21 @@ public class IsGameConsistentForGameTrigger implements Action<IsGameConsistentFo
         return EventOutput.Result.SUCCESS;
     }
 
+    private boolean gameShouldHavePlayers(Dto actionDto) {
+        if (actionDto.getQasinoGamePlayers() == null) {
+            log.info("!players");
+            actionDto.setHttpStatus(422);
+            actionDto.setErrorMessage("Action [" + actionDto.getSuppliedGameTrigger() + "] invalid - game has no players");
+            return false;
+        }
+        return true;
+    }
+
     public interface Dto {
 
         // @formatter:off
         // Getters
-        Visitor getQasinoGamePlayers();
+        List<Player> getQasinoGamePlayers();
         GameTrigger getSuppliedGameTrigger();
         Game getQasinoGame();
 

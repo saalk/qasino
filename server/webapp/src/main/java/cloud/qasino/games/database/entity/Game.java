@@ -79,7 +79,6 @@ public class Game {
     @Column(name = "ante")
     private int ante;
 
-
     // Derived fields
 
     @Setter(AccessLevel.NONE)
@@ -230,6 +229,13 @@ public class Game {
         }
         return playingOrderChanged;
 
+    }
+
+    public List<Integer> getSeats() {
+        return this.players.stream()
+                .map(Player::getSeat)
+                .sorted()
+                .toList();
     }
 
     @Override

@@ -96,16 +96,13 @@ public class QuickTestAtStartup implements ApplicationRunner {
         // seat 2 - bot player with same fiches as visitor
         visitorAndBot.add(playerRepository.save(new Player(null, game, Role.BOT, visitor.getBalance(), 2,
                 Avatar.GOBLIN, AiLevel.AVERAGE)));
-        game.setPlayers(visitorAndBot);
-
         // The visitor invites 2 friends also
-        List<Player> friends = new ArrayList<>();
         // seat 3 and 4 - Invite friend 1 and 2 to the game as player
         visitorAndBot.add(playerRepository.save(new Player(friend1, game, Role.INVITED, friend1.getBalance(), 3,
                 Avatar.GOBLIN, AiLevel.HUMAN)));
         visitorAndBot.add(playerRepository.save(new Player(friend2, game, Role.INVITED, friend2.getBalance(), 4,
                 Avatar.GOBLIN, AiLevel.HUMAN)));
-        game.setPlayers(friends);
+        game.setPlayers(visitorAndBot);
         game.setState(GameState.PENDING_INVITATIONS);
 
         // friend 1 and 2 accept the invitation

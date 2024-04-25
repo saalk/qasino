@@ -27,12 +27,16 @@ public interface PlayerRepository extends JpaRepository<Player, Long> {
     //@Query("SELECT * FROM playerS p WHERE p.game_id = ?1")
     List<Player> findByGameOrderBySeatAsc(Game game);
 
+
     //@Query("SELECT * FROM player p ORDER BY /"created/" desc WHERE p.visitor_id = ?1")
     List<Player> findByGameOrderByCreatedDesc(Game game);
 
-
     //@Query("SELECT count(p) FROM playerS p WHERE p.game_id = ?1")
     int countByGame(Game game);
+
+    //@Query("SELECT * FROM playerS p WHERE p.game_id = ?1")
+    List<Player> findByGameId(Long gameId);
+
 
     // special finds
 

@@ -46,7 +46,7 @@ public class QasinoFlowDTO //extends AbstractFlowDTO
         ProgressCardMovesForTurnTrigger.ProgressCardMovesForTurnTriggerDTO,
         UpdateTurnForGameType.UpdateTurnForGameTypeDTO,
         IsGameFinished.IsGameFinishedDTO,
-        MakeGamePlayableForGameType.MakeGamePlayableForGameTypeDTO,
+        MakeGamePlayableForGameType.Dto,
         SetupTurnAndInitialCardMovesForGameType.SetupTurnAndInitialCardMovesForGameTypeDTO,
         MapTableAndSeatsForGame.MapTableAndSeatsForGameDTO
 
