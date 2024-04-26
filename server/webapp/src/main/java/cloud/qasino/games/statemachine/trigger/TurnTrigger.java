@@ -3,6 +3,7 @@ package cloud.qasino.games.statemachine.trigger;
 import lombok.Getter;
 
 import javax.persistence.Transient;
+import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -35,6 +36,19 @@ public enum TurnTrigger {
 
     public static final Map<String, TurnTrigger> lookup
             = new HashMap<>();
+    public static final Map<String, TurnTrigger> turnTriggerMapNoError
+            = new HashMap<>();
+
+    static {
+        for (TurnTrigger turnTrigger : EnumSet.allOf(TurnTrigger.class))
+            lookup.put(turnTrigger.getLabel(), turnTrigger);
+    }
+
+    static {
+        for (TurnTrigger turnTrigger : EnumSet.allOf(TurnTrigger.class))
+            if (!turnTrigger.getLabel().equalsIgnoreCase("error"))
+                turnTriggerMapNoError.put(turnTrigger.getLabel(), turnTrigger);
+    }
 
     public static TurnTrigger fromLabel(String inputLabel) {
         return lookup.get(inputLabel.toLowerCase());

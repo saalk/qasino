@@ -2,6 +2,7 @@ package cloud.qasino.games.dto;
 
 import cloud.qasino.games.action.*;
 import cloud.qasino.games.database.entity.*;
+import cloud.qasino.games.dto.elements.SectionTable;
 import cloud.qasino.games.dto.statistics.Statistics;
 import cloud.qasino.games.database.entity.enums.card.Face;
 import cloud.qasino.games.database.entity.enums.card.Location;
@@ -41,8 +42,10 @@ public class QasinoFlowDTO //extends AbstractFlowDTO
         HandleSecuredLoanAction.HandleSecuredLoanActionDTO,
         SetStatusIndicatorsBaseOnRetrievedDataAction.SetStatusIndicatorsBaseOnRetrievedDataDTO,
         MapQasinoResponseFromRetrievedDataAction.Dto,
+        MapTableFromRetrievedDataAction.Dto,
+        PlayNextTurnAndCardMovesForHuman.Dto,
         IsGameConsistentForGameTrigger.Dto,
-        IsTurnConsistentForGameTrigger.IsTurnConsistentForGameTriggerDTO,
+        IsTurnConsistentForTurnTrigger.Dto,
         ProgressCardMovesForTurnTrigger.ProgressCardMovesForTurnTriggerDTO,
         UpdateTurnForGameType.UpdateTurnForGameTypeDTO,
         IsGameFinished.IsGameFinishedDTO,
@@ -121,6 +124,10 @@ public class QasinoFlowDTO //extends AbstractFlowDTO
     // the game results
     private Result gameResult;
     private List<Result> resultsForLeague;
+
+    // FOR THE GAME BIENG PLAYED
+    private SectionTable table;
+
     // during cardmoves in a turn
     private Player turnPlayer;
     private Turn activeTurn;

@@ -4,9 +4,11 @@ import cloud.qasino.games.action.CalculateHallOfFameAction;
 import cloud.qasino.games.action.FindAllEntitiesForInputAction;
 import cloud.qasino.games.action.IsGameConsistentForGameTrigger;
 import cloud.qasino.games.action.IsGameFinished;
-import cloud.qasino.games.action.IsTurnConsistentForGameTrigger;
+import cloud.qasino.games.action.IsTurnConsistentForTurnTrigger;
 import cloud.qasino.games.action.MakeGamePlayableForGameType;
 import cloud.qasino.games.action.MapQasinoResponseFromRetrievedDataAction;
+import cloud.qasino.games.action.MapTableFromRetrievedDataAction;
+import cloud.qasino.games.action.PlayNextTurnAndCardMovesForHuman;
 import cloud.qasino.games.action.ProgressCardMovesForTurnTrigger;
 import cloud.qasino.games.action.SetStatusIndicatorsBaseOnRetrievedDataAction;
 import cloud.qasino.games.action.SetupTurnAndInitialCardMovesForGameType;
@@ -35,7 +37,7 @@ public class PlayContoller {
     @Autowired
     IsGameConsistentForGameTrigger isGameConsistentForGameTrigger;
     @Autowired
-    IsTurnConsistentForGameTrigger isTurnConsistentForTurnTrigger;
+    IsTurnConsistentForTurnTrigger isTurnConsistentForTurnTrigger;
     @Autowired
     IsGameFinished isGameFinished;
     @Autowired
@@ -54,6 +56,10 @@ public class PlayContoller {
     CalculateHallOfFameAction calculateHallOfFameAction;
     @Autowired
     MapQasinoResponseFromRetrievedDataAction mapQasinoResponseFromRetrievedDataAction;
+    @Autowired
+    MapTableFromRetrievedDataAction mapTableFromRetrievedDataAction;
+    @Autowired
+    PlayNextTurnAndCardMovesForHuman playNextTurnAndCardMovesForHuman;
 
     private GameRepository gameRepository;
     private PlayerRepository playerRepository;
@@ -107,6 +113,7 @@ public class PlayContoller {
         setupTurnAndInitialCardMovesForGameType.perform(flowDTO);
         // build response
         findAllEntitiesForInputAction.perform(flowDTO);
+        mapTableFromRetrievedDataAction.perform(flowDTO);
         setStatusIndicatorsBaseOnRetrievedDataAction.perform(flowDTO);
         calculateHallOfFameAction.perform(flowDTO);
         mapQasinoResponseFromRetrievedDataAction.perform(flowDTO);
@@ -114,10 +121,6 @@ public class PlayContoller {
         return ResponseEntity.status(HttpStatus.valueOf(201)).headers(flowDTO.getHeaders()).body(flowDTO.getQasino());
     }
 
-    // POST - turntrigger HIGER|LOWER|PASS for visitor
-    // -> gamestate CASHED
-    // POST - turntrigger NEXT for bot
-    // -> gamestate CASHED
     @PostMapping(value = "/game/{gameId}/turn/{turnTrigger}")
     public ResponseEntity<Qasino> playerMakesAMoveForAGame(
             @RequestHeader("visitorId") String vId,
@@ -137,14 +140,23 @@ public class PlayContoller {
             flowDTO.prepareResponseHeaders();
             return ResponseEntity.status(HttpStatus.valueOf(flowDTO.getHttpStatus())).headers(flowDTO.getHeaders()).build();
         }
+        mapTableFromRetrievedDataAction.perform(flowDTO);
+
         // logic
-//        output = isTurnConsistentForTurnTrigger.perform(flowDTO);
-//        if (output == EventOutput.Result.FAILURE) {
-//            flowDTO.prepareResponseHeaders();
-//            return ResponseEntity.status(HttpStatus.valueOf(flowDTO.getHttpStatus())).headers(flowDTO.getHeaders()).build();
-//        }
+        output = isTurnConsistentForTurnTrigger.perform(flowDTO);
+        if (output == EventOutput.Result.FAILURE) {
+            flowDTO.prepareResponseHeaders();
+            return ResponseEntity.status(HttpStatus.valueOf(flowDTO.getHttpStatus())).headers(flowDTO.getHeaders()).build();
+        }
 //        output = canPlayerStillPlay.perform(flowDTO);
-//        playNextTurnAndCardMovesForGameType.perform(flowDTO);
+//        output = isPlayerHuman.perform(flowDTO);
+
+        // POST - turntrigger HIGER|LOWER|PASS for visitor
+        // -> gamestate CASHED
+        // POST - turntrigger NEXT for bot
+        // -> gamestate CASHED
+
+        playNextTurnAndCardMovesForHuman.perform(flowDTO);
 //        updateBalanceForPlayer.perform(flowDTO);
 //        isLastCardInGamePlayed.perform(flowDTO);
 //        -> createWinner.perform(flowDTO);
@@ -156,6 +168,7 @@ public class PlayContoller {
         progressCardMovesForTurnTrigger.perform(flowDTO);
         // build response
         findAllEntitiesForInputAction.perform(flowDTO);
+        mapTableFromRetrievedDataAction.perform(flowDTO);
         setStatusIndicatorsBaseOnRetrievedDataAction.perform(flowDTO);
         calculateHallOfFameAction.perform(flowDTO);
         mapQasinoResponseFromRetrievedDataAction.perform(flowDTO);

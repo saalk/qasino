@@ -21,13 +21,13 @@ public class SectionTable {
     private Turn currentTurn;
     @JsonProperty("PossibleMoves")
     private List<Move> possibleMoves;
-    @JsonProperty("Stock")
-    private List<Card> stockNotInHand;
-    @JsonProperty("Stats")
-    private String totalVsStockCards;
-    @JsonProperty("cardLeft")
-    private int cardsLeft;
+    @JsonProperty("CardsInStock")
+    private List<Card> cardsInStockNotInHand;
+    @JsonProperty("StringCardsInStock")
+    private String stringCardsInStockNotInHand;
+    @JsonProperty("CountCardsInStockNotInHand")
+    private int countCardsInStockNotInHand;
+
     @JsonProperty("Seats")
     private List<SectionSeat> seats;
-
 }

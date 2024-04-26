@@ -13,7 +13,6 @@ import cloud.qasino.games.database.repository.CardMoveRepository;
 import cloud.qasino.games.database.repository.CardRepository;
 import cloud.qasino.games.database.repository.TurnRepository;
 import cloud.qasino.games.event.EventOutput;
-import cloud.qasino.games.statemachine.trigger.GameTrigger;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
@@ -23,7 +22,7 @@ import java.util.Optional;
 
 @Slf4j
 @Component
-public class SetupTurnAndInitialCardMovesForGameType implements Action<SetupTurnAndInitialCardMovesForGameType.Dto, EventOutput.Result> {
+public class PlayNextTurnAndCardMovesForHuman implements Action<PlayNextTurnAndCardMovesForHuman.Dto, EventOutput.Result> {
 
     @Resource
     CardRepository cardRepository;
@@ -32,6 +31,9 @@ public class SetupTurnAndInitialCardMovesForGameType implements Action<SetupTurn
 
     @Override
     public EventOutput.Result perform(Dto actionDto) {
+
+        // POST - turntrigger HIGER|LOWER|PASS for visitor
+        // -> gamestate CASHED
 
         Optional<Player> player1 =
                 actionDto.getQasinoGamePlayers()

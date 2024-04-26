@@ -155,68 +155,13 @@ public class MapQasinoResponseFromRetrievedDataAction implements Action<MapQasin
         // set the content
         pageGamePlay.setSelectedGame(actionDto.getQasinoGame());
         pageGamePlay.setGameName(actionDto.getQasinoGame().getType().name());
-        if (!(actionDto.getActiveTurn() == null)) {
-            pageGamePlay.setActiveTurn(actionDto.getActiveTurn());
-            pageGamePlay.setTable(setTable(actionDto));
-            pageGamePlay.setCurrentRound(
-                    (int) actionDto.getActiveTurn().getCurrentRoundNumber());
-            pageGamePlay.setCurrentTurn(
-                    (int) actionDto.getActiveTurn().getCurrentMoveNumber());
-        }
+        if (!(actionDto.getTable() == null)) {
+            pageGamePlay.setTable(actionDto.getTable());
+      }
         navigationBarItem.setItemStats("move "+ pageGamePlay.getCurrentTurn() + "/" +
                 pageGamePlay.getCurrentRound() + " round");
     }
-    private SectionTable setTable(Dto actionDto) {
-        SectionTable table = new SectionTable();
-        if (!(actionDto.getActiveTurn() == null)) {
-//            table.setSelectedGame(actionDto.getQasinoGame());
-            table.setCurrentTurn(actionDto.getActiveTurn());
-            // todo HIGH new action for calc all possible moves
-            // the statement below gives an error
-            // table.setPossibleMoves(new ArrayList(Move.moveMapNoError.keySet()));
-            List<Card> stockNotInHand =
-                    actionDto.getCardsInTheGameSorted()
-                            .stream()
-                            .filter(c -> c.getHand() == null)
-                            .collect(Collectors.toList());
-            table.setStockNotInHand(stockNotInHand);
-            table.setTotalVsStockCards(stockNotInHand.size() + "/" + actionDto.getCardsInTheGameSorted().size() +
-                    " stock/total");
-            table.setCardsLeft(stockNotInHand.size());
-            table.setSeats(setSeats(actionDto));
-        }
-        return table;
-    }
-    private List<SectionSeat> setSeats(Dto actionDto) {
 
-        List<SectionSeat> seats = new ArrayList<>();
-        for (Player player : actionDto.getQasinoGamePlayers()) {
-            SectionSeat seat = new SectionSeat();
-            seat.setSeatId(player.getSeat());
-            seat.setActive(player.getPlayerId() == actionDto.getActiveTurn().getActivePlayerId());
-            seat.setBot(!player.isHuman());
-            seat.setPlayerId(player.getPlayerId());
-            seat.setAvatar(player.getAvatar());
-            seat.setAiLevel(player.getAiLevel());
-            seat.setInitiator(player.getRole() == Role.INITIATOR);
-
-            if (player.isHuman()) {
-                seat.setVisitorId(player.getVisitor().getVisitorId());
-                seat.setVisitorName(player.getVisitor().getVisitorName());
-            } else {
-                seat.setVisitorId(0);
-                seat.setVisitorName(player.getAiLevel().getLabel() + " " + player.getAvatar().getLabel());
-            }
-            seat.setBalance(player.getFiches());
-            seat.setFiches(player.getFiches());
-            List<Card> hand = player.getCards();
-            seat.setCardsInHand(hand);
-            List<String> handStrings =
-                    hand.stream().map(Card::getCard).collect(Collectors.toList());
-            seat.setStringCardsInHand("[" + String.join("],[", handStrings) + "]");
-        }
-        return seats;
-    }
     private void mapPendingGamesPage(Dto actionDto, NavigationBarItem navigationBarItem, PagePendingGames pageGamesOverview) {
         // set the nav bar
         navigationBarItem.setItemName( "Pending Games");
@@ -267,9 +212,8 @@ public class MapQasinoResponseFromRetrievedDataAction implements Action<MapQasin
         League getQasinoGameLeague();
         List<Result> getResultsForLeague();
 
+        SectionTable getTable();
         List<Player> getQasinoGamePlayers();
-        Turn getActiveTurn();
-        List<Card> getCardsInTheGameSorted();
 
         // Setters
         void setQasino(Qasino qasino);
