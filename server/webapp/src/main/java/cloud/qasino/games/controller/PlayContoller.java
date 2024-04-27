@@ -150,22 +150,16 @@ public class PlayContoller {
         }
 //        output = canPlayerStillPlay.perform(flowDTO);
 //        output = isPlayerHuman.perform(flowDTO);
-
-        // POST - turntrigger HIGER|LOWER|PASS for visitor
-        // -> gamestate CASHED
-        // POST - turntrigger NEXT for bot
-        // -> gamestate CASHED
-
+        mapTableFromRetrievedDataAction.perform(flowDTO);
         playNextTurnAndCardMovesForHuman.perform(flowDTO);
 //        updateBalanceForPlayer.perform(flowDTO);
 //        isLastCardInGamePlayed.perform(flowDTO);
 //        -> createWinner.perform(flowDTO);
-        // logic
-        isTurnConsistentForTurnTrigger.perform(flowDTO);
-        isGameFinished.perform(flowDTO);
-                //-> CalculateResultsForGame -> StopPlayableGame
         updateTurnForGameType.perform(flowDTO);
+        isGameFinished.perform(flowDTO);
+        //-> CalculateResultsForGame -> StopPlayableGame
         progressCardMovesForTurnTrigger.perform(flowDTO);
+
         // build response
         findAllEntitiesForInputAction.perform(flowDTO);
         mapTableFromRetrievedDataAction.perform(flowDTO);

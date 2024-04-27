@@ -5,6 +5,7 @@ import cloud.qasino.games.database.entity.Card;
 import cloud.qasino.games.database.entity.Game;
 import cloud.qasino.games.database.entity.Player;
 import cloud.qasino.games.database.entity.Turn;
+import cloud.qasino.games.database.entity.Visitor;
 import cloud.qasino.games.database.entity.enums.move.Move;
 import cloud.qasino.games.database.entity.enums.player.Role;
 import cloud.qasino.games.dto.elements.SectionSeat;
@@ -61,15 +62,29 @@ public class MapTableFromRetrievedDataAction implements Action<MapTableFromRetri
         List<SectionSeat> seats = new ArrayList<>();
         for (Player player : actionDto.getQasinoGamePlayers()) {
             SectionSeat seat = new SectionSeat();
+            // seat stats
             seat.setSeatId(player.getSeat());
             seat.setPlaying(player.getPlayerId() == actionDto.getActiveTurn().getActivePlayerId());
-
-            seat.setHuman(player.isHuman());
+            // todo which one to choose
+            seat.setSeatPlayerTheInitiator(player.getPlayerId() ==
+                    actionDto.getQasinoGame().getInitiator());
+            seat.setSeatPlayerTheInitiator(player.getRole() == Role.INITIATOR);
+            // player stats
             seat.setSeatPlayerId(player.getPlayerId());
+            seat.setSeatPlayer(player);
+            seat.setSeatFiches(player.getFiches());
+            // todo double or nothing? then time the turn in round
+            seat.setSeatCurrentBet(player.getFiches());
             seat.setSeatPlayerAvatar(player.getAvatar());
             seat.setSeatPlayerAiLevel(player.getAiLevel());
-            seat.setSeatPlayerTheInitiator(player.getRole() == Role.INITIATOR);
+            // player cards
+            List<Card> hand = player.getCards();
+            List<String> handStrings =
+                    hand.stream().map(Card::getCard).collect(Collectors.toList());
+            seat.setStringCardsInHand("[" + String.join("],[", handStrings) + "]");
 
+            // when player is human
+            seat.setHuman(player.isHuman());
             if (player.isHuman()) {
                 seat.setVisitorId(player.getVisitor().getVisitorId());
                 seat.setVisitorName(player.getVisitor().getVisitorName());
@@ -77,13 +92,10 @@ public class MapTableFromRetrievedDataAction implements Action<MapTableFromRetri
                 seat.setVisitorId(0);
                 seat.setVisitorName(player.getAiLevel().getLabel() + " " + player.getAvatar().getLabel());
             }
-            seat.setSeatFiches(player.getFiches());
-            List<Card> hand = player.getCards();
-            seat.setCardsInHand(hand);
-            List<String> handStrings =
-                    hand.stream().map(Card::getCard).collect(Collectors.toList());
-            seat.setStringCardsInHand("[" + String.join("],[", handStrings) + "]");
-        }
+
+            // is player the winner
+
+  }
         return seats;
     }
 
@@ -91,6 +103,7 @@ public class MapTableFromRetrievedDataAction implements Action<MapTableFromRetri
         // @formatter:off
         // Getters
         Game getQasinoGame();
+        Visitor getQasinoVisitor();
         List<Player> getQasinoGamePlayers();
         Turn getActiveTurn();
         List<Card> getCardsInTheGameSorted();
