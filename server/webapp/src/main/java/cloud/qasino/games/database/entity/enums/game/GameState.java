@@ -22,7 +22,7 @@ public enum GameState implements LabeledEnum {
 
     // HIGHLOW
     STARTED("started", "Game is being played and has Events","STARTED"),
-    CASHED("cashed", "Game is being played and has Events","STARTED"),
+//    CASHED("cashed", "Game is being played and has Events","STARTED"),
 
     // ENDED
     FINISHED("finished", "Game has a Result and if possible a Winner","FINISHED"),
@@ -77,13 +77,17 @@ public enum GameState implements LabeledEnum {
         return fromLabelWithDefault(Character.toString(character));
     }
 
-    public static final Set<GameState> setupGameStates = EnumSet.of(INITIALIZED, PENDING_INVITATIONS, PREPARED);
+    public static final Set<GameState> setupGameStates = EnumSet.of(INITIALIZED, PENDING_INVITATIONS);
     public static final String[] setupGameStatesValues = new String[]{INITIALIZED.name(),
-            PENDING_INVITATIONS.name(), PREPARED.name()};
+            PENDING_INVITATIONS.name()};
 
+    public static final Set<GameState> preparedGameStates = EnumSet.of(PREPARED);
+    public static final String[] preparedGameStatesValues = new String[]{PREPARED.name()};
+
+    // TODO check this
     public static final Set<GameState> highlowGameStates
-            = EnumSet.of(STARTED, CASHED);
-    public static final String[] highlowGameStatesValues = new String[]{STARTED.name(), CASHED.name()};
+            = EnumSet.of(STARTED);
+    public static final String[] highlowGameStatesValues = new String[]{STARTED.name()};
 
     public static final Set<GameState> finishedGameStates = EnumSet.of(FINISHED, QUIT, CANCELLED, OLD);
     public static final String[] finishedGameStatesValues = new String[]{FINISHED.name(), QUIT.name(),

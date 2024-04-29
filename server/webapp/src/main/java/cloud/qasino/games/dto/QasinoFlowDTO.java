@@ -1,18 +1,42 @@
 package cloud.qasino.games.dto;
 
-import cloud.qasino.games.action.*;
-import cloud.qasino.games.database.entity.*;
-import cloud.qasino.games.dto.elements.SectionTable;
-import cloud.qasino.games.dto.statistics.Statistics;
+import cloud.qasino.games.action.CalculateAndFinishGame;
+import cloud.qasino.games.action.CalculateHallOfFameAction;
+import cloud.qasino.games.action.CreateNewLeagueAction;
+import cloud.qasino.games.action.FindAllEntitiesForInputAction;
+import cloud.qasino.games.action.FindVisitorIdByVisitorNameAction;
+import cloud.qasino.games.action.HandleSecuredLoanAction;
+import cloud.qasino.games.action.IsGameConsistentForGameTrigger;
+import cloud.qasino.games.action.IsGameFinished;
+import cloud.qasino.games.action.IsTurnConsistentForTurnTrigger;
+import cloud.qasino.games.action.MakeGamePlayableForGameType;
+import cloud.qasino.games.action.MapQasinoResponseFromRetrievedDataAction;
+import cloud.qasino.games.action.MapTableFromRetrievedDataAction;
+import cloud.qasino.games.action.PlayFirstTurnAndInitialCardMovesForGameType;
+import cloud.qasino.games.action.PlayNextTurnAndCardMovesForHuman;
+import cloud.qasino.games.action.SetStatusIndicatorsBaseOnRetrievedDataAction;
+import cloud.qasino.games.action.SignUpNewVisitorAction;
+import cloud.qasino.games.action.UpdateFichesForPlayer;
+import cloud.qasino.games.database.entity.Card;
+import cloud.qasino.games.database.entity.CardMove;
+import cloud.qasino.games.database.entity.Game;
+import cloud.qasino.games.database.entity.League;
+import cloud.qasino.games.database.entity.Player;
+import cloud.qasino.games.database.entity.Result;
+import cloud.qasino.games.database.entity.Turn;
+import cloud.qasino.games.database.entity.Visitor;
 import cloud.qasino.games.database.entity.enums.card.Face;
 import cloud.qasino.games.database.entity.enums.card.Location;
 import cloud.qasino.games.database.entity.enums.card.Position;
+import cloud.qasino.games.database.entity.enums.game.Style;
 import cloud.qasino.games.database.entity.enums.game.Type;
+import cloud.qasino.games.database.entity.enums.game.gamestate.GameStateGroup;
 import cloud.qasino.games.database.entity.enums.move.Move;
 import cloud.qasino.games.database.entity.enums.player.AiLevel;
 import cloud.qasino.games.database.entity.enums.player.Avatar;
 import cloud.qasino.games.database.entity.enums.player.Role;
-import cloud.qasino.games.database.entity.enums.game.gamestate.GameStateGroup;
+import cloud.qasino.games.dto.elements.SectionTable;
+import cloud.qasino.games.dto.statistics.Statistics;
 import cloud.qasino.games.statemachine.trigger.GameTrigger;
 import cloud.qasino.games.statemachine.trigger.TurnTrigger;
 import lombok.AccessLevel;
@@ -46,12 +70,11 @@ public class QasinoFlowDTO //extends AbstractFlowDTO
         PlayNextTurnAndCardMovesForHuman.Dto,
         IsGameConsistentForGameTrigger.Dto,
         IsTurnConsistentForTurnTrigger.Dto,
-        ProgressCardMovesForTurnTrigger.ProgressCardMovesForTurnTriggerDTO,
-        UpdateTurnForGameType.UpdateTurnForGameTypeDTO,
+        CalculateAndFinishGame.Dto,
+        UpdateFichesForPlayer.Dto,
         IsGameFinished.IsGameFinishedDTO,
         MakeGamePlayableForGameType.Dto,
-        SetupTurnAndInitialCardMovesForGameType.Dto
-{
+        PlayFirstTurnAndInitialCardMovesForGameType.Dto {
     // suppress lombok setter for these fixed values
     @Setter(AccessLevel.NONE)
     private String applicationName = "qasino";
@@ -125,11 +148,12 @@ public class QasinoFlowDTO //extends AbstractFlowDTO
     private Result gameResult;
     private List<Result> resultsForLeague;
 
-    // FOR THE GAME BIENG PLAYED
+    // FOR THE GAME BEING PLAYED
     private SectionTable table;
 
     // during cardmoves in a turn
     private Player turnPlayer;
+    private Player nextPlayer;
     private Turn activeTurn;
     private List<Card> cardsInTheGameSorted;
     private List<CardMove> allCardMovesForTheGame;
@@ -147,29 +171,34 @@ public class QasinoFlowDTO //extends AbstractFlowDTO
     private String errorValue = "Value";
     private String errorMessage = "No error";
     private HttpHeaders headers = new HttpHeaders();
+
     public void addKeyValueToHeader(String key, String value) {
         this.headers.add(key, value);
     }
 
     // todo PROCESS AND VALIDATE INPUT
     private Map<String, String> pathVariables = new HashMap<>();
+
     public void setPathVariables(String... pathVariables) {
         if (pathVariables == null) return;
         if (pathVariables.length % 2 != 0) return;
-        for (int i=0 ; i< pathVariables.length ; i=i+2) {
-            this.pathVariables.put(pathVariables[i],pathVariables[i+1]);
+        for (int i = 0; i < pathVariables.length; i = i + 2) {
+            this.pathVariables.put(pathVariables[i], pathVariables[i + 1]);
         }
     }
+
     private Map<String, String> requestParams = new HashMap<>();
     private Object payloadData;
     private URI uri;
+
     public boolean validateInput() {
         if (!validatePathVariables(this.pathVariables)
-            | !validateRequestParams(this.requestParams)) {
+                | !validateRequestParams(this.requestParams)) {
             return false;
         }
         return true;
     }
+
     public void prepareResponseHeaders() {
         this.uri = ServletUriComponentsBuilder.fromCurrentRequest()
                 .path("")
@@ -197,13 +226,14 @@ public class QasinoFlowDTO //extends AbstractFlowDTO
             addKeyValueToHeader("Error", this.getErrorMessage());
         }
     }
+
     boolean validatePathVariables(Map<String, String> pathVariables) {
         String key;
         String dataName = "pathVariables";
         String pathDataString = StringUtils.join(pathVariables);
 //        log.info(this.getClass().getName() + ": " + dataName + " is " + pathDataString);
 
-        if (pathVariables==null) return true;
+        if (pathVariables == null) return true;
 
         key = "gameId";
         if (pathVariables.containsKey(key)) {
@@ -260,6 +290,7 @@ public class QasinoFlowDTO //extends AbstractFlowDTO
         return validateRequestParams(pathVariables);
 
     }
+
     boolean validateRequestParams(Map<String, String> requestParam) {
 
         String key;
@@ -267,7 +298,7 @@ public class QasinoFlowDTO //extends AbstractFlowDTO
         String paramDataString = StringUtils.join(requestParam);
 //        log.info(this.getClass().getName() + ": " + dataName + " is " + paramDataString);
 
-        if (requestParam==null) return true;
+        if (requestParam == null) return true;
 
         // paging
         key = "pageNumber";
@@ -314,7 +345,7 @@ public class QasinoFlowDTO //extends AbstractFlowDTO
         key = "role";
         if (requestParam.containsKey(key)) {
             if (isValueForEnumKeyValid(key, requestParam.get(
-                    key), dataName,
+                            key), dataName,
                     paramDataString)) {
                 this.suppliedRole = Role.fromLabel(requestParam.get(key));
             } else {
@@ -332,7 +363,7 @@ public class QasinoFlowDTO //extends AbstractFlowDTO
         key = "avatar";
         if (requestParam.containsKey(key)) {
             if (isValueForEnumKeyValid(key, requestParam.get(
-                    key), dataName,
+                            key), dataName,
                     paramDataString)) {
                 this.suppliedAvatar = Avatar.fromLabel(requestParam.get(key));
             } else {
@@ -342,7 +373,7 @@ public class QasinoFlowDTO //extends AbstractFlowDTO
         key = "aiLevel";
         if (requestParam.containsKey(key)) {
             if (isValueForEnumKeyValid(key, requestParam.get(
-                    key), dataName,
+                            key), dataName,
                     paramDataString)) {
                 this.suppliedAiLevel = AiLevel.fromLabel(requestParam.get(key));
             } else {
@@ -353,7 +384,7 @@ public class QasinoFlowDTO //extends AbstractFlowDTO
         key = "gameTrigger";
         if (requestParam.containsKey(key)) {
             if (isValueForEnumKeyValid(key, requestParam.get(
-                    key), dataName,
+                            key), dataName,
                     paramDataString)) {
                 this.suppliedGameTrigger = GameTrigger.fromLabel(requestParam.get(key));
             } else {
@@ -374,7 +405,7 @@ public class QasinoFlowDTO //extends AbstractFlowDTO
         key = "gameStateGroup";
         if (requestParam.containsKey(key)) {
             if (isValueForEnumKeyValid(key, requestParam.get(
-                    key), dataName,
+                            key), dataName,
                     paramDataString)) {
                 this.suppliedGameStateGroup = GameStateGroup.valueOf(requestParam.get(key));
             } else {
@@ -384,7 +415,7 @@ public class QasinoFlowDTO //extends AbstractFlowDTO
         key = "type";
         if (requestParam.containsKey(key)) {
             if (isValueForEnumKeyValid(key, requestParam.get(
-                    key), dataName,
+                            key), dataName,
                     paramDataString)) {
                 this.suppliedType = Type.fromLabel(requestParam.get(key));
             } else {
@@ -393,7 +424,14 @@ public class QasinoFlowDTO //extends AbstractFlowDTO
         }
         key = "style";
         if (requestParam.containsKey(key)) {
-            this.suppliedStyle = (requestParam.get("style"));
+
+            if (isValueForEnumKeyValid(key, requestParam.get(
+                            key), dataName,
+                    paramDataString)) {
+                this.suppliedStyle = requestParam.get("style");
+            } else {
+                return false;
+            }
         }
         key = "ante";
         if (requestParam.containsKey(key)) {
@@ -420,7 +458,7 @@ public class QasinoFlowDTO //extends AbstractFlowDTO
         key = "move";
         if (requestParam.containsKey(key)) {
             if (isValueForEnumKeyValid(key, requestParam.get(
-                    key), dataName,
+                            key), dataName,
                     paramDataString)) {
                 this.suppliedMove = Move.fromLabel(requestParam.get(key));
             } else {
@@ -430,7 +468,7 @@ public class QasinoFlowDTO //extends AbstractFlowDTO
         key = "location";
         if (requestParam.containsKey(key)) {
             if (isValueForEnumKeyValid(key, requestParam.get(
-                    key), dataName,
+                            key), dataName,
                     paramDataString)) {
                 this.suppliedLocation = Location.fromLabel(requestParam.get(key));
             } else {
@@ -447,20 +485,28 @@ public class QasinoFlowDTO //extends AbstractFlowDTO
         }
         return true;
     }
+
     boolean isValueForPrimaryKeyValid(String key, String value, String dataName, String dataToValidate) {
-        if (isValueForIntKeyValid(key, value, dataName, dataToValidate)) {
-            if (Long.parseLong(value) == 0) {
-                // 404 - not found
-                this.setHttpStatus(404);
-                this.setErrorKey(key);
-                this.setErrorValue(value);
-                this.setErrorMessage("Value for [" + key + "] is zero");
-                return false;
-            }
-            return true;
+        if (!StringUtils.isNumeric(value)) {
+            // 400 - bad request
+            this.setHttpStatus(400);
+            this.setErrorKey(key);
+            this.setErrorValue(value);
+            this.setErrorMessage("Invalid numeric value for [" + key + "]");
+            return false;
         }
-        return false;
+        if (Long.parseLong(value) == 0) {
+            // 400 - bad request
+            this.setHttpStatus(400);
+            this.setErrorKey(key);
+            this.setErrorValue(value);
+            this.setErrorMessage("Value for [" + key + "] is zero");
+            return false;
+        }
+
+        return true;
     }
+
     boolean isValueForIntKeyValid(String key, String value, String dataName, String dataToValidate) {
         if (!StringUtils.isNumeric(value)) {
             // 400 - bad request
@@ -472,6 +518,7 @@ public class QasinoFlowDTO //extends AbstractFlowDTO
         }
         return true;
     }
+
     boolean isValueForEnumKeyValid(String key, String value, String dataName,
                                    String dataToValidate) {
 
@@ -530,6 +577,12 @@ public class QasinoFlowDTO //extends AbstractFlowDTO
                 break;
             case "face":
                 if (!(Face.fromLabelWithDefault(value) == Face.ERROR)) {
+                    return true;
+                }
+                break;
+            case "style":
+                // TODO never in error due to a default
+                if (!Style.fromLabelWithDefault(value).equals(null)) {
                     return true;
                 }
                 break;

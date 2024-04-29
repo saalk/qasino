@@ -8,12 +8,13 @@ import lombok.NoArgsConstructor;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
 public enum GameStateGroup {
-    SETUP("setup"), STARTED("started"), FINISHED("finished"), ERROR("error");
+    SETUP("setup"), PREPARED("prepared"), STARTED("started"), FINISHED("finished"), ERROR("error");
 
     private String label;
 
@@ -39,17 +40,19 @@ public enum GameStateGroup {
         return fromLabelWithDefault(Character.toString(character));
     }
 
-    public  static List<GameState> listGameStatesForGameStateGroup(GameStateGroup gameStateGroup) {
+    public  static Set<GameState> listGameStatesForGameStateGroup(GameStateGroup gameStateGroup) {
         //  todo loop gamestate group
         switch (gameStateGroup) {
             case SETUP:
-                return (List<GameState>) GameState.setupGameStates;
+                return GameState.setupGameStates;
+            case PREPARED:
+                return GameState.preparedGameStates;
             case STARTED:
-                return (List<GameState>) GameState.highlowGameStates;
+                return GameState.highlowGameStates;
             case FINISHED:
-                return (List<GameState>) GameState.finishedGameStates;
+                return GameState.finishedGameStates;
             default:
-                return (List<GameState>) GameState.cardGamesError;
+                return GameState.cardGamesError;
         }
     }
 }

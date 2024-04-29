@@ -160,6 +160,7 @@ public class LeagueController {
             return ResponseEntity.status(HttpStatus.valueOf(flowDTO.getHttpStatus())).headers(flowDTO.getHeaders()).build();
         }
         // delete
+        // TODO check if league does not have games any more..
         leagueRepository.deleteById(flowDTO.getSuppliedLeagueId());
         flowDTO.setQasinoGameLeague(null);
         // build response

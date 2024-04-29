@@ -82,6 +82,9 @@ public class MapTableFromRetrievedDataAction implements Action<MapTableFromRetri
             List<String> handStrings =
                     hand.stream().map(Card::getCard).collect(Collectors.toList());
             seat.setStringCardsInHand("[" + String.join("],[", handStrings) + "]");
+            seat.setPreviousCardMoves(actionDto.getActiveTurn().getCardMoves().stream()
+                    .filter(p -> p.getPlayerId() == player.getPlayerId())
+                    .toList());
 
             // when player is human
             seat.setHuman(player.isHuman());

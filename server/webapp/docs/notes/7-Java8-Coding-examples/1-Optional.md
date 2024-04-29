@@ -105,5 +105,5 @@ return selectedUser.map(user -> user.getFirstName() + " " + user.getSurName())
 }
 ```
 ### Before Optional and after
-![ugly](1-Optional-ugly.png)
-![nicer](1-Optional-nice.png)
+![ugly](jpg/1-Optional-ugly.png)
+![nicer](jpg/1-Optional-nice.png)

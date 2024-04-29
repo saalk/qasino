@@ -73,6 +73,7 @@ public class League {
 
     // References
 
+    @JsonIgnore // otherwise the game does not show up - only as a ref in the response
     // L: A League can have more Games over time
     @OneToMany(mappedBy = "league", cascade = CascadeType.DETACH)
     // just a reference, the actual fk column is in game not here !

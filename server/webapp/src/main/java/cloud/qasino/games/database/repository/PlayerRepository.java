@@ -35,7 +35,7 @@ public interface PlayerRepository extends JpaRepository<Player, Long> {
     int countByGame(Game game);
 
     //@Query("SELECT * FROM playerS p WHERE p.game_id = ?1")
-    List<Player> findByGameId(Long gameId);
+    List<Player> findByGame(Game game);
 
 
     // special finds

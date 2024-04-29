@@ -108,6 +108,22 @@ public class FindAllEntitiesForInputAction implements Action<FindAllEntitiesForI
         if (foundPlayer.isPresent()) {
             gameId = (foundPlayer.get().getGame().getGameId());
             actionDto.setTurnPlayer(foundPlayer.get());
+            if (actionDto.getQasinoGamePlayers().size()>1) {
+                // TODO only one round for now do not start with first player again
+                Optional <Player> nextPlayer =
+                        actionDto.getQasinoGamePlayers()
+                                .stream()
+                                .filter(p -> p.getSeat() == foundPlayer.get().getSeat()+1)
+                                .findFirst();
+                if (nextPlayer.isPresent()) {
+                    actionDto.setNextPlayer(nextPlayer.get());
+                } else {
+                    actionDto.setNextPlayer(null);
+                }
+            } else {
+                // TODO only one round for now do not start with first player again
+                actionDto.setNextPlayer(null);
+            }
         } else {
             setErrorMessageNotFound(actionDto, "turnPlayerId", String.valueOf(id));
             return EventOutput.Result.FAILURE;
@@ -118,14 +134,32 @@ public class FindAllEntitiesForInputAction implements Action<FindAllEntitiesForI
         Optional<Game> foundGame = gameRepository.findById(Long.parseLong(String.valueOf(id)));
         if (foundGame.isPresent()) {
             actionDto.setQasinoGame(foundGame.get());
-            actionDto.setQasinoGamePlayers(playerRepository.findByGameId(Long.parseLong(String.valueOf(id))));
+            actionDto.setQasinoGamePlayers(playerRepository.findByGame(actionDto.getQasinoGame()));
             // TODO dont know why this is needed
             actionDto.getQasinoGame().setPlayers(actionDto.getQasinoGamePlayers());
-            actionDto.setCardsInTheGameSorted(cardRepository.findByGameOrderBySequenceAsc(actionDto.getQasinoGame().getGameId()));
+            // when in prepare there are no cards yet so this results in null
+            actionDto.setCardsInTheGameSorted(cardRepository.findByGameOrderBySequenceAsc(actionDto.getQasinoGame()));
             actionDto.setActiveTurn(foundGame.get().getTurn());
             if (actionDto.getActiveTurn() != null) {
                 actionDto.setAllCardMovesForTheGame(foundGame.get().getTurn().getCardMoves());
+            } else {
+                // there is no turn yet for the game, but we have a starting and next player
+                actionDto.setTurnPlayer(
+                        actionDto.getQasinoGamePlayers()
+                                .stream()
+                                .filter(p -> p.getSeat() == 1)
+                                .findFirst().get());
+                if (actionDto.getQasinoGamePlayers().size()>1) {
+                    actionDto.setNextPlayer(
+                            actionDto.getQasinoGamePlayers()
+                                    .stream()
+                                    .filter(p -> p.getSeat() == 2)
+                                    .findFirst().get());
+                } else {
+                    actionDto.setNextPlayer(actionDto.getTurnPlayer());
+                }
             }
+
 
         } else {
             setErrorMessageNotFound(actionDto, "gameId", String.valueOf(id));
@@ -186,6 +220,7 @@ public class FindAllEntitiesForInputAction implements Action<FindAllEntitiesForI
 
         Game getQasinoGame();
         Turn getActiveTurn();
+        Player getTurnPlayer();
 
         // Setters
         void setQasinoVisitor(Visitor visitor);
@@ -193,6 +228,7 @@ public class FindAllEntitiesForInputAction implements Action<FindAllEntitiesForI
 
         void setAcceptedPlayer(Player player);
         void setTurnPlayer(Player player);
+        void setNextPlayer(Player player);
         void setNewGamesForVisitor(List<Game> games);
 
         void setStartedGamesForVisitor(List<Game> games);

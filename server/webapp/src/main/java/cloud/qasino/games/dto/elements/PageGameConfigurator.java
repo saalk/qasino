@@ -23,6 +23,7 @@ public class PageGameConfigurator {
     @JsonProperty("Game")
     private Game selectedGame;
     private Type gameType;
+    private League gameLeague;
     private int totalHumanPlayers;
     private int totalBotPlayers;
     // selections per type

@@ -3,15 +3,14 @@ package cloud.qasino.games.action;
 import cloud.qasino.games.action.interfaces.Action;
 import cloud.qasino.games.database.entity.Game;
 import cloud.qasino.games.database.entity.Player;
-import cloud.qasino.games.database.entity.enums.game.GameState;
 import cloud.qasino.games.database.entity.enums.game.Style;
-import cloud.qasino.games.database.repository.CardMoveRepository;
 import cloud.qasino.games.database.repository.CardRepository;
 import cloud.qasino.games.database.repository.GameRepository;
-import cloud.qasino.games.database.repository.TurnRepository;
+import cloud.qasino.games.database.service.PlayService;
 import cloud.qasino.games.event.EventOutput;
 import cloud.qasino.games.statemachine.trigger.GameTrigger;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
@@ -21,11 +20,13 @@ import java.util.List;
 @Component
 public class MakeGamePlayableForGameType implements Action<MakeGamePlayableForGameType.Dto, EventOutput.Result> {
 
+    @Autowired
+    PlayService playService;
+
     @Resource
     GameRepository gameRepository;
+    @Resource
     CardRepository cardRepository;
-    TurnRepository turnRepository;
-    CardMoveRepository cardMoveRepository;
 
     @Override
     public EventOutput.Result perform(Dto actionDto) {
@@ -53,11 +54,7 @@ public class MakeGamePlayableForGameType implements Action<MakeGamePlayableForGa
             default -> throw new IllegalStateException("Unexpected value: " + style.getDeck());
         }
         // update Game, create Cards for game, create Turn, create CardMove
-        actionDto.getQasinoGame().shuffleGame(jokers);
-        actionDto.getQasinoGame().setState(GameState.INITIALIZED);
-        gameRepository.save(actionDto.getQasinoGame());
-        cardRepository.saveAll(actionDto.getQasinoGame().getCards());
-
+        actionDto.setQasinoGame(playService.prepareGameForPlaying(actionDto.getQasinoGame(), jokers));
         return EventOutput.Result.SUCCESS;
     }
 

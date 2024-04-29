@@ -22,6 +22,9 @@ public enum GameTrigger {
     // START
     PLAY("play"),       // deck, ante and a player is needed
 
+    // START
+    TURN("turn"),       // move some cards
+
     // specific triggers are with the event trigger
     // FINISHED
     WINNER("winner"),     // we have a winner

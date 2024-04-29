@@ -6,6 +6,7 @@ import cloud.qasino.games.database.entity.enums.game.Style;
 import cloud.qasino.games.database.entity.enums.game.Type;
 import cloud.qasino.games.database.entity.enums.card.PlayingCard;
 import cloud.qasino.games.database.entity.enums.card.Location;
+import cloud.qasino.games.database.entity.enums.move.Move;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -47,6 +48,7 @@ public class Game {
 
     // Foreign keys
 
+    // TODO why json ignore??
     @JsonIgnore
     // PlGa: many Games can be part of the same League
     @ManyToOne(cascade = CascadeType.DETACH)
@@ -170,18 +172,6 @@ public class Game {
             Card card = new Card(playingCard.getCardId(), this, null, i++, Location.STOCK );
             this.cards.add(card);
         }
-    }
-
-    public Card dealCard(Player humanOrBot, Face face) {
-        for (int i = 0; i < this.cards.size(); i++) {
-             if (this.cards.get(i).getHand() == null) {
-                this.cards.get(i).setHand(humanOrBot);
-                this.cards.get(i).setLocation(Location.HAND);
-                this.cards.get(i).setFace(face);
-                return this.cards.get(i);
-            }
-        }
-        return null;
     }
 
     // TODO LOW make this work with up / down and playerId

@@ -117,13 +117,6 @@ public class Turn {
         this.weekday = localDateAndTime.getDayOfMonth();
     }
 
-    public void newTurn(long newPlayerId) {
-        setUpdated();
-        this.activePlayerId = newPlayerId;
-        this.currentRoundNumber = ++ currentRoundNumber;
-        this.currentMoveNumber = ++ currentMoveNumber;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

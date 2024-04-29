@@ -19,6 +19,7 @@ public enum Move implements LabeledEnum {
     DEAL("deal"),
     PASS("pass"),
     NEXT("next"),
+    STOP("stop"),
 
     // cardmoves in hartenjagen
     PLAY("play"),
@@ -48,8 +49,8 @@ public enum Move implements LabeledEnum {
      * factory methods for creating an instance like creating groups from enums.
      * Here it is used to group all enums.
      */
-    public static Set<Move> highlowMoves = EnumSet.of(DEAL, PASS, HIGHER, LOWER, ERROR);
-    public static Set<Move> blackjackMoves = EnumSet.of(DEAL, STAND, DOUBLE, ERROR);
+    public static Set<Move> highlowMoves = EnumSet.of(DEAL, PASS, HIGHER, LOWER, STOP);
+    public static Set<Move> blackjackMoves = EnumSet.of(DEAL, STAND, DOUBLE, STOP);
 
     static {
         for (Move move : EnumSet.allOf(Move.class))

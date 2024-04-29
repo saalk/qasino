@@ -22,17 +22,16 @@ public enum TurnTrigger {
     // blackjack
     DEAL("deal"),
     SPLIT("split"),
-
-    // all
     STOP("stop"),
 
+    // technical
     ERROR("error"),
-    WINNER("winner"),
-    NO_CARDS_LEFT("no_cards_left"),; // system events
+    DETERMINE_WINNER("determine_winner"),
+    END_GAME("end_game"),; // system events
 
     public static final Set<TurnTrigger> blackJackTurn = of(DEAL, SPLIT, STOP);
     public static final Set<TurnTrigger> highLowTurn = of(HIGHER, LOWER, PASS, STOP, NEXT);
-    public static final Set<TurnTrigger> systemTurn = of(WINNER, NO_CARDS_LEFT);
+    public static final Set<TurnTrigger> systemTurn = of(DETERMINE_WINNER, END_GAME);
 
     public static final Map<String, TurnTrigger> lookup
             = new HashMap<>();

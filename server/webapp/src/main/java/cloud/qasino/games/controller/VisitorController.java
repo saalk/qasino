@@ -124,6 +124,7 @@ public class VisitorController {
             return ResponseEntity.status(HttpStatus.valueOf(flowDTO.getHttpStatus())).headers(flowDTO.getHeaders()).build();
         }
         // delete
+        // TODO delete players with this visitor first
         visitorRepository.deleteById(flowDTO.getSuppliedVisitorId());
         flowDTO.setQasinoVisitor(null);
         // build response

@@ -17,15 +17,13 @@ import org.springframework.stereotype.Component;
 import javax.annotation.Resource;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import static cloud.qasino.games.database.entity.enums.game.gamestate.GameStateGroup.listGameStatesForGameStateGroup;
 
 @Slf4j
 @Component
 public class IsGameConsistentForGameTrigger implements Action<IsGameConsistentForGameTrigger.Dto, EventOutput.Result> {
-
-    @Resource
-    VisitorRepository visitorRepository;
 
     @Override
     public EventOutput.Result perform(Dto actionDto) {
@@ -37,24 +35,30 @@ public class IsGameConsistentForGameTrigger implements Action<IsGameConsistentFo
 
             case WINNER -> {
                 noError = gameShouldHaveAResult(actionDto);
+                if (noError) noError = gameShouldHaveStateInCorrectGameStateGroup(actionDto, GameStateGroup.STARTED);
+                if (noError) noError = gameShouldHaveCardsAndTurn(actionDto);
+                break;
             }
             case PLAY -> {
+                noError = gameShouldHaveStateInCorrectGameStateGroup(actionDto, GameStateGroup.PREPARED);
+                break;
+            }
+            case TURN -> {
+                noError = gameShouldHaveStateInCorrectGameStateGroup(actionDto, GameStateGroup.STARTED);
+                if (noError) noError = gameShouldHaveCardsAndTurn(actionDto);
+                break;
             }
             case LEAVE -> {
                 noError = gameShouldHaveStateInCorrectGameStateGroup(actionDto, GameStateGroup.STARTED);
-                noError = gameShouldHaveCardsAndTurn(actionDto);
+                if (noError) noError = gameShouldHaveCardsAndTurn(actionDto);
                 break;
             }
             case PREPARE -> {
                 noError = gameShouldHaveAnte(actionDto);
-                noError = gameShouldHaveInitiator(actionDto);
-                noError = gameShouldHavePlayersWithFiches(actionDto);
-            }
-            case ACCEPT -> {
-                noError = playersShouldHaveSeats(actionDto);
-            }
-            case INVITE -> {
-                noError = gameShouldHavePlayers(actionDto);
+                if (noError) noError = gameShouldHaveInitiator(actionDto);
+                if (noError) noError = gameShouldHavePlayersWithFiches(actionDto);
+                if (noError) noError = playersShouldHaveSeats(actionDto);
+                break;
             }
             case SETUP -> {
                 noError = gameShouldHaveStateInCorrectGameStateGroup(actionDto, GameStateGroup.SETUP);
@@ -88,15 +92,16 @@ public class IsGameConsistentForGameTrigger implements Action<IsGameConsistentFo
         return true;
     }
     private boolean gameShouldHaveStateInCorrectGameStateGroup(Dto actionDto, GameStateGroup gameStateGroup) {
-        List<GameState> correctGameStates = listGameStatesForGameStateGroup(gameStateGroup);
-        if (!correctGameStates.contains(actionDto.getQasinoGame().getState())) {
+        Set<GameState> correctGameStates = listGameStatesForGameStateGroup(gameStateGroup);
+        log.info("correctGameStates: " + correctGameStates);
+        if (!(correctGameStates.contains(actionDto.getQasinoGame().getState()))) {
             log.info("!state");
             actionDto.setHttpStatus(422);
             actionDto.setErrorMessage(
                     "Action [" +
                             actionDto.getSuppliedGameTrigger() +
-                            "] invalid - game is not in correct game state group" +
-                            gameStateGroup.getLabel()
+                            "] is invalid - game state [" + actionDto.getQasinoGame().getState() + "] is not in correct game state group [" +
+                            gameStateGroup.getLabel() + "] which contains " + correctGameStates
             );
             return false;
         }

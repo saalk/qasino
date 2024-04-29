@@ -1,6 +1,7 @@
 package cloud.qasino.games.dto.elements;
 
 import cloud.qasino.games.database.entity.Card;
+import cloud.qasino.games.database.entity.CardMove;
 import cloud.qasino.games.database.entity.Player;
 import cloud.qasino.games.database.entity.enums.player.AiLevel;
 import cloud.qasino.games.database.entity.enums.player.Avatar;
@@ -42,11 +43,13 @@ public class SectionSeat {
     @JsonProperty("AiLevel")
     private AiLevel seatPlayerAiLevel;
 
-    // player cards
+    // player cards and moves
     @JsonProperty("CardsInHand")
     private List<Card> cardsInHand = new ArrayList<>();
     @JsonProperty("StringCardsInHand")
     private String stringCardsInHand;
+    @JsonProperty("PreviousCardMoves")
+    private List <CardMove> previousCardMoves;
 
     // when player is human
     @JsonProperty("IsHumanPlayer")

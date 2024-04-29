@@ -127,5 +127,6 @@ public class QuickTestAtStartup implements ApplicationRunner {
         CardMove cardMove = new CardMove(turn, visitorAndBot.get(0), 0, Move.DEAL,
                 Location.HAND);
         cardMoveRepository.save(cardMove);
+
     }
 }

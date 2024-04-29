@@ -80,9 +80,9 @@ public class GameController {
     }
 
     // /api/game/{id} - GET, DELETE, PUT type, style, ante - rules apply!
-    // /api/game/{id}/ACCEPT -> PUT player fiches // PREPARED
-    // /api/game/{id}/WITHDRAW/bot -> DELETE players // PREPARED
-    // /api/game/{id}/WITHDRAW/visitor{id} -> DELETE players // PREPARED
+    // /api/game/{id}/ACCEPT -> PUT player fiches
+    // /api/game/{id}/WITHDRAW/bot -> DELETE players
+    // /api/game/{id}/WITHDRAW/visitor{id} -> DELETE players
 
     @PostMapping(value = "/game/setup/{type}/visitor/{visitorId}")
     public ResponseEntity<Qasino> setupGameWithVisitorPlayer(
@@ -375,7 +375,7 @@ public class GameController {
             flowDTO.prepareResponseHeaders();
             return ResponseEntity.status(HttpStatus.valueOf(flowDTO.getHttpStatus())).headers(flowDTO.getHeaders()).build();
         }
-        // rules - GameState must be in 'setup' NEW, PENDING_INVITATIONS or PREPARED
+        // rules - GameState must be in 'setup' NEW, PENDING_INVITATIONS
         if (flowDTO.getQasinoGame() != null
                 && !setupGameStates.contains(flowDTO.getQasinoGame().getState())
         ) {

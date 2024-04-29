@@ -37,7 +37,7 @@ Stream.of() needs flattening whereas Arrays.stream() does not.
 For other primitive types, Arrays.stream() won’t work. On the other hand, Stream.of() returns a generic Stream of type T (Stream). Hence, it can be used with any type.
 
 ### Example
-![Example model](4-Stream-entity.png)
+![Example model](jpg/4-Stream-entity.png)
 The following code get the city name of the companies addresses:
 ```java
 public List<String> getCityNames(List<Company> companyList){
@@ -127,3 +127,59 @@ public List<String> getCityNames(List<Company> companyList){
             .toList();
 }
 ```
+## Stream concepts
+# Method Chaining
+With streams, you can put many operations together in a chain.
+```java
+List<String> words = Arrays.asList("apple", "banana", "cat", "dog");
+
+long count = words.stream()          // Make a stream
+.filter(word -> word.length() > 3)  // Filter out short words
+.map(String::toUpperCase)           // Convert remaining words to uppercase
+.count();                           // Count how many words are left
+```
+It’s like a conveyor belt for your data, where each step does something different to it (hence the title picture of this tutorial).
+#Lazy Evaluation
+Nothing happens in a stream until you need the result. Each step in the stream only happens when it’s needed, saving time and resources.
+```java
+List<Integer> numbers = Arrays.asList(5, 12, 8, 3, 15, 20);
+
+Integer result = numbers.stream()
+.filter(n -> n % 2 == 0) // Only even numbers
+.filter(n -> n > 10)     // Only numbers greater than 10
+.findFirst()              // Find the first matching number
+.orElse(null);            // Return null if no match
+```
+The filtering is not performed immediately. Instead, it sets up the condition for filtering but waits until the stream is consumed or a terminal operation is applied.
+
+# Parallel Processing
+Streams can automatically use multiple threads to do work faster.
+```java
+List<Integer> numbers = Arrays.asList(1, 2, 3, 4, 5, 6, 7, 8, 9, 10);
+
+int sum = numbers.parallelStream() // Process in parallel
+.mapToInt(n -> n)              // Convert to IntStream
+.sum();                        // Add up all the numbers
+```
+This can significantly improve performance for operations that can be parallelized, such as mapping, filtering, and reducing (but be careful about which operations you decide to parallelize not to corrupt the results).
+
+# Immutable Data
+Once you make a stream, you can’t change it.
+```java
+List<String> names = Arrays.asList("Alice", "Bob", "Charlie");
+
+List<String> upperCaseNames = names.stream() // Make a stream
+.map(String::toUpperCase)               // Make all names uppercase
+.collect(Collectors.toList());         // Collect into a new list
+```
+Each operation on the stream makes a new stream. This helps to keep your data safe and makes it easier to understand your code.
+
+# Optional
+Streams often work hand-in-hand with Optional to handle potentially absent values.
+```java
+Optional<String> firstFruit = fruits.stream() // Make a stream
+.findFirst();                             // Find the first fruit
+```
+findFirst operation returns an Optional containing the first element of the stream, or an empty Optional if the stream is empty. This helps us gracefully handle the null values.
+
+

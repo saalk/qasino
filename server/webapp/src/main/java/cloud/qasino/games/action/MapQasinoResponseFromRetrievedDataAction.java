@@ -139,6 +139,8 @@ public class MapQasinoResponseFromRetrievedDataAction implements Action<MapQasin
         navigationBarItem.setItemStats("bots "+pageGameConfigurator.getTotalBotPlayers() + "/" + pageGameConfigurator.getTotalHumanPlayers() + " humans");
         // set the content
         pageGameConfigurator.setSelectedGame(actionDto.getQasinoGame());
+        pageGameConfigurator.setGameType(actionDto.getQasinoGame().getType());
+        pageGameConfigurator.setGameLeague(actionDto.getQasinoGame().getLeague());
         Style style = Style.fromLabelWithDefault(actionDto.getQasinoGame().getStyle());
         pageGameConfigurator.setAnteToWin(style.getAnteToWin());
         pageGameConfigurator.setBettingStrategy(style.getBettingStrategy());
