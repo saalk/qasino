@@ -116,11 +116,15 @@ public class Game {
     @OneToOne(mappedBy = "game", cascade = CascadeType.DETACH)
     private Turn turn; // = new Turn();
 
-    @JsonIgnore
-    // AcTu:
-    // a Turn is kept do indicate the active player's move only
-    @OneToOne(mappedBy = "game", cascade = CascadeType.DETACH)
-    private Result result; // = new Result();
+    @OneToMany(mappedBy = "visitor", cascade = CascadeType.DETACH)
+    // just a reference, the actual fk column is in league not here!
+    private List<League> leagues;
+
+    // just a reference, the actual fk column is in result not here!
+    @OneToMany(mappedBy = "game", cascade = CascadeType.DETACH)
+    private List<Result> results; // = new Result();
+
+
 
     public Game() {
         setUpdated();

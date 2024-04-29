@@ -52,11 +52,11 @@ public class Result {
     private Visitor visitor;
 
     // the game for which the result is achieved
-    @OneToOne (cascade = CascadeType.DETACH)
+    // todo this was onetoone
+    @ManyToOne (cascade = CascadeType.DETACH)
     @JoinColumn(name = "game_id", referencedColumnName = "game_id",foreignKey = @ForeignKey(name =
             "fk_game_id"), nullable=false)
     private Game game;
-
 
     // Normal fields
     @Enumerated(EnumType.STRING)
@@ -79,6 +79,9 @@ public class Result {
     @Column(name = "fiches_won")
     private int fichesWon;
 
+    @Column(name = "winner", length = 2)
+    private boolean winner;
+
     // References
 
     public Result() {
@@ -93,7 +96,7 @@ public class Result {
         this.weekday = localDateAndTime.getDayOfMonth();
     }
 
-    public Result(Player player, Visitor visitor, Game game, Type type, int fichesWon) {
+    public Result(Player player, Visitor visitor, Game game, Type type, int fichesWon, boolean winner) {
         this();
         this.player = player;
         this.visitor = visitor;
@@ -101,6 +104,7 @@ public class Result {
 
         this.type = type;
         this.fichesWon = fichesWon;
+        this.winner = winner;
     }
 
     @Override

@@ -1,16 +1,18 @@
 package cloud.qasino.games.action;
 
 import cloud.qasino.games.action.interfaces.Action;
-import cloud.qasino.games.database.entity.Card;
+import cloud.qasino.games.action.util.ActionUtils;
 import cloud.qasino.games.database.entity.CardMove;
 import cloud.qasino.games.database.entity.Game;
 import cloud.qasino.games.database.entity.Player;
+import cloud.qasino.games.database.entity.Result;
 import cloud.qasino.games.database.entity.Turn;
-import cloud.qasino.games.database.entity.enums.card.PlayingCard;
-import cloud.qasino.games.database.entity.enums.move.Move;
+import cloud.qasino.games.database.entity.Visitor;
 import cloud.qasino.games.database.repository.CardMoveRepository;
 import cloud.qasino.games.database.repository.CardRepository;
 import cloud.qasino.games.database.repository.PlayerRepository;
+import cloud.qasino.games.database.repository.ResultsRepository;
+import cloud.qasino.games.database.repository.VisitorRepository;
 import cloud.qasino.games.database.service.PlayService;
 import cloud.qasino.games.event.EventOutput;
 import lombok.extern.slf4j.Slf4j;
@@ -18,8 +20,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+
 
 @Slf4j
 @Component
@@ -27,8 +32,12 @@ public class CalculateAndFinishGame implements Action<CalculateAndFinishGame.Dto
 
     @Resource
     CardMoveRepository cardMoveRepository;
+    @Resource
     CardRepository cardRepository;
-    PlayerRepository playerRepository;
+    @Resource
+    ResultsRepository resultsRepository;
+    @Resource
+    VisitorRepository visitorRepository;
 
     @Autowired
     PlayService playService;
@@ -36,59 +45,42 @@ public class CalculateAndFinishGame implements Action<CalculateAndFinishGame.Dto
     @Override
     public EventOutput.Result perform(CalculateAndFinishGame.Dto actionDto) {
 
-        Optional<Card> previousCardMoveCard = Optional.of(new Card());
-        for (CardMove cardMove : actionDto.getAllCardMovesForTheGame()) {
-            if (!(cardMove.getPlayerId() == actionDto.getTurnPlayer().getPlayerId())) {
-                continue; // not the correct player
-            }
-            if (cardMove.getBet() != 0) {
-                previousCardMoveCard = cardRepository.findById(cardMove.getCardId());
-                continue; // correct player but bet already filled in
-            }
-            // either there is nothing to calculate or there is and its a higher or lower move
-            if ((cardMove.getMove() == Move.HIGHER || cardMove.getMove() == Move.LOWER)) {
-                if (previousCardMoveCard.isEmpty()) {
-                    setErrorMessageConflict(actionDto, "Move", String.valueOf(cardMove.getMove()));
-                    return EventOutput.Result.FAILURE;
-                }
-                cardMove.setBet(actionDto.getQasinoGame().getAnte());
-                cardMove.setStartFiches(actionDto.getTurnPlayer().getFiches());
-                Optional<Card> previousCard = cardRepository.findById(previousCardMoveCard.get().getCardId());
-                Optional<Card> currentCard = cardRepository.findById(cardMove.getCardId());
-                cardMove.setEndFiches(
-                        actionDto.getTurnPlayer().getFiches() +
-                                calculateWinOrLoss(actionDto, cardMove.getMove(), previousCard.get(), currentCard.get()));
-                cardMoveRepository.save(cardMove);
-                actionDto.getTurnPlayer().setFiches(cardMove.getEndFiches());
-                playerRepository.save(actionDto.getTurnPlayer());
-                actionDto.setAllCardMovesForTheGame(playService.getAllCardMovesForTheGame(actionDto.getQasinoGame())); // can be null
+        HashMap<Long, Integer> playerProfit = new HashMap<>();
+        List<Player> players = actionDto.getQasinoGame().getPlayers();
+        Optional<Visitor> initiator = visitorRepository.findVisitorByVisitorId(actionDto.getQasinoGame().getInitiator());
 
+        for (Player player : players) {
+            playerProfit.put(player.getPlayerId(), 0);
+        }
+        // calculate all players profits
+        for (CardMove cardMove : actionDto.getAllCardMovesForTheGame()) {
+            int start = playerProfit.get(cardMove.getPlayerId());
+            int profit = start + (cardMove.getEndFiches() - cardMove.getStartFiches());
+            playerProfit.replace(cardMove.getPlayerId(), profit);
+        }
+        // rank and create results
+        HashMap<Long, Integer> playerProfitSortedOnValue = ActionUtils.sortByValue(playerProfit);
+
+        Player winner = null;
+        for (Map.Entry<Long, Integer> en : playerProfitSortedOnValue.entrySet()) {
+            Player player = ActionUtils.findPlayerByPlayerId(players, en.getKey());
+            boolean won = false;
+            if (winner == null) {
+                winner = player;
+                won = true;
             }
+            // en.getKey()
+            // en.getValue()
+            resultsRepository.save(new Result(
+                    player,
+                    initiator.get(),
+                    actionDto.getQasinoGame(),
+                    actionDto.getQasinoGame().getType(),
+                    en.getValue(),
+                    won
+            ));
         }
         return EventOutput.Result.SUCCESS;
-    }
-
-    int calculateWinOrLoss(CalculateAndFinishGame.Dto actionDto, Move move, Card previous, Card current) {
-        int previousValue = PlayingCard.calculateValueWithDefaultHighlow(previous.getCard(), actionDto.getQasinoGame().getType());
-        int currentValue = PlayingCard.calculateValueWithDefaultHighlow(current.getCard(), actionDto.getQasinoGame().getType());
-        // calculate if the bet is added or subtracted
-        if (previousValue == 0 || currentValue == 0) {
-            // joker now or previous so ok you win the bet
-            return actionDto.getQasinoGame().getAnte();
-        }
-        if (previousValue == currentValue) {
-            // with values being equal, you don't win or loose
-            return 0;
-        }
-        if (move.equals(Move.HIGHER) && currentValue < previousValue) {
-            // predicted higher and it is
-            return actionDto.getQasinoGame().getAnte();
-        }
-        if (move.equals(Move.LOWER) && currentValue > previousValue) {
-            // predicted lower and it is
-            return actionDto.getQasinoGame().getAnte();
-        }
-        return -actionDto.getQasinoGame().getAnte();
     }
 
     void setErrorMessageConflict(CalculateAndFinishGame.Dto actionDto, String id,
@@ -116,13 +108,7 @@ public class CalculateAndFinishGame implements Action<CalculateAndFinishGame.Dto
 
         List<CardMove> getAllCardMovesForTheGame();
         Game getQasinoGame();
-        Turn getActiveTurn();
-        Player getTurnPlayer();
-        Player getNextPlayer();
-
-        // Setters
-        void setTurnPlayer(Player player);
-        void setAllCardMovesForTheGame(List<CardMove> cardMoves);
+        Visitor getQasinoVisitor();
 
         // error setters
         void setHttpStatus(int status);
