@@ -159,10 +159,11 @@ public class PlayContoller {
         }
 //        output = canPlayerStillPlay.perform(flowDTO); // for now stop after one round
         mapTableFromRetrievedDataAction.perform(flowDTO);
-//      output = isPlayerHuman.perform(flowDTO);
+//        output = isPlayerHuman.perform(flowDTO);
         playNextTurnAndCardMovesForHuman.perform(flowDTO);
-//      OR playNextTurnAndCardMovesForBot.perform(flowDTO);
-
+////      OR playNextTurnAndCardMovesForBot.perform(flowDTO);
+//
+        // todo find 500 at Optional<Card> previousCard
         updateFichesForPlayer.perform(flowDTO);
         output = isGameFinished.perform(flowDTO);
         if (output == EventOutput.Result.SUCCESS) {

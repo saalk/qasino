@@ -37,12 +37,15 @@ public class PlayService {
 
     public Turn dealCardToPlayer(Game activeGame, Turn activeTurn, Player humanOrBot, Move move, Face face, int howMany) {
 
-        // determine card to deal - ignore howMany for now
+        // determine card to deal
+        // todo ignore howMany for now
         Card topCardInStock = null;
         List<CardMove> newCardMove = new ArrayList<>();
         for (int i = 0; i < activeGame.getCards().size(); i++) {
+            // find first card without hand (aka player_id) then break
             if (activeGame.getCards().get(i).getHand() == null) {
                 topCardInStock = activeGame.getCards().get(i);
+                break;
             }
         }
         if (topCardInStock == null) return null; // no cards left -> end the game
@@ -53,13 +56,19 @@ public class PlayService {
             activeTurn = new Turn(activeGame, humanOrBot.getPlayerId());
         }
 
+        int roundNo = activeTurn.getCurrentRoundNumber();
+        int moveNo = activeTurn.getCurrentMoveNumber();
+        String details = topCardInStock.getCard();
         // register the card move to the turn
         newCardMove.add(new CardMove(
                 activeTurn,
                 humanOrBot,
                 topCardInStock.getCardId(),
                 move,
-                Location.HAND));
+                Location.HAND,
+                roundNo,
+                moveNo,
+                details));
 
         // save turn and cardMove
         turnRepository.save(activeTurn);

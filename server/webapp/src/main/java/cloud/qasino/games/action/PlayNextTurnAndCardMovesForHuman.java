@@ -47,7 +47,16 @@ public class PlayNextTurnAndCardMovesForHuman implements Action<PlayNextTurnAndC
 
         // Update Turn + cardMoves can be DEAL, HIGHER, LOWER, PASS, STOP for Human
         switch (actionDto.getSuppliedTurnTrigger()) {
-            case HIGHER -> activeMove = Move.HIGHER;
+            case HIGHER -> {
+                activeMove = Move.HIGHER;
+                activeTurn = playService.dealCardToPlayer(
+                        actionDto.getQasinoGame(),
+                        activeTurn,
+                        activePlayer,
+                        activeMove,
+                        Face.UP,
+                        1);
+            }
             case LOWER -> {
                 activeMove = Move.LOWER;
                 activeTurn = playService.dealCardToPlayer(

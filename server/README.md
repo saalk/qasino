@@ -2,6 +2,10 @@
 - a Java 17 Spring-Boot 3 based application
 - [Running the app](./Running-the-app.md)
 
+# TODO 
+- no bet in cardmove when deal etc
+- ...
+
 # Notes
 - [Shortcuts](./webapp/docs/notes/1-Shortcuts/0-index.md)
 - [Infra](./webapp/docs/notes/2-Infra/0-index.md)

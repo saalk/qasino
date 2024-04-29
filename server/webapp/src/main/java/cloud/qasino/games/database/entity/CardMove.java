@@ -10,7 +10,19 @@ import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.DynamicUpdate;
 
-import javax.persistence.*;
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.ForeignKey;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Index;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Objects;
@@ -22,8 +34,8 @@ import java.util.Objects;
 @JsonIdentityInfo(generator = JSOGGenerator.class)
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 @Table(name = "cardmove", indexes =
-        { @Index(name = "cardmove_turn_index", columnList = "turn_id", unique = false),
-          // not needed : @Index(name = "cardmove_index", columnList = "cardmove_id", unique = true)
+        {@Index(name = "cardmove_turn_index", columnList = "turn_id", unique = false),
+                // not needed : @Index(name = "cardmove_index", columnList = "cardmove_id", unique = true)
         }
 )
 public class CardMove {
@@ -92,7 +104,7 @@ public class CardMove {
         setEndFiches(0);
     }
 
-    public CardMove(Turn turn, Player player, long cardId, Move move, Location location) {
+    public CardMove(Turn turn, Player player, long cardId, Move move, Location location, int roundNo, int moveNo, String details) {
         this();
         this.turn = turn;
         this.playerId = player.getPlayerId();
@@ -100,6 +112,10 @@ public class CardMove {
 
         this.move = move;
         this.location = location;
+
+        this.roundNumber = roundNo;
+        this.moveNumber = moveNo;
+        this.cardMoveDetails = details;
     }
 
     public void setCreated() {
