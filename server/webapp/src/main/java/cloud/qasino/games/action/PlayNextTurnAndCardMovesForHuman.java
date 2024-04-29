@@ -2,6 +2,7 @@ package cloud.qasino.games.action;
 
 import cloud.qasino.games.action.interfaces.Action;
 import cloud.qasino.games.database.entity.Card;
+import cloud.qasino.games.database.entity.CardMove;
 import cloud.qasino.games.database.entity.Game;
 import cloud.qasino.games.database.entity.Player;
 import cloud.qasino.games.database.entity.Turn;
@@ -21,6 +22,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
+import java.util.List;
 import java.util.Optional;
 
 @Slf4j
@@ -84,6 +86,8 @@ public class PlayNextTurnAndCardMovesForHuman implements Action<PlayNextTurnAndC
             actionDto.setSuppliedTurnTrigger(TurnTrigger.END_GAME);
         }
         actionDto.setActiveTurn(activeTurn); // can be null
+        actionDto.setAllCardMovesForTheGame(playService.getAllCardMovesForTheGame(actionDto.getQasinoGame())); // can be null
+
         return EventOutput.Result.SUCCESS;
     }
 
@@ -117,6 +121,7 @@ public class PlayNextTurnAndCardMovesForHuman implements Action<PlayNextTurnAndC
         // Setters
         void setQasinoGame(Game game);
         void setActiveTurn(Turn turn);
+        void setAllCardMovesForTheGame(List<CardMove> cardMoves);
 
         // error setters
         void setHttpStatus(int status);

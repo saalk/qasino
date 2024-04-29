@@ -78,12 +78,18 @@ public class CardMove {
 
     @Column(name = "bet", nullable = true)
     private int bet;
+    @Column(name = "start_fiches", nullable = true)
+    private int startFiches;
+    @Column(name = "end_fiches", nullable = true)
+    private int endFiches;
 
     // References
 
-
     public CardMove() {
         setCreated();
+        setBet(0);
+        setStartFiches(0);
+        setEndFiches(0);
     }
 
     public CardMove(Turn turn, Player player, long cardId, Move move, Location location) {

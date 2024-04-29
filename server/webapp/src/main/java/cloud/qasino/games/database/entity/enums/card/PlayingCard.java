@@ -47,7 +47,7 @@ public class PlayingCard {
 
         final StringBuilder builder = new StringBuilder();
         this.cardId = builder.append(rank.getLabel()).append(suit.getLabel()).toString();
-        this.value = calculateValueWithDefaultHighlow(rank, null);
+        this.value = calculateValueWithDefaultHighlowFromRank(rank, null);
         // todo: set thumbnailPath
     }
 
@@ -71,30 +71,34 @@ public class PlayingCard {
         return false;
     }
 
-    public boolean setPlayingCardFromCardId(String cardId) {
+    public static PlayingCard getPlayingCardFromCardId(String cardId) {
 
         if (cardId == null
                 || cardId.isEmpty()
                 || !isValidCardId(cardId))
-            return false;
+            return null;
         for (PlayingCard playingCard : prototypeDeck) {
             if (playingCard.cardId.equals(cardId)) {
-                this.cardId = cardId;
-                this.rank = playingCard.rank;
-                this.suit = playingCard.suit;
-                this.value = calculateValueWithDefaultHighlow(rank, null);
-                return true;
+                return playingCard;
             }
         }
-        return false;
+        return null;
     }
+
+
 
     public boolean isJoker() {
         String jokerCard = cardId;
         return jokerCard.equals("RJ");
     }
 
-    private int calculateValueWithDefaultHighlow(Rank rank, Type type) {
+    public static int calculateValueWithDefaultHighlow(String cardId, Type type) {
+
+        PlayingCard playingCard = getPlayingCardFromCardId(cardId);
+        return calculateValueWithDefaultHighlowFromRank(playingCard.rank, type);
+    }
+
+    public static int calculateValueWithDefaultHighlowFromRank(Rank rank, Type type) {
 
         Type localType = type == null ? Type.HIGHLOW : type;
         switch (rank) {

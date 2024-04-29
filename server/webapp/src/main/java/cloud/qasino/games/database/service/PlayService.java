@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 
@@ -73,7 +74,6 @@ public class PlayService {
 
         return activeTurn;
     }
-
     public Game prepareGameForPlaying(Game activeGame, int jokers) {
 
         List<PlayingCard> playingCards = PlayingCard.newDeck(jokers);
@@ -92,5 +92,10 @@ public class PlayService {
 
         return activeGame;
     }
-
+    public List<CardMove> getAllCardMovesForTheGame(Game activeGame) {
+        Turn activeTurn = activeGame.getTurn();
+        List<CardMove> allCardMovesForTheGame = cardMoveRepository.findByTurn(activeTurn);
+        allCardMovesForTheGame.sort(Comparator.comparing(CardMove::getCreated));
+        return allCardMovesForTheGame;
+    }
 }

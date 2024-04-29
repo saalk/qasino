@@ -2,6 +2,7 @@ package cloud.qasino.games.action;
 
 import cloud.qasino.games.action.interfaces.Action;
 import cloud.qasino.games.database.entity.Card;
+import cloud.qasino.games.database.entity.CardMove;
 import cloud.qasino.games.database.entity.Game;
 import cloud.qasino.games.database.entity.Player;
 import cloud.qasino.games.database.entity.Turn;
@@ -47,6 +48,8 @@ public class PlayFirstTurnAndInitialCardMovesForGameType implements Action<PlayF
             Face.UP,
             1);
         actionDto.setActiveTurn(activeTurn); // can be null
+        actionDto.setAllCardMovesForTheGame(playService.getAllCardMovesForTheGame(actionDto.getQasinoGame())); // can be null
+
         return EventOutput.Result.SUCCESS;
     }
 
@@ -69,7 +72,7 @@ public class PlayFirstTurnAndInitialCardMovesForGameType implements Action<PlayF
         void setActiveTurn(Turn turn);
         Turn getActiveTurn();
         Player getTurnPlayer();
-        List<Card> getCardsInTheGameSorted();
+        void setAllCardMovesForTheGame(List<CardMove> cardMoves);
 
         // error setters
         void setHttpStatus(int status);

@@ -72,7 +72,7 @@ public class QasinoFlowDTO //extends AbstractFlowDTO
         IsTurnConsistentForTurnTrigger.Dto,
         CalculateAndFinishGame.Dto,
         UpdateFichesForPlayer.Dto,
-        IsGameFinished.IsGameFinishedDTO,
+        IsGameFinished.Dto,
         MakeGamePlayableForGameType.Dto,
         PlayFirstTurnAndInitialCardMovesForGameType.Dto {
     // suppress lombok setter for these fixed values

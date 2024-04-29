@@ -165,7 +165,9 @@ public class PlayContoller {
 
         updateFichesForPlayer.perform(flowDTO);
         output = isGameFinished.perform(flowDTO);
-        output = calculateAndFinishGame.perform(flowDTO);
+        if (output == EventOutput.Result.SUCCESS) {
+            output = calculateAndFinishGame.perform(flowDTO);
+        }
 
         // build response
         findAllEntitiesForInputAction.perform(flowDTO);

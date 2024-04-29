@@ -2,62 +2,25 @@ package cloud.qasino.games.action;
 
 import cloud.qasino.games.action.interfaces.Action;
 import cloud.qasino.games.database.entity.Visitor;
-import cloud.qasino.games.database.repository.VisitorRepository;
 import cloud.qasino.games.event.EventOutput;
+import cloud.qasino.games.statemachine.trigger.TurnTrigger;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.Resource;
-import java.util.Random;
-
 @Slf4j
 @Component
-public class IsGameFinished implements Action<IsGameFinished.IsGameFinishedDTO, EventOutput.Result> {
-
-    @Resource
-    VisitorRepository visitorRepository;
+public class IsGameFinished implements Action<IsGameFinished.Dto, EventOutput.Result> {
 
     @Override
-    public EventOutput.Result perform(IsGameFinishedDTO actionDto) {
+    public EventOutput.Result perform(Dto actionDto) {
 
-        Visitor updateVisitor = actionDto.getQasinoVisitor();
-
-        if (actionDto.isRequestingToRepay()) {
-            boolean repayOk = updateVisitor.repayLoan();
-            if (!repayOk) {
-                log.info("!repayOk");
-                setErrorMessageConflict(actionDto, "Repay", "Repay loan with balance not possible, balance too low");
-                return EventOutput.Result.FAILURE;
-            }
-            actionDto.setQasinoVisitor(visitorRepository.save(updateVisitor));
+        if (actionDto.getSuppliedTurnTrigger().equals(TurnTrigger.END_GAME)) {
             return EventOutput.Result.SUCCESS;
         }
-
-        if (actionDto.isOfferingShipForPawn()) {
-            Random random = new Random();
-            int randomNumber = random.nextInt(1001);
-            boolean pawnOk = updateVisitor.pawnShip(randomNumber);
-            if (!pawnOk) {
-                log.info("!pawnOk");
-                setErrorMessageConflict(actionDto, "Pawn", "Ship already pawned, repay first");
-                return EventOutput.Result.FAILURE;
-            }
-            actionDto.setQasinoVisitor(visitorRepository.save(updateVisitor));
-            return EventOutput.Result.SUCCESS;
-        }
-        setErrorMessageBadRequest(actionDto, "Pawn or Repay", "Nothing to process");
         return EventOutput.Result.FAILURE;
     }
 
-    void setErrorMessageConflict(IsGameFinishedDTO actionDto, String id,
-                                 String value) {
-        actionDto.setHttpStatus(409);
-        actionDto.setErrorKey(id);
-        actionDto.setErrorValue(value);
-        actionDto.setErrorMessage("Action [" + id + "] invalid");
-
-    }
-    private void setErrorMessageBadRequest(IsGameFinishedDTO actionDto, String id,
+    private void setErrorMessageBadRequest(Dto actionDto, String id,
                                            String value) {
         actionDto.setHttpStatus(500);
         actionDto.setErrorKey(id);
@@ -65,15 +28,11 @@ public class IsGameFinished implements Action<IsGameFinished.IsGameFinishedDTO, 
         actionDto.setErrorMessage("Action [" + id + "] invalid");
 
     }
-    public interface IsGameFinishedDTO {
 
+    public interface Dto {
         // @formatter:off
         // Getters
-
-        boolean isRequestingToRepay();
-        boolean isOfferingShipForPawn();
-        Visitor getQasinoVisitor();
-
+        TurnTrigger getSuppliedTurnTrigger();
         // Setters
         void setQasinoVisitor(Visitor visitor);
 
