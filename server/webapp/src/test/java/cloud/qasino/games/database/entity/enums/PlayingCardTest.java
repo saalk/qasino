@@ -1,8 +1,6 @@
 package cloud.qasino.games.database.entity.enums;
 
 import cloud.qasino.games.database.entity.enums.card.PlayingCard;
-import cloud.qasino.games.database.entity.enums.card.playingcard.Rank;
-import cloud.qasino.games.database.entity.enums.card.playingcard.Suit;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
@@ -22,7 +20,7 @@ class PlayingCardTest {
         assertEquals(52, testDeckNoJokers.size());
         assertEquals(53, testDeckOneJokers.size());
         assertEquals(54, testDeckTwoJokers.size());
-        assertEquals(52, PlayingCard.prototypeDeck.size());
+        assertEquals(52, PlayingCard.normalCardDeck.size());
 
     }
 

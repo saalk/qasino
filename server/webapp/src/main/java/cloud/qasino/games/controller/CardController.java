@@ -42,11 +42,11 @@ public class CardController {
         this.cardRepository = cardRepository;
     }
 
-    @DeleteMapping("/card/{cardId}/game/{gameId}")
+    @DeleteMapping("/card/{rankSuit}/game/{gameId}")
     public ResponseEntity deletePlayingCardByCard(
             @RequestHeader("visitorId") String vId,
             @PathVariable("gameId") String id,
-            @PathVariable("cardId") String card
+            @PathVariable("rankSuit") String rankSuit
     ) {
 
         // header in response
@@ -70,7 +70,7 @@ public class CardController {
         }
 
         // todo LOW this is not unique
-        List<Card> foundCard = cardRepository.findByCard(card);
+        List<Card> foundCard = cardRepository.findByRankSuit(rankSuit);
         if (false) {
             // 404
             return ResponseEntity.status(HttpStatus.NOT_FOUND).headers(headers).build();
@@ -115,12 +115,12 @@ public class CardController {
     }
 
     @GetMapping(
-            value = "/card/{cardId}/image",
+            value = "/card/{rankAndSuit}/image",
             produces = MediaType.IMAGE_JPEG_VALUE
     )
     public @ResponseBody
     byte[] getPlayingCardImageWithMediaType(
-            @PathVariable("cardId") String card
+            @PathVariable("rankAndSuit") String card
     ) throws IOException {
         InputStream in = getClass()
                 .getResourceAsStream("/resources/images/playingcard/svg/diamonds-ten.svg");

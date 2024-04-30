@@ -1,12 +1,10 @@
 package cloud.qasino.games.database.entity;
 
-import cloud.qasino.games.database.entity.enums.card.Face;
 import cloud.qasino.games.database.entity.enums.game.GameState;
 import cloud.qasino.games.database.entity.enums.game.Style;
 import cloud.qasino.games.database.entity.enums.game.Type;
 import cloud.qasino.games.database.entity.enums.card.PlayingCard;
 import cloud.qasino.games.database.entity.enums.card.Location;
-import cloud.qasino.games.database.entity.enums.move.Move;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -173,7 +171,7 @@ public class Game {
 
         int i = 1;
         for (PlayingCard playingCard : playingCards) {
-            Card card = new Card(playingCard.getCardId(), this, null, i++, Location.STOCK );
+            Card card = new Card(playingCard.getRankAndSuit(), this, null, i++, Location.STOCK );
             this.cards.add(card);
         }
     }

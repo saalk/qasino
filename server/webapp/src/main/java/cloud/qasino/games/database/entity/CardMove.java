@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.voodoodyne.jackson.jsog.JSOGGenerator;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.DynamicUpdate;
@@ -65,9 +66,7 @@ public class CardMove {
     @Column(name = "card_id", nullable = true)
     private long cardId;
 
-
     // cardMove basics, what move does the player make
-
     @Enumerated(EnumType.STRING)
     @Column(name = "move", nullable = false)
     private Move move;
@@ -78,11 +77,9 @@ public class CardMove {
     private String cardMoveDetails;
 
     // json fields, filled in by engine
-    @Column(name = "round_number")
-    private int roundNumber;
-
-    @Column(name = "move_number")
-    private int moveNumber;
+    @Setter(AccessLevel.NONE)
+    @Column(name = "sequence")
+    private String sequence;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "location", nullable = true)
@@ -104,7 +101,7 @@ public class CardMove {
         setEndFiches(0);
     }
 
-    public CardMove(Turn turn, Player player, long cardId, Move move, Location location, int roundNo, int moveNo, String details) {
+    public CardMove(Turn turn, Player player, long cardId, Move move, Location location, String details) {
         this();
         this.turn = turn;
         this.playerId = player.getPlayerId();
@@ -113,9 +110,8 @@ public class CardMove {
         this.move = move;
         this.location = location;
 
-        this.roundNumber = roundNo;
-        this.moveNumber = moveNo;
         this.cardMoveDetails = details;
+        this.sequence = "000000";
     }
 
     public void setCreated() {
@@ -123,7 +119,23 @@ public class CardMove {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd-HH:mm-ssSSS-nnnnnnnnn");
         String result = localDateAndTime.format(formatter);
         this.created = result.substring(0, 20);
+    }
 
+    public void setSequence(int round, int seat, int move) {
+        // xxyyzz format
+        this.sequence =
+            String.format("%02d", round) +
+            String.format("%02d", seat) +
+            String.format("%02d", move);
+    }
+    public int getRoundFromSequence() {
+        return Integer.parseInt(this.sequence.substring(0,2));
+    }
+    public int getSeatFromSequence() {
+        return Integer.parseInt(this.sequence.substring(2,4));
+    }
+    public int getMoveFromSequence() {
+        return Integer.parseInt(this.sequence.substring(4,6));
     }
 
     @Override

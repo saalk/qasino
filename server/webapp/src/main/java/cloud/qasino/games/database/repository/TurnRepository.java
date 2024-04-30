@@ -10,7 +10,6 @@ import java.util.List;
 @Repository
 public interface TurnRepository extends JpaRepository<Turn, Long> {
 
-
     List<Turn> findByGame(Game game);
 
     //@Query("select e from Turn e where e.gameId = :gameId")

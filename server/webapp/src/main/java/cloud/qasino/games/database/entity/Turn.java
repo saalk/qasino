@@ -59,9 +59,8 @@ public class Turn {
     @Column(name = "current_round_number", nullable = true)
     private int currentRoundNumber;
 
-    @Column(name = "current_move_number", nullable = true)
-    private int currentMoveNumber;
-
+    @Column(name = "current_turn_number", nullable = true)
+    private int currentTurnNumber;
 
     // Derived technical fields
 
@@ -100,7 +99,7 @@ public class Turn {
         this.activePlayerId = playerId;
 
         this.currentRoundNumber = 1;
-        this.currentMoveNumber = 1;
+        this.currentTurnNumber = 1;
 
     }
 

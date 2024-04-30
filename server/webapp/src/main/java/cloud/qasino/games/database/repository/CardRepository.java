@@ -25,7 +25,7 @@ public interface CardRepository extends JpaRepository<Card, Long> {
 
     // lists
     List<Card> findByGame(Game game);
-    List<Card> findByCard(String card);
+    List<Card> findByRankSuit(String rankSuit);
 
     @Query( value = FIND_CARDS_BY_GAME_ID,
             countQuery = COUNT_CARDS_BY_GAME_ID,

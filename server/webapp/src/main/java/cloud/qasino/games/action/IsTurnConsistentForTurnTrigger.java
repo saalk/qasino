@@ -1,7 +1,6 @@
 package cloud.qasino.games.action;
 
 import cloud.qasino.games.action.interfaces.Action;
-import cloud.qasino.games.database.entity.Player;
 import cloud.qasino.games.database.entity.Turn;
 import cloud.qasino.games.database.repository.VisitorRepository;
 import cloud.qasino.games.event.EventOutput;
@@ -10,8 +9,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
-import java.util.List;
-import java.util.Optional;
 
 @Slf4j
 @Component
@@ -47,14 +44,14 @@ public class IsTurnConsistentForTurnTrigger implements Action<IsTurnConsistentFo
     }
 
     private boolean turnShouldHaveCurrentMoveNumberNotZero(Dto actionDto) {
-        if (actionDto.getActiveTurn().getCurrentMoveNumber() <= 0) {
+        if (actionDto.getActiveTurn().getCurrentTurnNumber() <= 0) {
             log.info("!moveNumber");
             actionDto.setHttpStatus(422);
             actionDto.setErrorMessage(
                     "Action [" +
                             actionDto.getSuppliedTurnTrigger() +
                             "] invalid - turn has incorrect number of " +
-                            actionDto.getActiveTurn().getCurrentMoveNumber()
+                            actionDto.getActiveTurn().getCurrentTurnNumber()
             );
             return false;
         }

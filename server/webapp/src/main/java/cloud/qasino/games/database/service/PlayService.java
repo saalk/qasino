@@ -19,7 +19,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 
@@ -40,7 +39,6 @@ public class PlayService {
         // determine card to deal
         // todo ignore howMany for now
         Card topCardInStock = null;
-        List<CardMove> newCardMove = new ArrayList<>();
         for (int i = 0; i < activeGame.getCards().size(); i++) {
             // find first card without hand (aka player_id) then break
             if (activeGame.getCards().get(i).getHand() == null) {
@@ -50,32 +48,36 @@ public class PlayService {
         }
         if (topCardInStock == null) return null; // no cards left -> end the game
 
-        // update turn - create if not exist
+        // update turn - create a turn if not exist yes for a new game
         if (activeTurn == null) {
             // round and move is 1 by default with new
             activeTurn = new Turn(activeGame, humanOrBot.getPlayerId());
         }
 
         int roundNo = activeTurn.getCurrentRoundNumber();
-        int moveNo = activeTurn.getCurrentMoveNumber();
-        String details = topCardInStock.getCard();
+        int moveNo = activeTurn.getCurrentTurnNumber();
+        int seatNo = humanOrBot.getSeat();
+        String details = topCardInStock.getRankSuit();
         // register the card move to the turn
-        newCardMove.add(new CardMove(
+        CardMove newMove = new CardMove(
                 activeTurn,
                 humanOrBot,
                 topCardInStock.getCardId(),
                 move,
                 Location.HAND,
-                roundNo,
-                moveNo,
-                details));
+                details);
+        newMove.setSequence(roundNo, moveNo, seatNo);
+
+        // for future use
+//        List<CardMove> newCardMove = new ArrayList<>();
+//        newCardMove.add(newMove);
 
         // save turn and cardMove
         turnRepository.save(activeTurn);
-        cardMoveRepository.save(newCardMove.get(0));
+        cardMoveRepository.save(newMove);
 
         // change the cards moved
-        Optional<Card> cardDealt = cardRepository.findById(newCardMove.get(0).getCardId());
+        Optional<Card> cardDealt = cardRepository.findById(newMove.getCardId());
         cardDealt.get().setLocation(Location.HAND);
         cardDealt.get().setFace(Face.UP);
         cardDealt.get().setHand(humanOrBot);
@@ -84,14 +86,12 @@ public class PlayService {
         return activeTurn;
     }
     public Game prepareGameForPlaying(Game activeGame, int jokers) {
-
         List<PlayingCard> playingCards = PlayingCard.newDeck(jokers);
         Collections.shuffle(playingCards);
-
         List<Card> cards = new ArrayList<>();
         int i = 1;
         for (PlayingCard playingCard : playingCards) {
-            Card card = new Card(playingCard.getCardId(), activeGame, null, i++, Location.STOCK );
+            Card card = new Card(playingCard.getRankAndSuit(), activeGame, null, i++, Location.STOCK );
             cards.add(card);
             cardRepository.save(card);
         }
@@ -103,8 +103,7 @@ public class PlayService {
     }
     public List<CardMove> getAllCardMovesForTheGame(Game activeGame) {
         Turn activeTurn = activeGame.getTurn();
-        List<CardMove> allCardMovesForTheGame = cardMoveRepository.findByTurn(activeTurn);
-        allCardMovesForTheGame.sort(Comparator.comparing(CardMove::getCreated));
+        List<CardMove> allCardMovesForTheGame = cardMoveRepository.findByTurnOrderBySequenceAsc(activeTurn);
         return allCardMovesForTheGame;
     }
 }

@@ -5,7 +5,6 @@ import cloud.qasino.games.database.entity.Card;
 import cloud.qasino.games.database.entity.CardMove;
 import cloud.qasino.games.database.entity.Game;
 import cloud.qasino.games.database.entity.Player;
-import cloud.qasino.games.database.entity.Turn;
 import cloud.qasino.games.database.entity.enums.card.PlayingCard;
 import cloud.qasino.games.database.entity.enums.move.Move;
 import cloud.qasino.games.database.repository.CardMoveRepository;
@@ -41,36 +40,48 @@ public class UpdateFichesForPlayer implements Action<UpdateFichesForPlayer.Dto, 
             if (!(cardMove.getPlayerId() == actionDto.getTurnPlayer().getPlayerId())) {
                 continue; // not the correct player
             }
-            if (cardMove.getBet() != 0) {
-                previousCardMoveCard = cardRepository.findById(cardMove.getCardId());
-                continue; // correct player but bet already filled in
-            }
-            // either there is nothing to calculate or there is and its a higher or lower move
-            if ((cardMove.getMove() == Move.HIGHER || cardMove.getMove() == Move.LOWER)) {
-                if (previousCardMoveCard.isEmpty()) {
-                    setErrorMessageConflict(actionDto, "Move", String.valueOf(cardMove.getMove()));
-                    return EventOutput.Result.FAILURE;
+            switch (cardMove.getMove()) {
+                case DEAL -> {
+                    if (cardMove.getBet() != 0) {
+                        setErrorMessageConflictWithDeal(actionDto, "Move", String.valueOf(cardMove.getMove()));
+                        return EventOutput.Result.FAILURE;
+                    }
+                    previousCardMoveCard = cardRepository.findById(cardMove.getCardId());
                 }
-                cardMove.setBet(actionDto.getQasinoGame().getAnte());
-                cardMove.setStartFiches(actionDto.getTurnPlayer().getFiches());
-                Optional<Card> previousCard = cardRepository.findById(previousCardMoveCard.get().getCardId());
-                Optional<Card> currentCard = cardRepository.findById(cardMove.getCardId());
-                cardMove.setEndFiches(
-                        actionDto.getTurnPlayer().getFiches() +
-                                calculateWinOrLoss(actionDto, cardMove.getMove(), previousCard.get(), currentCard.get()));
-                cardMoveRepository.save(cardMove);
-                actionDto.getTurnPlayer().setFiches(cardMove.getEndFiches());
-                playerRepository.save(actionDto.getTurnPlayer());
-                actionDto.setAllCardMovesForTheGame(playService.getAllCardMovesForTheGame(actionDto.getQasinoGame())); // can be null
+                case HIGHER, LOWER -> {
+                    if (cardMove.getBet() == 0) {
+                        // calculation needed
+                        if (previousCardMoveCard.isEmpty()) {
+                            setErrorMessageConflictWithHighLow(actionDto, "Move", String.valueOf(cardMove.getMove()));
+                            return EventOutput.Result.FAILURE;
+                        }
+                        updateWinOfLoss(actionDto, cardMove, previousCardMoveCard.orElse(null));
+                    }
+                    previousCardMoveCard = cardRepository.findById(cardMove.getCardId());
 
+                }
             }
         }
         return EventOutput.Result.SUCCESS;
     }
 
-    int calculateWinOrLoss(Dto actionDto, Move move, Card previous, Card current) {
-        int previousValue = PlayingCard.calculateValueWithDefaultHighlow(previous.getCard(), actionDto.getQasinoGame().getType());
-        int currentValue = PlayingCard.calculateValueWithDefaultHighlow(current.getCard(), actionDto.getQasinoGame().getType());
+    private void updateWinOfLoss(Dto actionDto, CardMove cardMove, Card previousCardMoveCard) {
+        cardMove.setBet(actionDto.getQasinoGame().getAnte());
+        cardMove.setStartFiches(actionDto.getTurnPlayer().getFiches());
+        Optional<Card> previousCard = cardRepository.findById(previousCardMoveCard.getCardId());
+        Optional<Card> currentCard = cardRepository.findById(cardMove.getCardId());
+        cardMove.setEndFiches(
+                actionDto.getTurnPlayer().getFiches() +
+                        calculateWinOrLoss(actionDto, cardMove.getMove(), previousCard.get(), currentCard.get()));
+        cardMoveRepository.save(cardMove);
+        actionDto.getTurnPlayer().setFiches(cardMove.getEndFiches());
+        playerRepository.save(actionDto.getTurnPlayer());
+        actionDto.setAllCardMovesForTheGame(playService.getAllCardMovesForTheGame(actionDto.getQasinoGame())); // can be null
+    }
+
+    private int calculateWinOrLoss(Dto actionDto, Move move, Card previous, Card current) {
+        int previousValue = PlayingCard.calculateValueWithDefaultHighlow(previous.getRankSuit(), actionDto.getQasinoGame().getType());
+        int currentValue = PlayingCard.calculateValueWithDefaultHighlow(current.getRankSuit(), actionDto.getQasinoGame().getType());
         // calculate if the bet is added or subtracted
         if (previousValue == 0 || currentValue == 0) {
             // joker now or previous so ok you win the bet
@@ -91,22 +102,20 @@ public class UpdateFichesForPlayer implements Action<UpdateFichesForPlayer.Dto, 
         return -actionDto.getQasinoGame().getAnte();
     }
 
-    void setErrorMessageConflict(Dto actionDto, String id,
-                                 String value) {
+    void setErrorMessageConflictWithDeal(Dto actionDto, String id,
+                                         String value) {
         actionDto.setHttpStatus(409);
         actionDto.setErrorKey(id);
         actionDto.setErrorValue(value);
-        actionDto.setErrorMessage("Action [" + id + "] invalid, no previous card to compare");
-
+        actionDto.setErrorMessage("Action [" + id + "] invalid, dealt card has a bet");
     }
 
-    private void setErrorMessageBadRequest(Dto actionDto, String id,
-                                           String value) {
-        actionDto.setHttpStatus(500);
+    void setErrorMessageConflictWithHighLow(Dto actionDto, String id,
+                                            String value) {
+        actionDto.setHttpStatus(409);
         actionDto.setErrorKey(id);
         actionDto.setErrorValue(value);
-        actionDto.setErrorMessage("Action [" + id + "] invalid");
-
+        actionDto.setErrorMessage("Action [" + id + "] invalid, no previous card dealt");
     }
 
     public interface Dto {
@@ -116,9 +125,7 @@ public class UpdateFichesForPlayer implements Action<UpdateFichesForPlayer.Dto, 
 
         List<CardMove> getAllCardMovesForTheGame();
         Game getQasinoGame();
-        Turn getActiveTurn();
         Player getTurnPlayer();
-        Player getNextPlayer();
 
         // Setters
         void setTurnPlayer(Player player);

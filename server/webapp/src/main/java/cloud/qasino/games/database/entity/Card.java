@@ -36,8 +36,8 @@ public class Card {
     @Column(name = "created", length = 25)
     private String created;
 
-    @Column(name = "card", length = 3, nullable = false)
-    private String card;
+    @Column(name = "rankSuit", length = 3, nullable = false)
+    private String rankSuit;
 
     // Foreign keys
 
@@ -56,7 +56,6 @@ public class Card {
     @ForeignKey(name =
             "fk_player_id"), nullable=true)
     private Player hand;
-
 
     // Normal fields
 
@@ -89,9 +88,9 @@ public class Card {
 
     }
 
-    public Card(String card, Game game, Player player, int sequence, Location location) {
+    public Card(String rankSuit, Game game, Player player, int sequence, Location location) {
         this();
-        this.card = card;
+        this.rankSuit = rankSuit;
         this.game = game;
         this.hand = player;
         this.sequence = sequence;

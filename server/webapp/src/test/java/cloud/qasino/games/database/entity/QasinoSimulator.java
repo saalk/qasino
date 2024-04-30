@@ -30,7 +30,7 @@ public abstract class QasinoSimulator {
         turn = new Turn(game, player.getPlayerId());
 
         // assume visitor wins 50
-        result = new Result(player,visitor, game,game.getType(), 50);
+        result = new Result(player,visitor, game,game.getType(), 50,true);
 
     }
 }
