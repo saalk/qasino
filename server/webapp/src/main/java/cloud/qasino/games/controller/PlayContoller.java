@@ -112,8 +112,8 @@ public class PlayContoller {
         makeGamePlayableForGameType.perform(flowDTO);
         mapTableFromRetrievedDataAction.perform(flowDTO);
         playFirstTurnAndInitialCardMovesForGameType.perform(flowDTO);
-        // build response
-        findAllEntitiesForInputAction.perform(flowDTO);
+        // get all entities and build reponse
+        output = findAllEntitiesForInputAction.perform(flowDTO);
         if (output == EventOutput.Result.FAILURE) {
             flowDTO.prepareResponseHeaders();
             return ResponseEntity.status(HttpStatus.valueOf(flowDTO.getHttpStatus())).headers(flowDTO.getHeaders()).build();
@@ -138,7 +138,7 @@ public class PlayContoller {
             flowDTO.prepareResponseHeaders();
             return ResponseEntity.status(HttpStatus.valueOf(flowDTO.getHttpStatus())).headers(flowDTO.getHeaders()).build();
         }
-        // get all entities
+        // get all entities and build reponse
         output = findAllEntitiesForInputAction.perform(flowDTO);
         if (output == EventOutput.Result.FAILURE) {
             flowDTO.prepareResponseHeaders();
@@ -170,8 +170,8 @@ public class PlayContoller {
             output = calculateAndFinishGame.perform(flowDTO);
         }
 
-        // build response
-        findAllEntitiesForInputAction.perform(flowDTO);
+        // get all entities and build reponse
+        output = findAllEntitiesForInputAction.perform(flowDTO);
         if (output == EventOutput.Result.FAILURE) {
             flowDTO.prepareResponseHeaders();
             return ResponseEntity.status(HttpStatus.valueOf(flowDTO.getHttpStatus())).headers(flowDTO.getHeaders()).build();

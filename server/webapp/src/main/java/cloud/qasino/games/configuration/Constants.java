@@ -93,8 +93,8 @@ public interface Constants {
                         GameState.fromLabelWithDefault(e) != GameState.ERROR ||
                         EnumUtils.isValidEnum(GameTrigger.class, e) ||
                         EnumUtils.isValidEnum(BettingStrategy.class, e) ||
-                        EnumUtils.isValidEnum(Deck.class, e) ||
-                        EnumUtils.isValidEnum(InsuranceCost.class, e) ||
+                        EnumUtils.isValidEnum(DeckConfiguration.class, e) ||
+                        EnumUtils.isValidEnum(OneTimeInsurance.class, e) ||
                         EnumUtils.isValidEnum(AnteToWin.class, e) ||
                         EnumUtils.isValidEnum(RoundsToWin.class, e) ||
                         EnumUtils.isValidEnum(TurnsToWin.class, e) ||

@@ -5,6 +5,7 @@ import cloud.qasino.games.action.FindAllEntitiesForInputAction;
 import cloud.qasino.games.action.FindVisitorIdByVisitorNameAction;
 import cloud.qasino.games.action.HandleSecuredLoanAction;
 import cloud.qasino.games.action.MapQasinoResponseFromDto;
+import cloud.qasino.games.action.MapTableFromRetrievedDataAction;
 import cloud.qasino.games.action.SetStatusIndicatorsBaseOnRetrievedDataAction;
 import cloud.qasino.games.action.SignUpNewVisitorAction;
 import cloud.qasino.games.database.entity.Visitor;
@@ -70,6 +71,8 @@ public class QasinoController {
     CountQasinoTotals countQasinoTotals;
     @Autowired
     MapQasinoResponseFromDto mapQasinoResponseFromDto;
+    @Autowired
+    MapTableFromRetrievedDataAction mapTableFromRetrievedDataAction;
 
     @Autowired
     public QasinoController(
@@ -128,12 +131,13 @@ public class QasinoController {
             flowDTO.prepareResponseHeaders();
             return ResponseEntity.status(HttpStatus.valueOf(flowDTO.getHttpStatus())).headers(flowDTO.getHeaders()).build();
         }
-        // build response
+        // get all entities and build reponse
         output = findAllEntitiesForInputAction.perform(flowDTO);
         if (output == EventOutput.Result.FAILURE) {
             flowDTO.prepareResponseHeaders();
             return ResponseEntity.status(HttpStatus.valueOf(flowDTO.getHttpStatus())).headers(flowDTO.getHeaders()).build();
         }
+        mapTableFromRetrievedDataAction.perform(flowDTO);
         setStatusIndicatorsBaseOnRetrievedDataAction.perform(flowDTO);
         countQasinoTotals.perform(flowDTO);
         mapQasinoResponseFromDto.perform(flowDTO);
@@ -164,6 +168,7 @@ public class QasinoController {
             flowDTO.prepareResponseHeaders();
             return ResponseEntity.status(HttpStatus.valueOf(flowDTO.getHttpStatus())).headers(flowDTO.getHeaders()).build();
         }
+        mapTableFromRetrievedDataAction.perform(flowDTO);
         setStatusIndicatorsBaseOnRetrievedDataAction.perform(flowDTO);
         countQasinoTotals.perform(flowDTO);
         mapQasinoResponseFromDto.perform(flowDTO);
@@ -189,6 +194,7 @@ public class QasinoController {
             handleSecuredLoanAction.perform(flowDTO);
         }
         // build response also for failure
+        mapTableFromRetrievedDataAction.perform(flowDTO);
         setStatusIndicatorsBaseOnRetrievedDataAction.perform(flowDTO);
         countQasinoTotals.perform(flowDTO);
         mapQasinoResponseFromDto.perform(flowDTO);
@@ -215,6 +221,7 @@ public class QasinoController {
             handleSecuredLoanAction.perform(flowDTO);
         }
         // build response also for failure
+        mapTableFromRetrievedDataAction.perform(flowDTO);
         setStatusIndicatorsBaseOnRetrievedDataAction.perform(flowDTO);
         countQasinoTotals.perform(flowDTO);
         mapQasinoResponseFromDto.perform(flowDTO);

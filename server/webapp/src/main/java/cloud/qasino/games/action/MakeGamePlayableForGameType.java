@@ -33,7 +33,7 @@ public class MakeGamePlayableForGameType implements Action<MakeGamePlayableForGa
 
         Style style = Style.fromLabelWithDefault(actionDto.getQasinoGame().getStyle());
         int jokers = 0;
-        switch(style.getDeck()) {
+        switch(style.getDeckConfiguration()) {
             case ALL_THREE_JOKER -> {
                 jokers = 3;
                 break;
@@ -51,7 +51,7 @@ public class MakeGamePlayableForGameType implements Action<MakeGamePlayableForGa
             case RANDOM_SUIT -> {
                 break;
             }
-            default -> throw new IllegalStateException("Unexpected value: " + style.getDeck());
+            default -> throw new IllegalStateException("Unexpected value: " + style.getDeckConfiguration());
         }
         // update Game, create Cards for game, create Turn, create CardMove
         actionDto.setQasinoGame(playService.prepareGameForPlaying(actionDto.getQasinoGame(), jokers));

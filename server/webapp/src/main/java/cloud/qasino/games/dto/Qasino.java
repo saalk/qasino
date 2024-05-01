@@ -26,19 +26,19 @@ public class Qasino {
     @JsonProperty("NavBarItems")
     private List<NavigationBarItem> navBarItems;
 
-    @JsonProperty("You")
+    @JsonProperty("VisitorPage")
     private PageVisitor pageVisitor;
 
-    @JsonProperty("GameConfigurator")
+    @JsonProperty("GameSetupPage")
     private PageGameSetup pageGameSetup;
 
-    @JsonProperty("GamePlay")
+    @JsonProperty("GamePlayPage")
     private PageGamePlay pageGamePlay;
 
-    @JsonProperty("PendingGames")
+    @JsonProperty("GameInvitationsPage")
     private PageGameInvitations pageGameInvitations;
 
-    @JsonProperty("Leagues")
+    @JsonProperty("LeaguesPage")
     private PageLeague pageLeague;
 
     // extra

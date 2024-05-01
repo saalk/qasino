@@ -7,6 +7,7 @@ import cloud.qasino.games.database.entity.Player;
 import cloud.qasino.games.database.entity.Result;
 import cloud.qasino.games.database.entity.Turn;
 import cloud.qasino.games.database.entity.Visitor;
+import cloud.qasino.games.database.entity.enums.game.GameState;
 import cloud.qasino.games.database.entity.enums.game.Style;
 import cloud.qasino.games.dto.Qasino;
 import cloud.qasino.games.dto.elements.NavigationBarItem;
@@ -22,7 +23,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Slf4j
 @Component
@@ -42,8 +45,8 @@ public class MapQasinoResponseFromDto implements Action<MapQasinoResponseFromDto
 
         // special for gameplay
         SectionTable table = new SectionTable();
-
         actionDto.setActionNeeded(false);
+        actionDto.setAction("No suggestions");
 
         // 1: PageVisitor
         NavigationBarItem navigationBarItem = new NavigationBarItem();
@@ -55,15 +58,15 @@ public class MapQasinoResponseFromDto implements Action<MapQasinoResponseFromDto
             actionDto.setShowVisitorPage(true);
             if (actionDto.getQasinoVisitor().getBalance() == 0) {
                 actionDto.setActionNeeded(true);
-                actionDto.setAction("pawn your ship to get a balance");
+                actionDto.setAction("Pawn your ship for fiches.");
             }
         } else {
             actionDto.setShowVisitorPage(false);
             actionDto.setActionNeeded(true);
-            actionDto.setAction("logon visitor");
+            actionDto.setAction("Logon visitor!");
         }
-        setupNextAction(actionDto, navigationBarItem);
-        navigationBarItem.setItemVisible(actionDto.isShowGamePlayPage());
+        setupMessage(actionDto, navigationBarItem);
+        navigationBarItem.setItemVisible(actionDto.isShowVisitorPage());
         navigationBarItems.add(navigationBarItem);
         qasino.setPageVisitor(pageVisitor);
 
@@ -74,16 +77,16 @@ public class MapQasinoResponseFromDto implements Action<MapQasinoResponseFromDto
 
         if (actionDto.getQasinoGame() != null) {
             actionDto.setShowGameSetupPage(true);
-            actionDto.setAction(actionDto.getQasinoGame().getState().getNextAction());
-            actionDto.setActionNeeded(false);
             switch (actionDto.getQasinoGame().getState().getGroup()) {
                 case SETUP, PREPARED -> {
                     actionDto.setActionNeeded(true);
                     actionDto.setShowGameSetupPage(true);
                     actionDto.setActionNeeded(true);
+                    actionDto.setAction(actionDto.getQasinoGame().getState().getNextAction());
                     mapGameSetupPage(actionDto, navigationBarItem, pageGameSetup);
                 }
                 case PLAYING, FINISHED, ERROR -> {
+                    actionDto.setActionNeeded(false);
                     actionDto.setShowGameSetupPage(false);
                 }
             }
@@ -91,10 +94,10 @@ public class MapQasinoResponseFromDto implements Action<MapQasinoResponseFromDto
             actionDto.setShowGameSetupPage(false);
             if (!actionDto.isActionNeeded()) {
                 actionDto.setActionNeeded(true);
-                actionDto.setAction("setup a new game");
+                actionDto.setAction("Setup a new game.");
             }
         }
-        setupNextAction(actionDto, navigationBarItem);
+        setupMessage(actionDto, navigationBarItem);
         navigationBarItem.setItemVisible(actionDto.isShowGameSetupPage());
         navigationBarItems.add(navigationBarItem);
         qasino.setPageGameSetup(pageGameSetup);
@@ -106,7 +109,6 @@ public class MapQasinoResponseFromDto implements Action<MapQasinoResponseFromDto
 
         if (actionDto.getQasinoGame() != null) {
             actionDto.setShowGamePlayPage(true);
-            actionDto.setAction(actionDto.getQasinoGame().getState().getNextAction());
             switch (actionDto.getQasinoGame().getState().getGroup()) {
                 case SETUP, PREPARED, ERROR -> {
                     actionDto.setShowGamePlayPage(false);
@@ -114,6 +116,7 @@ public class MapQasinoResponseFromDto implements Action<MapQasinoResponseFromDto
                 case PLAYING, FINISHED -> {
                     actionDto.setShowGamePlayPage(true);
                     actionDto.setActionNeeded(true);
+                    actionDto.setAction(actionDto.getQasinoGame().getState().getNextAction());
                     mapGamePlay(actionDto, navigationBarItem, pageGamePlay);
                 }
             }
@@ -121,48 +124,53 @@ public class MapQasinoResponseFromDto implements Action<MapQasinoResponseFromDto
             actionDto.setShowGamePlayPage(false);
             if (!actionDto.isActionNeeded()) {
                 actionDto.setActionNeeded(true);
-                actionDto.setAction("play a new game");
+                actionDto.setAction("Play a game");
             }
         }
-        setupNextAction(actionDto, navigationBarItem);
+        setupMessage(actionDto, navigationBarItem);
         navigationBarItem.setItemVisible(actionDto.isShowGamePlayPage());
         navigationBarItems.add(navigationBarItem);
         qasino.setPageGamePlay(pageGamePlay);
 
-        // 4: TODO GameInvitations
+        // 4: GameInvitatinos
         navigationBarItem = new NavigationBarItem();
         navigationBarItem.setItemName("Invites [0]");
         navigationBarItem.setItemStats("[0/0] setup/playing");
-        navigationBarItem.setItemVisible(false);
-        if (actionDto.getQasinoGame() != null) {
+        actionDto.setShowGamePlayPage(false);
+        if (actionDto.getQasinoGame() != null && actionDto.getQasinoGame().getState().equals(GameState.PENDING_INVITATIONS)) {
             actionDto.setShowGameInvitationsPage(true);
-            navigationBarItem.setItemVisible(actionDto.isShowGameInvitationsPage());
+            actionDto.setActionNeeded(true);
+            actionDto.setAction(actionDto.getQasinoGame().getState().getNextAction());
             mapGameInvitationsPage(actionDto, navigationBarItem, pageGamesOverview);
         }
+        navigationBarItem.setItemVisible(actionDto.isShowGameInvitationsPage());
         navigationBarItems.add(navigationBarItem);
         qasino.setPageGameInvitations(pageGamesOverview);
 
-        // 5: Leagues and Results
+        // 5: Leagues
         navigationBarItem = new NavigationBarItem();
-        navigationBarItem.setItemName("0 leagues");
-        navigationBarItem.setItemStats("0/0 pending/total");
+        navigationBarItem.setItemName("Leagues");
+        navigationBarItem.setItemStats("[0/0] pending/total");
         navigationBarItem.setItemVisible(false);
         if (actionDto.getQasinoGameLeague() != null) {
             actionDto.setShowLeaguesPage(true);
-            navigationBarItem.setItemVisible(actionDto.isShowLeaguesPage());
+            actionDto.setAction("Manage your leagues");
             mapLeaguesPage(actionDto, navigationBarItem, pageLeague);
         }
+        navigationBarItem.setItemVisible(actionDto.isShowLeaguesPage());
         navigationBarItems.add(navigationBarItem);
         qasino.setPageLeague(pageLeague);
 
         qasino.setNavBarItems(navigationBarItems);
         qasino.setStatistics(actionDto.getStatistics());
-        actionDto.setQasino(qasino);
+        qasino.setAction(actionDto.getAction());
+        qasino.setActionNeeded(actionDto.isActionNeeded());
 
+        actionDto.setQasino(qasino);
         return EventOutput.Result.SUCCESS;
     }
 
-    private static void setupNextAction(Dto actionDto, NavigationBarItem navigationBarItem) {
+    private static void setupMessage(Dto actionDto, NavigationBarItem navigationBarItem) {
         // todo
     }
 
@@ -170,10 +178,18 @@ public class MapQasinoResponseFromDto implements Action<MapQasinoResponseFromDto
         // set the nav bar
         navigationBarItem.setItemName(actionDto.getQasinoVisitor().getVisitorName());
         navigationBarItem.setItemStats("balance [" + actionDto.getQasinoVisitor().getBalance() + "]");
-        // TODO set the content
         pageVisitor.setSelectedVisitor(actionDto.getQasinoVisitor());
-        pageVisitor.setInitiatedGamesPerState(null);
-        pageVisitor.setInvitedGamesPerState(null);
+        Map<GameState, Integer> gameStateIntegerMap = new HashMap<>();
+        for (Game game : actionDto.getInitiatedGamesForVisitor()) {
+            Integer j = gameStateIntegerMap.get(game);
+            gameStateIntegerMap.put(game.getState(), (j == null) ? 1 : j + 1);
+        }
+        pageVisitor.setInitiatedGamesPerState(gameStateIntegerMap);
+        for (Game game : actionDto.getInvitedGamesForVisitor()) {
+            Integer j = gameStateIntegerMap.get(game);
+            gameStateIntegerMap.put(game.getState(), (j == null) ? 1 : j + 1);
+        }
+        pageVisitor.setInvitedGamesPerState(gameStateIntegerMap);
     }
 
     private void mapGameSetupPage(Dto actionDto, NavigationBarItem navigationBarItem, PageGameSetup pageGameSetup) {
@@ -193,8 +209,8 @@ public class MapQasinoResponseFromDto implements Action<MapQasinoResponseFromDto
         Style style = Style.fromLabelWithDefault(actionDto.getQasinoGame().getStyle());
         pageGameSetup.setAnteToWin(style.getAnteToWin());
         pageGameSetup.setBettingStrategy(style.getBettingStrategy());
-        pageGameSetup.setDeck(style.getDeck());
-        pageGameSetup.setInsuranceCost(style.getInsuranceCost());
+        pageGameSetup.setDeckConfiguration(style.getDeckConfiguration());
+        pageGameSetup.setOneTimeInsurance(style.getOneTimeInsurance());
         pageGameSetup.setRoundsToWin(style.getRoundsToWin());
         pageGameSetup.setTurnsToWin(style.getTurnsToWin());
 
@@ -215,18 +231,15 @@ public class MapQasinoResponseFromDto implements Action<MapQasinoResponseFromDto
             pageGamePlay.setTable(actionDto.getTable());
         }
         pageGamePlay.setGameResults(actionDto.getGameResults());
-
     }
 
     private void mapGameInvitationsPage(Dto actionDto, NavigationBarItem navigationBarItem, PageGameInvitations pageGamesOverview) {
         // set the nav bar
         navigationBarItem.setItemName("GameInvitations");
         navigationBarItem.setItemStats("calculating...");
+
         // set the content
-        pageGamesOverview.setGamesInitiated(actionDto.getNewGamesForVisitor());
-        pageGamesOverview.setGamesWaitingForYouToAccept(null); //todo LOW pending invitations
-        pageGamesOverview.setGamesPlayableYouInitiated(null); // todo LOW accepted games
-        pageGamesOverview.setGamesYouAccepted(actionDto.getStartedGamesForVisitor());
+        pageGamesOverview.setGameInvitations(actionDto.getNewGamesForVisitor());
     }
 
     private void mapLeaguesPage(Dto actionDto, NavigationBarItem navigationBarItem, PageLeague pageLeague) {
@@ -239,11 +252,11 @@ public class MapQasinoResponseFromDto implements Action<MapQasinoResponseFromDto
         pageLeague.setResultsForLeague(actionDto.getResultsForLeague());
     }
 
-    private void setErrorMessageCrash(Dto actionDto, String id, String value) {
-        actionDto.setHttpStatus(500);
+    private void setErrorMessageEntityNotFound(Dto actionDto, String id, String value, String entity) {
+        actionDto.setHttpStatus(404);
         actionDto.setErrorKey(id);
         actionDto.setErrorValue(value);
-        actionDto.setErrorMessage("Entity not found for key" + id);
+        actionDto.setErrorMessage("[" + entity + "] not found for id [" + value + "]");
     }
 
     public interface Dto {
@@ -266,7 +279,8 @@ public class MapQasinoResponseFromDto implements Action<MapQasinoResponseFromDto
         Visitor getQasinoVisitor();
         List<League> getLeaguesForVisitor();
         List<Game> getNewGamesForVisitor();
-        List<Game> getStartedGamesForVisitor();
+        List<Game> getInitiatedGamesForVisitor();
+        List<Game> getInvitedGamesForVisitor();
 
         // game setup and play
         Game getQasinoGame();

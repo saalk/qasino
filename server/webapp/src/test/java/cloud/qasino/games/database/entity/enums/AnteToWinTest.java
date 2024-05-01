@@ -17,7 +17,7 @@ class AnteToWinTest {
 
         assertEquals(AnteToWin.NA.getLabel(), AnteToWin.fromLabel("n").getLabel());
         assertEquals(AnteToWin.NA.getLabel(), AnteToWin.fromLabel("N").getLabel());
-        assertEquals(AnteToWin.FIVE_TIMES_WINS.getLabel(), AnteToWin.fromLabel("5").getLabel());
+        assertEquals(AnteToWin.TIMES_5_WINS.getLabel(), AnteToWin.fromLabel("5").getLabel());
 
         assertEquals(AnteToWin.NA.getLabel(), AnteToWin.fromLabelWithDefault("x").getLabel());
 
@@ -36,7 +36,7 @@ class AnteToWinTest {
 
         assertEquals(AnteToWin.NA.getLabel(), AnteToWin.fromLabel(N).getLabel());
         assertEquals(AnteToWin.NA.getLabel(), AnteToWin.fromLabel(n).getLabel());
-        assertEquals(AnteToWin.FIVE_TIMES_WINS.getLabel(), AnteToWin.fromLabel(F).getLabel());
+        assertEquals(AnteToWin.TIMES_5_WINS.getLabel(), AnteToWin.fromLabel(F).getLabel());
 
         assertEquals(AnteToWin.NA.getLabel(), AnteToWin.fromLabelWithDefault(x).getLabel());
 

@@ -20,7 +20,7 @@ public enum GameState implements LabeledEnum {
     // SETUP
     INITIALIZED("initialized", "Setup ante, League and Players", GameStateGroup.SETUP),
     PENDING_INVITATIONS("pending_invitations", "Awaiting invitations", GameStateGroup.SETUP),
-    PREPARED("prepared", "Start playing", GameStateGroup.PREPARED),
+    PREPARED("prepared", "Start playing.", GameStateGroup.PREPARED),
 
     // HIGHLOW
     STARTED("started", "Proceed with first Move", GameStateGroup.PLAYING),
@@ -29,12 +29,11 @@ public enum GameState implements LabeledEnum {
 
     // ENDED
     FINISHED("finished", "Show Results", GameStateGroup.FINISHED),
-    QUIT("quit", "Game stopped", GameStateGroup.FINISHED),
+    QUIT("quit", "Game stopped by player", GameStateGroup.FINISHED),
     CANCELLED("cancelled", "Game abandoned", GameStateGroup.FINISHED),
 
-    // ERROR,
-    ERROR("error", "Game in error", GameStateGroup.ERROR),
-    TIMEOUT("timeout", "Game in timeout", GameStateGroup.ERROR);
+    // ERROR
+    ERROR("error", "Game in error", GameStateGroup.ERROR);
 
     /**
      * A static HashMap lookup with key + value is created to use in a getter

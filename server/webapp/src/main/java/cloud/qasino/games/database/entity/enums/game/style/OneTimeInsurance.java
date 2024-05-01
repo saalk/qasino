@@ -8,7 +8,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Getter
-public enum InsuranceCost {
+public enum OneTimeInsurance {
     
     NO("n","No insurance"),
     TENTH_ANTE("t","10% of the bet"),
@@ -19,11 +19,11 @@ public enum InsuranceCost {
      * A static HashMap lookup with key + value is created to use in a getter
      * to fromLabel the Enum based on the name eg. key "Low" -> value AiLevel.DUMB
      */
-    public static final Map<String, InsuranceCost> lookup
+    public static final Map<String, OneTimeInsurance> lookup
             = new HashMap<>();
     static {
-        for(InsuranceCost insuranceCost : EnumSet.allOf(InsuranceCost.class))
-            lookup.put(insuranceCost.getLabel(), insuranceCost);
+        for(OneTimeInsurance oneTimeInsurance : EnumSet.allOf(OneTimeInsurance.class))
+            lookup.put(oneTimeInsurance.getLabel(), oneTimeInsurance);
     }
 
     @Pattern(regexp = "[a-z,0-9]")
@@ -32,26 +32,26 @@ public enum InsuranceCost {
 
     // Constructor, each argument to the constructor shadows one of the object's
     // fields
-    InsuranceCost(String label, String description) {
+    OneTimeInsurance(String label, String description) {
         this.label = label;
         this.description = description;
     }
 
-    public static InsuranceCost fromLabel(String inputLabel) {
+    public static OneTimeInsurance fromLabel(String inputLabel) {
         return lookup.get(inputLabel.toLowerCase());
     }
 
-    public static InsuranceCost fromLabel(char character) {
+    public static OneTimeInsurance fromLabel(char character) {
         return fromLabel(Character.toString(character));
     }
 
-    public static InsuranceCost fromLabelWithDefault(String label) {
-        InsuranceCost insuranceCost = fromLabel(label);
-        if (insuranceCost == null) return InsuranceCost.TENTH_ANTE;
-        return insuranceCost;
+    public static OneTimeInsurance fromLabelWithDefault(String label) {
+        OneTimeInsurance oneTimeInsurance = fromLabel(label);
+        if (oneTimeInsurance == null) return OneTimeInsurance.TENTH_ANTE;
+        return oneTimeInsurance;
     }
 
-    public static InsuranceCost fromLabelWithDefault(char character) {
+    public static OneTimeInsurance fromLabelWithDefault(char character) {
         return fromLabelWithDefault(Character.toString(character));
     }
 

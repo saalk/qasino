@@ -55,13 +55,12 @@ public class VisitorController {
             flowDTO.prepareResponseHeaders();
             return ResponseEntity.status(HttpStatus.valueOf(flowDTO.getHttpStatus())).headers(flowDTO.getHeaders()).build();
         }
-        // get all entities
+        // get all entities and build reponse
         output = findAllEntitiesForInputAction.perform(flowDTO);
         if (output == EventOutput.Result.FAILURE) {
             flowDTO.prepareResponseHeaders();
             return ResponseEntity.status(HttpStatus.valueOf(flowDTO.getHttpStatus())).headers(flowDTO.getHeaders()).build();
         }
-        // build response
         setStatusIndicatorsBaseOnRetrievedDataAction.perform(flowDTO);
         countQasinoTotals.perform(flowDTO);
         mapQasinoResponseFromDto.perform(flowDTO);

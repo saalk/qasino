@@ -12,7 +12,8 @@ public enum AnteToWin {
 
 // todo determine what to do here : bet vs ante ration?
     NA("n", "not applicable"),
-    FIVE_TIMES_WINS("5", "ante times 5"),
+    TIMES_3_WINS("3", "Triple your ante and win direct"),
+    TIMES_5_WINS("5", "5 Times your ante wins direct"),
     ERROR("e", "error");
 
     /**

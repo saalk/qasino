@@ -17,17 +17,28 @@ import java.util.List;
 @AllArgsConstructor
 public class PageLeague {
 
-    // Main
-    @JsonProperty("SelectedLeague")
-    private League selectedLeague;
-    // Stats
-    @JsonProperty("ResultsForSelectedLeague")
-    private List<Result> resultsForLeague;
+    // buttons
+    // 1 select and update league details
+    // - input is
+    //      name
+    // 2 create a new league
+    // - input is
+    //      name
+
+    // Main - 1, 2
     @JsonProperty("ActiveLeaguesForVisitor")
     private List<League> activeLeagues;
-    // Pending actions
+    @JsonProperty("League")
+    private League selectedLeague;
     @JsonProperty("AllGamesForLeague")
     private List<Game> leagueGames;
+
+    // Stats
+    @JsonProperty("ResultsForLeague")
+    private List<Result> resultsForLeague;
+
+    // Pending actions
+
 
 }
 

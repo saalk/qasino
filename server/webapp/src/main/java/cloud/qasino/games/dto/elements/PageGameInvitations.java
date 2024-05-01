@@ -15,18 +15,13 @@ import java.util.List;
 @AllArgsConstructor
 public class PageGameInvitations {
 
-    // Main
-    @JsonProperty("GamesWithPendingInvitations")
-    private List<Game> gamesPendingInvitations;
-    @JsonProperty("GamesWaitingToPlay")
-    private List<Game> gamesPlayableYouInitiated;
-    // Stats
-    @JsonProperty("InitiatedGames")
-    private List<Game> gamesInitiated;
-    // Pending actions
-    @JsonProperty("GamesWaitingForYou")
-    private List<Game> gamesWaitingForYouToAccept;
-    @JsonProperty("GamesYouAccepted")
-    private List<Game> gamesYouAccepted;
+    // buttons
+    // 1 accept or decline invitation for a game
+    // 2 when accepted and playable its selected game
+
+    // Main - 1, 2
+    @JsonProperty("GameInvitations")
+    private List<Game> gameInvitations;
+
 }
 

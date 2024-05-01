@@ -130,7 +130,8 @@ public class QasinoFlowDTO //extends AbstractFlowDTO
     // RETRIEVED DATA BASED ON FRONTEND ID's
     // the logged on visitor
     private Visitor qasinoVisitor;
-    private List<Visitor> friends;
+    private List<Game> initiatedGamesForVisitor;
+    private List<Game> invitedGamesForVisitor;
     // the game and players
     private Game qasinoGame;
     private List<Player> qasinoGamePlayers;

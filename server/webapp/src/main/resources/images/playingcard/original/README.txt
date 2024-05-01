@@ -42,7 +42,7 @@ __________________________
 
 This complete set of 52 playing playingCard faces (plus two jokers) is based off the
 standard set dating  back to the late 1900's and in use in most modern decks 
-today. The playingCards were initially scanned from a real deck at 600 DPI and then
+today. The playingCards were initially scanned from a real deckConfiguration at 600 DPI and then
 auto traced with Inkscape ( www.inkscape.org ) as a starting point. Nearly every
 line/node was redrawn from this initial starting point and then optimized to 
 decrease file size and create cleaner curves, sharper transitions, etc. 

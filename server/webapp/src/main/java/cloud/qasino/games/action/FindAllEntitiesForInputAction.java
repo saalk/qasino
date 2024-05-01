@@ -250,12 +250,12 @@ public class FindAllEntitiesForInputAction implements Action<FindAllEntitiesForI
 //                    Sort.Order.asc("a.\"type\""),
 //                    Sort.Order.desc("a.\"updated\""))
         );
-        actionDto.setNewGamesForVisitor(gameRepository.findAllNewGamesForVisitorWithPage(id,
+        actionDto.setInitiatedGamesForVisitor(gameRepository.findAllInitiatedGamesForVisitorWithPage(id,
                 pageable));
-        actionDto.setStartedGamesForVisitor(gameRepository.findAllStartedGamesForVisitorWithPage(id,
+        actionDto.setInvitedGamesForVisitor(gameRepository.findAllInvitedGamesForVisitorWithPage(id,
                 pageable));
-        actionDto.setFinishedGamesForVisitor(gameRepository.findAllFinishedGamesForVisitorWithPage(id,
-                pageable));
+
+
 //                    ,
 //                    Sort.by(
 //                            Sort.Order.desc("a.\"created\""))
@@ -301,10 +301,13 @@ public class FindAllEntitiesForInputAction implements Action<FindAllEntitiesForI
         void setAcceptedPlayer(Player player);
         void setTurnPlayer(Player player);
         void setNextPlayer(Player player);
-        void setNewGamesForVisitor(List<Game> games);
 
-        void setStartedGamesForVisitor(List<Game> games);
-        void setFinishedGamesForVisitor(List<Game> games);
+        void setInitiatedGamesForVisitor(List<Game> games);
+        List<Game> getInitiatedGamesForVisitor();
+        void setInvitedGamesForVisitor(List<Game> games);
+        List<Game> getInvitedGamesForVisitor();
+
+
         void setQasinoGame(Game game);
         void setQasinoGamePlayers(List<Player> players);
         void setActiveTurn(Turn turn);
@@ -314,8 +317,6 @@ public class FindAllEntitiesForInputAction implements Action<FindAllEntitiesForI
         void setQasinoGameLeague(League league);
         void setLeaguesForVisitor(List<League> leagues);
         void setResultsForLeague(List<Result> results);
-
-        void setFriends(List<Visitor> visitors);
 
         // error and response setters
         void setHttpStatus(int status);

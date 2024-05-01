@@ -7,8 +7,8 @@ import cloud.qasino.games.database.entity.enums.game.Style;
 import cloud.qasino.games.database.entity.enums.game.Type;
 import cloud.qasino.games.database.entity.enums.game.style.AnteToWin;
 import cloud.qasino.games.database.entity.enums.game.style.BettingStrategy;
-import cloud.qasino.games.database.entity.enums.game.style.Deck;
-import cloud.qasino.games.database.entity.enums.game.style.InsuranceCost;
+import cloud.qasino.games.database.entity.enums.game.style.DeckConfiguration;
+import cloud.qasino.games.database.entity.enums.game.style.OneTimeInsurance;
 import cloud.qasino.games.database.entity.enums.game.style.RoundsToWin;
 import cloud.qasino.games.database.entity.enums.game.style.TurnsToWin;
 import cloud.qasino.games.database.entity.enums.move.Move;
@@ -34,11 +34,11 @@ public abstract class QasinoItSimulator {
         String label = "nr3tnn";
         AnteToWin anteToWin = AnteToWin.NA;
         BettingStrategy bettingStrategy = BettingStrategy.REGULAR;
-        Deck deck = Deck.ALL_THREE_JOKER;
-        InsuranceCost insuranceCost = InsuranceCost.TENTH_ANTE;
+        DeckConfiguration deckConfiguration = DeckConfiguration.ALL_THREE_JOKER;
+        OneTimeInsurance oneTimeInsurance = OneTimeInsurance.TENTH_ANTE;
         RoundsToWin roundsToWin = RoundsToWin.NA;
         TurnsToWin turnsToWin = TurnsToWin.NA;
-        Style style = new Style(label, anteToWin, bettingStrategy, deck, insuranceCost,
+        Style style = new Style(label, anteToWin, bettingStrategy, deckConfiguration, oneTimeInsurance,
                 roundsToWin, turnsToWin);
         int ante = 50;
 

@@ -35,6 +35,28 @@ public interface GameRepository extends JpaRepository<Game, Long> {
                     "WHERE g.\"year\" = :year " +
                     "AND g.\"month\" = :month ";
 
+    public final static String FIND_ALL_INVITED_BY_VISITOR_ID =
+            "SELECT * FROM \"game\" a JOIN \"player\" b " +
+                    "WHERE a.\"game_id\" = b.\"game_id\" " +
+                    "AND b.\"visitor_id\" = :visitorId " +
+                    "AND a.\"initiator\" != :visitorId ) ";
+    public final static String COUNT_ALL_INVITED_BY_VISITOR_ID =
+            "SELECT count(*) FROM \"game\" a JOIN \"player\" b " +
+                    "WHERE a.\"game_id\" = b.\"game_id\" " +
+                    "AND b.\"visitor_id\" = :visitorId " +
+                    "AND a.\"initiator\" != :visitorId ) ";
+
+    public final static String FIND_ALL_INITIATED_BY_VISITOR_ID =
+            "SELECT * FROM \"game\" a JOIN \"player\" b " +
+                    "WHERE a.\"game_id\" = b.\"game_id\" " +
+                    "AND b.\"visitor_id\" = :visitorId " +
+                    "AND a.\"initiator\" = :visitorId ) ";
+    public final static String COUNT_ALL_INITIATED_BY_VISITOR_ID =
+            "SELECT count(*) FROM \"game\" a JOIN \"player\" b " +
+                    "WHERE a.\"game_id\" = b.\"game_id\" " +
+                    "AND b.\"visitor_id\" = :visitorId " +
+                    "AND a.\"initiator\" = :visitorId ) ";
+
     public final static String FIND_NEWGAMES_BY_VISITOR_ID =
             "SELECT * FROM \"game\" a JOIN \"player\" b " +
                     "WHERE a.\"game_id\" = b.\"game_id\" " +
@@ -107,6 +129,16 @@ public interface GameRepository extends JpaRepository<Game, Long> {
 
     @Query(value = FIND_FINISHEDGAMES_BY_VISITOR_ID, countQuery = COUNT_FINISHEDGAMES_BY_VISITOR_ID, nativeQuery = true)
     public List<Game> findAllFinishedGamesForVisitorWithPage(
+            @Param("visitorId") long visitorId,
+            Pageable pageable);
+
+    @Query(value = FIND_ALL_INITIATED_BY_VISITOR_ID, countQuery = COUNT_ALL_INITIATED_BY_VISITOR_ID, nativeQuery = true)
+    public List<Game> findAllInitiatedGamesForVisitorWithPage(
+            @Param("visitorId") long visitorId,
+            Pageable pageable);
+
+    @Query(value = FIND_ALL_INVITED_BY_VISITOR_ID, countQuery = COUNT_ALL_INVITED_BY_VISITOR_ID, nativeQuery = true)
+    public List<Game> findAllInvitedGamesForVisitorWithPage(
             @Param("visitorId") long visitorId,
             Pageable pageable);
 

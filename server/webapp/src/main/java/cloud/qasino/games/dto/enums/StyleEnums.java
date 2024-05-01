@@ -10,8 +10,8 @@ public class StyleEnums {
 
     Map<String, AnteToWin> maxAnte = AnteToWin.lookup;
     Map<String, BettingStrategy> bettingStrategy = BettingStrategy.lookup;
-    Map<String, Deck> deck = Deck.lookup;
-    Map<String, InsuranceCost> insuranceCost = InsuranceCost.lookup;
+    Map<String, DeckConfiguration> deck = DeckConfiguration.lookup;
+    Map<String, OneTimeInsurance> insuranceCost = OneTimeInsurance.lookup;
     Map<String, RoundsToWin> roundsToWin = RoundsToWin.lookup;
     Map<String, TurnsToWin> turnsToWinMap = TurnsToWin.lookup;
 

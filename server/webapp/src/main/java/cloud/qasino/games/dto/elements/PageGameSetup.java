@@ -2,7 +2,6 @@ package cloud.qasino.games.dto.elements;
 
 import cloud.qasino.games.database.entity.Game;
 import cloud.qasino.games.database.entity.League;
-import cloud.qasino.games.database.entity.enums.game.Type;
 import cloud.qasino.games.database.entity.enums.game.style.*;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
@@ -28,15 +27,21 @@ public class PageGameSetup {
     // 2 play a game when prepared
 
     // Main - 1,2
-    @JsonProperty("GameSetup")
+    @JsonProperty("GameInSetup")
     private Game selectedGame;
 
     // TODO selections per type are default for now
+    @JsonProperty("AnteToWin")
     private AnteToWin anteToWin;
+    @JsonProperty("BettingStrategy")
     private BettingStrategy bettingStrategy;
-    private Deck deck;
-    private InsuranceCost insuranceCost;
+    @JsonProperty("DeckConfiguration")
+    private DeckConfiguration deckConfiguration;
+    @JsonProperty("OneTimeInsurance")
+    private OneTimeInsurance oneTimeInsurance;
+    @JsonProperty("RoundsToWin")
     private RoundsToWin roundsToWin;
+    @JsonProperty("TurnsToWin")
     private TurnsToWin turnsToWin;
 
     @JsonProperty("SelectLeague")
