@@ -55,7 +55,7 @@ public class PlayService {
         }
 
         int roundNo = activeTurn.getCurrentRoundNumber();
-        int moveNo = activeTurn.getCurrentTurnNumber();
+        int turnNo = activeTurn.getCurrentTurnNumber();
         int seatNo = humanOrBot.getSeat();
         String details = topCardInStock.getRankSuit();
         // register the card move to the turn
@@ -66,7 +66,7 @@ public class PlayService {
                 move,
                 Location.HAND,
                 details);
-        newMove.setSequence(roundNo, moveNo, seatNo);
+        newMove.setSequence(roundNo, turnNo, seatNo);
 
         // for future use
 //        List<CardMove> newCardMove = new ArrayList<>();

@@ -150,11 +150,14 @@ public class MapQasinoResponseFromDto implements Action<MapQasinoResponseFromDto
         // 5: Leagues
         navigationBarItem = new NavigationBarItem();
         navigationBarItem.setItemName("Leagues");
-        navigationBarItem.setItemStats("[0/0] pending/total");
+        navigationBarItem.setItemStats("[0] active");
         navigationBarItem.setItemVisible(false);
         if (actionDto.getQasinoGameLeague() != null) {
             actionDto.setShowLeaguesPage(true);
-            actionDto.setAction("Manage your leagues");
+            if (!actionDto.isActionNeeded()) {
+                actionDto.setActionNeeded(true);
+                actionDto.setAction("Manage your leagues");
+            }
             mapLeaguesPage(actionDto, navigationBarItem, pageLeague);
         }
         navigationBarItem.setItemVisible(actionDto.isShowLeaguesPage());
@@ -239,13 +242,13 @@ public class MapQasinoResponseFromDto implements Action<MapQasinoResponseFromDto
         navigationBarItem.setItemStats("calculating...");
 
         // set the content
-        pageGamesOverview.setGameInvitations(actionDto.getNewGamesForVisitor());
+        pageGamesOverview.setGameInvitations(null);
     }
 
     private void mapLeaguesPage(Dto actionDto, NavigationBarItem navigationBarItem, PageLeague pageLeague) {
         // set the nav bar
-        navigationBarItem.setItemName("Leagues#" + actionDto.getLeaguesForVisitor().size());
-        navigationBarItem.setItemStats("calculating...");
+        navigationBarItem.setItemName("Leagues#" + Integer.toHexString((int) actionDto.getQasinoGameLeague().getLeagueId()));
+        navigationBarItem.setItemStats("[" + actionDto.getLeaguesForVisitor().size() + "] active");
         // set the content
         pageLeague.setSelectedLeague(actionDto.getQasinoGameLeague());
         pageLeague.setActiveLeagues(actionDto.getLeaguesForVisitor());
@@ -278,7 +281,6 @@ public class MapQasinoResponseFromDto implements Action<MapQasinoResponseFromDto
         // visitor
         Visitor getQasinoVisitor();
         List<League> getLeaguesForVisitor();
-        List<Game> getNewGamesForVisitor();
         List<Game> getInitiatedGamesForVisitor();
         List<Game> getInvitedGamesForVisitor();
 

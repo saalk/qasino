@@ -26,7 +26,9 @@ public class UpdateFichesForPlayer implements Action<UpdateFichesForPlayer.Dto, 
 
     @Resource
     CardMoveRepository cardMoveRepository;
+    @Resource
     CardRepository cardRepository;
+    @Resource
     PlayerRepository playerRepository;
 
     @Autowired
@@ -71,7 +73,7 @@ public class UpdateFichesForPlayer implements Action<UpdateFichesForPlayer.Dto, 
         Optional<Card> previousCard = cardRepository.findById(previousCardMoveCard.getCardId());
         Optional<Card> currentCard = cardRepository.findById(cardMove.getCardId());
         cardMove.setEndFiches(
-                actionDto.getTurnPlayer().getFiches() +
+                cardMove.getStartFiches() +
                         calculateWinOrLoss(actionDto, cardMove.getMove(), previousCard.get(), currentCard.get()));
         cardMoveRepository.save(cardMove);
         actionDto.getTurnPlayer().setFiches(cardMove.getEndFiches());
@@ -85,7 +87,7 @@ public class UpdateFichesForPlayer implements Action<UpdateFichesForPlayer.Dto, 
         // calculate if the bet is added or subtracted
         if (previousValue == 0 || currentValue == 0) {
             // joker now or previous so ok you win the bet
-            return actionDto.getQasinoGame().getAnte();
+            return -actionDto.getQasinoGame().getAnte();
         }
         if (previousValue == currentValue) {
             // with values being equal, you don't win or loose
@@ -93,13 +95,13 @@ public class UpdateFichesForPlayer implements Action<UpdateFichesForPlayer.Dto, 
         }
         if (move.equals(Move.HIGHER) && currentValue < previousValue) {
             // predicted higher and it is
-            return actionDto.getQasinoGame().getAnte();
+            return -actionDto.getQasinoGame().getAnte();
         }
         if (move.equals(Move.LOWER) && currentValue > previousValue) {
             // predicted lower and it is
-            return actionDto.getQasinoGame().getAnte();
+            return -actionDto.getQasinoGame().getAnte();
         }
-        return -actionDto.getQasinoGame().getAnte();
+        return actionDto.getQasinoGame().getAnte();
     }
 
     void setErrorMessageConflictWithDeal(Dto actionDto, String id,

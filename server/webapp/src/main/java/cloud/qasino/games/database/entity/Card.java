@@ -108,6 +108,11 @@ public class Card {
     }
 
     @Override
+    public String toString () {
+        return this.rankSuit;
+    }
+
+    @Override
     public int hashCode() {
         return Objects.hash(cardId);
     }

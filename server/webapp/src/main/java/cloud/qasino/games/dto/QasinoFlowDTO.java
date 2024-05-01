@@ -135,9 +135,6 @@ public class QasinoFlowDTO //extends AbstractFlowDTO
     // the game and players
     private Game qasinoGame;
     private List<Player> qasinoGamePlayers;
-    private List<Game> newGamesForVisitor;
-    private List<Game> startedGamesForVisitor;
-    private List<Game> finishedGamesForVisitor;
     // the individual player
     private Player invitedPlayer;
     private Player acceptedPlayer;

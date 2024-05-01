@@ -2,6 +2,7 @@ package cloud.qasino.games.database.entity.enums.game;
 
 import cloud.qasino.games.database.entity.enums.LabeledEnum;
 import cloud.qasino.games.database.entity.enums.game.gamestate.GameStateGroup;
+import cloud.qasino.games.database.entity.enums.move.Move;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -39,12 +40,21 @@ public enum GameState implements LabeledEnum {
      * A static HashMap lookup with key + value is created to use in a getter
      * to fromLabel the Enum based on the name eg. key "Low" -> value AiLevel.DUMB
      */
-    public static Map<String, GameState> lookup
+    public static final Map<String, GameState> lookup
+            = new HashMap<>();
+
+    public static final Map<String, GameState> lookupNoError
             = new HashMap<>();
 
     static {
         for (GameState gameState : EnumSet.allOf(GameState.class))
             lookup.put(gameState.getLabel(), gameState);
+    }
+
+    static {
+        for (GameState gameState : EnumSet.allOf(GameState.class))
+            if (!gameState.getLabel().toLowerCase().equals("error"))
+                lookupNoError.put(gameState.getLabel(), gameState);
     }
 
     private String label;

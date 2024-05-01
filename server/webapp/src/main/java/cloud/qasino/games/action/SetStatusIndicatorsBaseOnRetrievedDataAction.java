@@ -17,32 +17,30 @@ public class SetStatusIndicatorsBaseOnRetrievedDataAction implements Action<SetS
     @Override
     public EventOutput.Result perform(SetStatusIndicatorsBaseOnRetrievedDataDTO actionDto) {
 
-        log.debug("Action: SetStatusIndicatorsBaseOnRetrievedDataAction");
-
-        actionDto.setShowVisitorPage(false);
-        actionDto.setShowGameSetupPage(false);
-        actionDto.setShowGamePlayPage(false);
-        actionDto.setShowLeaguesPage(false);
-        actionDto.setShowGameInvitationsPage(false);
-
-        if (!(actionDto.getQasinoVisitor() == null)) {
-            actionDto.setShowVisitorPage(true);
-            if (actionDto.getQasinoVisitor().getBalance() > 0) {
-                actionDto.setShowGameSetupPage(true);
-            }
-        }
-        if (!(actionDto.getQasinoGame() == null)) {
-            if (
-                    actionDto.getQasinoGame().getState() == GameState.INITIALIZED ||
-                            actionDto.getQasinoGame().getState() == GameState.PREPARED) {
-                actionDto.setShowGamePlayPage(true);
-            }
-        }
-        if (!(actionDto.getQasinoGameLeague() == null)) {
-            actionDto.setShowLeaguesPage(true);
-        }
-        // todo implement friends
-        actionDto.setShowGameInvitationsPage(false);
+//        actionDto.setShowVisitorPage(false);
+//        actionDto.setShowGameSetupPage(false);
+//        actionDto.setShowGamePlayPage(false);
+//        actionDto.setShowLeaguesPage(false);
+//        actionDto.setShowGameInvitationsPage(false);
+//
+//        if (!(actionDto.getQasinoVisitor() == null)) {
+//            actionDto.setShowVisitorPage(true);
+//            if (actionDto.getQasinoVisitor().getBalance() > 0) {
+//                actionDto.setShowGameSetupPage(true);
+//            }
+//        }
+//        if (!(actionDto.getQasinoGame() == null)) {
+//            if (
+//                    actionDto.getQasinoGame().getState() == GameState.INITIALIZED ||
+//                            actionDto.getQasinoGame().getState() == GameState.PREPARED) {
+//                actionDto.setShowGamePlayPage(true);
+//            }
+//        }
+//        if (!(actionDto.getQasinoGameLeague() == null)) {
+//            actionDto.setShowLeaguesPage(true);
+//        }
+//        // todo implement friends
+//        actionDto.setShowGameInvitationsPage(false);
 
         return EventOutput.Result.SUCCESS;
     }
@@ -63,10 +61,6 @@ public class SetStatusIndicatorsBaseOnRetrievedDataAction implements Action<SetS
         Player getInvitedPlayer();
         Player getAcceptedPlayer();
         Player getTurnPlayer();
-
-        List<Game> getNewGamesForVisitor();
-        List<Game> getStartedGamesForVisitor();
-        List<Game> getFinishedGamesForVisitor();
 
         Game getQasinoGame();
         League getQasinoGameLeague();

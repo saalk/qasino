@@ -17,7 +17,6 @@ import java.util.List;
 @AllArgsConstructor
 public class Qasino {
 
-
     @JsonProperty("Message")
     private String action;
     @JsonProperty("ShowMessage")
@@ -46,6 +45,4 @@ public class Qasino {
     EnumOverview enumOverview = new EnumOverview();
     @JsonProperty("Statistics")
     Statistics statistics = new Statistics();
-
-
 }

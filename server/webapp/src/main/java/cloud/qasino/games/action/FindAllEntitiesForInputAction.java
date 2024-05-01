@@ -153,9 +153,11 @@ public class FindAllEntitiesForInputAction implements Action<FindAllEntitiesForI
         Optional<Game> foundGame = gameRepository.findById(Long.parseLong(String.valueOf(id)));
         if (foundGame.isPresent()) {
             actionDto.setQasinoGame(foundGame.get());
-            actionDto.setQasinoGamePlayers(playerRepository.findByGame(actionDto.getQasinoGame()));
+            // TODO check which works
+//            actionDto.setQasinoGamePlayers(playerRepository.findByGame(actionDto.getQasinoGame()));
+            actionDto.setQasinoGamePlayers(foundGame.get().getPlayers());
             // TODO dont know why this is needed
-            actionDto.getQasinoGame().setPlayers(actionDto.getQasinoGamePlayers());
+//            actionDto.getQasinoGame().setPlayers(actionDto.getQasinoGamePlayers());
             // when in prepare there are no cards yet so this results in null
             actionDto.setCardsInTheGameSorted(cardRepository.findByGameOrderBySequenceAsc(actionDto.getQasinoGame()));
             actionDto.setActiveTurn(foundGame.get().getTurn());

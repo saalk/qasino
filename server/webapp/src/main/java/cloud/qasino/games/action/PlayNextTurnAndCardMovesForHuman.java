@@ -49,6 +49,8 @@ public class PlayNextTurnAndCardMovesForHuman implements Action<PlayNextTurnAndC
         switch (actionDto.getSuppliedTurnTrigger()) {
             case HIGHER -> {
                 activeMove = Move.HIGHER;
+                // update round +1 start with turn 0
+                activeTurn.setCurrentTurnNumber(activeTurn.getCurrentTurnNumber()+1);
                 activeTurn = playService.dealCardToPlayer(
                         actionDto.getQasinoGame(),
                         activeTurn,
@@ -59,6 +61,7 @@ public class PlayNextTurnAndCardMovesForHuman implements Action<PlayNextTurnAndC
             }
             case LOWER -> {
                 activeMove = Move.LOWER;
+                activeTurn.setCurrentTurnNumber(activeTurn.getCurrentTurnNumber()+1);
                 activeTurn = playService.dealCardToPlayer(
                         actionDto.getQasinoGame(),
                         activeTurn,
@@ -76,7 +79,6 @@ public class PlayNextTurnAndCardMovesForHuman implements Action<PlayNextTurnAndC
                 }
                 // update round +1 start with turn 0
                 activeTurn.setCurrentRoundNumber(activeTurn.getCurrentRoundNumber()+1);
-                activeTurn.setCurrentRoundNumber(1);
                 activeTurn = playService.dealCardToPlayer(
                         actionDto.getQasinoGame(),
                         activeTurn,
