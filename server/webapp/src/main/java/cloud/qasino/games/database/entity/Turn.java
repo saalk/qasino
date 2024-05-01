@@ -111,7 +111,7 @@ public class Turn {
 
         this.year = localDateAndTime.getYear();
         this.month = localDateAndTime.getMonth();
-        DateTimeFormatter week = DateTimeFormatter.ofPattern("W");
+        DateTimeFormatter week = DateTimeFormatter.ofPattern("w");
         this.week = localDateAndTime.format(week);
         this.weekday = localDateAndTime.getDayOfMonth();
     }

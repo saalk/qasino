@@ -11,9 +11,10 @@ import java.util.Map;
 public enum AnteToWin {
 
 // todo determine what to do here : bet vs ante ration?
-    NA("n", "Not applicable"),
-    FIVE_TIMES_WINS("5", "ante times 5");
-    
+    NA("n", "not applicable"),
+    FIVE_TIMES_WINS("5", "ante times 5"),
+    ERROR("e", "error");
+
     /**
      * A static HashMap lookup with key + value is created to use in a getter
      * to fromLabel the Enum based on the name eg. key "Low" -> value AiLevel.DUMB
@@ -23,6 +24,14 @@ public enum AnteToWin {
     static {
         for(AnteToWin anteToWin : EnumSet.allOf(AnteToWin.class))
             lookup.put(anteToWin.getLabel(), anteToWin);
+    }
+
+    public static final Map<String, AnteToWin> AnteToWinMapNoError
+            = new HashMap<>();
+    static {
+        for(AnteToWin anteToWin : EnumSet.allOf(AnteToWin.class))
+            if (!anteToWin.getLabel().toLowerCase().equals("error"))
+                AnteToWinMapNoError.put(anteToWin.getLabel(), anteToWin);
     }
 
     @Pattern(regexp = "[a-z,0-9]")
@@ -46,7 +55,7 @@ public enum AnteToWin {
 
     public static AnteToWin fromLabelWithDefault(String label) {
         AnteToWin anteToWin = fromLabel(label);
-        if (anteToWin == null) return AnteToWin.NA;
+        if (anteToWin == null) return AnteToWin.ERROR;
         return anteToWin;
     }
 

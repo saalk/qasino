@@ -9,8 +9,8 @@ import java.util.Map;
 @Getter
 public class GameEnums {
 
-    public Map<String, Type> type = Type.typeMapNoError;
+    public Map<String, Type> type = Type.lookup;
     StyleEnums style = new StyleEnums();
-    Map<String, GameState> state = GameState.gameStates;
+    Map<String, GameState> state = GameState.lookup;
 
 }

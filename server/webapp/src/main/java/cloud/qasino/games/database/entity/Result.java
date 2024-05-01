@@ -87,7 +87,7 @@ public class Result {
     public Result() {
         LocalDateTime localDateAndTime = LocalDateTime.now();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd-HH:mm-ssSSS-nnnnnnnnn");
-        DateTimeFormatter week = DateTimeFormatter.ofPattern("W");
+        DateTimeFormatter week = DateTimeFormatter.ofPattern("w");
         String result = localDateAndTime.format(formatter);
         this.created = result.substring(0, 20);
         this.year = localDateAndTime.getYear();

@@ -1,7 +1,7 @@
 package cloud.qasino.games.dto;
 
 import cloud.qasino.games.action.CalculateAndFinishGame;
-import cloud.qasino.games.action.CalculateHallOfFameAction;
+import cloud.qasino.games.action.CountQasinoTotals;
 import cloud.qasino.games.action.CreateNewLeagueAction;
 import cloud.qasino.games.action.FindAllEntitiesForInputAction;
 import cloud.qasino.games.action.FindVisitorIdByVisitorNameAction;
@@ -10,7 +10,7 @@ import cloud.qasino.games.action.IsGameConsistentForGameTrigger;
 import cloud.qasino.games.action.IsGameFinished;
 import cloud.qasino.games.action.IsTurnConsistentForTurnTrigger;
 import cloud.qasino.games.action.MakeGamePlayableForGameType;
-import cloud.qasino.games.action.MapQasinoResponseFromRetrievedDataAction;
+import cloud.qasino.games.action.MapQasinoResponseFromDto;
 import cloud.qasino.games.action.MapTableFromRetrievedDataAction;
 import cloud.qasino.games.action.PlayFirstTurnAndInitialCardMovesForGameType;
 import cloud.qasino.games.action.PlayNextTurnAndCardMovesForHuman;
@@ -61,11 +61,11 @@ public class QasinoFlowDTO //extends AbstractFlowDTO
         FindVisitorIdByVisitorNameAction.FindVisitorIdByVisitorNameActionDTO,
         SignUpNewVisitorAction.SignUpNewVisitorActionDTO,
         CreateNewLeagueAction.CreateNewLeagueActionDTO,
-        FindAllEntitiesForInputAction.FindAllEntitiesForInputActionDTO,
-        CalculateHallOfFameAction.CalculateHallOfFameActionDTO,
+        FindAllEntitiesForInputAction.Dto,
+        CountQasinoTotals.Dto,
         HandleSecuredLoanAction.HandleSecuredLoanActionDTO,
         SetStatusIndicatorsBaseOnRetrievedDataAction.SetStatusIndicatorsBaseOnRetrievedDataDTO,
-        MapQasinoResponseFromRetrievedDataAction.Dto,
+        MapQasinoResponseFromDto.Dto,
         MapTableFromRetrievedDataAction.Dto,
         PlayNextTurnAndCardMovesForHuman.Dto,
         IsGameConsistentForGameTrigger.Dto,
@@ -145,13 +145,11 @@ public class QasinoFlowDTO //extends AbstractFlowDTO
     private League qasinoGameLeague;
     private List<League> leaguesForVisitor;
     // the game results
-    private Result gameResult;
+    private List<Result> gameResults;
     private List<Result> resultsForLeague;
 
     // FOR THE GAME BEING PLAYED
     private SectionTable table;
-
-    // during cardmoves in a turn
     private Player turnPlayer;
     private Player nextPlayer;
     private Turn activeTurn;
@@ -159,13 +157,16 @@ public class QasinoFlowDTO //extends AbstractFlowDTO
     private List<CardMove> allCardMovesForTheGame;
 
     // NAVIGATION based on RETRIEVED DATA
-    public boolean showVisitorPage;       // spaceShip - nav-visitor
-    public boolean showGameConfigurator;  // cards - nav-game
-    public boolean showGamePlay;          // fiches - nav-qasino
-    public boolean showPendingGames;      // chat - nav-chat
-    public boolean showLeagues;           // hallOfFame - nav-fame
+    public boolean showVisitorPage;
+    public boolean showGameSetupPage;
+    public boolean showGamePlayPage;
+    public boolean showGameInvitationsPage;
+    public boolean showLeaguesPage;
 
-    // ERROR DATA
+    // MESSAGE AND  DATA
+    private String action;
+    private boolean actionNeeded;
+
     private int httpStatus = 200;
     private String errorKey = "Key";
     private String errorValue = "Value";

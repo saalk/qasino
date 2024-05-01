@@ -19,6 +19,9 @@ public class EnumOverview {
     @JsonProperty("TurnEnums")
     private TurnEnums turn = new TurnEnums();
 
+    @JsonProperty("TriggerEnums")
+    private TriggerEnums triggerEnums = new TriggerEnums();
+
     public EnumOverview() {
 
     }

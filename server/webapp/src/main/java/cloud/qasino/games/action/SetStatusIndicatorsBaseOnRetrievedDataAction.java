@@ -20,29 +20,29 @@ public class SetStatusIndicatorsBaseOnRetrievedDataAction implements Action<SetS
         log.debug("Action: SetStatusIndicatorsBaseOnRetrievedDataAction");
 
         actionDto.setShowVisitorPage(false);
-        actionDto.setShowGameConfigurator(false);
-        actionDto.setShowGamePlay(false);
-        actionDto.setShowLeagues(false);
-        actionDto.setShowPendingGames(false);
+        actionDto.setShowGameSetupPage(false);
+        actionDto.setShowGamePlayPage(false);
+        actionDto.setShowLeaguesPage(false);
+        actionDto.setShowGameInvitationsPage(false);
 
         if (!(actionDto.getQasinoVisitor() == null)) {
             actionDto.setShowVisitorPage(true);
             if (actionDto.getQasinoVisitor().getBalance() > 0) {
-                actionDto.setShowGameConfigurator(true);
+                actionDto.setShowGameSetupPage(true);
             }
         }
         if (!(actionDto.getQasinoGame() == null)) {
             if (
                     actionDto.getQasinoGame().getState() == GameState.INITIALIZED ||
                             actionDto.getQasinoGame().getState() == GameState.PREPARED) {
-                actionDto.setShowGamePlay(true);
+                actionDto.setShowGamePlayPage(true);
             }
         }
         if (!(actionDto.getQasinoGameLeague() == null)) {
-            actionDto.setShowLeagues(true);
+            actionDto.setShowLeaguesPage(true);
         }
         // todo implement friends
-        actionDto.setShowPendingGames(false);
+        actionDto.setShowGameInvitationsPage(false);
 
         return EventOutput.Result.SUCCESS;
     }
@@ -76,10 +76,10 @@ public class SetStatusIndicatorsBaseOnRetrievedDataAction implements Action<SetS
         List<CardMove> getAllCardMovesForTheGame();
 
         void setShowVisitorPage(boolean bool);
-        void setShowGameConfigurator(boolean bool);
-        void setShowGamePlay(boolean bool);
-        void setShowPendingGames(boolean bool);
-        void setShowLeagues(boolean bool);
+        void setShowGameSetupPage(boolean bool);
+        void setShowGamePlayPage(boolean bool);
+        void setShowGameInvitationsPage(boolean bool);
+        void setShowLeaguesPage(boolean bool);
 
         // error setters
         void setHttpStatus(int status);

@@ -1,14 +1,16 @@
 package cloud.qasino.games.database.entity.enums.game;
 
 import cloud.qasino.games.database.entity.enums.LabeledEnum;
+import cloud.qasino.games.database.entity.enums.game.gamestate.GameStateGroup;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -16,23 +18,23 @@ import java.util.Set;
 public enum GameState implements LabeledEnum {
 
     // SETUP
-    INITIALIZED("initialized", "New games may or may not have ante, cards, leagues or players","SETUP"),
-    PENDING_INVITATIONS("pending_invitations", "Game has Player(s) with pending invitation","SETUP"),
-    PREPARED("prepared", "Game is valid for playing","SETUP"),
+    INITIALIZED("initialized", "Setup ante, League and Players", GameStateGroup.SETUP),
+    PENDING_INVITATIONS("pending_invitations", "Awaiting invitations", GameStateGroup.SETUP),
+    PREPARED("prepared", "Start playing", GameStateGroup.PREPARED),
 
     // HIGHLOW
-    STARTED("started", "Game is being played and has Events","STARTED"),
-//    CASHED("cashed", "Game is being played and has Events","STARTED"),
+    STARTED("started", "Proceed with first Move", GameStateGroup.PLAYING),
+    NEXT_MOVE("next_move", "Proceed with next Move", GameStateGroup.PLAYING),
+    NEXT_TURN("next_turn", "Proceed with next Player", GameStateGroup.PLAYING),
 
     // ENDED
-    FINISHED("finished", "Game has a Result and if possible a Winner","FINISHED"),
-    QUIT("quit", "Game is stopped by a Player and has no Result or Winner","FINISHED"),
-    CANCELLED("cancelled", "Game is cancelled by the system","FINISHED"),
-    OLD("old", "Game is abandoned without Results or Winner","FINISHED"),
+    FINISHED("finished", "Show Results", GameStateGroup.FINISHED),
+    QUIT("quit", "Game stopped", GameStateGroup.FINISHED),
+    CANCELLED("cancelled", "Game abandoned", GameStateGroup.FINISHED),
 
     // ERROR,
-    ERROR("error", "Game has an unforseen 500 and needs a fix","ERROR"),
-    TIMEOUT("timeout", "Game has an unforseen timeout and needs a fix","ERROR");
+    ERROR("error", "Game in error", GameStateGroup.ERROR),
+    TIMEOUT("timeout", "Game in timeout", GameStateGroup.ERROR);
 
     /**
      * A static HashMap lookup with key + value is created to use in a getter
@@ -46,25 +48,12 @@ public enum GameState implements LabeledEnum {
             lookup.put(gameState.getLabel(), gameState);
     }
 
-    public static final Map<String, GameState> gameStates
-            = new HashMap<>();
-
-    static {
-        for (GameState gameState : EnumSet.allOf(GameState.class))
-            gameStates.put(gameState.getLabel(), gameState);
-    }
-
     private String label;
-    private String description;
-    private String group;
+    private String nextAction;
+    private GameStateGroup group;
 
     public static GameState fromLabel(String inputLabel) {
         return lookup.get(inputLabel.toLowerCase());
-    }
-
-
-    public static GameState fromLabel(char character) {
-        return fromLabel(Character.toString(character));
     }
 
     public static GameState fromLabelWithDefault(String label) {
@@ -73,29 +62,16 @@ public enum GameState implements LabeledEnum {
         return gameState;
     }
 
-    public static GameState fromLabelWithDefault(char character) {
-        return fromLabelWithDefault(Character.toString(character));
+    public static List<GameState> fromGroupWithDefault(GameStateGroup group) {
+        List<GameState> gameStates = new ArrayList<>();
+        for (GameState gameState : lookup.values()) {
+            if (gameState.getGroup().equals(group)) {
+                gameStates.add(gameState);
+            }
+        }
+        if (gameStates.isEmpty()) {
+            gameStates.add(GameState.ERROR);
+        }
+        return gameStates;
     }
-
-    public static final Set<GameState> setupGameStates = EnumSet.of(INITIALIZED, PENDING_INVITATIONS);
-    public static final String[] setupGameStatesValues = new String[]{INITIALIZED.name(),
-            PENDING_INVITATIONS.name()};
-
-    public static final Set<GameState> preparedGameStates = EnumSet.of(PREPARED);
-    public static final String[] preparedGameStatesValues = new String[]{PREPARED.name()};
-
-    // TODO check this
-    public static final Set<GameState> highlowGameStates
-            = EnumSet.of(STARTED);
-    public static final String[] highlowGameStatesValues = new String[]{STARTED.name()};
-
-    public static final Set<GameState> finishedGameStates = EnumSet.of(FINISHED, QUIT, CANCELLED, OLD);
-    public static final String[] finishedGameStatesValues = new String[]{FINISHED.name(), QUIT.name(),
-            CANCELLED.name(), OLD.name()};
-
-    public static final Set<GameState> cardGamesError = EnumSet.of(TIMEOUT, ERROR);
-    public static final String[] errorGameStatesValues = new String[]{TIMEOUT.name(), ERROR.name(),
-            CANCELLED.name()};
-
-
 }

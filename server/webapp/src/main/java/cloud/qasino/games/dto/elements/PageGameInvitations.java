@@ -13,7 +13,7 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class PagePendingGames {
+public class PageGameInvitations {
 
     // Main
     @JsonProperty("GamesWithPendingInvitations")

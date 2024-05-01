@@ -22,7 +22,7 @@ import java.util.List;
 public class SectionSeat {
 
     // seat stats
-    @JsonProperty("SeatId")
+    @JsonProperty("SeatNumber")
     private int seatId;
     @JsonProperty("IsPlaying")
     private boolean isPlaying;

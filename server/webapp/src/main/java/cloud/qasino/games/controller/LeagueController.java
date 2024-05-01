@@ -1,9 +1,9 @@
 package cloud.qasino.games.controller;
 
-import cloud.qasino.games.action.CalculateHallOfFameAction;
+import cloud.qasino.games.action.CountQasinoTotals;
 import cloud.qasino.games.action.CreateNewLeagueAction;
 import cloud.qasino.games.action.FindAllEntitiesForInputAction;
-import cloud.qasino.games.action.MapQasinoResponseFromRetrievedDataAction;
+import cloud.qasino.games.action.MapQasinoResponseFromDto;
 import cloud.qasino.games.action.SetStatusIndicatorsBaseOnRetrievedDataAction;
 import cloud.qasino.games.database.repository.LeagueRepository;
 import cloud.qasino.games.dto.Qasino;
@@ -38,9 +38,9 @@ public class LeagueController {
     @Autowired
     SetStatusIndicatorsBaseOnRetrievedDataAction setStatusIndicatorsBaseOnRetrievedDataAction;
     @Autowired
-    CalculateHallOfFameAction calculateHallOfFameAction;
+    CountQasinoTotals countQasinoTotals;
     @Autowired
-    MapQasinoResponseFromRetrievedDataAction mapQasinoResponseFromRetrievedDataAction;
+    MapQasinoResponseFromDto mapQasinoResponseFromDto;
 
     @Autowired
     public LeagueController(
@@ -68,8 +68,8 @@ public class LeagueController {
         }
         // build response
         setStatusIndicatorsBaseOnRetrievedDataAction.perform(flowDTO);
-        calculateHallOfFameAction.perform(flowDTO);
-        mapQasinoResponseFromRetrievedDataAction.perform(flowDTO);
+        countQasinoTotals.perform(flowDTO);
+        mapQasinoResponseFromDto.perform(flowDTO);
         flowDTO.prepareResponseHeaders();
         return ResponseEntity.ok().headers(flowDTO.getHeaders()).body(flowDTO.getQasino());
     }
@@ -101,8 +101,8 @@ public class LeagueController {
         // build response
         findAllEntitiesForInputAction.perform(flowDTO);
         setStatusIndicatorsBaseOnRetrievedDataAction.perform(flowDTO);
-        calculateHallOfFameAction.perform(flowDTO);
-        mapQasinoResponseFromRetrievedDataAction.perform(flowDTO);
+        countQasinoTotals.perform(flowDTO);
+        mapQasinoResponseFromDto.perform(flowDTO);
         flowDTO.prepareResponseHeaders();
         return ResponseEntity.ok().headers(flowDTO.getHeaders()).body(flowDTO.getQasino());
     }
@@ -135,8 +135,8 @@ public class LeagueController {
         leagueRepository.save(flowDTO.getQasinoGameLeague());
         // build response
         setStatusIndicatorsBaseOnRetrievedDataAction.perform(flowDTO);
-        calculateHallOfFameAction.perform(flowDTO);
-        mapQasinoResponseFromRetrievedDataAction.perform(flowDTO);
+        countQasinoTotals.perform(flowDTO);
+        mapQasinoResponseFromDto.perform(flowDTO);
         flowDTO.prepareResponseHeaders();
         return ResponseEntity.ok().headers(flowDTO.getHeaders()).body(flowDTO.getQasino());
     }
@@ -165,8 +165,8 @@ public class LeagueController {
         flowDTO.setQasinoGameLeague(null);
         // build response
         setStatusIndicatorsBaseOnRetrievedDataAction.perform(flowDTO);
-        calculateHallOfFameAction.perform(flowDTO);
-        mapQasinoResponseFromRetrievedDataAction.perform(flowDTO);
+        countQasinoTotals.perform(flowDTO);
+        mapQasinoResponseFromDto.perform(flowDTO);
         flowDTO.prepareResponseHeaders();
         // delete 204 -> 200 otherwise no content in response body
         return ResponseEntity.status(HttpStatus.OK).headers(flowDTO.getHeaders()).body(flowDTO.getQasino());

@@ -15,7 +15,7 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class PageLeagues {
+public class PageLeague {
 
     // Main
     @JsonProperty("SelectedLeague")

@@ -14,7 +14,12 @@ import java.util.List;
 //@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Statistics {
 
-    @JsonProperty("Totals")
-    private List<Total> totals;
+    public int totalVisitors;
+    public int totalGames;
+    @JsonProperty("SubTotalsGame")
+    private SubTotalsGame subTotalsGames;
+    public int totalPlayers;
+    public int totalLeagues;
+    public int totalCards;
 
 }

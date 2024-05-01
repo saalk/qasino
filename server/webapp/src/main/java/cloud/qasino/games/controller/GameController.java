@@ -1,13 +1,14 @@
 package cloud.qasino.games.controller;
 
-import cloud.qasino.games.action.CalculateHallOfFameAction;
+import cloud.qasino.games.action.CountQasinoTotals;
 import cloud.qasino.games.action.FindAllEntitiesForInputAction;
-import cloud.qasino.games.action.MapQasinoResponseFromRetrievedDataAction;
+import cloud.qasino.games.action.MapQasinoResponseFromDto;
 import cloud.qasino.games.action.SetStatusIndicatorsBaseOnRetrievedDataAction;
 import cloud.qasino.games.database.entity.Game;
 import cloud.qasino.games.database.entity.Player;
 import cloud.qasino.games.database.entity.Visitor;
 import cloud.qasino.games.database.entity.enums.game.GameState;
+import cloud.qasino.games.database.entity.enums.game.gamestate.GameStateGroup;
 import cloud.qasino.games.database.entity.enums.player.AiLevel;
 import cloud.qasino.games.database.entity.enums.player.Avatar;
 import cloud.qasino.games.database.entity.enums.player.Role;
@@ -39,7 +40,6 @@ import java.util.List;
 import java.util.Optional;
 
 import static cloud.qasino.games.configuration.Constants.DEFAULT_PAWN_SHIP_BOT;
-import static cloud.qasino.games.database.entity.enums.game.GameState.setupGameStates;
 
 @RestController
 public class GameController {
@@ -58,9 +58,9 @@ public class GameController {
     @Autowired
     SetStatusIndicatorsBaseOnRetrievedDataAction setStatusIndicatorsBaseOnRetrievedDataAction;
     @Autowired
-    CalculateHallOfFameAction calculateHallOfFameAction;
+    CountQasinoTotals countQasinoTotals;
     @Autowired
-    MapQasinoResponseFromRetrievedDataAction mapQasinoResponseFromRetrievedDataAction;
+    MapQasinoResponseFromDto mapQasinoResponseFromDto;
 
     @Autowired
     public GameController(
@@ -134,8 +134,8 @@ public class GameController {
         // build response
         findAllEntitiesForInputAction.perform(flowDTO);
         setStatusIndicatorsBaseOnRetrievedDataAction.perform(flowDTO);
-        calculateHallOfFameAction.perform(flowDTO);
-        mapQasinoResponseFromRetrievedDataAction.perform(flowDTO);
+        countQasinoTotals.perform(flowDTO);
+        mapQasinoResponseFromDto.perform(flowDTO);
         flowDTO.prepareResponseHeaders();
         return ResponseEntity.status(HttpStatus.valueOf(201)).headers(flowDTO.getHeaders()).body(flowDTO.getQasino());
     }
@@ -205,8 +205,8 @@ public class GameController {
         // build response
         findAllEntitiesForInputAction.perform(flowDTO);
         setStatusIndicatorsBaseOnRetrievedDataAction.perform(flowDTO);
-        calculateHallOfFameAction.perform(flowDTO);
-        mapQasinoResponseFromRetrievedDataAction.perform(flowDTO);
+        countQasinoTotals.perform(flowDTO);
+        mapQasinoResponseFromDto.perform(flowDTO);
         flowDTO.prepareResponseHeaders();
         return ResponseEntity.status(HttpStatus.valueOf(201)).headers(flowDTO.getHeaders()).body(flowDTO.getQasino());
     }
@@ -263,8 +263,8 @@ public class GameController {
         // build response
         findAllEntitiesForInputAction.perform(flowDTO);
         setStatusIndicatorsBaseOnRetrievedDataAction.perform(flowDTO);
-        calculateHallOfFameAction.perform(flowDTO);
-        mapQasinoResponseFromRetrievedDataAction.perform(flowDTO);
+        countQasinoTotals.perform(flowDTO);
+        mapQasinoResponseFromDto.perform(flowDTO);
         flowDTO.prepareResponseHeaders();
         return ResponseEntity.status(HttpStatus.valueOf(201)).headers(flowDTO.getHeaders()).body(flowDTO.getQasino());
     }
@@ -338,8 +338,8 @@ public class GameController {
         // build response
         findAllEntitiesForInputAction.perform(flowDTO);
         setStatusIndicatorsBaseOnRetrievedDataAction.perform(flowDTO);
-        calculateHallOfFameAction.perform(flowDTO);
-        mapQasinoResponseFromRetrievedDataAction.perform(flowDTO);
+        countQasinoTotals.perform(flowDTO);
+        mapQasinoResponseFromDto.perform(flowDTO);
         flowDTO.prepareResponseHeaders();
         return ResponseEntity.status(HttpStatus.valueOf(201)).headers(flowDTO.getHeaders()).body(flowDTO.getQasino());
     }
@@ -375,10 +375,9 @@ public class GameController {
             flowDTO.prepareResponseHeaders();
             return ResponseEntity.status(HttpStatus.valueOf(flowDTO.getHttpStatus())).headers(flowDTO.getHeaders()).build();
         }
-        // rules - GameState must be in 'setup' NEW, PENDING_INVITATIONS
+        // rules - GameState must be in GameStateGroup 'setup' NEW, PENDING_INVITATIONS
         if (flowDTO.getQasinoGame() != null
-                && !setupGameStates.contains(flowDTO.getQasinoGame().getState())
-        ) {
+                && !flowDTO.getQasinoGame().getState().getGroup().equals(GameStateGroup.SETUP)) {
             flowDTO.prepareResponseHeaders();
             return ResponseEntity.status(HttpStatus.CONFLICT).headers(flowDTO.getHeaders()).build();
         }
@@ -400,8 +399,8 @@ public class GameController {
         // get all (updated) entities
         findAllEntitiesForInputAction.perform(flowDTO);
         setStatusIndicatorsBaseOnRetrievedDataAction.perform(flowDTO);
-        calculateHallOfFameAction.perform(flowDTO);
-        mapQasinoResponseFromRetrievedDataAction.perform(flowDTO);
+        countQasinoTotals.perform(flowDTO);
+        mapQasinoResponseFromDto.perform(flowDTO);
         flowDTO.prepareResponseHeaders();
         return ResponseEntity.ok().headers(flowDTO.getHeaders()).body(flowDTO.getQasino());
     }
@@ -752,7 +751,7 @@ public class GameController {
     ) {
         // validate
         QasinoFlowDTO flowDTO = new QasinoFlowDTO();
-        flowDTO.setPathVariables("visitorId",vId,"gameId", id);
+        flowDTO.setPathVariables("visitorId", vId, "gameId", id);
         if (!flowDTO.validateInput()) {
             flowDTO.prepareResponseHeaders();
             return ResponseEntity.status(HttpStatus.valueOf(flowDTO.getHttpStatus())).headers(flowDTO.getHeaders()).build();
@@ -769,8 +768,8 @@ public class GameController {
         // build response
         findAllEntitiesForInputAction.perform(flowDTO);
         setStatusIndicatorsBaseOnRetrievedDataAction.perform(flowDTO);
-        calculateHallOfFameAction.perform(flowDTO);
-        mapQasinoResponseFromRetrievedDataAction.perform(flowDTO);
+        countQasinoTotals.perform(flowDTO);
+        mapQasinoResponseFromDto.perform(flowDTO);
         flowDTO.prepareResponseHeaders();
         // delete 204 -> 200 otherwise no content in response body
         return ResponseEntity.status(HttpStatus.OK).headers(flowDTO.getHeaders()).body(flowDTO.getQasino());

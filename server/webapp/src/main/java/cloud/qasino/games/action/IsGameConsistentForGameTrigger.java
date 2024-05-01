@@ -8,13 +8,11 @@ import cloud.qasino.games.database.entity.Result;
 import cloud.qasino.games.database.entity.Turn;
 import cloud.qasino.games.database.entity.enums.game.GameState;
 import cloud.qasino.games.database.entity.enums.game.gamestate.GameStateGroup;
-import cloud.qasino.games.database.repository.VisitorRepository;
 import cloud.qasino.games.event.EventOutput;
 import cloud.qasino.games.statemachine.trigger.GameTrigger;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.Resource;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -35,7 +33,7 @@ public class IsGameConsistentForGameTrigger implements Action<IsGameConsistentFo
 
             case WINNER -> {
                 noError = gameShouldHaveAResult(actionDto);
-                if (noError) noError = gameShouldHaveStateInCorrectGameStateGroup(actionDto, GameStateGroup.STARTED);
+                if (noError) noError = gameShouldHaveStateInCorrectGameStateGroup(actionDto, GameStateGroup.PLAYING);
                 if (noError) noError = gameShouldHaveCardsAndTurn(actionDto);
                 break;
             }
@@ -44,12 +42,12 @@ public class IsGameConsistentForGameTrigger implements Action<IsGameConsistentFo
                 break;
             }
             case TURN -> {
-                noError = gameShouldHaveStateInCorrectGameStateGroup(actionDto, GameStateGroup.STARTED);
+                noError = gameShouldHaveStateInCorrectGameStateGroup(actionDto, GameStateGroup.PLAYING);
                 if (noError) noError = gameShouldHaveCardsAndTurn(actionDto);
                 break;
             }
             case LEAVE -> {
-                noError = gameShouldHaveStateInCorrectGameStateGroup(actionDto, GameStateGroup.STARTED);
+                noError = gameShouldHaveStateInCorrectGameStateGroup(actionDto, GameStateGroup.PLAYING);
                 if (noError) noError = gameShouldHaveCardsAndTurn(actionDto);
                 break;
             }
@@ -92,17 +90,17 @@ public class IsGameConsistentForGameTrigger implements Action<IsGameConsistentFo
         return true;
     }
     private boolean gameShouldHaveStateInCorrectGameStateGroup(Dto actionDto, GameStateGroup gameStateGroup) {
-        Set<GameState> correctGameStates = listGameStatesForGameStateGroup(gameStateGroup);
-        log.info("correctGameStates: " + correctGameStates);
-        if (!(correctGameStates.contains(actionDto.getQasinoGame().getState()))) {
+        if (!(actionDto.getQasinoGame().getState().getGroup().equals(gameStateGroup))) {
             log.info("!state");
             actionDto.setHttpStatus(422);
             actionDto.setErrorMessage(
                     "Action [" +
                             actionDto.getSuppliedGameTrigger() +
-                            "] is invalid - game state [" + actionDto.getQasinoGame().getState() + "] is not in correct game state group [" +
-                            gameStateGroup.getLabel() + "] which contains " + correctGameStates
-            );
+                            "] is invalid - game state [" +
+                            actionDto.getQasinoGame().getState() +
+                            "] is not in correct game state group [" +
+                            gameStateGroup.getLabel() + "] which contains " +
+                            GameStateGroup.listGameStatesForGameStateGroup(gameStateGroup));
             return false;
         }
         return true;
@@ -167,7 +165,7 @@ public class IsGameConsistentForGameTrigger implements Action<IsGameConsistentFo
         return true;
     }
     private boolean gameShouldHaveAResult(Dto actionDto) {
-        if (actionDto.getGameResult() == null) {
+        if (actionDto.getGameResults() == null) {
             log.info("!turn and/or cards");
             actionDto.setHttpStatus(422);
             actionDto.setErrorMessage(
@@ -190,7 +188,7 @@ public class IsGameConsistentForGameTrigger implements Action<IsGameConsistentFo
         Game getQasinoGame();
         Turn getActiveTurn();
         List<Card> getCardsInTheGameSorted();
-        Result getGameResult();
+        List<Result> getGameResults();
 
         // error setters and getters
         void setHttpStatus(int status);

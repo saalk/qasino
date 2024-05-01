@@ -39,34 +39,34 @@ public interface GameRepository extends JpaRepository<Game, Long> {
             "SELECT * FROM \"game\" a JOIN \"player\" b " +
                     "WHERE a.\"game_id\" = b.\"game_id\" " +
                     "AND b.\"visitor_id\" = :visitorId " +
-                     "AND a.\"state\" IN ('NEW','PENDING_INVITATIONS','PREPARED') ";
+                     "AND a.\"state\" IN ('INITIALIZED','PENDING_INVITATIONS','PREPARED') ";
     public final static String COUNT_NEWGAMES_BY_VISITOR_ID =
             "SELECT count(*) FROM \"game\" a JOIN \"player\" b " +
                     "WHERE a.\"game_id\" = b.\"game_id\" " +
                     "AND b.\"visitor_id\" = :visitorId " +
-                    "AND a.\"state\" IN ('NEW','PENDING_INVITATIONS','PREPARED') ";
+                    "AND a.\"state\" IN ('INITIALIZED','PENDING_INVITATIONS','PREPARED') ";
 
     public final static String FIND_STARTEDGAMES_BY_VISITOR_ID =
             "SELECT * FROM \"game\" a JOIN \"player\" b " +
                     "WHERE a.\"game_id\" = b.\"game_id\" " +
                     "AND b.\"visitor_id\" = :visitorId " +
-                    "AND a.\"state\" IN ('PLAYING') ";
+                    "AND a.\"state\" IN ('STARTED','NEXT_MOVE','NEXT_TURN') ";
     public final static String COUNT_STARTEDGAMES_BY_VISITOR_ID =
             "SELECT count(*) FROM \"game\" a JOIN \"player\" b " +
                     "WHERE a.\"game_id\" = b.\"game_id\" " +
                     "AND b.\"visitor_id\" = :visitorId " +
-                    "AND a.\"state\" IN ('PLAYING') ";
+                    "AND a.\"state\" IN ('STARTED','NEXT_MOVE','NEXT_TURN') ";
 
     public final static String FIND_FINISHEDGAMES_BY_VISITOR_ID =
             "SELECT * FROM \"game\" a JOIN \"player\" b " +
                     "WHERE a.\"game_id\" = b.\"game_id\" " +
                     "AND b.\"visitor_id\" = :visitorId " +
-                    "AND a.\"state\" IN ('FINISHED','QUIT','CANCELLED','OLD') ";
+                    "AND a.\"state\" IN ('FINISHED','QUIT','CANCELLED') ";
     public final static String COUNT_FINISHEDGAMES_BY_VISITOR_ID =
             "SELECT count(*) FROM \"game\" a JOIN \"player\" b " +
                     "WHERE a.\"game_id\" = b.\"game_id\" " +
                     "AND b.\"visitor_id\" = :visitorId " +
-                    "AND a.\"state\" IN ('FINISHED','QUIT','CANCELLED','OLD') ";
+                    "AND a.\"state\" IN ('FINISHED','QUIT','CANCELLED') ";
 
     // counts
     Integer countByLeague(League league);
@@ -123,7 +123,7 @@ public interface GameRepository extends JpaRepository<Game, Long> {
     }
 
     default String getWeek() {
-        DateTimeFormatter week = DateTimeFormatter.ofPattern("W");
+        DateTimeFormatter week = DateTimeFormatter.ofPattern("w");
         return String.valueOf(LocalDate.now().format(week));
     }
 

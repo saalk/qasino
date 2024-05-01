@@ -1,10 +1,10 @@
 package cloud.qasino.games.controller;
 
-import cloud.qasino.games.action.CalculateHallOfFameAction;
+import cloud.qasino.games.action.CountQasinoTotals;
 import cloud.qasino.games.action.FindAllEntitiesForInputAction;
 import cloud.qasino.games.action.FindVisitorIdByVisitorNameAction;
 import cloud.qasino.games.action.HandleSecuredLoanAction;
-import cloud.qasino.games.action.MapQasinoResponseFromRetrievedDataAction;
+import cloud.qasino.games.action.MapQasinoResponseFromDto;
 import cloud.qasino.games.action.SetStatusIndicatorsBaseOnRetrievedDataAction;
 import cloud.qasino.games.action.SignUpNewVisitorAction;
 import cloud.qasino.games.database.entity.Visitor;
@@ -67,9 +67,9 @@ public class QasinoController {
     @Autowired
     SetStatusIndicatorsBaseOnRetrievedDataAction setStatusIndicatorsBaseOnRetrievedDataAction;
     @Autowired
-    CalculateHallOfFameAction calculateHallOfFameAction;
+    CountQasinoTotals countQasinoTotals;
     @Autowired
-    MapQasinoResponseFromRetrievedDataAction mapQasinoResponseFromRetrievedDataAction;
+    MapQasinoResponseFromDto mapQasinoResponseFromDto;
 
     @Autowired
     public QasinoController(
@@ -104,8 +104,8 @@ public class QasinoController {
             return ResponseEntity.status(HttpStatus.valueOf(flowDTO.getHttpStatus())).headers(flowDTO.getHeaders()).build();
         }
         setStatusIndicatorsBaseOnRetrievedDataAction.perform(flowDTO);
-        calculateHallOfFameAction.perform(flowDTO);
-        mapQasinoResponseFromRetrievedDataAction.perform(flowDTO);
+        countQasinoTotals.perform(flowDTO);
+        mapQasinoResponseFromDto.perform(flowDTO);
         flowDTO.prepareResponseHeaders();
         return ResponseEntity.ok().headers(flowDTO.getHeaders()).body(flowDTO.getQasino());
     }
@@ -135,8 +135,8 @@ public class QasinoController {
             return ResponseEntity.status(HttpStatus.valueOf(flowDTO.getHttpStatus())).headers(flowDTO.getHeaders()).build();
         }
         setStatusIndicatorsBaseOnRetrievedDataAction.perform(flowDTO);
-        calculateHallOfFameAction.perform(flowDTO);
-        mapQasinoResponseFromRetrievedDataAction.perform(flowDTO);
+        countQasinoTotals.perform(flowDTO);
+        mapQasinoResponseFromDto.perform(flowDTO);
         flowDTO.prepareResponseHeaders();
         return ResponseEntity.ok().headers(flowDTO.getHeaders()).body(flowDTO.getQasino());
     }
@@ -165,8 +165,8 @@ public class QasinoController {
             return ResponseEntity.status(HttpStatus.valueOf(flowDTO.getHttpStatus())).headers(flowDTO.getHeaders()).build();
         }
         setStatusIndicatorsBaseOnRetrievedDataAction.perform(flowDTO);
-        calculateHallOfFameAction.perform(flowDTO);
-        mapQasinoResponseFromRetrievedDataAction.perform(flowDTO);
+        countQasinoTotals.perform(flowDTO);
+        mapQasinoResponseFromDto.perform(flowDTO);
         flowDTO.prepareResponseHeaders();
         return ResponseEntity.ok().headers(flowDTO.getHeaders()).body(flowDTO.getQasino());
     }
@@ -190,8 +190,8 @@ public class QasinoController {
         }
         // build response also for failure
         setStatusIndicatorsBaseOnRetrievedDataAction.perform(flowDTO);
-        calculateHallOfFameAction.perform(flowDTO);
-        mapQasinoResponseFromRetrievedDataAction.perform(flowDTO);
+        countQasinoTotals.perform(flowDTO);
+        mapQasinoResponseFromDto.perform(flowDTO);
         flowDTO.prepareResponseHeaders();
         return ResponseEntity.status(HttpStatus.valueOf(flowDTO.getHttpStatus())).headers(flowDTO.getHeaders()).body(flowDTO.getQasino());
     }
@@ -216,8 +216,8 @@ public class QasinoController {
         }
         // build response also for failure
         setStatusIndicatorsBaseOnRetrievedDataAction.perform(flowDTO);
-        calculateHallOfFameAction.perform(flowDTO);
-        mapQasinoResponseFromRetrievedDataAction.perform(flowDTO);
+        countQasinoTotals.perform(flowDTO);
+        mapQasinoResponseFromDto.perform(flowDTO);
         flowDTO.prepareResponseHeaders();
         return ResponseEntity.status(HttpStatus.valueOf(flowDTO.getHttpStatus())).headers(flowDTO.getHeaders()).body(flowDTO.getQasino());
     }

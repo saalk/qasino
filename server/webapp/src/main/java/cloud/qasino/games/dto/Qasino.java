@@ -17,24 +17,29 @@ import java.util.List;
 @AllArgsConstructor
 public class Qasino {
 
+
+    @JsonProperty("Message")
+    private String action;
+    @JsonProperty("ShowMessage")
+    private boolean actionNeeded;
+
     @JsonProperty("NavBarItems")
     private List<NavigationBarItem> navBarItems;
-
 
     @JsonProperty("You")
     private PageVisitor pageVisitor;
 
     @JsonProperty("GameConfigurator")
-    private PageGameConfigurator pageGameConfigurator;
+    private PageGameSetup pageGameSetup;
 
     @JsonProperty("GamePlay")
     private PageGamePlay pageGamePlay;
 
     @JsonProperty("PendingGames")
-    private PagePendingGames pagePendingGames;
+    private PageGameInvitations pageGameInvitations;
 
     @JsonProperty("Leagues")
-    private PageLeagues pageLeagues;
+    private PageLeague pageLeague;
 
     // extra
     @JsonProperty("Enums")

@@ -77,7 +77,7 @@ public class MapTableFromRetrievedDataAction implements Action<MapTableFromRetri
             seat.setSeatCurrentBet(player.getFiches());
             seat.setSeatPlayerAvatar(player.getAvatar());
             seat.setSeatPlayerAiLevel(player.getAiLevel());
-            // player cards
+            // player cards and moves
             List<Card> hand = player.getCards();
             List<String> handStrings =
                     hand.stream().map(Card::getRankSuit).collect(Collectors.toList());

@@ -6,11 +6,9 @@ import cloud.qasino.games.database.entity.CardMove;
 import cloud.qasino.games.database.entity.Game;
 import cloud.qasino.games.database.entity.Player;
 import cloud.qasino.games.database.entity.Result;
-import cloud.qasino.games.database.entity.Turn;
 import cloud.qasino.games.database.entity.Visitor;
 import cloud.qasino.games.database.repository.CardMoveRepository;
 import cloud.qasino.games.database.repository.CardRepository;
-import cloud.qasino.games.database.repository.PlayerRepository;
 import cloud.qasino.games.database.repository.ResultsRepository;
 import cloud.qasino.games.database.repository.VisitorRepository;
 import cloud.qasino.games.database.service.PlayService;
@@ -80,6 +78,7 @@ public class CalculateAndFinishGame implements Action<CalculateAndFinishGame.Dto
                     won
             ));
         }
+        actionDto.setGameResults(resultsRepository.findAllByGame(actionDto.getQasinoGame()));
         return EventOutput.Result.SUCCESS;
     }
 
@@ -109,6 +108,9 @@ public class CalculateAndFinishGame implements Action<CalculateAndFinishGame.Dto
         List<CardMove> getAllCardMovesForTheGame();
         Game getQasinoGame();
         Visitor getQasinoVisitor();
+
+        // Setters
+        void setGameResults(List<Result> results);
 
         // error setters
         void setHttpStatus(int status);

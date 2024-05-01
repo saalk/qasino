@@ -1,5 +1,6 @@
 package cloud.qasino.games.database.repository;
 
+import cloud.qasino.games.database.entity.Game;
 import cloud.qasino.games.database.entity.Result;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -28,4 +29,5 @@ public interface ResultsRepository extends JpaRepository<Result, Long> {
             @Param("leagueId") long leagueId,
             Pageable pageable);
 
+    public List<Result> findAllByGame(Game game);
 }

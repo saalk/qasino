@@ -5,29 +5,37 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
+import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
 public enum GameStateGroup {
-    SETUP("setup"), PREPARED("prepared"), STARTED("started"), FINISHED("finished"), ERROR("error");
+    SETUP("setup"),
+    PREPARED("prepared"),
+    PLAYING("started"),
+    FINISHED("finished"),
+    ERROR("error");
 
     private String label;
 
     public static Map<String, GameStateGroup> lookup
             = new HashMap<>();
 
+    public static final Map<String, GameStateGroup> gameStateGroupMapNoError
+            = new HashMap<>();
+    static {
+        for(GameStateGroup gameStateGroup : EnumSet.allOf(GameStateGroup.class))
+            if (!gameStateGroup.getLabel().toLowerCase().equals("error"))
+                gameStateGroupMapNoError.put(gameStateGroup.getLabel(), gameStateGroup);
+    }
 
     public static GameStateGroup fromLabel(String inputLabel) {
         return lookup.get(inputLabel.toLowerCase());
-    }
-
-    public static GameStateGroup fromLabel(char character) {
-        return fromLabel(Character.toString(character));
     }
 
     public static GameStateGroup fromLabelWithDefault(String label) {
@@ -36,24 +44,17 @@ public enum GameStateGroup {
         return gameStateGroup;
     }
 
-    public static GameStateGroup fromLabelWithDefault(char character) {
-        return fromLabelWithDefault(Character.toString(character));
+    public  static List<GameState> listGameStatesForGameStateGroup(GameStateGroup gameStateGroup) {
+        return GameState.fromGroupWithDefault(gameStateGroup);
     }
 
-    public  static Set<GameState> listGameStatesForGameStateGroup(GameStateGroup gameStateGroup) {
-        //  todo loop gamestate group
-        switch (gameStateGroup) {
-            case SETUP:
-                return GameState.setupGameStates;
-            case PREPARED:
-                return GameState.preparedGameStates;
-            case STARTED:
-                return GameState.highlowGameStates;
-            case FINISHED:
-                return GameState.finishedGameStates;
-            default:
-                return GameState.cardGamesError;
+    public  static String[] listGameStatesStringsForGameStateGroup(GameStateGroup gameStateGroup) {
+        List<GameState> gameStateList = GameState.fromGroupWithDefault(gameStateGroup);
+        List<String> list = new ArrayList<>();
+        for (GameState gameState : gameStateList) {
+            list.add(gameState.getLabel());
         }
+        return list.toArray(String[]::new);
     }
 }
 

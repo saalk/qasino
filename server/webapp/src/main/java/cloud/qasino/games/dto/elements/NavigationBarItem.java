@@ -12,10 +12,9 @@ import lombok.Setter;
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class NavigationBarItem {
 
-    private boolean isVisible;
+    private boolean itemVisible;
     private String itemName;
     private String itemStats;
-    private boolean actionNeeded; // todo
 
 }
 

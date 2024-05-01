@@ -1,12 +1,12 @@
 package cloud.qasino.games.controller;
 
-import cloud.qasino.games.action.CalculateHallOfFameAction;
+import cloud.qasino.games.action.CountQasinoTotals;
 import cloud.qasino.games.action.FindAllEntitiesForInputAction;
 import cloud.qasino.games.action.IsGameConsistentForGameTrigger;
 import cloud.qasino.games.action.IsGameFinished;
 import cloud.qasino.games.action.IsTurnConsistentForTurnTrigger;
 import cloud.qasino.games.action.MakeGamePlayableForGameType;
-import cloud.qasino.games.action.MapQasinoResponseFromRetrievedDataAction;
+import cloud.qasino.games.action.MapQasinoResponseFromDto;
 import cloud.qasino.games.action.MapTableFromRetrievedDataAction;
 import cloud.qasino.games.action.PlayNextTurnAndCardMovesForHuman;
 import cloud.qasino.games.action.CalculateAndFinishGame;
@@ -53,9 +53,9 @@ public class PlayContoller {
     @Autowired
     SetStatusIndicatorsBaseOnRetrievedDataAction setStatusIndicatorsBaseOnRetrievedDataAction;
     @Autowired
-    CalculateHallOfFameAction calculateHallOfFameAction;
+    CountQasinoTotals countQasinoTotals;
     @Autowired
-    MapQasinoResponseFromRetrievedDataAction mapQasinoResponseFromRetrievedDataAction;
+    MapQasinoResponseFromDto mapQasinoResponseFromDto;
     @Autowired
     MapTableFromRetrievedDataAction mapTableFromRetrievedDataAction;
     @Autowired
@@ -120,8 +120,8 @@ public class PlayContoller {
         }
         mapTableFromRetrievedDataAction.perform(flowDTO);
         setStatusIndicatorsBaseOnRetrievedDataAction.perform(flowDTO);
-        calculateHallOfFameAction.perform(flowDTO);
-        mapQasinoResponseFromRetrievedDataAction.perform(flowDTO);
+        countQasinoTotals.perform(flowDTO);
+        mapQasinoResponseFromDto.perform(flowDTO);
         flowDTO.prepareResponseHeaders();
         return ResponseEntity.status(HttpStatus.valueOf(201)).headers(flowDTO.getHeaders()).body(flowDTO.getQasino());
     }
@@ -178,8 +178,8 @@ public class PlayContoller {
         }
         mapTableFromRetrievedDataAction.perform(flowDTO);
         setStatusIndicatorsBaseOnRetrievedDataAction.perform(flowDTO);
-        calculateHallOfFameAction.perform(flowDTO);
-        mapQasinoResponseFromRetrievedDataAction.perform(flowDTO);
+        countQasinoTotals.perform(flowDTO);
+        mapQasinoResponseFromDto.perform(flowDTO);
         flowDTO.prepareResponseHeaders();
         return ResponseEntity.status(HttpStatus.valueOf(201)).headers(flowDTO.getHeaders()).body(flowDTO.getQasino());
     }
