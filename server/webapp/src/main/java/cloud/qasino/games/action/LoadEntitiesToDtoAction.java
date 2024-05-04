@@ -187,14 +187,15 @@ public class LoadEntitiesToDtoAction implements Action<LoadEntitiesToDtoAction.D
             actionDto.setCardsInTheGameSorted(cardRepository.findByGameOrderBySequenceAsc(actionDto.getQasinoGame()));
             actionDto.setActiveTurn(foundGame.get().getTurn());
             if (actionDto.getActiveTurn() != null) {
-                actionDto.setSuppliedTurnPlayerId(actionDto.getActiveTurn().getActivePlayerId());
+//                actionDto.setSuppliedTurnPlayerId(actionDto.getActiveTurn().getActivePlayerId());
                 actionDto.setAllCardMovesForTheGame(foundGame.get().getTurn().getCardMoves());
             } else {
-                actionDto.setSuppliedTurnPlayerId(
-                        actionDto.getQasinoGamePlayers()
-                                .stream()
-                                .filter(p -> p.getSeat() == 1)
-                                .findFirst().get().getPlayerId());
+                // TODO check if this is needed
+//                actionDto.setSuppliedTurnPlayerId(
+//                        actionDto.getQasinoGamePlayers()
+//                                .stream()
+//                                .filter(p -> p.getSeat() == 1)
+//                                .findFirst().get().getPlayerId());
             }
         } else {
             setNotFoundErrorMessage(actionDto, "gameId", String.valueOf(id), "Game");

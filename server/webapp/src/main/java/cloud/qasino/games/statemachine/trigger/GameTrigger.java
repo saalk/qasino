@@ -20,7 +20,7 @@ public enum GameTrigger {
     PREPARE("prepare"),    // do some updates and validate if playable
 
     // START
-    PLAY("play"),       // deck, ante and a player is needed
+    PLAY("play"),       // add cards to the game
 
     // START
     TURN("turn"),       // move some cards
