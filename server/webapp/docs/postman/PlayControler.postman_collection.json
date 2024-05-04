@@ -8,7 +8,45 @@
 	},
 	"item": [
 		{
-			"name": "UsersGamesPlayers-C1",
+			"name": "game/{gameId}/play",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const jsonData = pm.response.json();\r",
+							"pm.test(\"Successful POST request for signup should be returned\", () => {\r",
+							"  pm.expect(pm.response.code).to.be.oneOf([200, 201]);\r",
+							"});\r",
+							"pm.test(\"Body should return with NavBarItems property\", () => {\r",
+							"  pm.expect(jsonData).to.have.property('NavBarItems');\r",
+							"});\r",
+							"pm.test(\"Header should contain the vistorId\", () => {\r",
+							"    pm.response.to.have.header(\"visitorId\");\r",
+							"});\r",
+							"pm.test(\"Header should contain the gameId\", () => {\r",
+							"    pm.response.to.have.header(\"gameId\");\r",
+							"});\r",
+							"pm.test(\"Header should contain the turnPlayerId\", () => {\r",
+							"    pm.response.to.have.header(\"turnPlayerId\");\r",
+							"});\r",
+							"\r",
+							"// store all the ids in the header\r",
+							"pm.test( \"visitorId is \" + pm.response.headers.get(\"visitorId\").split(\"=\"), () => {\r",
+							"    pm.environment.set(\"visitorId\", pm.response.headers.get(\"visitorId\").split(\"=\"));\r",
+							"});\r",
+							"pm.test( \"turnPlayerId is \" + pm.response.headers.get(\"turnPlayerId\").split(\"=\"), () => {\r",
+							"    pm.environment.set(\"turnPlayerId\", pm.response.headers.get(\"turnPlayerId\").split(\"=\"));\r",
+							"});\r",
+							"pm.test( \"gameId is \" + pm.response.headers.get(\"gameId\").split(\"=\"), () => {\r",
+							"    pm.environment.set(\"gameId\", pm.response.headers.get(\"gameId\").split(\"=\"));\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
 			"request": {
 				"method": "POST",
 				"header": [
@@ -16,42 +54,58 @@
 						"key": "Content-Type",
 						"type": "text",
 						"value": "application/json"
+					},
+					{
+						"key": "visitorId",
+						"value": "{{visitorId}}",
+						"type": "text"
 					}
 				],
 				"url": {
-					"raw": "{{url}}/qasino/users/1/games/HIGHLOW/players/DUMB?ante=20&style=a&avatar=ELF",
+					"raw": "{{host}}/game/{{gameId}}/play",
 					"host": [
-						"{{url}}"
+						"{{host}}"
 					],
 					"path": [
-						"qasino",
-						"users",
-						"1",
-						"games",
-						"HIGHLOW",
-						"players",
-						"DUMB"
-					],
-					"query": [
-						{
-							"key": "ante",
-							"value": "20"
-						},
-						{
-							"key": "style",
-							"value": "a"
-						},
-						{
-							"key": "avatar",
-							"value": "ELF"
-						}
+						"game",
+						"{{gameId}}",
+						"play"
 					]
 				}
 			},
 			"response": []
 		},
 		{
-			"name": "Games-C-1",
+			"name": "/game/{gameId}/stop",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const jsonData = pm.response.json();\r",
+							"pm.test(\"Successful POST request for signup should be returned\", () => {\r",
+							"  pm.expect(pm.response.code).to.be.oneOf([200, 201]);\r",
+							"});\r",
+							"pm.test(\"Body should return with NavBarItems property\", () => {\r",
+							"  pm.expect(jsonData).to.have.property('NavBarItems');\r",
+							"});\r",
+							"pm.test(\"Header should contain the gameId\", () => {\r",
+							"    pm.response.to.have.header(\"gameId\");\r",
+							"});\r",
+							"\r",
+							"// store all the ids in the header\r",
+							"pm.test( \"gameId is \" + pm.response.headers.get(\"gameId\").split(\"=\"), () => {\r",
+							"    pm.environment.set(\"gameId\", pm.response.headers.get(\"gameId\").split(\"=\"));\r",
+							"});\r",
+							"// pm.test( pm.response.headers.get(\"leagueId\").split(\"=\"), () => {\r",
+							"//     pm.environment.set(\"leagueId\", pm.response.headers.get(\"leagueId\").split(\"=\"));\r",
+							"// });"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
 			"request": {
 				"method": "POST",
 				"header": [
@@ -59,34 +113,64 @@
 						"key": "Content-Type",
 						"type": "text",
 						"value": "application/json"
+					},
+					{
+						"key": "visitorId",
+						"value": "{{visitorId}}",
+						"type": "text"
 					}
 				],
 				"url": {
-					"raw": "{{url}}/qasino/games/HIGHLOW?style=qwe&ante=30",
+					"raw": "{{host}}/game/{{gameId}}/stop",
 					"host": [
-						"{{url}}"
+						"{{host}}"
 					],
 					"path": [
-						"qasino",
-						"games",
-						"HIGHLOW"
-					],
-					"query": [
-						{
-							"key": "style",
-							"value": "qwe"
-						},
-						{
-							"key": "ante",
-							"value": "30"
-						}
+						"game",
+						"{{gameId}}",
+						"stop"
 					]
 				}
 			},
 			"response": []
 		},
 		{
-			"name": "PlayersGames-C-",
+			"name": "/game/{gameId}/turn/higher",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const xmlData = pm.response.text();\r",
+							"pm.test(\"Successful POST request for signup should be returned\", () => {\r",
+							"  pm.expect(pm.response.code).to.be.oneOf([200, 201]);\r",
+							"});\r",
+							"pm.test(\"Body should return with NavBarItems property\", () => {\r",
+							"  pm.expect(xmlData).to.include('NavBarItems');\r",
+							"});\r",
+							"pm.test(\"Header should contain the turnPlayerId\", () => {\r",
+							"    pm.response.to.have.header(\"turnPlayerId\");\r",
+							"});\r",
+							"pm.test(\"Header should contain the gameId\", () => {\r",
+							"    pm.response.to.have.header(\"gameId\");\r",
+							"});\r",
+							"\r",
+							"// store all the ids in the header\r",
+							"pm.test( \"turnPlayerId is \" + pm.response.headers.get(\"turnPlayerId\").split(\"=\"), () => {\r",
+							"    pm.environment.set(\"turnPlayerId\", pm.response.headers.get(\"turnPlayerId\").split(\"=\"));\r",
+							"});\r",
+							"pm.test( \"gameId is \" + pm.response.headers.get(\"gameId\").split(\"=\"), () => {\r",
+							"    pm.environment.set(\"gameId\", pm.response.headers.get(\"gameId\").split(\"=\"));\r",
+							"});\r",
+							"// pm.test( pm.response.headers.get(\"leagueId\").split(\"=\"), () => {\r",
+							"//     pm.environment.set(\"leagueId\", pm.response.headers.get(\"leagueId\").split(\"=\"));\r",
+							"// });"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
 			"request": {
 				"method": "POST",
 				"header": [
@@ -94,25 +178,70 @@
 						"key": "Content-Type",
 						"type": "text",
 						"value": "application/json"
+					},
+					{
+						"key": "turnPlayerId",
+						"value": "{{turnPlayerId}}",
+						"type": "text"
+					},
+					{
+						"key": "visitorId",
+						"value": "{{visitorId}}",
+						"type": "text"
 					}
 				],
 				"url": {
-					"raw": "{{url}}/qasino/players/games/5",
+					"raw": "{{host}}/game/{{gameId}}/turn/{{turnTriggerHigher}}",
 					"host": [
-						"{{url}}"
+						"{{host}}"
 					],
 					"path": [
-						"qasino",
-						"players",
-						"games",
-						"5"
+						"game",
+						"{{gameId}}",
+						"turn",
+						"{{turnTriggerHigher}}"
 					]
 				}
 			},
 			"response": []
 		},
 		{
-			"name": "PlayersGamesUsers-C-1",
+			"name": "/game/{gameId}/turn/lower",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const jsonData = pm.response.json();\r",
+							"pm.test(\"Successful POST request for signup should be returned\", () => {\r",
+							"  pm.expect(pm.response.code).to.be.oneOf([200, 201]);\r",
+							"});\r",
+							"pm.test(\"Body should return with NavBarItems property\", () => {\r",
+							"  pm.expect(jsonData).to.have.property('NavBarItems');\r",
+							"});\r",
+							"pm.test(\"Header should contain the turnPlayerId\", () => {\r",
+							"    pm.response.to.have.header(\"turnPlayerId\");\r",
+							"});\r",
+							"pm.test(\"Header should contain the gameId\", () => {\r",
+							"    pm.response.to.have.header(\"gameId\");\r",
+							"});\r",
+							"\r",
+							"// store all the ids in the header\r",
+							"pm.test( \"turnPlayerId is \" + pm.response.headers.get(\"turnPlayerId\").split(\"=\"), () => {\r",
+							"    pm.environment.set(\"turnPlayerId\", pm.response.headers.get(\"turnPlayerId\").split(\"=\"));\r",
+							"});\r",
+							"pm.test( \"gameId is \" + pm.response.headers.get(\"gameId\").split(\"=\"), () => {\r",
+							"    pm.environment.set(\"gameId\", pm.response.headers.get(\"gameId\").split(\"=\"));\r",
+							"});\r",
+							"// pm.test( pm.response.headers.get(\"leagueId\").split(\"=\"), () => {\r",
+							"//     pm.environment.set(\"leagueId\", pm.response.headers.get(\"leagueId\").split(\"=\"));\r",
+							"// });"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
 			"request": {
 				"method": "POST",
 				"header": [
@@ -120,27 +249,160 @@
 						"key": "Content-Type",
 						"type": "text",
 						"value": "application/json"
+					},
+					{
+						"key": "turnPlayerId",
+						"value": "{{turnPlayerId}}",
+						"type": "text"
+					},
+					{
+						"key": "visitorId",
+						"value": "{{visitorId}}",
+						"type": "text"
 					}
 				],
 				"url": {
-					"raw": "{{url}}/qasino/players/MEDIUM/games/5/users/1?avatar=ELF",
+					"raw": "{{host}}/game/{{gameId}}/turn/{{turnTriggerLower}}",
 					"host": [
-						"{{url}}"
+						"{{host}}"
 					],
 					"path": [
-						"qasino",
-						"players",
-						"MEDIUM",
-						"games",
-						"5",
-						"users",
-						"1"
+						"game",
+						"{{gameId}}",
+						"turn",
+						"{{turnTriggerLower}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/game/{gameId}/turn/pass",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const jsonData = pm.response.json();\r",
+							"pm.test(\"Successful POST request for signup should be returned\", () => {\r",
+							"  pm.expect(pm.response.code).to.be.oneOf([200, 201]);\r",
+							"});\r",
+							"pm.test(\"Body should return with NavBarItems property\", () => {\r",
+							"  pm.expect(jsonData).to.have.property('NavBarItems');\r",
+							"});\r",
+							"pm.test(\"Header should contain the turnPlayerId\", () => {\r",
+							"    pm.response.to.have.header(\"turnPlayerId\");\r",
+							"});\r",
+							"pm.test(\"Header should contain the gameId\", () => {\r",
+							"    pm.response.to.have.header(\"gameId\");\r",
+							"});\r",
+							"\r",
+							"// store all the ids in the header\r",
+							"pm.test( \"turnPlayerId is \" + pm.response.headers.get(\"turnPlayerId\").split(\"=\"), () => {\r",
+							"    pm.environment.set(\"turnPlayerId\", pm.response.headers.get(\"turnPlayerId\").split(\"=\"));\r",
+							"});\r",
+							"pm.test( \"gameId is \" + pm.response.headers.get(\"gameId\").split(\"=\"), () => {\r",
+							"    pm.environment.set(\"gameId\", pm.response.headers.get(\"gameId\").split(\"=\"));\r",
+							"});\r",
+							"// pm.test( pm.response.headers.get(\"leagueId\").split(\"=\"), () => {\r",
+							"//     pm.environment.set(\"leagueId\", pm.response.headers.get(\"leagueId\").split(\"=\"));\r",
+							"// });"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					},
+					{
+						"key": "turnPlayerId",
+						"value": "{{turnPlayerId}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{host}}/game/{{gameId}}/turn/{{turnTriggerPass}}",
+					"host": [
+						"{{host}}"
 					],
-					"query": [
-						{
-							"key": "avatar",
-							"value": "ELF"
-						}
+					"path": [
+						"game",
+						"{{gameId}}",
+						"turn",
+						"{{turnTriggerPass}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/game/{gameId}/turn/next",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const jsonData = pm.response.json();\r",
+							"pm.test(\"Successful POST request for signup should be returned\", () => {\r",
+							"  pm.expect(pm.response.code).to.be.oneOf([200, 201]);\r",
+							"});\r",
+							"pm.test(\"Body should return with NavBarItems property\", () => {\r",
+							"  pm.expect(jsonData).to.have.property('NavBarItems');\r",
+							"});\r",
+							"pm.test(\"Header should contain the turnPlayerId\", () => {\r",
+							"    pm.response.to.have.header(\"turnPlayerId\");\r",
+							"});\r",
+							"pm.test(\"Header should contain the gameId\", () => {\r",
+							"    pm.response.to.have.header(\"gameId\");\r",
+							"});\r",
+							"\r",
+							"// store all the ids in the header\r",
+							"pm.test( \"turnPlayerId is \" + pm.response.headers.get(\"turnPlayerId\").split(\"=\"), () => {\r",
+							"    pm.environment.set(\"turnPlayerId\", pm.response.headers.get(\"turnPlayerId\").split(\"=\"));\r",
+							"});\r",
+							"pm.test( \"gameId is \" + pm.response.headers.get(\"gameId\").split(\"=\"), () => {\r",
+							"    pm.environment.set(\"gameId\", pm.response.headers.get(\"gameId\").split(\"=\"));\r",
+							"});\r",
+							"// pm.test( pm.response.headers.get(\"leagueId\").split(\"=\"), () => {\r",
+							"//     pm.environment.set(\"leagueId\", pm.response.headers.get(\"leagueId\").split(\"=\"));\r",
+							"// });"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					},
+					{
+						"key": "turnPlayerId",
+						"value": "{{turnPlayerId}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{host}}/game/{{gameId}}/turn/{{turnTriggerNext}}",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"game",
+						"{{gameId}}",
+						"turn",
+						"{{turnTriggerNext}}"
 					]
 				}
 			},

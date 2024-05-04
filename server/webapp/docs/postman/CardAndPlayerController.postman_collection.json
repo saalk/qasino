@@ -1,12 +1,62 @@
 {
 	"info": {
 		"_postman_id": "4982f548-598e-413d-9192-475ddfe3c99b",
-		"name": "PlayerController",
+		"name": "CardAndPlayerController",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
 		"_exporter_id": "439257",
 		"_collection_link": "https://qasino.postman.co/workspace/Qasino~4634f2dd-4487-4c9b-9d29-607ac0ed86c8/collection/439257-4982f548-598e-413d-9192-475ddfe3c99b?action=share&source=collection_link&creator=439257"
 	},
 	"item": [
+		{
+			"name": "Playingcard-D",
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"url": {
+					"raw": "{{url}}/qasino/playingcards/5",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"qasino",
+						"playingcards",
+						"5"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Playingcard-R image",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"url": {
+					"raw": "{{url}}/qasino/playingcards/image",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"qasino",
+						"playingcards",
+						"image"
+					]
+				}
+			},
+			"response": []
+		},
 		{
 			"name": "PlayersGames-L",
 			"request": {

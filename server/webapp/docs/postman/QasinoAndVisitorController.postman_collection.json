@@ -433,9 +433,9 @@
 							"// });\r",
 							"\r",
 							"// store all the ids in the header\r",
-							"pm.test( pm.response.headers.get(\"visitorId\").split(\"=\"), () => {\r",
-							"    pm.environment.set(\"visitorId\", pm.response.headers.get(\"visitorId\").split(\"=\"));\r",
-							"});\r",
+							"// pm.test( pm.response.headers.get(\"visitorId\").split(\"=\"), () => {\r",
+							"//     pm.environment.set(\"visitorId\", pm.response.headers.get(\"visitorId\").split(\"=\"));\r",
+							"// });\r",
 							"// pm.test( pm.response.headers.get(\"gameId\").split(\"=\"), () => {\r",
 							"//     pm.environment.set(\"gameId\", pm.response.headers.get(\"gameId\").split(\"=\"));\r",
 							"// });\r",
@@ -501,7 +501,13 @@
 			],
 			"request": {
 				"method": "GET",
-				"header": [],
+				"header": [
+					{
+						"key": "visitorId",
+						"value": "{{visitorId}}",
+						"type": "text"
+					}
+				],
 				"url": {
 					"raw": "{{host}}/paging/visitors?pageNumber={{pageNumber}}&pageSize={{pageSize}}",
 					"host": [
