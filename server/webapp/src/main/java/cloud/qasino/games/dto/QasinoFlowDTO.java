@@ -1,21 +1,25 @@
 package cloud.qasino.games.dto;
 
-import cloud.qasino.games.action.CalculateAndFinishGame;
-import cloud.qasino.games.action.CountQasinoTotals;
+import cloud.qasino.games.action.CalculateAndFinishGameAction;
+import cloud.qasino.games.action.CalculateQasinoStatistics;
+import cloud.qasino.games.action.CreateNewGameAction;
 import cloud.qasino.games.action.CreateNewLeagueAction;
-import cloud.qasino.games.action.FindAllEntitiesForInputAction;
+import cloud.qasino.games.action.IsPlayerHuman;
+import cloud.qasino.games.action.LoadEntitiesToDtoAction;
 import cloud.qasino.games.action.FindVisitorIdByVisitorNameAction;
 import cloud.qasino.games.action.HandleSecuredLoanAction;
 import cloud.qasino.games.action.IsGameConsistentForGameTrigger;
 import cloud.qasino.games.action.IsGameFinished;
 import cloud.qasino.games.action.IsTurnConsistentForTurnTrigger;
-import cloud.qasino.games.action.MakeGamePlayableForGameType;
+import cloud.qasino.games.action.PlayGameForType;
 import cloud.qasino.games.action.MapQasinoResponseFromDto;
-import cloud.qasino.games.action.MapTableFromRetrievedDataAction;
-import cloud.qasino.games.action.PlayFirstTurnAndInitialCardMovesForGameType;
-import cloud.qasino.games.action.PlayNextTurnAndCardMovesForHuman;
+import cloud.qasino.games.action.MapQasinoGameTableFromDto;
+import cloud.qasino.games.action.PlayFirstTurnAction;
+import cloud.qasino.games.action.PlayNextHumanTurnAction;
+import cloud.qasino.games.action.PrepareGameAction;
 import cloud.qasino.games.action.SetStatusIndicatorsBaseOnRetrievedDataAction;
 import cloud.qasino.games.action.SignUpNewVisitorAction;
+import cloud.qasino.games.action.StopGameAction;
 import cloud.qasino.games.action.UpdateFichesForPlayer;
 import cloud.qasino.games.database.entity.Card;
 import cloud.qasino.games.database.entity.CardMove;
@@ -58,23 +62,27 @@ import java.util.Map;
 @Slf4j
 public class QasinoFlowDTO //extends AbstractFlowDTO
         implements
-        FindVisitorIdByVisitorNameAction.FindVisitorIdByVisitorNameActionDTO,
+        FindVisitorIdByVisitorNameAction.Dto,
         SignUpNewVisitorAction.SignUpNewVisitorActionDTO,
-        CreateNewLeagueAction.CreateNewLeagueActionDTO,
-        FindAllEntitiesForInputAction.Dto,
-        CountQasinoTotals.Dto,
-        HandleSecuredLoanAction.HandleSecuredLoanActionDTO,
+        CreateNewLeagueAction.Dto,
+        LoadEntitiesToDtoAction.Dto,
+        CalculateQasinoStatistics.Dto,
+        HandleSecuredLoanAction.Dto,
         SetStatusIndicatorsBaseOnRetrievedDataAction.SetStatusIndicatorsBaseOnRetrievedDataDTO,
         MapQasinoResponseFromDto.Dto,
-        MapTableFromRetrievedDataAction.Dto,
-        PlayNextTurnAndCardMovesForHuman.Dto,
+        MapQasinoGameTableFromDto.Dto,
+        PlayNextHumanTurnAction.Dto,
         IsGameConsistentForGameTrigger.Dto,
         IsTurnConsistentForTurnTrigger.Dto,
-        CalculateAndFinishGame.Dto,
+        CalculateAndFinishGameAction.Dto,
         UpdateFichesForPlayer.Dto,
         IsGameFinished.Dto,
-        MakeGamePlayableForGameType.Dto,
-        PlayFirstTurnAndInitialCardMovesForGameType.Dto {
+        PlayGameForType.Dto,
+        CreateNewGameAction.Dto,
+        PrepareGameAction.Dto,
+        StopGameAction.Dto,
+        IsPlayerHuman.Dto,
+        PlayFirstTurnAction.Dto {
     // suppress lombok setter for these fixed values
     @Setter(AccessLevel.NONE)
     private String applicationName = "qasino";
@@ -161,43 +169,55 @@ public class QasinoFlowDTO //extends AbstractFlowDTO
     public boolean showGameInvitationsPage;
     public boolean showLeaguesPage;
 
-    // MESSAGE AND  DATA
+    // MESSAGE AND ERROR DATA
     private String action;
     private boolean actionNeeded;
 
+    // EXCEPTION - - TODO move out of DTO
+    // 400 bad request "malformed entity syntax" - eg null, zero, not numeric or invalid enum
+    // 404 not found "unknown id" - eg id not in db
+    // 409 conflict "update sent at the wrong time" eg state not valid now/anymore
+    // 422 unprocessable "unable to process action" eg event not in correct order
+    // @formatter:off
+    @Setter(AccessLevel.NONE)
     private int httpStatus = 200;
     private String errorKey = "Key";
     private String errorValue = "Value";
-    private String errorMessage = "No error";
-    private HttpHeaders headers = new HttpHeaders();
+    @Setter(AccessLevel.NONE)
+    private String errorMessage = "";
+    @Setter(AccessLevel.NONE)
+    private String errorReason = "";
+    public void setBadRequestErrorMessage(String problem) {
+        this.errorMessage = "Supplied value for [" + this.errorKey + "] is [" + problem + "]";
+        this.httpStatus = 400;
+    }
+    public void setNotFoundErrorMessage(String problem) {
+        String defaultProblem = problem.isEmpty() ? "not found" : problem;
+        this.errorMessage = "Supplied value for [" + this.errorKey + "] is [" + defaultProblem + "]";
+        this.httpStatus = 400;
+    }
+    public void setConflictErrorMessage(String reason) {
+        String defaultReason = reason.isEmpty() ? "Reason cannot be given" : reason;
+        this.errorMessage = this.errorKey + " [" + this.errorValue + "] not valid now/anymore";
+        this.errorReason = defaultReason;
+        this.httpStatus = 409;
+    }
+    public void setUnprocessableErrorMessage(String reason) {
+        String defaultReason = reason.isEmpty() ? "Reason cannot be given" : reason;
+        this.errorMessage = this.errorKey + " [" + this.errorValue + "] cannot be processed";
+        this.errorReason = defaultReason;
+        this.httpStatus = 422;
+    }
+    // @formatter:on
 
+    // RESPONSE DATA
+    // @formatter:off
+    private HttpHeaders headers = new HttpHeaders();
+    private Object payloadData;
+    private URI uri;
     public void addKeyValueToHeader(String key, String value) {
         this.headers.add(key, value);
     }
-
-    // todo PROCESS AND VALIDATE INPUT
-    private Map<String, String> pathVariables = new HashMap<>();
-
-    public void setPathVariables(String... pathVariables) {
-        if (pathVariables == null) return;
-        if (pathVariables.length % 2 != 0) return;
-        for (int i = 0; i < pathVariables.length; i = i + 2) {
-            this.pathVariables.put(pathVariables[i], pathVariables[i + 1]);
-        }
-    }
-
-    private Map<String, String> requestParams = new HashMap<>();
-    private Object payloadData;
-    private URI uri;
-
-    public boolean validateInput() {
-        if (!validatePathVariables(this.pathVariables)
-                | !validateRequestParams(this.requestParams)) {
-            return false;
-        }
-        return true;
-    }
-
     public void prepareResponseHeaders() {
         this.uri = ServletUriComponentsBuilder.fromCurrentRequest()
                 .path("")
@@ -223,9 +243,37 @@ public class QasinoFlowDTO //extends AbstractFlowDTO
             // also add error to header
             addKeyValueToHeader(this.getErrorKey(), this.getErrorValue());
             addKeyValueToHeader("Error", this.getErrorMessage());
+            if (!this.errorReason.isEmpty()) {
+                // also add error to header
+                addKeyValueToHeader("Reason", this.getErrorReason());
+            }
+        }
+
+    }
+    // @formatter:on
+
+    // INPUT
+    @Setter(AccessLevel.NONE)
+    private Map<String, String> pathVariables = new HashMap<>();
+    private Map<String, String> requestParams = new HashMap<>();
+
+    public void setPathVariables(String... pathVariables) {
+        if (pathVariables == null) return;
+        if (pathVariables.length % 2 != 0) return;
+        for (int i = 0; i < pathVariables.length; i = i + 2) {
+            this.pathVariables.put(pathVariables[i], pathVariables[i + 1]);
         }
     }
 
+    // VALIDATE INPUT - TODO move out of DTO
+    // @formatter:off
+    public boolean validateInput() {
+        if (!validatePathVariables(this.pathVariables)
+                | !validateRequestParams(this.requestParams)) {
+            return false;
+        }
+        return true;
+    }
     boolean validatePathVariables(Map<String, String> pathVariables) {
         String key;
         String dataName = "pathVariables";
@@ -289,7 +337,6 @@ public class QasinoFlowDTO //extends AbstractFlowDTO
         return validateRequestParams(pathVariables);
 
     }
-
     boolean validateRequestParams(Map<String, String> requestParam) {
 
         String key;
@@ -304,10 +351,9 @@ public class QasinoFlowDTO //extends AbstractFlowDTO
         if (requestParam.containsKey(key)) {
             if (isValueForIntKeyValid(key, requestParam.get(key), dataName, paramDataString)) {
                 if (Integer.parseInt(requestParam.get(key)) < 1) {
-                    this.setHttpStatus(400);
                     this.setErrorKey(key);
                     this.setErrorValue(errorValue);
-                    this.setErrorMessage("Value for [" + key + "] is less than 1");
+                    setBadRequestErrorMessage("Less than 1");
                     return false;
                 }
                 this.suppliedPage = Integer.parseInt(requestParam.get(key));
@@ -435,6 +481,12 @@ public class QasinoFlowDTO //extends AbstractFlowDTO
         key = "ante";
         if (requestParam.containsKey(key)) {
             if (isValueForIntKeyValid(key, requestParam.get(key), dataName, paramDataString)) {
+                if (Integer.parseInt(requestParam.get(key)) == 0) {
+                    this.setErrorKey(key);
+                    this.setErrorValue(requestParam.get(key));
+                    setBadRequestErrorMessage("Zero");
+                    return false;
+                }
                 this.suppliedAnte = Integer.parseInt(requestParam.get(key));
             } else {
                 return false;
@@ -484,42 +536,32 @@ public class QasinoFlowDTO //extends AbstractFlowDTO
         }
         return true;
     }
-
     boolean isValueForPrimaryKeyValid(String key, String value, String dataName, String dataToValidate) {
         if (!StringUtils.isNumeric(value)) {
-            // 400 - bad request
-            this.setHttpStatus(400);
             this.setErrorKey(key);
             this.setErrorValue(value);
-            this.setErrorMessage("Invalid numeric value for [" + key + "]");
+            setBadRequestErrorMessage("Not numeric");
             return false;
         }
         if (Long.parseLong(value) == 0) {
-            // 400 - bad request
-            this.setHttpStatus(400);
             this.setErrorKey(key);
             this.setErrorValue(value);
-            this.setErrorMessage("Value for [" + key + "] is zero");
+            setBadRequestErrorMessage("Zero");
             return false;
         }
 
         return true;
     }
-
     boolean isValueForIntKeyValid(String key, String value, String dataName, String dataToValidate) {
         if (!StringUtils.isNumeric(value)) {
-            // 400 - bad request
-            this.setHttpStatus(400);
             this.setErrorKey(key);
             this.setErrorValue(value);
-            this.setErrorMessage("Invalid numeric value for [" + key + "]");
+            setBadRequestErrorMessage("Not numeric");
             return false;
         }
         return true;
     }
-
-    boolean isValueForEnumKeyValid(String key, String value, String dataName,
-                                   String dataToValidate) {
+    boolean isValueForEnumKeyValid(String key, String value, String dataName, String dataToValidate) {
 
         switch (key) {
 
@@ -587,13 +629,11 @@ public class QasinoFlowDTO //extends AbstractFlowDTO
                 break;
         }
 
-        // 400 - bad request
-        this.setHttpStatus(400);
         this.setErrorKey(key);
         this.setErrorValue(value);
-        this.setErrorMessage("Invalid enum value for [" + key + "]");
-
+        setBadRequestErrorMessage("No valid emun");
         return false;
     }
+    // @formatter:on
 
 }

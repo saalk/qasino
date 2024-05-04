@@ -10,6 +10,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.voodoodyne.jackson.jsog.JSOGGenerator;
 import lombok.AccessLevel;
+import lombok.Builder;
+import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.DynamicUpdate;
@@ -25,8 +27,7 @@ import java.util.Objects;
 
 @Entity
 @DynamicUpdate
-@Getter
-@Setter
+@Data
 @JsonIdentityInfo(generator = JSOGGenerator.class)
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 @Table(name = "game", indexes = {
@@ -97,7 +98,6 @@ public class Game {
     @Column(name = "weekday", length = 2)
     private int weekday;
 
-
     // References
 
     @JsonIgnore
@@ -121,8 +121,6 @@ public class Game {
     // just a reference, the actual fk column is in result not here!
     @OneToMany(mappedBy = "game", cascade = CascadeType.DETACH)
     private List<Result> results; // = new Result();
-
-
 
     public Game() {
         setUpdated();

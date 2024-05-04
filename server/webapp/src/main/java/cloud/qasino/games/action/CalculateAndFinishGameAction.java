@@ -26,7 +26,7 @@ import java.util.Optional;
 
 @Slf4j
 @Component
-public class CalculateAndFinishGame implements Action<CalculateAndFinishGame.Dto, EventOutput.Result> {
+public class CalculateAndFinishGameAction implements Action<CalculateAndFinishGameAction.Dto, EventOutput.Result> {
 
     @Resource
     CardMoveRepository cardMoveRepository;
@@ -41,7 +41,7 @@ public class CalculateAndFinishGame implements Action<CalculateAndFinishGame.Dto
     PlayService playService;
 
     @Override
-    public EventOutput.Result perform(CalculateAndFinishGame.Dto actionDto) {
+    public EventOutput.Result perform(CalculateAndFinishGameAction.Dto actionDto) {
 
         HashMap<Long, Integer> playerProfit = new HashMap<>();
         List<Player> players = actionDto.getQasinoGame().getPlayers();
@@ -82,22 +82,10 @@ public class CalculateAndFinishGame implements Action<CalculateAndFinishGame.Dto
         return EventOutput.Result.SUCCESS;
     }
 
-    void setErrorMessageConflict(CalculateAndFinishGame.Dto actionDto, String id,
-                                 String value) {
-        actionDto.setHttpStatus(409);
+    void setUnprocessableErrorMessage(Dto actionDto, String id, String value) {
         actionDto.setErrorKey(id);
         actionDto.setErrorValue(value);
-        actionDto.setErrorMessage("Action [" + id + "] invalid, no previous card to compare");
-
-    }
-
-    private void setErrorMessageBadRequest(CalculateAndFinishGame.Dto actionDto, String id,
-                                           String value) {
-        actionDto.setHttpStatus(500);
-        actionDto.setErrorKey(id);
-        actionDto.setErrorValue(value);
-        actionDto.setErrorMessage("Action [" + id + "] invalid");
-
+        actionDto.setUnprocessableErrorMessage("Action [" + id + "] invalid, no previous card to compare");
     }
 
     public interface Dto {
@@ -113,10 +101,13 @@ public class CalculateAndFinishGame implements Action<CalculateAndFinishGame.Dto
         void setGameResults(List<Result> results);
 
         // error setters
-        void setHttpStatus(int status);
+        // @formatter:off
+        void setBadRequestErrorMessage(String problem);
+        void setNotFoundErrorMessage(String problem);
+        void setConflictErrorMessage(String reason);
+        void setUnprocessableErrorMessage(String reason);
         void setErrorKey(String errorKey);
         void setErrorValue(String errorValue);
-        void setErrorMessage(String key);
         // @formatter:on
     }
 }

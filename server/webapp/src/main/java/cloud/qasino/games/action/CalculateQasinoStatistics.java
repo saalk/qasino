@@ -18,7 +18,7 @@ import org.springframework.stereotype.Service;
 
 @Slf4j
 @Service
-public class CountQasinoTotals implements Action<CountQasinoTotals.Dto, EventOutput.Result> {
+public class CalculateQasinoStatistics implements Action<CalculateQasinoStatistics.Dto, EventOutput.Result> {
 
     @Autowired
     private GameRepository gameRepository;
@@ -61,27 +61,18 @@ public class CountQasinoTotals implements Action<CountQasinoTotals.Dto, EventOut
         return EventOutput.Result.SUCCESS;
     }
 
-    private void setErrorMessageNotFound(SetStatusIndicatorsBaseOnRetrievedDataAction.SetStatusIndicatorsBaseOnRetrievedDataDTO actionDto, String id,
-                                         String value) {
-        actionDto.setHttpStatus(500);
-        actionDto.setErrorKey(id);
-        actionDto.setErrorValue(value);
-        actionDto.setErrorMessage("Entity not found for key" + id);
-    }
-
     public interface Dto {
 
         void setStatistics(Statistics statistics);
 
         // error setters
-        void setHttpStatus(int status);
-
+        // @formatter:off
+        void setBadRequestErrorMessage(String problem);
+        void setNotFoundErrorMessage(String problem);
+        void setConflictErrorMessage(String reason);
+        void setUnprocessableErrorMessage(String reason);
         void setErrorKey(String errorKey);
-
         void setErrorValue(String errorValue);
-
-        void setErrorMessage(String key);
-
         // @formatter:on
     }
 }

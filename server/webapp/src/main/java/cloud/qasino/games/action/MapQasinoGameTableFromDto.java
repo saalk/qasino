@@ -7,6 +7,7 @@ import cloud.qasino.games.database.entity.Player;
 import cloud.qasino.games.database.entity.Turn;
 import cloud.qasino.games.database.entity.Visitor;
 import cloud.qasino.games.database.entity.enums.move.Move;
+import cloud.qasino.games.database.entity.enums.player.AiLevel;
 import cloud.qasino.games.database.entity.enums.player.Role;
 import cloud.qasino.games.dto.elements.SectionSeat;
 import cloud.qasino.games.dto.elements.SectionTable;
@@ -20,12 +21,14 @@ import java.util.stream.Collectors;
 
 @Slf4j
 @Component
-public class MapTableFromRetrievedDataAction implements Action<MapTableFromRetrievedDataAction.Dto, EventOutput.Result> {
+public class MapQasinoGameTableFromDto implements Action<MapQasinoGameTableFromDto.Dto, EventOutput.Result> {
 
     @Override
     public EventOutput.Result perform(Dto actionDto) {
 
         SectionTable table = new SectionTable();
+        List<SectionSeat> seats = new ArrayList<>();
+
         if ((actionDto.getActiveTurn() == null)) {
             return EventOutput.Result.SUCCESS;
         }
@@ -33,15 +36,22 @@ public class MapTableFromRetrievedDataAction implements Action<MapTableFromRetri
         table.setPossibleMoves(new ArrayList<>());
         switch (actionDto.getQasinoGame().getType()) {
             case HIGHLOW -> {
-                table.getPossibleMoves().add(Move.HIGHER);
-                table.getPossibleMoves().add(Move.LOWER);
-                table.getPossibleMoves().add(Move.PASS);
-                table.getPossibleMoves().add(Move.NEXT);
+                if (actionDto.getTurnPlayer().getAiLevel().equals(AiLevel.HUMAN)) {
+                    table.getPossibleMoves().add(Move.HIGHER);
+                    table.getPossibleMoves().add(Move.LOWER);
+                    table.getPossibleMoves().add(Move.PASS);
+                } else {
+                    table.getPossibleMoves().add(Move.NEXT);
+                }
             }
             case BLACKJACK -> {
-                table.getPossibleMoves().add(Move.DEAL);
-                table.getPossibleMoves().add(Move.DOUBLE);
-                table.getPossibleMoves().add(Move.STAND);
+                if (actionDto.getTurnPlayer().getAiLevel().equals(AiLevel.HUMAN)) {
+                    table.getPossibleMoves().add(Move.DEAL);
+                    table.getPossibleMoves().add(Move.DOUBLE);
+                    table.getPossibleMoves().add(Move.STAND);
+                } else {
+                    table.getPossibleMoves().add(Move.NEXT);
+                }
             }
         }
         List<Card> stockNotInHand =
@@ -49,17 +59,19 @@ public class MapTableFromRetrievedDataAction implements Action<MapTableFromRetri
                         .stream()
                         .filter(c -> c.getHand() == null)
                         .collect(Collectors.toList());
-        table.setCardsInStockNotInHand(stockNotInHand);
+//        table.setCardsInStockNotInHand(stockNotInHand);
         table.setStringCardsInStockNotInHand(String.valueOf(stockNotInHand));
-        table.setCountCardsInStockNotInHand(stockNotInHand.size());
-        table.setSeats(setSeats(actionDto));
+        table.setCountStockAndTotal(
+                "[" + stockNotInHand.size() +
+                "/" + actionDto.getCardsInTheGameSorted().size() +
+                "] stock/total");
+        table.setSeats(mapSeats(actionDto, seats));
         actionDto.setTable(table);
         return EventOutput.Result.SUCCESS;
     }
 
-    private List<SectionSeat> setSeats(Dto actionDto) {
+    private List<SectionSeat> mapSeats(Dto actionDto, List<SectionSeat> seats) {
 
-        List<SectionSeat> seats = new ArrayList<>();
         for (Player player : actionDto.getQasinoGamePlayers()) {
             SectionSeat seat = new SectionSeat();
             // seat stats
@@ -95,10 +107,10 @@ public class MapTableFromRetrievedDataAction implements Action<MapTableFromRetri
                 seat.setVisitorId(0);
                 seat.setVisitorName(player.getAiLevel().getLabel() + " " + player.getAvatar().getLabel());
             }
-
+            seats.add(seat);
             // is player the winner
 
-  }
+        }
         return seats;
     }
 
@@ -108,6 +120,7 @@ public class MapTableFromRetrievedDataAction implements Action<MapTableFromRetri
         Game getQasinoGame();
         Visitor getQasinoVisitor();
         List<Player> getQasinoGamePlayers();
+        Player getTurnPlayer();
         Turn getActiveTurn();
         List<Card> getCardsInTheGameSorted();
 
@@ -115,10 +128,13 @@ public class MapTableFromRetrievedDataAction implements Action<MapTableFromRetri
         void setTable(SectionTable table);
 
         // error setters
-        void setHttpStatus(int status);
+        // @formatter:off
+        void setBadRequestErrorMessage(String problem);
+        void setNotFoundErrorMessage(String problem);
+        void setConflictErrorMessage(String reason);
+        void setUnprocessableErrorMessage(String reason);
         void setErrorKey(String errorKey);
         void setErrorValue(String errorValue);
-        void setErrorMessage(String key);
         // @formatter:on
     }
 }

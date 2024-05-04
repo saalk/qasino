@@ -3,17 +3,26 @@ package cloud.qasino.games.database.service;
 import cloud.qasino.games.database.entity.Card;
 import cloud.qasino.games.database.entity.CardMove;
 import cloud.qasino.games.database.entity.Game;
+import cloud.qasino.games.database.entity.League;
 import cloud.qasino.games.database.entity.Player;
 import cloud.qasino.games.database.entity.Turn;
+import cloud.qasino.games.database.entity.Visitor;
 import cloud.qasino.games.database.entity.enums.card.Face;
 import cloud.qasino.games.database.entity.enums.card.Location;
 import cloud.qasino.games.database.entity.enums.card.PlayingCard;
 import cloud.qasino.games.database.entity.enums.game.GameState;
+import cloud.qasino.games.database.entity.enums.game.Style;
+import cloud.qasino.games.database.entity.enums.game.Type;
 import cloud.qasino.games.database.entity.enums.move.Move;
+import cloud.qasino.games.database.entity.enums.player.AiLevel;
+import cloud.qasino.games.database.entity.enums.player.Avatar;
+import cloud.qasino.games.database.entity.enums.player.Role;
 import cloud.qasino.games.database.repository.CardMoveRepository;
 import cloud.qasino.games.database.repository.CardRepository;
 import cloud.qasino.games.database.repository.GameRepository;
+import cloud.qasino.games.database.repository.PlayerRepository;
 import cloud.qasino.games.database.repository.TurnRepository;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -21,6 +30,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+
+import static cloud.qasino.games.configuration.Constants.DEFAULT_PAWN_SHIP_BOT;
 
 @Service
 public class PlayService {
@@ -33,7 +44,10 @@ public class PlayService {
     private CardRepository cardRepository;
     @Autowired
     private GameRepository gameRepository;
+    @Autowired
+    private PlayerRepository playerRepository;
 
+    // @formatter:off
     public Turn dealCardToPlayer(Game activeGame, Turn activeTurn, Player humanOrBot, Move move, Face face, int howMany) {
 
         // determine card to deal
@@ -66,7 +80,7 @@ public class PlayService {
                 move,
                 Location.HAND,
                 details);
-        newMove.setSequence(roundNo, turnNo, seatNo);
+        newMove.setSequence(roundNo, seatNo, turnNo);
 
         // for future use
 //        List<CardMove> newCardMove = new ArrayList<>();
@@ -85,13 +99,13 @@ public class PlayService {
 
         return activeTurn;
     }
-    public Game prepareGameForPlaying(Game activeGame, int jokers) {
+    public Game addCardsToGame(Game activeGame, int jokers) {
         List<PlayingCard> playingCards = PlayingCard.newDeck(jokers);
         Collections.shuffle(playingCards);
         List<Card> cards = new ArrayList<>();
         int i = 1;
         for (PlayingCard playingCard : playingCards) {
-            Card card = new Card(playingCard.getRankAndSuit(), activeGame, null, i++, Location.STOCK );
+            Card card = new Card(playingCard.getRankAndSuit(), activeGame, null, i++, Location.STOCK);
             cards.add(card);
             cardRepository.save(card);
         }
@@ -101,9 +115,65 @@ public class PlayService {
 
         return activeGame;
     }
-    public List<CardMove> getAllCardMovesForTheGame(Game activeGame) {
-        Turn activeTurn = activeGame.getTurn();
-        List<CardMove> allCardMovesForTheGame = cardMoveRepository.findByTurnOrderBySequenceAsc(activeTurn);
-        return allCardMovesForTheGame;
+    public Game setupNewGameWithPlayers(String type, Visitor initiator, League league, AiLevel aiLevel,
+                                        String style, String ante, Avatar avatar) {
+        Game newGame = gameRepository.save(new Game(
+                league,
+                type,
+                initiator.getVisitorId(),
+                style,
+                Integer.parseInt(ante)));
+        // todo move to find all entities with if
+        // create human player for visitor with role initiator
+        Player human = playerRepository.save(new Player(
+                initiator,
+                newGame,
+                Role.INITIATOR,
+                initiator.getBalance(),
+                1,
+                avatar,
+                AiLevel.HUMAN));
+        // create bot if ai level supplied
+        if (aiLevel != null && aiLevel!=AiLevel.HUMAN) {
+            int fiches = (int) (Math.random() * DEFAULT_PAWN_SHIP_BOT + 1);
+            Player bot = playerRepository.save(new Player(
+                    null,
+                    newGame,
+                    Role.BOT,
+                    fiches,
+                    2,
+                    avatar,
+                    aiLevel));
+        }
+        return newGame;
     }
+    public Game prepareExistingGame(Game game, Visitor initiator, Type type, League league, String style, int ante) {
+        // update game
+        if (!(initiator == null)) {
+            game.setInitiator(initiator.getVisitorId());
+        }
+        if (!(league == null)) {
+            game.setLeague(league);
+        }
+        if (!(type == null)) {
+            game.setType(type);
+        }
+        if (!(style.isEmpty())) {
+            game.setStyle(style);
+        }
+        if (!(ante == 0)) {
+            game.setAnte(ante);
+        }
+        game.setState(GameState.PREPARED);
+        return gameRepository.save(game);
+    }
+    public List<CardMove> getCardMovesForGame(Game activeGame) {
+        Turn activeTurn = activeGame.getTurn();
+        return cardMoveRepository.findByTurnOrderBySequenceAsc(activeTurn);
+    }
+    public List<CardMove> getCardMovesForPlayer(Player activePlayer) {
+        return cardMoveRepository.findByplayerIdOrderBySequenceAsc(activePlayer.getPlayerId());
+        }
+    // @formatter:on
+
 }

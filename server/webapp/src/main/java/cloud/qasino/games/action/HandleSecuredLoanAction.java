@@ -12,13 +12,13 @@ import java.util.Random;
 
 @Slf4j
 @Component
-public class HandleSecuredLoanAction implements Action<HandleSecuredLoanAction.HandleSecuredLoanActionDTO, EventOutput.Result> {
+public class HandleSecuredLoanAction implements Action<HandleSecuredLoanAction.Dto, EventOutput.Result> {
 
     @Resource
     VisitorRepository visitorRepository;
 
     @Override
-    public EventOutput.Result perform(HandleSecuredLoanActionDTO actionDto) {
+    public EventOutput.Result perform(Dto actionDto) {
 
         Visitor updateVisitor = actionDto.getQasinoVisitor();
 
@@ -26,7 +26,7 @@ public class HandleSecuredLoanAction implements Action<HandleSecuredLoanAction.H
             boolean repayOk = updateVisitor.repayLoan();
             if (!repayOk) {
                 log.info("!repayOk");
-                setErrorMessageConflict(actionDto, "Repay", "Repay loan with balance not possible, balance too low");
+                setConflictErrorMessage(actionDto, "Repay", "Repay loan with balance not possible, balance too low");
                 return EventOutput.Result.FAILURE;
             }
             actionDto.setQasinoVisitor(visitorRepository.save(updateVisitor));
@@ -39,33 +39,29 @@ public class HandleSecuredLoanAction implements Action<HandleSecuredLoanAction.H
             boolean pawnOk = updateVisitor.pawnShip(randomNumber);
             if (!pawnOk) {
                 log.info("!pawnOk");
-                setErrorMessageConflict(actionDto, "Pawn", "Ship already pawned, repay first");
+                setConflictErrorMessage(actionDto, "Pawn", "Ship already pawned, repay first");
                 return EventOutput.Result.FAILURE;
             }
             actionDto.setQasinoVisitor(visitorRepository.save(updateVisitor));
             return EventOutput.Result.SUCCESS;
         }
-        setErrorMessageBadRequest(actionDto, "Pawn or Repay", "Nothing to process");
+        setBadRequestErrorMessage(actionDto, "Pawn or Repay", "Nothing to process");
         return EventOutput.Result.FAILURE;
     }
 
-    void setErrorMessageConflict(HandleSecuredLoanActionDTO actionDto, String id,
-                                        String value) {
-        actionDto.setHttpStatus(409);
+    private void setConflictErrorMessage(Dto actionDto, String id, String value) {
         actionDto.setErrorKey(id);
         actionDto.setErrorValue(value);
-        actionDto.setErrorMessage("Action [" + id + "] invalid");
+        actionDto.setConflictErrorMessage("Action [" + id + "] invalid");
 
     }
-    private void setErrorMessageBadRequest(HandleSecuredLoanActionDTO actionDto, String id,
-                                           String value) {
-        actionDto.setHttpStatus(500);
+    private void setBadRequestErrorMessage(Dto actionDto, String id, String value) {
         actionDto.setErrorKey(id);
         actionDto.setErrorValue(value);
-        actionDto.setErrorMessage("Action [" + id + "] invalid");
+        actionDto.setBadRequestErrorMessage("Action [" + id + "] invalid");
 
     }
-    public interface HandleSecuredLoanActionDTO {
+    public interface Dto {
 
         // @formatter:off
         // Getters
@@ -78,10 +74,13 @@ public class HandleSecuredLoanAction implements Action<HandleSecuredLoanAction.H
         void setQasinoVisitor(Visitor visitor);
 
         // error setters
-        void setHttpStatus(int status);
+        // @formatter:off
+        void setBadRequestErrorMessage(String problem);
+        void setNotFoundErrorMessage(String problem);
+        void setConflictErrorMessage(String reason);
+        void setUnprocessableErrorMessage(String reason);
         void setErrorKey(String errorKey);
         void setErrorValue(String errorValue);
-        void setErrorMessage(String key);
         // @formatter:on
     }
 }

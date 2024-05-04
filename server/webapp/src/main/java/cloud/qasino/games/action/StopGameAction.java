@@ -2,20 +2,26 @@ package cloud.qasino.games.action;
 
 import cloud.qasino.games.action.interfaces.Action;
 import cloud.qasino.games.database.entity.Game;
+import cloud.qasino.games.database.entity.League;
 import cloud.qasino.games.database.entity.Visitor;
 import cloud.qasino.games.database.entity.enums.game.GameState;
-import cloud.qasino.games.database.repository.CardMoveRepository;
+import cloud.qasino.games.database.entity.enums.game.Type;
+import cloud.qasino.games.database.entity.enums.player.AiLevel;
+import cloud.qasino.games.database.entity.enums.player.Avatar;
 import cloud.qasino.games.database.repository.GameRepository;
+import cloud.qasino.games.database.service.PlayService;
 import cloud.qasino.games.event.EventOutput;
+import cloud.qasino.games.statemachine.trigger.GameTrigger;
 import cloud.qasino.games.statemachine.trigger.TurnTrigger;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
 
 @Slf4j
 @Component
-public class IsGameFinished implements Action<IsGameFinished.Dto, EventOutput.Result> {
+public class StopGameAction implements Action<StopGameAction.Dto, EventOutput.Result> {
 
     @Resource
     GameRepository gameRepository;
@@ -23,8 +29,8 @@ public class IsGameFinished implements Action<IsGameFinished.Dto, EventOutput.Re
     @Override
     public EventOutput.Result perform(Dto actionDto) {
 
-        if (actionDto.getSuppliedTurnTrigger().equals(TurnTrigger.END_GAME)) {
-            actionDto.getQasinoGame().setState(GameState.FINISHED);
+        if (actionDto.getSuppliedGameTrigger().equals(GameTrigger.STOP)) {
+            actionDto.getQasinoGame().setState(GameState.QUIT);
             gameRepository.save(actionDto.getQasinoGame());
             return EventOutput.Result.SUCCESS;
         }
@@ -34,15 +40,31 @@ public class IsGameFinished implements Action<IsGameFinished.Dto, EventOutput.Re
     private void setBadRequestErrorMessage(Dto actionDto, String id, String value) {
         actionDto.setErrorKey(id);
         actionDto.setErrorValue(value);
-        actionDto.setBadRequestErrorMessage("Action [" + id + "] invalid");
+        actionDto.setBadRequestErrorMessage("Supplied value for leagueName is empty");
+    }
+
+    private void setConflictErrorMessage(Dto actionDto, String id, String value) {
+        actionDto.setErrorKey(id);
+        actionDto.setErrorValue(value);
+        actionDto.setConflictErrorMessage("leagueName [" + value + "] not available any more");
     }
 
     public interface Dto {
+
         // @formatter:off
         // Getters
-        TurnTrigger getSuppliedTurnTrigger();
+        League getQasinoGameLeague();
+        int getSuppliedAnte();
+        Avatar getSuppliedAvatar();
+        AiLevel getSuppliedAiLevel();
+        Type getSuppliedType();
+        String getSuppliedStyle();
+        Visitor getQasinoVisitor();
+
+        GameTrigger getSuppliedGameTrigger();
         Game getQasinoGame();
-        // Setters
+
+        // Setter
         void setQasinoGame(Game game);
 
         // error setters

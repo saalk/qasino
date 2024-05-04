@@ -95,7 +95,7 @@ public class Card {
         this.hand = player;
         this.sequence = sequence;
         this.location = location;
-        this.position = Position.ORDERED;
+        this.position = Position.SHUFFLED;
         this.face = Face.DOWN;
     }
 

@@ -5,20 +5,20 @@ import cloud.qasino.games.database.entity.CardMove;
 import cloud.qasino.games.database.entity.Player;
 import cloud.qasino.games.database.entity.enums.player.AiLevel;
 import cloud.qasino.games.database.entity.enums.player.Avatar;
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.voodoodyne.jackson.jsog.JSOGGenerator;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.ArrayList;
 import java.util.List;
 
-@Getter
-@Setter
-@JsonIdentityInfo(generator = JSOGGenerator.class)
-@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class SectionSeat {
 
     // seat stats
@@ -44,12 +44,13 @@ public class SectionSeat {
     private AiLevel seatPlayerAiLevel;
 
     // player cards and moves
-    @JsonProperty("CardsInHand")
-    private List<Card> cardsInHand = new ArrayList<>();
-    @JsonProperty("StringCardsInHand")
+//    @JsonIgnore
+//    @JsonProperty("CardsInHand")
+//    private List<Card> cardsInHand = new ArrayList<>();
+    @JsonProperty("Hand")
     private String stringCardsInHand;
     @JsonProperty("PreviousCardMoves")
-    private List <CardMove> previousCardMoves;
+    private List<CardMove> previousCardMoves;
 
     // when player is human
     @JsonProperty("IsHumanPlayer")
@@ -62,7 +63,6 @@ public class SectionSeat {
     // is player the winner
     @JsonProperty("IsWinner")
     private boolean isSeatWinner;
-
 
 
 }

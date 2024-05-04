@@ -27,16 +27,11 @@ public enum GameTrigger {
 
     // specific triggers are with the event trigger
     // FINISHED
-    WINNER("winner"),     // we have a winner
-    LEAVE("leave"),      // User left - via GameController
-
-    // STATUS - initiated by system
-    OK("ok"),         // result ok
-    NOT_OK("not_ok"),     // result nok
+    WINNER("winner"),     // end game and declare the winner
+    STOP("stop"),      // stop the game, no winner or results
 
     // ERROR
     ABANDON("abandon"),    // game is abandonned
-    CRASH("crash"),       // error 500
     ERROR("error");    // bad label or null supplied
 
     public static final Map<String, GameTrigger> lookup
@@ -46,11 +41,11 @@ public enum GameTrigger {
 
     public static final Set<GameTrigger> setupGameTriggers = of(SETUP, INVITE, ACCEPT, PREPARE);
     public static final Set<GameTrigger> playingGameTriggers = of(PLAY);
-    public static final Set<GameTrigger> finishedGamesTriggers = of(WINNER, LEAVE);
-    public static final Set<GameTrigger> errorGameTriggers = of(ABANDON, CRASH);
+    public static final Set<GameTrigger> finishedGamesTriggers = of(WINNER, STOP);
+    public static final Set<GameTrigger> errorGameTriggers = of(ABANDON, ERROR);
 
     public static final Set<GameTrigger> allGameTriggers = EnumSet.of(SETUP, INVITE, ACCEPT, PREPARE, PLAY, WINNER,
-            LEAVE, OK, NOT_OK, ABANDON, CRASH, ERROR);
+            STOP,ABANDON, ERROR);
 
     static {
         for (GameTrigger gameTrigger : EnumSet.allOf(GameTrigger.class))

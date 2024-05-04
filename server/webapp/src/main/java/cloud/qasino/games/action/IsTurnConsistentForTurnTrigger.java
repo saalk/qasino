@@ -22,6 +22,7 @@ public class IsTurnConsistentForTurnTrigger implements Action<IsTurnConsistentFo
 
         actionDto.setErrorKey("TurnTrigger");
         actionDto.setErrorValue(actionDto.getSuppliedTurnTrigger().getLabel());
+
         boolean noError = true;
         switch (actionDto.getSuppliedTurnTrigger()) {
             case LOWER -> {
@@ -46,12 +47,8 @@ public class IsTurnConsistentForTurnTrigger implements Action<IsTurnConsistentFo
     private boolean turnShouldHaveCurrentMoveNumberNotZero(Dto actionDto) {
         if (actionDto.getActiveTurn().getCurrentTurnNumber() <= 0) {
             log.info("!moveNumber");
-            actionDto.setHttpStatus(422);
-            actionDto.setErrorMessage(
-                    "Action [" +
-                            actionDto.getSuppliedTurnTrigger() +
-                            "] invalid - turn has incorrect number of " +
-                            actionDto.getActiveTurn().getCurrentTurnNumber()
+            setUnprocessableErrorMessage(actionDto, "Action [" + actionDto.getSuppliedTurnTrigger() +
+                    "] invalid - turn has incorrect number of " + actionDto.getActiveTurn().getCurrentTurnNumber()
             );
             return false;
         }
@@ -61,15 +58,17 @@ public class IsTurnConsistentForTurnTrigger implements Action<IsTurnConsistentFo
     private boolean turnShouldHaveActivePlayer(Dto actionDto) {
         if (actionDto.getActiveTurn().getActivePlayerId() == 0) {
             log.info("!initiator");
-            actionDto.setHttpStatus(422);
-            actionDto.setErrorMessage(
-                    "Action [" +
-                            actionDto.getSuppliedTurnTrigger() +
-                            "] invalid - turn has no active player "
-            );
+            setUnprocessableErrorMessage(actionDto, "Action [" + actionDto.getSuppliedTurnTrigger() +
+                    "] invalid - turn has no active player ");
             return false;
         }
         return true;
+    }
+
+    void setUnprocessableErrorMessage(Dto actionDto, String reason) {
+//        actionDto.setErrorKey(id); - already set
+//        actionDto.setErrorValue(value); - already set
+        actionDto.setUnprocessableErrorMessage(reason);
     }
 
     public interface Dto {
@@ -79,14 +78,14 @@ public class IsTurnConsistentForTurnTrigger implements Action<IsTurnConsistentFo
         TurnTrigger getSuppliedTurnTrigger();
         Turn getActiveTurn();
 
-        // error setters and getters
-        void setHttpStatus(int status);
-        int getHttpStatus();
+        // error setters
+        // @formatter:off
+        void setBadRequestErrorMessage(String problem);
+        void setNotFoundErrorMessage(String problem);
+        void setConflictErrorMessage(String reason);
+        void setUnprocessableErrorMessage(String reason);
         void setErrorKey(String errorKey);
-        String getErrorKey();
         void setErrorValue(String errorValue);
-        String getErrorValue();
-        void setErrorMessage(String message);
         // @formatter:on
     }
 }

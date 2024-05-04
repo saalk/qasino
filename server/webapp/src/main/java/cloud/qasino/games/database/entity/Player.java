@@ -91,6 +91,7 @@ public class Player {
     // just a reference the fk column is in "game" not here!
     private Result result;// = new Result();
 
+    @JsonIgnore
     // HO: A Player holds one or more Card after dealing
     @OneToMany(mappedBy = "hand", cascade = CascadeType.DETACH)
     // just a reference, the actual fk column is in "game" not here !

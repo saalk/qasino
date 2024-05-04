@@ -1,42 +1,37 @@
 package cloud.qasino.games.action;
 
 import cloud.qasino.games.action.interfaces.Action;
+import cloud.qasino.games.database.entity.Game;
 import cloud.qasino.games.database.entity.League;
 import cloud.qasino.games.database.entity.Visitor;
-import cloud.qasino.games.database.repository.LeagueRepository;
+import cloud.qasino.games.database.entity.enums.game.Style;
+import cloud.qasino.games.database.entity.enums.game.Type;
+import cloud.qasino.games.database.entity.enums.player.AiLevel;
+import cloud.qasino.games.database.entity.enums.player.Avatar;
+import cloud.qasino.games.database.service.PlayService;
 import cloud.qasino.games.event.EventOutput;
+import cloud.qasino.games.statemachine.trigger.GameTrigger;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
-import javax.annotation.Resource;
 
 @Slf4j
 @Component
-public class CreateNewLeagueAction implements Action<CreateNewLeagueAction.Dto, EventOutput.Result> {
+public class PrepareGameAction implements Action<PrepareGameAction.Dto, EventOutput.Result> {
 
-    @Resource
-    LeagueRepository leagueRepository;
-
+    @Autowired
+    PlayService playService;
     @Override
     public EventOutput.Result perform(Dto actionDto) {
 
-        if (!(StringUtils.isEmpty(actionDto.getSuppliedLeagueName()))) {
-            int sequence = Math.toIntExact(leagueRepository.countByName(actionDto.getSuppliedLeagueName()));
-            if (sequence != 0) {
-                setConflictErrorMessage(actionDto, "leagueName", String.valueOf(actionDto.getSuppliedLeagueName()));
-                return EventOutput.Result.FAILURE;
-            }
-            // todo LOW split leagueName and number
-            League createdLeague = leagueRepository.save(new League(
-                    actionDto.getQasinoVisitor(),
-                    actionDto.getSuppliedLeagueName(),
-                    1));
-            actionDto.setSuppliedLeagueId(createdLeague.getLeagueId());
-        } else {
-            setBadRequestErrorMessage(actionDto, "leagueName", String.valueOf(actionDto.getSuppliedLeagueName()));
-            return EventOutput.Result.FAILURE;
-        }
+        // update Game
+        actionDto.setQasinoGame(playService.prepareExistingGame(
+                actionDto.getQasinoGame(),
+                actionDto.getQasinoVisitor(),
+                actionDto.getSuppliedType(),
+                actionDto.getQasinoGameLeague(),
+                actionDto.getSuppliedStyle(),
+                actionDto.getSuppliedAnte()));
         return EventOutput.Result.SUCCESS;
     }
 
@@ -56,11 +51,19 @@ public class CreateNewLeagueAction implements Action<CreateNewLeagueAction.Dto, 
 
         // @formatter:off
         // Getters
-        String getSuppliedLeagueName();
+        League getQasinoGameLeague();
+        int getSuppliedAnte();
+        Avatar getSuppliedAvatar();
+        AiLevel getSuppliedAiLevel();
+        Type getSuppliedType();
+        String getSuppliedStyle();
         Visitor getQasinoVisitor();
 
+        GameTrigger getSuppliedGameTrigger();
+        Game getQasinoGame();
+
         // Setter
-        void setSuppliedLeagueId(long id);
+        void setQasinoGame(Game game);
 
         // error setters
         // @formatter:off

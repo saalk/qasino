@@ -18,15 +18,10 @@ import java.util.List;
 
 @Slf4j
 @Component
-public class MakeGamePlayableForGameType implements Action<MakeGamePlayableForGameType.Dto, EventOutput.Result> {
+public class PlayGameForType implements Action<PlayGameForType.Dto, EventOutput.Result> {
 
     @Autowired
     PlayService playService;
-
-    @Resource
-    GameRepository gameRepository;
-    @Resource
-    CardRepository cardRepository;
 
     @Override
     public EventOutput.Result perform(Dto actionDto) {
@@ -54,16 +49,8 @@ public class MakeGamePlayableForGameType implements Action<MakeGamePlayableForGa
             default -> throw new IllegalStateException("Unexpected value: " + style.getDeckConfiguration());
         }
         // update Game, create Cards for game, create Turn, create CardMove
-        actionDto.setQasinoGame(playService.prepareGameForPlaying(actionDto.getQasinoGame(), jokers));
+        actionDto.setQasinoGame(playService.addCardsToGame(actionDto.getQasinoGame(), jokers));
         return EventOutput.Result.SUCCESS;
-    }
-
-    private void setErrorMessageInternalServerError(Dto actionDto, String id,
-                                                    String value) {
-        actionDto.setHttpStatus(500);
-        actionDto.setErrorKey(id);
-        actionDto.setErrorValue(value);
-        actionDto.setErrorMessage("Action [" + id + "] invalid - no seat with 1");
     }
 
     public interface Dto {
@@ -77,10 +64,13 @@ public class MakeGamePlayableForGameType implements Action<MakeGamePlayableForGa
         void setQasinoGame(Game game);
 
         // error setters
-        void setHttpStatus(int status);
+        // @formatter:off
+        void setBadRequestErrorMessage(String problem);
+        void setNotFoundErrorMessage(String problem);
+        void setConflictErrorMessage(String reason);
+        void setUnprocessableErrorMessage(String reason);
         void setErrorKey(String errorKey);
         void setErrorValue(String errorValue);
-        void setErrorMessage(String key);
         // @formatter:on
     }
 }

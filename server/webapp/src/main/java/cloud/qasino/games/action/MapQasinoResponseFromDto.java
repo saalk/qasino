@@ -50,6 +50,7 @@ public class MapQasinoResponseFromDto implements Action<MapQasinoResponseFromDto
 
         // 1: PageVisitor
         NavigationBarItem navigationBarItem = new NavigationBarItem();
+        navigationBarItem.setItemSequence(1);
         navigationBarItem.setItemName("Logon");
         navigationBarItem.setItemStats("balance []");
 
@@ -72,6 +73,7 @@ public class MapQasinoResponseFromDto implements Action<MapQasinoResponseFromDto
 
         // 2: GameSetup
         navigationBarItem = new NavigationBarItem();
+        navigationBarItem.setItemSequence(2);
         navigationBarItem.setItemName("Setup");
         navigationBarItem.setItemStats("[0/0] bots/humans");
 
@@ -104,6 +106,7 @@ public class MapQasinoResponseFromDto implements Action<MapQasinoResponseFromDto
 
         // 3: GamePlay and Results
         navigationBarItem = new NavigationBarItem();
+        navigationBarItem.setItemSequence(3);
         navigationBarItem.setItemName("Play");
         navigationBarItem.setItemStats("[0/0] round/move");
 
@@ -117,7 +120,7 @@ public class MapQasinoResponseFromDto implements Action<MapQasinoResponseFromDto
                     actionDto.setShowGamePlayPage(true);
                     actionDto.setActionNeeded(true);
                     actionDto.setAction(actionDto.getQasinoGame().getState().getNextAction());
-                    mapGamePlay(actionDto, navigationBarItem, pageGamePlay);
+                    mapGamePlayPage(actionDto, navigationBarItem, pageGamePlay);
                 }
             }
         } else {
@@ -134,6 +137,7 @@ public class MapQasinoResponseFromDto implements Action<MapQasinoResponseFromDto
 
         // 4: GameInvitatinos
         navigationBarItem = new NavigationBarItem();
+        navigationBarItem.setItemSequence(4);
         navigationBarItem.setItemName("Invites [0]");
         navigationBarItem.setItemStats("[0/0] setup/playing");
         actionDto.setShowGamePlayPage(false);
@@ -149,6 +153,7 @@ public class MapQasinoResponseFromDto implements Action<MapQasinoResponseFromDto
 
         // 5: Leagues
         navigationBarItem = new NavigationBarItem();
+        navigationBarItem.setItemSequence(5);
         navigationBarItem.setItemName("Leagues");
         navigationBarItem.setItemStats("[0] active");
         navigationBarItem.setItemVisible(false);
@@ -188,6 +193,7 @@ public class MapQasinoResponseFromDto implements Action<MapQasinoResponseFromDto
             gameStateIntegerMap.put(game.getState(), (j == null) ? 1 : j + 1);
         }
         pageVisitor.setInitiatedGamesPerState(gameStateIntegerMap);
+        gameStateIntegerMap = null;
         for (Game game : actionDto.getInvitedGamesForVisitor()) {
             Integer j = gameStateIntegerMap.get(game);
             gameStateIntegerMap.put(game.getState(), (j == null) ? 1 : j + 1);
@@ -220,14 +226,17 @@ public class MapQasinoResponseFromDto implements Action<MapQasinoResponseFromDto
         pageGameSetup.setLeaguesToSelect(null);
     }
 
-    private void mapGamePlay(Dto actionDto, NavigationBarItem navigationBarItem, PageGamePlay pageGamePlay) {
+    private void mapGamePlayPage(Dto actionDto, NavigationBarItem navigationBarItem, PageGamePlay pageGamePlay) {
         // set the nav bar
         navigationBarItem.setItemName("Qasinogame#" +
                 Integer.toHexString((int) actionDto.getQasinoGame().getGameId()));
-        navigationBarItem.setItemStats(
-                "[" + actionDto.getActiveTurn().getCurrentRoundNumber() +
-                        "/" + actionDto.getActiveTurn().getCurrentTurnNumber() +
-                        "] round/turn");
+        // TODO FIXXXX .NullPointerException: Cannot invoke "cloud.qasino.games.database.entity.Turn.getCurrentRoundNumber()" because the return value of "cloud.qasino.games.action.MapQasinoResponseFromDto$Dto.getActiveTurn()" is null
+        if (actionDto.getActiveTurn() != null) { // games is still being prepared
+            navigationBarItem.setItemStats(
+                    "[" + actionDto.getActiveTurn().getCurrentRoundNumber() +
+                            "/" + actionDto.getActiveTurn().getCurrentTurnNumber() +
+                            "] round/turn");
+        }
         // set the content
         pageGamePlay.setSelectedGame(actionDto.getQasinoGame());
         if (!(actionDto.getTable() == null)) {
@@ -253,13 +262,6 @@ public class MapQasinoResponseFromDto implements Action<MapQasinoResponseFromDto
         pageLeague.setSelectedLeague(actionDto.getQasinoGameLeague());
         pageLeague.setActiveLeagues(actionDto.getLeaguesForVisitor());
         pageLeague.setResultsForLeague(actionDto.getResultsForLeague());
-    }
-
-    private void setErrorMessageEntityNotFound(Dto actionDto, String id, String value, String entity) {
-        actionDto.setHttpStatus(404);
-        actionDto.setErrorKey(id);
-        actionDto.setErrorValue(value);
-        actionDto.setErrorMessage("[" + entity + "] not found for id [" + value + "]");
     }
 
     public interface Dto {
@@ -305,10 +307,13 @@ public class MapQasinoResponseFromDto implements Action<MapQasinoResponseFromDto
         void setShowLeaguesPage(boolean bool);
 
         // error setters
-        void setHttpStatus(int status);
+        // @formatter:off
+        void setBadRequestErrorMessage(String problem);
+        void setNotFoundErrorMessage(String problem);
+        void setConflictErrorMessage(String reason);
+        void setUnprocessableErrorMessage(String reason);
         void setErrorKey(String errorKey);
         void setErrorValue(String errorValue);
-        void setErrorMessage(String key);
         // @formatter:on
     }
 }

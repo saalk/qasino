@@ -48,6 +48,16 @@ public enum GameStateGroup {
         return GameState.fromGroupWithDefault(gameStateGroup);
     }
 
+    public  static List<GameState> listGameStatesForGameStateGroups(List<GameStateGroup> gameStateGroups) {
+        List<GameState> gameStates = new ArrayList<>();
+        for (GameStateGroup gameStateGroup : gameStateGroups) {
+            for (GameState gameState : listGameStatesForGameStateGroup(gameStateGroup)) {
+                gameStates.add(gameState);
+            }
+        }
+        return gameStates;
+    }
+
     public  static String[] listGameStatesStringsForGameStateGroup(GameStateGroup gameStateGroup) {
         List<GameState> gameStateList = GameState.fromGroupWithDefault(gameStateGroup);
         List<String> list = new ArrayList<>();

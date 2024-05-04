@@ -54,7 +54,7 @@ public class UpdateFichesForPlayer implements Action<UpdateFichesForPlayer.Dto, 
                     if (cardMove.getBet() == 0) {
                         // calculation needed
                         if (previousCardMoveCard.isEmpty()) {
-                            setErrorMessageConflictWithHighLow(actionDto, "Move", String.valueOf(cardMove.getMove()));
+                            setConflictErrorMessage(actionDto, "Move", String.valueOf(cardMove.getMove()));
                             return EventOutput.Result.FAILURE;
                         }
                         updateWinOfLoss(actionDto, cardMove, previousCardMoveCard.orElse(null));
@@ -78,7 +78,7 @@ public class UpdateFichesForPlayer implements Action<UpdateFichesForPlayer.Dto, 
         cardMoveRepository.save(cardMove);
         actionDto.getTurnPlayer().setFiches(cardMove.getEndFiches());
         playerRepository.save(actionDto.getTurnPlayer());
-        actionDto.setAllCardMovesForTheGame(playService.getAllCardMovesForTheGame(actionDto.getQasinoGame())); // can be null
+        actionDto.setAllCardMovesForTheGame(playService.getCardMovesForGame(actionDto.getQasinoGame())); // can be null
     }
 
     private int calculateWinOrLoss(Dto actionDto, Move move, Card previous, Card current) {
@@ -104,20 +104,16 @@ public class UpdateFichesForPlayer implements Action<UpdateFichesForPlayer.Dto, 
         return actionDto.getQasinoGame().getAnte();
     }
 
-    void setErrorMessageConflictWithDeal(Dto actionDto, String id,
-                                         String value) {
-        actionDto.setHttpStatus(409);
+    void setErrorMessageConflictWithDeal(Dto actionDto, String id, String value) {
         actionDto.setErrorKey(id);
         actionDto.setErrorValue(value);
-        actionDto.setErrorMessage("Action [" + id + "] invalid, dealt card has a bet");
+        actionDto.setConflictErrorMessage("Action [" + id + "] invalid, dealt card has a bet");
     }
 
-    void setErrorMessageConflictWithHighLow(Dto actionDto, String id,
-                                            String value) {
-        actionDto.setHttpStatus(409);
+    void setConflictErrorMessage(Dto actionDto, String id, String value) {
         actionDto.setErrorKey(id);
         actionDto.setErrorValue(value);
-        actionDto.setErrorMessage("Action [" + id + "] invalid, no previous card dealt");
+        actionDto.setConflictErrorMessage("Action [" + id + "] invalid, no previous card dealt");
     }
 
     public interface Dto {
@@ -134,10 +130,13 @@ public class UpdateFichesForPlayer implements Action<UpdateFichesForPlayer.Dto, 
         void setAllCardMovesForTheGame(List<CardMove> cardMoves);
 
         // error setters
-        void setHttpStatus(int status);
+        // @formatter:off
+        void setBadRequestErrorMessage(String problem);
+        void setNotFoundErrorMessage(String problem);
+        void setConflictErrorMessage(String reason);
+        void setUnprocessableErrorMessage(String reason);
         void setErrorKey(String errorKey);
         void setErrorValue(String errorValue);
-        void setErrorMessage(String key);
         // @formatter:on
     }
 }

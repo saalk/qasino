@@ -17,17 +17,17 @@ import java.util.List;
 public interface GameRepository extends JpaRepository<Game, Long> {
 
     // prepared queries
-    public final static String FIND_ALL = "SELECT * FROM \"game\" ORDER BY \"created\" DESC";
+    public final static String FIND_ALL = "SELECT * FROM \"game\" ORDER BY \"updated\" DESC";
     public final static String COUNT_ALL = "SELECT count(*) FROM \"game\"";
-    public final static String FIND_STATES = "SELECT * FROM \"game\" g WHERE g.\"state\"IN :states";
-    public final static String COUNT_STATES = "SELECT count(*) FROM \"game\" g WHERE g.\"state\"IN (:states)";
+    public final static String FIND_STATES = "SELECT * FROM \"game\" as g WHERE g.\"state\" IN :states";
+    public final static String COUNT_STATES = "SELECT count(*) FROM \"game\" as g WHERE g.\"state\" IN (:states)";
     public final static String COUNT_TODAY =
-            "SELECT count(*) FROM \"game\" g " +
+            "SELECT count(*) FROM \"game\" as g " +
                     "WHERE g.\"year\" = :year " +
                     "AND g.\"month\" = :month " +
                     "AND g.\"weekday\" = :weekday ";
     public final static String COUNT_WEEK =
-            "SELECT count(*) FROM \"game\" g " +
+            "SELECT count(*) FROM \"game\" as g " +
                     "WHERE g.\"year\" = :year " +
                     "AND g.\"week\" = :week ";
     public final static String COUNT_MONTH =
@@ -36,56 +36,54 @@ public interface GameRepository extends JpaRepository<Game, Long> {
                     "AND g.\"month\" = :month ";
 
     public final static String FIND_ALL_INVITED_BY_VISITOR_ID =
-            "SELECT * FROM \"game\" a JOIN \"player\" b " +
+            "SELECT * FROM \"game\" as a left outer join \"player\" as b " +
                     "WHERE a.\"game_id\" = b.\"game_id\" " +
                     "AND b.\"visitor_id\" = :visitorId " +
-                    "AND a.\"initiator\" <> :visitorId ";
+                    "AND a.\"initiator\" <> :visitorId " +
+                    "ORDER BY a.\"updated\" DESC ";
     public final static String COUNT_ALL_INVITED_BY_VISITOR_ID =
-            "SELECT count(*) FROM \"game\" a JOIN \"player\" b " +
+            "SELECT count(*) FROM \"game\" as a left outer join \"player\" as b " +
                     "WHERE a.\"game_id\" = b.\"game_id\" " +
                     "AND b.\"visitor_id\" = :visitorId " +
                     "AND a.\"initiator\" <> :visitorId ";
 
     public final static String FIND_ALL_INITIATED_BY_VISITOR_ID =
-            "SELECT * FROM \"game\" a JOIN \"player\" b " +
-                    "WHERE a.\"game_id\" = b.\"game_id\" " +
-                    "AND b.\"visitor_id\" = :visitorId " +
-                    "AND a.\"initiator\" = :visitorId ";
+            "SELECT * FROM \"game\" WHERE \"initiator\" = :visitorId ORDER BY \"updated\" desc ";
     public final static String COUNT_ALL_INITIATED_BY_VISITOR_ID =
-            "SELECT count(*) FROM \"game\" a JOIN \"player\" b " +
-                    "WHERE a.\"game_id\" = b.\"game_id\" " +
-                    "AND b.\"visitor_id\" = :visitorId " +
-                    "AND a.\"initiator\" = :visitorId ";
+            "SELECT count(*) FROM \"game\" WHERE \"initiator\" = :visitorId ";
 
     public final static String FIND_NEWGAMES_BY_VISITOR_ID =
-            "SELECT * FROM \"game\" a JOIN \"player\" b " +
+            "SELECT * FROM \"game\" as a JOIN \"player\" b " +
                     "WHERE a.\"game_id\" = b.\"game_id\" " +
                     "AND b.\"visitor_id\" = :visitorId " +
-                     "AND a.\"state\" IN ('INITIALIZED','PENDING_INVITATIONS','PREPARED') ";
+                     "AND a.\"state\" IN ('INITIALIZED','PENDING_INVITATIONS','PREPARED') " +
+                    "ORDER BY a.\"updated\" DESC ";
     public final static String COUNT_NEWGAMES_BY_VISITOR_ID =
-            "SELECT count(*) FROM \"game\" a JOIN \"player\" b " +
+            "SELECT count(*) FROM \"game\" as a JOIN \"player\" b " +
                     "WHERE a.\"game_id\" = b.\"game_id\" " +
                     "AND b.\"visitor_id\" = :visitorId " +
                     "AND a.\"state\" IN ('INITIALIZED','PENDING_INVITATIONS','PREPARED') ";
 
     public final static String FIND_STARTEDGAMES_BY_VISITOR_ID =
-            "SELECT * FROM \"game\" a JOIN \"player\" b " +
+            "SELECT * FROM \"game\" as a JOIN \"player\" as b " +
                     "WHERE a.\"game_id\" = b.\"game_id\" " +
                     "AND b.\"visitor_id\" = :visitorId " +
-                    "AND a.\"state\" IN ('STARTED','NEXT_MOVE','NEXT_TURN') ";
+                    "AND a.\"state\" IN ('STARTED','NEXT_MOVE','NEXT_TURN') " +
+                    "ORDER BY a.\"updated\" DESC ";
     public final static String COUNT_STARTEDGAMES_BY_VISITOR_ID =
-            "SELECT count(*) FROM \"game\" a JOIN \"player\" b " +
+            "SELECT count(*) FROM \"game\" as a JOIN \"player\" as b " +
                     "WHERE a.\"game_id\" = b.\"game_id\" " +
                     "AND b.\"visitor_id\" = :visitorId " +
                     "AND a.\"state\" IN ('STARTED','NEXT_MOVE','NEXT_TURN') ";
 
     public final static String FIND_FINISHEDGAMES_BY_VISITOR_ID =
-            "SELECT * FROM \"game\" a JOIN \"player\" b " +
+            "SELECT * FROM \"game\" as a JOIN \"player\" as b " +
                     "WHERE a.\"game_id\" = b.\"game_id\" " +
                     "AND b.\"visitor_id\" = :visitorId " +
-                    "AND a.\"state\" IN ('FINISHED','QUIT','CANCELLED') ";
+                    "AND a.\"state\" IN ('FINISHED','QUIT','CANCELLED') " +
+                    "ORDER BY a.\"updated\" DESC ";
     public final static String COUNT_FINISHEDGAMES_BY_VISITOR_ID =
-            "SELECT count(*) FROM \"game\" a JOIN \"player\" b " +
+            "SELECT count(*) FROM \"game\" as a JOIN \"player\" as b " +
                     "WHERE a.\"game_id\" = b.\"game_id\" " +
                     "AND b.\"visitor_id\" = :visitorId " +
                     "AND a.\"state\" IN ('FINISHED','QUIT','CANCELLED') ";
@@ -107,6 +105,8 @@ public interface GameRepository extends JpaRepository<Game, Long> {
 
     // special finds
     List<Game> findGamesByLeague(League league);
+
+    List<Game> findByInitiator(long initiator);
 
     // list with paging
     @Query(value = FIND_ALL, countQuery = COUNT_ALL, nativeQuery = true)
@@ -158,11 +158,4 @@ public interface GameRepository extends JpaRepository<Game, Long> {
         DateTimeFormatter week = DateTimeFormatter.ofPattern("w");
         return String.valueOf(LocalDate.now().format(week));
     }
-
-    // todo implement
-    //List<Game> getCurrentGamesForVisitorByState(Game currentGame, List<Type> typesToCancel,
-    //                                          List<GameState> pendingStates);
-
-    // todo implement
-    //Game getLastTypeGameByVisitor(Type contextType, long visitorId);
 }

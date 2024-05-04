@@ -1,6 +1,6 @@
 package cloud.qasino.games.statemachine;
 
-import cloud.qasino.games.action.FindAllEntitiesForInputAction;
+import cloud.qasino.games.action.LoadEntitiesToDtoAction;
 import cloud.qasino.games.event.interfaces.AbstractFlowDTO;
 import cloud.qasino.games.event.interfaces.Event;
 import cloud.qasino.games.orchestration.OrchestrationConfig;
@@ -22,20 +22,20 @@ public class GameStateMachine { // implements QasinoAsyncConfiguration.ASyncEven
     static {
         // @formatter:off
         qasinoConfiguration
-                .beforeEventPerform(FindAllEntitiesForInputAction.class)
-                .afterEventPerform(FindAllEntitiesForInputAction.class)
+                .beforeEventPerform(LoadEntitiesToDtoAction.class)
+                .afterEventPerform(LoadEntitiesToDtoAction.class)
                 .onResult(Exception.class, ERROR)
                 .rethrowExceptions();
 
         qasinoConfiguration
                 .onState(INITIALIZED)
                 .onEvent(LIST)
-                .perform(FindAllEntitiesForInputAction.class)
+                .perform(LoadEntitiesToDtoAction.class)
                 .onResult(FAILURE, ERROR)   //Move catches RunTime Exceptions. So we need this.
-                .perform(FindAllEntitiesForInputAction.class)
-                .perform(FindAllEntitiesForInputAction.class)
+                .perform(LoadEntitiesToDtoAction.class)
+                .perform(LoadEntitiesToDtoAction.class)
                 .onResult(FAILURE, ERROR)
-                .perform(FindAllEntitiesForInputAction.class)
+                .perform(LoadEntitiesToDtoAction.class)
                 .onResult(SUCCESS, PREPARED);
     }
 

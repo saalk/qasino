@@ -45,14 +45,6 @@ public class SetStatusIndicatorsBaseOnRetrievedDataAction implements Action<SetS
         return EventOutput.Result.SUCCESS;
     }
 
-    private void setErrorMessageCrash(SetStatusIndicatorsBaseOnRetrievedDataDTO actionDto, String id,
-                                         String value) {
-        actionDto.setHttpStatus(500);
-        actionDto.setErrorKey(id);
-        actionDto.setErrorValue(value);
-        actionDto.setErrorMessage("Entity not found for key" + id);
-    }
-
     public interface SetStatusIndicatorsBaseOnRetrievedDataDTO {
 
         // @formatter:off
@@ -76,10 +68,13 @@ public class SetStatusIndicatorsBaseOnRetrievedDataAction implements Action<SetS
         void setShowLeaguesPage(boolean bool);
 
         // error setters
-        void setHttpStatus(int status);
+        // @formatter:off
+        void setBadRequestErrorMessage(String problem);
+        void setNotFoundErrorMessage(String problem);
+        void setConflictErrorMessage(String reason);
+        void setUnprocessableErrorMessage(String reason);
         void setErrorKey(String errorKey);
         void setErrorValue(String errorValue);
-        void setErrorMessage(String key);
         // @formatter:on
     }
 }

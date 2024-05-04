@@ -13,69 +13,59 @@ import java.util.Optional;
 
 @Slf4j
 @Component
-public class FindVisitorIdByVisitorNameAction implements Action<FindVisitorIdByVisitorNameAction.FindVisitorIdByVisitorNameActionDTO, EventOutput.Result> {
+public class FindVisitorIdByVisitorNameAction implements Action<FindVisitorIdByVisitorNameAction.Dto, EventOutput.Result> {
 
     @Resource
     VisitorRepository visitorRepository;
 
     @Override
-    public EventOutput.Result perform(FindVisitorIdByVisitorNameActionDTO actionDto) {
-
-        log.debug("Action: FindVisitorByVisitorNameAction");
+    public EventOutput.Result perform(Dto actionDto) {
 
         // set http to created when done
-
         if (!(StringUtils.isEmpty(actionDto.getSuppliedVisitorName()))) {
             int sequence = Math.toIntExact(visitorRepository.countByVisitorName(actionDto.getSuppliedVisitorName()));
             if (sequence > 1) {
                 // todo LOW split visitorName and number
-                setErrorMessageConflict(actionDto, "visitorName", String.valueOf(actionDto.getSuppliedVisitorName()));
+                setConflictErrorMessage(actionDto, "visitorName", String.valueOf(actionDto.getSuppliedVisitorName()));
                 return EventOutput.Result.FAILURE;
             } else if (sequence == 0) {
-                setErrorMessageNotFound(actionDto, "visitorName", String.valueOf(actionDto.getSuppliedVisitorName()));
+                setNotFoundErrorMessage(actionDto, "visitorName", String.valueOf(actionDto.getSuppliedVisitorName()));
                 return EventOutput.Result.FAILURE;
             }
             Optional<Visitor> foundVisitor = visitorRepository.findVisitorByVisitorNameAndVisitorNameSequence(actionDto.getSuppliedVisitorName(), 1);
             if (foundVisitor.isPresent()) {
                 actionDto.setSuppliedVisitorId(foundVisitor.get().getVisitorId());
             } else {
-                setErrorMessageNotFound(actionDto, "visitorId", actionDto.getSuppliedVisitorName());
+                setNotFoundErrorMessage(actionDto, "visitorId", actionDto.getSuppliedVisitorName());
                 return EventOutput.Result.FAILURE;
             }
         } else {
-            setErrorMessageBadRequest(actionDto, "Visitor", String.valueOf(actionDto.getSuppliedVisitorName()));
+            setBadRequestErrorMessage(actionDto, "Visitor", String.valueOf(actionDto.getSuppliedVisitorName()));
             return EventOutput.Result.FAILURE;
         }
         return EventOutput.Result.SUCCESS;
     }
 
-    private void setErrorMessageNotFound(FindVisitorIdByVisitorNameActionDTO actionDto, String id,
-                                         String value) {
-        actionDto.setHttpStatus(404);
+    private void setNotFoundErrorMessage(Dto actionDto, String id, String value) {
         actionDto.setErrorKey(id);
         actionDto.setErrorValue(value);
-        actionDto.setErrorMessage(id + " not found for supplied value [" + value + "]");
+        actionDto.setNotFoundErrorMessage("");
     }
 
-    private void setErrorMessageBadRequest(FindVisitorIdByVisitorNameActionDTO actionDto, String id,
-                                           String value) {
-        actionDto.setHttpStatus(400);
+    private void setBadRequestErrorMessage(Dto actionDto, String id, String value) {
         actionDto.setErrorKey(id);
         actionDto.setErrorValue(value);
-        actionDto.setErrorMessage("Supplied value " + id + " is empty");
+        actionDto.setBadRequestErrorMessage("");
     }
 
-
-    private void setErrorMessageConflict(FindVisitorIdByVisitorNameActionDTO actionDto, String id,
-                                         String value) {
-        actionDto.setHttpStatus(409);
+    private void setConflictErrorMessage(Dto actionDto, String id, String value) {
         actionDto.setErrorKey(id);
         actionDto.setErrorValue(value);
-        actionDto.setErrorMessage("Multiple " + id + " found for supplied value [" + value +
+        actionDto.setConflictErrorMessage("Multiple " + id + " found for supplied value [" + value +
                 "]");
     }
 
-    public interface FindVisitorIdByVisitorNameActionDTO {
+    public interface Dto {
 
         // @formatter:off
         // Getters
@@ -85,10 +75,13 @@ public class FindVisitorIdByVisitorNameAction implements Action<FindVisitorIdByV
         void setSuppliedVisitorId(long id);
 
         // error setters
-        void setHttpStatus(int status);
+        // @formatter:off
+        void setBadRequestErrorMessage(String problem);
+        void setNotFoundErrorMessage(String problem);
+        void setConflictErrorMessage(String reason);
+        void setUnprocessableErrorMessage(String reason);
         void setErrorKey(String errorKey);
         void setErrorValue(String errorValue);
-        void setErrorMessage(String key);
         // @formatter:on
     }
 }

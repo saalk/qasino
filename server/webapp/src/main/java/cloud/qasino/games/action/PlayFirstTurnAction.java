@@ -1,33 +1,25 @@
 package cloud.qasino.games.action;
 
 import cloud.qasino.games.action.interfaces.Action;
-import cloud.qasino.games.database.entity.Card;
 import cloud.qasino.games.database.entity.CardMove;
 import cloud.qasino.games.database.entity.Game;
 import cloud.qasino.games.database.entity.Player;
 import cloud.qasino.games.database.entity.Turn;
 import cloud.qasino.games.database.entity.enums.card.Face;
-import cloud.qasino.games.database.entity.enums.card.Location;
 import cloud.qasino.games.database.entity.enums.game.Type;
 import cloud.qasino.games.database.entity.enums.move.Move;
-import cloud.qasino.games.database.repository.CardMoveRepository;
-import cloud.qasino.games.database.repository.CardRepository;
-import cloud.qasino.games.database.repository.TurnRepository;
 import cloud.qasino.games.database.service.PlayService;
 import cloud.qasino.games.dto.elements.SectionTable;
 import cloud.qasino.games.event.EventOutput;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
 
-import javax.annotation.Resource;
 import java.util.List;
-import java.util.Optional;
 
 @Slf4j
 @Component
-public class PlayFirstTurnAndInitialCardMovesForGameType implements Action<PlayFirstTurnAndInitialCardMovesForGameType.Dto, EventOutput.Result> {
+public class PlayFirstTurnAction implements Action<PlayFirstTurnAction.Dto, EventOutput.Result> {
 
     @Autowired
     PlayService playService;
@@ -36,7 +28,7 @@ public class PlayFirstTurnAndInitialCardMovesForGameType implements Action<PlayF
     public EventOutput.Result perform(Dto actionDto) {
 
         if (!actionDto.getQasinoGame().getType().equals(Type.HIGHLOW)) {
-            setErrorMessageBadRequestError(actionDto,"Game.type", String.valueOf(actionDto.getQasinoGame().getType()));
+            setBadRequestErrorMessage(actionDto,"Game.type", String.valueOf(actionDto.getQasinoGame().getType()));
             return EventOutput.Result.FAILURE;
         }
         // get active player / starting player
@@ -48,17 +40,15 @@ public class PlayFirstTurnAndInitialCardMovesForGameType implements Action<PlayF
             Face.UP,
             1);
         actionDto.setActiveTurn(activeTurn); // can be null
-        actionDto.setAllCardMovesForTheGame(playService.getAllCardMovesForTheGame(actionDto.getQasinoGame())); // can be null
+        actionDto.setAllCardMovesForTheGame(playService.getCardMovesForGame(actionDto.getQasinoGame())); // can be null
 
         return EventOutput.Result.SUCCESS;
     }
 
-    private void setErrorMessageBadRequestError(Dto actionDto, String id,
-                                                String value) {
-        actionDto.setHttpStatus(400);
+    private void setBadRequestErrorMessage(Dto actionDto, String id, String value) {
         actionDto.setErrorKey(id);
         actionDto.setErrorValue(value);
-        actionDto.setErrorMessage("Action [" + id + "] invalid - only highlow implemented");
+        actionDto.setBadRequestErrorMessage("Action [" + id + "] invalid - only highlow implemented");
     }
     public interface Dto {
 
@@ -75,10 +65,13 @@ public class PlayFirstTurnAndInitialCardMovesForGameType implements Action<PlayF
         void setAllCardMovesForTheGame(List<CardMove> cardMoves);
 
         // error setters
-        void setHttpStatus(int status);
+        // @formatter:off
+        void setBadRequestErrorMessage(String problem);
+        void setNotFoundErrorMessage(String problem);
+        void setConflictErrorMessage(String reason);
+        void setUnprocessableErrorMessage(String reason);
         void setErrorKey(String errorKey);
         void setErrorValue(String errorValue);
-        void setErrorMessage(String key);
         // @formatter:on
     }
 }

@@ -1,9 +1,7 @@
 package cloud.qasino.games.dto.elements;
 
-import cloud.qasino.games.database.entity.Card;
 import cloud.qasino.games.database.entity.Turn;
 import cloud.qasino.games.database.entity.enums.move.Move;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -22,13 +20,13 @@ public class SectionTable {
     private Turn currentTurn;
     @JsonProperty("PossibleMoves")
     private List<Move> possibleMoves;
-    @JsonIgnore
-    @JsonProperty("CardsInStock")
-    private List<Card> cardsInStockNotInHand;
-    @JsonProperty("StringCardsInStock")
+    //    @JsonIgnore
+//    @JsonProperty("CardsInStock")
+//    private List<Card> cardsInStockNotInHand;
+    @JsonProperty("Stock")
     private String stringCardsInStockNotInHand;
-    @JsonProperty("CountCardsInStockNotInHand")
-    private int countCardsInStockNotInHand;
+    @JsonProperty("countStockAndTotal")
+    private String countStockAndTotal;
 
     @JsonProperty("Seats")
     private List<SectionSeat> seats;

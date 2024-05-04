@@ -23,47 +23,30 @@ public class SignUpNewVisitorAction implements Action<SignUpNewVisitorAction.Sig
         if (!(StringUtils.isEmpty(actionDto.getSuppliedVisitorName()))) {
             int sequence = Math.toIntExact(visitorRepository.countByVisitorName(actionDto.getSuppliedVisitorName()));
             if (sequence != 0) {
-                setErrorMessageConflict(actionDto, "visitorName", String.valueOf(actionDto.getSuppliedVisitorName()));
+                setConflictErrorMessage(actionDto, "visitorName", String.valueOf(actionDto.getSuppliedVisitorName()));
                 return EventOutput.Result.FAILURE;
             }
             // todo LOW split visitorName and number
             Visitor createdVisitor = visitorRepository.save(new Visitor(actionDto.getSuppliedVisitorName(), 1,
                     actionDto.getSuppliedEmail()));
-            if (createdVisitor.getVisitorId() == 0) {
-                setErrorMessageInternalServerError(actionDto, "visitorName", String.valueOf(actionDto.getSuppliedVisitorName()));
-                return EventOutput.Result.FAILURE;
-            }
             actionDto.setSuppliedVisitorId(createdVisitor.getVisitorId());
         } else {
-            setErrorMessageBadRequest(actionDto, "visitorName", String.valueOf(actionDto.getSuppliedVisitorName()));
+            setBadRequestErrorMessage(actionDto, "visitorName", String.valueOf(actionDto.getSuppliedVisitorName()));
             return EventOutput.Result.FAILURE;
         }
         return EventOutput.Result.SUCCESS;
     }
 
-    private void setErrorMessageBadRequest(SignUpNewVisitorActionDTO actionDto, String id,
-                                           String value) {
-        actionDto.setHttpStatus(400);
+     private void setBadRequestErrorMessage(SignUpNewVisitorActionDTO actionDto, String id, String value) {
         actionDto.setErrorKey(id);
         actionDto.setErrorValue(value);
-        actionDto.setErrorMessage("Supplied value for visitorName is empty");
+        actionDto.setBadRequestErrorMessage("empty");
     }
 
-
-    private void setErrorMessageConflict(SignUpNewVisitorActionDTO actionDto, String id,
-                                         String value) {
-        actionDto.setHttpStatus(409);
+    private void setConflictErrorMessage(SignUpNewVisitorActionDTO actionDto, String id, String value) {
         actionDto.setErrorKey(id);
         actionDto.setErrorValue(value);
-        actionDto.setErrorMessage("visitorName [" + value + "] not available any more");
-    }
-
-    private void setErrorMessageInternalServerError(SignUpNewVisitorActionDTO actionDto, String id,
-                                                    String value) {
-        actionDto.setHttpStatus(500);
-        actionDto.setErrorKey(id);
-        actionDto.setErrorValue(value);
-        actionDto.setErrorMessage("Crash while signing up a new visitor");
+        actionDto.setConflictErrorMessage("visitorName [" + value + "] not available any more");
     }
 
     public interface SignUpNewVisitorActionDTO {
@@ -77,10 +60,13 @@ public class SignUpNewVisitorAction implements Action<SignUpNewVisitorAction.Sig
         void setSuppliedVisitorId(long id);
 
         // error setters
-        void setHttpStatus(int status);
+        // @formatter:off
+        void setBadRequestErrorMessage(String problem);
+        void setNotFoundErrorMessage(String problem);
+        void setConflictErrorMessage(String reason);
+        void setUnprocessableErrorMessage(String reason);
         void setErrorKey(String errorKey);
         void setErrorValue(String errorValue);
-        void setErrorMessage(String key);
         // @formatter:on
     }
 }

@@ -1,8 +1,12 @@
 package cloud.qasino.games.controller;
 
-import cloud.qasino.games.action.CountQasinoTotals;
-import cloud.qasino.games.action.FindAllEntitiesForInputAction;
+import cloud.qasino.games.action.CalculateQasinoStatistics;
+import cloud.qasino.games.action.CreateNewGameAction;
+import cloud.qasino.games.action.CreateNewLeagueAction;
+import cloud.qasino.games.action.IsGameConsistentForGameTrigger;
+import cloud.qasino.games.action.LoadEntitiesToDtoAction;
 import cloud.qasino.games.action.MapQasinoResponseFromDto;
+import cloud.qasino.games.action.PrepareGameAction;
 import cloud.qasino.games.action.SetStatusIndicatorsBaseOnRetrievedDataAction;
 import cloud.qasino.games.database.entity.Game;
 import cloud.qasino.games.database.entity.Player;
@@ -27,6 +31,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -42,7 +47,7 @@ import java.util.Optional;
 import static cloud.qasino.games.configuration.Constants.DEFAULT_PAWN_SHIP_BOT;
 
 @RestController
-public class GameController {
+public class GameAndLeagueController {
 
     private VisitorRepository visitorRepository;
     private LeagueRepository leagueRepository;
@@ -54,16 +59,24 @@ public class GameController {
     EventOutput.Result output;
 
     @Autowired
-    FindAllEntitiesForInputAction findAllEntitiesForInputAction;
+    LoadEntitiesToDtoAction loadEntitiesToDtoAction;
     @Autowired
     SetStatusIndicatorsBaseOnRetrievedDataAction setStatusIndicatorsBaseOnRetrievedDataAction;
     @Autowired
-    CountQasinoTotals countQasinoTotals;
+    CalculateQasinoStatistics calculateQasinoStatistics;
+    @Autowired
+    CreateNewLeagueAction createNewLeagueAction;
     @Autowired
     MapQasinoResponseFromDto mapQasinoResponseFromDto;
+    @Autowired
+    IsGameConsistentForGameTrigger isGameConsistentForGameTrigger;
+    @Autowired
+    CreateNewGameAction createNewGameAction;
+    @Autowired
+    PrepareGameAction prepareGameAction;
 
     @Autowired
-    public GameController(
+    public GameAndLeagueController(
             VisitorRepository visitorRepository,
             LeagueRepository leagueRepository,
             GameRepository gameRepository,
@@ -107,34 +120,24 @@ public class GameController {
             return ResponseEntity.status(HttpStatus.valueOf(flowDTO.getHttpStatus())).headers(flowDTO.getHeaders()).build();
         }
         // get all entities
-        output = findAllEntitiesForInputAction.perform(flowDTO);
+        output = loadEntitiesToDtoAction.perform(flowDTO);
         if (output == EventOutput.Result.FAILURE) {
             flowDTO.prepareResponseHeaders();
             return ResponseEntity.status(HttpStatus.valueOf(flowDTO.getHttpStatus())).headers(flowDTO.getHeaders()).build();
         }
-        // create game no league
-        flowDTO.setQasinoGame(gameRepository.save(new Game(
-                null,
-                type,
-                flowDTO.getQasinoVisitor().getVisitorId(),
-                style,
-                Integer.parseInt(ante))));
-        // todo move to find all entities with if
-        flowDTO.setSuppliedGameId(flowDTO.getSuppliedGameId());
-        // create human player for visitor with role initiator
-        Player createdHuman = new Player(
-                flowDTO.getQasinoVisitor(),
-                flowDTO.getQasinoGame(),
-                Role.INITIATOR,
-                flowDTO.getQasinoVisitor().getBalance(),
-                1,
-                Avatar.fromLabelWithDefault(avatar),
-                AiLevel.HUMAN);
-        flowDTO.setInitiatingPlayer(playerRepository.save(createdHuman));
+
+        // create or update the game
+        output = isGameConsistentForGameTrigger.perform(flowDTO);
+        if (output == EventOutput.Result.FAILURE) {
+            flowDTO.prepareResponseHeaders();
+            return ResponseEntity.status(HttpStatus.valueOf(flowDTO.getHttpStatus())).headers(flowDTO.getHeaders()).build();
+        }
+        createNewGameAction.perform(flowDTO);
+
         // build response
-        findAllEntitiesForInputAction.perform(flowDTO);
+        loadEntitiesToDtoAction.perform(flowDTO);
         setStatusIndicatorsBaseOnRetrievedDataAction.perform(flowDTO);
-        countQasinoTotals.perform(flowDTO);
+        calculateQasinoStatistics.perform(flowDTO);
         mapQasinoResponseFromDto.perform(flowDTO);
         flowDTO.prepareResponseHeaders();
         return ResponseEntity.status(HttpStatus.valueOf(201)).headers(flowDTO.getHeaders()).body(flowDTO.getQasino());
@@ -165,47 +168,24 @@ public class GameController {
             return ResponseEntity.status(HttpStatus.valueOf(flowDTO.getHttpStatus())).headers(flowDTO.getHeaders()).build();
         }
         // get all entities
-        output = findAllEntitiesForInputAction.perform(flowDTO);
+        output = loadEntitiesToDtoAction.perform(flowDTO);
         if (output == EventOutput.Result.FAILURE) {
             flowDTO.prepareResponseHeaders();
             return ResponseEntity.status(HttpStatus.valueOf(flowDTO.getHttpStatus())).headers(flowDTO.getHeaders()).build();
         }
-        // create game no league
-        flowDTO.setQasinoGame(gameRepository.save(new Game(null, type,
-                flowDTO.getQasinoVisitor().getVisitorId(), style, Integer.parseInt(ante))));
-        // todo move to find all entities with if
-        flowDTO.setSuppliedGameId(flowDTO.getSuppliedGameId());
-        // create human player for visitor with role initiator
-        Player createdHuman = new Player(
-                flowDTO.getQasinoVisitor(),
-                flowDTO.getQasinoGame(),
-                Role.INITIATOR,
-                flowDTO.getQasinoVisitor().getBalance(),
-                1,
-                Avatar.fromLabelWithDefault(avatar),
-                AiLevel.HUMAN);
-        flowDTO.setInitiatingPlayer(playerRepository.save(createdHuman));
-        // rules - AiLevel bot cannot be HUMAN
-        if (AiLevel.fromLabelWithDefault(aiLevel) == AiLevel.HUMAN) {
+
+        // create or update the game
+        output = isGameConsistentForGameTrigger.perform(flowDTO);
+        if (output == EventOutput.Result.FAILURE) {
             flowDTO.prepareResponseHeaders();
-            return ResponseEntity.status(409).headers(flowDTO.getHeaders()).build();
+            return ResponseEntity.status(HttpStatus.valueOf(flowDTO.getHttpStatus())).headers(flowDTO.getHeaders()).build();
         }
-        // create bot
-        int fiches = (int) (Math.random() * DEFAULT_PAWN_SHIP_BOT + 1);
-        Player createdAi = new Player(
-                flowDTO.getQasinoVisitor(),
-                flowDTO.getQasinoGame(),
-                Role.BOT,
-                fiches,
-                2,
-                flowDTO.getSuppliedAvatar(),
-                flowDTO.getSuppliedAiLevel());
-        playerRepository.save(createdAi);
+        createNewGameAction.perform(flowDTO);
 
         // build response
-        findAllEntitiesForInputAction.perform(flowDTO);
+        loadEntitiesToDtoAction.perform(flowDTO);
         setStatusIndicatorsBaseOnRetrievedDataAction.perform(flowDTO);
-        countQasinoTotals.perform(flowDTO);
+        calculateQasinoStatistics.perform(flowDTO);
         mapQasinoResponseFromDto.perform(flowDTO);
         flowDTO.prepareResponseHeaders();
         return ResponseEntity.status(HttpStatus.valueOf(201)).headers(flowDTO.getHeaders()).body(flowDTO.getQasino());
@@ -236,34 +216,24 @@ public class GameController {
             return ResponseEntity.status(HttpStatus.valueOf(flowDTO.getHttpStatus())).headers(flowDTO.getHeaders()).build();
         }
         // get all entities
-        output = findAllEntitiesForInputAction.perform(flowDTO);
+        output = loadEntitiesToDtoAction.perform(flowDTO);
         if (output == EventOutput.Result.FAILURE) {
             flowDTO.prepareResponseHeaders();
             return ResponseEntity.status(HttpStatus.valueOf(flowDTO.getHttpStatus())).headers(flowDTO.getHeaders()).build();
         }
-        // create game with league
-        flowDTO.setQasinoGame(gameRepository.save(new Game(
-                flowDTO.getQasinoGameLeague(),
-                type,
-                flowDTO.getQasinoVisitor().getVisitorId(),
-                style,
-                Integer.parseInt(ante))));
-        // todo move to find all entities with if
-        flowDTO.setSuppliedGameId(flowDTO.getSuppliedGameId());
-        // create human player for visitor with role initiator
-        Player createdHuman = new Player(
-                flowDTO.getQasinoVisitor(),
-                flowDTO.getQasinoGame(),
-                Role.INITIATOR,
-                flowDTO.getQasinoVisitor().getBalance(),
-                1,
-                Avatar.fromLabelWithDefault(avatar),
-                AiLevel.HUMAN);
-        flowDTO.setInitiatingPlayer(playerRepository.save(createdHuman));
+
+        // create or update the game
+        output = isGameConsistentForGameTrigger.perform(flowDTO);
+        if (output == EventOutput.Result.FAILURE) {
+            flowDTO.prepareResponseHeaders();
+            return ResponseEntity.status(HttpStatus.valueOf(flowDTO.getHttpStatus())).headers(flowDTO.getHeaders()).build();
+        }
+        createNewGameAction.perform(flowDTO);
+
         // build response
-        findAllEntitiesForInputAction.perform(flowDTO);
+        loadEntitiesToDtoAction.perform(flowDTO);
         setStatusIndicatorsBaseOnRetrievedDataAction.perform(flowDTO);
-        countQasinoTotals.perform(flowDTO);
+        calculateQasinoStatistics.perform(flowDTO);
         mapQasinoResponseFromDto.perform(flowDTO);
         flowDTO.prepareResponseHeaders();
         return ResponseEntity.status(HttpStatus.valueOf(201)).headers(flowDTO.getHeaders()).body(flowDTO.getQasino());
@@ -296,49 +266,26 @@ public class GameController {
             return ResponseEntity.status(HttpStatus.valueOf(flowDTO.getHttpStatus())).headers(flowDTO.getHeaders()).build();
         }
         // get all entities
-        output = findAllEntitiesForInputAction.perform(flowDTO);
+        output = loadEntitiesToDtoAction.perform(flowDTO);
         if (output == EventOutput.Result.FAILURE) {
             flowDTO.prepareResponseHeaders();
             return ResponseEntity.status(HttpStatus.valueOf(flowDTO.getHttpStatus())).headers(flowDTO.getHeaders()).build();
         }
-        // create game with league
-        flowDTO.setQasinoGame(gameRepository.save(new Game(
-                flowDTO.getQasinoGameLeague(),
-                type,
-                flowDTO.getQasinoVisitor().getVisitorId(),
-                style,
-                Integer.parseInt(ante))));
-        // todo move to find all entities with if
-        flowDTO.setSuppliedGameId(flowDTO.getSuppliedGameId());
-        // create human player for visitor with role initiator
-        Player createdHuman = new Player(
-                flowDTO.getQasinoVisitor(),
-                flowDTO.getQasinoGame(),
-                Role.INITIATOR,
-                flowDTO.getQasinoVisitor().getBalance(),
-                1,
-                Avatar.fromLabelWithDefault(avatar),
-                AiLevel.HUMAN);
-        flowDTO.setInitiatingPlayer(playerRepository.save(createdHuman));
-        // rules - AiLevel bot cannot be HUMAN
-        if (AiLevel.fromLabelWithDefault(aiLevel) == AiLevel.HUMAN) {
+
+        output = isGameConsistentForGameTrigger.perform(flowDTO);
+        if (output == EventOutput.Result.FAILURE) {
             flowDTO.prepareResponseHeaders();
-            return ResponseEntity.status(409).headers(flowDTO.getHeaders()).build();
+            return ResponseEntity.status(HttpStatus.valueOf(flowDTO.getHttpStatus())).headers(flowDTO.getHeaders()).build();
         }
-        // create bot
-        int fiches = (int) (Math.random() * DEFAULT_PAWN_SHIP_BOT + 1);
-        playerRepository.save(new Player(
-                flowDTO.getQasinoVisitor(),
-                flowDTO.getQasinoGame(),
-                Role.BOT,
-                fiches,
-                2,
-                flowDTO.getSuppliedAvatar(),
-                flowDTO.getSuppliedAiLevel()));
+        // update game
+        createNewGameAction.perform(flowDTO);
+
+
+
         // build response
-        findAllEntitiesForInputAction.perform(flowDTO);
+        loadEntitiesToDtoAction.perform(flowDTO);
         setStatusIndicatorsBaseOnRetrievedDataAction.perform(flowDTO);
-        countQasinoTotals.perform(flowDTO);
+        calculateQasinoStatistics.perform(flowDTO);
         mapQasinoResponseFromDto.perform(flowDTO);
         flowDTO.prepareResponseHeaders();
         return ResponseEntity.status(HttpStatus.valueOf(201)).headers(flowDTO.getHeaders()).body(flowDTO.getQasino());
@@ -370,36 +317,23 @@ public class GameController {
             return ResponseEntity.status(HttpStatus.valueOf(flowDTO.getHttpStatus())).headers(flowDTO.getHeaders()).build();
         }
         // get all entities
-        output = findAllEntitiesForInputAction.perform(flowDTO);
+        output = loadEntitiesToDtoAction.perform(flowDTO);
         if (output == EventOutput.Result.FAILURE) {
             flowDTO.prepareResponseHeaders();
             return ResponseEntity.status(HttpStatus.valueOf(flowDTO.getHttpStatus())).headers(flowDTO.getHeaders()).build();
         }
-        // rules - GameState must be in GameStateGroup 'setup' NEW, PENDING_INVITATIONS
-        if (flowDTO.getQasinoGame() != null
-                && !flowDTO.getQasinoGame().getState().getGroup().equals(GameStateGroup.SETUP)) {
+        output = isGameConsistentForGameTrigger.perform(flowDTO);
+        if (output == EventOutput.Result.FAILURE) {
             flowDTO.prepareResponseHeaders();
-            return ResponseEntity.status(HttpStatus.CONFLICT).headers(flowDTO.getHeaders()).build();
+            return ResponseEntity.status(HttpStatus.valueOf(flowDTO.getHttpStatus())).headers(flowDTO.getHeaders()).build();
         }
-        // update game
-        if (!(flowDTO.getSuppliedLeagueId() == 0)) {
-            flowDTO.getQasinoGame().setLeague(flowDTO.getQasinoGameLeague());
-        }
-        if (!(flowDTO.getSuppliedType() == null)) {
-            flowDTO.getQasinoGame().setType(flowDTO.getSuppliedType());
-        }
-        if (!StringUtils.isEmpty(flowDTO.getSuppliedStyle())) {
-            flowDTO.getQasinoGame().setStyle(flowDTO.getSuppliedStyle());
-        }
-        if (!(flowDTO.getSuppliedAnte() <= 0)) {
-            flowDTO.getQasinoGame().setAnte(flowDTO.getSuppliedAnte());
-        }
-        flowDTO.getQasinoGame().setState(GameState.PREPARED);
-        gameRepository.save(flowDTO.getQasinoGame());
+         // update game
+        prepareGameAction.perform(flowDTO);
+
         // get all (updated) entities
-        findAllEntitiesForInputAction.perform(flowDTO);
+        loadEntitiesToDtoAction.perform(flowDTO);
         setStatusIndicatorsBaseOnRetrievedDataAction.perform(flowDTO);
-        countQasinoTotals.perform(flowDTO);
+        calculateQasinoStatistics.perform(flowDTO);
         mapQasinoResponseFromDto.perform(flowDTO);
         flowDTO.prepareResponseHeaders();
         return ResponseEntity.ok().headers(flowDTO.getHeaders()).body(flowDTO.getQasino());
@@ -630,7 +564,6 @@ public class GameController {
         return ResponseEntity.ok().headers(headers).body(linkedGame);
     }
 
-
 //    // @PostMapping(value = "/cards/game/{id}/jokers/{jokers}")
 //    public ResponseEntity setupGame(
 //@RequestHeader("visitorId") String vId,
@@ -674,76 +607,6 @@ public class GameController {
 //    }
 //
 
-    // Game crud actions
-    // @GetMapping("/game/{gameId}")
-    public ResponseEntity<Optional<Game>> getGame(
-            @RequestHeader("visitorId") String vId,
-            @PathVariable("gameId") String id
-    ) {
-
-        // header in response
-        URI uri = ServletUriComponentsBuilder.fromCurrentRequest()
-                .path("")
-                .buildAndExpand()
-                .toUri();
-        HttpHeaders headers = new HttpHeaders();
-        headers.add("URI", String.valueOf(uri));
-
-        // validations
-        if (!StringUtils.isNumeric(id)) {
-            return ResponseEntity.badRequest().headers(headers).build();
-        }
-
-        // logic
-        Optional<Game> foundGame = gameRepository.findById(Long.parseLong(id));
-        if (foundGame.isPresent()) {
-            return ResponseEntity.ok().headers(headers).body(foundGame);
-        } else {
-            return ResponseEntity.notFound().headers(headers).build();
-        }
-
-    }
-
-    // todo LOW work on all sqls, works for new
-    // @PutMapping(value = "/game/{gameId}/state/{state}")
-    public ResponseEntity<Game> updateGameState(
-            @RequestHeader("visitorId") String vId,
-            @PathVariable("gameId") String id,
-            @PathVariable("state") String state
-    ) {
-        // todo make string and add fromLabelWithDefault
-
-        // header in response
-        URI uri = ServletUriComponentsBuilder.fromCurrentRequest()
-                .path("")
-                .query("")
-                .buildAndExpand(id, state)
-                .toUri();
-        HttpHeaders headers = new HttpHeaders();
-        headers.add("URI", String.valueOf(uri));
-
-        // validations
-        if (!StringUtils.isNumeric(id)
-                || (GameState.fromLabelWithDefault(state) == GameState.ERROR)) {
-            // 400
-            return ResponseEntity.badRequest().headers(headers).build();
-        }
-
-        long gameId = Long.parseLong(id);
-        Optional<Game> foundGame = gameRepository.findById(gameId);
-        if (!foundGame.isPresent()) {
-            // 404
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).headers(headers).build();
-        }
-
-        // logic
-        Game updateGame = foundGame.get();
-        updateGame.setState(GameState.fromLabelWithDefault(state));
-        gameRepository.save(updateGame);
-
-        return ResponseEntity.ok().headers(headers).body(updateGame);
-    }
-
     @DeleteMapping("/game/{gameId}")
     public ResponseEntity<Qasino> deleteGame(
             @RequestHeader("visitorId") String vId,
@@ -757,7 +620,7 @@ public class GameController {
             return ResponseEntity.status(HttpStatus.valueOf(flowDTO.getHttpStatus())).headers(flowDTO.getHeaders()).build();
         }
         // get all entities
-        output = findAllEntitiesForInputAction.perform(flowDTO);
+        output = loadEntitiesToDtoAction.perform(flowDTO);
         if (output == EventOutput.Result.FAILURE) {
             flowDTO.prepareResponseHeaders();
             return ResponseEntity.status(HttpStatus.valueOf(flowDTO.getHttpStatus())).headers(flowDTO.getHeaders()).build();
@@ -766,9 +629,133 @@ public class GameController {
         gameRepository.deleteById(flowDTO.getSuppliedGameId());
         flowDTO.setQasinoGame(null);
         // build response
-        findAllEntitiesForInputAction.perform(flowDTO);
+        loadEntitiesToDtoAction.perform(flowDTO);
         setStatusIndicatorsBaseOnRetrievedDataAction.perform(flowDTO);
-        countQasinoTotals.perform(flowDTO);
+        calculateQasinoStatistics.perform(flowDTO);
+        mapQasinoResponseFromDto.perform(flowDTO);
+        flowDTO.prepareResponseHeaders();
+        // delete 204 -> 200 otherwise no content in response body
+        return ResponseEntity.status(HttpStatus.OK).headers(flowDTO.getHeaders()).body(flowDTO.getQasino());
+    }
+
+    @GetMapping("/league/{leagueId}")
+    public ResponseEntity<Qasino> getLeague(
+            @RequestHeader("visitorId") String vId,
+            @PathVariable("leagueId") String id
+    ) {
+        // validate
+        QasinoFlowDTO flowDTO = new QasinoFlowDTO();
+        flowDTO.setPathVariables("vistiorId", vId, "leagueId", id);
+        if (!flowDTO.validateInput()) {
+            flowDTO.prepareResponseHeaders();
+            return ResponseEntity.status(HttpStatus.valueOf(flowDTO.getHttpStatus())).headers(flowDTO.getHeaders()).build();
+        }
+        // get all entities
+        output = loadEntitiesToDtoAction.perform(flowDTO);
+        if (output == EventOutput.Result.FAILURE) {
+            flowDTO.prepareResponseHeaders();
+            return ResponseEntity.status(HttpStatus.valueOf(flowDTO.getHttpStatus())).headers(flowDTO.getHeaders()).build();
+        }
+        // build response
+        setStatusIndicatorsBaseOnRetrievedDataAction.perform(flowDTO);
+        calculateQasinoStatistics.perform(flowDTO);
+        mapQasinoResponseFromDto.perform(flowDTO);
+        flowDTO.prepareResponseHeaders();
+        return ResponseEntity.ok().headers(flowDTO.getHeaders()).body(flowDTO.getQasino());
+    }
+
+    @PostMapping(value = "/league/{leagueName}/visitor/{visitorId}")
+    public ResponseEntity<Qasino> createLeague(
+            @PathVariable("leagueName") String name,
+            @PathVariable("visitorId") String visitorId
+    ) {
+        // validate
+        QasinoFlowDTO flowDTO = new QasinoFlowDTO();
+        flowDTO.setPathVariables("leagueName", name, "visitorId", visitorId);
+        if (!flowDTO.validateInput()) {
+            flowDTO.prepareResponseHeaders();
+            return ResponseEntity.status(HttpStatus.valueOf(flowDTO.getHttpStatus())).headers(flowDTO.getHeaders()).build();
+        }
+        // get all entities
+        output = loadEntitiesToDtoAction.perform(flowDTO);
+        if (output == EventOutput.Result.FAILURE) {
+            flowDTO.prepareResponseHeaders();
+            return ResponseEntity.status(HttpStatus.valueOf(flowDTO.getHttpStatus())).headers(flowDTO.getHeaders()).build();
+        }
+        // create - League for Visitor
+        output = createNewLeagueAction.perform(flowDTO);
+        if (output == EventOutput.Result.FAILURE) {
+            flowDTO.prepareResponseHeaders();
+            return ResponseEntity.status(HttpStatus.valueOf(flowDTO.getHttpStatus())).headers(flowDTO.getHeaders()).build();
+        }
+        // build response
+        loadEntitiesToDtoAction.perform(flowDTO);
+        setStatusIndicatorsBaseOnRetrievedDataAction.perform(flowDTO);
+        calculateQasinoStatistics.perform(flowDTO);
+        mapQasinoResponseFromDto.perform(flowDTO);
+        flowDTO.prepareResponseHeaders();
+        return ResponseEntity.ok().headers(flowDTO.getHeaders()).body(flowDTO.getQasino());
+    }
+
+    @PutMapping(value = "/league/{leagueId}")
+    public ResponseEntity<Qasino> updateLeague(
+            @RequestHeader("visitorId") String vId,
+            @PathVariable("leagueId") String id,
+            @RequestParam(name = "leagueName", defaultValue = "") String leagueName
+    ) {
+        // validate
+        QasinoFlowDTO flowDTO = new QasinoFlowDTO();
+        flowDTO.setPathVariables("visitorId", vId, "leagueId", id, "leagueName", leagueName);
+        if (!flowDTO.validateInput()) {
+            flowDTO.prepareResponseHeaders();
+            return ResponseEntity.status(HttpStatus.valueOf(flowDTO.getHttpStatus())).headers(flowDTO.getHeaders()).build();
+        }
+        // get all entities
+        output = loadEntitiesToDtoAction.perform(flowDTO);
+        if (output == EventOutput.Result.FAILURE) {
+            flowDTO.prepareResponseHeaders();
+            return ResponseEntity.status(HttpStatus.valueOf(flowDTO.getHttpStatus())).headers(flowDTO.getHeaders()).build();
+        }
+        // update
+        if (!StringUtils.isEmpty(flowDTO.getSuppliedLeagueName())) {
+            int sequence = (int) (leagueRepository.countByName(leagueName) + 1);
+            flowDTO.getQasinoGameLeague().setName(leagueName);
+            flowDTO.getQasinoGameLeague().setNameSequence(sequence);
+        }
+        leagueRepository.save(flowDTO.getQasinoGameLeague());
+        // build response
+        setStatusIndicatorsBaseOnRetrievedDataAction.perform(flowDTO);
+        calculateQasinoStatistics.perform(flowDTO);
+        mapQasinoResponseFromDto.perform(flowDTO);
+        flowDTO.prepareResponseHeaders();
+        return ResponseEntity.ok().headers(flowDTO.getHeaders()).body(flowDTO.getQasino());
+    }
+
+    @DeleteMapping("/league/{leagueId}")
+    public ResponseEntity<Qasino> deleteLeague(
+            @RequestHeader("visitorId") String vId,
+            @PathVariable("leagueId") String id
+    ) {
+        // validate
+        QasinoFlowDTO flowDTO = new QasinoFlowDTO();
+        flowDTO.setPathVariables("visitorId", vId, "leagueId", id);
+        if (!flowDTO.validateInput()) {
+            flowDTO.prepareResponseHeaders();
+            return ResponseEntity.status(HttpStatus.valueOf(flowDTO.getHttpStatus())).headers(flowDTO.getHeaders()).build();
+        }
+        // get all entities
+        output = loadEntitiesToDtoAction.perform(flowDTO);
+        if (output == EventOutput.Result.FAILURE) {
+            flowDTO.prepareResponseHeaders();
+            return ResponseEntity.status(HttpStatus.valueOf(flowDTO.getHttpStatus())).headers(flowDTO.getHeaders()).build();
+        }
+        // delete
+        // TODO check if league does not have games any more..
+        leagueRepository.deleteById(flowDTO.getSuppliedLeagueId());
+        flowDTO.setQasinoGameLeague(null);
+        // build response
+        setStatusIndicatorsBaseOnRetrievedDataAction.perform(flowDTO);
+        calculateQasinoStatistics.perform(flowDTO);
         mapQasinoResponseFromDto.perform(flowDTO);
         flowDTO.prepareResponseHeaders();
         // delete 204 -> 200 otherwise no content in response body

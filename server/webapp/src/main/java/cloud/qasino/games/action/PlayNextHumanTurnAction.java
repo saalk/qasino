@@ -1,18 +1,13 @@
 package cloud.qasino.games.action;
 
 import cloud.qasino.games.action.interfaces.Action;
-import cloud.qasino.games.database.entity.Card;
 import cloud.qasino.games.database.entity.CardMove;
 import cloud.qasino.games.database.entity.Game;
 import cloud.qasino.games.database.entity.Player;
 import cloud.qasino.games.database.entity.Turn;
 import cloud.qasino.games.database.entity.enums.card.Face;
-import cloud.qasino.games.database.entity.enums.card.Location;
 import cloud.qasino.games.database.entity.enums.game.Type;
 import cloud.qasino.games.database.entity.enums.move.Move;
-import cloud.qasino.games.database.repository.CardMoveRepository;
-import cloud.qasino.games.database.repository.CardRepository;
-import cloud.qasino.games.database.repository.TurnRepository;
 import cloud.qasino.games.database.service.PlayService;
 import cloud.qasino.games.dto.elements.SectionTable;
 import cloud.qasino.games.event.EventOutput;
@@ -21,13 +16,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.Resource;
 import java.util.List;
-import java.util.Optional;
 
 @Slf4j
 @Component
-public class PlayNextTurnAndCardMovesForHuman implements Action<PlayNextTurnAndCardMovesForHuman.Dto, EventOutput.Result> {
+public class PlayNextHumanTurnAction implements Action<PlayNextHumanTurnAction.Dto, EventOutput.Result> {
 
     @Autowired
     PlayService playService;
@@ -37,7 +30,7 @@ public class PlayNextTurnAndCardMovesForHuman implements Action<PlayNextTurnAndC
 
         // POST - turntrigger HIGER|LOWER|PASS for player in highlow game
         if (!actionDto.getQasinoGame().getType().equals(Type.HIGHLOW)) {
-            setErrorMessageBadRequestError(actionDto,"Game.type", String.valueOf(actionDto.getQasinoGame().getType()));
+            setBadRequestErrorMessage(actionDto,"Game.type", String.valueOf(actionDto.getQasinoGame().getType()));
             return EventOutput.Result.FAILURE;
         }
         // prepare local data
@@ -97,25 +90,21 @@ public class PlayNextTurnAndCardMovesForHuman implements Action<PlayNextTurnAndC
             actionDto.setSuppliedTurnTrigger(TurnTrigger.END_GAME);
         }
         actionDto.setActiveTurn(activeTurn); // can be null
-        actionDto.setAllCardMovesForTheGame(playService.getAllCardMovesForTheGame(actionDto.getQasinoGame())); // can be null
+        actionDto.setAllCardMovesForTheGame(playService.getCardMovesForGame(actionDto.getQasinoGame())); // can be null
 
         return EventOutput.Result.SUCCESS;
     }
 
-    private void setErrorMessageConflictError(Dto actionDto, String id,
-                                                String value) {
-        actionDto.setHttpStatus(409);
+    private void setConflictErrorMessage(Dto actionDto, String id, String value) {
         actionDto.setErrorKey(id);
         actionDto.setErrorValue(value);
-        actionDto.setErrorMessage("Trigger [" + actionDto.getSuppliedTurnTrigger() + "] invalid for gameState");
+        actionDto.setConflictErrorMessage("Trigger [" + actionDto.getSuppliedTurnTrigger() + "] invalid for gameState");
     }
 
-    private void setErrorMessageBadRequestError(Dto actionDto, String id,
-                                                String value) {
-        actionDto.setHttpStatus(400);
+    private void setBadRequestErrorMessage(Dto actionDto, String id, String value) {
         actionDto.setErrorKey(id);
         actionDto.setErrorValue(value);
-        actionDto.setErrorMessage("Action [" + id + "] invalid - only highlow implemented");
+        actionDto.setBadRequestErrorMessage("Action [" + id + "] invalid - only highlow implemented");
     }
 
     public interface Dto {
@@ -135,10 +124,13 @@ public class PlayNextTurnAndCardMovesForHuman implements Action<PlayNextTurnAndC
         void setAllCardMovesForTheGame(List<CardMove> cardMoves);
 
         // error setters
-        void setHttpStatus(int status);
+        // @formatter:off
+        void setBadRequestErrorMessage(String problem);
+        void setNotFoundErrorMessage(String problem);
+        void setConflictErrorMessage(String reason);
+        void setUnprocessableErrorMessage(String reason);
         void setErrorKey(String errorKey);
         void setErrorValue(String errorValue);
-        void setErrorMessage(String key);
         // @formatter:on
     }
 }

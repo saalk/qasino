@@ -8,7 +8,7 @@ public class Systemout {
 
     static int count = 1;
 
-    public static void handleSecuredLoanActionFlow(HandleSecuredLoanAction.HandleSecuredLoanActionDTO flowDTO) {
+    public static void handleSecuredLoanActionFlow(HandleSecuredLoanAction.Dto flowDTO) {
         ObjectMapper mapper = new ObjectMapper();
         try {
             String json = mapper.writeValueAsString(flowDTO);
@@ -19,7 +19,7 @@ public class Systemout {
         }
     }
 
-    public static void flow(HandleSecuredLoanAction.HandleSecuredLoanActionDTO flowDTO) {
+    public static void flow(HandleSecuredLoanAction.Dto flowDTO) {
         ObjectMapper mapper = new ObjectMapper();
         try {
             String json = mapper.writeValueAsString(flowDTO);

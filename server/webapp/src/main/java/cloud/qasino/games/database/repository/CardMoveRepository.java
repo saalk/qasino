@@ -12,6 +12,8 @@ public interface CardMoveRepository extends JpaRepository<CardMove, Long> {
 
 
     List<CardMove> findByTurnOrderBySequenceAsc(Turn turn);
+    List<CardMove> findByplayerIdOrderBySequenceAsc(long playerId);
+
 
     //@Query("select e from Turn e where e.gameId = :gameId")
     //Stream<Turn> findByGameIdReturnStream(Game game);

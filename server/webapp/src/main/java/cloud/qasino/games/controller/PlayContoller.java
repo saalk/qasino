@@ -1,17 +1,18 @@
 package cloud.qasino.games.controller;
 
-import cloud.qasino.games.action.CountQasinoTotals;
-import cloud.qasino.games.action.FindAllEntitiesForInputAction;
+import cloud.qasino.games.action.CalculateQasinoStatistics;
+import cloud.qasino.games.action.LoadEntitiesToDtoAction;
 import cloud.qasino.games.action.IsGameConsistentForGameTrigger;
 import cloud.qasino.games.action.IsGameFinished;
 import cloud.qasino.games.action.IsTurnConsistentForTurnTrigger;
-import cloud.qasino.games.action.MakeGamePlayableForGameType;
+import cloud.qasino.games.action.PlayGameForType;
 import cloud.qasino.games.action.MapQasinoResponseFromDto;
-import cloud.qasino.games.action.MapTableFromRetrievedDataAction;
-import cloud.qasino.games.action.PlayNextTurnAndCardMovesForHuman;
-import cloud.qasino.games.action.CalculateAndFinishGame;
+import cloud.qasino.games.action.MapQasinoGameTableFromDto;
+import cloud.qasino.games.action.PlayNextHumanTurnAction;
+import cloud.qasino.games.action.CalculateAndFinishGameAction;
 import cloud.qasino.games.action.SetStatusIndicatorsBaseOnRetrievedDataAction;
-import cloud.qasino.games.action.PlayFirstTurnAndInitialCardMovesForGameType;
+import cloud.qasino.games.action.PlayFirstTurnAction;
+import cloud.qasino.games.action.StopGameAction;
 import cloud.qasino.games.action.UpdateFichesForPlayer;
 import cloud.qasino.games.database.repository.CardMoveRepository;
 import cloud.qasino.games.database.repository.CardRepository;
@@ -43,23 +44,25 @@ public class PlayContoller {
     @Autowired
     UpdateFichesForPlayer updateFichesForPlayer;
     @Autowired
-    CalculateAndFinishGame calculateAndFinishGame;
+    CalculateAndFinishGameAction calculateAndFinishGameAction;
     @Autowired
-    MakeGamePlayableForGameType makeGamePlayableForGameType;
+    PlayGameForType playGameForType;
     @Autowired
-    PlayFirstTurnAndInitialCardMovesForGameType playFirstTurnAndInitialCardMovesForGameType;
+    PlayFirstTurnAction playFirstTurnAction;
     @Autowired
-    FindAllEntitiesForInputAction findAllEntitiesForInputAction;
+    StopGameAction stopGameAction;
+    @Autowired
+    LoadEntitiesToDtoAction loadEntitiesToDtoAction;
     @Autowired
     SetStatusIndicatorsBaseOnRetrievedDataAction setStatusIndicatorsBaseOnRetrievedDataAction;
     @Autowired
-    CountQasinoTotals countQasinoTotals;
+    CalculateQasinoStatistics calculateQasinoStatistics;
     @Autowired
     MapQasinoResponseFromDto mapQasinoResponseFromDto;
     @Autowired
-    MapTableFromRetrievedDataAction mapTableFromRetrievedDataAction;
+    MapQasinoGameTableFromDto mapQasinoGameTableFromDto;
     @Autowired
-    PlayNextTurnAndCardMovesForHuman playNextTurnAndCardMovesForHuman;
+    PlayNextHumanTurnAction playNextHumanTurnAction;
 
     private GameRepository gameRepository;
     private PlayerRepository playerRepository;
@@ -98,7 +101,7 @@ public class PlayContoller {
             return ResponseEntity.status(HttpStatus.valueOf(flowDTO.getHttpStatus())).headers(flowDTO.getHeaders()).build();
         }
         // get all entities
-        output = findAllEntitiesForInputAction.perform(flowDTO);
+        output = loadEntitiesToDtoAction.perform(flowDTO);
         if (output == EventOutput.Result.FAILURE) {
             flowDTO.prepareResponseHeaders();
             return ResponseEntity.status(HttpStatus.valueOf(flowDTO.getHttpStatus())).headers(flowDTO.getHeaders()).build();
@@ -109,18 +112,18 @@ public class PlayContoller {
             flowDTO.prepareResponseHeaders();
             return ResponseEntity.status(HttpStatus.valueOf(flowDTO.getHttpStatus())).headers(flowDTO.getHeaders()).build();
         }
-        makeGamePlayableForGameType.perform(flowDTO);
-        mapTableFromRetrievedDataAction.perform(flowDTO);
-        playFirstTurnAndInitialCardMovesForGameType.perform(flowDTO);
+        playGameForType.perform(flowDTO);
+        mapQasinoGameTableFromDto.perform(flowDTO);
+        playFirstTurnAction.perform(flowDTO);
         // get all entities and build reponse
-        output = findAllEntitiesForInputAction.perform(flowDTO);
+        output = loadEntitiesToDtoAction.perform(flowDTO);
         if (output == EventOutput.Result.FAILURE) {
             flowDTO.prepareResponseHeaders();
             return ResponseEntity.status(HttpStatus.valueOf(flowDTO.getHttpStatus())).headers(flowDTO.getHeaders()).build();
         }
-        mapTableFromRetrievedDataAction.perform(flowDTO);
+        mapQasinoGameTableFromDto.perform(flowDTO);
         setStatusIndicatorsBaseOnRetrievedDataAction.perform(flowDTO);
-        countQasinoTotals.perform(flowDTO);
+        calculateQasinoStatistics.perform(flowDTO);
         mapQasinoResponseFromDto.perform(flowDTO);
         flowDTO.prepareResponseHeaders();
         return ResponseEntity.status(HttpStatus.valueOf(201)).headers(flowDTO.getHeaders()).body(flowDTO.getQasino());
@@ -139,12 +142,12 @@ public class PlayContoller {
             return ResponseEntity.status(HttpStatus.valueOf(flowDTO.getHttpStatus())).headers(flowDTO.getHeaders()).build();
         }
         // get all entities and build reponse
-        output = findAllEntitiesForInputAction.perform(flowDTO);
+        output = loadEntitiesToDtoAction.perform(flowDTO);
         if (output == EventOutput.Result.FAILURE) {
             flowDTO.prepareResponseHeaders();
             return ResponseEntity.status(HttpStatus.valueOf(flowDTO.getHttpStatus())).headers(flowDTO.getHeaders()).build();
         }
-        mapTableFromRetrievedDataAction.perform(flowDTO);
+        mapQasinoGameTableFromDto.perform(flowDTO);
 
         // logic
         output = isGameConsistentForGameTrigger.perform(flowDTO);
@@ -158,30 +161,77 @@ public class PlayContoller {
             return ResponseEntity.status(HttpStatus.valueOf(flowDTO.getHttpStatus())).headers(flowDTO.getHeaders()).build();
         }
 //        output = canPlayerStillPlay.perform(flowDTO); // for now stop after one round
-        mapTableFromRetrievedDataAction.perform(flowDTO);
+        mapQasinoGameTableFromDto.perform(flowDTO);
 //        output = isPlayerHuman.perform(flowDTO);
-        playNextTurnAndCardMovesForHuman.perform(flowDTO);
+        playNextHumanTurnAction.perform(flowDTO);
 ////      OR playNextTurnAndCardMovesForBot.perform(flowDTO);
 //
         // todo find 500 at Optional<Card> previousCard
         updateFichesForPlayer.perform(flowDTO);
         output = isGameFinished.perform(flowDTO);
         if (output == EventOutput.Result.SUCCESS) {
-            output = calculateAndFinishGame.perform(flowDTO);
+            output = calculateAndFinishGameAction.perform(flowDTO);
         }
 
         // get all entities and build reponse
-        output = findAllEntitiesForInputAction.perform(flowDTO);
+        output = loadEntitiesToDtoAction.perform(flowDTO);
         if (output == EventOutput.Result.FAILURE) {
             flowDTO.prepareResponseHeaders();
             return ResponseEntity.status(HttpStatus.valueOf(flowDTO.getHttpStatus())).headers(flowDTO.getHeaders()).build();
         }
-        mapTableFromRetrievedDataAction.perform(flowDTO);
+        mapQasinoGameTableFromDto.perform(flowDTO);
         setStatusIndicatorsBaseOnRetrievedDataAction.perform(flowDTO);
-        countQasinoTotals.perform(flowDTO);
+        calculateQasinoStatistics.perform(flowDTO);
         mapQasinoResponseFromDto.perform(flowDTO);
         flowDTO.prepareResponseHeaders();
         return ResponseEntity.status(HttpStatus.valueOf(201)).headers(flowDTO.getHeaders()).body(flowDTO.getQasino());
     }
+
+    @PostMapping(value = "/game/{gameId}/stop")
+    public ResponseEntity<Qasino> stopPlayingTheGame(
+            @RequestHeader("visitorId") String vId,
+//            @RequestHeader("turnPlayerId") String pId,
+            @PathVariable("gameId") String id
+    ) {
+        // validate
+        QasinoFlowDTO flowDTO = new QasinoFlowDTO();
+        flowDTO.setPathVariables("gameId", id, "gameTrigger", "stop");
+        if (!flowDTO.validateInput()) {
+            flowDTO.prepareResponseHeaders();
+            return ResponseEntity.status(HttpStatus.valueOf(flowDTO.getHttpStatus())).headers(flowDTO.getHeaders()).build();
+        }
+        // get all entities
+        output = loadEntitiesToDtoAction.perform(flowDTO);
+        if (output == EventOutput.Result.FAILURE) {
+            flowDTO.prepareResponseHeaders();
+            return ResponseEntity.status(HttpStatus.valueOf(flowDTO.getHttpStatus())).headers(flowDTO.getHeaders()).build();
+        }
+        // logic
+        output = isGameConsistentForGameTrigger.perform(flowDTO);
+        if (output == EventOutput.Result.FAILURE) {
+            flowDTO.prepareResponseHeaders();
+            return ResponseEntity.status(HttpStatus.valueOf(flowDTO.getHttpStatus())).headers(flowDTO.getHeaders()).build();
+        }
+
+        stopGameAction.perform(flowDTO);
+        if (output == EventOutput.Result.SUCCESS) {
+            output = calculateAndFinishGameAction.perform(flowDTO);
+        }
+
+        // get all entities and build reponse
+        output = loadEntitiesToDtoAction.perform(flowDTO);
+        if (output == EventOutput.Result.FAILURE) {
+            flowDTO.prepareResponseHeaders();
+            return ResponseEntity.status(HttpStatus.valueOf(flowDTO.getHttpStatus())).headers(flowDTO.getHeaders()).build();
+        }
+
+        mapQasinoGameTableFromDto.perform(flowDTO);
+        setStatusIndicatorsBaseOnRetrievedDataAction.perform(flowDTO);
+        calculateQasinoStatistics.perform(flowDTO);
+        mapQasinoResponseFromDto.perform(flowDTO);
+        flowDTO.prepareResponseHeaders();
+        return ResponseEntity.status(HttpStatus.valueOf(201)).headers(flowDTO.getHeaders()).body(flowDTO.getQasino());
+    }
+
 }
 
