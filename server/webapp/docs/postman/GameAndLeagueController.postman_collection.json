@@ -8,14 +8,14 @@
 	},
 	"item": [
 		{
-			"name": "signup/saalk",
+			"name": "game/{gameId}",
 			"event": [
 				{
 					"listen": "test",
 					"script": {
 						"exec": [
 							"const jsonData = pm.response.json();\r",
-							"pm.test(\"Successful POST request for signup should be returned\", () => {\r",
+							"pm.test(\"Successful GET request should be returned\", () => {\r",
 							"  pm.expect(pm.response.code).to.be.oneOf([200, 201]);\r",
 							"});\r",
 							"pm.test(\"Body should return with NavBarItems property\", () => {\r",
@@ -39,12 +39,63 @@
 						"type": "text/javascript",
 						"packages": {}
 					}
-				},
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"uuid": "42df4898-68e8-4731-8fe4-8e0d1d62e687"
+					},
+					{
+						"key": "visitorId",
+						"value": "{{visitorId}}",
+						"uuid": "cff72cbd-7732-4be4-a9f0-6a2975829377"
+					}
+				],
+				"url": {
+					"raw": "{{host}}/game/{{gameId}}",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"game",
+						"{{gameId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "league/{leagueId}",
+			"event": [
 				{
-					"listen": "prerequest",
+					"listen": "test",
 					"script": {
 						"exec": [
-							""
+							"const jsonData = pm.response.json();\r",
+							"pm.test(\"Successful GET request should be returned\", () => {\r",
+							"  pm.expect(pm.response.code).to.be.oneOf([200, 201]);\r",
+							"});\r",
+							"pm.test(\"Body should return with NavBarItems property\", () => {\r",
+							"  pm.expect(jsonData).to.have.property('NavBarItems');\r",
+							"});\r",
+							"pm.test(\"Header should contain the vistorId\", () => {\r",
+							"    pm.response.to.have.header(\"visitorId\");\r",
+							"});\r",
+							"\r",
+							"// store all the ids in the header\r",
+							"pm.test( pm.response.headers.get(\"visitorId\").split(\"=\"), () => {\r",
+							"    pm.environment.set(\"visitorId\", pm.response.headers.get(\"visitorId\").split(\"=\"));\r",
+							"});\r",
+							"// pm.test( pm.response.headers.get(\"gameId\").split(\"=\"), () => {\r",
+							"//     pm.environment.set(\"gameId\", pm.response.headers.get(\"gameId\").split(\"=\"));\r",
+							"// });\r",
+							"// pm.test( pm.response.headers.get(\"leagueId\").split(\"=\"), () => {\r",
+							"//     pm.environment.set(\"leagueId\", pm.response.headers.get(\"leagueId\").split(\"=\"));\r",
+							"// });"
 						],
 						"type": "text/javascript",
 						"packages": {}
@@ -52,22 +103,27 @@
 				}
 			],
 			"request": {
-				"method": "POST",
-				"header": [],
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"uuid": "3fce27ca-4aba-4d51-a7ef-9c35fe5f18e4"
+					},
+					{
+						"key": "visitorId",
+						"value": "{{visitorId}}",
+						"uuid": "70ddb720-bd31-489b-bf2d-94700b770ecc"
+					}
+				],
 				"url": {
-					"raw": "{{host}}/signup/{{visitorName}}?email={{email}}",
+					"raw": "{{host}}/league/{{leagueId}}",
 					"host": [
 						"{{host}}"
 					],
 					"path": [
-						"signup",
-						"{{visitorName}}"
-					],
-					"query": [
-						{
-							"key": "email",
-							"value": "{{email}}"
-						}
+						"league",
+						"{{leagueId}}"
 					]
 				}
 			},
@@ -136,7 +192,7 @@
 			"response": []
 		},
 		{
-			"name": "game/setup/{type}/visitor/{visitorId}",
+			"name": "game/start/{type}/visitor/{visitorId}",
 			"event": [
 				{
 					"listen": "test",
@@ -177,18 +233,18 @@
 				"header": [
 					{
 						"key": "Content-Type",
-						"type": "text",
-						"value": "application/json"
+						"value": "application/json",
+						"uuid": "f93ecdbd-fa44-4ca4-b9e1-81e76475a90a"
 					}
 				],
 				"url": {
-					"raw": "{{host}}/game/setup/{{gameType}}/visitor/{{visitorId}}?ante={{gameAnte}}&style={{gameStyle}}&avatar={{playerAvatar}}",
+					"raw": "{{host}}/game/start/{{gameType}}/visitor/{{visitorId}}?ante={{gameAnte}}&style={{gameStyle}}&avatar={{playerAvatar}}",
 					"host": [
 						"{{host}}"
 					],
 					"path": [
 						"game",
-						"setup",
+						"start",
 						"{{gameType}}",
 						"visitor",
 						"{{visitorId}}"
@@ -212,7 +268,7 @@
 			"response": []
 		},
 		{
-			"name": "game/setup/{type}/visitor/{visitorId}/bot/{aiLevel}",
+			"name": "game/start/{type}/visitor/{visitorId}/bot/{aiLevel}",
 			"event": [
 				{
 					"listen": "test",
@@ -253,18 +309,18 @@
 				"header": [
 					{
 						"key": "Content-Type",
-						"type": "text",
-						"value": "application/json"
+						"value": "application/json",
+						"uuid": "11378641-b35d-4afc-bc9d-1130fd461b86"
 					}
 				],
 				"url": {
-					"raw": "{{host}}/game/setup/{{gameType}}/visitor/{{visitorId}}/bot/{{playerAiLevel}}?ante={{gameAnte}}&style={{gameStyle}}&avatar={{playerAvatar}}",
+					"raw": "{{host}}/game/start/{{gameType}}/visitor/{{visitorId}}/bot/{{playerAiLevel}}?ante={{gameAnte}}&style={{gameStyle}}&avatar={{playerAvatar}}",
 					"host": [
 						"{{host}}"
 					],
 					"path": [
 						"game",
-						"setup",
+						"start",
 						"{{gameType}}",
 						"visitor",
 						"{{visitorId}}",
@@ -290,7 +346,7 @@
 			"response": []
 		},
 		{
-			"name": "game/setup/{type}/league/{leagueId}/visitor/{visitorId}",
+			"name": "game/start/{type}/league/{leagueId}/visitor/{visitorId}",
 			"event": [
 				{
 					"listen": "test",
@@ -331,18 +387,18 @@
 				"header": [
 					{
 						"key": "Content-Type",
-						"type": "text",
-						"value": "application/json"
+						"value": "application/json",
+						"uuid": "4438ed68-d84b-4296-8c6e-8f6420bab67b"
 					}
 				],
 				"url": {
-					"raw": "{{host}}/game/setup/{{gameType}}/league/{{leagueId}}/visitor/{{visitorId}}?ante={{gameAnte}}&style={{gameStyle}}&avatar={{playerAvatar}}",
+					"raw": "{{host}}/game/start/{{gameType}}/league/{{leagueId}}/visitor/{{visitorId}}?ante={{gameAnte}}&style={{gameStyle}}&avatar={{playerAvatar}}",
 					"host": [
 						"{{host}}"
 					],
 					"path": [
 						"game",
-						"setup",
+						"start",
 						"{{gameType}}",
 						"league",
 						"{{leagueId}}",
@@ -368,7 +424,7 @@
 			"response": []
 		},
 		{
-			"name": "game/setup/{type}/league/{leagueId}/visitor/{visitorId}/bot/{aiLevel}",
+			"name": "game/start/{type}/league/{leagueId}/visitor/{visitorId}/bot/{aiLevel}",
 			"event": [
 				{
 					"listen": "test",
@@ -409,23 +465,23 @@
 				"header": [
 					{
 						"key": "Content-Type",
-						"type": "text",
-						"value": "application/json"
+						"value": "application/json",
+						"uuid": "6dbf73fe-6b6a-41cb-8a93-1eb9b1b74bdd"
 					},
 					{
 						"key": "visitorId",
 						"value": "{{visitorId}}",
-						"type": "text"
+						"uuid": "834f5a8f-e26b-482a-b14b-7ffa3cc47543"
 					}
 				],
 				"url": {
-					"raw": "{{host}}/game/setup/{{gameType}}/league/{{leagueId}}/visitor/{{visitorId}}/bot/{{playerAiLevel}}?ante={{gameAnte}}&style={{gameStyle}}&avatar={{playerAvatar}}",
+					"raw": "{{host}}/game/start/{{gameType}}/league/{{leagueId}}/visitor/{{visitorId}}/bot/{{playerAiLevel}}?ante={{gameAnte}}&style={{gameStyle}}&avatar={{playerAvatar}}",
 					"host": [
 						"{{host}}"
 					],
 					"path": [
 						"game",
-						"setup",
+						"start",
 						"{{gameType}}",
 						"league",
 						"{{leagueId}}",
@@ -453,7 +509,7 @@
 			"response": []
 		},
 		{
-			"name": "game/{gameId}/prepare/{type}/league/{leagueId}",
+			"name": "game/{gameId}/validate/{type}/league/{leagueId}",
 			"event": [
 				{
 					"listen": "test",
@@ -494,24 +550,24 @@
 				"header": [
 					{
 						"key": "Content-Type",
-						"type": "text",
-						"value": "application/json"
+						"value": "application/json",
+						"uuid": "9110d3dc-5358-49db-bd9a-ec0d9b6d33a2"
 					},
 					{
 						"key": "visitorId",
 						"value": "{{visitorId}}",
-						"type": "text"
+						"uuid": "fd163b27-672e-4c17-8068-d13e4d71b2f2"
 					}
 				],
 				"url": {
-					"raw": "{{host}}/game/{{gameId}}/prepare/{{gameType}}/league/{{leagueId}}?ante={{gameAnte}}&style={{gameStyle}}",
+					"raw": "{{host}}/game/{{gameId}}/validate/{{gameType}}/league/{{leagueId}}?ante={{gameAnte}}&style={{gameStyle}}",
 					"host": [
 						"{{host}}"
 					],
 					"path": [
 						"game",
 						"{{gameId}}",
-						"prepare",
+						"validate",
 						"{{gameType}}",
 						"league",
 						"{{leagueId}}"
@@ -563,12 +619,14 @@
 					{
 						"key": "Content-Type",
 						"type": "text",
-						"value": "application/json"
+						"value": "application/json",
+						"uuid": "b35c9905-eb44-4d66-b265-6953efd19373"
 					},
 					{
 						"key": "visitorId",
 						"value": "{{visitorId}}",
-						"type": "text"
+						"type": "text",
+						"uuid": "45234a11-5f4f-4af1-bd0d-9c4c43bfd83a"
 					}
 				],
 				"url": {
@@ -624,12 +682,14 @@
 					{
 						"key": "Content-Type",
 						"type": "text",
-						"value": "application/json"
+						"value": "application/json",
+						"uuid": "1ff7d46c-1959-418a-9724-a20e9f0b6b07"
 					},
 					{
 						"key": "visitorId",
 						"value": "{{visitorId}}",
-						"type": "text"
+						"type": "text",
+						"uuid": "e70fea4e-8279-4e7f-b0cc-ee0259f5db86"
 					}
 				],
 				"url": {
@@ -640,62 +700,6 @@
 					"path": [
 						"league",
 						"{{leagueId}}"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "visitor/{visitorId}",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"const jsonData = pm.response.json();\r",
-							"pm.test(\"Successful DELETE request for update be returned\", () => {\r",
-							"  pm.expect(pm.response.code).to.be.oneOf([200, 201, 204]);\r",
-							"});\r",
-							"pm.test(\"Body should return with NavBarItems property\", () => {\r",
-							"  pm.expect(jsonData).to.have.property('NavBarItems');\r",
-							"})\r",
-							"// pm.test(\"Header should not contain the vistorId\", () => {\r",
-							"//     pm.response.not.to.have.header(\"visitorId\");\r",
-							"// });\r",
-							"\r",
-							"// store all the ids in the header\r",
-							"pm.test( pm.response.headers.get(\"visitorId\").split(\"=\"), () => {\r",
-							"    pm.environment.set(\"visitorId\", pm.response.headers.get(\"visitorId\").split(\"=\"));\r",
-							"});\r",
-							"// pm.test( pm.response.headers.get(\"gameId\").split(\"=\"), () => {\r",
-							"//     pm.environment.set(\"gameId\", pm.response.headers.get(\"gameId\").split(\"=\"));\r",
-							"// });\r",
-							"// pm.test( pm.response.headers.get(\"leagueId\").split(\"=\"), () => {\r",
-							"//     pm.environment.set(\"leagueId\", pm.response.headers.get(\"leagueId\").split(\"=\"));\r",
-							"// });"
-						],
-						"type": "text/javascript",
-						"packages": {}
-					}
-				}
-			],
-			"request": {
-				"method": "DELETE",
-				"header": [
-					{
-						"key": "Content-Type",
-						"type": "text",
-						"value": "application/json"
-					}
-				],
-				"url": {
-					"raw": "{{host}}/visitor/{{visitorId}}",
-					"host": [
-						"{{host}}"
-					],
-					"path": [
-						"visitor",
-						"{{visitorId}}"
 					]
 				}
 			},

@@ -13,8 +13,6 @@ import cloud.qasino.games.event.EventOutput;
 import cloud.qasino.games.statemachine.trigger.GameTrigger;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -46,10 +44,10 @@ public class IsGameConsistentForGameTrigger implements Action<IsGameConsistentFo
         boolean noError = true;
         switch (actionDto.getSuppliedGameTrigger()) {
 
-            case SETUP -> {
+            case START -> {
                 noError = noGameInSetupOrPlayingShouldAlreadyExist(actionDto);
             }
-            case PREPARE -> {
+            case VALIDATE -> {
                 noError = gameShouldHaveStateInCorrectGameStateGroup(actionDto,
                         List.of(GameStateGroup.SETUP, GameStateGroup.PREPARED));
                 if (noError) noError = gameShouldHaveAnte(actionDto);
@@ -57,7 +55,7 @@ public class IsGameConsistentForGameTrigger implements Action<IsGameConsistentFo
                 if (noError) noError = gameShouldHavePlayersWithFiches(actionDto);
                 if (noError) noError = playersShouldHaveSeats(actionDto);
             }
-            case PLAY -> {
+            case SHUFFLE -> {
                 noError = gameShouldHaveStateInCorrectGameStateGroup(actionDto, Collections.singletonList(GameStateGroup.PREPARED));
             }
             case TURN -> {
@@ -65,8 +63,7 @@ public class IsGameConsistentForGameTrigger implements Action<IsGameConsistentFo
                 if (noError) noError = gameShouldHaveCardsAndTurn(actionDto);
             }
             case STOP -> {
-                noError = !gameShouldHaveStateInCorrectGameStateGroup(actionDto, Collections.singletonList(GameStateGroup.FINISHED));
-                if (noError) noError = gameShouldHaveCardsAndTurn(actionDto);
+//                noError = !gameShouldHaveStateInCorrectGameStateGroup(actionDto, Collections.singletonList(GameStateGroup.FINISHED));
             }
             case WINNER -> {
                 noError = gameShouldHaveAResult(actionDto);

@@ -1,14 +1,14 @@
 {
 	"info": {
 		"_postman_id": "e08137f7-b04d-49bc-a116-21dd6a8cbd37",
-		"name": "PlayControler",
+		"name": "TurnAndCardMoveControler",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
 		"_exporter_id": "439257",
 		"_collection_link": "https://qasino.postman.co/workspace/Qasino~4634f2dd-4487-4c9b-9d29-607ac0ed86c8/collection/439257-e08137f7-b04d-49bc-a116-21dd6a8cbd37?action=share&source=collection_link&creator=439257"
 	},
 	"item": [
 		{
-			"name": "game/{gameId}/play",
+			"name": "game/{gameId}/shuffle",
 			"event": [
 				{
 					"listen": "test",
@@ -48,28 +48,28 @@
 				}
 			],
 			"request": {
-				"method": "POST",
+				"method": "PUT",
 				"header": [
 					{
 						"key": "Content-Type",
-						"type": "text",
-						"value": "application/json"
+						"value": "application/json",
+						"uuid": "081fd725-d324-4042-b70c-80ff246abaf6"
 					},
 					{
 						"key": "visitorId",
 						"value": "{{visitorId}}",
-						"type": "text"
+						"uuid": "45a9262b-d4dc-4753-b495-135be049868b"
 					}
 				],
 				"url": {
-					"raw": "{{host}}/game/{{gameId}}/play",
+					"raw": "{{host}}/game/{{gameId}}/shuffle",
 					"host": [
 						"{{host}}"
 					],
 					"path": [
 						"game",
 						"{{gameId}}",
-						"play"
+						"shuffle"
 					]
 				}
 			},
@@ -107,17 +107,17 @@
 				}
 			],
 			"request": {
-				"method": "POST",
+				"method": "PUT",
 				"header": [
 					{
 						"key": "Content-Type",
-						"type": "text",
-						"value": "application/json"
+						"value": "application/json",
+						"uuid": "bda63b5f-401e-4597-ab79-21de74c6e356"
 					},
 					{
 						"key": "visitorId",
 						"value": "{{visitorId}}",
-						"type": "text"
+						"uuid": "5bc438e8-4a55-40da-96dd-7f0b720e3189"
 					}
 				],
 				"url": {
@@ -177,17 +177,20 @@
 					{
 						"key": "Content-Type",
 						"type": "text",
-						"value": "application/json"
+						"value": "application/json",
+						"uuid": "4313e6cc-c254-409e-85d5-9c712f8ba992"
 					},
 					{
 						"key": "turnPlayerId",
 						"value": "{{turnPlayerId}}",
-						"type": "text"
+						"type": "text",
+						"uuid": "e346422a-0d70-43d0-9409-909f73c8c4c4"
 					},
 					{
 						"key": "visitorId",
 						"value": "{{visitorId}}",
-						"type": "text"
+						"type": "text",
+						"uuid": "ce98981a-d2d8-4529-a3cc-de75a64c8d3d"
 					}
 				],
 				"url": {
@@ -248,17 +251,20 @@
 					{
 						"key": "Content-Type",
 						"type": "text",
-						"value": "application/json"
+						"value": "application/json",
+						"uuid": "8e0ef093-43d0-4e31-b252-983a9092d56d"
 					},
 					{
 						"key": "turnPlayerId",
 						"value": "{{turnPlayerId}}",
-						"type": "text"
+						"type": "text",
+						"uuid": "6f70b928-12b8-4518-97e7-78624a031c8d"
 					},
 					{
 						"key": "visitorId",
 						"value": "{{visitorId}}",
-						"type": "text"
+						"type": "text",
+						"uuid": "0939002c-b6af-43a7-a6e2-7fe3ee1c8952"
 					}
 				],
 				"url": {
@@ -319,12 +325,14 @@
 					{
 						"key": "Content-Type",
 						"type": "text",
-						"value": "application/json"
+						"value": "application/json",
+						"uuid": "d21fbf76-497c-4371-967d-5de726383fb6"
 					},
 					{
 						"key": "turnPlayerId",
 						"value": "{{turnPlayerId}}",
-						"type": "text"
+						"type": "text",
+						"uuid": "b62746ba-2041-4aa6-8bc2-f88632617158"
 					}
 				],
 				"url": {
@@ -385,12 +393,14 @@
 					{
 						"key": "Content-Type",
 						"type": "text",
-						"value": "application/json"
+						"value": "application/json",
+						"uuid": "a770e4fa-24f5-406a-9b16-40333cafa229"
 					},
 					{
 						"key": "turnPlayerId",
 						"value": "{{turnPlayerId}}",
-						"type": "text"
+						"type": "text",
+						"uuid": "0dc1b54b-6981-4145-8174-f48d5b27642a"
 					}
 				],
 				"url": {

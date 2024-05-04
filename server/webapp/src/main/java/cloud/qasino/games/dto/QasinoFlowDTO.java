@@ -15,6 +15,7 @@ import cloud.qasino.games.action.PlayGameForType;
 import cloud.qasino.games.action.MapQasinoResponseFromDto;
 import cloud.qasino.games.action.MapQasinoGameTableFromDto;
 import cloud.qasino.games.action.PlayFirstTurnAction;
+import cloud.qasino.games.action.PlayNextBotTurnAction;
 import cloud.qasino.games.action.PlayNextHumanTurnAction;
 import cloud.qasino.games.action.PrepareGameAction;
 import cloud.qasino.games.action.SetStatusIndicatorsBaseOnRetrievedDataAction;
@@ -72,6 +73,7 @@ public class QasinoFlowDTO //extends AbstractFlowDTO
         MapQasinoResponseFromDto.Dto,
         MapQasinoGameTableFromDto.Dto,
         PlayNextHumanTurnAction.Dto,
+        PlayNextBotTurnAction.Dto,
         IsGameConsistentForGameTrigger.Dto,
         IsTurnConsistentForTurnTrigger.Dto,
         CalculateAndFinishGameAction.Dto,

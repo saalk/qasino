@@ -7,11 +7,11 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class GameTriggerTest {
 
-    GameTrigger gameTrigger = GameTrigger.PREPARE;
+    GameTrigger gameTrigger = GameTrigger.VALIDATE;
 
     @Test
     void fromLabel() {
-        assertEquals(GameTrigger.PREPARE,GameTrigger.fromLabel("prepare"));
+        assertEquals(GameTrigger.VALIDATE,GameTrigger.fromLabel("prepare"));
 
     }
 

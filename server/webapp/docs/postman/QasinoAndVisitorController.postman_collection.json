@@ -95,9 +95,9 @@
 							"pm.test( pm.response.headers.get(\"visitorId\").split(\"=\"), () => {\r",
 							"    pm.environment.set(\"visitorId\", pm.response.headers.get(\"visitorId\").split(\"=\"));\r",
 							"});\r",
-							"// pm.test( pm.response.headers.get(\"gameId\").split(\"=\"), () => {\r",
-							"//     pm.environment.set(\"gameId\", pm.response.headers.get(\"gameId\").split(\"=\"));\r",
-							"// });\r",
+							"pm.test( pm.response.headers.get(\"gameId\").split(\"=\"), () => {\r",
+							"    pm.environment.set(\"gameId\", pm.response.headers.get(\"gameId\").split(\"=\"));\r",
+							"});\r",
 							"// pm.test( pm.response.headers.get(\"leagueId\").split(\"=\"), () => {\r",
 							"//     pm.environment.set(\"leagueId\", pm.response.headers.get(\"leagueId\").split(\"=\"));\r",
 							"// });"
@@ -236,7 +236,8 @@
 					{
 						"key": "Content-Type",
 						"type": "text",
-						"value": "application/json"
+						"value": "application/json",
+						"uuid": "0d638ef6-ea39-4c36-9528-da58089704d3"
 					}
 				],
 				"url": {
@@ -391,12 +392,12 @@
 				"header": [
 					{
 						"key": "Content-Type",
-						"type": "text",
-						"value": "application/json"
+						"value": "application/json",
+						"uuid": "ddc3ffb8-ccc8-4bb3-a157-3016e66aa1b8"
 					}
 				],
 				"url": {
-					"raw": "{{host}}/visitor/{{visitorId}}?email=test@email.nl",
+					"raw": "{{host}}/visitor/{{visitorId}}?email=test2@email.nl",
 					"host": [
 						"{{host}}"
 					],
@@ -407,7 +408,7 @@
 					"query": [
 						{
 							"key": "email",
-							"value": "test@email.nl"
+							"value": "test2@email.nl"
 						}
 					]
 				}
@@ -454,7 +455,8 @@
 					{
 						"key": "Content-Type",
 						"type": "text",
-						"value": "application/json"
+						"value": "application/json",
+						"uuid": "19874d1f-264d-4ee1-ad2b-4d93a57ef73b"
 					}
 				],
 				"url": {
@@ -505,7 +507,8 @@
 					{
 						"key": "visitorId",
 						"value": "{{visitorId}}",
-						"type": "text"
+						"type": "text",
+						"uuid": "c06fca40-387d-4a07-b097-641958028b12"
 					}
 				],
 				"url": {

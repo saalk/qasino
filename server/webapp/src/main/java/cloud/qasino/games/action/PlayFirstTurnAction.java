@@ -28,17 +28,29 @@ public class PlayFirstTurnAction implements Action<PlayFirstTurnAction.Dto, Even
     public EventOutput.Result perform(Dto actionDto) {
 
         if (!actionDto.getQasinoGame().getType().equals(Type.HIGHLOW)) {
-            setBadRequestErrorMessage(actionDto,"Game.type", String.valueOf(actionDto.getQasinoGame().getType()));
+            setBadRequestErrorMessage(actionDto, "Game Type", String.valueOf(actionDto.getQasinoGame().getType()));
             return EventOutput.Result.FAILURE;
         }
-        // get active player / starting player
+
+        if (actionDto.getSuppliedTurnPlayerId() == 0) {
+            actionDto.setSuppliedTurnPlayerId(
+                    actionDto.getQasinoGamePlayers()
+                            .stream()
+                            .filter(p -> p.getSeat() == 1)
+                            .findFirst().get().getPlayerId());
+            actionDto.setTurnPlayer(
+                    actionDto.getQasinoGamePlayers()
+                            .stream()
+                            .filter(p -> p.getSeat() == 1)
+                            .findFirst().get());
+        }
         Turn activeTurn = playService.dealCardToPlayer(
-            actionDto.getQasinoGame(),
-            null,
-            actionDto.getTurnPlayer(),
-            Move.DEAL,
-            Face.UP,
-            1);
+                actionDto.getQasinoGame(),
+                null,
+                actionDto.getTurnPlayer(),
+                Move.DEAL,
+                Face.UP,
+                1);
         actionDto.setActiveTurn(activeTurn); // can be null
         actionDto.setAllCardMovesForTheGame(playService.getCardMovesForGame(actionDto.getQasinoGame())); // can be null
 
@@ -50,6 +62,7 @@ public class PlayFirstTurnAction implements Action<PlayFirstTurnAction.Dto, Even
         actionDto.setErrorValue(value);
         actionDto.setBadRequestErrorMessage("Action [" + id + "] invalid - only highlow implemented");
     }
+
     public interface Dto {
 
         // @formatter:off
@@ -62,6 +75,9 @@ public class PlayFirstTurnAction implements Action<PlayFirstTurnAction.Dto, Even
         void setActiveTurn(Turn turn);
         Turn getActiveTurn();
         Player getTurnPlayer();
+        void setTurnPlayer(Player turnPlayer);
+        long getSuppliedTurnPlayerId();
+        void setSuppliedTurnPlayerId(long turnPlayerId);
         void setAllCardMovesForTheGame(List<CardMove> cardMoves);
 
         // error setters

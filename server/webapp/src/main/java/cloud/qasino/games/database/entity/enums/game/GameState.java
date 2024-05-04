@@ -19,9 +19,9 @@ import java.util.Map;
 public enum GameState implements LabeledEnum {
 
     // SETUP
-    INITIALIZED("initialized", "Setup ante, League and Players", GameStateGroup.SETUP),
+    INITIALIZED("initialized", "Setup or change ante, League and Players", GameStateGroup.SETUP),
     PENDING_INVITATIONS("pending_invitations", "Awaiting invitations", GameStateGroup.SETUP),
-    PREPARED("prepared", "Start playing.", GameStateGroup.PREPARED),
+    PREPARED("prepared", "Validated, start shuffling.", GameStateGroup.PREPARED),
 
     // HIGHLOW
     STARTED("started", "Proceed with first Move", GameStateGroup.PLAYING),

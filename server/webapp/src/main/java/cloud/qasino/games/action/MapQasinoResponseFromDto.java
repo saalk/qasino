@@ -96,7 +96,7 @@ public class MapQasinoResponseFromDto implements Action<MapQasinoResponseFromDto
             actionDto.setShowGameSetupPage(false);
             if (!actionDto.isActionNeeded()) {
                 actionDto.setActionNeeded(true);
-                actionDto.setAction("Setup a new game.");
+                actionDto.setAction("Start a new game.");
             }
         }
         setupMessage(actionDto, navigationBarItem);
@@ -230,7 +230,7 @@ public class MapQasinoResponseFromDto implements Action<MapQasinoResponseFromDto
         navigationBarItem.setItemName("Qasinogame#" +
                 Integer.toHexString((int) actionDto.getQasinoGame().getGameId()));
         // TODO FIXXXX .NullPointerException: Cannot invoke "cloud.qasino.games.database.entity.Turn.getCurrentRoundNumber()" because the return value of "cloud.qasino.games.action.MapQasinoResponseFromDto$Dto.getActiveTurn()" is null
-        if (actionDto.getActiveTurn() != null) { // games is still being prepared
+        if (actionDto.getActiveTurn() != null) { // games is still being validated
             navigationBarItem.setItemStats(
                     "[" + actionDto.getActiveTurn().getCurrentRoundNumber() +
                             "/" + actionDto.getActiveTurn().getCurrentTurnNumber() +
@@ -240,6 +240,8 @@ public class MapQasinoResponseFromDto implements Action<MapQasinoResponseFromDto
         pageGamePlay.setSelectedGame(actionDto.getQasinoGame());
         if (!(actionDto.getTable() == null)) {
             pageGamePlay.setTable(actionDto.getTable());
+        } else {
+            log.info("tabel is null !!!");
         }
         pageGamePlay.setGameResults(actionDto.getGameResults());
     }

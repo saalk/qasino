@@ -30,6 +30,13 @@ public class MapQasinoGameTableFromDto implements Action<MapQasinoGameTableFromD
         List<SectionSeat> seats = new ArrayList<>();
 
         if ((actionDto.getActiveTurn() == null)) {
+            if ((actionDto.getQasinoGame() != null)) {
+                actionDto.setActiveTurn(actionDto.getQasinoGame().getTurn());
+            } else {
+                return EventOutput.Result.SUCCESS;
+            }
+        }
+        if ((actionDto.getActiveTurn() == null)) {
             return EventOutput.Result.SUCCESS;
         }
         table.setCurrentTurn(actionDto.getActiveTurn());
@@ -67,6 +74,7 @@ public class MapQasinoGameTableFromDto implements Action<MapQasinoGameTableFromD
                 "] stock/total");
         table.setSeats(mapSeats(actionDto, seats));
         actionDto.setTable(table);
+        log.info("table set");
         return EventOutput.Result.SUCCESS;
     }
 
@@ -108,6 +116,7 @@ public class MapQasinoGameTableFromDto implements Action<MapQasinoGameTableFromD
                 seat.setVisitorName(player.getAiLevel().getLabel() + " " + player.getAvatar().getLabel());
             }
             seats.add(seat);
+            log.info("tabel seat " + seat.getSeatId()+ "set ");
             // is player the winner
 
         }
@@ -125,6 +134,7 @@ public class MapQasinoGameTableFromDto implements Action<MapQasinoGameTableFromD
         List<Card> getCardsInTheGameSorted();
 
         // Setters
+        void setActiveTurn(Turn turn);
         void setTable(SectionTable table);
 
         // error setters

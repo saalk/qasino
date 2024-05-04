@@ -183,11 +183,11 @@ public class LoadEntitiesToDtoAction implements Action<LoadEntitiesToDtoAction.D
             actionDto.setQasinoGamePlayers(foundGame.get().getPlayers());
             // TODO dont know why this is needed
 //            actionDto.getQasinoGame().setPlayers(actionDto.getQasinoGamePlayers());
-            // when in prepare there are no cards yet so this results in null
+            // when in validate there are no cards yet so this results in null
             actionDto.setCardsInTheGameSorted(cardRepository.findByGameOrderBySequenceAsc(actionDto.getQasinoGame()));
             actionDto.setActiveTurn(foundGame.get().getTurn());
             if (actionDto.getActiveTurn() != null) {
-//                actionDto.setSuppliedTurnPlayerId(actionDto.getActiveTurn().getActivePlayerId());
+                actionDto.setSuppliedTurnPlayerId(actionDto.getActiveTurn().getActivePlayerId());
                 actionDto.setAllCardMovesForTheGame(foundGame.get().getTurn().getCardMoves());
             } else {
                 // TODO check if this is needed
