@@ -62,7 +62,7 @@ public enum GameStateGroup {
         List<GameState> gameStateList = GameState.fromGroupWithDefault(gameStateGroup);
         List<String> list = new ArrayList<>();
         for (GameState gameState : gameStateList) {
-            list.add(gameState.getLabel());
+            list.add(gameState.getLabel().toUpperCase());
         }
         return list.toArray(String[]::new);
     }

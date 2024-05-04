@@ -37,6 +37,7 @@ public class CreateNewGameAction implements Action<CreateNewGameAction.Dto, Even
                 String.valueOf(actionDto.getSuppliedAnte()),
                 actionDto.getSuppliedAvatar())
         );
+        actionDto.setSuppliedGameId(actionDto.getQasinoGame().getGameId());
         return EventOutput.Result.SUCCESS;
     }
 
@@ -58,6 +59,7 @@ public class CreateNewGameAction implements Action<CreateNewGameAction.Dto, Even
         // Getters
         League getQasinoGameLeague();
         int getSuppliedAnte();
+        void setSuppliedGameId(long id);
         Avatar getSuppliedAvatar();
         AiLevel getSuppliedAiLevel();
         Type getSuppliedType();

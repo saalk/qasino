@@ -170,7 +170,6 @@ public class QasinoAndVisitorController {
             flowDTO.prepareResponseHeaders();
             return ResponseEntity.status(HttpStatus.valueOf(flowDTO.getHttpStatus())).headers(flowDTO.getHeaders()).build();
         }
-        mapQasinoGameTableFromDto.perform(flowDTO);
         setStatusIndicatorsBaseOnRetrievedDataAction.perform(flowDTO);
         calculateQasinoStatistics.perform(flowDTO);
         mapQasinoResponseFromDto.perform(flowDTO);
@@ -223,10 +222,9 @@ public class QasinoAndVisitorController {
             handleSecuredLoanAction.perform(flowDTO);
         }
         // build response also for failure
-        mapQasinoGameTableFromDto.perform(flowDTO);
         setStatusIndicatorsBaseOnRetrievedDataAction.perform(flowDTO);
         calculateQasinoStatistics.perform(flowDTO);
-        mapQasinoResponseFromDto.perform(flowDTO);
+        mapQasinoGameTableFromDto.perform(flowDTO);
         flowDTO.prepareResponseHeaders();
         return ResponseEntity.status(HttpStatus.valueOf(flowDTO.getHttpStatus())).headers(flowDTO.getHeaders()).body(flowDTO.getQasino());
     }
@@ -344,8 +342,9 @@ public class QasinoAndVisitorController {
         // delete
         // TODO delete players with this visitor first
         visitorRepository.deleteById(flowDTO.getSuppliedVisitorId());
-        flowDTO.setQasinoVisitor(null);
+        flowDTO.setSuppliedVisitorId(0);
         // build response
+        loadEntitiesToDtoAction.perform(flowDTO);
         setStatusIndicatorsBaseOnRetrievedDataAction.perform(flowDTO);
         calculateQasinoStatistics.perform(flowDTO);
         mapQasinoResponseFromDto.perform(flowDTO);

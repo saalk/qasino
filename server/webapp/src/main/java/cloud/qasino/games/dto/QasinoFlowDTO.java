@@ -252,7 +252,7 @@ public class QasinoFlowDTO //extends AbstractFlowDTO
     }
     // @formatter:on
 
-    // INPUT
+    // INPUT // TODO move out of DTO
     @Setter(AccessLevel.NONE)
     private Map<String, String> pathVariables = new HashMap<>();
     private Map<String, String> requestParams = new HashMap<>();

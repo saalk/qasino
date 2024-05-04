@@ -27,6 +27,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -87,7 +88,7 @@ public class PlayContoller {
 
     // POST - gametrigger PLAY add cards -> can only be done by visitor
     // -> gamestate STARTED
-    @PostMapping(value = "/game/{gameId}/play")
+    @PutMapping(value = "/game/{gameId}/play")
     public ResponseEntity<Qasino> startPlayingTheGame(
             @RequestHeader("visitorId") String vId,
 //            @RequestHeader("turnPlayerId") String pId,
@@ -187,7 +188,7 @@ public class PlayContoller {
         return ResponseEntity.status(HttpStatus.valueOf(201)).headers(flowDTO.getHeaders()).body(flowDTO.getQasino());
     }
 
-    @PostMapping(value = "/game/{gameId}/stop")
+    @PutMapping(value = "/game/{gameId}/stop")
     public ResponseEntity<Qasino> stopPlayingTheGame(
             @RequestHeader("visitorId") String vId,
 //            @RequestHeader("turnPlayerId") String pId,
@@ -195,7 +196,7 @@ public class PlayContoller {
     ) {
         // validate
         QasinoFlowDTO flowDTO = new QasinoFlowDTO();
-        flowDTO.setPathVariables("gameId", id, "gameTrigger", "stop");
+        flowDTO.setPathVariables("visitorId", vId,"gameId", id, "gameTrigger", "stop");
         if (!flowDTO.validateInput()) {
             flowDTO.prepareResponseHeaders();
             return ResponseEntity.status(HttpStatus.valueOf(flowDTO.getHttpStatus())).headers(flowDTO.getHeaders()).build();

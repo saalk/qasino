@@ -100,6 +100,8 @@ public class PlayService {
         return activeTurn;
     }
     public Game addCardsToGame(Game activeGame, int jokers) {
+        if (!activeGame.getCards().isEmpty()) return activeGame;
+
         List<PlayingCard> playingCards = PlayingCard.newDeck(jokers);
         Collections.shuffle(playingCards);
         List<Card> cards = new ArrayList<>();

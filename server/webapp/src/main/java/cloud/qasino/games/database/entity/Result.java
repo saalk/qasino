@@ -20,7 +20,7 @@ import java.util.Objects;
 @DynamicUpdate
 @Getter
 @Setter
-@JsonIdentityInfo(generator = JSOGGenerator.class)
+//@JsonIdentityInfo(generator = JSOGGenerator.class)
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 @Table(name = "result", indexes = {
         // not needed : @Index(name = "results_index", columnList = "result_id", unique = true)
@@ -38,20 +38,22 @@ public class Result {
 
 
     // Foreign keys
-
-    // UsPl: a Result has one PLayer that wins the GameSubTotals
+    @JsonIgnore
+    // UsPl: a Result has one PLayer for which this result contains the stats
     @OneToOne(cascade = CascadeType.DETACH)
     @JoinColumn(name = "player_id", referencedColumnName = "player_id", foreignKey = @ForeignKey
             (name = "fk_player_id"), nullable = false)
     private Player player;
 
-    // UsPl: a Visitor can win the Games as a Player
+    @JsonIgnore
+    // UsPl: the Initiator can win the Games as a Player - not sure if we want this relation
     @ManyToOne(cascade = CascadeType.DETACH)
     @JoinColumn(name = "visitor_id", referencedColumnName = "visitor_id", foreignKey = @ForeignKey
             (name = "fk_visitor_id"), nullable = true)
     private Visitor visitor;
 
-    // the game for which the result is achieved
+//    @JsonIgnore
+    // the game for which the result is achieved by all the players
     // todo this was onetoone
     @ManyToOne (cascade = CascadeType.DETACH)
     @JoinColumn(name = "game_id", referencedColumnName = "game_id",foreignKey = @ForeignKey(name =

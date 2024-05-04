@@ -607,6 +607,31 @@ public class GameAndLeagueController {
 //    }
 //
 
+    @GetMapping("/game/{gameId}")
+    public ResponseEntity<Qasino> getGame(
+            @RequestHeader("visitorId") String vId,
+            @PathVariable("gameId") String id
+    ) {
+        // validate
+        QasinoFlowDTO flowDTO = new QasinoFlowDTO();
+        flowDTO.setPathVariables("visitorId", vId, "gameId", id);
+        if (!flowDTO.validateInput()) {
+            flowDTO.prepareResponseHeaders();
+            return ResponseEntity.status(HttpStatus.valueOf(flowDTO.getHttpStatus())).headers(flowDTO.getHeaders()).build();
+        }
+        // get all entities and build reponse
+        output = loadEntitiesToDtoAction.perform(flowDTO);
+        if (output == EventOutput.Result.FAILURE) {
+            flowDTO.prepareResponseHeaders();
+            return ResponseEntity.status(HttpStatus.valueOf(flowDTO.getHttpStatus())).headers(flowDTO.getHeaders()).build();
+        }
+        setStatusIndicatorsBaseOnRetrievedDataAction.perform(flowDTO);
+        calculateQasinoStatistics.perform(flowDTO);
+        mapQasinoResponseFromDto.perform(flowDTO);
+        flowDTO.prepareResponseHeaders();
+        return ResponseEntity.ok().headers(flowDTO.getHeaders()).body(flowDTO.getQasino());
+    }
+
     @DeleteMapping("/game/{gameId}")
     public ResponseEntity<Qasino> deleteGame(
             @RequestHeader("visitorId") String vId,
@@ -645,7 +670,7 @@ public class GameAndLeagueController {
     ) {
         // validate
         QasinoFlowDTO flowDTO = new QasinoFlowDTO();
-        flowDTO.setPathVariables("vistiorId", vId, "leagueId", id);
+        flowDTO.setPathVariables("visitorId", vId, "leagueId", id);
         if (!flowDTO.validateInput()) {
             flowDTO.prepareResponseHeaders();
             return ResponseEntity.status(HttpStatus.valueOf(flowDTO.getHttpStatus())).headers(flowDTO.getHeaders()).build();

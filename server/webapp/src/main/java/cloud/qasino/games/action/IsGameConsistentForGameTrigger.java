@@ -6,12 +6,18 @@ import cloud.qasino.games.database.entity.Game;
 import cloud.qasino.games.database.entity.Player;
 import cloud.qasino.games.database.entity.Result;
 import cloud.qasino.games.database.entity.Turn;
+import cloud.qasino.games.database.entity.Visitor;
 import cloud.qasino.games.database.entity.enums.game.gamestate.GameStateGroup;
+import cloud.qasino.games.database.service.PlayService;
 import cloud.qasino.games.event.EventOutput;
 import cloud.qasino.games.statemachine.trigger.GameTrigger;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -28,6 +34,8 @@ import java.util.Optional;
  * @return Result.SUCCESS or FAILURE (404) when not found
  */
 public class IsGameConsistentForGameTrigger implements Action<IsGameConsistentForGameTrigger.Dto, EventOutput.Result> {
+    @Autowired
+    PlayService playService;
 
     @Override
     public EventOutput.Result perform(Dto actionDto) {
@@ -39,12 +47,12 @@ public class IsGameConsistentForGameTrigger implements Action<IsGameConsistentFo
         switch (actionDto.getSuppliedGameTrigger()) {
 
             case SETUP -> {
-                // nothing to check as the game does not exist
+                noError = noGameInSetupOrPlayingShouldAlreadyExist(actionDto);
             }
             case PREPARE -> {
                 noError = gameShouldHaveStateInCorrectGameStateGroup(actionDto,
                         List.of(GameStateGroup.SETUP, GameStateGroup.PREPARED));
-                noError = gameShouldHaveAnte(actionDto);
+                if (noError) noError = gameShouldHaveAnte(actionDto);
                 if (noError) noError = gameShouldHaveInitiator(actionDto);
                 if (noError) noError = gameShouldHavePlayersWithFiches(actionDto);
                 if (noError) noError = playersShouldHaveSeats(actionDto);
@@ -57,7 +65,7 @@ public class IsGameConsistentForGameTrigger implements Action<IsGameConsistentFo
                 if (noError) noError = gameShouldHaveCardsAndTurn(actionDto);
             }
             case STOP -> {
-                noError = gameShouldHaveStateInCorrectGameStateGroup(actionDto, Collections.singletonList(GameStateGroup.PLAYING));
+                noError = !gameShouldHaveStateInCorrectGameStateGroup(actionDto, Collections.singletonList(GameStateGroup.FINISHED));
                 if (noError) noError = gameShouldHaveCardsAndTurn(actionDto);
             }
             case WINNER -> {
@@ -71,10 +79,26 @@ public class IsGameConsistentForGameTrigger implements Action<IsGameConsistentFo
 
     // @formatter:off
     // todo add AiLevel bot cannot be HUMAN
-    private boolean gameShouldHavePlayers(Dto actionDto) {
-        if (actionDto.getQasinoGamePlayers() == null) {
-            log.info("!players");
-            setUnprocessableErrorMessage(actionDto, "Action [" + actionDto.getSuppliedGameTrigger() + "] invalid - game has no players");
+    private boolean noGameInSetupOrPlayingShouldAlreadyExist(Dto actionDto) {
+
+        List <Game> initiatedGame = actionDto.getInitiatedGamesForVisitor();
+        List<String> reasonPart = new ArrayList<>();
+        for (Game game : initiatedGame) {
+            if (game.getState().getGroup() == GameStateGroup.SETUP) {
+                reasonPart.add(GameStateGroup.SETUP.getLabel());
+            } else if (game.getState().getGroup() == GameStateGroup.PREPARED) {
+                reasonPart.add(GameStateGroup.PREPARED.getLabel());
+            } else if (game.getState().getGroup() == GameStateGroup.PLAYING) {
+                reasonPart.add(GameStateGroup.PLAYING.getLabel());
+            }
+        }
+        if (!reasonPart.isEmpty()) {
+            log.info("!exists");
+            setUnprocessableErrorMessage(actionDto,
+                    "Action [" +
+                            actionDto.getSuppliedGameTrigger() +
+                            "] is invalid - game already exists with game state group [" +
+                            Arrays.toString(reasonPart.toArray()) + "]");
             return false;
         }
         return true;
@@ -188,6 +212,8 @@ public class IsGameConsistentForGameTrigger implements Action<IsGameConsistentFo
         // @formatter:off
         // Getters
         List<Player> getQasinoGamePlayers();
+        Visitor getQasinoVisitor();
+        List<Game> getInitiatedGamesForVisitor();
         GameTrigger getSuppliedGameTrigger();
         Game getQasinoGame();
         Turn getActiveTurn();

@@ -182,6 +182,7 @@ public class MapQasinoResponseFromDto implements Action<MapQasinoResponseFromDto
         // todo
     }
 
+    // @formatter:off
     private void mapVisitorPage(Dto actionDto, NavigationBarItem navigationBarItem, PageVisitor pageVisitor) {
         // set the nav bar
         navigationBarItem.setItemName(actionDto.getQasinoVisitor().getVisitorName());
@@ -200,7 +201,6 @@ public class MapQasinoResponseFromDto implements Action<MapQasinoResponseFromDto
         }
         pageVisitor.setInvitedGamesPerState(gameStateIntegerMap);
     }
-
     private void mapGameSetupPage(Dto actionDto, NavigationBarItem navigationBarItem, PageGameSetup pageGameSetup) {
         // set the nav bar
         navigationBarItem.setItemName("Qasinogame#" +
@@ -225,7 +225,6 @@ public class MapQasinoResponseFromDto implements Action<MapQasinoResponseFromDto
 
         pageGameSetup.setLeaguesToSelect(null);
     }
-
     private void mapGamePlayPage(Dto actionDto, NavigationBarItem navigationBarItem, PageGamePlay pageGamePlay) {
         // set the nav bar
         navigationBarItem.setItemName("Qasinogame#" +
@@ -244,7 +243,6 @@ public class MapQasinoResponseFromDto implements Action<MapQasinoResponseFromDto
         }
         pageGamePlay.setGameResults(actionDto.getGameResults());
     }
-
     private void mapGameInvitationsPage(Dto actionDto, NavigationBarItem navigationBarItem, PageGameInvitations pageGamesOverview) {
         // set the nav bar
         navigationBarItem.setItemName("GameInvitations");
@@ -253,7 +251,6 @@ public class MapQasinoResponseFromDto implements Action<MapQasinoResponseFromDto
         // set the content
         pageGamesOverview.setGameInvitations(null);
     }
-
     private void mapLeaguesPage(Dto actionDto, NavigationBarItem navigationBarItem, PageLeague pageLeague) {
         // set the nav bar
         navigationBarItem.setItemName("Leagues#" + Integer.toHexString((int) actionDto.getQasinoGameLeague().getLeagueId()));
@@ -263,6 +260,7 @@ public class MapQasinoResponseFromDto implements Action<MapQasinoResponseFromDto
         pageLeague.setActiveLeagues(actionDto.getLeaguesForVisitor());
         pageLeague.setResultsForLeague(actionDto.getResultsForLeague());
     }
+    // @formatter:on
 
     public interface Dto {
 

@@ -73,6 +73,7 @@ public class LoadEntitiesToDtoAction implements Action<LoadEntitiesToDtoAction.D
     @Override
     public EventOutput.Result perform(Dto actionDto) {
 
+        gameId = actionDto.getSuppliedGameId();
         visitorId = actionDto.getSuppliedVisitorId();
         if (!(visitorId == 0)) {
             EventOutput.Result response = getVisitorSupplied(actionDto, visitorId);

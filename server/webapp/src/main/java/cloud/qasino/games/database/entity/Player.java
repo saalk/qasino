@@ -40,6 +40,7 @@ public class Player {
 
     // Foreign keys
 
+    @JsonIgnore
     // UsPl: a Visitor can play many Games as a Player
     // However ai players are no visitors!
     @ManyToOne(cascade = CascadeType.DETACH)
@@ -85,7 +86,7 @@ public class Player {
     private boolean winner;
 
     // References
-
+    @JsonIgnore
     // GaWi: one Player is the Winner of the GameSubTotals in the end
     @OneToOne(mappedBy = "player", cascade = CascadeType.DETACH)
     // just a reference the fk column is in "game" not here!
