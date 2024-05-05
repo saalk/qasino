@@ -1,6 +1,5 @@
-package cloud.qasino.games.event;
+package cloud.qasino.games.statemachine.event;
 
-import cloud.qasino.games.statemachine.trigger.GameTrigger;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -8,7 +7,7 @@ import lombok.Getter;
 @Getter
 public class EventOutput {
     protected Result result;
-    protected GameTrigger trigger;
+    protected GameEvent trigger;
 
     public EventOutput(Result result) {
         this(result, null);

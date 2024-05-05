@@ -15,9 +15,9 @@ import cloud.qasino.games.database.repository.PlayerRepository;
 import cloud.qasino.games.database.repository.ResultsRepository;
 import cloud.qasino.games.database.repository.TurnRepository;
 import cloud.qasino.games.database.repository.VisitorRepository;
-import cloud.qasino.games.dto.Qasino;
+import cloud.qasino.games.response.QasinoResponse;
 import cloud.qasino.games.dto.QasinoFlowDTO;
-import cloud.qasino.games.event.EventOutput;
+import cloud.qasino.games.statemachine.event.EventOutput;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -92,7 +92,7 @@ public class QasinoAndVisitorController {
     }
 
     @GetMapping(value = {"/home", "/home/{visitorId}"})
-    public ResponseEntity<Qasino> home(
+    public ResponseEntity<QasinoResponse> home(
             @PathVariable("visitorId") Optional<String> id
     ) {
         // validate
@@ -113,11 +113,11 @@ public class QasinoAndVisitorController {
         calculateQasinoStatistics.perform(flowDTO);
         mapQasinoResponseFromDto.perform(flowDTO);
         flowDTO.prepareResponseHeaders();
-        return ResponseEntity.ok().headers(flowDTO.getHeaders()).body(flowDTO.getQasino());
+        return ResponseEntity.ok().headers(flowDTO.getHeaders()).body(flowDTO.getQasinoResponse());
     }
 
     @PostMapping(value = "/signup/{visitorName}")
-    public ResponseEntity<Qasino> visitorSignup(
+    public ResponseEntity<QasinoResponse> visitorSignup(
             @PathVariable("visitorName") String name,
             @RequestParam(name = "email", defaultValue = "") String email
     ) {
@@ -145,11 +145,11 @@ public class QasinoAndVisitorController {
         calculateQasinoStatistics.perform(flowDTO);
         mapQasinoResponseFromDto.perform(flowDTO);
         flowDTO.prepareResponseHeaders();
-        return ResponseEntity.ok().headers(flowDTO.getHeaders()).body(flowDTO.getQasino());
+        return ResponseEntity.ok().headers(flowDTO.getHeaders()).body(flowDTO.getQasinoResponse());
     }
 
     @GetMapping(value = "/logon/{visitorName}")
-    public ResponseEntity<Qasino> visitorLogon(
+    public ResponseEntity<QasinoResponse> visitorLogon(
             @PathVariable("visitorName") String name
     ) {
         // validate
@@ -176,11 +176,11 @@ public class QasinoAndVisitorController {
         calculateQasinoStatistics.perform(flowDTO);
         mapQasinoResponseFromDto.perform(flowDTO);
         flowDTO.prepareResponseHeaders();
-        return ResponseEntity.ok().headers(flowDTO.getHeaders()).body(flowDTO.getQasino());
+        return ResponseEntity.ok().headers(flowDTO.getHeaders()).body(flowDTO.getQasinoResponse());
     }
 
     @PutMapping(value = "/pawn/{visitorId}")
-    public ResponseEntity<Qasino> visitorPawnsShip(
+    public ResponseEntity<QasinoResponse> visitorPawnsShip(
             @PathVariable("visitorId") String id
     ) {
         // validate
@@ -202,11 +202,11 @@ public class QasinoAndVisitorController {
         calculateQasinoStatistics.perform(flowDTO);
         mapQasinoResponseFromDto.perform(flowDTO);
         flowDTO.prepareResponseHeaders();
-        return ResponseEntity.status(HttpStatus.valueOf(flowDTO.getHttpStatus())).headers(flowDTO.getHeaders()).body(flowDTO.getQasino());
+        return ResponseEntity.status(HttpStatus.valueOf(flowDTO.getHttpStatus())).headers(flowDTO.getHeaders()).body(flowDTO.getQasinoResponse());
     }
 
     @PutMapping(value = "/repay/{visitorId}")
-    public ResponseEntity<Qasino> visitorRepaysLoan(
+    public ResponseEntity<QasinoResponse> visitorRepaysLoan(
             @PathVariable("visitorId") String id
     ) {
         // validate
@@ -229,7 +229,7 @@ public class QasinoAndVisitorController {
         calculateQasinoStatistics.perform(flowDTO);
         mapQasinoResponseFromDto.perform(flowDTO);
         flowDTO.prepareResponseHeaders();
-        return ResponseEntity.status(HttpStatus.valueOf(flowDTO.getHttpStatus())).headers(flowDTO.getHeaders()).body(flowDTO.getQasino());
+        return ResponseEntity.status(HttpStatus.valueOf(flowDTO.getHttpStatus())).headers(flowDTO.getHeaders()).body(flowDTO.getQasinoResponse());
     }
 
     @GetMapping(value = "/paging/visitors")
@@ -265,7 +265,7 @@ public class QasinoAndVisitorController {
     }
 
     @GetMapping("/visitor/{visitorId}")
-    public ResponseEntity<Qasino> getVisitor(
+    public ResponseEntity<QasinoResponse> getVisitor(
             @PathVariable("visitorId") String id
     ) {
         // validate
@@ -286,11 +286,11 @@ public class QasinoAndVisitorController {
         calculateQasinoStatistics.perform(flowDTO);
         mapQasinoResponseFromDto.perform(flowDTO);
         flowDTO.prepareResponseHeaders();
-        return ResponseEntity.ok().headers(flowDTO.getHeaders()).body(flowDTO.getQasino());
+        return ResponseEntity.ok().headers(flowDTO.getHeaders()).body(flowDTO.getQasinoResponse());
     }
 
     @PutMapping(value = "/visitor/{visitorId}")
-    public ResponseEntity<Qasino> updateVisitor(
+    public ResponseEntity<QasinoResponse> updateVisitor(
             @PathVariable("visitorId") String id,
             @RequestParam(name = "visitorName", defaultValue = "") String visitorName,
             @RequestParam(name = "email", defaultValue = "") String email
@@ -324,11 +324,11 @@ public class QasinoAndVisitorController {
         calculateQasinoStatistics.perform(flowDTO);
         mapQasinoResponseFromDto.perform(flowDTO);
         flowDTO.prepareResponseHeaders();
-        return ResponseEntity.ok().headers(flowDTO.getHeaders()).body(flowDTO.getQasino());
+        return ResponseEntity.ok().headers(flowDTO.getHeaders()).body(flowDTO.getQasinoResponse());
     }
 
     @DeleteMapping("/visitor/{visitorId}")
-    public ResponseEntity<Qasino> deleteVisitor(
+    public ResponseEntity<QasinoResponse> deleteVisitor(
             @PathVariable("visitorId") String id
     ) {
         // validate
@@ -356,7 +356,7 @@ public class QasinoAndVisitorController {
         mapQasinoResponseFromDto.perform(flowDTO);
         flowDTO.prepareResponseHeaders();
         // delete 204 -> 200 otherwise no content in response body
-        return ResponseEntity.status(HttpStatus.OK).headers(flowDTO.getHeaders()).body(flowDTO.getQasino());
+        return ResponseEntity.status(HttpStatus.OK).headers(flowDTO.getHeaders()).body(flowDTO.getQasinoResponse());
     }
 
 }

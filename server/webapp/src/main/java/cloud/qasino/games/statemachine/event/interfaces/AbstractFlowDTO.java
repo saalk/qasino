@@ -1,4 +1,4 @@
-package cloud.qasino.games.event.interfaces;
+package cloud.qasino.games.statemachine.event.interfaces;
 
 import cloud.qasino.games.database.entity.enums.game.GameState;
 import cloud.qasino.games.orchestration.interfaces.EventHandlingResponse;

@@ -3,15 +3,15 @@ package cloud.qasino.games.orchestration;
 import cloud.qasino.games.action.interfaces.Action;
 import cloud.qasino.games.action.interfaces.ActionOutput;
 import cloud.qasino.games.database.entity.enums.game.GameState;
-import cloud.qasino.games.event.interfaces.AbstractFlowDTO;
-import cloud.qasino.games.event.interfaces.Event;
+import cloud.qasino.games.statemachine.event.interfaces.AbstractFlowDTO;
+import cloud.qasino.games.statemachine.event.interfaces.Event;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationContext;
 
 import java.util.Collection;
 import java.util.List;
 
-import static cloud.qasino.games.event.EventEnum.ENTER_STATE;
+import static cloud.qasino.games.statemachine.event.GameEvent.START;
 
 @Slf4j
 public class QasinoEventHandler {
@@ -49,7 +49,7 @@ public class QasinoEventHandler {
         Collection<OrchestrationConfig.ActionConfig> actionConfigs = orchestrationConfig.getActionsForEvent(getCurrentState(flowDTO)
                 , event);
 
-        if (event == ENTER_STATE && !actionConfigs.isEmpty()) {
+        if (event == START && !actionConfigs.isEmpty()) {
             flowDTO.setEventHandlingResponse(null);
         }
         for (OrchestrationConfig.ActionConfig actionConfig : actionConfigs) {
@@ -79,7 +79,7 @@ public class QasinoEventHandler {
     }
 
     private void checkStateForEvent(Event event, AbstractFlowDTO flowDto) {
-        if (event == ENTER_STATE) {
+        if (event == START) {
             return;
         }
         List<GameState> states = orchestrationConfig.getStatesPermittingEvent(event);
@@ -153,8 +153,8 @@ public class QasinoEventHandler {
             if (transition.getNextEvent() != null) {
                 handleEvent(transition.getNextEvent(), flowDTO);
             } else if (actionConfig.getCorrespondingState() != newState && orchestrationConfig.statePermitsEvent(newState,
-                    ENTER_STATE)) {
-                handleEvent(ENTER_STATE, flowDTO);
+                    START)) {
+                handleEvent(START, flowDTO);
             }
             return true;
         }

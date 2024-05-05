@@ -1,15 +1,17 @@
-/*
-package cloud.qasino.card.controller;
+package cloud.qasino.games.handler;
 
-import cloud.qasino.card.statemachine.QasinoStateMachine;
-import cloud.qasino.card.core.context.ChannelContext;
-import cloud.qasino.card.dto.QasinoFlowDTO;
-import cloud.qasino.card.event.EventEnum;
+import cloud.qasino.games.request.QasinoRequest;
+import cloud.qasino.games.response.QasinoResponse;
+import cloud.qasino.games.response.QasinoResponseMapper;
+import cloud.qasino.games.statemachine.QasinoStateMachine;
+import cloud.qasino.games.dto.QasinoFlowDTO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
 import java.time.LocalTime;
+
+import static cloud.qasino.games.statemachine.event.GameEvent.START;
 
 @Slf4j
 @Component
@@ -17,76 +19,22 @@ public class GameHandler {
 
     @Resource
     private QasinoStateMachine qasinoStateMachine;
-    @Resource
-    private AsyncEventHandlerService fulfillmentHandler;
 
-
-    public QasinoSelectResponse initialize(final ChannelContext channelContext,
-                                                   final String userId,
-                                                   final String accountNumber,
-                                                   final String creditCardId) {
+    public QasinoResponse qasinoAndVisitor(final Long visitorId) {
         log.info("########## Start of initialize: " + LocalTime.now());
         log.info("########## Start of initialize: " + LocalTime.now());
 
-        // Add request from Resource, and extract Response from FlowDTO.
-        QasinoSelectCardRequest request = new QasinoSelectCardRequest(channelContext, accountNumber, creditCardId);
+        QasinoRequest request = new QasinoRequest(); // pathvariables
+        // validate and give 400 if needed
         QasinoFlowDTO flowDTO = new QasinoFlowDTO();
-        flowDTO.setUserId(userId);
-        flowDTO.addFrontendRequestInput(request);
+        flowDTO.setSuppliedVisitorId(visitorId);
+//      flowDTO.addQasinoRequest(request);
 
-        qasinoStateMachine.handleEvent(LIST, flowDTO);
+        qasinoStateMachine.handleEvent(START, flowDTO);
         log.info("########## Start of initialize: " + LocalTime.now());
 
-        return new QasinoSelectResponse().extract(flowDTO);
+        return new QasinoResponseMapper().map(flowDTO);
     }
-
-    public QasinoCheckAndVerifyResponse check(final ChannelContext channelContext,
-                                                      final String requestId,
-                                                      final String beneficiaryId) {
-        return checkAndVerify(channelContext, requestId, beneficiaryId, CHECK);
-    }
-
-    public QasinoSubmitResponse submit(final ChannelContext channelContext, final String requestId) {
-        QasinoSubmitRequest request = new QasinoSubmitRequest(channelContext, requestId);
-        QasinoFlowDTO flowDTO = new QasinoFlowDTO();
-        flowDTO.setRequestId(requestId);
-        flowDTO.addFrontendRequestInput(request);
-
-        qasinoStateMachine.handleEvent(SUBMIT, flowDTO);
-        return new QasinoSubmitResponse().extract(flowDTO);
-    }
-
-    public void authorize(final CramUserRequest userRequest) {
-        String requestId = userRequest.getUserRequest()
-                .getExternalReference()
-                .getId();
-        QasinoFlowDTO flowDTO = new QasinoFlowDTO();
-        flowDTO.setRequestId(requestId);
-        flowDTO.getCramDTO().setStatus(CramStatus.fromString(userRequest.getUserRequest().getStatus().toString()));
-
-        switch (userRequest.getUserRequest().getStatus()) {
-            case Cancelled:
-                qasinoStateMachine.handleEvent(CANCEL, flowDTO);
-                break;
-            case Expired:
-                qasinoStateMachine.handleEvent(REJECT, flowDTO);
-                break;
-            default:
-                qasinoStateMachine.handleEvent(AUTHORIZE, flowDTO);
-                fulfillmentHandler.scheduleEvent(qasinoStateMachine, VERIFY, flowDTO);
-                break;
-        }
-    }
-
-    public void reset(final ChannelContext channelContext,
-                      final String requestId) {
-        QasinoFlowDTO flowDTO = new QasinoFlowDTO();
-        flowDTO.setRequestId(requestId);
-        flowDTO.addFrontendRequestInput(new BaseCreditcardFrontendRequest(channelContext));
-
-        qasinoStateMachine.handleEvent(RESET, flowDTO);
-    }
-
 
 }
-*/
+

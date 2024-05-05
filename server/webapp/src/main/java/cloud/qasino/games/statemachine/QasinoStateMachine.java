@@ -1,21 +1,23 @@
 package cloud.qasino.games.statemachine;
 
 import cloud.qasino.games.action.LoadEntitiesToDtoAction;
-import cloud.qasino.games.event.interfaces.AbstractFlowDTO;
-import cloud.qasino.games.event.interfaces.Event;
+import cloud.qasino.games.statemachine.event.interfaces.AbstractFlowDTO;
+import cloud.qasino.games.statemachine.event.interfaces.Event;
 import cloud.qasino.games.orchestration.OrchestrationConfig;
 import cloud.qasino.games.orchestration.QasinoEventHandler;
 import org.springframework.context.ApplicationContext;
+import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 
 import static cloud.qasino.games.database.entity.enums.game.GameState.*;
-import static cloud.qasino.games.event.EventEnum.LIST;
-import static cloud.qasino.games.event.EventOutput.Result.FAILURE;
-import static cloud.qasino.games.event.EventOutput.Result.SUCCESS;
+import static cloud.qasino.games.statemachine.event.GameEvent.START;
+import static cloud.qasino.games.statemachine.event.EventOutput.Result.FAILURE;
+import static cloud.qasino.games.statemachine.event.EventOutput.Result.SUCCESS;
 
-public class GameStateMachine { // implements QasinoAsyncConfiguration.ASyncEventHandler {
+@Component
+public class QasinoStateMachine { // implements QasinoAsyncConfiguration.ASyncEventHandler {
 
     public static final OrchestrationConfig qasinoConfiguration = new OrchestrationConfig();
 
@@ -29,7 +31,7 @@ public class GameStateMachine { // implements QasinoAsyncConfiguration.ASyncEven
 
         qasinoConfiguration
                 .onState(INITIALIZED)
-                .onEvent(LIST)
+                .onEvent(START)
                 .perform(LoadEntitiesToDtoAction.class)
                 .onResult(FAILURE, ERROR)   //Move catches RunTime Exceptions. So we need this.
                 .perform(LoadEntitiesToDtoAction.class)

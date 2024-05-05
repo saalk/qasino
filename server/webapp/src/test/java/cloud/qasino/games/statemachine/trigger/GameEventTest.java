@@ -1,17 +1,18 @@
 package cloud.qasino.games.statemachine.trigger;
 
+import cloud.qasino.games.statemachine.event.GameEvent;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-class GameTriggerTest {
+class GameEventTest {
 
-    GameTrigger gameTrigger = GameTrigger.VALIDATE;
+    GameEvent gameEvent = GameEvent.VALIDATE;
 
     @Test
     void fromLabel() {
-        assertEquals(GameTrigger.VALIDATE,GameTrigger.fromLabel("prepare"));
+        assertEquals(GameEvent.VALIDATE, GameEvent.fromLabel("prepare"));
 
     }
 

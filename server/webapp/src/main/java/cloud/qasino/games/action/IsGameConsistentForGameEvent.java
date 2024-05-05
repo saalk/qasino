@@ -9,8 +9,8 @@ import cloud.qasino.games.database.entity.Turn;
 import cloud.qasino.games.database.entity.Visitor;
 import cloud.qasino.games.database.entity.enums.game.gamestate.GameStateGroup;
 import cloud.qasino.games.database.service.PlayService;
-import cloud.qasino.games.event.EventOutput;
-import cloud.qasino.games.statemachine.trigger.GameTrigger;
+import cloud.qasino.games.statemachine.event.EventOutput;
+import cloud.qasino.games.statemachine.event.GameEvent;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -24,25 +24,25 @@ import java.util.Optional;
 @Slf4j
 @Component
 /**
- * @param actionDto Validate game for supplied GameTrigger
- * 1) getSuppliedGameTrigger
+ * @param actionDto Validate game for supplied GameEvent
+ * 1) getSuppliedGameEvent
  *
  * Business rules:
  * BR1)
  * @return Result.SUCCESS or FAILURE (404) when not found
  */
-public class IsGameConsistentForGameTrigger implements Action<IsGameConsistentForGameTrigger.Dto, EventOutput.Result> {
+public class IsGameConsistentForGameEvent implements Action<IsGameConsistentForGameEvent.Dto, EventOutput.Result> {
     @Autowired
     PlayService playService;
 
     @Override
     public EventOutput.Result perform(Dto actionDto) {
 
-        actionDto.setErrorKey("GameTrigger");
-        actionDto.setErrorValue(actionDto.getSuppliedGameTrigger().getLabel());
+        actionDto.setErrorKey("GameEvent");
+        actionDto.setErrorValue(actionDto.getSuppliedGameEvent().getLabel());
 
         boolean noError = true;
-        switch (actionDto.getSuppliedGameTrigger()) {
+        switch (actionDto.getSuppliedGameEvent()) {
 
             case START -> {
                 noError = noGameInSetupOrPlayingShouldAlreadyExist(actionDto);
@@ -93,7 +93,7 @@ public class IsGameConsistentForGameTrigger implements Action<IsGameConsistentFo
             log.info("!exists");
             setUnprocessableErrorMessage(actionDto,
                     "Action [" +
-                            actionDto.getSuppliedGameTrigger() +
+                            actionDto.getSuppliedGameEvent() +
                             "] is invalid - game already exists with game state group [" +
                             Arrays.toString(reasonPart.toArray()) + "]");
             return false;
@@ -108,7 +108,7 @@ public class IsGameConsistentForGameTrigger implements Action<IsGameConsistentFo
                         .findFirst();
         if (player.isEmpty()) {
             log.info("!seats");
-            setUnprocessableErrorMessage(actionDto, "Action [" + actionDto.getSuppliedGameTrigger() + "] invalid - no correct seat order for player(s)");
+            setUnprocessableErrorMessage(actionDto, "Action [" + actionDto.getSuppliedGameEvent() + "] invalid - no correct seat order for player(s)");
             return false;
         }
         return true;
@@ -118,7 +118,7 @@ public class IsGameConsistentForGameTrigger implements Action<IsGameConsistentFo
             log.info("!state");
             setUnprocessableErrorMessage(actionDto,
                     "Action [" +
-                            actionDto.getSuppliedGameTrigger() +
+                            actionDto.getSuppliedGameEvent() +
                             "] is invalid - game state [" +
                             actionDto.getQasinoGame().getState() +
                             "] is not in correct game state group [" +
@@ -133,7 +133,7 @@ public class IsGameConsistentForGameTrigger implements Action<IsGameConsistentFo
             log.info("!ante");
             setUnprocessableErrorMessage(actionDto,
                     "Action [" +
-                            actionDto.getSuppliedGameTrigger() +
+                            actionDto.getSuppliedGameEvent() +
                             "] invalid - game has incorrect ante of " +
                             actionDto.getQasinoGame().getAnte()
             );
@@ -146,7 +146,7 @@ public class IsGameConsistentForGameTrigger implements Action<IsGameConsistentFo
             log.info("!initiator");
             setUnprocessableErrorMessage(actionDto,
                     "Action [" +
-                            actionDto.getSuppliedGameTrigger() +
+                            actionDto.getSuppliedGameEvent() +
                             "] invalid - game has no initiator "
             );
             return false;
@@ -159,7 +159,7 @@ public class IsGameConsistentForGameTrigger implements Action<IsGameConsistentFo
                 log.info("!fiches");
                 setUnprocessableErrorMessage(actionDto,
                         "Action [" +
-                                actionDto.getSuppliedGameTrigger() +
+                                actionDto.getSuppliedGameEvent() +
                                 "] invalid - this player has no fiches " +
                                 player.getPlayerId()
 
@@ -175,7 +175,7 @@ public class IsGameConsistentForGameTrigger implements Action<IsGameConsistentFo
             log.info("!turn and/or cards");
             setUnprocessableErrorMessage(actionDto,
                     "Action [" +
-                            actionDto.getSuppliedGameTrigger() +
+                            actionDto.getSuppliedGameEvent() +
                             "] invalid - game has no cards and or a turn"
 
             );
@@ -188,7 +188,7 @@ public class IsGameConsistentForGameTrigger implements Action<IsGameConsistentFo
             log.info("!turn and/or cards");
             setUnprocessableErrorMessage(actionDto,
                     "Action [" +
-                            actionDto.getSuppliedGameTrigger() +
+                            actionDto.getSuppliedGameEvent() +
                             "] invalid - game has no result"
 
             );
@@ -211,7 +211,7 @@ public class IsGameConsistentForGameTrigger implements Action<IsGameConsistentFo
         List<Player> getQasinoGamePlayers();
         Visitor getQasinoVisitor();
         List<Game> getInitiatedGamesForVisitor();
-        GameTrigger getSuppliedGameTrigger();
+        GameEvent getSuppliedGameEvent();
         Game getQasinoGame();
         Turn getActiveTurn();
         List<Card> getCardsInTheGameSorted();

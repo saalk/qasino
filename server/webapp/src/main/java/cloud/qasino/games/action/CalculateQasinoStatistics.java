@@ -11,7 +11,7 @@ import cloud.qasino.games.database.repository.TurnRepository;
 import cloud.qasino.games.database.repository.VisitorRepository;
 import cloud.qasino.games.dto.statistics.Statistics;
 import cloud.qasino.games.dto.statistics.SubTotalsGame;
-import cloud.qasino.games.event.EventOutput;
+import cloud.qasino.games.statemachine.event.EventOutput;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

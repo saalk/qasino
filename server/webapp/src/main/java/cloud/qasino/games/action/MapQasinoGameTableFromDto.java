@@ -11,7 +11,7 @@ import cloud.qasino.games.database.entity.enums.player.AiLevel;
 import cloud.qasino.games.database.entity.enums.player.Role;
 import cloud.qasino.games.dto.elements.SectionSeat;
 import cloud.qasino.games.dto.elements.SectionTable;
-import cloud.qasino.games.event.EventOutput;
+import cloud.qasino.games.statemachine.event.EventOutput;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 

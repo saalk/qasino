@@ -10,8 +10,8 @@ import cloud.qasino.games.database.entity.enums.game.Type;
 import cloud.qasino.games.database.entity.enums.move.Move;
 import cloud.qasino.games.database.service.PlayService;
 import cloud.qasino.games.dto.elements.SectionTable;
-import cloud.qasino.games.event.EventOutput;
-import cloud.qasino.games.statemachine.trigger.TurnTrigger;
+import cloud.qasino.games.statemachine.event.EventOutput;
+import cloud.qasino.games.statemachine.event.TurnEvent;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -28,7 +28,7 @@ public class PlayNextHumanTurnAction implements Action<PlayNextHumanTurnAction.D
     @Override
     public EventOutput.Result perform(Dto actionDto) {
 
-        // POST - turntrigger HIGER|LOWER|PASS for player in highlow game
+        // POST - turnEvent HIGER|LOWER|PASS for player in highlow game
         if (!actionDto.getQasinoGame().getType().equals(Type.HIGHLOW)) {
             setBadRequestErrorMessage(actionDto,"Game.type", String.valueOf(actionDto.getQasinoGame().getType()));
             return EventOutput.Result.FAILURE;
@@ -39,7 +39,7 @@ public class PlayNextHumanTurnAction implements Action<PlayNextHumanTurnAction.D
         Move activeMove = null;
 
         // Update Turn + cardMoves can be DEAL, HIGHER, LOWER, PASS, STOP for Human
-        switch (actionDto.getSuppliedTurnTrigger()) {
+        switch (actionDto.getSuppliedTurnEvent()) {
             case HIGHER -> {
                 activeMove = Move.HIGHER;
                 // update round +1 start with turn 0
@@ -67,7 +67,7 @@ public class PlayNextHumanTurnAction implements Action<PlayNextHumanTurnAction.D
                 activeMove = Move.DEAL;
                 // TODO only one round for now do not start with first player again
                 if (actionDto.getNextPlayer() == null) {
-                    actionDto.setSuppliedTurnTrigger(TurnTrigger.END_GAME);
+                    actionDto.setSuppliedTurnEvent(TurnEvent.END_GAME);
                     return EventOutput.Result.SUCCESS;
                 }
                 // update round +1 start with turn 0
@@ -82,12 +82,12 @@ public class PlayNextHumanTurnAction implements Action<PlayNextHumanTurnAction.D
             }
             default -> {
                 // ony STOP left TODO implement some logic here
-                actionDto.setSuppliedTurnTrigger(TurnTrigger.END_GAME);
+                actionDto.setSuppliedTurnEvent(TurnEvent.END_GAME);
                 return EventOutput.Result.SUCCESS;
             }
         }
         if (actionDto.getActiveTurn() == null ) {
-            actionDto.setSuppliedTurnTrigger(TurnTrigger.END_GAME);
+            actionDto.setSuppliedTurnEvent(TurnEvent.END_GAME);
         }
         actionDto.setActiveTurn(activeTurn); // can be null
         actionDto.setAllCardMovesForTheGame(playService.getCardMovesForGame(actionDto.getQasinoGame())); // can be null
@@ -98,7 +98,7 @@ public class PlayNextHumanTurnAction implements Action<PlayNextHumanTurnAction.D
     private void setConflictErrorMessage(Dto actionDto, String id, String value) {
         actionDto.setErrorKey(id);
         actionDto.setErrorValue(value);
-        actionDto.setConflictErrorMessage("Trigger [" + actionDto.getSuppliedTurnTrigger() + "] invalid for gameState");
+        actionDto.setConflictErrorMessage("Trigger [" + actionDto.getSuppliedTurnEvent() + "] invalid for gameState");
     }
 
     private void setBadRequestErrorMessage(Dto actionDto, String id, String value) {
@@ -116,8 +116,8 @@ public class PlayNextHumanTurnAction implements Action<PlayNextHumanTurnAction.D
         Turn getActiveTurn();
         Player getTurnPlayer();
         Player getNextPlayer();
-        TurnTrigger getSuppliedTurnTrigger();
-        void setSuppliedTurnTrigger(TurnTrigger turnTrigger);
+        TurnEvent getSuppliedTurnEvent();
+        void setSuppliedTurnEvent(TurnEvent turnEvent);
         // Setters
         void setQasinoGame(Game game);
         void setActiveTurn(Turn turn);

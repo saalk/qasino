@@ -3,7 +3,7 @@ package cloud.qasino.games.controller;
 import cloud.qasino.games.action.CalculateQasinoStatistics;
 import cloud.qasino.games.action.CreateNewGameAction;
 import cloud.qasino.games.action.CreateNewLeagueAction;
-import cloud.qasino.games.action.IsGameConsistentForGameTrigger;
+import cloud.qasino.games.action.IsGameConsistentForGameEvent;
 import cloud.qasino.games.action.LoadEntitiesToDtoAction;
 import cloud.qasino.games.action.MapQasinoGameTableFromDto;
 import cloud.qasino.games.action.MapQasinoResponseFromDto;
@@ -12,8 +12,6 @@ import cloud.qasino.games.action.SetStatusIndicatorsBaseOnRetrievedDataAction;
 import cloud.qasino.games.database.entity.Game;
 import cloud.qasino.games.database.entity.Player;
 import cloud.qasino.games.database.entity.Visitor;
-import cloud.qasino.games.database.entity.enums.game.GameState;
-import cloud.qasino.games.database.entity.enums.game.gamestate.GameStateGroup;
 import cloud.qasino.games.database.entity.enums.player.AiLevel;
 import cloud.qasino.games.database.entity.enums.player.Avatar;
 import cloud.qasino.games.database.entity.enums.player.Role;
@@ -23,9 +21,9 @@ import cloud.qasino.games.database.repository.LeagueRepository;
 import cloud.qasino.games.database.repository.PlayerRepository;
 import cloud.qasino.games.database.repository.TurnRepository;
 import cloud.qasino.games.database.repository.VisitorRepository;
-import cloud.qasino.games.dto.Qasino;
+import cloud.qasino.games.response.QasinoResponse;
 import cloud.qasino.games.dto.QasinoFlowDTO;
-import cloud.qasino.games.event.EventOutput;
+import cloud.qasino.games.statemachine.event.EventOutput;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -44,8 +42,6 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import java.net.URI;
 import java.util.List;
 import java.util.Optional;
-
-import static cloud.qasino.games.configuration.Constants.DEFAULT_PAWN_SHIP_BOT;
 
 @RestController
 public class GameAndLeagueController {
@@ -70,7 +66,7 @@ public class GameAndLeagueController {
     @Autowired
     MapQasinoResponseFromDto mapQasinoResponseFromDto;
     @Autowired
-    IsGameConsistentForGameTrigger isGameConsistentForGameTrigger;
+    IsGameConsistentForGameEvent isGameConsistentForGameEvent;
     @Autowired
     CreateNewGameAction createNewGameAction;
     @Autowired
@@ -101,7 +97,7 @@ public class GameAndLeagueController {
     // /api/game/{id}/WITHDRAW/visitor{id} -> DELETE players
 
     @PostMapping(value = "/game/start/{type}/visitor/{visitorId}")
-    public ResponseEntity<Qasino> startGameWithVisitorPlayer(
+    public ResponseEntity<QasinoResponse> startGameWithVisitorPlayer(
             @PathVariable("type") String type,
             @PathVariable("visitorId") String id,
             @RequestParam(name = "style", defaultValue = " ") String style,
@@ -116,7 +112,7 @@ public class GameAndLeagueController {
                 "style", style,
                 "ante", ante,
                 "avatar", avatar,
-                "gameTrigger", "start"
+                "gameEvent", "start"
         );
         if (!flowDTO.validateInput()) {
             flowDTO.prepareResponseHeaders();
@@ -130,7 +126,7 @@ public class GameAndLeagueController {
         }
 
         // create or update the game
-        output = isGameConsistentForGameTrigger.perform(flowDTO);
+        output = isGameConsistentForGameEvent.perform(flowDTO);
         if (output == EventOutput.Result.FAILURE) {
             flowDTO.prepareResponseHeaders();
             return ResponseEntity.status(HttpStatus.valueOf(flowDTO.getHttpStatus())).headers(flowDTO.getHeaders()).build();
@@ -143,11 +139,11 @@ public class GameAndLeagueController {
         calculateQasinoStatistics.perform(flowDTO);
         mapQasinoResponseFromDto.perform(flowDTO);
         flowDTO.prepareResponseHeaders();
-        return ResponseEntity.status(HttpStatus.valueOf(201)).headers(flowDTO.getHeaders()).body(flowDTO.getQasino());
+        return ResponseEntity.status(HttpStatus.valueOf(201)).headers(flowDTO.getHeaders()).body(flowDTO.getQasinoResponse());
     }
 
     @PostMapping(value = "/game/start/{type}/visitor/{visitorId}/bot/{aiLevel}")
-    public ResponseEntity<Qasino> startGameWithVisitorPlayerAndBot(
+    public ResponseEntity<QasinoResponse> startGameWithVisitorPlayerAndBot(
             @PathVariable("type") String type,
             @PathVariable("visitorId") String id,
             @PathVariable("aiLevel") String aiLevel,
@@ -164,7 +160,7 @@ public class GameAndLeagueController {
                 "style", style,
                 "ante", ante,
                 "avatar", avatar,
-                "gameTrigger", "start"
+                "gameEvent", "start"
         );
         if (!flowDTO.validateInput()) {
             flowDTO.prepareResponseHeaders();
@@ -178,7 +174,7 @@ public class GameAndLeagueController {
         }
 
         // create or update the game
-        output = isGameConsistentForGameTrigger.perform(flowDTO);
+        output = isGameConsistentForGameEvent.perform(flowDTO);
         if (output == EventOutput.Result.FAILURE) {
             flowDTO.prepareResponseHeaders();
             return ResponseEntity.status(HttpStatus.valueOf(flowDTO.getHttpStatus())).headers(flowDTO.getHeaders()).build();
@@ -192,11 +188,11 @@ public class GameAndLeagueController {
         calculateQasinoStatistics.perform(flowDTO);
         mapQasinoResponseFromDto.perform(flowDTO);
         flowDTO.prepareResponseHeaders();
-        return ResponseEntity.status(HttpStatus.valueOf(201)).headers(flowDTO.getHeaders()).body(flowDTO.getQasino());
+        return ResponseEntity.status(HttpStatus.valueOf(201)).headers(flowDTO.getHeaders()).body(flowDTO.getQasinoResponse());
     }
 
     @PostMapping(value = "/game/start/{type}/league/{leagueId}/visitor/{visitorId}")
-    public ResponseEntity<Qasino> startGameInLeagueWithVisitorPlayer(
+    public ResponseEntity<QasinoResponse> startGameInLeagueWithVisitorPlayer(
             @PathVariable("type") String type,
             @PathVariable("visitorId") String vId,
             @PathVariable("leagueId") String lId,
@@ -213,7 +209,7 @@ public class GameAndLeagueController {
                 "style", style,
                 "ante", ante,
                 "avatar", avatar,
-                "gameTrigger", "start"
+                "gameEvent", "start"
         );
         if (!flowDTO.validateInput()) {
             flowDTO.prepareResponseHeaders();
@@ -227,7 +223,7 @@ public class GameAndLeagueController {
         }
 
         // create or update the game
-        output = isGameConsistentForGameTrigger.perform(flowDTO);
+        output = isGameConsistentForGameEvent.perform(flowDTO);
         if (output == EventOutput.Result.FAILURE) {
             flowDTO.prepareResponseHeaders();
             return ResponseEntity.status(HttpStatus.valueOf(flowDTO.getHttpStatus())).headers(flowDTO.getHeaders()).build();
@@ -241,11 +237,11 @@ public class GameAndLeagueController {
         calculateQasinoStatistics.perform(flowDTO);
         mapQasinoResponseFromDto.perform(flowDTO);
         flowDTO.prepareResponseHeaders();
-        return ResponseEntity.status(HttpStatus.valueOf(201)).headers(flowDTO.getHeaders()).body(flowDTO.getQasino());
+        return ResponseEntity.status(HttpStatus.valueOf(201)).headers(flowDTO.getHeaders()).body(flowDTO.getQasinoResponse());
     }
 
     @PostMapping(value = "/game/start/{type}/league/{leagueId}/visitor/{visitorId}/bot/{aiLevel}")
-    public ResponseEntity<Qasino> startGameInLeagueWithVisitorPlayerAndBot(
+    public ResponseEntity<QasinoResponse> startGameInLeagueWithVisitorPlayerAndBot(
             @PathVariable("type") String type,
             @PathVariable("visitorId") String vId,
             @PathVariable("leagueId") String lId,
@@ -264,7 +260,7 @@ public class GameAndLeagueController {
                 "style", style,
                 "ante", ante,
                 "avatar", avatar,
-                "gameTrigger", "start"
+                "gameEvent", "start"
         );
         if (!flowDTO.validateInput()) {
             flowDTO.prepareResponseHeaders();
@@ -277,7 +273,7 @@ public class GameAndLeagueController {
             return ResponseEntity.status(HttpStatus.valueOf(flowDTO.getHttpStatus())).headers(flowDTO.getHeaders()).build();
         }
 
-        output = isGameConsistentForGameTrigger.perform(flowDTO);
+        output = isGameConsistentForGameEvent.perform(flowDTO);
         if (output == EventOutput.Result.FAILURE) {
             flowDTO.prepareResponseHeaders();
             return ResponseEntity.status(HttpStatus.valueOf(flowDTO.getHttpStatus())).headers(flowDTO.getHeaders()).build();
@@ -292,11 +288,11 @@ public class GameAndLeagueController {
         calculateQasinoStatistics.perform(flowDTO);
         mapQasinoResponseFromDto.perform(flowDTO);
         flowDTO.prepareResponseHeaders();
-        return ResponseEntity.status(HttpStatus.valueOf(201)).headers(flowDTO.getHeaders()).body(flowDTO.getQasino());
+        return ResponseEntity.status(HttpStatus.valueOf(201)).headers(flowDTO.getHeaders()).body(flowDTO.getQasinoResponse());
     }
 
     @PutMapping(value = "/game/{gameId}/validate/{type}/league/{leagueId}")
-    public ResponseEntity<Qasino> validateGameWithTypeLeagueStyleAnte(
+    public ResponseEntity<QasinoResponse> validateGameWithTypeLeagueStyleAnte(
             @RequestHeader("visitorId") String vId,
             @PathVariable("gameId") String gid,
             @PathVariable("type") String type,
@@ -313,7 +309,7 @@ public class GameAndLeagueController {
                 "type", type,
                 "style", style,
                 "ante", ante,
-                "gameTrigger", "validate"
+                "gameEvent", "validate"
 
         );
         if (!flowDTO.validateInput()) {
@@ -326,7 +322,7 @@ public class GameAndLeagueController {
             flowDTO.prepareResponseHeaders();
             return ResponseEntity.status(HttpStatus.valueOf(flowDTO.getHttpStatus())).headers(flowDTO.getHeaders()).build();
         }
-        output = isGameConsistentForGameTrigger.perform(flowDTO);
+        output = isGameConsistentForGameEvent.perform(flowDTO);
         if (output == EventOutput.Result.FAILURE) {
             flowDTO.prepareResponseHeaders();
             return ResponseEntity.status(HttpStatus.valueOf(flowDTO.getHttpStatus())).headers(flowDTO.getHeaders()).build();
@@ -341,7 +337,7 @@ public class GameAndLeagueController {
         calculateQasinoStatistics.perform(flowDTO);
         mapQasinoResponseFromDto.perform(flowDTO);
         flowDTO.prepareResponseHeaders();
-        return ResponseEntity.ok().headers(flowDTO.getHeaders()).body(flowDTO.getQasino());
+        return ResponseEntity.ok().headers(flowDTO.getHeaders()).body(flowDTO.getQasinoResponse());
     }
 
     // @PutMapping(value = "/game/{gameId}/invite/visitor{visitorId}")
@@ -613,7 +609,7 @@ public class GameAndLeagueController {
 //
 
     @GetMapping("/game/{gameId}")
-    public ResponseEntity<Qasino> getGame(
+    public ResponseEntity<QasinoResponse> getGame(
             @RequestHeader("visitorId") String vId,
             @PathVariable("gameId") String id
     ) {
@@ -635,11 +631,11 @@ public class GameAndLeagueController {
         calculateQasinoStatistics.perform(flowDTO);
         mapQasinoResponseFromDto.perform(flowDTO);
         flowDTO.prepareResponseHeaders();
-        return ResponseEntity.ok().headers(flowDTO.getHeaders()).body(flowDTO.getQasino());
+        return ResponseEntity.ok().headers(flowDTO.getHeaders()).body(flowDTO.getQasinoResponse());
     }
 
     @DeleteMapping("/game/{gameId}")
-    public ResponseEntity<Qasino> deleteGame(
+    public ResponseEntity<QasinoResponse> deleteGame(
             @RequestHeader("visitorId") String vId,
             @PathVariable("gameId") String id
     ) {
@@ -667,11 +663,11 @@ public class GameAndLeagueController {
         mapQasinoResponseFromDto.perform(flowDTO);
         flowDTO.prepareResponseHeaders();
         // delete 204 -> 200 otherwise no content in response body
-        return ResponseEntity.status(HttpStatus.OK).headers(flowDTO.getHeaders()).body(flowDTO.getQasino());
+        return ResponseEntity.status(HttpStatus.OK).headers(flowDTO.getHeaders()).body(flowDTO.getQasinoResponse());
     }
 
     @GetMapping("/league/{leagueId}")
-    public ResponseEntity<Qasino> getLeague(
+    public ResponseEntity<QasinoResponse> getLeague(
             @RequestHeader("visitorId") String vId,
             @PathVariable("leagueId") String id
     ) {
@@ -694,11 +690,11 @@ public class GameAndLeagueController {
         calculateQasinoStatistics.perform(flowDTO);
         mapQasinoResponseFromDto.perform(flowDTO);
         flowDTO.prepareResponseHeaders();
-        return ResponseEntity.ok().headers(flowDTO.getHeaders()).body(flowDTO.getQasino());
+        return ResponseEntity.ok().headers(flowDTO.getHeaders()).body(flowDTO.getQasinoResponse());
     }
 
     @PostMapping(value = "/league/{leagueName}/visitor/{visitorId}")
-    public ResponseEntity<Qasino> createLeague(
+    public ResponseEntity<QasinoResponse> createLeague(
             @PathVariable("leagueName") String name,
             @PathVariable("visitorId") String visitorId
     ) {
@@ -728,11 +724,11 @@ public class GameAndLeagueController {
         calculateQasinoStatistics.perform(flowDTO);
         mapQasinoResponseFromDto.perform(flowDTO);
         flowDTO.prepareResponseHeaders();
-        return ResponseEntity.ok().headers(flowDTO.getHeaders()).body(flowDTO.getQasino());
+        return ResponseEntity.ok().headers(flowDTO.getHeaders()).body(flowDTO.getQasinoResponse());
     }
 
     @PutMapping(value = "/league/{leagueId}")
-    public ResponseEntity<Qasino> updateLeague(
+    public ResponseEntity<QasinoResponse> updateLeague(
             @RequestHeader("visitorId") String vId,
             @PathVariable("leagueId") String id,
             @RequestParam(name = "leagueName", defaultValue = "") String leagueName
@@ -763,11 +759,11 @@ public class GameAndLeagueController {
         calculateQasinoStatistics.perform(flowDTO);
         mapQasinoResponseFromDto.perform(flowDTO);
         flowDTO.prepareResponseHeaders();
-        return ResponseEntity.ok().headers(flowDTO.getHeaders()).body(flowDTO.getQasino());
+        return ResponseEntity.ok().headers(flowDTO.getHeaders()).body(flowDTO.getQasinoResponse());
     }
 
     @DeleteMapping("/league/{leagueId}")
-    public ResponseEntity<Qasino> deleteLeague(
+    public ResponseEntity<QasinoResponse> deleteLeague(
             @RequestHeader("visitorId") String vId,
             @PathVariable("leagueId") String id
     ) {
@@ -795,7 +791,7 @@ public class GameAndLeagueController {
         mapQasinoResponseFromDto.perform(flowDTO);
         flowDTO.prepareResponseHeaders();
         // delete 204 -> 200 otherwise no content in response body
-        return ResponseEntity.status(HttpStatus.OK).headers(flowDTO.getHeaders()).body(flowDTO.getQasino());
+        return ResponseEntity.status(HttpStatus.OK).headers(flowDTO.getHeaders()).body(flowDTO.getQasinoResponse());
     }
 
 }

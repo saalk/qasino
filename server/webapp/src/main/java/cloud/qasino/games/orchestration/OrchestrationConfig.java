@@ -4,14 +4,14 @@ import cloud.qasino.games.action.interfaces.Action;
 import cloud.qasino.games.orchestration.interfaces.EventHandlingResponse;
 import cloud.qasino.games.orchestration.interfaces.Expression;
 import cloud.qasino.games.database.entity.enums.game.GameState;
-import cloud.qasino.games.event.EventEnum;
-import cloud.qasino.games.event.interfaces.Event;
+import cloud.qasino.games.statemachine.event.GameEvent;
+import cloud.qasino.games.statemachine.event.interfaces.Event;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.*;
 
-import static cloud.qasino.games.event.EventEnum.ENTER_STATE;
-import static cloud.qasino.games.event.EventOutput.Result.SUCCESS;
+import static cloud.qasino.games.statemachine.event.GameEvent.START;
+import static cloud.qasino.games.statemachine.event.EventOutput.Result.SUCCESS;
 
 /**
  * Contains states, events handled by certain states, actions to be carried out and transitions.
@@ -240,7 +240,7 @@ public class OrchestrationConfig {
      * @param event
      * @return true if state is configured to handle event
      */
-    public boolean statePermitsEvent(final GameState state, final EventEnum event) {
+    public boolean statePermitsEvent(final GameState state, final GameEvent event) {
         return getEventConfig(state, event) != null;
     }
 
@@ -321,7 +321,7 @@ public class OrchestrationConfig {
          * @return EventConfig
          */
         EventConfig getEntryEvent() {
-            return eventConfigMap.get(ENTER_STATE);
+            return eventConfigMap.get(START);
         }
 
         /**
@@ -345,11 +345,11 @@ public class OrchestrationConfig {
          * @return ActionConfig
          */
         public ActionConfig onEntryPerform(Class<? extends Action> action) {
-            return onEvent(ENTER_STATE).perform(action);
+            return onEvent(START).perform(action);
         }
 
         public EventConfig onEntry() {
-            return onEvent(ENTER_STATE);
+            return onEvent(START);
         }
 
         /**

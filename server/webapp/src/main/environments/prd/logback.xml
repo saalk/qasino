@@ -19,7 +19,7 @@
             <fileNamePattern>${LOG_PATH}/${APP_NAME}-audit.%d{yyyy-MM-dd}.log.gz</fileNamePattern>
             <maxHistory>3</maxHistory>
         </rollingPolicy>
-        <encoder class="cloud.qasino.games.logback.SingleLinePatternLayoutEncoder">
+        <encoder class="cloud.qasinoResponse.games.logback.SingleLinePatternLayoutEncoder">
             <pattern>%d{ISO8601} [%thread] %level %class{36} %msg%n</pattern>
             <immediateFlush>true</immediateFlush>
         </encoder>
@@ -29,7 +29,7 @@
         <appender-ref ref="APP_LOG"/>
     </logger>
 
-    <logger name="cloud.qasino.games.audit.slf4j" level="info" additivity="false">
+    <logger name="cloud.qasinoResponse.games.audit.slf4j" level="info" additivity="false">
         <appender-ref ref="AUDIT_LOG"/>
     </logger>
 

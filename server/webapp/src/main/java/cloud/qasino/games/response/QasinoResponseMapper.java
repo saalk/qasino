@@ -1,6 +1,5 @@
-package cloud.qasino.games.action;
+package cloud.qasino.games.response;
 
-import cloud.qasino.games.action.interfaces.Action;
 import cloud.qasino.games.database.entity.Game;
 import cloud.qasino.games.database.entity.League;
 import cloud.qasino.games.database.entity.Player;
@@ -9,7 +8,7 @@ import cloud.qasino.games.database.entity.Turn;
 import cloud.qasino.games.database.entity.Visitor;
 import cloud.qasino.games.database.entity.enums.game.GameState;
 import cloud.qasino.games.database.entity.enums.game.Style;
-import cloud.qasino.games.response.QasinoResponse;
+import cloud.qasino.games.dto.QasinoFlowDTO;
 import cloud.qasino.games.dto.elements.NavigationBarItem;
 import cloud.qasino.games.dto.elements.PageGameInvitations;
 import cloud.qasino.games.dto.elements.PageGamePlay;
@@ -18,7 +17,6 @@ import cloud.qasino.games.dto.elements.PageLeague;
 import cloud.qasino.games.dto.elements.PageVisitor;
 import cloud.qasino.games.dto.elements.SectionTable;
 import cloud.qasino.games.dto.statistics.Statistics;
-import cloud.qasino.games.statemachine.event.EventOutput;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
@@ -29,10 +27,9 @@ import java.util.Map;
 
 @Slf4j
 @Component
-public class MapQasinoResponseFromDto implements Action<MapQasinoResponseFromDto.Dto, EventOutput.Result> {
+public class QasinoResponseMapper {
 
-    @Override
-    public EventOutput.Result perform(Dto actionDto) {
+    public QasinoResponse map(QasinoFlowDTO actionDto) {
 
         QasinoResponse qasinoResponse = new QasinoResponse();
 
@@ -174,16 +171,15 @@ public class MapQasinoResponseFromDto implements Action<MapQasinoResponseFromDto
         qasinoResponse.setAction(actionDto.getAction());
         qasinoResponse.setActionNeeded(actionDto.isActionNeeded());
 
-        actionDto.setQasinoResponse(qasinoResponse);
-        return EventOutput.Result.SUCCESS;
+        return qasinoResponse;
     }
 
-    private static void setupMessage(Dto actionDto, NavigationBarItem navigationBarItem) {
+    private static void setupMessage(QasinoFlowDTO actionDto, NavigationBarItem navigationBarItem) {
         // todo
     }
 
     // @formatter:off
-    private void mapVisitorPage(Dto actionDto, NavigationBarItem navigationBarItem, PageVisitor pageVisitor) {
+    private void mapVisitorPage(QasinoFlowDTO actionDto, NavigationBarItem navigationBarItem, PageVisitor pageVisitor) {
         // set the nav bar
         navigationBarItem.setItemName(actionDto.getQasinoVisitor().getVisitorName());
         navigationBarItem.setItemStats("balance [" + actionDto.getQasinoVisitor().getBalance() + "]");
@@ -201,7 +197,7 @@ public class MapQasinoResponseFromDto implements Action<MapQasinoResponseFromDto
         }
         pageVisitor.setInvitedGamesPerState(gameStateIntegerMap);
     }
-    private void mapGameSetupPage(Dto actionDto, NavigationBarItem navigationBarItem, PageGameSetup pageGameSetup) {
+    private void mapGameSetupPage(QasinoFlowDTO actionDto, NavigationBarItem navigationBarItem, PageGameSetup pageGameSetup) {
         // set the nav bar
         navigationBarItem.setItemName("Qasinogame#" +
                 Integer.toHexString((int) actionDto.getQasinoGame().getGameId()));
@@ -225,7 +221,7 @@ public class MapQasinoResponseFromDto implements Action<MapQasinoResponseFromDto
 
         pageGameSetup.setLeaguesToSelect(null);
     }
-    private void mapGamePlayPage(Dto actionDto, NavigationBarItem navigationBarItem, PageGamePlay pageGamePlay) {
+    private void mapGamePlayPage(QasinoFlowDTO actionDto, NavigationBarItem navigationBarItem, PageGamePlay pageGamePlay) {
         // set the nav bar
         navigationBarItem.setItemName("Qasinogame#" +
                 Integer.toHexString((int) actionDto.getQasinoGame().getGameId()));
@@ -245,7 +241,7 @@ public class MapQasinoResponseFromDto implements Action<MapQasinoResponseFromDto
         }
         pageGamePlay.setGameResults(actionDto.getGameResults());
     }
-    private void mapGameInvitationsPage(Dto actionDto, NavigationBarItem navigationBarItem, PageGameInvitations pageGamesOverview) {
+    private void mapGameInvitationsPage(QasinoFlowDTO actionDto, NavigationBarItem navigationBarItem, PageGameInvitations pageGamesOverview) {
         // set the nav bar
         navigationBarItem.setItemName("GameInvitations");
         navigationBarItem.setItemStats("calculating...");
@@ -253,7 +249,7 @@ public class MapQasinoResponseFromDto implements Action<MapQasinoResponseFromDto
         // set the content
         pageGamesOverview.setGameInvitations(null);
     }
-    private void mapLeaguesPage(Dto actionDto, NavigationBarItem navigationBarItem, PageLeague pageLeague) {
+    private void mapLeaguesPage(QasinoFlowDTO actionDto, NavigationBarItem navigationBarItem, PageLeague pageLeague) {
         // set the nav bar
         navigationBarItem.setItemName("Leagues#" + Integer.toHexString((int) actionDto.getQasinoGameLeague().getLeagueId()));
         navigationBarItem.setItemStats("[" + actionDto.getLeaguesForVisitor().size() + "] active");
@@ -264,56 +260,4 @@ public class MapQasinoResponseFromDto implements Action<MapQasinoResponseFromDto
     }
     // @formatter:on
 
-    public interface Dto {
-
-        // @formatter:off
-        // Getters
-        Statistics getStatistics();
-        void setAction(String message);
-        String getAction();
-        boolean isActionNeeded();
-        void setActionNeeded(boolean bool);
-
-        boolean isShowVisitorPage();
-        boolean isShowGameSetupPage();
-        boolean isShowGamePlayPage();
-        boolean isShowGameInvitationsPage();
-        boolean isShowLeaguesPage();
-
-        // visitor
-        Visitor getQasinoVisitor();
-        List<League> getLeaguesForVisitor();
-        List<Game> getInitiatedGamesForVisitor();
-        List<Game> getInvitedGamesForVisitor();
-
-        // game setup and play
-        Game getQasinoGame();
-        Turn getActiveTurn();
-        SectionTable getTable();
-        List<Player> getQasinoGamePlayers();
-        List<Result> getGameResults();
-
-        // league
-        League getQasinoGameLeague();
-        List<Result> getResultsForLeague();
-
-        // Setters
-        void setQasinoResponse(QasinoResponse qasinoResponse);
-
-        void setShowVisitorPage(boolean bool);
-        void setShowGameSetupPage(boolean bool);
-        void setShowGamePlayPage(boolean bool);
-        void setShowGameInvitationsPage(boolean bool);
-        void setShowLeaguesPage(boolean bool);
-
-        // error setters
-        // @formatter:off
-        void setBadRequestErrorMessage(String problem);
-        void setNotFoundErrorMessage(String problem);
-        void setConflictErrorMessage(String reason);
-        void setUnprocessableErrorMessage(String reason);
-        void setErrorKey(String errorKey);
-        void setErrorValue(String errorValue);
-        // @formatter:on
-    }
 }

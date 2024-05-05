@@ -1,74 +1,48 @@
 package cloud.qasino.games.response;
 
-import cloud.qasino.games.database.entity.Game;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonInclude;
-import lombok.*;
+import cloud.qasino.games.dto.enums.EnumOverview;
+import cloud.qasino.games.dto.elements.*;
+import cloud.qasino.games.dto.statistics.Statistics;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
-@Getter
-@Setter
+import java.util.List;
+
+@Data
 @Builder
+@NoArgsConstructor
 @AllArgsConstructor
-@JsonInclude(JsonInclude.Include.NON_NULL)
 public class QasinoResponse {
 
-    private Game cardGame;
+    @JsonProperty("Message")
+    private String action;
+    @JsonProperty("ShowMessage")
+    private boolean actionNeeded;
 
-    private Reason reason;
-    @Getter(AccessLevel.NONE)
-    @Setter(AccessLevel.NONE)
+    @JsonProperty("NavBarItems")
+    private List<NavigationBarItem> navBarItems;
 
-    private String errorCode;
+    @JsonProperty("VisitorPage")
+    private PageVisitor pageVisitor;
 
-    @Getter(AccessLevel.NONE)
-    @Setter(AccessLevel.NONE)
-    private String errorMessage;
+    @JsonProperty("GameSetupPage")
+    private PageGameSetup pageGameSetup;
 
-    @Getter(AccessLevel.NONE)
-    @Setter(AccessLevel.NONE)
-    private String solution;
+    @JsonProperty("GamePlayPage")
+    private PageGamePlay pageGamePlay;
 
-    @JsonIgnore
-    public Reason getReason() {
-        return reason;
-    }
+    @JsonProperty("GameInvitationsPage")
+    private PageGameInvitations pageGameInvitations;
 
-    @JsonIgnore
-    public void setReason(Reason reason) {
-        this.reason = reason;
-    }
+    @JsonProperty("LeaguesPage")
+    private PageLeague pageLeague;
 
-    @JsonIgnore
-    public String getErrorCode() {
-        return errorCode;
-    }
-
-    @JsonIgnore
-    public void setErrorCode(String errorCode) {
-        this.errorCode = errorCode;
-    }
-
-    @JsonIgnore
-    public String getSolution() {
-        return solution;
-    }
-
-    @JsonIgnore
-    public void setSolution(String solution) {
-        this.solution = solution;
-    }
-
-    @JsonIgnore
-    public String getErrorMessage() {
-        return errorMessage;
-    }
-
-    @JsonIgnore
-    public void setErrorMessage(String errorMessage) {
-        this.errorMessage = errorMessage;
-    }
-
-    public enum Reason {
-        SUCCESS, FAILURE;
-    }
+    // extra
+    @JsonProperty("Enums")
+    EnumOverview enumOverview = new EnumOverview();
+    @JsonProperty("Statistics")
+    Statistics statistics = new Statistics();
 }

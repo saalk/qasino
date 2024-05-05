@@ -3,9 +3,9 @@ package cloud.qasino.games.controller;
 import cloud.qasino.games.action.CalculateQasinoStatistics;
 import cloud.qasino.games.action.IsPlayerHuman;
 import cloud.qasino.games.action.LoadEntitiesToDtoAction;
-import cloud.qasino.games.action.IsGameConsistentForGameTrigger;
+import cloud.qasino.games.action.IsGameConsistentForGameEvent;
 import cloud.qasino.games.action.IsGameFinished;
-import cloud.qasino.games.action.IsTurnConsistentForTurnTrigger;
+import cloud.qasino.games.action.IsTurnConsistentForTurnEvent;
 import cloud.qasino.games.action.PlayGameForType;
 import cloud.qasino.games.action.MapQasinoResponseFromDto;
 import cloud.qasino.games.action.MapQasinoGameTableFromDto;
@@ -21,9 +21,9 @@ import cloud.qasino.games.database.repository.CardRepository;
 import cloud.qasino.games.database.repository.TurnRepository;
 import cloud.qasino.games.database.repository.GameRepository;
 import cloud.qasino.games.database.repository.PlayerRepository;
-import cloud.qasino.games.dto.Qasino;
+import cloud.qasino.games.response.QasinoResponse;
 import cloud.qasino.games.dto.QasinoFlowDTO;
-import cloud.qasino.games.event.EventOutput;
+import cloud.qasino.games.statemachine.event.EventOutput;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -39,9 +39,9 @@ public class TurnAndCardMoveContoller {
     EventOutput.Result output;
 
     @Autowired
-    IsGameConsistentForGameTrigger isGameConsistentForGameTrigger;
+    IsGameConsistentForGameEvent isGameConsistentForGameEvent;
     @Autowired
-    IsTurnConsistentForTurnTrigger isTurnConsistentForTurnTrigger;
+    IsTurnConsistentForTurnEvent isTurnConsistentForTurnEvent;
     @Autowired
     IsGameFinished isGameFinished;
     @Autowired
@@ -92,17 +92,17 @@ public class TurnAndCardMoveContoller {
         this.cardMoveRepository = cardMoveRepository;
     }
 
-    // POST - gametrigger PLAY add cards -> can only be done by visitor
+    // POST - gameEvent PLAY add cards -> can only be done by visitor
     // -> gamestate STARTED
     @PutMapping(value = "/game/{gameId}/shuffle")
-    public ResponseEntity<Qasino> startShuffleAndDealingTheGame(
+    public ResponseEntity<QasinoResponse> startShuffleAndDealingTheGame(
             @RequestHeader("visitorId") String vId,
 //            @RequestHeader("turnPlayerId") String pId,
             @PathVariable("gameId") String id
     ) {
         // validate
         QasinoFlowDTO flowDTO = new QasinoFlowDTO();
-        flowDTO.setPathVariables("visitorId",vId,"gameId", id, "gameTrigger", "shuffle");
+        flowDTO.setPathVariables("visitorId",vId,"gameId", id, "gameEvent", "shuffle");
         if (!flowDTO.validateInput()) {
             flowDTO.prepareResponseHeaders();
             return ResponseEntity.status(HttpStatus.valueOf(flowDTO.getHttpStatus())).headers(flowDTO.getHeaders()).build();
@@ -114,7 +114,7 @@ public class TurnAndCardMoveContoller {
             return ResponseEntity.status(HttpStatus.valueOf(flowDTO.getHttpStatus())).headers(flowDTO.getHeaders()).build();
         }
         // logic
-        output = isGameConsistentForGameTrigger.perform(flowDTO);
+        output = isGameConsistentForGameEvent.perform(flowDTO);
         if (output == EventOutput.Result.FAILURE) {
             flowDTO.prepareResponseHeaders();
             return ResponseEntity.status(HttpStatus.valueOf(flowDTO.getHttpStatus())).headers(flowDTO.getHeaders()).build();
@@ -134,18 +134,18 @@ public class TurnAndCardMoveContoller {
         calculateQasinoStatistics.perform(flowDTO);
         mapQasinoResponseFromDto.perform(flowDTO);
         flowDTO.prepareResponseHeaders();
-        return ResponseEntity.status(HttpStatus.valueOf(201)).headers(flowDTO.getHeaders()).body(flowDTO.getQasino());
+        return ResponseEntity.status(HttpStatus.valueOf(201)).headers(flowDTO.getHeaders()).body(flowDTO.getQasinoResponse());
     }
 
-    @PostMapping(value = "/game/{gameId}/turn/{turnTrigger}")
-    public ResponseEntity<Qasino> playerMakesAMoveForAGame(
+    @PostMapping(value = "/game/{gameId}/turn/{turnEvent}")
+    public ResponseEntity<QasinoResponse> playerMakesAMoveForAGame(
             @RequestHeader("visitorId") String vId,
             @RequestHeader("turnPlayerId") String pId,
             @PathVariable("gameId") String id,
-            @PathVariable("turnTrigger") String trigger) {
+            @PathVariable("turnEvent") String trigger) {
         // validate
         QasinoFlowDTO flowDTO = new QasinoFlowDTO();
-        flowDTO.setPathVariables("visitorId",vId, "turnPlayerId",pId,"gameId", id, "gameTrigger", "turn", "turnTrigger", trigger);
+        flowDTO.setPathVariables("visitorId",vId, "turnPlayerId",pId,"gameId", id, "gameEvent", "turn", "turnEvent", trigger);
         if (!flowDTO.validateInput()) {
             flowDTO.prepareResponseHeaders();
             return ResponseEntity.status(HttpStatus.valueOf(flowDTO.getHttpStatus())).headers(flowDTO.getHeaders()).build();
@@ -159,12 +159,12 @@ public class TurnAndCardMoveContoller {
         mapQasinoGameTableFromDto.perform(flowDTO);
 
         // logic
-        output = isGameConsistentForGameTrigger.perform(flowDTO);
+        output = isGameConsistentForGameEvent.perform(flowDTO);
         if (output == EventOutput.Result.FAILURE) {
             flowDTO.prepareResponseHeaders();
             return ResponseEntity.status(HttpStatus.valueOf(flowDTO.getHttpStatus())).headers(flowDTO.getHeaders()).build();
         }
-        output = isTurnConsistentForTurnTrigger.perform(flowDTO);
+        output = isTurnConsistentForTurnEvent.perform(flowDTO);
         if (output == EventOutput.Result.FAILURE) {
             flowDTO.prepareResponseHeaders();
             return ResponseEntity.status(HttpStatus.valueOf(flowDTO.getHttpStatus())).headers(flowDTO.getHeaders()).build();
@@ -194,18 +194,18 @@ public class TurnAndCardMoveContoller {
         calculateQasinoStatistics.perform(flowDTO);
         mapQasinoResponseFromDto.perform(flowDTO);
         flowDTO.prepareResponseHeaders();
-        return ResponseEntity.status(HttpStatus.valueOf(201)).headers(flowDTO.getHeaders()).body(flowDTO.getQasino());
+        return ResponseEntity.status(HttpStatus.valueOf(201)).headers(flowDTO.getHeaders()).body(flowDTO.getQasinoResponse());
     }
 
     @PutMapping(value = "/game/{gameId}/stop")
-    public ResponseEntity<Qasino> stopPlayingTheGame(
+    public ResponseEntity<QasinoResponse> stopPlayingTheGame(
             @RequestHeader("visitorId") String vId,
 //            @RequestHeader("turnPlayerId") String pId,
             @PathVariable("gameId") String id
     ) {
         // validate
         QasinoFlowDTO flowDTO = new QasinoFlowDTO();
-        flowDTO.setPathVariables("visitorId", vId,"gameId", id, "gameTrigger", "stop");
+        flowDTO.setPathVariables("visitorId", vId,"gameId", id, "gameEvent", "stop");
         if (!flowDTO.validateInput()) {
             flowDTO.prepareResponseHeaders();
             return ResponseEntity.status(HttpStatus.valueOf(flowDTO.getHttpStatus())).headers(flowDTO.getHeaders()).build();
@@ -217,7 +217,7 @@ public class TurnAndCardMoveContoller {
             return ResponseEntity.status(HttpStatus.valueOf(flowDTO.getHttpStatus())).headers(flowDTO.getHeaders()).build();
         }
         // logic
-        output = isGameConsistentForGameTrigger.perform(flowDTO);
+        output = isGameConsistentForGameEvent.perform(flowDTO);
         if (output == EventOutput.Result.FAILURE) {
             flowDTO.prepareResponseHeaders();
             return ResponseEntity.status(HttpStatus.valueOf(flowDTO.getHttpStatus())).headers(flowDTO.getHeaders()).build();
@@ -240,7 +240,7 @@ public class TurnAndCardMoveContoller {
         calculateQasinoStatistics.perform(flowDTO);
         mapQasinoResponseFromDto.perform(flowDTO);
         flowDTO.prepareResponseHeaders();
-        return ResponseEntity.status(HttpStatus.valueOf(201)).headers(flowDTO.getHeaders()).body(flowDTO.getQasino());
+        return ResponseEntity.status(HttpStatus.valueOf(201)).headers(flowDTO.getHeaders()).body(flowDTO.getQasinoResponse());
     }
 
 }

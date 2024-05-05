@@ -2,12 +2,10 @@ package cloud.qasino.games.action;
 
 import cloud.qasino.games.action.interfaces.Action;
 import cloud.qasino.games.database.entity.Game;
-import cloud.qasino.games.database.entity.Visitor;
 import cloud.qasino.games.database.entity.enums.game.GameState;
-import cloud.qasino.games.database.repository.CardMoveRepository;
 import cloud.qasino.games.database.repository.GameRepository;
-import cloud.qasino.games.event.EventOutput;
-import cloud.qasino.games.statemachine.trigger.TurnTrigger;
+import cloud.qasino.games.statemachine.event.EventOutput;
+import cloud.qasino.games.statemachine.event.TurnEvent;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
@@ -23,7 +21,7 @@ public class IsGameFinished implements Action<IsGameFinished.Dto, EventOutput.Re
     @Override
     public EventOutput.Result perform(Dto actionDto) {
 
-        if (actionDto.getSuppliedTurnTrigger().equals(TurnTrigger.END_GAME)) {
+        if (actionDto.getSuppliedTurnEvent().equals(TurnEvent.END_GAME)) {
             actionDto.getQasinoGame().setState(GameState.FINISHED);
             gameRepository.save(actionDto.getQasinoGame());
             return EventOutput.Result.SUCCESS;
@@ -40,7 +38,7 @@ public class IsGameFinished implements Action<IsGameFinished.Dto, EventOutput.Re
     public interface Dto {
         // @formatter:off
         // Getters
-        TurnTrigger getSuppliedTurnTrigger();
+        TurnEvent getSuppliedTurnEvent();
         Game getQasinoGame();
         // Setters
         void setQasinoGame(Game game);

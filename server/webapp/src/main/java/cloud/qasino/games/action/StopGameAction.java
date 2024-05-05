@@ -9,12 +9,9 @@ import cloud.qasino.games.database.entity.enums.game.Type;
 import cloud.qasino.games.database.entity.enums.player.AiLevel;
 import cloud.qasino.games.database.entity.enums.player.Avatar;
 import cloud.qasino.games.database.repository.GameRepository;
-import cloud.qasino.games.database.service.PlayService;
-import cloud.qasino.games.event.EventOutput;
-import cloud.qasino.games.statemachine.trigger.GameTrigger;
-import cloud.qasino.games.statemachine.trigger.TurnTrigger;
+import cloud.qasino.games.statemachine.event.EventOutput;
+import cloud.qasino.games.statemachine.event.GameEvent;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
@@ -29,7 +26,7 @@ public class StopGameAction implements Action<StopGameAction.Dto, EventOutput.Re
     @Override
     public EventOutput.Result perform(Dto actionDto) {
 
-        if (actionDto.getSuppliedGameTrigger().equals(GameTrigger.STOP)) {
+        if (actionDto.getSuppliedGameEvent().equals(GameEvent.STOP)) {
             actionDto.getQasinoGame().setState(GameState.QUIT);
             gameRepository.save(actionDto.getQasinoGame());
             return EventOutput.Result.SUCCESS;
@@ -61,7 +58,7 @@ public class StopGameAction implements Action<StopGameAction.Dto, EventOutput.Re
         String getSuppliedStyle();
         Visitor getQasinoVisitor();
 
-        GameTrigger getSuppliedGameTrigger();
+        GameEvent getSuppliedGameEvent();
         Game getQasinoGame();
 
         // Setter

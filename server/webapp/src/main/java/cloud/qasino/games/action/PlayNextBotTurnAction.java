@@ -10,8 +10,8 @@ import cloud.qasino.games.database.entity.enums.game.Type;
 import cloud.qasino.games.database.entity.enums.move.Move;
 import cloud.qasino.games.database.service.PlayService;
 import cloud.qasino.games.dto.elements.SectionTable;
-import cloud.qasino.games.event.EventOutput;
-import cloud.qasino.games.statemachine.trigger.TurnTrigger;
+import cloud.qasino.games.statemachine.event.EventOutput;
+import cloud.qasino.games.statemachine.event.TurnEvent;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -28,7 +28,7 @@ public class PlayNextBotTurnAction implements Action<PlayNextBotTurnAction.Dto, 
     @Override
     public EventOutput.Result perform(Dto actionDto) {
 
-        // POST - turntrigger NEXT for player in highlow game
+        // POST - turnEvent NEXT for player in highlow game
         if (!actionDto.getQasinoGame().getType().equals(Type.HIGHLOW)) {
             setBadRequestErrorMessage(actionDto, "Game type", String.valueOf(actionDto.getQasinoGame().getType()));
             return EventOutput.Result.FAILURE;
@@ -62,7 +62,7 @@ public class PlayNextBotTurnAction implements Action<PlayNextBotTurnAction.Dto, 
                 activeMove = Move.HIGHER;
             }
             case HUMAN -> {
-                setConflictErrorMessage(actionDto, "TurnTrigger", actionDto.getSuppliedTurnTrigger().getLabel());
+                setConflictErrorMessage(actionDto, "TurnEvent", actionDto.getSuppliedTurnEvent().getLabel());
             }
         }
 
@@ -92,7 +92,7 @@ public class PlayNextBotTurnAction implements Action<PlayNextBotTurnAction.Dto, 
                 activeMove = Move.DEAL;
                 // TODO only one round for now do not start with first player again
                 if (actionDto.getNextPlayer() == null) {
-                    actionDto.setSuppliedTurnTrigger(TurnTrigger.END_GAME);
+                    actionDto.setSuppliedTurnEvent(TurnEvent.END_GAME);
                     return EventOutput.Result.SUCCESS;
                 }
                 // update round +1 start with turn 0
@@ -108,12 +108,12 @@ public class PlayNextBotTurnAction implements Action<PlayNextBotTurnAction.Dto, 
             }
             default -> {
                 // ony STOP left TODO implement some logic here
-                actionDto.setSuppliedTurnTrigger(TurnTrigger.END_GAME);
+                actionDto.setSuppliedTurnEvent(TurnEvent.END_GAME);
                 return EventOutput.Result.SUCCESS;
             }
         }
         if (actionDto.getActiveTurn() == null) {
-            actionDto.setSuppliedTurnTrigger(TurnTrigger.END_GAME);
+            actionDto.setSuppliedTurnEvent(TurnEvent.END_GAME);
         }
         actionDto.setActiveTurn(activeTurn); // can be null
         actionDto.setAllCardMovesForTheGame(playService.getCardMovesForGame(actionDto.getQasinoGame())); // can be null
@@ -124,7 +124,7 @@ public class PlayNextBotTurnAction implements Action<PlayNextBotTurnAction.Dto, 
     private void setConflictErrorMessage(Dto actionDto, String id, String value) {
         actionDto.setErrorKey(id);
         actionDto.setErrorValue(value);
-        actionDto.setConflictErrorMessage("Trigger [" + actionDto.getSuppliedTurnTrigger() + "] invalid for bot player");
+        actionDto.setConflictErrorMessage("Trigger [" + actionDto.getSuppliedTurnEvent() + "] invalid for bot player");
     }
 
     private void setBadRequestErrorMessage(Dto actionDto, String id, String value) {
@@ -142,8 +142,8 @@ public class PlayNextBotTurnAction implements Action<PlayNextBotTurnAction.Dto, 
         Turn getActiveTurn();
         Player getTurnPlayer();
         Player getNextPlayer();
-        TurnTrigger getSuppliedTurnTrigger();
-        void setSuppliedTurnTrigger(TurnTrigger turnTrigger);
+        TurnEvent getSuppliedTurnEvent();
+        void setSuppliedTurnEvent(TurnEvent turnEvent);
         // Setters
         void setQasinoGame(Game game);
         void setActiveTurn(Turn turn);

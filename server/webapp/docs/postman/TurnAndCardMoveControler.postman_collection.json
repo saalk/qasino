@@ -194,7 +194,7 @@
 					}
 				],
 				"url": {
-					"raw": "{{host}}/game/{{gameId}}/turn/{{turnTriggerHigher}}",
+					"raw": "{{host}}/game/{{gameId}}/turn/{{turnEventHigher}}",
 					"host": [
 						"{{host}}"
 					],
@@ -202,7 +202,7 @@
 						"game",
 						"{{gameId}}",
 						"turn",
-						"{{turnTriggerHigher}}"
+						"{{turnEventHigher}}"
 					]
 				}
 			},
@@ -268,7 +268,7 @@
 					}
 				],
 				"url": {
-					"raw": "{{host}}/game/{{gameId}}/turn/{{turnTriggerLower}}",
+					"raw": "{{host}}/game/{{gameId}}/turn/{{turnEventLower}}",
 					"host": [
 						"{{host}}"
 					],
@@ -276,7 +276,7 @@
 						"game",
 						"{{gameId}}",
 						"turn",
-						"{{turnTriggerLower}}"
+						"{{turnEventLower}}"
 					]
 				}
 			},
@@ -336,7 +336,7 @@
 					}
 				],
 				"url": {
-					"raw": "{{host}}/game/{{gameId}}/turn/{{turnTriggerPass}}",
+					"raw": "{{host}}/game/{{gameId}}/turn/{{turnEventPass}}",
 					"host": [
 						"{{host}}"
 					],
@@ -344,7 +344,7 @@
 						"game",
 						"{{gameId}}",
 						"turn",
-						"{{turnTriggerPass}}"
+						"{{turnEventPass}}"
 					]
 				}
 			},
@@ -404,7 +404,7 @@
 					}
 				],
 				"url": {
-					"raw": "{{host}}/game/{{gameId}}/turn/{{turnTriggerNext}}",
+					"raw": "{{host}}/game/{{gameId}}/turn/{{turnEventNext}}",
 					"host": [
 						"{{host}}"
 					],
@@ -412,7 +412,7 @@
 						"game",
 						"{{gameId}}",
 						"turn",
-						"{{turnTriggerNext}}"
+						"{{turnEventNext}}"
 					]
 				}
 			},

@@ -4,20 +4,15 @@ import cloud.qasino.games.action.interfaces.Action;
 import cloud.qasino.games.database.entity.Game;
 import cloud.qasino.games.database.entity.League;
 import cloud.qasino.games.database.entity.Visitor;
-import cloud.qasino.games.database.entity.enums.game.Style;
 import cloud.qasino.games.database.entity.enums.game.Type;
 import cloud.qasino.games.database.entity.enums.player.AiLevel;
 import cloud.qasino.games.database.entity.enums.player.Avatar;
-import cloud.qasino.games.database.repository.LeagueRepository;
 import cloud.qasino.games.database.service.PlayService;
-import cloud.qasino.games.event.EventOutput;
-import cloud.qasino.games.statemachine.trigger.GameTrigger;
+import cloud.qasino.games.statemachine.event.EventOutput;
+import cloud.qasino.games.statemachine.event.GameEvent;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
-import javax.annotation.Resource;
 
 @Slf4j
 @Component
@@ -66,7 +61,7 @@ public class CreateNewGameAction implements Action<CreateNewGameAction.Dto, Even
         String getSuppliedStyle();
         Visitor getQasinoVisitor();
 
-        GameTrigger getSuppliedGameTrigger();
+        GameEvent getSuppliedGameEvent();
         Game getQasinoGame();
 
         // Setter

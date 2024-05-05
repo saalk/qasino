@@ -1,8 +1,8 @@
-package cloud.qasino.games.event.interfaces;
+package cloud.qasino.games.statemachine.event.interfaces;
 
 import cloud.qasino.games.action.interfaces.Action;
 import cloud.qasino.games.action.interfaces.ActionOutput;
-import cloud.qasino.games.event.EventOutput;
+import cloud.qasino.games.statemachine.event.EventOutput;
 
 /**
  * Use {@link Action} for future implementations.

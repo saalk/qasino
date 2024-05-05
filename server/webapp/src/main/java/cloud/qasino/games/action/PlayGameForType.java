@@ -4,16 +4,13 @@ import cloud.qasino.games.action.interfaces.Action;
 import cloud.qasino.games.database.entity.Game;
 import cloud.qasino.games.database.entity.Player;
 import cloud.qasino.games.database.entity.enums.game.Style;
-import cloud.qasino.games.database.repository.CardRepository;
-import cloud.qasino.games.database.repository.GameRepository;
 import cloud.qasino.games.database.service.PlayService;
-import cloud.qasino.games.event.EventOutput;
-import cloud.qasino.games.statemachine.trigger.GameTrigger;
+import cloud.qasino.games.statemachine.event.EventOutput;
+import cloud.qasino.games.statemachine.event.GameEvent;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.Resource;
 import java.util.List;
 
 @Slf4j
@@ -58,7 +55,7 @@ public class PlayGameForType implements Action<PlayGameForType.Dto, EventOutput.
         // @formatter:off
         // Getters
         List<Player> getQasinoGamePlayers();
-        GameTrigger getSuppliedGameTrigger();
+        GameEvent getSuppliedGameEvent();
         Game getQasinoGame();
 
         void setQasinoGame(Game game);

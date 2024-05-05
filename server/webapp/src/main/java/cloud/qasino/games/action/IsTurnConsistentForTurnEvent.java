@@ -3,8 +3,8 @@ package cloud.qasino.games.action;
 import cloud.qasino.games.action.interfaces.Action;
 import cloud.qasino.games.database.entity.Turn;
 import cloud.qasino.games.database.repository.VisitorRepository;
-import cloud.qasino.games.event.EventOutput;
-import cloud.qasino.games.statemachine.trigger.TurnTrigger;
+import cloud.qasino.games.statemachine.event.EventOutput;
+import cloud.qasino.games.statemachine.event.TurnEvent;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
@@ -12,7 +12,7 @@ import javax.annotation.Resource;
 
 @Slf4j
 @Component
-public class IsTurnConsistentForTurnTrigger implements Action<IsTurnConsistentForTurnTrigger.Dto, EventOutput.Result> {
+public class IsTurnConsistentForTurnEvent implements Action<IsTurnConsistentForTurnEvent.Dto, EventOutput.Result> {
 
     @Resource
     VisitorRepository visitorRepository;
@@ -20,11 +20,11 @@ public class IsTurnConsistentForTurnTrigger implements Action<IsTurnConsistentFo
     @Override
     public EventOutput.Result perform(Dto actionDto) {
 
-        actionDto.setErrorKey("TurnTrigger");
-        actionDto.setErrorValue(actionDto.getSuppliedTurnTrigger().getLabel());
+        actionDto.setErrorKey("TurnEvent");
+        actionDto.setErrorValue(actionDto.getSuppliedTurnEvent().getLabel());
 
         boolean noError = true;
-        switch (actionDto.getSuppliedTurnTrigger()) {
+        switch (actionDto.getSuppliedTurnEvent()) {
             case LOWER -> {
             }
             case HIGHER -> {
@@ -47,7 +47,7 @@ public class IsTurnConsistentForTurnTrigger implements Action<IsTurnConsistentFo
     private boolean turnShouldHaveCurrentMoveNumberNotZero(Dto actionDto) {
         if (actionDto.getActiveTurn().getCurrentTurnNumber() <= 0) {
             log.info("!moveNumber");
-            setUnprocessableErrorMessage(actionDto, "Action [" + actionDto.getSuppliedTurnTrigger() +
+            setUnprocessableErrorMessage(actionDto, "Action [" + actionDto.getSuppliedTurnEvent() +
                     "] invalid - turn has incorrect number of " + actionDto.getActiveTurn().getCurrentTurnNumber()
             );
             return false;
@@ -58,7 +58,7 @@ public class IsTurnConsistentForTurnTrigger implements Action<IsTurnConsistentFo
     private boolean turnShouldHaveActivePlayer(Dto actionDto) {
         if (actionDto.getActiveTurn().getActivePlayerId() == 0) {
             log.info("!initiator");
-            setUnprocessableErrorMessage(actionDto, "Action [" + actionDto.getSuppliedTurnTrigger() +
+            setUnprocessableErrorMessage(actionDto, "Action [" + actionDto.getSuppliedTurnEvent() +
                     "] invalid - turn has no active player ");
             return false;
         }
@@ -75,7 +75,7 @@ public class IsTurnConsistentForTurnTrigger implements Action<IsTurnConsistentFo
 
         // @formatter:off
         // Getters
-        TurnTrigger getSuppliedTurnTrigger();
+        TurnEvent getSuppliedTurnEvent();
         Turn getActiveTurn();
 
         // error setters

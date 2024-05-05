@@ -1,35 +1,6 @@
-package cloud.qasino.games.dto;
+package cloud.qasino.games.request;
 
-import cloud.qasino.games.action.CalculateAndFinishGameAction;
-import cloud.qasino.games.action.CalculateQasinoStatistics;
-import cloud.qasino.games.action.CreateNewGameAction;
-import cloud.qasino.games.action.CreateNewLeagueAction;
-import cloud.qasino.games.action.IsPlayerHuman;
-import cloud.qasino.games.action.LoadEntitiesToDtoAction;
-import cloud.qasino.games.action.FindVisitorIdByVisitorNameAction;
-import cloud.qasino.games.action.HandleSecuredLoanAction;
-import cloud.qasino.games.action.IsGameConsistentForGameEvent;
-import cloud.qasino.games.action.IsGameFinished;
-import cloud.qasino.games.action.IsTurnConsistentForTurnEvent;
-import cloud.qasino.games.action.PlayGameForType;
-import cloud.qasino.games.action.MapQasinoResponseFromDto;
-import cloud.qasino.games.action.MapQasinoGameTableFromDto;
-import cloud.qasino.games.action.PlayFirstTurnAction;
-import cloud.qasino.games.action.PlayNextBotTurnAction;
-import cloud.qasino.games.action.PlayNextHumanTurnAction;
-import cloud.qasino.games.action.PrepareGameAction;
-import cloud.qasino.games.action.SetStatusIndicatorsBaseOnRetrievedDataAction;
-import cloud.qasino.games.action.SignUpNewVisitorAction;
-import cloud.qasino.games.action.StopGameAction;
-import cloud.qasino.games.action.UpdateFichesForPlayer;
 import cloud.qasino.games.database.entity.Card;
-import cloud.qasino.games.database.entity.CardMove;
-import cloud.qasino.games.database.entity.Game;
-import cloud.qasino.games.database.entity.League;
-import cloud.qasino.games.database.entity.Player;
-import cloud.qasino.games.database.entity.Result;
-import cloud.qasino.games.database.entity.Turn;
-import cloud.qasino.games.database.entity.Visitor;
 import cloud.qasino.games.database.entity.enums.card.Face;
 import cloud.qasino.games.database.entity.enums.card.Location;
 import cloud.qasino.games.database.entity.enums.card.Position;
@@ -40,21 +11,14 @@ import cloud.qasino.games.database.entity.enums.move.Move;
 import cloud.qasino.games.database.entity.enums.player.AiLevel;
 import cloud.qasino.games.database.entity.enums.player.Avatar;
 import cloud.qasino.games.database.entity.enums.player.Role;
-import cloud.qasino.games.dto.elements.SectionTable;
-import cloud.qasino.games.dto.statistics.Statistics;
-import cloud.qasino.games.response.QasinoResponse;
 import cloud.qasino.games.statemachine.event.GameEvent;
 import cloud.qasino.games.statemachine.event.TurnEvent;
-import cloud.qasino.games.statemachine.event.interfaces.AbstractFlowDTO;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.http.HttpHeaders;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import java.net.URI;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -63,37 +27,7 @@ import java.util.Map;
 @Getter
 @Setter
 @Slf4j
-public class QasinoFlowDTO extends AbstractFlowDTO
-        implements
-        FindVisitorIdByVisitorNameAction.Dto,
-        SignUpNewVisitorAction.SignUpNewVisitorActionDTO,
-        CreateNewLeagueAction.Dto,
-        LoadEntitiesToDtoAction.Dto,
-        CalculateQasinoStatistics.Dto,
-        HandleSecuredLoanAction.Dto,
-        SetStatusIndicatorsBaseOnRetrievedDataAction.SetStatusIndicatorsBaseOnRetrievedDataDTO,
-        MapQasinoResponseFromDto.Dto,
-        MapQasinoGameTableFromDto.Dto,
-        PlayNextHumanTurnAction.Dto,
-        PlayNextBotTurnAction.Dto,
-        IsGameConsistentForGameEvent.Dto,
-        IsTurnConsistentForTurnEvent.Dto,
-        CalculateAndFinishGameAction.Dto,
-        UpdateFichesForPlayer.Dto,
-        IsGameFinished.Dto,
-        PlayGameForType.Dto,
-        CreateNewGameAction.Dto,
-        PrepareGameAction.Dto,
-        StopGameAction.Dto,
-        IsPlayerHuman.Dto,
-        PlayFirstTurnAction.Dto {
-    // suppress lombok setter for these fixed values
-    @Setter(AccessLevel.NONE)
-    private String applicationName = "qasino";
-
-    // gui
-    private QasinoResponse qasinoResponse;
-    private Statistics statistics;
+public class QasinoRequestValidator {
 
     // FRONTEND
     // path params
@@ -139,44 +73,6 @@ public class QasinoFlowDTO extends AbstractFlowDTO
     private Location suppliedLocation;
     private int suppliedBet;
 
-    // RETRIEVED DATA BASED ON FRONTEND ID's
-    // the logged on visitor
-    private Visitor qasinoVisitor;
-    private List<Game> initiatedGamesForVisitor;
-    private List<Game> invitedGamesForVisitor;
-    // the game and players
-    private Game qasinoGame;
-    private List<Player> qasinoGamePlayers;
-    // the individual player
-    private Player invitedPlayer;
-    private Player acceptedPlayer;
-    private Player initiatingPlayer;
-    // the league and list of leagues the visitor created
-    private League qasinoGameLeague;
-    private List<League> leaguesForVisitor;
-    // the game results
-    private List<Result> gameResults;
-    private List<Result> resultsForLeague;
-
-    // FOR THE GAME BEING PLAYED
-    private SectionTable table;
-    private Player turnPlayer;
-    private Player nextPlayer;
-    private Turn activeTurn;
-    private List<Card> cardsInTheGameSorted;
-    private List<CardMove> allCardMovesForTheGame;
-
-    // NAVIGATION based on RETRIEVED DATA
-    public boolean showVisitorPage;
-    public boolean showGameSetupPage;
-    public boolean showGamePlayPage;
-    public boolean showGameInvitationsPage;
-    public boolean showLeaguesPage;
-
-    // MESSAGE AND ERROR DATA
-    private String action;
-    private boolean actionNeeded;
-
     // EXCEPTION - - TODO move out of DTO
     // 400 bad request "malformed entity syntax" - eg null, zero, not numeric or invalid enum
     // 404 not found "unknown id" - eg id not in db
@@ -195,65 +91,6 @@ public class QasinoFlowDTO extends AbstractFlowDTO
         this.errorMessage = "Supplied value for [" + this.errorKey + "] is [" + problem + "]";
         this.httpStatus = 400;
     }
-    public void setNotFoundErrorMessage(String problem) {
-        String defaultProblem = problem.isEmpty() ? "not found" : problem;
-        this.errorMessage = "Supplied value for [" + this.errorKey + "] is [" + defaultProblem + "]";
-        this.httpStatus = 400;
-    }
-    public void setConflictErrorMessage(String reason) {
-        String defaultReason = reason.isEmpty() ? "Reason cannot be given" : reason;
-        this.errorMessage = this.errorKey + " [" + this.errorValue + "] not valid now/anymore";
-        this.errorReason = defaultReason;
-        this.httpStatus = 409;
-    }
-    public void setUnprocessableErrorMessage(String reason) {
-        String defaultReason = reason.isEmpty() ? "Reason cannot be given" : reason;
-        this.errorMessage = this.errorKey + " [" + this.errorValue + "] cannot be processed";
-        this.errorReason = defaultReason;
-        this.httpStatus = 422;
-    }
-    // @formatter:on
-
-    // RESPONSE DATA
-    // @formatter:off
-    private HttpHeaders headers = new HttpHeaders();
-    private Object payloadData;
-    private URI uri;
-    public void addKeyValueToHeader(String key, String value) {
-        this.headers.add(key, value);
-    }
-    public void prepareResponseHeaders() {
-        this.uri = ServletUriComponentsBuilder.fromCurrentRequest()
-                .path("")
-                .buildAndExpand(this.pathVariables, this.requestParams)
-                .toUri();
-        this.headers.add("URI", String.valueOf(this.getUri()));
-        if (qasinoVisitor != null) {
-            this.headers.add("visitorId", String.valueOf(qasinoVisitor.getVisitorId()));
-        }
-        if (qasinoGame != null) {
-            this.headers.add("gameId", String.valueOf(qasinoGame.getGameId()));
-        }
-        if (qasinoGameLeague != null) {
-            this.headers.add("leagueId", String.valueOf(qasinoGameLeague.getLeagueId()));
-        }
-        if (turnPlayer != null) {
-            this.headers.add("turnPlayerId", String.valueOf(turnPlayer.getPlayerId()));
-        }
-        if (activeTurn != null) {
-            this.headers.add("turnId", String.valueOf(activeTurn.getTurnId()));
-        }
-        if (this.httpStatus > 299) {
-            // also add error to header
-            addKeyValueToHeader(this.getErrorKey(), this.getErrorValue());
-            addKeyValueToHeader("Error", this.getErrorMessage());
-            if (!this.errorReason.isEmpty()) {
-                // also add error to header
-                addKeyValueToHeader("Reason", this.getErrorReason());
-            }
-        }
-
-    }
     // @formatter:on
 
     // INPUT // TODO move out of DTO
@@ -271,9 +108,9 @@ public class QasinoFlowDTO extends AbstractFlowDTO
 
     // VALIDATE INPUT - TODO move out of DTO
     // @formatter:off
-    public boolean validateInput() {
-        if (!validatePathVariables(this.pathVariables)
-                | !validateRequestParams(this.requestParams)) {
+    public boolean validate(QasinoRequest request) {
+        if (!validatePathVariables(request.getPathVariables())
+                | !validateRequestParams(request.getRequestParams())) {
             return false;
         }
         return true;
@@ -540,6 +377,7 @@ public class QasinoFlowDTO extends AbstractFlowDTO
         }
         return true;
     }
+
     boolean isValueForPrimaryKeyValid(String key, String value, String dataName, String dataToValidate) {
         if (!StringUtils.isNumeric(value)) {
             this.setErrorKey(key);
