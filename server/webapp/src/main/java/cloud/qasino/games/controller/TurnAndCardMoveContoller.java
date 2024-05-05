@@ -172,7 +172,7 @@ public class TurnAndCardMoveContoller {
 //        output = canPlayerStillPlay.perform(flowDTO); // for now stop after one round
         mapQasinoGameTableFromDto.perform(flowDTO);
         output = isPlayerHuman.perform(flowDTO);
-        if (output == EventOutput.Result.FAILURE) {
+        if (output == EventOutput.Result.SUCCESS) {
             playNextHumanTurnAction.perform(flowDTO);
         } else {
             playNextBotTurnAction.perform(flowDTO);

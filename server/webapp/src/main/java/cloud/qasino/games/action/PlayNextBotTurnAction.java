@@ -30,7 +30,7 @@ public class PlayNextBotTurnAction implements Action<PlayNextBotTurnAction.Dto, 
 
         // POST - turntrigger NEXT for player in highlow game
         if (!actionDto.getQasinoGame().getType().equals(Type.HIGHLOW)) {
-            setBadRequestErrorMessage(actionDto, "Game.type", String.valueOf(actionDto.getQasinoGame().getType()));
+            setBadRequestErrorMessage(actionDto, "Game type", String.valueOf(actionDto.getQasinoGame().getType()));
             return EventOutput.Result.FAILURE;
         }
         // prepare local data
@@ -60,6 +60,9 @@ public class PlayNextBotTurnAction implements Action<PlayNextBotTurnAction.Dto, 
             }
             case SMART -> {
                 activeMove = Move.HIGHER;
+            }
+            case HUMAN -> {
+                setConflictErrorMessage(actionDto, "TurnTrigger", actionDto.getSuppliedTurnTrigger().getLabel());
             }
         }
 
@@ -94,6 +97,7 @@ public class PlayNextBotTurnAction implements Action<PlayNextBotTurnAction.Dto, 
                 }
                 // update round +1 start with turn 0
                 activeTurn.setCurrentRoundNumber(activeTurn.getCurrentRoundNumber() + 1);
+                activeTurn.setCurrentTurnNumber(1);
                 activeTurn = playService.dealCardToPlayer(
                         actionDto.getQasinoGame(),
                         activeTurn,
@@ -120,7 +124,7 @@ public class PlayNextBotTurnAction implements Action<PlayNextBotTurnAction.Dto, 
     private void setConflictErrorMessage(Dto actionDto, String id, String value) {
         actionDto.setErrorKey(id);
         actionDto.setErrorValue(value);
-        actionDto.setConflictErrorMessage("Trigger [" + actionDto.getSuppliedTurnTrigger() + "] invalid for gameState");
+        actionDto.setConflictErrorMessage("Trigger [" + actionDto.getSuppliedTurnTrigger() + "] invalid for bot player");
     }
 
     private void setBadRequestErrorMessage(Dto actionDto, String id, String value) {
