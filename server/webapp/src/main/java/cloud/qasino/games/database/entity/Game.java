@@ -63,8 +63,14 @@ public class Game {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "state", length = 50, nullable = false)
+    @Setter(AccessLevel.NONE)
     private GameState state;
 
+    public void setState(GameState state ){
+        this.previousState = this.state;
+        this.state = state;
+        setUpdated();
+    }
     @Enumerated(EnumType.STRING)
     @Column(name = "previous_state", length = 50, nullable = true)
     private GameState previousState;

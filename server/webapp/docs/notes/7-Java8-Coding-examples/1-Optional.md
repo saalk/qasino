@@ -17,8 +17,8 @@ By returning Optional User from the function, we have made it clear to the clien
 **return a boolean**
 - .isPresent() =  to check if there is a value present
 - .isEmpty() = use with .ofNullable() to check for null giving 'true'
-- .isEmpty() = use with .of() still gives NPE !!
-- 
+- **.isEmpty() = use with .of() still gives NPE !!**
+
 **return an Optional<String>** 
 - .map() = use to Optional User to an Optional String
 eg. map(user -> user.getFirstName())
@@ -103,6 +103,23 @@ Optional<User> selectedUser = userRepo.findById(userId);
 return selectedUser.map(user -> user.getFirstName() + " " + user.getSurName())
 .orElseThrow(() -> new IllegalArgumentException("No user found for this id"));
 }
+
+//  Optional forces you to actively unwrap an Optional to deal with the absence of a value; as a result, you protect your code against unintended null pointer exceptions.
+Optional<T> findById(ID id);
+T getById(ID id); // 2.7 -> getReferenceById
+
+public Optional<User> findById(String id) {
+    if (u.getReferenceById() == null) {
+        return Optional.of(u);
+    }
+    return Optional.empty();
+}
+
+//
+User findById(String id).orElseThrow(() -> new ..)));
+
+
+
 ```
 ### Before Optional and after
 ![ugly](jpg/1-Optional-ugly.png)

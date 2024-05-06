@@ -60,7 +60,13 @@ public class Turn {
     private int currentRoundNumber;
 
     @Column(name = "current_turn_number", nullable = true)
+    @Setter(AccessLevel.NONE)
     private int currentTurnNumber;
+
+    public void setCurrentTurnNumber(int currentTurnNumber) {
+        this.currentTurnNumber = currentTurnNumber;
+        setUpdated();
+    }
 
     // Derived technical fields
 

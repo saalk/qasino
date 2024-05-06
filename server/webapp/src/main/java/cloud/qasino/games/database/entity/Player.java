@@ -30,7 +30,7 @@ public class Player {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "player_id")
+    @Column(name = "player_id", nullable = false)
     private long playerId;
 
     @JsonIgnore

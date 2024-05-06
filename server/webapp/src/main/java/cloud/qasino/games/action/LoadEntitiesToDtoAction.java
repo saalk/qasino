@@ -131,7 +131,7 @@ public class LoadEntitiesToDtoAction implements Action<LoadEntitiesToDtoAction.D
 
     private EventOutput.Result getVisitorSupplied(Dto actionDto, long id) {
         Pageable pageable;
-        Optional<Visitor> foundVisitor = visitorRepository.findById(Long.parseLong(String.valueOf(id)));
+        Optional<Visitor> foundVisitor = visitorRepository.findById(id);
         if (foundVisitor.isPresent()) {
             actionDto.setQasinoVisitor(foundVisitor.get());
         } else {
@@ -204,7 +204,7 @@ public class LoadEntitiesToDtoAction implements Action<LoadEntitiesToDtoAction.D
         return EventOutput.Result.SUCCESS;
     }
     private EventOutput.Result getTurnPlayerSupplied(Dto actionDto, long id) {
-        Optional<Player> foundPlayer = playerRepository.findById(Long.parseLong(String.valueOf(id)));
+        Optional<Player> foundPlayer = playerRepository.findById(id);
         if (foundPlayer.isPresent()) {
             gameId = (foundPlayer.get().getGame().getGameId());
             actionDto.setTurnPlayer(foundPlayer.get());
