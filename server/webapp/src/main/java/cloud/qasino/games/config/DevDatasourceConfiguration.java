@@ -1,7 +1,4 @@
-package cloud.qasino.games.configuration;
-
-import org.springframework.context.annotation.Profile;
-import org.springframework.stereotype.Component;
+package cloud.qasino.games.config;
 
 //@Component
 //@Profile("dev")

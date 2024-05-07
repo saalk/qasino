@@ -1,4 +1,4 @@
-package cloud.qasino.games.util;
+package cloud.qasino.games.utils;
 
 import java.util.function.Function;
 

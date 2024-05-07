@@ -1,4 +1,4 @@
-package cloud.qasino.games.configuration;
+package cloud.qasino.games.config;
 
 import cloud.qasino.games.database.entity.enums.game.style.*;
 import cloud.qasino.games.database.entity.enums.game.GameState;

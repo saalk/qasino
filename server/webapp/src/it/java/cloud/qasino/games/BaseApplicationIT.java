@@ -10,11 +10,10 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 
 import javax.annotation.Resource;
-import java.util.Collections;
 import java.util.Optional;
 
-import static cloud.qasino.games.configuration.Constants.BASE_PATH;
-import static cloud.qasino.games.configuration.Constants.ENDPOINT_VISITOR;
+import static cloud.qasino.games.config.Constants.BASE_PATH;
+import static cloud.qasino.games.config.Constants.ENDPOINT_VISITOR;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @Slf4j

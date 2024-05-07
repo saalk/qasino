@@ -11,7 +11,6 @@ import cloud.qasino.games.database.entity.enums.card.Face;
 import cloud.qasino.games.database.entity.enums.card.Location;
 import cloud.qasino.games.database.entity.enums.card.PlayingCard;
 import cloud.qasino.games.database.entity.enums.game.GameState;
-import cloud.qasino.games.database.entity.enums.game.Style;
 import cloud.qasino.games.database.entity.enums.game.Type;
 import cloud.qasino.games.database.entity.enums.move.Move;
 import cloud.qasino.games.database.entity.enums.player.AiLevel;
@@ -22,7 +21,6 @@ import cloud.qasino.games.database.repository.CardRepository;
 import cloud.qasino.games.database.repository.GameRepository;
 import cloud.qasino.games.database.repository.PlayerRepository;
 import cloud.qasino.games.database.repository.TurnRepository;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -31,7 +29,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-import static cloud.qasino.games.configuration.Constants.DEFAULT_PAWN_SHIP_BOT;
+import static cloud.qasino.games.config.Constants.DEFAULT_PAWN_SHIP_BOT;
 
 @Service
 public class PlayService {
@@ -172,6 +170,15 @@ public class PlayService {
     public List<CardMove> getCardMovesForGame(Game activeGame) {
         Turn activeTurn = activeGame.getTurn();
         return cardMoveRepository.findByTurnOrderBySequenceAsc(activeTurn);
+    }
+    public int getValueLastCardMove(List<CardMove> cardMoves) {
+        long previousCardId = cardMoves.get( cardMoves.size()-1).getCardMoveId();
+        Optional<Card> previousCard = cardRepository.findById(previousCardId);
+        if (previousCard.isPresent()) {
+//            PlayingCard.calculateValueWithDefaultHighlowFromRank(previousCard.get().getRankSuit())
+        }
+
+        return 0;
     }
     public List<CardMove> getCardMovesForPlayer(Player activePlayer) {
         return cardMoveRepository.findByplayerIdOrderBySequenceAsc(activePlayer.getPlayerId());

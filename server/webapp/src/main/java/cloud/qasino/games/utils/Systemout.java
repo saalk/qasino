@@ -1,4 +1,4 @@
-package cloud.qasino.games.util;
+package cloud.qasino.games.utils;
 
 import cloud.qasino.games.action.HandleSecuredLoanAction;
 import com.fasterxml.jackson.core.JsonProcessingException;

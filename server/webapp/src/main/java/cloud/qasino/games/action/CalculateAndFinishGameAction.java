@@ -51,7 +51,7 @@ public class CalculateAndFinishGameAction implements Action<CalculateAndFinishGa
             playerProfit.put(player.getPlayerId(), 0);
         }
         if (actionDto.getAllCardMovesForTheGame() == null || players.isEmpty()) {
-            // some errar happened - just stop calculating
+            // some error happened - just stop calculating
             return EventOutput.Result.SUCCESS;
         }
         // calculate all players profits

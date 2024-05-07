@@ -1,4 +1,4 @@
-package cloud.qasino.games.configuration;
+package cloud.qasino.games.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;

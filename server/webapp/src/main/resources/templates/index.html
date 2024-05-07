@@ -38,13 +38,7 @@
                 <li></li>
             </ul>
             -->
-            <ul>
-                <li style="list-style-type:none" v-for="visitor in visitors">
-                    <visitor-playingCard
-                            v-bind:visitor="visitor" v-bind:key="visitor.visitorId">
-                    </visitor-playingCard>
-                </li>
-            </ul>
+
         </div>
         <div id="footer">
             <hr>
@@ -53,68 +47,5 @@
         </div>
     </div>
 </div>
-</div>
-
-<!-- include Vue.js -->
-<!-- we include babel js so that we can write ES6 code in the browser
-     for a more production like setup it is recommended to setup a build process
-     to transpile and minify the code (such as using webpack)
- -->
-<script src="https://cdn.jsdelivr.net/npm/vue@2.5.16/dist/vue.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/6.21.1/babel.min.js"></script>
-<script type="text/babel">
-    // visitor-playingCard is now a Vue component that generates a 'playingCard' showing a visitor
-    // It can be used declaratively like <visitor-playingCard v-bind:visitor="somevisitor">
-    //
-    Vue.component('visitor-playingCard', {
-        props: ['visitor'],
-        template: `<div class="playingCard">
-                    <div class="playingCard-body">
-                        <h6 class="playingCard-title">
-                            {{ visitor.visitorName }}
-                        </h6>
-                        <p class="playingCard-text">
-                            <div>
-                            {{ visitor.email }}
-                            </div>
-                        </p>
-                    </div>
-                </div>`
-    });
-
-    var app = new Vue({
-        el: '#contents',
-        data: {
-            visitors: [
-                {visitorId: "1", visitorName: "Lionel Messi", email: "Argentina's superstar"},
-                {visitorId: "2", visitorName: "Christiano Ronaldo", email: "Portugal top-ranked visitor"}
-            ]
-        },
-        mounted () {
-            axios
-                .get('http://localhost:9000/Qasino/api')
-                .then(response => (this.info = response))
-  }
-    });
-
-
-</script>
-<!-- Piwik -->
-<script type="text/javascript">
-        var _paq = _paq || [];
-        _paq.push(['trackPageView']);
-        _paq.push(['enableLinkTracking']);
-        (function() {
-        var u="//192.168.2.100/piwik/";
-        _paq.push(['setTrackerUrl', u+'piwik.php']);
-        _paq.push(['setSiteId', 1]);
-        var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
-        g.type='text/javascript'; g.async=true; g.defer=true; g.src=u+'piwik.js'; s.parentNode.insertBefore(g,s);
-        })();
-
-</script>
-<noscript><p><img src="//192.168.2.100/piwik/piwik.php?idsite=1" style="border:0;" alt=""/></p>
-</noscript>
-<!-- End Piwik Code -->
 </body>
 </html>

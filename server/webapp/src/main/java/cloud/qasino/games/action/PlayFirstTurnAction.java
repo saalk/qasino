@@ -52,6 +52,7 @@ public class PlayFirstTurnAction implements Action<PlayFirstTurnAction.Dto, Even
                 Face.UP,
                 1);
         actionDto.setActiveTurn(activeTurn); // can be null
+        actionDto.setSuppliedTurnPlayerId(activeTurn.getActivePlayerId()); // can be null
         actionDto.setAllCardMovesForTheGame(playService.getCardMovesForGame(actionDto.getQasinoGame())); // can be null
 
         return EventOutput.Result.SUCCESS;

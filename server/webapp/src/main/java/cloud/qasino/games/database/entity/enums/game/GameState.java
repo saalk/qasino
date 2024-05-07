@@ -2,7 +2,6 @@ package cloud.qasino.games.database.entity.enums.game;
 
 import cloud.qasino.games.database.entity.enums.LabeledEnum;
 import cloud.qasino.games.database.entity.enums.game.gamestate.GameStateGroup;
-import cloud.qasino.games.database.entity.enums.move.Move;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -25,8 +24,8 @@ public enum GameState implements LabeledEnum {
 
     // HIGHLOW
     STARTED("started", "Proceed with first Move", GameStateGroup.PLAYING),
-    NEXT_MOVE("next_move", "Proceed with next Move", GameStateGroup.PLAYING),
-    NEXT_TURN("next_turn", "Proceed with next Player", GameStateGroup.PLAYING),
+    NEXT_PLAYER("next_player", "Proceed with next Player", GameStateGroup.PLAYING),
+    NEXT_TURN("next_turn", "Proceed with another turn for same Player", GameStateGroup.PLAYING),
 
     // ENDED
     FINISHED("finished", "Show Results", GameStateGroup.FINISHED),

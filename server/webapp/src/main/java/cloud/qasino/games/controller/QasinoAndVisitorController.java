@@ -25,6 +25,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -89,6 +90,23 @@ public class QasinoAndVisitorController {
         this.playerRepository = playerRepository;
         this.cardRepository = cardRepository;
         this.turnRepository = turnRepository;
+    }
+
+    @GetMapping("/index")
+    public String showUserList(Model model) {
+
+        // validate
+        QasinoFlowDTO flowDTO = new QasinoFlowDTO();
+        // build response
+        output = loadEntitiesToDtoAction.perform(flowDTO);
+        mapQasinoGameTableFromDto.perform(flowDTO);
+        setStatusIndicatorsBaseOnRetrievedDataAction.perform(flowDTO);
+        calculateQasinoStatistics.perform(flowDTO);
+        mapQasinoResponseFromDto.perform(flowDTO);
+        flowDTO.prepareResponseHeaders();
+
+        model.addAttribute("qasino", flowDTO.getQasinoResponse());
+        return "index";
     }
 
     @GetMapping(value = {"/home", "/home/{visitorId}"})

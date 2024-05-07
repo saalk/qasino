@@ -43,23 +43,54 @@ public class PlayNextBotTurnAction implements Action<PlayNextBotTurnAction.Dto, 
         // TODO get the last card value
 
         // Update Turn + cardMoves
-        // - DUMB = one dumb move than pass
+        // - DUMB = 2 guess moves than pass
         // - SMART = two smart moves than pass
-        // - AVERAGE = one guess move than pass
+        // - AVERAGE = one smart and one guess move than pass
+
+        int turn = activeTurn.getCurrentTurnNumber();
         switch (actionDto.getTurnPlayer().getAiLevel()) {
-            case AVERAGE -> {
-                boolean lower = Math.random() < 0.5;
-                if (lower) {
-                    activeMove = Move.LOWER;
+            case DUMB -> {
+                if (turn >= 3) {
+                    activeMove = Move.PASS;
                 } else {
-                    activeMove = Move.HIGHER;
+                    boolean lower = Math.random() < 0.5;
+                    if (lower) {
+                        activeMove = Move.LOWER;
+                    } else {
+                        activeMove = Move.HIGHER;
+                    }
                 }
             }
-            case DUMB -> {
-                activeMove = Move.LOWER;
+            case AVERAGE -> {
+                if (turn >= 3) {
+                    activeMove = Move.PASS;
+                } else if(turn == 2) {
+                    boolean lower = Math.random() < 0.5;
+                    if (lower) {
+                        activeMove = Move.LOWER;
+                    } else {
+                        activeMove = Move.HIGHER;
+                    }
+                } else {
+                    // smart move
+                    if (playService.getValueLastCardMove(cardMoves) < 6) {
+                        activeMove = Move.HIGHER;
+                    } else {
+                        activeMove = Move.HIGHER;
+                    }
+                }
             }
             case SMART -> {
-                activeMove = Move.HIGHER;
+                if (turn >= 3) {
+                    activeMove = Move.PASS;
+                } else {
+                    // smart move
+                    if (playService.getValueLastCardMove(cardMoves) < 6) {
+                        activeMove = Move.HIGHER;
+                    } else {
+                        activeMove = Move.HIGHER;
+                    }
+                }
             }
             case HUMAN -> {
                 setConflictErrorMessage(actionDto, "TurnEvent", actionDto.getSuppliedTurnEvent().getLabel());
@@ -105,6 +136,11 @@ public class PlayNextBotTurnAction implements Action<PlayNextBotTurnAction.Dto, 
                         activeMove,
                         Face.UP,
                         1);
+                actionDto.setTurnPlayer(actionDto.getNextPlayer());
+                actionDto.setActiveTurn(activeTurn);
+                actionDto.setSuppliedTurnPlayerId(actionDto.getTurnPlayer().getPlayerId());
+                //  TODO rely on load again to get new next player
+
             }
             default -> {
                 // ony STOP left TODO implement some logic here
@@ -143,8 +179,12 @@ public class PlayNextBotTurnAction implements Action<PlayNextBotTurnAction.Dto, 
         Player getTurnPlayer();
         Player getNextPlayer();
         TurnEvent getSuppliedTurnEvent();
-        void setSuppliedTurnEvent(TurnEvent turnEvent);
+
         // Setters
+        void setTurnPlayer(Player turnPlayer);
+        void setNextPlayer(Player nextPlayer);
+        void setSuppliedTurnPlayerId( long turnPlayer);
+        void setSuppliedTurnEvent(TurnEvent turnEvent);
         void setQasinoGame(Game game);
         void setActiveTurn(Turn turn);
         void setAllCardMovesForTheGame(List<CardMove> cardMoves);

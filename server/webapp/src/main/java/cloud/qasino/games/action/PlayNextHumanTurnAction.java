@@ -28,9 +28,12 @@ public class PlayNextHumanTurnAction implements Action<PlayNextHumanTurnAction.D
     @Override
     public EventOutput.Result perform(Dto actionDto) {
 
+        actionDto.setErrorKey("TurnEvent");
+        actionDto.setErrorValue(actionDto.getSuppliedTurnEvent().getLabel());
+
         // POST - turnEvent HIGER|LOWER|PASS for player in highlow game
         if (!actionDto.getQasinoGame().getType().equals(Type.HIGHLOW)) {
-            setBadRequestErrorMessage(actionDto,"Game.type", String.valueOf(actionDto.getQasinoGame().getType()));
+            setBadRequestErrorMessage(actionDto, "Game type", String.valueOf(actionDto.getQasinoGame().getType()));
             return EventOutput.Result.FAILURE;
         }
         // prepare local data
@@ -43,7 +46,7 @@ public class PlayNextHumanTurnAction implements Action<PlayNextHumanTurnAction.D
             case HIGHER -> {
                 activeMove = Move.HIGHER;
                 // update round +1 start with turn 0
-                activeTurn.setCurrentTurnNumber(activeTurn.getCurrentTurnNumber()+1);
+                activeTurn.setCurrentTurnNumber(activeTurn.getCurrentTurnNumber() + 1);
                 activeTurn = playService.dealCardToPlayer(
                         actionDto.getQasinoGame(),
                         activeTurn,
@@ -54,7 +57,7 @@ public class PlayNextHumanTurnAction implements Action<PlayNextHumanTurnAction.D
             }
             case LOWER -> {
                 activeMove = Move.LOWER;
-                activeTurn.setCurrentTurnNumber(activeTurn.getCurrentTurnNumber()+1);
+                activeTurn.setCurrentTurnNumber(activeTurn.getCurrentTurnNumber() + 1);
                 activeTurn = playService.dealCardToPlayer(
                         actionDto.getQasinoGame(),
                         activeTurn,
@@ -71,7 +74,8 @@ public class PlayNextHumanTurnAction implements Action<PlayNextHumanTurnAction.D
                     return EventOutput.Result.SUCCESS;
                 }
                 // update round +1 start with turn 0
-                activeTurn.setCurrentRoundNumber(activeTurn.getCurrentRoundNumber()+1);
+                activeTurn.setCurrentRoundNumber(activeTurn.getCurrentRoundNumber() + 1);
+                activeTurn.setCurrentTurnNumber(1);
                 activeTurn = playService.dealCardToPlayer(
                         actionDto.getQasinoGame(),
                         activeTurn,
@@ -79,14 +83,19 @@ public class PlayNextHumanTurnAction implements Action<PlayNextHumanTurnAction.D
                         activeMove,
                         Face.UP,
                         1);
+                actionDto.setTurnPlayer(actionDto.getNextPlayer());
+                actionDto.setActiveTurn(activeTurn);
+                actionDto.setSuppliedTurnPlayerId(actionDto.getTurnPlayer().getPlayerId());
+                //  TODO rely on load again to get new next player
             }
             default -> {
                 // ony STOP left TODO implement some logic here
-                actionDto.setSuppliedTurnEvent(TurnEvent.END_GAME);
-                return EventOutput.Result.SUCCESS;
+                setConflictErrorMessage(actionDto);
+//                actionDto.setSuppliedTurnEvent(TurnEvent.END_GAME);
+                return EventOutput.Result.FAILURE;
             }
         }
-        if (actionDto.getActiveTurn() == null ) {
+        if (actionDto.getActiveTurn() == null) {
             actionDto.setSuppliedTurnEvent(TurnEvent.END_GAME);
         }
         actionDto.setActiveTurn(activeTurn); // can be null
@@ -95,9 +104,9 @@ public class PlayNextHumanTurnAction implements Action<PlayNextHumanTurnAction.D
         return EventOutput.Result.SUCCESS;
     }
 
-    private void setConflictErrorMessage(Dto actionDto, String id, String value) {
-        actionDto.setErrorKey(id);
-        actionDto.setErrorValue(value);
+    private void setConflictErrorMessage(Dto actionDto) {
+//        actionDto.setErrorKey(id);
+//        actionDto.setErrorValue(value);
         actionDto.setConflictErrorMessage("Trigger [" + actionDto.getSuppliedTurnEvent() + "] invalid for gameState");
     }
 
@@ -117,8 +126,12 @@ public class PlayNextHumanTurnAction implements Action<PlayNextHumanTurnAction.D
         Player getTurnPlayer();
         Player getNextPlayer();
         TurnEvent getSuppliedTurnEvent();
-        void setSuppliedTurnEvent(TurnEvent turnEvent);
+        List<Player> getQasinoGamePlayers();
         // Setters
+        void setTurnPlayer(Player turnPlayer);
+        void setNextPlayer(Player nextPlayer);
+        void setSuppliedTurnPlayerId( long turnPlayer);
+        void setSuppliedTurnEvent(TurnEvent turnEvent);
         void setQasinoGame(Game game);
         void setActiveTurn(Turn turn);
         void setAllCardMovesForTheGame(List<CardMove> cardMoves);

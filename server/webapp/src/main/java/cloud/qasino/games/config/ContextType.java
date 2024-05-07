@@ -1,4 +1,4 @@
-package cloud.qasino.games.configuration;
+package cloud.qasino.games.config;
 
 public interface ContextType {
     String getId();

@@ -1,6 +1,6 @@
 package cloud.qasino.games.database.entity.enums.game;
 
-import cloud.qasino.games.configuration.ContextType;
+import cloud.qasino.games.config.ContextType;
 import cloud.qasino.games.database.entity.enums.LabeledEnum;
 import lombok.Getter;
 

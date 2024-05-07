@@ -1,6 +1,7 @@
 package cloud.qasino.games.action;
 
 import cloud.qasino.games.action.interfaces.Action;
+import cloud.qasino.games.database.entity.Player;
 import cloud.qasino.games.database.entity.Turn;
 import cloud.qasino.games.database.repository.VisitorRepository;
 import cloud.qasino.games.statemachine.event.EventOutput;
@@ -26,17 +27,24 @@ public class IsTurnConsistentForTurnEvent implements Action<IsTurnConsistentForT
         boolean noError = true;
         switch (actionDto.getSuppliedTurnEvent()) {
             case LOWER -> {
+                noError = turnShouldHaveActiveHumanPlayer(actionDto);
+                if (noError) noError = turnShouldHaveNextPlayer(actionDto);
             }
             case HIGHER -> {
+                noError = turnShouldHaveActiveHumanPlayer(actionDto);
+                if (noError) noError = turnShouldHaveNextPlayer(actionDto);
             }
             case PASS -> {
+                noError = turnShouldHaveActiveHumanPlayer(actionDto);
+                if (noError) noError = turnShouldHaveNextPlayer(actionDto);
             }
             case NEXT -> {
-                break;
+                noError = turnShouldHaveActiveBotPlayer(actionDto);
+                if (noError) noError = turnShouldHaveNextPlayer(actionDto);
             }
             case DEAL -> {
                 noError = turnShouldHaveCurrentMoveNumberNotZero(actionDto);
-                noError = turnShouldHaveActivePlayer(actionDto);
+                if (noError) noError = turnShouldHaveActivePlayer(actionDto);
             }
             case SPLIT -> {
             }
@@ -54,12 +62,38 @@ public class IsTurnConsistentForTurnEvent implements Action<IsTurnConsistentForT
         }
         return true;
     }
-
+    private boolean turnShouldHaveNextPlayer(Dto actionDto) {
+        if (actionDto.getNextPlayer() == null) {
+            log.info("!nextplayer");
+            setUnprocessableErrorMessage(actionDto, "Action [" + actionDto.getSuppliedTurnEvent() +
+                    "] invalid - turn has no next player ");
+            return false;
+        }
+        return true;
+    }
     private boolean turnShouldHaveActivePlayer(Dto actionDto) {
         if (actionDto.getActiveTurn().getActivePlayerId() == 0) {
             log.info("!initiator");
             setUnprocessableErrorMessage(actionDto, "Action [" + actionDto.getSuppliedTurnEvent() +
                     "] invalid - turn has no active player ");
+            return false;
+        }
+        return true;
+    }
+    private boolean turnShouldHaveActiveHumanPlayer(Dto actionDto) {
+        if (!actionDto.getTurnPlayer().isHuman()) {
+            log.info("!human");
+            setUnprocessableErrorMessage(actionDto, "Action [" + actionDto.getSuppliedTurnEvent() +
+                    "] inconsistent - this turn event is not for human player ");
+            return false;
+        }
+        return true;
+    }
+    private boolean turnShouldHaveActiveBotPlayer(Dto actionDto) {
+        if (actionDto.getTurnPlayer().isHuman()) {
+            log.info("!human");
+            setUnprocessableErrorMessage(actionDto, "Action [" + actionDto.getSuppliedTurnEvent() +
+                    "] inconsistent - this turn event is not for bot player ");
             return false;
         }
         return true;
@@ -77,6 +111,8 @@ public class IsTurnConsistentForTurnEvent implements Action<IsTurnConsistentForT
         // Getters
         TurnEvent getSuppliedTurnEvent();
         Turn getActiveTurn();
+        Player getTurnPlayer();
+        Player getNextPlayer();
 
         // error setters
         // @formatter:off
