@@ -151,7 +151,7 @@ public class QasinoAndVisitorThymeleafController {
         return "home";
     }
 
-    @GetMapping("/")
+    @GetMapping({"/","/home","home","home/homeNotSignedIn"} )
     String index(Principal principal) {
         return principal != null ? "home/homeSignedIn" : "home/homeNotSignedIn";
     }
