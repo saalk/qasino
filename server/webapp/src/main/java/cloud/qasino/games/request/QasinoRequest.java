@@ -51,7 +51,7 @@ public class QasinoRequest {
     private int suppliedPage = 1;
     private int suppliedMaxPerPage = 4;
     // visitor
-    private String suppliedVisitorName;
+    private String suppliedUsername;
     private String suppliedEmail;
     public boolean requestingToRepay = false;
     public boolean offeringShipForPawn = false;
@@ -210,9 +210,9 @@ public class QasinoRequest {
             }
         }
         // visitor
-        key = "visitorName";
+        key = "username";
         if (requestParam.containsKey(key)) {
-            this.suppliedVisitorName = (requestParam.get("visitorName"));
+            this.suppliedUsername = (requestParam.get("username"));
         }
         key = "email";
         if (requestParam.containsKey(key)) {

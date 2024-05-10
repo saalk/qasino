@@ -8,11 +8,14 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.DynamicUpdate;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.User;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.time.Month;
 import java.time.format.DateTimeFormatter;
+import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 import java.util.Random;
@@ -25,9 +28,9 @@ import java.util.Random;
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 @Table(name = "visitor", indexes =
         {@Index(name = "visitors_index", columnList = "visitor_id", unique = true),
-                @Index(name = "visitorName_index", columnList = "visitorName", unique = false)
+                @Index(name = "alias_index", columnList = "alias", unique = false)
         })
-public class Visitor {
+public class Visitor extends User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -42,12 +45,11 @@ public class Visitor {
 
     // Normal fields
 
-    @Column(name = "visitorName", length = 50, nullable = false)
-    private String visitorName;
+    @Column(name = "alias", length = 50, nullable = false)
+    private String alias;
 
-    @Column(name = "visitorName_seq")
-    private int visitorNameSequence;
-
+    @Column(name = "alias_seq")
+    private int aliasSequence;
 
     @Column(name = "email", length = 50, nullable = true)
     private String email;
@@ -91,7 +93,9 @@ public class Visitor {
     // just a reference, the actual fk column is in league not here!
     private List<League> leagues;
 
-    public Visitor() {
+    private Visitor(Builder builder) {
+        super(builder.username, builder.password, builder.authorities);
+
         LocalDateTime localDateAndTime = LocalDateTime.now();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd-HH:mm-ssSSS-nnnnnnnnn");
         String result = localDateAndTime.format(formatter);
@@ -102,14 +106,68 @@ public class Visitor {
         DateTimeFormatter week = DateTimeFormatter.ofPattern("w");
         this.week = localDateAndTime.format(week);
         this.weekday = localDateAndTime.getDayOfMonth();
-        this.visitorName = "visitorName";
+
+        this.alias = builder.alias;
+        this.aliasSequence = builder.aliasSequence;
+        this.email = builder.email;
     }
 
-    public Visitor(String visitorName, int visitorNameSequence, String email) {
-        this();
-        this.visitorName = visitorName;
-        this.visitorNameSequence = visitorNameSequence;
-        this.email = email;
+    public static class Builder {
+        private String username;
+        private String password;
+
+        private String alias;
+        private int aliasSequence;
+        private String email;
+
+        private int balance;
+        private int securedLoan;
+
+        private Collection<? extends GrantedAuthority> authorities;
+
+        public Builder withUsername(String username) {
+            this.username = username;
+            return this;
+        }
+
+        public Builder withPassword(String password) {
+            this.password = password;
+            return this;
+        }
+
+        public Builder withAlias(String alias) {
+            this.alias = alias;
+            return this;
+        }
+
+        public Builder withAliasSequence(int aliasSequence) {
+            this.aliasSequence = aliasSequence;
+            return this;
+        }
+
+        public Builder withEmail(String email) {
+            this.email = email;
+            return this;
+        }
+
+        public Builder withBalance(int balance) {
+            this.balance = balance;
+            return this;
+        }
+
+        public Builder withSecuredLoan(int securedLoan) {
+            this.securedLoan = securedLoan;
+            return this;
+        }
+
+        public Builder withAuthorities(Collection<? extends GrantedAuthority> authorities) {
+            this.authorities = authorities;
+            return this;
+        }
+
+        public Visitor build() {
+            return new Visitor(this);
+        }
     }
 
     public boolean repayLoan() {

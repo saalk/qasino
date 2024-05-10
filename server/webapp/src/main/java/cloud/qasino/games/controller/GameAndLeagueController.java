@@ -422,7 +422,7 @@ public class GameAndLeagueController {
 
         // rules - AiLevel bot cannot be Human
         if (AiLevel.fromLabelWithDefault(aiLevel) == AiLevel.HUMAN)
-            // todo LOW split visitorName and number
+            // todo LOW split username and number
             return ResponseEntity.status(HttpStatus.CONFLICT).headers(headers).build();
 
         long gameId = Long.parseLong(id);

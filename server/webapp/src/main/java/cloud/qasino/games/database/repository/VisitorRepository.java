@@ -7,17 +7,20 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
-import java.util.List;
 import java.util.Optional;
 
 @Repository
 public interface VisitorRepository extends JpaRepository<Visitor, Long> {
 
-    //@Query("SELECT count(u) FROM visitorS u where u.VisitorName = ?1")
-    Long countByVisitorName(String visitorName);
+//    Visitor findOne(Long id);
+
+    Visitor findOneByEmail(String email);
+
+    //@Query("SELECT count(u) FROM visitorS u where u.Alias = ?1")
+    Long countByAlias(String alias);
 
     Optional<Visitor> findVisitorByVisitorId(Long visitorId);
-    Optional<Visitor> findVisitorByVisitorNameAndVisitorNameSequence(String visitorName, int visitorNameSequence);
+    Optional<Visitor> findVisitorByAliasAndAliasSequence(String alias, int aliasSequence);
 
     @Query(
             value = "SELECT * FROM \"visitor\" ORDER BY \"visitor_id\" ",

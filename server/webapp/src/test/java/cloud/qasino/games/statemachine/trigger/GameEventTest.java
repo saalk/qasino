@@ -12,7 +12,7 @@ class GameEventTest {
 
     @Test
     void fromLabel() {
-        assertEquals(GameEvent.VALIDATE, GameEvent.fromLabel("prepare"));
+        assertEquals(GameEvent.VALIDATE, GameEvent.fromLabel("validate"));
 
     }
 

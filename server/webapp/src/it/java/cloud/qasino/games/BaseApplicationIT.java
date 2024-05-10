@@ -35,7 +35,15 @@ public class BaseApplicationIT extends AbstractBaseApplicationIT {
     }
 
     public Visitor createVisitorInDatabase() {
-        Visitor newVisitor = new Visitor("visitorName", 1, "email");
+
+        Visitor newVisitor = new Visitor.Builder()
+                .withUsername("Julie")
+                .withPassword("Julie")
+                .withEmail("email")
+                .withAlias("visitorName")
+                .withAliasSequence(1)
+                .build();
+
         return visitorRepository.save(newVisitor);
     }
     public Optional<Visitor> fetchVisitorFromDatabase(long visitorId) {

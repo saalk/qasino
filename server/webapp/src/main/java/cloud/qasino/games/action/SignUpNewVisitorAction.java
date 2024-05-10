@@ -20,18 +20,24 @@ public class SignUpNewVisitorAction implements Action<SignUpNewVisitorAction.Sig
     @Override
     public EventOutput.Result perform(SignUpNewVisitorActionDTO actionDto) {
 
-        if (!(StringUtils.isEmpty(actionDto.getSuppliedVisitorName()))) {
-            int sequence = Math.toIntExact(visitorRepository.countByVisitorName(actionDto.getSuppliedVisitorName()));
+        if (!(StringUtils.isEmpty(actionDto.getSuppliedAlias()))) {
+            int sequence = Math.toIntExact(visitorRepository.countByAlias(actionDto.getSuppliedAlias()));
             if (sequence != 0) {
-                setConflictErrorMessage(actionDto, "visitorName", String.valueOf(actionDto.getSuppliedVisitorName()));
+                setConflictErrorMessage(actionDto, "alias", String.valueOf(actionDto.getSuppliedAlias()));
                 return EventOutput.Result.FAILURE;
             }
-            // todo LOW split visitorName and number
-            Visitor createdVisitor = visitorRepository.save(new Visitor(actionDto.getSuppliedVisitorName(), 1,
-                    actionDto.getSuppliedEmail()));
+            // todo LOW split alias and number
+            Visitor createdVisitor = visitorRepository.save(
+                    new Visitor.Builder()
+                            .withUsername(actionDto.getSuppliedUsername())
+                            .withPassword(actionDto.getSuppliedPassword())
+                            .withEmail(actionDto.getSuppliedEmail())
+                            .withAlias(actionDto.getSuppliedAlias())
+                            .withAliasSequence(1)
+                            .build());
             actionDto.setSuppliedVisitorId(createdVisitor.getVisitorId());
         } else {
-            setBadRequestErrorMessage(actionDto, "visitorName", String.valueOf(actionDto.getSuppliedVisitorName()));
+            setBadRequestErrorMessage(actionDto, "username", String.valueOf(actionDto.getSuppliedUsername()));
             return EventOutput.Result.FAILURE;
         }
         return EventOutput.Result.SUCCESS;
@@ -46,15 +52,17 @@ public class SignUpNewVisitorAction implements Action<SignUpNewVisitorAction.Sig
     private void setConflictErrorMessage(SignUpNewVisitorActionDTO actionDto, String id, String value) {
         actionDto.setErrorKey(id);
         actionDto.setErrorValue(value);
-        actionDto.setConflictErrorMessage("visitorName [" + value + "] not available any more");
+        actionDto.setConflictErrorMessage("username [" + value + "] not available any more");
     }
 
     public interface SignUpNewVisitorActionDTO {
 
         // @formatter:off
         // Getters
-        String getSuppliedVisitorName();
+        String getSuppliedUsername();
+        String getSuppliedPassword();
         String getSuppliedEmail();
+        String getSuppliedAlias();
 
         // Setter
         void setSuppliedVisitorId(long id);

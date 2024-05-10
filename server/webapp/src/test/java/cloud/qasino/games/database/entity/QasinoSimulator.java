@@ -4,6 +4,7 @@ import cloud.qasino.games.database.entity.enums.card.Location;
 import cloud.qasino.games.database.entity.enums.move.Move;
 import cloud.qasino.games.database.entity.enums.player.AiLevel;
 import cloud.qasino.games.database.entity.enums.player.Role;
+import org.springframework.security.core.userdetails.User;
 
 public abstract class QasinoSimulator {
 
@@ -16,7 +17,13 @@ public abstract class QasinoSimulator {
     Result result;
 
     QasinoSimulator() {
-        visitor = new Visitor("Julie", 1, "julie@domain.com");
+        visitor = new Visitor.Builder()
+                .withUsername("Julie")
+                .withPassword("Julie")
+                .withEmail("Julie@domain.com")
+                .withAlias("Julie")
+                .withAliasSequence(1)
+                .build();
         league = new League(visitor, "leagueName", 1);
         game = new Game(league, visitor.getVisitorId());
         game.shuffleGame(0);

@@ -185,7 +185,7 @@ public class MapQasinoResponseFromDto implements Action<MapQasinoResponseFromDto
     // @formatter:off
     private void mapVisitorPage(Dto actionDto, NavigationBarItem navigationBarItem, PageVisitor pageVisitor) {
         // set the nav bar
-        navigationBarItem.setItemName(actionDto.getQasinoVisitor().getVisitorName());
+        navigationBarItem.setItemName(actionDto.getQasinoVisitor().getUsername());
         navigationBarItem.setItemStats("balance [" + actionDto.getQasinoVisitor().getBalance() + "]");
         pageVisitor.setSelectedVisitor(actionDto.getQasinoVisitor());
         Map<GameState, Integer> gameStateIntegerMap = new HashMap<>();

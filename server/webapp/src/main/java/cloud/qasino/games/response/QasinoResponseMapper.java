@@ -181,7 +181,7 @@ public class QasinoResponseMapper {
     // @formatter:off
     private void mapVisitorPage(QasinoFlowDTO actionDto, NavigationBarItem navigationBarItem, PageVisitor pageVisitor) {
         // set the nav bar
-        navigationBarItem.setItemName(actionDto.getQasinoVisitor().getVisitorName());
+        navigationBarItem.setItemName(actionDto.getQasinoVisitor().getUsername());
         navigationBarItem.setItemStats("balance [" + actionDto.getQasinoVisitor().getBalance() + "]");
         pageVisitor.setSelectedVisitor(actionDto.getQasinoVisitor());
         Map<GameState, Integer> gameStateIntegerMap = new HashMap<>();

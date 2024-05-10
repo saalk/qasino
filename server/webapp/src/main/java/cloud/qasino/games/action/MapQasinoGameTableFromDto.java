@@ -110,10 +110,10 @@ public class MapQasinoGameTableFromDto implements Action<MapQasinoGameTableFromD
             seat.setHuman(player.isHuman());
             if (player.isHuman()) {
                 seat.setVisitorId(player.getVisitor().getVisitorId());
-                seat.setVisitorName(player.getVisitor().getVisitorName());
+                seat.setUsername(player.getVisitor().getUsername());
             } else {
                 seat.setVisitorId(0);
-                seat.setVisitorName(player.getAiLevel().getLabel() + " " + player.getAvatar().getLabel());
+                seat.setUsername(player.getAiLevel().getLabel() + " " + player.getAvatar().getLabel());
             }
             seats.add(seat);
             log.info("tabel seat " + seat.getSeatId()+ "set ");

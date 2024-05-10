@@ -26,7 +26,14 @@ public abstract class QasinoItSimulator {
     League league;
 
     QasinoItSimulator() {
-        visitor = new Visitor("itTester", 1, "tester@domain.com");
+        visitor = new Visitor.Builder()
+                .withUsername("itTester")
+                .withPassword("itTester")
+                .withEmail("itTester@domain.com")
+                .withAlias("itTester")
+                .withAliasSequence(1)
+                .build();
+
         league = new League(visitor, "itLeague", 1);
 
         // Game setup

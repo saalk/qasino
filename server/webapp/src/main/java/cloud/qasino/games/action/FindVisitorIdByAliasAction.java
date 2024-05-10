@@ -13,7 +13,7 @@ import java.util.Optional;
 
 @Slf4j
 @Component
-public class FindVisitorIdByVisitorNameAction implements Action<FindVisitorIdByVisitorNameAction.Dto, EventOutput.Result> {
+public class FindVisitorIdByAliasAction implements Action<FindVisitorIdByAliasAction.Dto, EventOutput.Result> {
 
     @Resource
     VisitorRepository visitorRepository;
@@ -22,25 +22,25 @@ public class FindVisitorIdByVisitorNameAction implements Action<FindVisitorIdByV
     public EventOutput.Result perform(Dto actionDto) {
 
         // set http to created when done
-        if (!(StringUtils.isEmpty(actionDto.getSuppliedVisitorName()))) {
-            int sequence = Math.toIntExact(visitorRepository.countByVisitorName(actionDto.getSuppliedVisitorName()));
+        if (!(StringUtils.isEmpty(actionDto.getSuppliedAlias()))) {
+            int sequence = Math.toIntExact(visitorRepository.countByAlias(actionDto.getSuppliedAlias()));
             if (sequence > 1) {
-                // todo LOW split visitorName and number
-                setConflictErrorMessage(actionDto, "visitorName", String.valueOf(actionDto.getSuppliedVisitorName()));
+                // todo LOW split alias and number
+                setConflictErrorMessage(actionDto, "alias", String.valueOf(actionDto.getSuppliedAlias()));
                 return EventOutput.Result.FAILURE;
             } else if (sequence == 0) {
-                setNotFoundErrorMessage(actionDto, "visitorName", String.valueOf(actionDto.getSuppliedVisitorName()));
+                setNotFoundErrorMessage(actionDto, "alias", String.valueOf(actionDto.getSuppliedAlias()));
                 return EventOutput.Result.FAILURE;
             }
-            Optional<Visitor> foundVisitor = visitorRepository.findVisitorByVisitorNameAndVisitorNameSequence(actionDto.getSuppliedVisitorName(), 1);
+            Optional<Visitor> foundVisitor = visitorRepository.findVisitorByAliasAndAliasSequence(actionDto.getSuppliedAlias(), 1);
             if (foundVisitor.isPresent()) {
                 actionDto.setSuppliedVisitorId(foundVisitor.get().getVisitorId());
             } else {
-                setNotFoundErrorMessage(actionDto, "visitorId", actionDto.getSuppliedVisitorName());
+                setNotFoundErrorMessage(actionDto, "visitorId", actionDto.getSuppliedAlias());
                 return EventOutput.Result.FAILURE;
             }
         } else {
-            setBadRequestErrorMessage(actionDto, "Visitor", String.valueOf(actionDto.getSuppliedVisitorName()));
+            setBadRequestErrorMessage(actionDto, "Visitor", String.valueOf(actionDto.getSuppliedAlias()));
             return EventOutput.Result.FAILURE;
         }
         return EventOutput.Result.SUCCESS;
@@ -69,7 +69,7 @@ public class FindVisitorIdByVisitorNameAction implements Action<FindVisitorIdByV
 
         // @formatter:off
         // Getters
-        String getSuppliedVisitorName();
+        String getSuppliedAlias();
 
         // Setter
         void setSuppliedVisitorId(long id);

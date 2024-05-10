@@ -6,7 +6,7 @@ import cloud.qasino.games.action.CreateNewGameAction;
 import cloud.qasino.games.action.CreateNewLeagueAction;
 import cloud.qasino.games.action.IsPlayerHuman;
 import cloud.qasino.games.action.LoadEntitiesToDtoAction;
-import cloud.qasino.games.action.FindVisitorIdByVisitorNameAction;
+import cloud.qasino.games.action.FindVisitorIdByAliasAction;
 import cloud.qasino.games.action.HandleSecuredLoanAction;
 import cloud.qasino.games.action.IsGameConsistentForGameEvent;
 import cloud.qasino.games.action.IsGameFinished;
@@ -65,7 +65,7 @@ import java.util.Map;
 @Slf4j
 public class QasinoFlowDTO extends AbstractFlowDTO
         implements
-        FindVisitorIdByVisitorNameAction.Dto,
+        FindVisitorIdByAliasAction.Dto,
         SignUpNewVisitorAction.SignUpNewVisitorActionDTO,
         CreateNewLeagueAction.Dto,
         LoadEntitiesToDtoAction.Dto,
@@ -95,7 +95,7 @@ public class QasinoFlowDTO extends AbstractFlowDTO
     private QasinoResponse qasinoResponse;
     private Statistics statistics;
 
-    // FRONTEND
+    // FRONTEND IDS
     // path params
     private long suppliedVisitorId;
     private long suppliedGameId;
@@ -117,8 +117,10 @@ public class QasinoFlowDTO extends AbstractFlowDTO
     private int suppliedPage = 1;
     private int suppliedMaxPerPage = 4;
     // visitor
-    private String suppliedVisitorName;
+    private String suppliedUsername;
+    private String suppliedPassword;
     private String suppliedEmail;
+    private String suppliedAlias;
     public boolean requestingToRepay = false;
     public boolean offeringShipForPawn = false;
     // league
@@ -374,9 +376,9 @@ public class QasinoFlowDTO extends AbstractFlowDTO
             }
         }
         // visitor
-        key = "visitorName";
+        key = "username";
         if (requestParam.containsKey(key)) {
-            this.suppliedVisitorName = (requestParam.get("visitorName"));
+            this.suppliedUsername = (requestParam.get("username"));
         }
         key = "email";
         if (requestParam.containsKey(key)) {

@@ -57,8 +57,8 @@ public class SectionSeat {
     private boolean isHuman;
     @JsonProperty("VisitorId")
     private long visitorId;
-    @JsonProperty("VisitorName")
-    private String visitorName;
+    @JsonProperty("Username")
+    private String username;
 
     // is player the winner
     @JsonProperty("IsWinner")
