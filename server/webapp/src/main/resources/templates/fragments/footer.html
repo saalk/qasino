@@ -1,17 +1,29 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <link href="../../css/bootstrap.min.css" rel="stylesheet" media="screen" th:href="@{/resources/css/bootstrap.min.css}"/>
-</head>
+    <!-- Include Bootstrap - for thymeleaf we only need to specify the path below src/main/resources/static -->
+    <link th:href="@{/styles/cssandjs/bootstrap.min.css}" rel="stylesheet"/>
+    <script type="text/javascript" th:src="@{/js/cssandjs/jquery.min.js}"></script>
+    <script type="text/javascript" th:src="@{/js/cssandjs/bootstrap.min.js}"></script>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="icon" type="image" href="images/favicon3.ico"></head>
 <body>
     <!--/*  Multiple fragments may be defined in one file */-->
     <div th:fragment="footer" th:align="center">
-        &copy; <span th:text="${#temporals.format(#temporals.createNow(), 'yyyy')}">2017</span>
-        <span>My Awesome App</span>
+        <div class="twelve columns">
+            &copy; <span th:text="${#temporals.format(#temporals.createNow(), 'yyyy')}">2017</span>
+            Saalk@github.com - trying to beat
+                <a href="https://medium.com/@uwehook/sturgeons-law-285c007406db">sturgeon's law</a></div>
+        </div>
     </div>
     <div th:fragment="footer-admin" th:align="center">
-        &copy; <span th:text="${#temporals.format(#temporals.createNow(), 'yyyy')}">2017</span>
-        <span>My Awesome App </span><span th:text="${@environment.getProperty('app.version')}"></span>
+        <div class="twelve columns">
+            &copy; <span th:text="${#temporals.format(#temporals.createNow(), 'yyyy')}">2017</span>
+            Saalk@github.com - trying to beat
+            <a href="https://medium.com/@uwehook/sturgeons-law-285c007406db">sturgeon's law</a></div>
+    </div>
+        <span th:text="${@environment.getProperty('app.version')}"></span>
     </div>
 </body>
 </html>
