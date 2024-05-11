@@ -1,8 +1,7 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" lang="en">
 <head>
-    <title>Sign In</title>
-    <meta http-equiv="content-type" content="text/javascript; charset=UTF-8">
+    <title>Enter the Qasino</title>
     <th:block th:include="~{fragments/header :: headerfiles}">
     </th:block>
 </head>
@@ -10,16 +9,15 @@
 <div th:replace="~{fragments/header :: header}">Header</div>
 <!-- the specific part of this html -->
 <div class="container">
-    <div th:fragment="footer" th:align="center">
-
     <form class="form-narrow form-horizontal" action="#" method="post" th:action="@{/authenticate}">
         <th:block th:if="${param.error != null}">
+            <!-- /* The message code is returned from the @Controller */ -->
             <div th:replace="fragments/alert :: alert (type='danger', message='Sign in error. Please try again.')">
                 Alert
             </div>
         </th:block>
         <fieldset>
-            <legend>Please Sign In</legend>
+            <legend>Enter the Qasino</legend>
             <div class="form-group">
                 <label for="inputEmail" class="col-lg-2 control-label">Email</label>
                 <div class="col-lg-10">
@@ -54,6 +52,7 @@
             </div>
         </fieldset>
     </form>
+    <div th:insert="~{fragments/footer :: footer}"></div>
 </div>
 </body>
 </html>

@@ -82,7 +82,7 @@ public class QasinoAndVisitorThymeleafController {
     @Autowired
     MapQasinoGameTableFromDto mapQasinoGameTableFromDto;
 
-    private static final String SIGNUP_VIEW_NAME = "signup/signup";
+    private static final String SIGNUP_VIEW_NAME = "home/signup";
 
     @Autowired
     private VisitorService visitorService;
@@ -102,7 +102,7 @@ public class QasinoAndVisitorThymeleafController {
         this.turnRepository = turnRepository;
     }
 
-    @GetMapping("/index")
+    @GetMapping("/qasino")
     public String showUserList(Model model) {
 
         // validate
@@ -116,12 +116,12 @@ public class QasinoAndVisitorThymeleafController {
         flowDTO.prepareResponseHeaders();
 
         model.addAttribute("qasino", flowDTO.getQasinoResponse());
-        return "index";
+        return "qasino";
     }
 
     @RequestMapping(value = "signin")
     public String signin() {
-        return "signin/signin";
+        return "home/signin";
     }
 
     @GetMapping("signup")
@@ -146,10 +146,10 @@ public class QasinoAndVisitorThymeleafController {
     }
 
 
-    @ModelAttribute("module")
-    String module() {
-        return "home";
-    }
+//    @ModelAttribute("module")
+//    String module() {
+//        return "home";
+//    }
 
     @GetMapping({"/","/home","home","home/homeNotSignedIn"} )
     String index(Principal principal) {
