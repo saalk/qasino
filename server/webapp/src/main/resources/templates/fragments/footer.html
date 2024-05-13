@@ -3,22 +3,22 @@
 <head>
 </head>
 <body>
-    <!--/*  Multiple fragments may be defined in one file */-->
-    <div th:fragment="footer" th:align="center">
-        <div class="twelve columns">
-            &copy; <span th:text="${#temporals.format(#temporals.createNow(), 'yyyy')}">2017</span>
-            Saalk@github.com - trying to beat
-                <a href="https://medium.com/@uwehook/sturgeons-law-285c007406db">sturgeon's law</a></div>
-        </div>
-    </div>
-    <div th:fragment="footer-admin" th:align="center">
-        <div class="twelve columns">
-            &copy; <span th:text="${#temporals.format(#temporals.createNow(), 'yyyy')}">2017</span>
-            Saalk@github.com - trying to beat
-            <a href="https://medium.com/@uwehook/sturgeons-law-285c007406db">sturgeon's law</a></div>
-    </div>
-        <span th:text="${@environment.getProperty('app.version')}"></span>
-    </div>
+<!--/*  Multiple fragments may be defined in one file */-->
+<div th:fragment="footer" th:align="center" class="footer">
+    <div class="twelve columns">
+        &copy; <span th:text="${#temporals.format(#temporals.createNow(), 'yyyy')}">2017</span>
+        Saalk@github.com - trying to beat
+        <a href="https://medium.com/@uwehook/sturgeons-law-285c007406db">sturgeon's law</a></div>
+</div>
+</div>
+<div th:fragment="footer-admin" th:align="center">
+    <div class="twelve columns">
+        &copy; <span th:text="${#temporals.format(#temporals.createNow(), 'yyyy')}">2017</span>
+        Saalk@github.com - trying to beat
+        <a href="https://medium.com/@uwehook/sturgeons-law-285c007406db">sturgeon's law</a></div>
+</div>
+<span th:text="${@environment.getProperty('app.version')}"></span>
+</div>
 </body>
 </html>
 
