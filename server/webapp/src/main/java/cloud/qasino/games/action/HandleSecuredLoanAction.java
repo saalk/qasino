@@ -1,9 +1,9 @@
 package cloud.qasino.games.action;
 
 import cloud.qasino.games.action.interfaces.Action;
-import cloud.qasino.games.database.entity.Visitor;
+import cloud.qasino.games.database.security.Visitor;
 import cloud.qasino.games.statemachine.event.EventOutput;
-import cloud.qasino.games.database.repository.VisitorRepository;
+import cloud.qasino.games.database.security.VisitorRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 

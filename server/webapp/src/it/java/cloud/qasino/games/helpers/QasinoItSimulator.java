@@ -2,7 +2,7 @@ package cloud.qasino.games.helpers;
 
 import cloud.qasino.games.database.entity.Game;
 import cloud.qasino.games.database.entity.League;
-import cloud.qasino.games.database.entity.Visitor;
+import cloud.qasino.games.database.security.Visitor;
 import cloud.qasino.games.database.entity.enums.game.Style;
 import cloud.qasino.games.database.entity.enums.game.Type;
 import cloud.qasino.games.database.entity.enums.game.style.AnteToWin;

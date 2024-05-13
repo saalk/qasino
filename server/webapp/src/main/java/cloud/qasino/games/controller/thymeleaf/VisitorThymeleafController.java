@@ -1,7 +1,7 @@
 package cloud.qasino.games.controller.thymeleaf;
 
-import cloud.qasino.games.database.entity.Visitor;
-import cloud.qasino.games.database.repository.VisitorRepository;
+import cloud.qasino.games.database.security.Visitor;
+import cloud.qasino.games.database.security.VisitorRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.util.Assert;

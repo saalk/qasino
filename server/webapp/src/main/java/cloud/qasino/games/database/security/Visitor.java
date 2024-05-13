@@ -1,15 +1,16 @@
-package cloud.qasino.games.database.entity;
+package cloud.qasino.games.database.security;
 
+import cloud.qasino.games.database.entity.League;
+import cloud.qasino.games.database.entity.Player;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.voodoodyne.jackson.jsog.JSOGGenerator;
 import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.DynamicUpdate;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.userdetails.User;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -19,18 +20,21 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 import java.util.Random;
+import java.util.Set;
 
 @Entity
 @DynamicUpdate
+@NoArgsConstructor
 @Getter
 @Setter
 @JsonIdentityInfo(generator = JSOGGenerator.class)
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 @Table(name = "visitor", indexes =
         {@Index(name = "visitors_index", columnList = "visitor_id", unique = true),
-                @Index(name = "alias_index", columnList = "alias", unique = false)
+                @Index(name = "alias_index", columnList = "alias", unique = false),
+                @Index(name = "username_index", columnList = "username", unique = true)
         })
-public class Visitor extends User {
+public class Visitor{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -40,6 +44,21 @@ public class Visitor extends User {
     @JsonIgnore
     @Column(name = "created", length = 25)
     private String created;
+
+    @Column(name = "username", length = 25, unique = true)
+    private String username;
+
+    @JsonIgnore
+    @Column(name = "password", length = 60)
+    private String password;
+
+    private boolean enabled;
+
+    private boolean isUsing2FA;
+
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(name = "users_roles", joinColumns = @JoinColumn(name = "visitor_id", referencedColumnName = "visitor_id"), inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "role_id"))
+    private Collection<Role> roles;
 
     // Foreign keys
 
@@ -94,7 +113,9 @@ public class Visitor extends User {
     private List<League> leagues;
 
     private Visitor(Builder builder) {
-        super(builder.username, builder.password, builder.authorities);
+        this.username = builder.username;
+        this.password = builder.password;
+        this.roles = builder.roles;
 
         LocalDateTime localDateAndTime = LocalDateTime.now();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd-HH:mm-ssSSS-nnnnnnnnn");
@@ -115,6 +136,7 @@ public class Visitor extends User {
     public static class Builder {
         private String username;
         private String password;
+        private Set<Role> roles;
 
         private String alias;
         private int aliasSequence;
@@ -123,8 +145,6 @@ public class Visitor extends User {
         private int balance;
         private int securedLoan;
 
-        private Collection<? extends GrantedAuthority> authorities;
-
         public Builder withUsername(String username) {
             this.username = username;
             return this;
@@ -132,6 +152,11 @@ public class Visitor extends User {
 
         public Builder withPassword(String password) {
             this.password = password;
+            return this;
+        }
+
+        public Builder withRoles(Set<Role> roles) {
+            this.roles = roles;
             return this;
         }
 
@@ -157,11 +182,6 @@ public class Visitor extends User {
 
         public Builder withSecuredLoan(int securedLoan) {
             this.securedLoan = securedLoan;
-            return this;
-        }
-
-        public Builder withAuthorities(Collection<? extends GrantedAuthority> authorities) {
-            this.authorities = authorities;
             return this;
         }
 
@@ -220,7 +240,6 @@ public class Visitor extends User {
     public int hashCode() {
         return Objects.hash(visitorId);
     }
-
 }
 
 

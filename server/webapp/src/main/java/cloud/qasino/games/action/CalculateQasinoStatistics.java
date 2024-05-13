@@ -8,7 +8,7 @@ import cloud.qasino.games.database.repository.LeagueRepository;
 import cloud.qasino.games.database.repository.PlayerRepository;
 import cloud.qasino.games.database.repository.ResultsRepository;
 import cloud.qasino.games.database.repository.TurnRepository;
-import cloud.qasino.games.database.repository.VisitorRepository;
+import cloud.qasino.games.database.security.VisitorRepository;
 import cloud.qasino.games.dto.statistics.Statistics;
 import cloud.qasino.games.dto.statistics.SubTotalsGame;
 import cloud.qasino.games.statemachine.event.EventOutput;

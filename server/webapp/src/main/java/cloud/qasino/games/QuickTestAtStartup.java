@@ -5,7 +5,6 @@ import cloud.qasino.games.database.entity.Game;
 import cloud.qasino.games.database.entity.League;
 import cloud.qasino.games.database.entity.Player;
 import cloud.qasino.games.database.entity.Turn;
-import cloud.qasino.games.database.entity.Visitor;
 import cloud.qasino.games.database.entity.enums.card.Location;
 import cloud.qasino.games.database.entity.enums.game.GameState;
 import cloud.qasino.games.database.entity.enums.move.Move;
@@ -18,7 +17,9 @@ import cloud.qasino.games.database.repository.GameRepository;
 import cloud.qasino.games.database.repository.LeagueRepository;
 import cloud.qasino.games.database.repository.PlayerRepository;
 import cloud.qasino.games.database.repository.TurnRepository;
-import cloud.qasino.games.database.repository.VisitorRepository;
+import cloud.qasino.games.database.security.Visitor;
+import cloud.qasino.games.database.security.VisitorRepository;
+import cloud.qasino.games.database.security.VisitorService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -26,11 +27,9 @@ import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 @Component
@@ -39,6 +38,9 @@ public class QuickTestAtStartup implements ApplicationRunner {
 
     @Value("${spring.profiles.active:}")
     private String activeProfiles;
+
+    @Autowired
+    private VisitorService visitorService;
 
     @Autowired
     VisitorRepository visitorRepository;
@@ -75,42 +77,39 @@ public class QuickTestAtStartup implements ApplicationRunner {
 
         // A new visitor with 2 friends arrive
         Visitor visitor = new Visitor.Builder()
-                        .withUsername("user1")
-                        .withPassword("user1")
-                        .withAuthorities(Collections.singletonList(new SimpleGrantedAuthority("ROLE_USER")))
-                        .withEmail("user@email.com")
-                        .withAlias("User1")
-                        .withAliasSequence(1)
-                        .build();
+                .withUsername("user1")
+                .withPassword("user1")
+                .withEmail("user@email.com")
+                .withAlias("User1")
+                .withAliasSequence(1)
+                .build();
 
         int pawn = Visitor.pawnShipValue(0);
         visitor.pawnShip(pawn);
-        visitor = visitorRepository.save(visitor);
+        visitor = visitorService.saveUser(visitor);
 
         Visitor friend1 = new Visitor.Builder()
                 .withUsername("friend1")
                 .withPassword("friend1")
-                .withAuthorities(Collections.singletonList(new SimpleGrantedAuthority("ROLE_USER")))
                 .withEmail("friend1@email.com")
                 .withAlias("Friend1")
                 .withAliasSequence(1)
                 .build();
         pawn = Visitor.pawnShipValue(0);
         friend1.pawnShip(pawn);
-        friend1 = visitorRepository.save(visitor);
+        friend1 = visitorService.saveUser(friend1);
 
         Visitor friend2 =
                 new Visitor.Builder()
                         .withUsername("friend2")
                         .withPassword("friend2")
-                        .withAuthorities(Collections.singletonList(new SimpleGrantedAuthority("ROLE_USER")))
                         .withEmail("friend2@email.com")
                         .withAlias("Friend2")
                         .withAliasSequence(1)
                         .build();
         pawn = Visitor.pawnShipValue(0);
         friend2.pawnShip(pawn);
-        friend2 = visitorRepository.save(visitor);
+        friend2 = visitorService.saveUser(friend2);
 
         // The visitor starts a league
         League league = new League(visitor, "defaultLeague", 1);

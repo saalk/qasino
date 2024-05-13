@@ -1,5 +1,6 @@
 package cloud.qasino.games.database.entity;
 
+import cloud.qasino.games.database.security.Visitor;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;

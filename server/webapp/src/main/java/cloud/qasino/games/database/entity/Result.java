@@ -1,10 +1,9 @@
 package cloud.qasino.games.database.entity;
 
 import cloud.qasino.games.database.entity.enums.game.Type;
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import cloud.qasino.games.database.security.Visitor;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.voodoodyne.jackson.jsog.JSOGGenerator;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;

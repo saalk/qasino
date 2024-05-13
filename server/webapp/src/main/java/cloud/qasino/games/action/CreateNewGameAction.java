@@ -3,7 +3,7 @@ package cloud.qasino.games.action;
 import cloud.qasino.games.action.interfaces.Action;
 import cloud.qasino.games.database.entity.Game;
 import cloud.qasino.games.database.entity.League;
-import cloud.qasino.games.database.entity.Visitor;
+import cloud.qasino.games.database.security.Visitor;
 import cloud.qasino.games.database.entity.enums.game.Type;
 import cloud.qasino.games.database.entity.enums.player.AiLevel;
 import cloud.qasino.games.database.entity.enums.player.Avatar;

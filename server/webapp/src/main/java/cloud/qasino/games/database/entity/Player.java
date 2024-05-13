@@ -3,6 +3,7 @@ package cloud.qasino.games.database.entity;
 import cloud.qasino.games.database.entity.enums.player.AiLevel;
 import cloud.qasino.games.database.entity.enums.player.Avatar;
 import cloud.qasino.games.database.entity.enums.player.Role;
+import cloud.qasino.games.database.security.Visitor;
 import com.fasterxml.jackson.annotation.*;
 import com.voodoodyne.jackson.jsog.JSOGGenerator;
 import lombok.AccessLevel;

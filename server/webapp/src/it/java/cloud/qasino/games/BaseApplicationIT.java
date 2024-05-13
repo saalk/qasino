@@ -1,7 +1,7 @@
 package cloud.qasino.games;
 
-import cloud.qasino.games.database.entity.Visitor;
-import cloud.qasino.games.database.repository.VisitorRepository;
+import cloud.qasino.games.database.security.Visitor;
+import cloud.qasino.games.database.security.VisitorRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;

@@ -1,7 +1,8 @@
 package cloud.qasino.games.controller.thymeleaf;
 
-import cloud.qasino.games.database.entity.Visitor;
-import cloud.qasino.games.database.service.VisitorService;
+import cloud.qasino.games.database.security.MyUserDetailService;
+import cloud.qasino.games.database.security.Visitor;
+import cloud.qasino.games.database.security.VisitorService;
 import cloud.qasino.games.action.CalculateQasinoStatistics;
 import cloud.qasino.games.action.FindVisitorIdByAliasAction;
 import cloud.qasino.games.action.HandleSecuredLoanAction;
@@ -15,7 +16,7 @@ import cloud.qasino.games.database.repository.GameRepository;
 import cloud.qasino.games.database.repository.PlayerRepository;
 import cloud.qasino.games.database.repository.ResultsRepository;
 import cloud.qasino.games.database.repository.TurnRepository;
-import cloud.qasino.games.database.repository.VisitorRepository;
+import cloud.qasino.games.database.security.VisitorRepository;
 import cloud.qasino.games.dto.QasinoFlowDTO;
 import cloud.qasino.games.statemachine.event.EventOutput;
 import cloud.qasino.games.web.AjaxUtils;
@@ -88,6 +89,9 @@ public class QasinoAndVisitorThymeleafController {
     private VisitorService visitorService;
 
     @Autowired
+    private MyUserDetailService userDetailService;
+
+    @Autowired
     public QasinoAndVisitorThymeleafController(
             VisitorRepository visitorRepository,
             GameRepository gameRepository,
@@ -102,24 +106,12 @@ public class QasinoAndVisitorThymeleafController {
         this.turnRepository = turnRepository;
     }
 
-    @GetMapping("/qasino")
-    public String showUserList(Model model) {
-
-        // validate
-        QasinoFlowDTO flowDTO = new QasinoFlowDTO();
-        // build response
-        output = loadEntitiesToDtoAction.perform(flowDTO);
-        mapQasinoGameTableFromDto.perform(flowDTO);
-        setStatusIndicatorsBaseOnRetrievedDataAction.perform(flowDTO);
-        calculateQasinoStatistics.perform(flowDTO);
-        mapQasinoResponseFromDto.perform(flowDTO);
-        flowDTO.prepareResponseHeaders();
-
-        model.addAttribute("qasino", flowDTO.getQasinoResponse());
-        return "qasino";
+    @RequestMapping("favicon.ico")
+    String favicon() {
+        return "forward:/resources/images/2favicon.ico";
     }
 
-    @RequestMapping(value = "signin")
+    @RequestMapping(value = "signin") // works with get, post, put etc
     public String signin() {
         return "home/signin";
     }
@@ -138,18 +130,18 @@ public class QasinoAndVisitorThymeleafController {
         if (errors.hasErrors()) {
             return SIGNUP_VIEW_NAME;
         }
-        Visitor visitor = visitorService.save(signupForm.createVisitor());
-        visitorService.signin(visitor);
+        Visitor visitor = visitorService.saveUser(signupForm.createVisitor());
+        userDetailService.signin(visitor);
         // see /WEB-INF/i18n/messages.properties and /WEB-INF/views/homeSignedIn.html
         MessageHelper.addSuccessAttribute(ra, "signup.success");
         return "redirect:/";
     }
 
 
-//    @ModelAttribute("module")
-//    String module() {
-//        return "home";
-//    }
+    @ModelAttribute("module")
+    String module() {
+        return "home";
+    }
 
     @GetMapping({"/","/home","home","home/homeNotSignedIn"} )
     String index(Principal principal) {

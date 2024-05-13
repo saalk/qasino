@@ -2,7 +2,7 @@ package cloud.qasino.games.configuration;
 
 import cloud.qasino.games.database.entity.Game;
 import cloud.qasino.games.database.entity.Player;
-import cloud.qasino.games.database.entity.Visitor;
+import cloud.qasino.games.database.security.Visitor;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;

@@ -1,11 +1,6 @@
 package cloud.qasino.games.response;
 
 import cloud.qasino.games.database.entity.Game;
-import cloud.qasino.games.database.entity.League;
-import cloud.qasino.games.database.entity.Player;
-import cloud.qasino.games.database.entity.Result;
-import cloud.qasino.games.database.entity.Turn;
-import cloud.qasino.games.database.entity.Visitor;
 import cloud.qasino.games.database.entity.enums.game.GameState;
 import cloud.qasino.games.database.entity.enums.game.Style;
 import cloud.qasino.games.dto.QasinoFlowDTO;
@@ -16,7 +11,6 @@ import cloud.qasino.games.dto.elements.PageGameSetup;
 import cloud.qasino.games.dto.elements.PageLeague;
 import cloud.qasino.games.dto.elements.PageVisitor;
 import cloud.qasino.games.dto.elements.SectionTable;
-import cloud.qasino.games.dto.statistics.Statistics;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 

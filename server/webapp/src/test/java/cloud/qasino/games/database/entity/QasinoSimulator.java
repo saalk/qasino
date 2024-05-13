@@ -1,10 +1,8 @@
 package cloud.qasino.games.database.entity;
 
-import cloud.qasino.games.database.entity.enums.card.Location;
-import cloud.qasino.games.database.entity.enums.move.Move;
 import cloud.qasino.games.database.entity.enums.player.AiLevel;
 import cloud.qasino.games.database.entity.enums.player.Role;
-import org.springframework.security.core.userdetails.User;
+import cloud.qasino.games.database.security.Visitor;
 
 public abstract class QasinoSimulator {
 

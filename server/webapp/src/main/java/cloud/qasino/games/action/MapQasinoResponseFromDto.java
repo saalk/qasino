@@ -6,7 +6,7 @@ import cloud.qasino.games.database.entity.League;
 import cloud.qasino.games.database.entity.Player;
 import cloud.qasino.games.database.entity.Result;
 import cloud.qasino.games.database.entity.Turn;
-import cloud.qasino.games.database.entity.Visitor;
+import cloud.qasino.games.database.security.Visitor;
 import cloud.qasino.games.database.entity.enums.game.GameState;
 import cloud.qasino.games.database.entity.enums.game.Style;
 import cloud.qasino.games.response.QasinoResponse;

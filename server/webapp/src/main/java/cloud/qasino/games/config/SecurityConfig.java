@@ -1,6 +1,6 @@
 package cloud.qasino.games.config;
 
-import cloud.qasino.games.database.service.VisitorService;
+import cloud.qasino.games.database.security.MyUserDetailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -21,13 +21,15 @@ import org.springframework.security.web.authentication.rememberme.TokenBasedReme
 class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     // https://www.marcobehler.com/guides/spring-security
+    // https://github.com/thymeleaf/thymeleafexamples-layouts/blob/master/src/main/java/thymeleafexamples/layouts/config/SecurityConfig.java
+
 
     @Autowired
-    private VisitorService visitorService;
+    private MyUserDetailService userDetailService;
 
     @Bean
     public TokenBasedRememberMeServices rememberMeServices() {
-        return new TokenBasedRememberMeServices("remember-me-key", visitorService);
+        return new TokenBasedRememberMeServices("remember-me-key", userDetailService);
     }
 
     @Bean
@@ -39,7 +41,7 @@ class SecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth
             .eraseCredentials(true)
-            .userDetailsService(visitorService)
+            .userDetailsService(userDetailService)
             .passwordEncoder(passwordEncoder());
     }
 
