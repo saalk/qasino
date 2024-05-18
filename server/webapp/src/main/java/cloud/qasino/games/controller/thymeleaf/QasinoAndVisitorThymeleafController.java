@@ -17,6 +17,7 @@ import cloud.qasino.games.database.repository.PlayerRepository;
 import cloud.qasino.games.database.repository.ResultsRepository;
 import cloud.qasino.games.database.repository.TurnRepository;
 import cloud.qasino.games.database.security.VisitorRepository;
+import cloud.qasino.games.dto.QasinoFlowDTO;
 import cloud.qasino.games.statemachine.event.EventOutput;
 import cloud.qasino.games.web.AjaxUtils;
 import cloud.qasino.games.web.MessageHelper;
@@ -25,9 +26,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.util.MultiValueMap;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -41,6 +44,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.security.Principal;
 import java.text.MessageFormat;
+import java.util.Optional;
 
 // basic path /qasino
 // basic header @RequestHeader(value "visitor", required = true) int visitorId" // else 400
@@ -127,7 +131,9 @@ public class QasinoAndVisitorThymeleafController {
     }
 
     @PostMapping("/signup")
-    public String signup(@Valid @ModelAttribute SignupForm signupForm, Errors errors, RedirectAttributes ra) {
+    public String signup(
+            @Valid @ModelAttribute SignupForm signupForm,
+            Errors errors, RedirectAttributes ra) {
         if (errors.hasErrors()) {
             return SIGNUP_VIEW_LOCATION;
         }
@@ -136,6 +142,7 @@ public class QasinoAndVisitorThymeleafController {
         // see /WEB-INF/i18n/messages.properties and /WEB-INF/views/homeSignedIn.html
         MessageHelper.addSuccessAttribute(ra, "signup.success");
         return "redirect:/";
+//        return "redirect:/"+visitor.getVisitorId();
     }
 
 
@@ -145,10 +152,30 @@ public class QasinoAndVisitorThymeleafController {
     }
 
     @GetMapping({"/"} )
-    String index(Principal principal) {
+    String index(
+            Model model,
+            Principal principal,
+            HttpServletResponse response) {
+
+        // validate
+        QasinoFlowDTO flowDTO = new QasinoFlowDTO();
+        // build response
+        output = loadEntitiesToDtoAction.perform(flowDTO);
+        if (output == EventOutput.Result.FAILURE) {
+            flowDTO.prepareResponseHeaders();
+            model.addAttribute("qasino", flowDTO.getQasinoResponse());
+            return "/home/homeSignedIn";
+        }
+        mapQasinoGameTableFromDto.perform(flowDTO);
+        setStatusIndicatorsBaseOnRetrievedDataAction.perform(flowDTO);
+        calculateQasinoStatistics.perform(flowDTO);
+        mapQasinoResponseFromDto.perform(flowDTO);
+        flowDTO.prepareResponseHeaders();
+
+        model.addAttribute("qasino", flowDTO.getQasinoResponse());
+        setVaryResponseHeader(null, flowDTO);
         return principal != null ? "/home/homeSignedIn" : "/home/homeNotSignedIn";
     }
-
 
     /**
      * Display an error page, as defined in web.xml <code>custom-error</code> element.
@@ -182,4 +209,13 @@ public class QasinoAndVisitorThymeleafController {
         return httpStatus.getReasonPhrase();
     }
 
+    @ModelAttribute
+    public void setVaryResponseHeader(HttpServletResponse response, QasinoFlowDTO flowDTO) {
+        MultiValueMap<String, String> headers = flowDTO.getHeaders();
+        headers.forEach((name, values) -> {
+            for (String value : values) {
+                response.setHeader(name, value);
+            }
+        });
+    }
 }
