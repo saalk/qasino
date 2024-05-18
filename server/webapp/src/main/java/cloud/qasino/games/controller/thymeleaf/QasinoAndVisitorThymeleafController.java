@@ -18,6 +18,7 @@ import cloud.qasino.games.database.repository.ResultsRepository;
 import cloud.qasino.games.database.repository.TurnRepository;
 import cloud.qasino.games.database.security.VisitorRepository;
 import cloud.qasino.games.dto.QasinoFlowDTO;
+import cloud.qasino.games.response.QasinoResponse;
 import cloud.qasino.games.statemachine.event.EventOutput;
 import cloud.qasino.games.web.AjaxUtils;
 import cloud.qasino.games.web.MessageHelper;
@@ -146,9 +147,9 @@ public class QasinoAndVisitorThymeleafController {
     }
 
 
-    @ModelAttribute("module")
-    String module() {
-        return "/";
+    @ModelAttribute("qasino")
+    QasinoResponse module() {
+        return new QasinoResponse();
     }
 
     @GetMapping({"/"} )
@@ -173,7 +174,7 @@ public class QasinoAndVisitorThymeleafController {
         flowDTO.prepareResponseHeaders();
 
         model.addAttribute("qasino", flowDTO.getQasinoResponse());
-        setVaryResponseHeader(null, flowDTO);
+        setVaryResponseHeader(response, flowDTO);
         return principal != null ? "/home/homeSignedIn" : "/home/homeNotSignedIn";
     }
 
