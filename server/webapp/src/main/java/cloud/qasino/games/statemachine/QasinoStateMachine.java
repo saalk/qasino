@@ -1,20 +1,22 @@
 package cloud.qasino.games.statemachine;
 
-import cloud.qasino.games.action.FindAllEntitiesForInputAction;
-import cloud.qasino.games.event.interfaces.AbstractFlowDTO;
-import cloud.qasino.games.event.interfaces.Event;
+import cloud.qasino.games.action.LoadEntitiesToDtoAction;
+import cloud.qasino.games.statemachine.event.interfaces.AbstractFlowDTO;
+import cloud.qasino.games.statemachine.event.interfaces.Event;
 import cloud.qasino.games.orchestration.OrchestrationConfig;
 import cloud.qasino.games.orchestration.QasinoEventHandler;
 import org.springframework.context.ApplicationContext;
+import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 
-import static cloud.qasino.games.statemachine.GameState.*;
-import static cloud.qasino.games.event.EventEnum.LIST;
-import static cloud.qasino.games.event.EventOutput.Result.FAILURE;
-import static cloud.qasino.games.event.EventOutput.Result.SUCCESS;
+import static cloud.qasino.games.database.entity.enums.game.GameState.*;
+import static cloud.qasino.games.statemachine.event.GameEvent.START;
+import static cloud.qasino.games.statemachine.event.EventOutput.Result.FAILURE;
+import static cloud.qasino.games.statemachine.event.EventOutput.Result.SUCCESS;
 
+@Component
 public class QasinoStateMachine { // implements QasinoAsyncConfiguration.ASyncEventHandler {
 
     public static final OrchestrationConfig qasinoConfiguration = new OrchestrationConfig();
@@ -22,20 +24,20 @@ public class QasinoStateMachine { // implements QasinoAsyncConfiguration.ASyncEv
     static {
         // @formatter:off
         qasinoConfiguration
-                .beforeEventPerform(FindAllEntitiesForInputAction.class)
-                .afterEventPerform(FindAllEntitiesForInputAction.class)
+                .beforeEventPerform(LoadEntitiesToDtoAction.class)
+                .afterEventPerform(LoadEntitiesToDtoAction.class)
                 .onResult(Exception.class, ERROR)
                 .rethrowExceptions();
 
         qasinoConfiguration
-                .onState(NEW)
-                .onEvent(LIST)
-                .perform(FindAllEntitiesForInputAction.class)
+                .onState(INITIALIZED)
+                .onEvent(START)
+                .perform(LoadEntitiesToDtoAction.class)
                 .onResult(FAILURE, ERROR)   //Move catches RunTime Exceptions. So we need this.
-                .perform(FindAllEntitiesForInputAction.class)
-                .perform(FindAllEntitiesForInputAction.class)
+                .perform(LoadEntitiesToDtoAction.class)
+                .perform(LoadEntitiesToDtoAction.class)
                 .onResult(FAILURE, ERROR)
-                .perform(FindAllEntitiesForInputAction.class)
+                .perform(LoadEntitiesToDtoAction.class)
                 .onResult(SUCCESS, PREPARED);
     }
 

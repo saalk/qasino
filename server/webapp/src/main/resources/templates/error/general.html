@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html xmlns:th="www.thymeleaf.org" lang="en">
+<head>
+    <title>Qasino on tilt</title>
+    <th:block th:include="~{fragments/header :: headerfiles}">
+    </th:block>
+</head>
+<body>
+<div th:replace="~{fragments/header :: header}">Header</div>
+<!-- the specific part of this html -->
+<div class="container">
+    <div th:replace="fragments/alert :: alert (type='danger', message=${errorMessage})">Error: Error</div>
+    <div th:insert="~{fragments/footer :: footer}"></div>
+</div>
+</body>
+</html>

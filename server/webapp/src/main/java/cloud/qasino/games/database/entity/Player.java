@@ -3,6 +3,7 @@ package cloud.qasino.games.database.entity;
 import cloud.qasino.games.database.entity.enums.player.AiLevel;
 import cloud.qasino.games.database.entity.enums.player.Avatar;
 import cloud.qasino.games.database.entity.enums.player.Role;
+import cloud.qasino.games.database.security.Visitor;
 import com.fasterxml.jackson.annotation.*;
 import com.voodoodyne.jackson.jsog.JSOGGenerator;
 import lombok.AccessLevel;
@@ -30,7 +31,7 @@ public class Player {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "player_id")
+    @Column(name = "player_id", nullable = false)
     private long playerId;
 
     @JsonIgnore
@@ -40,6 +41,7 @@ public class Player {
 
     // Foreign keys
 
+    @JsonIgnore
     // UsPl: a Visitor can play many Games as a Player
     // However ai players are no visitors!
     @ManyToOne(cascade = CascadeType.DETACH)
@@ -85,15 +87,16 @@ public class Player {
     private boolean winner;
 
     // References
-
+    @JsonIgnore
     // GaWi: one Player is the Winner of the GameSubTotals in the end
     @OneToOne(mappedBy = "player", cascade = CascadeType.DETACH)
-    // just a reference the fk column is in game not here!
+    // just a reference the fk column is in "game" not here!
     private Result result;// = new Result();
 
+    @JsonIgnore
     // HO: A Player holds one or more Card after dealing
     @OneToMany(mappedBy = "hand", cascade = CascadeType.DETACH)
-    // just a reference, the actual fk column is in game not here !
+    // just a reference, the actual fk column is in "game" not here !
     private List<Card> cards = new ArrayList<>();
 
     public Player() {

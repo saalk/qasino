@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Qasino in the cloud - a playingCard game</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <!-- Include Bootstrap -->
+    <link href="../../../resources/css/bootstrap.min.css" rel="stylesheet" media="screen" th:href="@{/resources/css/bootstrap.min.css}"/>
+    <!-- Optional theme -->
+<!--    <link href=href="https://maxcdn.bootstrapcdn.com/bootstrap/5.0.2/css/bootstrap-theme.min.css">-->
+    <link href="../../../resources/css/core.css" rel="stylesheet" media="screen" th:href="@{/resources/css/core.css}" />
+    <script src="../../../resources/js/jquery.min.js" th:src="@{/resources/js/jquery.min.js}"></script>
+    <script src="../../../resources/js/bootstrap.min.js" th:src="@{/resources/js/bootstrap.min.js}"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="icon" type="image" href="favicon.ico">
+</head>
+<body>
+<div th:replace="~{fragments/header :: header}">Header</div>
+
+<div class="container-fluid">
+
+    <div id="contents-main">
+        <div class="lead">
+            <strong>Qasino</strong>
+            <span th:text="${eventName}"></span>
+        </div>
+        <div id="contents">
+            <!-- Since we create a Vue component pointing to id=contents,
+                 Vue will generate a unordered list of items such
+                 as this inside this div.
+                 v-for will cause a loop to run over all visitors
+                 as per the visitors array found in app.data
+            <ul>
+                <li></li>
+                <li></li>
+            </ul>
+            -->
+
+        </div>
+        <div id="footer">
+            <hr>
+            &copy;2024 Saalk@Qasino.cloud - trying to beat
+            <a href="https://medium.com/@uwehook/sturgeons-law-285c007406db">sturgeon's law</a>
+        </div>
+    </div>
+</div>
+</body>
+</html>

@@ -1,7 +1,6 @@
 package cloud.qasino.games.database.entity;
 
-import cloud.qasino.games.database.entity.enums.card.Face;
-import cloud.qasino.games.statemachine.GameState;
+import cloud.qasino.games.database.entity.enums.game.GameState;
 import cloud.qasino.games.database.entity.enums.game.Style;
 import cloud.qasino.games.database.entity.enums.game.Type;
 import cloud.qasino.games.database.entity.enums.card.PlayingCard;
@@ -11,6 +10,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.voodoodyne.jackson.jsog.JSOGGenerator;
 import lombok.AccessLevel;
+import lombok.Builder;
+import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.DynamicUpdate;
@@ -26,8 +27,7 @@ import java.util.Objects;
 
 @Entity
 @DynamicUpdate
-@Getter
-@Setter
+@Data
 @JsonIdentityInfo(generator = JSOGGenerator.class)
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 @Table(name = "game", indexes = {
@@ -47,6 +47,7 @@ public class Game {
 
     // Foreign keys
 
+    // TODO why json ignore??
     @JsonIgnore
     // PlGa: many Games can be part of the same League
     @ManyToOne(cascade = CascadeType.DETACH)
@@ -62,8 +63,14 @@ public class Game {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "state", length = 50, nullable = false)
+    @Setter(AccessLevel.NONE)
     private GameState state;
 
+    public void setState(GameState state ){
+        this.previousState = this.state;
+        this.state = state;
+        setUpdated();
+    }
     @Enumerated(EnumType.STRING)
     @Column(name = "previous_state", length = 50, nullable = true)
     private GameState previousState;
@@ -75,10 +82,9 @@ public class Game {
     @Column(name = "style", length = 10, nullable = true)
     private String style;
 
-    // A mandatory stake made before the game begins
+    // A mandatory stake made before the "game" begins
     @Column(name = "ante")
     private int ante;
-
 
     // Derived fields
 
@@ -95,9 +101,8 @@ public class Game {
     private String week;
 
     @Setter(AccessLevel.NONE)
-    @Column(name = "day", length = 2)
-    private int day;
-
+    @Column(name = "weekday", length = 2)
+    private int weekday;
 
     // References
 
@@ -115,15 +120,17 @@ public class Game {
     @OneToOne(mappedBy = "game", cascade = CascadeType.DETACH)
     private Turn turn; // = new Turn();
 
-    @JsonIgnore
-    // AcTu:
-    // a Turn is kept do indicate the active player's move only
-    @OneToOne(mappedBy = "game", cascade = CascadeType.DETACH)
-    private Result result; // = new Result();
+    @OneToMany(mappedBy = "visitor", cascade = CascadeType.DETACH)
+    // just a reference, the actual fk column is in league not here!
+    private List<League> leagues;
+
+    // just a reference, the actual fk column is in result not here!
+    @OneToMany(mappedBy = "game", cascade = CascadeType.DETACH)
+    private List<Result> results; // = new Result();
 
     public Game() {
         setUpdated();
-        this.state = GameState.NEW;
+        this.state = GameState.INITIALIZED;
         this.type = Type.HIGHLOW;
         this.style = new Style().getLabel();
         this.ante = 20;
@@ -156,9 +163,9 @@ public class Game {
 
         this.year = localDateAndTime.getYear();
         this.month = localDateAndTime.getMonth();
-        DateTimeFormatter week = DateTimeFormatter.ofPattern("W");
+        DateTimeFormatter week = DateTimeFormatter.ofPattern("w");
         this.week = localDateAndTime.format(week);
-        this.day = localDateAndTime.getDayOfMonth();
+        this.weekday = localDateAndTime.getDayOfMonth();
     }
 
     public void shuffleGame(int jokers) {
@@ -168,21 +175,9 @@ public class Game {
 
         int i = 1;
         for (PlayingCard playingCard : playingCards) {
-            Card card = new Card(playingCard.getCardId(), this, null, i++, Location.STOCK );
+            Card card = new Card(playingCard.getRankAndSuit(), this, null, i++, Location.STOCK );
             this.cards.add(card);
         }
-    }
-
-    public Card dealCard(Player humanOrBot, Face face) {
-        for (int i = 0; i < this.cards.size(); i++) {
-             if (this.cards.get(i).getHand() == null) {
-                this.cards.get(i).setHand(humanOrBot);
-                this.cards.get(i).setLocation(Location.HAND);
-                this.cards.get(i).setFace(face);
-                return this.cards.get(i);
-            }
-        }
-        return null;
     }
 
     // TODO LOW make this work with up / down and playerId
@@ -230,6 +225,13 @@ public class Game {
         }
         return playingOrderChanged;
 
+    }
+
+    public List<Integer> getSeats() {
+        return this.players.stream()
+                .map(Player::getSeat)
+                .sorted()
+                .toList();
     }
 
     @Override

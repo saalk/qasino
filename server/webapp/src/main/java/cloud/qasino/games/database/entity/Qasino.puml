@@ -61,9 +61,9 @@ class Game {
 + getAllHands(out: playingCards per hand)
 }
 
-Game -left- Type : playingCard
+Game -left- Type : Card
 Game -down- Style : style
-Game "1" -right- "n" PlayingCard : deck
+Game "1" -right- "n" Card : deck
 
 enum Type {
 HIGHLOW
@@ -79,54 +79,55 @@ enum Style {
 	maxMoves : enum
 }
 
-class PlayingCard {
-- playingCardId : int
+class Card {
+- CardId : in
+- Card : [2H/KD/10C/..]
 - created : String
 ..
 - (MoreToOne) gameId : Game
 - (MoreToOne) hand : Player
 ..
-- value: int
-- order : int
+- face: [DOWN/UP]
 - location : Location
+- position: [ORDERED/SHUFFLED/..]
+- sequence : int
 -- PREPARE --
 - calculateValue(in:Type)
 }
-PlayingCard -down- Location
-PlayingCard "0..n" -up- "0..1" Player : in hand
+Card -down- Location
+Card "0..n" -up- "0..1" Player : in hand
 
 enum Location {
+PACK
+STOCK
 STACK
-PILE_DRAW
-PILE_DISCARD
-HAND_OPEN
-HAND_CLOSED
-TABLE_MIDDLE
+HAND
+WASTEPILE
 }
 
 
 package "gameEngine" {
-class Card {
-- cardId: String
+class PlayingCard {
+- playingCardId: String
 ..
-- rank : rank
-- suit : suit
+- rank : [A/2-10/J/Q/H /R]
+- suit : [C/D/H/S /J]
+- value : int
 - thumbnailPath : String
 --
 }
 
-class CardEvent {
-- cardEventId : int
+class CardMove {
+- cardMoveId : int
 - created : String
 ..
-- (MoreToOne) playingCardId : Card
-- (MoreToOne) gameId : Game
+- (MoreToOne) cardId : Card
 - (MoreToOne) playerId : Player
+- (OneToOne) turnId : Turn
 .. json..
-- playerOrder : int
+- move : Move
 - roundNumber : int
 - moveNumber : int
-- move : Move
 - bet : int
 -- PREPARE --
 - validateAction(in: CardEvent)
@@ -138,12 +139,28 @@ class CardEvent {
 + determineNextAction
 (out: Player, Moves, GameState)
 }
-CardEvent -up- Move : move
+CardMove -up- Move : move
+CardMove "1..1" -down- "1..1" Turn : turnId
+
+class Turn {
+- turnId : long
+- updated : String
+..
+- (OneToOen) gameId : Game
+- (OneToOne) cardMoveId : CardMove
+..
+activePlayerId : long
+currentRoundNumber : int
+currentMoveNumber : int
+--
+(out: CardMove, Game)
+}
 
 enum Move {
 .. Generic
 DEAL
 PASS
+NEXT
 HIGHER
 LOWER
 }

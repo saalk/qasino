@@ -11,8 +11,8 @@ public class Style {
 
     AnteToWin anteToWin;
     BettingStrategy bettingStrategy;
-    Deck deck;
-    InsuranceCost insuranceCost;
+    DeckConfiguration deckConfiguration;
+    OneTimeInsurance oneTimeInsurance;
     RoundsToWin roundsToWin;
     TurnsToWin turnsToWin;
 
@@ -20,19 +20,19 @@ public class Style {
         this.label = "nr3tnn";
         this.anteToWin = AnteToWin.NA;
         this.bettingStrategy = BettingStrategy.REGULAR;
-        this.deck = Deck.ALL_THREE_JOKER;
-        this.insuranceCost = InsuranceCost.TENTH_ANTE;
+        this.deckConfiguration = DeckConfiguration.ALL_THREE_JOKER;
+        this.oneTimeInsurance = OneTimeInsurance.TENTH_ANTE;
         this.roundsToWin = RoundsToWin.NA;
         this.turnsToWin = TurnsToWin.NA;
 
     }
 
-    public Style(String label, AnteToWin anteToWin, BettingStrategy bettingStrategy, Deck deck, InsuranceCost insuranceCost, RoundsToWin roundsToWin, TurnsToWin turnsToWin) {
+    public Style(String label, AnteToWin anteToWin, BettingStrategy bettingStrategy, DeckConfiguration deckConfiguration, OneTimeInsurance oneTimeInsurance, RoundsToWin roundsToWin, TurnsToWin turnsToWin) {
         this.label = label;
         this.anteToWin = anteToWin;
         this.bettingStrategy = bettingStrategy;
-        this.deck = deck;
-        this.insuranceCost = insuranceCost;
+        this.deckConfiguration = deckConfiguration;
+        this.oneTimeInsurance = oneTimeInsurance;
         this.roundsToWin = roundsToWin;
         this.turnsToWin = turnsToWin;
     }
@@ -46,8 +46,8 @@ public class Style {
 
         AnteToWin anteToWin = AnteToWin.NA;
         BettingStrategy bettingStrategy = BettingStrategy.REGULAR;
-        Deck deck = Deck.ALL_THREE_JOKER;
-        InsuranceCost insuranceCost = InsuranceCost.TENTH_ANTE;
+        DeckConfiguration deckConfiguration = DeckConfiguration.ALL_THREE_JOKER;
+        OneTimeInsurance oneTimeInsurance = OneTimeInsurance.TENTH_ANTE;
         RoundsToWin roundsToWin = RoundsToWin.NA;
         TurnsToWin turnsToWin = TurnsToWin.NA;
 
@@ -59,13 +59,13 @@ public class Style {
 
         // todo change to char array with loop
         switch (len) {
-            case 6:
+            case 6: // 6th pos is turnsToWin
                 pos = label.charAt(5);
                 turnsToWin = TurnsToWin.fromLabelWithDefault(pos);
                 newPos = turnsToWin.getLabel().charAt(0);
                 newLabel.setCharAt(5, newPos);
 
-            case 5:
+            case 5: // 5th pos is roundsToWin
                 pos = label.charAt(4);
                 roundsToWin = RoundsToWin.fromLabelWithDefault(pos);
                 newPos = roundsToWin.getLabel().charAt(0);
@@ -73,14 +73,14 @@ public class Style {
 
             case 4:
                 pos = label.charAt(3);
-                insuranceCost = InsuranceCost.fromLabelWithDefault(pos);
-                newPos = insuranceCost.getLabel().charAt(0);
+                oneTimeInsurance = OneTimeInsurance.fromLabelWithDefault(pos);
+                newPos = oneTimeInsurance.getLabel().charAt(0);
                 newLabel.setCharAt(3, newPos);
 
             case 3:
                 pos = label.charAt(2);
-                deck = Deck.fromLabelWithDefault(pos);
-                newPos = deck.getLabel().charAt(0);
+                deckConfiguration = DeckConfiguration.fromLabelWithDefault(pos);
+                newPos = deckConfiguration.getLabel().charAt(0);
                 newLabel.setCharAt(2, newPos);
 
             case 2:
@@ -96,7 +96,7 @@ public class Style {
                 newLabel.setCharAt(0, newPos);
         }
         label = String.valueOf(newLabel);
-        return new Style(label, anteToWin, bettingStrategy, deck, insuranceCost, roundsToWin, turnsToWin);
+        return new Style(label, anteToWin, bettingStrategy, deckConfiguration, oneTimeInsurance, roundsToWin, turnsToWin);
     }
 
     @Override

@@ -2,8 +2,8 @@ package cloud.qasino.games.action;
 
 import cloud.qasino.games.action.interfaces.Action;
 import cloud.qasino.games.database.entity.*;
-import cloud.qasino.games.event.EventOutput;
-import cloud.qasino.games.statemachine.GameState;
+import cloud.qasino.games.database.security.Visitor;
+import cloud.qasino.games.statemachine.event.EventOutput;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
@@ -17,77 +17,64 @@ public class SetStatusIndicatorsBaseOnRetrievedDataAction implements Action<SetS
     @Override
     public EventOutput.Result perform(SetStatusIndicatorsBaseOnRetrievedDataDTO actionDto) {
 
-        log.debug("Action: SetStatusIndicatorsBaseOnRetrievedDataAction");
-
-        actionDto.setLoggedOn(false);
-        actionDto.setBalanceNotZero(false);
-        actionDto.setGamePlayable(false);
-        actionDto.setLeaguePresent(false);
-        actionDto.setFriendsPresent(false);
-
-        if (!(actionDto.getGameVisitor() == null)) {
-            actionDto.setLoggedOn(true);
-            if (actionDto.getGameVisitor().getBalance() > 0) {
-                actionDto.setBalanceNotZero(true);
-            }
-        }
-        if (!(actionDto.getQasinoGame() == null)) {
-            if (
-                    actionDto.getQasinoGame().getState() == GameState.PLAYING ||
-                            actionDto.getQasinoGame().getState() == GameState.PREPARED) {
-                actionDto.setGamePlayable(true);
-            }
-        }
-        if (!(actionDto.getQasinoGameLeague() == null)) {
-            actionDto.setLeaguePresent(true);
-        }
-        // todo implement friends
-        actionDto.setFriendsPresent(false);
+//        actionDto.setShowVisitorPage(false);
+//        actionDto.setShowGameSetupPage(false);
+//        actionDto.setShowGamePlayPage(false);
+//        actionDto.setShowLeaguesPage(false);
+//        actionDto.setShowGameInvitationsPage(false);
+//
+//        if (!(actionDto.getQasinoVisitor() == null)) {
+//            actionDto.setShowVisitorPage(true);
+//            if (actionDto.getQasinoVisitor().getBalance() > 0) {
+//                actionDto.setShowGameSetupPage(true);
+//            }
+//        }
+//        if (!(actionDto.getQasinoGame() == null)) {
+//            if (
+//                    actionDto.getQasinoGame().getState() == GameState.INITIALIZED ||
+//                            actionDto.getQasinoGame().getState() == GameState.PREPARED) {
+//                actionDto.setShowGamePlayPage(true);
+//            }
+//        }
+//        if (!(actionDto.getQasinoGameLeague() == null)) {
+//            actionDto.setShowLeaguesPage(true);
+//        }
+//        // todo implement friends
+//        actionDto.setShowGameInvitationsPage(false);
 
         return EventOutput.Result.SUCCESS;
-    }
-
-    private void setErrorMessageCrash(SetStatusIndicatorsBaseOnRetrievedDataDTO actionDto, String id,
-                                         String value) {
-        actionDto.setHttpStatus(500);
-        actionDto.setErrorKey(id);
-        actionDto.setErrorValue(value);
-        actionDto.setErrorMessage("Entity not found for key" + id);
-        actionDto.setUriAndHeaders();
     }
 
     public interface SetStatusIndicatorsBaseOnRetrievedDataDTO {
 
         // @formatter:off
         // Getters
-        Visitor getGameVisitor();
+        Visitor getQasinoVisitor();
         Player getInvitedPlayer();
         Player getAcceptedPlayer();
         Player getTurnPlayer();
 
-        List<Game> getNewGamesForVisitor();
-        List<Game> getStartedGamesForVisitor();
-        List<Game> getFinishedGamesForVisitor();
-
         Game getQasinoGame();
         League getQasinoGameLeague();
         List<Player> getQasinoGamePlayers();
-        Turn getQasinoGameTurn();
-        List<Card> getQasinoGameCards();
-        List<CardMove> getQasinoGameCardMoves();
+        Turn getActiveTurn();
+        List<Card> getCardsInTheGameSorted();
+        List<CardMove> getAllCardMovesForTheGame();
 
-        void setLoggedOn(boolean bool);
-        void setBalanceNotZero(boolean bool);
-        void setGamePlayable(boolean bool);
-        void setLeaguePresent(boolean bool);
-        void setFriendsPresent(boolean bool);
+        void setShowVisitorPage(boolean bool);
+        void setShowGameSetupPage(boolean bool);
+        void setShowGamePlayPage(boolean bool);
+        void setShowGameInvitationsPage(boolean bool);
+        void setShowLeaguesPage(boolean bool);
 
         // error setters
-        void setHttpStatus(int status);
-        void setErrorKey(String key);
-        void setErrorValue(String value);
-        void setErrorMessage(String key);
-        void setUriAndHeaders();
+        // @formatter:off
+        void setBadRequestErrorMessage(String problem);
+        void setNotFoundErrorMessage(String problem);
+        void setConflictErrorMessage(String reason);
+        void setUnprocessableErrorMessage(String reason);
+        void setErrorKey(String errorKey);
+        void setErrorValue(String errorValue);
         // @formatter:on
     }
 }

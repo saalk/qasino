@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml" lang="en">
+<!--/*  Multiple fragments may be defined in one file */-->
+<head th:fragment="headerfiles">
+    <!-- Basic Page Needs -->
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <title>Qasino in the cloud</title>
+    <meta name="description" content="A basic structure for card playing games."/>
+    <meta name="author" content="Saalk"/>
+    <!-- Mobile Specific Metas -->
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <!-- FONT -->
+    <link href="//fonts.googleapis.com/css?family=Raleway:400,300,600" rel="stylesheet" type="text/css">
+    <!-- CSS -->
+    <!-- for thymeleaf we only need to specify the path below src/main/resources/static -->
+    <link rel="stylesheet" type="text/css" href="../../static/cssandjs/skeleton/skeleton.css" media="all"
+          th:href="@{/cssandjs/skeleton/skeleton.css}"/>
+    <link rel="stylesheet" type="text/css" href="../../static/cssandjs/skeleton/normalize.css" media="all"
+          th:href="@{/cssandjs/skeleton/normalize.css}"/>
+    <link rel="stylesheet" type="text/css" href="../../static/cssandjs/bootstrap/bootstrap.css" media="all"
+          th:href="@{/cssandjs/bootstrap/bootstrap.css}"/>
+    <link rel="stylesheet" type="text/css" href="../../static/cssandjs/specific.css" media="all"
+          th:href="@{/cssandjs/specific.css}"/>
+    <!--    <link rel="stylesheet" type="text/css"-->
+    <!--    <link rel="stylesheet" type="text/css"-->
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="../../static/images/3favicon.png" th:href="@{/images/3favicon.png}"/>
+    <script type="text/javascript" th:src="@{/cssandjs/jquery.min.js}"></script>
+    <script type="text/javascript" th:src="@{/cssandjs/bootstrap/bootstrap.bundle.min.js}"></script>
+</head>
+
+<body>
+<!--/*  Multiple fragments may be defined in one file */-->
+<div th:fragment="header">
+    <nav class="navbar navbar-expand-lg bg-body-tertiary">
+        <div class="container-fluid"> <!-- adjusted -->
+            <a class="navbar-brand" href="#">
+                <img th:src="@{images/qasino-logo.png}" alt="Logo" width="90" height="70"
+                     class="d-inline-block align-text-top">
+            </a>
+            <!--            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">-->
+            <!--                <span class="navbar-toggler-icon"></span>-->
+            <!--            </button>-->
+            <!--            <div class="collapse navbar-collapse" id="navbarNav">-->
+            <div class="navbar" id="navbarNav">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item" th:classappend="${module == '/home' ? 'active' : ''}">
+                        <a class="nav-link active" aria-current="page" href="#" th:href="@{/}">Home</a>
+                    </li>
+                    <li class="nav-item" th:classappend="${module == 'Visitor' ? 'active' : ''}">
+                        <a class="nav-link" href="#" th:href="@{/visitor}">Visitor</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link disabled" aria-disabled="true">Game</a>
+                    </li>
+                </ul>
+
+                <ul class="nav navbar-nav navbar-right">
+                    <li class="nav-item" sec:authorize="!isAuthenticated()">
+                        <a class="nav-link" href="/signin" th:href="@{/signin}">Sign in</a>
+                    </li>
+                    <li class="nav-item" sec:authorize="isAuthenticated()">
+                        <a class="nav-link" href="/logout" th:href="@{/logout}">Logout</a>
+                    </li>
+                    <li class="nav-item" sec:authorize="isAuthenticated()">
+                        <span sec:authentication="name"></span>
+                    </li>
+
+                </ul>
+
+                <!--                <ul class="nav navbar-nav navbar-right">-->
+                <!--                    <li class="nav-item" th:switch="${#authentication}? ${#authorization.expression('isAuthenticated()')} : ${false}">-->
+                <!--                    <span th:case="${false}">-->
+                <!--                        <a class="nav-link" href="/signin" th:href="@{/signin}">-->
+                <!--                        <span class="glyphicon glyphicon-log-in" aria-hidden="true"></span>&nbsp;Sign in-->
+                <!--                        </a>-->
+                <!--                    </span>-->
+                <!--                        <span th:case="${true}">-->
+                <!--                        <a class="nav-link" href="/logout" th:href="@{#}" onclick="$('#form').submit();">-->
+                <!--                        <span class="glyphicon glyphicon-log-out" aria-hidden="true"></span>&nbsp;Logout-->
+                <!--                        </a>-->
+                <!--                        <form style="visibility: hidden" id="form" method="post" action="#"-->
+                <!--                              th:action="@{/logout}"></form>-->
+                <!--                    </span>-->
+                <!--                        <span th:case="*">Should never happen, but who knows...</span>-->
+                <!--                    </li>-->
+                <!--                </ul>-->
+            </div>
+        </div>
+    </nav>
+</div>
+</body>
+</html>

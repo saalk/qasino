@@ -1,9 +1,8 @@
 package cloud.qasino.games.database.entity;
 
-import cloud.qasino.games.database.entity.enums.card.Location;
-import cloud.qasino.games.database.entity.enums.move.Move;
 import cloud.qasino.games.database.entity.enums.player.AiLevel;
 import cloud.qasino.games.database.entity.enums.player.Role;
+import cloud.qasino.games.database.security.Visitor;
 
 public abstract class QasinoSimulator {
 
@@ -16,7 +15,13 @@ public abstract class QasinoSimulator {
     Result result;
 
     QasinoSimulator() {
-        visitor = new Visitor("Julie", 1, "julie@domain.com");
+        visitor = new Visitor.Builder()
+                .withUsername("Julie")
+                .withPassword("Julie")
+                .withEmail("Julie@domain.com")
+                .withAlias("Julie")
+                .withAliasSequence(1)
+                .build();
         league = new League(visitor, "leagueName", 1);
         game = new Game(league, visitor.getVisitorId());
         game.shuffleGame(0);
@@ -30,7 +35,7 @@ public abstract class QasinoSimulator {
         turn = new Turn(game, player.getPlayerId());
 
         // assume visitor wins 50
-        result = new Result(player,visitor, game,game.getType(), 50);
+        result = new Result(player,visitor, game,game.getType(), 50,true);
 
     }
 }

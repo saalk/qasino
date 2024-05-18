@@ -1,18 +1,51 @@
 package cloud.qasino.games.dto;
 
-import cloud.qasino.games.action.*;
-import cloud.qasino.games.database.entity.*;
-import cloud.qasino.games.dto.statistics.Counter;
+import cloud.qasino.games.action.CalculateAndFinishGameAction;
+import cloud.qasino.games.action.CalculateQasinoStatistics;
+import cloud.qasino.games.action.CreateNewGameAction;
+import cloud.qasino.games.action.CreateNewLeagueAction;
+import cloud.qasino.games.action.IsPlayerHuman;
+import cloud.qasino.games.action.LoadEntitiesToDtoAction;
+import cloud.qasino.games.action.FindVisitorIdByAliasAction;
+import cloud.qasino.games.action.HandleSecuredLoanAction;
+import cloud.qasino.games.action.IsGameConsistentForGameEvent;
+import cloud.qasino.games.action.IsGameFinished;
+import cloud.qasino.games.action.IsTurnConsistentForTurnEvent;
+import cloud.qasino.games.action.PlayGameForType;
+import cloud.qasino.games.action.MapQasinoResponseFromDto;
+import cloud.qasino.games.action.MapQasinoGameTableFromDto;
+import cloud.qasino.games.action.PlayFirstTurnAction;
+import cloud.qasino.games.action.PlayNextBotTurnAction;
+import cloud.qasino.games.action.PlayNextHumanTurnAction;
+import cloud.qasino.games.action.PrepareGameAction;
+import cloud.qasino.games.action.SetStatusIndicatorsBaseOnRetrievedDataAction;
+import cloud.qasino.games.action.SignUpNewVisitorAction;
+import cloud.qasino.games.action.StopGameAction;
+import cloud.qasino.games.action.UpdateFichesForPlayer;
+import cloud.qasino.games.database.entity.Card;
+import cloud.qasino.games.database.entity.CardMove;
+import cloud.qasino.games.database.entity.Game;
+import cloud.qasino.games.database.entity.League;
+import cloud.qasino.games.database.entity.Player;
+import cloud.qasino.games.database.entity.Result;
+import cloud.qasino.games.database.entity.Turn;
+import cloud.qasino.games.database.security.Visitor;
 import cloud.qasino.games.database.entity.enums.card.Face;
 import cloud.qasino.games.database.entity.enums.card.Location;
 import cloud.qasino.games.database.entity.enums.card.Position;
+import cloud.qasino.games.database.entity.enums.game.Style;
 import cloud.qasino.games.database.entity.enums.game.Type;
+import cloud.qasino.games.database.entity.enums.game.gamestate.GameStateGroup;
 import cloud.qasino.games.database.entity.enums.move.Move;
 import cloud.qasino.games.database.entity.enums.player.AiLevel;
 import cloud.qasino.games.database.entity.enums.player.Avatar;
 import cloud.qasino.games.database.entity.enums.player.Role;
-import cloud.qasino.games.statemachine.GameStateGroup;
-import cloud.qasino.games.statemachine.GameTrigger;
+import cloud.qasino.games.dto.elements.SectionTable;
+import cloud.qasino.games.dto.statistics.Statistics;
+import cloud.qasino.games.response.QasinoResponse;
+import cloud.qasino.games.statemachine.event.GameEvent;
+import cloud.qasino.games.statemachine.event.TurnEvent;
+import cloud.qasino.games.statemachine.event.interfaces.AbstractFlowDTO;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
@@ -22,6 +55,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -29,479 +63,583 @@ import java.util.Map;
 @Getter
 @Setter
 @Slf4j
-public class QasinoFlowDTO //extends AbstractFlowDTO
+public class QasinoFlowDTO extends AbstractFlowDTO
         implements
-        FindVisitorIdByVisitorNameAction.FindVisitorIdByVisitorNameActionDTO,
+        FindVisitorIdByAliasAction.Dto,
         SignUpNewVisitorAction.SignUpNewVisitorActionDTO,
-        FindAllEntitiesForInputAction.FindAllEntitiesForInputActionDTO,
-        CalculateHallOfFameAction.CalculateHallOfFameActionDTO,
-        HandleSecuredLoanAction.HandleSecuredLoanActionDTO,
+        CreateNewLeagueAction.Dto,
+        LoadEntitiesToDtoAction.Dto,
+        CalculateQasinoStatistics.Dto,
+        HandleSecuredLoanAction.Dto,
         SetStatusIndicatorsBaseOnRetrievedDataAction.SetStatusIndicatorsBaseOnRetrievedDataDTO,
-        MapQasinoResponseFromRetrievedDataAction.MapQasinoResponseFromRetrievedDataDTO
-
-{
+        MapQasinoResponseFromDto.Dto,
+        MapQasinoGameTableFromDto.Dto,
+        PlayNextHumanTurnAction.Dto,
+        PlayNextBotTurnAction.Dto,
+        IsGameConsistentForGameEvent.Dto,
+        IsTurnConsistentForTurnEvent.Dto,
+        CalculateAndFinishGameAction.Dto,
+        UpdateFichesForPlayer.Dto,
+        IsGameFinished.Dto,
+        PlayGameForType.Dto,
+        CreateNewGameAction.Dto,
+        PrepareGameAction.Dto,
+        StopGameAction.Dto,
+        IsPlayerHuman.Dto,
+        PlayFirstTurnAction.Dto {
     // suppress lombok setter for these fixed values
     @Setter(AccessLevel.NONE)
     private String applicationName = "qasino";
 
     // gui
-    private Qasino qasino;
-    private Counter counter;
+    private QasinoResponse qasinoResponse;
+    private Statistics statistics;
 
-    // FRONTEND ID DATA
-    // frontend header
+    // FRONTEND IDS
+    // path params
     private long suppliedVisitorId;
     private long suppliedGameId;
-    // frontend path ids
     private long suppliedLeagueId;
+    private long initiatingPlayerId;
     private long invitedPlayerId;
     private long acceptedPlayerId;
     private long suppliedTurnPlayerId;
-    // generic frontend path ids
-    private String suppliedEntity;      // todo
-    private long suppliedEntityId;       // todo
-    private String suppliedPathParam;   // todo
-
-    // FRONTEND PATH/PARAM DATA
-    // enums
-    private GameTrigger suppliedTrigger;
+    // triggers for the Game
+    private GameEvent suppliedGameEvent;
+    private TurnEvent suppliedTurnEvent;
     private GameStateGroup suppliedGameStateGroup;
+    // Triggers for playing a Game
     private Move suppliedMove;
     private List<Card> suppliedCards;   // todo
-    // frontend query params
+
+    // FRONTEND request params
     // paging
-    private int suppliedPages = 0;
+    private int suppliedPage = 1;
     private int suppliedMaxPerPage = 4;
     // visitor
-    private String suppliedVisitorName;
+    private String suppliedUsername;
+    private String suppliedPassword;
     private String suppliedEmail;
+    private String suppliedAlias;
+    public boolean requestingToRepay = false;
+    public boolean offeringShipForPawn = false;
     // league
     private String suppliedLeagueName;
     private String suppliedLeagueEnd;    // todo monthsEnd, thisMonday, x days.
     private Boolean suppliedLeagueClose; // todo null, or true/false
     // player
-    private Role suppliedRole;
+    private Role suppliedRole; // bot, initiator or guest
     private int suppliedFiches;
     private Avatar suppliedAvatar;
-    private AiLevel suppliedAiLevel;
+    private AiLevel suppliedAiLevel; // human or ai
     // game
-    private Type suppliedType;
-    private String suppliedStyle;
-    private int suppliedAnte;
+    private Type suppliedType; // highlow
+    private String suppliedStyle; // maxrounds etc
+    private int suppliedAnte; // inleg
     private int suppliedJokers;
     // cardMove
     private Location suppliedLocation;
     private int suppliedBet;
 
-    // pawn or repay
-    private boolean requestingToRepay = false;
-    private boolean offeringShipForPawn = false;
-
     // RETRIEVED DATA BASED ON FRONTEND ID's
-    // in game data
-    private Visitor gameVisitor;
-    private Player invitedPlayer;
-    private Player acceptedPlayer;
-    private Player turnPlayer;
-
-    private List<Game> newGamesForVisitor;
-    private List<Game> startedGamesForVisitor;
-    private List<Game> finishedGamesForVisitor;
-
+    // the logged on visitor
+    private Visitor qasinoVisitor;
+    private List<Game> initiatedGamesForVisitor;
+    private List<Game> invitedGamesForVisitor;
+    // the game and players
     private Game qasinoGame;
     private List<Player> qasinoGamePlayers;
-    private Turn qasinoGameTurn;
-    private List<Card> qasinoGameCards;
-    private List<CardMove> qasinoGameCardMoves;
-
+    // the individual player
+    private Player invitedPlayer;
+    private Player acceptedPlayer;
+    private Player initiatingPlayer;
+    // the league and list of leagues the visitor created
     private League qasinoGameLeague;
     private List<League> leaguesForVisitor;
-    private Result gameResult;
+    // the game results
+    private List<Result> gameResults;
     private List<Result> resultsForLeague;
-    // todo
-    private List<Visitor> friends;
 
-    // STATS based on RETRIEVED DATA
-    // stats
-    public boolean loggedOn;     // icon is spaceShip -> logon to enable nav-visitor
-    public boolean balanceNotZero;      // icon is cards -> select/start game to enable nav-game
-    public boolean gamePlayable;      // icon is fiches -> playable game to enable nav-qasino
-    public boolean leaguePresent;       // icon is hallOfFame -> position in league or no league
-    public boolean friendsPresent;      // icon is chat -> chats and relations
+    // FOR THE GAME BEING PLAYED
+    private SectionTable table;
+    private Player turnPlayer;
+    private Player nextPlayer;
+    private Turn activeTurn;
+    private List<Card> cardsInTheGameSorted;
+    private List<CardMove> allCardMovesForTheGame;
 
-    // ERROR DATA
-    private int httpStatus;
-    private String errorKey;
-    private String errorValue;
-    private String errorMessage;
-    private HttpHeaders headers;
+    // NAVIGATION based on RETRIEVED DATA
+    public boolean showVisitorPage;
+    public boolean showGameSetupPage;
+    public boolean showGamePlayPage;
+    public boolean showGameInvitationsPage;
+    public boolean showLeaguesPage;
 
-    private Map<String, String> headerData;
-    private Map<String, String> pathData;
-    private Map<String, String> paramData;
+    // MESSAGE AND ERROR DATA
+    private String action;
+    private boolean actionNeeded;
+
+    // EXCEPTION - - TODO move out of DTO
+    // 400 bad request "malformed entity syntax" - eg null, zero, not numeric or invalid enum
+    // 404 not found "unknown id" - eg id not in db
+    // 409 conflict "update sent at the wrong time" eg state not valid now/anymore
+    // 422 unprocessable "unable to process action" eg event not in correct order
+    // @formatter:off
+    @Setter(AccessLevel.NONE)
+    private int httpStatus = 200;
+    private String errorKey = "Key";
+    private String errorValue = "Value";
+    @Setter(AccessLevel.NONE)
+    private String errorMessage = "";
+    @Setter(AccessLevel.NONE)
+    private String errorReason = "";
+    public void setBadRequestErrorMessage(String problem) {
+        this.errorMessage = "Supplied value for [" + this.errorKey + "] is [" + problem + "]";
+        this.httpStatus = 400;
+    }
+    public void setNotFoundErrorMessage(String problem) {
+        String defaultProblem = problem.isEmpty() ? "not found" : problem;
+        this.errorMessage = "Supplied value for [" + this.errorKey + "] is [" + defaultProblem + "]";
+        this.httpStatus = 400;
+    }
+    public void setConflictErrorMessage(String reason) {
+        String defaultReason = reason.isEmpty() ? "Reason cannot be given" : reason;
+        this.errorMessage = this.errorKey + " [" + this.errorValue + "] not valid now/anymore";
+        this.errorReason = defaultReason;
+        this.httpStatus = 409;
+    }
+    public void setUnprocessableErrorMessage(String reason) {
+        String defaultReason = reason.isEmpty() ? "Reason cannot be given" : reason;
+        this.errorMessage = this.errorKey + " [" + this.errorValue + "] cannot be processed";
+        this.errorReason = defaultReason;
+        this.httpStatus = 422;
+    }
+    // @formatter:on
+
+    // RESPONSE DATA
+    // @formatter:off
+    private HttpHeaders headers = new HttpHeaders();
     private Object payloadData;
     private URI uri;
-
-
-    public void setUriAndHeaders() {
+    public void addKeyValueToHeader(String key, String value) {
+        this.headers.add(key, value);
+    }
+    public void prepareResponseHeaders() {
         this.uri = ServletUriComponentsBuilder.fromCurrentRequest()
                 .path("")
-                .buildAndExpand(this.pathData, this.paramData)
+                .buildAndExpand(this.pathVariables, this.requestParams)
                 .toUri();
-        this.headers = new HttpHeaders();
-        headers.add("URI", String.valueOf(this.getUri()));
+        this.headers.add("URI", String.valueOf(this.getUri()));
+        if (qasinoVisitor != null) {
+            this.headers.add("visitorId", String.valueOf(qasinoVisitor.getVisitorId()));
+        }
+        if (qasinoGame != null) {
+            this.headers.add("gameId", String.valueOf(qasinoGame.getGameId()));
+        }
+        if (qasinoGameLeague != null) {
+            this.headers.add("leagueId", String.valueOf(qasinoGameLeague.getLeagueId()));
+        }
+        if (turnPlayer != null) {
+            this.headers.add("turnPlayerId", String.valueOf(turnPlayer.getPlayerId()));
+        }
+        if (activeTurn != null) {
+            this.headers.add("turnId", String.valueOf(activeTurn.getTurnId()));
+        }
+        if (this.httpStatus > 299) {
+            // also add error to header
+            addKeyValueToHeader(this.getErrorKey(), this.getErrorValue());
+            addKeyValueToHeader("Error", this.getErrorMessage());
+            if (!this.errorReason.isEmpty()) {
+                // also add error to header
+                addKeyValueToHeader("Reason", this.getErrorReason());
+            }
+        }
 
-        if (!StringUtils.isEmpty(this.getErrorKey())) {
-            headers.add(this.getErrorKey(), this.getErrorValue());
-            headers.add("Error", this.getErrorMessage());
+    }
+    // @formatter:on
+
+    // INPUT // TODO move out of DTO
+    @Setter(AccessLevel.NONE)
+    private Map<String, String> pathVariables = new HashMap<>();
+    private Map<String, String> requestParams = new HashMap<>();
+
+    public void setPathVariables(String... pathVariables) {
+        if (pathVariables == null) return;
+        if (pathVariables.length % 2 != 0) return;
+        for (int i = 0; i < pathVariables.length; i = i + 2) {
+            this.pathVariables.put(pathVariables[i], pathVariables[i + 1]);
         }
     }
 
-    // PROCESS AND VALIDATE INPUT
+    // VALIDATE INPUT - TODO move out of DTO
+    // @formatter:off
     public boolean validateInput() {
-
-        // header in response
-/*
-        uri = ServletUriComponentsBuilder.fromCurrentRequest()
-                .path("")
-                .buildAndExpand(this.pathData, this.paramData)
-                .toUri();
-        this.headers = new HttpHeaders();
-        headers.add("URI", String.valueOf(uri));
-*/
-
-        if (!processHeader(this.headerData)
-            | !processPathData(this.pathData)
-            | !processParamData(this.paramData)) {
-/*
-            headers.add(this.getErrorKey(), this.getErrorValue());
-            headers.add("Error", this.getErrorMessage());
-*/
-            setUriAndHeaders();
+        if (!validatePathVariables(this.pathVariables)
+                | !validateRequestParams(this.requestParams)) {
             return false;
         }
-        setUriAndHeaders();
         return true;
     }
-    boolean processHeader(Map<String, String> headerData) {
+    boolean validatePathVariables(Map<String, String> pathVariables) {
         String key;
-        String dataName = "headerData";
-        String headerDataString = StringUtils.join(headerData);
-//        log.info(this.getClass().getName() + ": " + dataName + " is " + headerDataString);
-
-        if (headerData==null) return true;
-
-        key = "gameid"; // todo why is this lower if passed is upper
-        if (headerData.containsKey(key)) {
-            if (isValueForIntKeyValid(key, headerData.get(key), dataName, headerDataString)) {
-                this.suppliedGameId = Long.parseLong(headerData.get(key));
-            } else {
-                return false;
-            }
-        }
-
-        key = "visitorid";
-        if (headerData.containsKey(key)) {
-            if (isValueForIntKeyValid(key, headerData.get(key), dataName, headerDataString)) {
-                this.suppliedVisitorId = Long.parseLong(headerData.get(key));
-            } else {
-                return false;
-            }
-        }
-
-        return true;
-    }
-    boolean processPathData(Map<String, String> pathData) {
-        String key;
-        String dataName = "pathData";
-        String pathDataString = StringUtils.join(pathData);
+        String dataName = "pathVariables";
+        String pathDataString = StringUtils.join(pathVariables);
 //        log.info(this.getClass().getName() + ": " + dataName + " is " + pathDataString);
 
-        if (pathData==null) return true;
+        if (pathVariables == null) return true;
 
-        // visitor repay or pawn
-        key = "pawnship";
-        if (pathData.containsKey(key)) {
-            this.offeringShipForPawn = true;
+        key = "gameId";
+        if (pathVariables.containsKey(key)) {
+            if (isValueForPrimaryKeyValid(key, pathVariables.get(key), dataName, pathDataString)) {
+                this.suppliedGameId = Long.parseLong(pathVariables.get(key));
+            } else {
+                return false;
+            }
         }
-        key = "repayloan";
-        if (pathData.containsKey(key)) {
-            this.requestingToRepay = true;
+
+        key = "visitorId";
+        if (pathVariables.containsKey(key)) {
+            if (isValueForPrimaryKeyValid(key, pathVariables.get(key), dataName, pathDataString)) {
+                this.suppliedVisitorId = Long.parseLong(pathVariables.get(key));
+            } else {
+                return false;
+            }
         }
 
         key = "leagueId";
-        if (pathData.containsKey(key)) {
-            if (isValueForIntKeyValid(key, pathData.get(key), dataName, pathDataString)) {
-                this.suppliedLeagueId = Long.parseLong(pathData.get(key));
+        if (pathVariables.containsKey(key)) {
+            if (isValueForPrimaryKeyValid(key, pathVariables.get(key), dataName, pathDataString)) {
+                this.suppliedLeagueId = Long.parseLong(pathVariables.get(key));
             } else {
                 return false;
             }
         }
         key = "invitedPlayerId";
-        if (pathData.containsKey(key)) {
-            if (isValueForIntKeyValid(key, pathData.get(key), dataName, pathDataString)) {
-                this.invitedPlayerId = Long.parseLong(pathData.get(key));
+        if (pathVariables.containsKey(key)) {
+            if (isValueForPrimaryKeyValid(key, pathVariables.get(key), dataName, pathDataString)) {
+                this.invitedPlayerId = Long.parseLong(pathVariables.get(key));
             } else {
                 return false;
             }
         }
         key = "acceptedPlayerId";
-        if (pathData.containsKey(key)) {
-            if (isValueForIntKeyValid(key, pathData.get(key), dataName, pathDataString)) {
-                this.suppliedLeagueId = Long.parseLong(pathData.get(key));
+        if (pathVariables.containsKey(key)) {
+            if (isValueForPrimaryKeyValid(key, pathVariables.get(key), dataName, pathDataString)) {
+                this.suppliedLeagueId = Long.parseLong(pathVariables.get(key));
             } else {
                 return false;
             }
         }
         key = "turnPlayerId";
-        if (pathData.containsKey(key)) {
-            if (isValueForIntKeyValid(key, pathData.get(key), dataName, pathDataString)) {
-                this.suppliedTurnPlayerId = Long.parseLong(pathData.get(key));
+        if (pathVariables.containsKey(key)) {
+            if (isValueForPrimaryKeyValid(key, pathVariables.get(key), dataName, pathDataString)) {
+                this.suppliedTurnPlayerId = Long.parseLong(pathVariables.get(key));
             } else {
                 return false;
             }
         }
 
         // call param data with path data to be sure
-        return processParamData(pathData);
+        return validateRequestParams(pathVariables);
 
     }
-    boolean processParamData(Map<String, String> paramData) {
+    boolean validateRequestParams(Map<String, String> requestParam) {
 
         String key;
-        String dataName = "paramData";
-        String paramDataString = StringUtils.join(paramData);
+        String dataName = "requestParam";
+        String paramDataString = StringUtils.join(requestParam);
 //        log.info(this.getClass().getName() + ": " + dataName + " is " + paramDataString);
 
-        if (paramData==null) return true;
+        if (requestParam == null) return true;
 
         // paging
-        key = "pages";
-        if (paramData.containsKey(key)) {
-            if (isValueForIntKeyValid(key, paramData.get(key), dataName, paramDataString)) {
-                this.suppliedPages = Integer.parseInt(paramData.get(key));
+        key = "pageNumber";
+        if (requestParam.containsKey(key)) {
+            if (isValueForIntKeyValid(key, requestParam.get(key), dataName, paramDataString)) {
+                if (Integer.parseInt(requestParam.get(key)) < 1) {
+                    this.setErrorKey(key);
+                    this.setErrorValue(errorValue);
+                    setBadRequestErrorMessage("Less than 1");
+                    return false;
+                }
+                this.suppliedPage = Integer.parseInt(requestParam.get(key));
             } else {
                 return false;
             }
         }
-        key = "maxPerPage";
-        if (paramData.containsKey(key)) {
-            if (isValueForIntKeyValid(key, paramData.get(key), dataName, paramDataString)) {
-                this.suppliedMaxPerPage = Integer.parseInt(paramData.get(key));
+        key = "pageSize";
+        if (requestParam.containsKey(key)) {
+            if (isValueForIntKeyValid(key, requestParam.get(key), dataName, paramDataString)) {
+                this.suppliedMaxPerPage = Integer.parseInt(requestParam.get(key));
             } else {
                 return false;
             }
         }
         // visitor
-        key = "visitorName";
-        if (paramData.containsKey(key)) {
-            this.suppliedVisitorName = (paramData.get("visitorName"));
+        key = "username";
+        if (requestParam.containsKey(key)) {
+            this.suppliedUsername = (requestParam.get("username"));
         }
         key = "email";
-        if (paramData.containsKey(key)) {
-            this.suppliedEmail = (paramData.get("email"));
+        if (requestParam.containsKey(key)) {
+            this.suppliedEmail = (requestParam.get("email"));
+        }
+        key = "pawn";
+        if (requestParam.containsKey(key)) {
+            this.offeringShipForPawn = true;
+        }
+        key = "repay";
+        if (requestParam.containsKey(key)) {
+            this.requestingToRepay = true;
         }
         // player
         key = "role";
-        if (paramData.containsKey(key)) {
-            if (isValueForEnumKeyValid(key, paramData.get(
-                    key), dataName,
+        if (requestParam.containsKey(key)) {
+            if (isValueForEnumKeyValid(key, requestParam.get(
+                            key), dataName,
                     paramDataString)) {
-                this.suppliedRole = Role.fromLabel(paramData.get(key));
+                this.suppliedRole = Role.fromLabel(requestParam.get(key));
             } else {
                 return false;
             }
         }
         key = "fiches";
-        if (paramData.containsKey(key)) {
-            if (isValueForIntKeyValid(key, paramData.get(key), dataName, paramDataString)) {
-                this.suppliedFiches = Integer.parseInt(paramData.get(key));
+        if (requestParam.containsKey(key)) {
+            if (isValueForIntKeyValid(key, requestParam.get(key), dataName, paramDataString)) {
+                this.suppliedFiches = Integer.parseInt(requestParam.get(key));
             } else {
                 return false;
             }
         }
         key = "avatar";
-        if (paramData.containsKey(key)) {
-            if (isValueForEnumKeyValid(key, paramData.get(
-                    key), dataName,
+        if (requestParam.containsKey(key)) {
+            if (isValueForEnumKeyValid(key, requestParam.get(
+                            key), dataName,
                     paramDataString)) {
-                this.suppliedAvatar = Avatar.fromLabel(paramData.get(key));
+                this.suppliedAvatar = Avatar.fromLabel(requestParam.get(key));
             } else {
                 return false;
             }
         }
         key = "aiLevel";
-        if (paramData.containsKey(key)) {
-            if (isValueForEnumKeyValid(key, paramData.get(
-                    key), dataName,
+        if (requestParam.containsKey(key)) {
+            if (isValueForEnumKeyValid(key, requestParam.get(
+                            key), dataName,
                     paramDataString)) {
-                this.suppliedAiLevel = AiLevel.fromLabel(paramData.get(key));
+                this.suppliedAiLevel = AiLevel.fromLabel(requestParam.get(key));
             } else {
                 return false;
             }
         }
         // game
-        key = "trigger";
-        if (paramData.containsKey(key)) {
-            if (isValueForEnumKeyValid(key, paramData.get(
-                    key), dataName,
+        key = "gameEvent";
+        if (requestParam.containsKey(key)) {
+            if (isValueForEnumKeyValid(key, requestParam.get(
+                            key), dataName,
                     paramDataString)) {
-                this.suppliedTrigger = GameTrigger.valueOf(paramData.get(key));
+                this.suppliedGameEvent = GameEvent.fromLabel(requestParam.get(key));
+            } else {
+                return false;
+            }
+        }
+        // turn
+        key = "turnEvent";
+        if (requestParam.containsKey(key)) {
+            if (isValueForEnumKeyValid(key, requestParam.get(
+                            key), dataName,
+                    paramDataString)) {
+                this.suppliedTurnEvent = TurnEvent.fromLabel(requestParam.get(key));
             } else {
                 return false;
             }
         }
         key = "gameStateGroup";
-        if (paramData.containsKey(key)) {
-            if (isValueForEnumKeyValid(key, paramData.get(
-                    key), dataName,
+        if (requestParam.containsKey(key)) {
+            if (isValueForEnumKeyValid(key, requestParam.get(
+                            key), dataName,
                     paramDataString)) {
-                this.suppliedGameStateGroup = GameStateGroup.valueOf(paramData.get(key));
+                this.suppliedGameStateGroup = GameStateGroup.valueOf(requestParam.get(key));
             } else {
                 return false;
             }
         }
         key = "type";
-        if (paramData.containsKey(key)) {
-            if (isValueForEnumKeyValid(key, paramData.get(
-                    key), dataName,
+        if (requestParam.containsKey(key)) {
+            if (isValueForEnumKeyValid(key, requestParam.get(
+                            key), dataName,
                     paramDataString)) {
-                this.suppliedType = Type.fromLabel(paramData.get(key));
+                this.suppliedType = Type.fromLabel(requestParam.get(key));
             } else {
                 return false;
             }
         }
         key = "style";
-        if (paramData.containsKey(key)) {
-            this.suppliedStyle = (paramData.get("style"));
+        if (requestParam.containsKey(key)) {
+
+            if (isValueForEnumKeyValid(key, requestParam.get(
+                            key), dataName,
+                    paramDataString)) {
+                this.suppliedStyle = requestParam.get("style");
+            } else {
+                return false;
+            }
         }
         key = "ante";
-        if (paramData.containsKey(key)) {
-            if (isValueForIntKeyValid(key, paramData.get(key), dataName, paramDataString)) {
-                this.suppliedAnte = Integer.parseInt(paramData.get(key));
+        if (requestParam.containsKey(key)) {
+            if (isValueForIntKeyValid(key, requestParam.get(key), dataName, paramDataString)) {
+                if (Integer.parseInt(requestParam.get(key)) == 0) {
+                    this.setErrorKey(key);
+                    this.setErrorValue(requestParam.get(key));
+                    setBadRequestErrorMessage("Zero");
+                    return false;
+                }
+                this.suppliedAnte = Integer.parseInt(requestParam.get(key));
             } else {
                 return false;
             }
         }
         key = "jokers";
-        if (paramData.containsKey(key)) {
-            if (isValueForIntKeyValid(key, paramData.get(key), dataName, paramDataString)) {
-                this.suppliedJokers = Integer.parseInt(paramData.get(key));
+        if (requestParam.containsKey(key)) {
+            if (isValueForIntKeyValid(key, requestParam.get(key), dataName, paramDataString)) {
+                this.suppliedJokers = Integer.parseInt(requestParam.get(key));
             } else {
                 return false;
             }
         }
         // league
         key = "leagueName";
-        if (paramData.containsKey(key)) {
-            this.suppliedLeagueName = (paramData.get("leagueName"));
+        if (requestParam.containsKey(key)) {
+            this.suppliedLeagueName = (requestParam.get("leagueName"));
         }
         // cardmove
         key = "move";
-        if (paramData.containsKey(key)) {
-            if (isValueForEnumKeyValid(key, paramData.get(
-                    key), dataName,
+        if (requestParam.containsKey(key)) {
+            if (isValueForEnumKeyValid(key, requestParam.get(
+                            key), dataName,
                     paramDataString)) {
-                this.suppliedMove = Move.fromLabel(paramData.get(key));
+                this.suppliedMove = Move.fromLabel(requestParam.get(key));
             } else {
                 return false;
             }
         }
         key = "location";
-        if (paramData.containsKey(key)) {
-            if (isValueForEnumKeyValid(key, paramData.get(
-                    key), dataName,
+        if (requestParam.containsKey(key)) {
+            if (isValueForEnumKeyValid(key, requestParam.get(
+                            key), dataName,
                     paramDataString)) {
-                this.suppliedLocation = Location.fromLabel(paramData.get(key));
+                this.suppliedLocation = Location.fromLabel(requestParam.get(key));
             } else {
                 return false;
             }
         }
         key = "bet";
-        if (paramData.containsKey(key)) {
-            if (isValueForIntKeyValid(key, paramData.get(key), dataName, paramDataString)) {
-                this.suppliedBet = Integer.parseInt(paramData.get(key));
+        if (requestParam.containsKey(key)) {
+            if (isValueForIntKeyValid(key, requestParam.get(key), dataName, paramDataString)) {
+                this.suppliedBet = Integer.parseInt(requestParam.get(key));
             } else {
                 return false;
             }
         }
         return true;
     }
-    boolean isValueForIntKeyValid(String key, String value, String dataName, String dataToValidate) {
+    boolean isValueForPrimaryKeyValid(String key, String value, String dataName, String dataToValidate) {
         if (!StringUtils.isNumeric(value)) {
-            // 400 - bad request
-            this.setHttpStatus(400);
             this.setErrorKey(key);
             this.setErrorValue(value);
-            this.setErrorMessage("Invalid int value for" + key);
+            setBadRequestErrorMessage("Not numeric");
+            return false;
+        }
+        if (Long.parseLong(value) == 0) {
+            this.setErrorKey(key);
+            this.setErrorValue(value);
+            setBadRequestErrorMessage("Zero");
+            return false;
+        }
+
+        return true;
+    }
+    boolean isValueForIntKeyValid(String key, String value, String dataName, String dataToValidate) {
+        if (!StringUtils.isNumeric(value)) {
+            this.setErrorKey(key);
+            this.setErrorValue(value);
+            setBadRequestErrorMessage("Not numeric");
             return false;
         }
         return true;
     }
-    boolean isValueForEnumKeyValid(String key, String value, String dataName,
-                                   String dataToValidate) {
+    boolean isValueForEnumKeyValid(String key, String value, String dataName, String dataToValidate) {
 
         switch (key) {
 
             case "role":
-                if (!(Role.fromLabelWithDefault(key) == Role.ERROR)) {
+                if (!(Role.fromLabelWithDefault(value) == Role.ERROR)) {
                     return true;
                 }
                 break;
             case "avatar":
-                if (!(Avatar.fromLabelWithDefault(key) == Avatar.ERROR)) {
+                if (!(Avatar.fromLabelWithDefault(value) == Avatar.ERROR)) {
                     return true;
                 }
                 break;
             case "aiLevel":
-                if (!(AiLevel.fromLabelWithDefault(key) == AiLevel.ERROR)) {
+                if (!(AiLevel.fromLabelWithDefault(value) == AiLevel.ERROR)) {
                     return true;
                 }
                 break;
-            case "trigger":
-                if (!(GameTrigger.fromLabelWithDefault(key) == GameTrigger.ERROR)) {
+            case "gameEvent":
+                if (!(GameEvent.fromLabelWithDefault(value) == GameEvent.ERROR)) {
+                    return true;
+                }
+                break;
+            case "turnEvent":
+                if (!(TurnEvent.fromLabelWithDefault(value) == TurnEvent.ERROR)) {
                     return true;
                 }
                 break;
             case "gameStateGroup":
-                if (!(GameStateGroup.fromLabelWithDefault(key) == GameStateGroup.ERROR)) {
+                if (!(GameStateGroup.fromLabelWithDefault(value) == GameStateGroup.ERROR)) {
                     // todo ERROR can be a valid state but for now is bad request coming from client
                     return true;
                 }
                 break;
             case "type":
-                if (!(Type.fromLabelWithDefault(key) == Type.ERROR)) {
+                if (!(Type.fromLabelWithDefault(value) == Type.ERROR)) {
                     return true;
                 }
                 break;
             case "move":
-                if (!(Move.fromLabelWithDefault(key) == Move.ERROR)) {
+                if (!(Move.fromLabelWithDefault(value) == Move.ERROR)) {
                     return true;
                 }
                 break;
             case "location":
-                if (!(Location.fromLabelWithDefault(key) == Location.ERROR)) {
+                if (!(Location.fromLabelWithDefault(value) == Location.ERROR)) {
                     return true;
                 }
                 break;
             case "position":
-                if (!(Position.fromLabelWithDefault(key) == Position.ERROR)) {
+                if (!(Position.fromLabelWithDefault(value) == Position.ERROR)) {
                     return true;
                 }
                 break;
             case "face":
-                if (!(Face.fromLabelWithDefault(key) == Face.ERROR)) {
+                if (!(Face.fromLabelWithDefault(value) == Face.ERROR)) {
+                    return true;
+                }
+                break;
+            case "style":
+                // TODO never in error due to a default
+                if (!Style.fromLabelWithDefault(value).equals(null)) {
                     return true;
                 }
                 break;
         }
 
-        // 400 - bad request
-        this.setHttpStatus(400);
         this.setErrorKey(key);
-        this.setErrorValue("in error");
-        this.setErrorMessage("Invalid enum value for" + key);
-
+        this.setErrorValue(value);
+        setBadRequestErrorMessage("No valid emun");
         return false;
     }
+    // @formatter:on
+
 }

@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <title>Enter the Qasino</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+</head>
+<body>
+<!--/*  Multiple fragments may be defined in one file */-->
+<div th:fragment="footer">
+    <div class="specific-footer">
+        &copy; <span th:text="${#temporals.format(#temporals.createNow(), 'yyyy')}">2017</span>
+        Saalk@github.com - trying to beat
+        <a href="https://medium.com/@uwehook/sturgeons-law-285c007406db">sturgeon's law</a>
+        <br>
+            <ul>
+                <li>Using </li>
+                <li><a href="http://getskeleton.com/">Skeleton css </a></li>
+                <li><a href="https://github.com/necolas/normalize.css">Normalize css </a></li>
+                <li><a href="https://www.thymeleaf.org/">Thymeleaf </a></li>
+                <li><a href="https://spring.io/projects/spring-boot">Springboot </a></li>
+            </ul>
+    </div>
+</div>
+<div th:fragment="footer-admin">
+    <div class="specific-footer">
+        &copy; <span th:text="${#temporals.format(#temporals.createNow(), 'yyyy')}">2017</span>
+        Saalk@github.com - trying to beat
+        <a href="https://medium.com/@uwehook/sturgeons-law-285c007406db">sturgeon's law</a>
+        <span th:text="${@environment.getProperty('app.version')}"></span>
+    </div>
+</div>
+</body>
+</html>
+

@@ -67,8 +67,8 @@ REQUEST='{
 #PROFILE_ID="${3}"
 BASE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" >/dev/null 2>&1 && pwd)"
 LIB_DIR="${BASE_DIR}/../lib"
-TST_CERTS_PATH="${BASE_DIR}/../tst"
-ACC_CERTS_PATH="${BASE_DIR}/../acc"
+TST_CERTS_PATH="${BASE_DIR}/../certs/tst"
+ACC_CERTS_PATH="${BASE_DIR}/../certs/acc"
 
 function callCreditCardScoring() {
 

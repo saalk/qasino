@@ -1,5 +1,6 @@
 package cloud.qasino.games.database.entity;
 
+import cloud.qasino.games.database.security.Visitor;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -73,6 +74,7 @@ public class League {
 
     // References
 
+    @JsonIgnore // otherwise the game does not show up - only as a ref in the response
     // L: A League can have more Games over time
     @OneToMany(mappedBy = "league", cascade = CascadeType.DETACH)
     // just a reference, the actual fk column is in game not here !
@@ -128,7 +130,7 @@ public class League {
     }
 
     public boolean isActive() {
-        if (!this.active) return false; // visitor can set to inactive before enddate
+        if (!this.active) return false; // \"visitor\"can set to inactive before enddate
 
         if (this.ended == null || this.ended.isEmpty()) return true;
 

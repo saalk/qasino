@@ -8,19 +8,26 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface LeagueRepository extends JpaRepository<League, Long> {
 
-    public final static String FIND_ACTIVE_LEAGUES_BY_VISITOR_ID =
-            "SELECT * FROM LEAGUES a WHERE a.VISITOR_ID = :visitorId " +
-                    "AND a.IS_ACTIVE = 'TRUE' ";
-    public final static String COUNT_ACTIVE_LEAGUES_BY_VISITOR_ID =
-            "SELECT count(*) FROM LEAGUES a WHERE a.VISITOR_ID = :visitorId " +
-                    "AND a.IS_ACTIVE = 'TRUE' ";
+    //@Query("SELECT count(u) FROM League u where u.LeagueName = ?1")
+    Long countByName(String leagueName);
 
-    @Query(value = FIND_ACTIVE_LEAGUES_BY_VISITOR_ID, countQuery = COUNT_ACTIVE_LEAGUES_BY_VISITOR_ID, nativeQuery = true)
-    public List<League> findAllActiveLeaguesForVisitorWithPage(
+    Optional<League> findLeagueByLeagueId(Long leagueId);
+    Optional<League> findLeagueByNameAndNameSequence(String leagueName, int leagueNameSequence);
+
+    public final static String FIND_LEAGUES_FOR_VISITOR_ID =
+            "SELECT * FROM \"league\" a WHERE a.\"visitor_id\" = :visitorId " +
+                    "AND a.\"is_active\" = CAST('true' AS BOOLEAN) ";
+    public final static String COUNT_LEAGUES_FOR_VISITOR_ID =
+            "SELECT count(*) FROM \"league\" a WHERE a.\"visitor_id\" = :visitorId " +
+                    "AND a.\"is_active\" = CAST('true' AS BOOLEAN) ";
+
+    @Query(value = FIND_LEAGUES_FOR_VISITOR_ID, countQuery = COUNT_LEAGUES_FOR_VISITOR_ID, nativeQuery = true)
+    public List<League> findLeaguesForVisitorWithPage(
             @Param("visitorId") long visitorId,
             Pageable pageable);
 }

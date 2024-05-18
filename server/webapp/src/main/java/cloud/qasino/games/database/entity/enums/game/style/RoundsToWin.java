@@ -11,9 +11,9 @@ import java.util.Map;
 public enum RoundsToWin {
 
     NA ("n","Not applicable"),
-    ONE_ROUND("1","One round only"),
-    TWO_ROUNDS("2","Two rounds"),
-    THREE_ROUNDS("3","Three rounds");
+    ONE_ROUND("1","One round finish"),
+    TWO_ROUNDS("2","Two rounds finish"),
+    THREE_ROUNDS("3","Three round finish");
 
     /**
      * A static HashMap lookup with key + value is created to use in a getter

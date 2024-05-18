@@ -15,33 +15,24 @@ public enum Move implements LabeledEnum {
 
     @Column(name = "cardMove", length = 25, nullable = false)
 
-    // shuffle the pack into a stock
-    SHUFFLE("shuffle"),
-    // setting up the layout areas - stock and hands
-    SETTING_UP("setup"),
-
-    // deal another card
+    // generic cardmoves in a turn
     DEAL("deal"),
+    PASS("pass"),
+    NEXT("next"),
+    STOP("stop"),
 
-    // in hartenjagen
+    // cardmoves in hartenjagen
     PLAY("play"),
-    DISCARD("discard"),
 
-    // in blackjack
-
-    // no more cards
+    // cardmoves in blackjack
     STAND("stand"),
-    // no more cards
     DOUBLE("double"),
 
-    // in higher/lower
+    // cardmoves in higher/lower
     HIGHER("higher"),
     LOWER("lower"),
 
-    // make no bid any more
-    PASS("pass"),
-
-    NEXT("next"),
+    // a problem,
     ERROR("error");
 
     /**
@@ -58,7 +49,8 @@ public enum Move implements LabeledEnum {
      * factory methods for creating an instance like creating groups from enums.
      * Here it is used to group all enums.
      */
-    public static Set<Move> moves = EnumSet.of(DEAL, HIGHER, LOWER, PASS, NEXT, ERROR);
+    public static Set<Move> highlowMoves = EnumSet.of(DEAL, PASS, HIGHER, LOWER, STOP);
+    public static Set<Move> blackjackMoves = EnumSet.of(DEAL, STAND, DOUBLE, STOP);
 
     static {
         for (Move move : EnumSet.allOf(Move.class))

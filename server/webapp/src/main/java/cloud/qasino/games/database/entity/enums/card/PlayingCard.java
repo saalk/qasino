@@ -13,7 +13,7 @@ import java.util.List;
 @Slf4j
 public class PlayingCard {
 
-    public static final List<PlayingCard> prototypeDeck = new ArrayList<>();
+    public static final List<PlayingCard> normalCardDeck = new ArrayList<>();
     protected static final PlayingCard joker = new PlayingCard(Rank.JOKER, Suit.JOKERS);
 
     static {
@@ -21,7 +21,7 @@ public class PlayingCard {
             if (suit != Suit.JOKERS) {
                 for (Rank rank : Rank.values()) {
                     if (rank != Rank.JOKER) {
-                        prototypeDeck.add(new PlayingCard(rank, suit));
+                        normalCardDeck.add(new PlayingCard(rank, suit));
                     }
                 }
             }
@@ -29,7 +29,7 @@ public class PlayingCard {
     }
 
     // 13 progressing ranks 2 to 10, jack, queen, king, ace.
-    private String cardId;
+    private String rankAndSuit;
     private Rank rank;
     private Suit suit;
     private int value;
@@ -46,8 +46,8 @@ public class PlayingCard {
         this.suit = suit;
 
         final StringBuilder builder = new StringBuilder();
-        this.cardId = builder.append(rank.getLabel()).append(suit.getLabel()).toString();
-        this.value = calculateValueWithDefaultHighlow(rank, null);
+        this.rankAndSuit = builder.append(rank.getLabel()).append(suit.getLabel()).toString();
+        this.value = calculateValueWithDefaultHighlowFromRank(rank, null);
         // todo: set thumbnailPath
     }
 
@@ -56,46 +56,46 @@ public class PlayingCard {
         for (int i = 0; i < addJokers; i++) {
             newDeck.add(joker);
         }
-        newDeck.addAll(prototypeDeck);
+        newDeck.addAll(normalCardDeck);
         return newDeck;
     }
 
-    public static boolean isValidCardId(String cardId) {
-        if (cardId == null
-                || cardId.isEmpty())
+    public static boolean isValidCardId(String rankAndSuit) {
+        if (rankAndSuit == null
+                || rankAndSuit.isEmpty())
             return false;
 
-        for (PlayingCard playingCard : prototypeDeck) {
-            if (playingCard.cardId.equals(cardId)) return true;
+        for (PlayingCard playingCard : normalCardDeck) {
+            if (playingCard.rankAndSuit.equals(rankAndSuit)) return true;
         }
         return false;
     }
 
-    public boolean setPlayingCardFromCardId(String cardId) {
+    public static PlayingCard getPlayingCardFromCardId(String card) {
 
-        if (cardId == null
-                || cardId.isEmpty()
-                || !isValidCardId(cardId))
-            return false;
-        for (PlayingCard playingCard : prototypeDeck) {
-            if (playingCard.cardId.equals(cardId)) {
-                this.cardId = cardId;
-                this.rank = playingCard.rank;
-                this.suit = playingCard.suit;
-                this.value = calculateValueWithDefaultHighlow(rank, null);
-                return true;
+        if (card == null
+                || card.isEmpty()
+                || !isValidCardId(card))
+            return null;
+        for (PlayingCard playingCard : normalCardDeck) {
+            if (playingCard.rankAndSuit.equals(card)) {
+                return playingCard;
             }
         }
-        return false;
+        return null;
     }
 
-    public boolean isJoker() {
+    public static boolean isJoker(String cardId) {
         String jokerCard = cardId;
         return jokerCard.equals("RJ");
     }
 
-    private int calculateValueWithDefaultHighlow(Rank rank, Type type) {
+    public static int calculateValueWithDefaultHighlow(String cardId, Type type) {
+        PlayingCard playingCard = getPlayingCardFromCardId(cardId);
+        return calculateValueWithDefaultHighlowFromRank(playingCard.rank, type);
+    }
 
+    public static int calculateValueWithDefaultHighlowFromRank(Rank rank, Type type) {
         Type localType = type == null ? Type.HIGHLOW : type;
         switch (rank) {
             case JOKER:

@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <title>Qasino in the cloud</title>
+    <th:block th:include="~{fragments/header :: headerfiles}">
+    </th:block>
+</head>
+<body>
+<div th:replace="~{fragments/header :: header}"></div>
+<div>
+    <!-- the specific part of this html -->
+    <div class="container">
+        <div class="text-center">
+            <!-- /* Handle the flash message */-->
+            <th:block th:if="${message != null}">
+                <!-- /* The message code is returned from the @Controller */ -->
+                <div th:replace="fragments/alert :: alert (type=${#strings.toLowerCase(message.type)}, message=#{${message.message}(${#authentication.username})})">
+                    &nbsp;
+                </div>
+            </th:block>
+            <div class="text-center">
+                <h1>Welcome inside the Qasino!</h1>
+                <div class="lead">
+                    Start playing games
+                </div>
+            </div>
+        </div>
+        <div th:insert="~{fragments/footer :: footer}"></div>
+    </div>
+</div>
+</body>
+</html>

@@ -1,6 +1,6 @@
 package cloud.qasino.games.orchestration;
 
-import cloud.qasino.games.event.interfaces.AbstractFlowDTO;
+import cloud.qasino.games.statemachine.event.interfaces.AbstractFlowDTO;
 import cloud.qasino.games.orchestration.interfaces.StatelessCheck;
 import org.springframework.stereotype.Component;
 

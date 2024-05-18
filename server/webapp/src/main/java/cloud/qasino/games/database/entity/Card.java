@@ -36,8 +36,8 @@ public class Card {
     @Column(name = "created", length = 25)
     private String created;
 
-    @Column(name = "card", length = 3, nullable = false)
-    private String card;
+    @Column(name = "rankSuit", length = 3, nullable = false)
+    private String rankSuit;
 
     // Foreign keys
 
@@ -57,24 +57,23 @@ public class Card {
             "fk_player_id"), nullable=true)
     private Player hand;
 
-
     // Normal fields
 
-    // current sequence of the card in the deck or hand
+    // current sequence of the \"card\" in the deck or hand
     @Column(name = "sequence")
     private int sequence;
 
-    // current location for the card (can be hand or not)
+    // current location for the \"card\" (can be hand or not)
     @Enumerated(EnumType.STRING)
     @Column(name = "location", nullable = false)
     private Location location;
 
-    // current Postion for the card in the location TODO make Ordered
+    // current Postion for the \"card\" in the location TODO make Ordered
     @Enumerated(EnumType.STRING)
     @Column(name = "position", nullable = false)
     private Position position;
 
-    // current Face for the card in the location (up or down)
+    // current Face for the \"card\" in the location (up or down)
     @Enumerated(EnumType.STRING)
     @Column(name = "face", nullable = false)
     private Face face;
@@ -89,14 +88,14 @@ public class Card {
 
     }
 
-    public Card(String card, Game game, Player player, int sequence, Location location) {
+    public Card(String rankSuit, Game game, Player player, int sequence, Location location) {
         this();
-        this.card = card;
+        this.rankSuit = rankSuit;
         this.game = game;
         this.hand = player;
         this.sequence = sequence;
         this.location = location;
-        this.position = Position.ORDERED;
+        this.position = Position.SHUFFLED;
         this.face = Face.DOWN;
     }
 
@@ -106,6 +105,11 @@ public class Card {
         if (o == null || getClass() != o.getClass()) return false;
         Card that = (Card) o;
         return cardId == that.cardId;
+    }
+
+    @Override
+    public String toString () {
+        return this.rankSuit;
     }
 
     @Override

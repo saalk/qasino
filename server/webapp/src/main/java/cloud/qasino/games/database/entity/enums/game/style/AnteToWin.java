@@ -11,9 +11,10 @@ import java.util.Map;
 public enum AnteToWin {
 
 // todo determine what to do here : bet vs ante ration?
-    NA("n", "Not applicable"),
-    FIVE_TIMES_WINS("5", "ante times 5");
-    
+    NA("n", "not applicable"),
+    TIMES_3_WINS("3", "Triple your ante and win direct"),
+    TIMES_5_WINS("5", "5 Times your ante wins direct");
+
     /**
      * A static HashMap lookup with key + value is created to use in a getter
      * to fromLabel the Enum based on the name eg. key "Low" -> value AiLevel.DUMB

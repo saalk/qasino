@@ -1,0 +1,308 @@
+{
+	"info": {
+		"_postman_id": "4982f548-598e-413d-9192-475ddfe3c99b",
+		"name": "CardAndPlayerController",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "439257",
+		"_collection_link": "https://qasino.postman.co/workspace/Qasino~4634f2dd-4487-4c9b-9d29-607ac0ed86c8/collection/439257-4982f548-598e-413d-9192-475ddfe3c99b?action=share&source=collection_link&creator=439257"
+	},
+	"item": [
+		{
+			"name": "Playingcard-D",
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Content-Type",
+						"type": "text",
+						"value": "application/json",
+						"uuid": "3f9c1da8-1442-46d3-b2de-eb685431d7b9"
+					}
+				],
+				"url": {
+					"raw": "{{url}}/qasino/playingcards/5",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"qasino",
+						"playingcards",
+						"5"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Playingcard-R image",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"type": "text",
+						"value": "application/json",
+						"uuid": "a1e89551-4325-465a-bbb2-20f8649c317e"
+					}
+				],
+				"url": {
+					"raw": "{{url}}/qasino/playingcards/image",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"qasino",
+						"playingcards",
+						"image"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "PlayersGames-L",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"type": "text",
+						"value": "application/json",
+						"uuid": "397de4b2-b54c-4566-99a8-508aba515e2b"
+					}
+				],
+				"url": {
+					"raw": "{{url}}/qasino/players/games/5?human=true",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"qasino",
+						"players",
+						"games",
+						"5"
+					],
+					"query": [
+						{
+							"key": "human",
+							"value": "true"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "PlayersGamesUsers-Chuman",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"type": "text",
+						"value": "application/json",
+						"uuid": "05ffbc8d-18a3-4589-92c9-6681b719753c"
+					}
+				],
+				"url": {
+					"raw": "{{url}}/qasino/players/games/5/users/1?avatar=elf",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"qasino",
+						"players",
+						"games",
+						"5",
+						"users",
+						"1"
+					],
+					"query": [
+						{
+							"key": "avatar",
+							"value": "elf"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "PlayersGames-Cai",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"type": "text",
+						"value": "application/json",
+						"uuid": "fd79cbfb-8816-4021-a0ed-213619b9b103"
+					}
+				],
+				"url": {
+					"raw": "{{url}}/qasino/players/games/5?aiLevel=smart&avatar=elf",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"qasino",
+						"players",
+						"games",
+						"5"
+					],
+					"query": [
+						{
+							"key": "aiLevel",
+							"value": "smart"
+						},
+						{
+							"key": "avatar",
+							"value": "elf"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Players-R",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"type": "text",
+						"value": "application/json",
+						"uuid": "85bd4dc7-5804-42a0-ae07-87855db46471"
+					}
+				],
+				"url": {
+					"raw": "{{url}}/qasino/players/6",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"qasino",
+						"players",
+						"6"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Players-U",
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"type": "text",
+						"value": "application/json",
+						"uuid": "fb045872-66f7-4db8-bb8f-c2e1e7290cb0"
+					}
+				],
+				"url": {
+					"raw": "{{url}}/qasino/players/6?avatar=warrior&aiLevel=dumb",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"qasino",
+						"players",
+						"6"
+					],
+					"query": [
+						{
+							"key": "avatar",
+							"value": "warrior"
+						},
+						{
+							"key": "aiLevel",
+							"value": "dumb"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Players-U order",
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"type": "text",
+						"value": "application/json",
+						"uuid": "7f2742aa-149c-42d5-9282-89e686382244"
+					}
+				],
+				"url": {
+					"raw": "{{url}}/qasino/players/6?order=1",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"qasino",
+						"players",
+						"6"
+					],
+					"query": [
+						{
+							"key": "order",
+							"value": "1"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Players-D",
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Content-Type",
+						"type": "text",
+						"value": "application/json",
+						"uuid": "2346f4b8-9e3e-4dde-a6fd-1bef62eae543"
+					}
+				],
+				"url": {
+					"raw": "{{url}}/qasino/players/6",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"qasino",
+						"players",
+						"6"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	]
+}

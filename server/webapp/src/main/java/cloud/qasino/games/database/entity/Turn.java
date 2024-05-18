@@ -59,9 +59,14 @@ public class Turn {
     @Column(name = "current_round_number", nullable = true)
     private int currentRoundNumber;
 
-    @Column(name = "current_move_number", nullable = true)
-    private int currentMoveNumber;
+    @Column(name = "current_turn_number", nullable = true)
+    @Setter(AccessLevel.NONE)
+    private int currentTurnNumber;
 
+    public void setCurrentTurnNumber(int currentTurnNumber) {
+        this.currentTurnNumber = currentTurnNumber;
+        setUpdated();
+    }
 
     // Derived technical fields
 
@@ -78,13 +83,13 @@ public class Turn {
     private String week;
 
     @Setter(AccessLevel.NONE)
-    @Column(name = "day", length = 2)
-    private int day;
+    @Column(name = "weekday", length = 2)
+    private int weekday;
 
 
     // References
 
-    // L: A League can have more Games over time
+    // L: A turn can have many moves over time
     @OneToMany(mappedBy = "turn", cascade = CascadeType.DETACH)
     // just a reference, the actual fk column is in game not here !
     private List<CardMove> cardMoves = new ArrayList<>();
@@ -100,7 +105,7 @@ public class Turn {
         this.activePlayerId = playerId;
 
         this.currentRoundNumber = 1;
-        this.currentMoveNumber = 1;
+        this.currentTurnNumber = 1;
 
     }
 
@@ -112,16 +117,9 @@ public class Turn {
 
         this.year = localDateAndTime.getYear();
         this.month = localDateAndTime.getMonth();
-        DateTimeFormatter week = DateTimeFormatter.ofPattern("W");
+        DateTimeFormatter week = DateTimeFormatter.ofPattern("w");
         this.week = localDateAndTime.format(week);
-        this.day = localDateAndTime.getDayOfMonth();
-    }
-
-    public void newTurn(long newPlayerId) {
-        setUpdated();
-        this.activePlayerId = newPlayerId;
-        this.currentRoundNumber = ++ currentRoundNumber;
-        this.currentMoveNumber = ++ currentMoveNumber;
+        this.weekday = localDateAndTime.getDayOfMonth();
     }
 
     @Override
