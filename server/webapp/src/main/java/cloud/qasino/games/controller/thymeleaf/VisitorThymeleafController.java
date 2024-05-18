@@ -1,16 +1,39 @@
 package cloud.qasino.games.controller.thymeleaf;
 
+import cloud.qasino.games.action.CalculateQasinoStatistics;
+import cloud.qasino.games.action.FindVisitorIdByAliasAction;
+import cloud.qasino.games.action.HandleSecuredLoanAction;
+import cloud.qasino.games.action.LoadEntitiesToDtoAction;
+import cloud.qasino.games.action.MapQasinoGameTableFromDto;
+import cloud.qasino.games.action.MapQasinoResponseFromDto;
+import cloud.qasino.games.action.SetStatusIndicatorsBaseOnRetrievedDataAction;
+import cloud.qasino.games.action.SignUpNewVisitorAction;
+import cloud.qasino.games.database.repository.CardRepository;
+import cloud.qasino.games.database.repository.GameRepository;
+import cloud.qasino.games.database.repository.PlayerRepository;
+import cloud.qasino.games.database.repository.ResultsRepository;
+import cloud.qasino.games.database.repository.TurnRepository;
 import cloud.qasino.games.database.security.Visitor;
 import cloud.qasino.games.database.security.VisitorRepository;
+import cloud.qasino.games.dto.QasinoFlowDTO;
+import cloud.qasino.games.statemachine.event.EventOutput;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.ui.Model;
 import org.springframework.util.Assert;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.http.HttpServletResponse;
 import java.security.Principal;
+import java.util.List;
 import java.util.Optional;
 
 // basic path /qasino
@@ -28,29 +51,88 @@ import java.util.Optional;
 @Slf4j
 public class VisitorThymeleafController {
 
-    private final VisitorRepository visitorRepository;
+    EventOutput.Result output;
 
+    private VisitorRepository visitorRepository;
+    private GameRepository gameRepository;
+    private PlayerRepository playerRepository;
+    private CardRepository cardRepository;
+    private TurnRepository turnRepository;
+    private ResultsRepository resultsRepository;
+    @Autowired
+    LoadEntitiesToDtoAction loadEntitiesToDtoAction;
+    @Autowired
+    FindVisitorIdByAliasAction findVisitorIdByAliasAction;
+    @Autowired
+    SignUpNewVisitorAction signUpNewVisitorAction;
+    @Autowired
+    HandleSecuredLoanAction handleSecuredLoanAction;
+    @Autowired
+    SetStatusIndicatorsBaseOnRetrievedDataAction setStatusIndicatorsBaseOnRetrievedDataAction;
+    @Autowired
+    CalculateQasinoStatistics calculateQasinoStatistics;
+    @Autowired
+    MapQasinoResponseFromDto mapQasinoResponseFromDto;
+    @Autowired
+    MapQasinoGameTableFromDto mapQasinoGameTableFromDto;
+
+    @Autowired
     public VisitorThymeleafController(
-            VisitorRepository visitorRepository) {
+            VisitorRepository visitorRepository,
+            GameRepository gameRepository,
+            PlayerRepository playerRepository,
+            CardRepository cardRepository,
+            TurnRepository turnRepository) {
+
         this.visitorRepository = visitorRepository;
-
+        this.gameRepository = gameRepository;
+        this.playerRepository = playerRepository;
+        this.cardRepository = cardRepository;
+        this.turnRepository = turnRepository;
     }
 
-
-    @GetMapping("visitor/current")
-    @ResponseStatus(value = HttpStatus.OK)
-//    @Secured({"ROLE_USER", "ROLE_ADMIN"})
-    public Visitor currentVisitor(Principal principal) {
-        Assert.notNull(principal);
-        return visitorRepository.findOneByEmail(principal.getName());
-    }
-
-    @GetMapping("visitor/{id}")
+    @GetMapping("visitor/{visitorId}")
     @ResponseStatus(value = HttpStatus.OK)
 //    @Secured("ROLE_ADMIN")
-    public Optional<Visitor> visitor(@PathVariable("id") Long id) {
-        return visitorRepository.findVisitorByVisitorId(id);
+    public String visitor(
+            Model model,
+            @PathVariable("visitorId") Optional<String> id,
+            HttpServletResponse response) {
+
+        // validate
+        QasinoFlowDTO flowDTO = new QasinoFlowDTO();
+        if (id.isPresent()) flowDTO.setPathVariables("visitorId", id.get());
+        if (!flowDTO.validateInput()) {
+            flowDTO.prepareResponseHeaders();
+            model.addAttribute("qasino", flowDTO.getQasinoResponse());
+            setVaryResponseHeader(response, flowDTO);
+            return "/home/homeSignedIn";
+        }
+        // build response
+        output = loadEntitiesToDtoAction.perform(flowDTO);
+        if (output == EventOutput.Result.FAILURE) {
+            flowDTO.prepareResponseHeaders();
+            model.addAttribute("qasino", flowDTO.getQasinoResponse());
+            return "/home/homeSignedIn";
+        }
+        mapQasinoGameTableFromDto.perform(flowDTO);
+        setStatusIndicatorsBaseOnRetrievedDataAction.perform(flowDTO);
+        calculateQasinoStatistics.perform(flowDTO);
+        mapQasinoResponseFromDto.perform(flowDTO);
+        flowDTO.prepareResponseHeaders();
+
+        model.addAttribute("qasino", flowDTO.getQasinoResponse());
+        setVaryResponseHeader(response, flowDTO);
+        return "/home/homeSignedIn";
     }
 
-
+    @ModelAttribute
+    public void setVaryResponseHeader(HttpServletResponse response, QasinoFlowDTO flowDTO) {
+        MultiValueMap<String, String> headers = flowDTO.getHeaders();
+        headers.forEach((name, values) -> {
+            for (String value : values) {
+                response.setHeader(name, value);
+            }
+        });
+    }
 }
