@@ -91,7 +91,7 @@ public class QasinoAndVisitorController {
         this.turnRepository = turnRepository;
     }
 
-    @GetMapping(value = {"/home/{visitorId}"})
+//    @GetMapping(value = {"/home/{visitorId}"})
     public ResponseEntity<QasinoResponse> home(
             @PathVariable("visitorId") Optional<String> id
     ) {
@@ -116,7 +116,7 @@ public class QasinoAndVisitorController {
         return ResponseEntity.ok().headers(flowDTO.getHeaders()).body(flowDTO.getQasinoResponse());
     }
 
-    @PostMapping(value = "/signup/{username}")
+//    @PostMapping(value = "/signup/{username}")
     public ResponseEntity<QasinoResponse> visitorSignup(
             @PathVariable("username") String name,
             @RequestParam(name = "email", defaultValue = "") String email
@@ -148,7 +148,7 @@ public class QasinoAndVisitorController {
         return ResponseEntity.ok().headers(flowDTO.getHeaders()).body(flowDTO.getQasinoResponse());
     }
 
-    @GetMapping(value = "/logon/{username}")
+//    @GetMapping(value = "/logon/{username}")
     public ResponseEntity<QasinoResponse> visitorLogon(
             @PathVariable("username") String name
     ) {
@@ -289,7 +289,7 @@ public class QasinoAndVisitorController {
 //        return ResponseEntity.ok().headers(flowDTO.getHeaders()).body(flowDTO.getQasinoResponse());
 //    }
 
-    @PutMapping(value = "/visitor/{visitorId}")
+//    @PutMapping(value = "/visitor/{visitorId}")
     public ResponseEntity<QasinoResponse> updateVisitor(
             @PathVariable("visitorId") String id,
             @RequestParam(name = "alias", defaultValue = "") String alias,
@@ -327,7 +327,7 @@ public class QasinoAndVisitorController {
         return ResponseEntity.ok().headers(flowDTO.getHeaders()).body(flowDTO.getQasinoResponse());
     }
 
-    @DeleteMapping("/visitor/{visitorId}")
+//    @DeleteMapping("/visitor/{visitorId}")
     public ResponseEntity<QasinoResponse> deleteVisitor(
             @PathVariable("visitorId") String id
     ) {

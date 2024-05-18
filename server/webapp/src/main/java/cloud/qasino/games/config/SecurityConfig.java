@@ -49,7 +49,7 @@ class SecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity httpSecurity) throws Exception {
         httpSecurity
             .authorizeRequests()
-                .antMatchers("/","index","error","home/homeNotSignedIn", "/favicon.ico", "/resources/**", "/signup","/h2-console/**").permitAll()
+                .antMatchers("/","/cssandjs/**","/images/**","/authenticate","/signin","/signup","/general","/homeNotSignedIn","/h2-console/**").permitAll()
                 .anyRequest().authenticated()
                 .and()
             .formLogin()

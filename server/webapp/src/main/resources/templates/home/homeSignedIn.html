@@ -6,19 +6,20 @@
     </th:block>
 </head>
 <body>
-<div th:replace="~{fragments/header :: header}">
+<div th:replace="~{fragments/header :: header}"></div>
+<div>
     <!-- the specific part of this html -->
     <div class="container">
         <div class="text-center">
             <!-- /* Handle the flash message */-->
             <th:block th:if="${message != null}">
                 <!-- /* The message code is returned from the @Controller */ -->
-                <div th:replace="fragments/alert :: alert (type=${#strings.toLowerCase(message.type)}, message=#{${message.message}(${#authentication.name})})">
+                <div th:replace="fragments/alert :: alert (type=${#strings.toLowerCase(message.type)}, message=#{${message.message}(${#authentication.username})})">
                     &nbsp;
                 </div>
             </th:block>
             <div class="text-center">
-                <h1>Welcome to the Qasino in the cloud!</h1>
+                <h1>Welcome inside Qasino in the cloud!</h1>
                 <div class="lead">
                     Start playing games
                 </div>

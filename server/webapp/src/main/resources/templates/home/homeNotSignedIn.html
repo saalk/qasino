@@ -1,18 +1,19 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" lang="en">
 <head>
-    <title>Qasino in the cloud</title>
+    <title>Sigin to the Qasino</title>
     <th:block th:include="~{fragments/header :: headerfiles}">
     </th:block>
 </head>
 <body>
-<div th:replace="~{fragments/header :: header}">
+<div th:replace="~{fragments/header :: header}"></div>
+<div>
     <!-- the specific part of this html -->
     <div class="container">
         <div class="text-center">
             <h1>Welcome to the qasino in the cloud!</h1>
             <div class="lead">
-                Get started quickly by signing up
+                Get started quickly by signing in
             </div>
         </div>
         <div th:insert="~{fragments/footer :: footer}"></div>

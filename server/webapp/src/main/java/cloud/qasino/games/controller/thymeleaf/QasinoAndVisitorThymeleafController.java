@@ -17,7 +17,6 @@ import cloud.qasino.games.database.repository.PlayerRepository;
 import cloud.qasino.games.database.repository.ResultsRepository;
 import cloud.qasino.games.database.repository.TurnRepository;
 import cloud.qasino.games.database.security.VisitorRepository;
-import cloud.qasino.games.dto.QasinoFlowDTO;
 import cloud.qasino.games.statemachine.event.EventOutput;
 import cloud.qasino.games.web.AjaxUtils;
 import cloud.qasino.games.web.MessageHelper;
@@ -83,7 +82,8 @@ public class QasinoAndVisitorThymeleafController {
     @Autowired
     MapQasinoGameTableFromDto mapQasinoGameTableFromDto;
 
-    private static final String SIGNUP_VIEW_NAME = "home/signup";
+    private static final String SIGNUP_VIEW_LOCATION = "/home/signup";
+    private static final String SIGNIN_VIEW_LOCATION = "/home/signin";
 
     @Autowired
     private VisitorService visitorService;
@@ -108,27 +108,28 @@ public class QasinoAndVisitorThymeleafController {
 
     @RequestMapping("favicon.ico")
     String favicon() {
-        return "forward:/resources/images/2favicon.ico";
+//        return "forward:/images/2favicon.ico";
+        return "/images/2favicon.ico";
     }
 
-    @RequestMapping(value = "signin") // works with get, post, put etc
+    @RequestMapping(value = "/signin") // works with get, post, put etc
     public String signin() {
-        return "home/signin";
+        return SIGNIN_VIEW_LOCATION;
     }
 
-    @GetMapping("signup")
+    @GetMapping("/signup")
     String signup(Model model, @RequestHeader(value = "X-Requested-With", required = false) String requestedWith) {
         model.addAttribute(new SignupForm());
         if (AjaxUtils.isAjaxRequest(requestedWith)) {
-            return SIGNUP_VIEW_NAME.concat(" :: signupForm");
+            return SIGNUP_VIEW_LOCATION.concat(" :: signupForm");
         }
-        return SIGNUP_VIEW_NAME;
+        return SIGNUP_VIEW_LOCATION;
     }
 
-    @PostMapping("signup")
+    @PostMapping("/signup")
     public String signup(@Valid @ModelAttribute SignupForm signupForm, Errors errors, RedirectAttributes ra) {
         if (errors.hasErrors()) {
-            return SIGNUP_VIEW_NAME;
+            return SIGNUP_VIEW_LOCATION;
         }
         Visitor visitor = visitorService.saveUser(signupForm.createVisitor());
         userDetailService.signin(visitor);
@@ -140,19 +141,19 @@ public class QasinoAndVisitorThymeleafController {
 
     @ModelAttribute("module")
     String module() {
-        return "home";
+        return "/";
     }
 
-    @GetMapping({"/","/home","home","home/homeNotSignedIn"} )
+    @GetMapping({"/"} )
     String index(Principal principal) {
-        return principal != null ? "home/homeSignedIn" : "home/homeNotSignedIn";
+        return principal != null ? "/home/homeSignedIn" : "/home/homeNotSignedIn";
     }
 
 
     /**
      * Display an error page, as defined in web.xml <code>custom-error</code> element.
      */
-    @RequestMapping("generalError")
+    @RequestMapping("/generalError")
     public String generalError(HttpServletRequest request, HttpServletResponse response, Model model) {
         // retrieve some useful information from the request
         Integer statusCode = (Integer) request.getAttribute("javax.servlet.error.status_code");
@@ -170,7 +171,7 @@ public class QasinoAndVisitorThymeleafController {
         );
 
         model.addAttribute("errorMessage", message);
-        return "error/general";
+        return "/error/general";
     }
 
     private String getExceptionMessage(Throwable throwable, Integer statusCode) {
