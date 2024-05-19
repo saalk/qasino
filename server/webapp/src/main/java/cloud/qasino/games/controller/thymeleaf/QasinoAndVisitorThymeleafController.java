@@ -196,11 +196,11 @@ public class QasinoAndVisitorThymeleafController {
         mapQasinoResponseFromDto.perform(flowDTO);
         flowDTO.prepareResponseHeaders();
 
-        model.addAttribute("qasino", flowDTO.getQasinoResponse());
+        model.addAttribute(flowDTO.getQasinoResponse());
         setVaryResponseHeader(response, flowDTO);
 
         log.info("GetMapping: /");
-        log.info("Model qasino: {}",model.getAttribute("qasino"));
+        log.info("Model: {}",model);
         log.info("Principal: {}",principal);
         log.info("HttpServletResponse: {}",response);
 
@@ -232,8 +232,6 @@ public class QasinoAndVisitorThymeleafController {
         String message = MessageFormat.format("{0} returned for {1} with message {2}",
                 statusCode, requestUri, exceptionMessage
         );
-
-        model.addAttribute("errorMessage", message);
         return "error/general";
     }
 
