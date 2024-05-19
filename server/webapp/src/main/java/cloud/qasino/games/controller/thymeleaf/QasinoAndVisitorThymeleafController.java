@@ -164,6 +164,8 @@ public class QasinoAndVisitorThymeleafController {
                 UsernamePasswordAuthenticationToken.unauthenticated(loginRequest.username(), loginRequest.password());
         Authentication authenticationResponse =
                 this.authenticationManager.authenticate(authenticationRequest);
+        log.warn("PostMapping: perform_signin");
+        log.warn("LoginRequest: {}",loginRequest);
         return null;
     }
 
