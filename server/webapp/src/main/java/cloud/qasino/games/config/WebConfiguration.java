@@ -24,5 +24,6 @@ public class WebConfiguration {
                 .paths(PathSelectors.any())
                 .build();
     }
+
 }
 

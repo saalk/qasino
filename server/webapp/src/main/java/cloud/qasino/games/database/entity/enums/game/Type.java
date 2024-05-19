@@ -4,7 +4,7 @@ import cloud.qasino.games.config.ContextType;
 import cloud.qasino.games.database.entity.enums.LabeledEnum;
 import lombok.Getter;
 
-import javax.persistence.Column;
+import jakarta.persistence.Column;
 import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.Map;

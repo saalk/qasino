@@ -3,8 +3,8 @@ package cloud.qasino.games.database.entity.enums.move;
 import cloud.qasino.games.database.entity.enums.LabeledEnum;
 import lombok.Getter;
 
-import javax.persistence.Column;
-import javax.persistence.Transient;
+import jakarta.persistence.Column;
+import jakarta.persistence.Transient;
 import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.Map;

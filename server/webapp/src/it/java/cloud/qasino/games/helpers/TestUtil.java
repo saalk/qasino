@@ -11,7 +11,7 @@
 //import org.awaitility.Duration;
 //import org.awaitility.core.ConditionTimeoutException;
 //
-//import javax.annotation.Resource;
+//import jakarta.annotation.Resource;
 //import java.time.LocalDateTime;
 //import java.util.List;
 //import java.util.concurrent.TimeUnit;
@@ -115,12 +115,12 @@
 //    public void cancelAllRequestsForCustomer(String customerId) {
 //        List<CreditCardRequestEntity> preAuthorizedRequests = requestService.getPreAuthorizedRequestsForCustomerForRequestType(customerId, CreditCardsRequestTypes.APPLY_CARD_SERVICE);
 //        if (preAuthorizedRequests != null && !preAuthorizedRequests.isEmpty()) {
-//            log.debug("pre authorized requests exist for this request id");
+//            log.info("pre authorized requests exist for this request id");
 //            requestService.batchUpdateCreditCardRequestList(preAuthorizedRequests, CreditCardsStates.CANCELLED);
 //        }
 //        List<CreditCardRequestEntity> postAuthorizedRequests = requestService.getPostAuthorizedRequestsForCustomer(customerId);
 //        if (postAuthorizedRequests != null && !postAuthorizedRequests.isEmpty()) {
-//            log.debug("post authorized requests exist for this request id");
+//            log.info("post authorized requests exist for this request id");
 //            requestService.batchUpdateCreditCardRequestList(postAuthorizedRequests, CreditCardsStates.CANCELLED);
 //        }
 //    }

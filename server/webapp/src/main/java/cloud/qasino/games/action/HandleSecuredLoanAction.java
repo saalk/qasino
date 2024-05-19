@@ -7,7 +7,7 @@ import cloud.qasino.games.database.security.VisitorRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.Resource;
+import jakarta.annotation.Resource;
 import java.util.Random;
 
 @Slf4j

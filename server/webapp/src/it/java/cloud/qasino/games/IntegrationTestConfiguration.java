@@ -10,14 +10,14 @@ import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 @TestConfiguration
 public class IntegrationTestConfiguration {
 
-    @Bean
-    public TestRestTemplate getTestRestTemplate() {
-//        var socketFactory = new SSLConnectionSocketFactory(sslContext);
-//        var httpClient = HttpClients.custom().setSSLSocketFactory(socketFactory).build();
-        var httpClient = HttpClients.createDefault();
-        var testRestTemplate = new TestRestTemplate();
-        ((HttpComponentsClientHttpRequestFactory) testRestTemplate.getRestTemplate().getRequestFactory()).setHttpClient(httpClient);
-        return testRestTemplate;
-    }
+//    @Bean
+//    public TestRestTemplate getTestRestTemplate() {
+////        var socketFactory = new SSLConnectionSocketFactory(sslContext);
+////        var httpClient = HttpClients.custom().setSSLSocketFactory(socketFactory).build();
+//        var httpClient = HttpClients.createDefault();
+//        var testRestTemplate = new TestRestTemplate();
+//        ((HttpComponentsClientHttpRequestFactory) testRestTemplate.getRestTemplate().getRequestFactory()).setHttpClient(httpClient);
+//        return testRestTemplate;
+//    }
 
 }

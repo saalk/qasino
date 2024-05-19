@@ -1,5 +1,6 @@
 package cloud.qasino.games.database.security;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.context.annotation.ScopedProxyMode;
@@ -8,7 +9,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.annotation.PostConstruct;
+import jakarta.annotation.PostConstruct;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -16,8 +17,9 @@ import java.util.Collections;
 import java.util.List;
 
 @Service
-@Scope(proxyMode = ScopedProxyMode.TARGET_CLASS)
-@Secured("ROLE_USER")
+//@Scope(proxyMode = ScopedProxyMode.TARGET_CLASS)
+//@Secured("ROLE_USER")
+@Slf4j
 public class VisitorService {
 
     @Autowired
@@ -109,22 +111,23 @@ public class VisitorService {
             roleRepository.save(role);
         }
     }
-    @javax.transaction.Transactional
+    @Transactional
     public Visitor createUserIfNotFound(Visitor search) {
-        Visitor visitor = visitorRepository.findByUsername(search.getUsername());
-        if (visitor == null) {
-            return saveUser(search);
+        Visitor user = visitorRepository.findByUsername(search.getUsername());
+        if (user == null) {
+            user = saveUser(search);
         }
-        return  search;
+        log.info("createUserIfNotFound: {}",user);
+        return  user;
     }
 
     @Transactional
     public Visitor createAdminIfNotFound(Visitor search) {
-        Visitor visitor = visitorRepository.findByUsername(search.getUsername());
-        if (visitor == null) {
-            return saveAdmin(search);
+        Visitor admin = visitorRepository.findByUsername(search.getUsername());
+        if (admin == null) {
+            admin = saveAdmin(search);
         }
-        return search;
+        log.info("createAdminIfNotFound: {}",admin);
+        return admin;
     }
-
 }

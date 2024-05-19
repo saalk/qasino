@@ -1,7 +1,6 @@
 package cloud.qasino.games;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.test.web.server.LocalServerPort;
@@ -14,7 +13,7 @@ import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.TestPropertySources;
 import org.springframework.test.context.web.WebAppConfiguration;
 
-import javax.annotation.Resource;
+import jakarta.annotation.Resource;
 import java.util.Collections;
 import java.util.Map;
 
@@ -29,7 +28,6 @@ import java.util.Map;
 @ContextConfiguration(classes = IntegrationTestConfiguration.class)
 public abstract class AbstractBaseApplicationIT {
 
-    private static final Logger log = LoggerFactory.getLogger(AbstractBaseApplicationIT.class);
 
     @Resource
     protected TestRestTemplate testRestTemplate;

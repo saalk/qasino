@@ -8,8 +8,8 @@ import cloud.qasino.games.orchestration.QasinoEventHandler;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.PostConstruct;
-import javax.annotation.Resource;
+import jakarta.annotation.PostConstruct;
+import jakarta.annotation.Resource;
 
 import static cloud.qasino.games.database.entity.enums.game.GameState.*;
 import static cloud.qasino.games.statemachine.event.GameEvent.START;

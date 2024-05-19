@@ -9,9 +9,12 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
 @Service
 //@Scope(proxyMode = ScopedProxyMode.TARGET_CLASS)
@@ -19,6 +22,11 @@ public class MyUserDetailService implements UserDetailsService {
 
     @Autowired
     private VisitorRepository visitorRepository;
+
+    private final Map<String, Visitor> userMap = new HashMap<>();
+
+    public MyUserDetailService(BCryptPasswordEncoder bCryptPasswordEncoder) {
+   }
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {

@@ -5,8 +5,8 @@ import cloud.qasino.games.database.entity.enums.LabeledEnum;
 import lombok.Getter;
 import org.apache.commons.lang3.StringUtils;
 
-import javax.persistence.Column;
-import javax.persistence.Transient;
+import jakarta.persistence.Column;
+import jakarta.persistence.Transient;
 import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.Map;

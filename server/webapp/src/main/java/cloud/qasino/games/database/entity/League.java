@@ -10,7 +10,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.DynamicUpdate;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -78,7 +78,7 @@ public class League {
     // L: A League can have more Games over time
     @OneToMany(mappedBy = "league", cascade = CascadeType.DETACH)
     // just a reference, the actual fk column is in game not here !
-    private List<Game> games = new ArrayList<>();
+    private List<Game> games;
 
     public League() {
         LocalDateTime localDateAndTime = LocalDateTime.now();

@@ -29,6 +29,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.MultiValueMap;
 import org.springframework.validation.Errors;
+import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -40,9 +41,9 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import com.google.common.base.Throwables;
 
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.validation.Valid;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.Valid;
 import java.security.Principal;
 import java.text.MessageFormat;
 import java.util.Optional;
@@ -58,6 +59,7 @@ import java.util.Optional;
 // 500 - internal server error
 
 @Controller
+@ControllerAdvice
 //@Api(tags = {WebConfiguration.QASINO_TAG})
 @Slf4j
 public class QasinoAndVisitorThymeleafController {
@@ -87,8 +89,8 @@ public class QasinoAndVisitorThymeleafController {
     @Autowired
     MapQasinoGameTableFromDto mapQasinoGameTableFromDto;
 
-    private static final String SIGNUP_VIEW_LOCATION = "/home/signup";
-    private static final String SIGNIN_VIEW_LOCATION = "/home/signin";
+    private static final String SIGNUP_VIEW_LOCATION = "home/signup";
+    private static final String SIGNIN_VIEW_LOCATION = "home/signin";
 
     @Autowired
     private VisitorService visitorService;
@@ -113,33 +115,47 @@ public class QasinoAndVisitorThymeleafController {
 
     @RequestMapping("favicon.ico")
     String favicon() {
-//        return "forward:/images/2favicon.ico";
-        return "/images/2favicon.ico";
+//        return "forward:/images/favicon.ico";
+        return "/images/favicon.ico";
     }
 
-    @RequestMapping(value = "/signin") // works with get, post, put etc
+    @RequestMapping(value = "signin") // works with get, post, put etc
     public String signin() {
         return SIGNIN_VIEW_LOCATION;
     }
 
-    @GetMapping("/signup")
+    @GetMapping("signup")
     String signup(Model model, @RequestHeader(value = "X-Requested-With", required = false) String requestedWith) {
         model.addAttribute(new SignupForm());
+
+        log.info("GetMapping: signup");
+        log.info("Model: {}",model);
+        log.info("String: {}",requestedWith);
+
         if (AjaxUtils.isAjaxRequest(requestedWith)) {
             return SIGNUP_VIEW_LOCATION.concat(" :: signupForm");
         }
         return SIGNUP_VIEW_LOCATION;
     }
 
-    @PostMapping("/signup")
+    @PostMapping("signup")
     public String signup(
             @Valid @ModelAttribute SignupForm signupForm,
             Errors errors, RedirectAttributes ra) {
+
+        log.info("PostMapping: signup");
+        log.info("SignupForm: {}",signupForm);
+        log.info("Errors: {}",errors);
+        log.info("RedirectAttributes: {}",ra);
+
         if (errors.hasErrors()) {
             return SIGNUP_VIEW_LOCATION;
         }
         Visitor visitor = visitorService.saveUser(signupForm.createVisitor());
         userDetailService.signin(visitor);
+
+        log.info("visitor: {}",visitor.toString());
+
         // see /WEB-INF/i18n/messages.properties and /WEB-INF/views/homeSignedIn.html
         MessageHelper.addSuccessAttribute(ra, "signup.success");
         return "redirect:/";
@@ -147,10 +163,21 @@ public class QasinoAndVisitorThymeleafController {
     }
 
 
-    @ModelAttribute("qasino")
-    QasinoResponse module() {
-        return new QasinoResponse();
-    }
+//    // move to abstract class
+//    @ModelAttribute
+//    public void addAttributes(final Model model) {
+//        model.addAttribute("welcome", "Welcome to the Qasino in the Cloud!");
+//
+//        // build qasino
+//        QasinoFlowDTO flowDTO = new QasinoFlowDTO();
+//        loadEntitiesToDtoAction.perform(flowDTO);
+//        mapQasinoGameTableFromDto.perform(flowDTO);
+//        setStatusIndicatorsBaseOnRetrievedDataAction.perform(flowDTO);
+//        calculateQasinoStatistics.perform(flowDTO);
+//        mapQasinoResponseFromDto.perform(flowDTO);
+//        flowDTO.prepareResponseHeaders();
+//        model.addAttribute("qasino", flowDTO.getQasinoResponse());
+//    }
 
     @GetMapping({"/"} )
     String index(
@@ -158,15 +185,11 @@ public class QasinoAndVisitorThymeleafController {
             Principal principal,
             HttpServletResponse response) {
 
-        // validate
-        QasinoFlowDTO flowDTO = new QasinoFlowDTO();
+
+
         // build response
-        output = loadEntitiesToDtoAction.perform(flowDTO);
-        if (output == EventOutput.Result.FAILURE) {
-            flowDTO.prepareResponseHeaders();
-            model.addAttribute("qasino", flowDTO.getQasinoResponse());
-            return "/home/homeSignedIn";
-        }
+        QasinoFlowDTO flowDTO = new QasinoFlowDTO();
+        loadEntitiesToDtoAction.perform(flowDTO);
         mapQasinoGameTableFromDto.perform(flowDTO);
         setStatusIndicatorsBaseOnRetrievedDataAction.perform(flowDTO);
         calculateQasinoStatistics.perform(flowDTO);
@@ -175,21 +198,33 @@ public class QasinoAndVisitorThymeleafController {
 
         model.addAttribute("qasino", flowDTO.getQasinoResponse());
         setVaryResponseHeader(response, flowDTO);
-        return principal != null ? "/home/homeSignedIn" : "/home/homeNotSignedIn";
+
+        log.info("GetMapping: /");
+        log.info("Model qasino: {}",model.getAttribute("qasino"));
+        log.info("Principal: {}",principal);
+        log.info("HttpServletResponse: {}",response);
+
+        return principal != null ? "home/homeSignedIn" : "home/homeNotSignedIn";
     }
 
     /**
      * Display an error page, as defined in web.xml <code>custom-error</code> element.
      */
-    @RequestMapping("/generalError")
+    @RequestMapping("general")
     public String generalError(HttpServletRequest request, HttpServletResponse response, Model model) {
         // retrieve some useful information from the request
-        Integer statusCode = (Integer) request.getAttribute("javax.servlet.error.status_code");
-        Throwable throwable = (Throwable) request.getAttribute("javax.servlet.error.exception");
-        // String servletName = (String) request.getAttribute("javax.servlet.error.servlet_name");
+
+        log.info("RequestMapping: general");
+        log.info("HttpServletRequest: {}",request.toString());
+        log.info("HttpServletResponse: {}",response.toString());
+        log.info("Model: {}",model.toString());
+
+        Integer statusCode = (Integer) request.getAttribute("jakarta.servlet.error.status_code");
+        Throwable throwable = (Throwable) request.getAttribute("jakarta.servlet.error.exception");
+        // String servletName = (String) request.getAttribute("jakarta.servlet.error.servlet_name");
         String exceptionMessage = getExceptionMessage(throwable, statusCode);
 
-        String requestUri = (String) request.getAttribute("javax.servlet.error.request_uri");
+        String requestUri = (String) request.getAttribute("jakarta.servlet.error.request_uri");
         if (requestUri == null) {
             requestUri = "Unknown";
         }
@@ -199,7 +234,7 @@ public class QasinoAndVisitorThymeleafController {
         );
 
         model.addAttribute("errorMessage", message);
-        return "/error/general";
+        return "error/general";
     }
 
     private String getExceptionMessage(Throwable throwable, Integer statusCode) {

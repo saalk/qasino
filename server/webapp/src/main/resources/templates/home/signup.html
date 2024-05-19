@@ -2,14 +2,14 @@
 <html xmlns:th="http://www.thymeleaf.org" lang="en">
 <head>
     <title>Signup</title>
-    <th:block th:include="~{fragments/header :: headerfiles}">
+    <th:block th:insert="~{fragments/header :: headerfiles}">
     </th:block>
 </head>
 <body>
 <div th:replace="~{fragments/header :: header}"></div>
 <div>
     <form class="form-narrow form-horizontal" method="post" th:action="@{/signup}" th:object="${signupForm}"
-          th:fragment="signupForm" autocomplete="on">
+          th:fragment="signupForm">
         <!--/* Show general error message when form contains errors */-->
         <th:block th:if="${#fields.hasErrors('${signupForm.*}')}">
             <div th:replace="fragments/alert :: alert (type='danger', message='Form contains errors. Please try again.')">
@@ -26,7 +26,7 @@
                           th:errors="*{email}">Incorrect email</span>
                 </div>
             </div>
-            <div class="form-group" th:classappend="${#fields.hasErrors('email')}? 'has-error'">
+            <div class="form-group" th:classappend="${#fields.hasErrors('username')}? 'has-error'">
                 <label for="username" class="col-lg-2 control-label">Username</label>
                 <div class="col-lg-10">
                     <input type="text" class="form-control" id="username" placeholder="Username"
@@ -58,7 +58,7 @@
             </div>
             <div class="form-group">
                 <div class="col-lg-offset-2 col-lg-10">
-                    <p>Been here before? <a href="signin" th:href="@{/signin}">Sign In</a></p>
+                    <p>Been here before? <a href="/signin" th:href="@{/signin}">Sign In</a></p>
                 </div>
             </div>
         </fieldset>
