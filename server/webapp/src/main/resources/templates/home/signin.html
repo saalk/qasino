@@ -11,7 +11,7 @@
     <!-- the specific part of this html -->
     <div class="container">
 <!--    <form class="form-narrow form-horizontal" action="#" method="post" th:action="@{/home/authenticate}" autocomplete="on">-->
-    <form action="#" method="post" th:action="@{perform_login}">
+    <form action="#" method="post" th:action="@{/perform_signin}">
         <!-- check this => .failureUrl("/signin?error=1") -->
         <th:block th:if="${param.error != null}">
             <!-- /* The message code is returned from the @Controller */ -->
