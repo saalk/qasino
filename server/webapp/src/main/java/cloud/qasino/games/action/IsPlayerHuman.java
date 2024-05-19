@@ -8,7 +8,7 @@ import cloud.qasino.games.statemachine.event.EventOutput;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.Resource;
+import jakarta.annotation.Resource;
 
 @Slf4j
 @Component

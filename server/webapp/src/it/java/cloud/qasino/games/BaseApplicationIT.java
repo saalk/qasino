@@ -9,7 +9,7 @@ import org.junit.jupiter.api.TestInstance;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 
-import javax.annotation.Resource;
+import jakarta.annotation.Resource;
 import java.util.Optional;
 
 import static cloud.qasino.games.config.Constants.BASE_PATH;

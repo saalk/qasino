@@ -21,7 +21,7 @@ public interface CardRepository extends JpaRepository<Card, Long> {
                     "WHERE \"game_id\" = :gameId ";
 
     // counters
-    Long countByGame(int gameId);
+    int countByGame(Game game);
 
     // lists
     List<Card> findByGame(Game game);

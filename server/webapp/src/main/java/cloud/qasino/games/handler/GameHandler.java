@@ -8,7 +8,7 @@ import cloud.qasino.games.dto.QasinoFlowDTO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.Resource;
+import jakarta.annotation.Resource;
 import java.time.LocalTime;
 
 import static cloud.qasino.games.statemachine.event.GameEvent.START;

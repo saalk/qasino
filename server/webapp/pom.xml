@@ -18,9 +18,10 @@
 		<start-class>cloud.qasinoResponse.games.GamesApplication</start-class>
 
 		<!-- 1: spring boot and web development -->
-		 <spring-boot.version>2.7.18</spring-boot.version>
+		<spring-boot.version>3.2.5</spring-boot.version>
 		<enforcer.legacy.fail>false</enforcer.legacy.fail>
 		<httpclient.version>4.5.14</httpclient.version>
+		<thymeleaf-extras-springsecurity6.version>3.1.2.RELEASE</thymeleaf-extras-springsecurity6.version>
 
 		<!-- 2: database -->
 		<h2.version>2.2.224</h2.version>
@@ -48,9 +49,8 @@
 		<version.swagger>2.3.1</version.swagger>
 
 		<!-- 6: logging -->
-		<org.slf4j.version>1.7.21</org.slf4j.version>
-		<!--		<logback.version>1.5.3</logback.version>-->
-		<logback.version>1.2.11</logback.version>
+				<logback-core.version>1.5.6</logback-core.version>
+<!--		<logback.version>1.2.11</logback.version>-->
 
 		<!-- 7: test -->
 		<mockito-core.version>5.11.0</mockito-core.version>
@@ -81,6 +81,7 @@
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-security</artifactId>
+			<version>${spring-boot.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.security</groupId>
@@ -89,7 +90,7 @@
 		<dependency>
 			<groupId>org.thymeleaf.extras</groupId>
 			<artifactId>thymeleaf-extras-springsecurity6</artifactId>
-			<version>3.1.2.RELEASE</version>
+			<version>${thymeleaf-extras-springsecurity6.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.security</groupId>
@@ -109,19 +110,27 @@
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-devtools</artifactId>
+			<version>${spring-boot.version}</version>
+
 			<optional>true</optional>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
+			<version>${spring-boot.version}</version>
+
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-thymeleaf</artifactId>
+			<version>${spring-boot.version}</version>
+
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
+			<version>${spring-boot.version}</version>
+
 			<scope>test</scope>
 			<exclusions>
 				<exclusion>
@@ -133,6 +142,8 @@
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-validation</artifactId>
+			<version>${spring-boot.version}</version>
+
 		</dependency>
 
 		<!-- 2: database -->
@@ -140,6 +151,8 @@
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-data-jpa</artifactId>
+			<version>${spring-boot.version}</version>
+
 		</dependency>
 		<!-- use H2 as a very lightweight test database -->
 		<dependency>
@@ -255,7 +268,11 @@
 		<!--		</dependency>-->
 
 		<!-- 6: logging -->
-
+		<dependency>
+			<groupId>ch.qos.logback</groupId>
+			<artifactId>logback-core</artifactId>
+			<version>${logback-core.version}</version>
+		</dependency>
 
 		<!-- 7: test -->
 		<dependency>
@@ -338,6 +355,8 @@
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
+				<version>${spring-boot.version}</version>
+
 				<!-- used dev when spring-boot:run is executed -->
 				<configuration>
 					<profiles>

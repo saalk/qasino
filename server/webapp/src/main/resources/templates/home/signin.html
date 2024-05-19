@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org" lang="en">
 <head>
     <title>Sigin</title>
-    <th:block th:include="~{fragments/header :: headerfiles}">
+    <th:block th:insert="~{fragments/header :: headerfiles}">
     </th:block>
 </head>
 <body>
@@ -12,6 +12,7 @@
     <div class="container">
 <!--    <form class="form-narrow form-horizontal" action="#" method="post" th:action="@{/home/authenticate}" autocomplete="on">-->
     <form action="#" method="post" th:action="@{/authenticate}" autocomplete="on">
+        <!-- check this => .failureUrl("/signin?error=1") -->
         <th:block th:if="${param.error != null}">
             <!-- /* The message code is returned from the @Controller */ -->
             <div th:replace="/fragments/alert :: alert (type='danger', message='Sign in error. Please try again.')">
@@ -33,15 +34,15 @@
                            name="password"/>
                 </div>
             </div>
-            <div class="form-group">
-                <div class="col-lg-offset-2 col-lg-10">
-                    <div class="checkbox">
-                        <label>
-                            <input type="checkbox" name="_spring_security_remember_me"/> Remember me
-                        </label>
-                    </div>
-                </div>
-            </div>
+<!--            <div class="form-group">-->
+<!--                <div class="col-lg-offset-2 col-lg-10">-->
+<!--                    <div class="checkbox">-->
+<!--                        <label>-->
+<!--                            <input type="checkbox" name="_spring_security_remember_me"/> Remember me-->
+<!--                        </label>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--            </div>-->
             <div class="form-group">
                 <div class="col-lg-offset-2 col-lg-10">
                     <button type="submit" class="btn btn-default">Sign in</button>

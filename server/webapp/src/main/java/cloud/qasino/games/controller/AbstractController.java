@@ -4,7 +4,7 @@ import cloud.qasino.games.dto.QasinoFlowDTO;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.ModelAttribute;
 
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletResponse;
 
 public class AbstractController {
 

@@ -3,7 +3,7 @@ package cloud.qasino.games.statemachine.event;
 import cloud.qasino.games.statemachine.event.interfaces.Event;
 import lombok.Getter;
 
-import javax.persistence.Transient;
+import jakarta.persistence.Transient;
 import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.Map;

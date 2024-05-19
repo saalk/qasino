@@ -2,7 +2,7 @@ package cloud.qasino.games.database.entity.enums.game.style;
 
 import lombok.Getter;
 
-import javax.validation.constraints.Pattern;
+import jakarta.validation.constraints.Pattern;
 import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.Map;

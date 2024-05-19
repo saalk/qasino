@@ -24,7 +24,7 @@
     <!--    <link rel="stylesheet" type="text/css"-->
     <!--    <link rel="stylesheet" type="text/css"-->
     <!-- Favicon -->
-    <link rel="icon" type="image/png" href="../../static/images/3favicon.png" th:href="@{/images/3favicon.png}"/>
+    <link rel="icon" type="image/x-icon" href="../../static/images/favicon.ico" th:href="@{/images/favicon.ico}"/>
     <script type="text/javascript" th:src="@{/cssandjs/jquery.min.js}"></script>
     <script type="text/javascript" th:src="@{/cssandjs/bootstrap/bootstrap.bundle.min.js}"></script>
 </head>
@@ -35,7 +35,7 @@
     <nav class="navbar navbar-expand-lg bg-body-tertiary">
         <div class="container-fluid"> <!-- adjusted -->
             <a class="navbar-brand" href="#">
-                <img th:src="@{images/qasino-logo.png}" alt="Logo" width="90" height="70"
+                <img th:src="@{images/qasino/qasino-logo.png}" alt="Logo" width="90" height="70"
                      class="d-inline-block align-text-top">
             </a>
             <!--            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">-->
@@ -60,7 +60,7 @@
                         <a class="nav-link" href="/signin" th:href="@{/signin}">Sign in</a>
                     </li>
                     <li class="nav-item" sec:authorize="isAuthenticated()">
-                        <a class="nav-link" href="/logout" th:href="@{/logout}">Logout</a>
+                        <a class="nav-link" href="/logout" th:href="@{#}">Logout</a>
                     </li>
                     <li class="nav-item" sec:authorize="isAuthenticated()">
                         <span sec:authentication="name"></span>

@@ -36,10 +36,10 @@ public class QasinoEventHandler {
     }
 
     public <T extends AbstractFlowDTO> T handleEvent(Event event, T flowDTO) {
-        log.debug((label != null ? label + ": " : "") + "handling event " + event);
+        log.info((label != null ? label + ": " : "") + "handling event " + event);
         flowDTO.setCurrentEvent(event);
         handleBeforeEventActions(flowDTO);
-        log.debug((label != null ? label + ": " : "") + "handling event " + event + " for state " + flowDTO.getCurrentState());
+        log.info((label != null ? label + ": " : "") + "handling event " + event + " for state " + flowDTO.getCurrentState());
 
         flowDTO.setStartState(flowDTO.getCurrentState());
         checkStateForEvent(event, flowDTO);
@@ -118,7 +118,7 @@ public class QasinoEventHandler {
             throw new IllegalStateException("No bean present for event " + actionConfig.getEvent() + ", make " +
                     "sure it's annotated with @Component");
         }
-        log.debug("performing event " + action.getClass().getSimpleName());
+        log.info("performing event " + action.getClass().getSimpleName());
         OrchestrationConfig.Transition resultingTransition;
         RuntimeException resultingException = null;
         try {
@@ -127,7 +127,7 @@ public class QasinoEventHandler {
             if (output instanceof ActionOutput) {
                 output = ((ActionOutput) output).getResult();
             }
-            log.debug("output of event " + action.getClass().getSimpleName() + " is " + output);
+            log.info("output of event " + action.getClass().getSimpleName() + " is " + output);
             resultingTransition = actionConfig.getTransitionForResult(output);
         } catch (RuntimeException e) {
             resultingException = e;
@@ -148,7 +148,7 @@ public class QasinoEventHandler {
             GameState oldState = getCurrentState(flowDTO);
             performTransition(transition, flowDTO);
             GameState newState = getCurrentState(flowDTO);
-            log.debug("performed transition " + oldState + "->" + newState + " after event " + actionConfig.getAction().getSimpleName());
+            log.info("performed transition " + oldState + "->" + newState + " after event " + actionConfig.getAction().getSimpleName());
             handleAfterEventActions(flowDTO);
             if (transition.getNextEvent() != null) {
                 handleEvent(transition.getNextEvent(), flowDTO);

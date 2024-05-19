@@ -29,10 +29,6 @@
         <appender-ref ref="APP_LOG"/>
     </logger>
 
-    <logger name="cloud.qasinoResponse.games.audit.slf4j" level="info" additivity="false">
-        <appender-ref ref="AUDIT_LOG"/>
-    </logger>
-
     <logger name="com.zaxxer.hikari" level="warn">
         <appender-ref ref="APP_LOG"/>
     </logger>

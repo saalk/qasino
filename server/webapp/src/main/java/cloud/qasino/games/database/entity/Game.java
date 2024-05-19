@@ -16,7 +16,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.DynamicUpdate;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 import java.time.LocalDateTime;
 import java.time.Month;
 import java.time.format.DateTimeFormatter;
@@ -109,20 +109,21 @@ public class Game {
     @JsonIgnore
     // SF: a shuffled Card is added to a GameSubTotals at the start
     @OneToMany(mappedBy = "game", cascade = CascadeType.DETACH)
-    private List<Card> cards = new ArrayList<>();
+    private List<Card> cards;
 
     // PlGa: many Players can play the same GameSubTotals
     @OneToMany(mappedBy = "game", cascade = CascadeType.DETACH)
-    private List<Player> players = new ArrayList<>();
+    private List<Player> players;
 
     @JsonIgnore
     // AcTu: a Turn is kept do indicate the active player's move only
     @OneToOne(mappedBy = "game", cascade = CascadeType.DETACH)
     private Turn turn; // = new Turn();
 
-    @OneToMany(mappedBy = "visitor", cascade = CascadeType.DETACH)
-    // just a reference, the actual fk column is in league not here!
-    private List<League> leagues;
+    // todo delete
+//    @OneToMany(mappedBy = "game", cascade = CascadeType.DETACH)
+//    // just a reference, the actual fk column is in league not here!
+//    private List<League> leagues;
 
     // just a reference, the actual fk column is in result not here!
     @OneToMany(mappedBy = "game", cascade = CascadeType.DETACH)

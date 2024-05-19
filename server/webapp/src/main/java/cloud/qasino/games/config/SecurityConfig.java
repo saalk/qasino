@@ -1,79 +1,82 @@
 package cloud.qasino.games.config;
 
 import cloud.qasino.games.database.security.MyUserDetailService;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
-import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.web.authentication.rememberme.TokenBasedRememberMeServices;
+import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 
 @Configuration
 @EnableWebSecurity
-@EnableGlobalMethodSecurity(securedEnabled = true)
-class SecurityConfig extends WebSecurityConfigurerAdapter {
+@EnableMethodSecurity(securedEnabled = true, jsr250Enabled = true)
+class SecurityConfig {
 
     // https://www.marcobehler.com/guides/spring-security
     // https://github.com/thymeleaf/thymeleafexamples-layouts/blob/master/src/main/java/thymeleafexamples/layouts/config/SecurityConfig.java
 
-
-    @Autowired
-    private MyUserDetailService userDetailService;
-
-    @Bean
-    public TokenBasedRememberMeServices rememberMeServices() {
-        return new TokenBasedRememberMeServices("remember-me-key", userDetailService);
-    }
+    @Value("${spring.security.debug:false}")
+    boolean securityDebug;
 
     @Bean
-    public PasswordEncoder passwordEncoder() {
+    public BCryptPasswordEncoder bCryptPasswordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
-    @Override
-    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth
-            .eraseCredentials(true)
-            .userDetailsService(userDetailService)
-            .passwordEncoder(passwordEncoder());
+    @Bean
+    public WebSecurityCustomizer webSecurityCustomizer() {
+        return web -> web.debug(securityDebug).ignoring().requestMatchers("/cssandjs/**", "/images/**", "/authenticate", "/homeNotSignedIn", "/general", "/h2-console/**");
     }
 
-    @Override
-    protected void configure(HttpSecurity httpSecurity) throws Exception {
-        httpSecurity
-            .authorizeRequests()
-//                .antMatchers("/","/cssandjs/**","/images/**","/authenticate","/signin","/signup","/general","/homeNotSignedIn","/h2-console/**").permitAll()
-                .antMatchers("/cssandjs/**","/images/**","/authenticate","/signin","/signup","/general","/homeNotSignedIn","/h2-console/**").permitAll()
-                .anyRequest().authenticated()
-                .and()
-            .formLogin()
-                .loginPage("/signin")
-                .permitAll()
-                .failureUrl("/signin?error=1")
-                .loginProcessingUrl("/authenticate")
-                .and()
-            .logout()
-                .logoutUrl("/logout")
-                .permitAll()
-                .logoutSuccessUrl("/signin?logout")
-                .and()
-            .rememberMe()
-                .rememberMeServices(rememberMeServices())
-                .key("remember-me-key");
-        httpSecurity.csrf().disable();
-        httpSecurity.headers().frameOptions().disable();
+    @Bean
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+        http.csrf(AbstractHttpConfigurer::disable)
+                .authorizeHttpRequests(
+                        auth -> auth.requestMatchers("/","/cssandjs/**", "/images/**", "/authenticate", "/signin", "/signup", "/general", "/homeNotSignedIn", "/h2-console/**").permitAll()
+                                .requestMatchers("/users/**", "/apps/**").hasAuthority("ADMIN")
+                                .requestMatchers("/myapps/**").hasAuthority("CLIENT")
+                                .anyRequest().authenticated()
+                )
+                .formLogin(formLogin -> formLogin
+                        .loginPage("/signin")
+                        .permitAll()
+                        .failureUrl("/signin?error=1")
+                        .loginProcessingUrl("/authenticate")
+                        .permitAll()
+                )
+//                .rememberMe(rememberMe -> rememberMe.key("remember-me-key"))
+                .logout(logout -> logout.logoutUrl("/")
+                        .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
+                        .permitAll()
+                        .logoutSuccessUrl("/signin?logout"));
+
+        return http.build();
     }
 
-    @Bean(name = "authenticationManager")
-    @Override
-    public AuthenticationManager authenticationManagerBean() throws Exception {
-        return super.authenticationManagerBean();
+//--
+
+    @Bean
+    public AuthenticationManager authenticationManager(HttpSecurity httpSecurity, MyUserDetailService userDetailsService, BCryptPasswordEncoder bCryptPasswordEncoder) throws Exception {
+        AuthenticationManagerBuilder auth = httpSecurity.getSharedObject(AuthenticationManagerBuilder.class);
+        auth.userDetailsService(userDetailsService)
+                .passwordEncoder(bCryptPasswordEncoder);
+        return auth.build();
     }
+
+    @Bean
+    public UserDetailsService userDetailsService(BCryptPasswordEncoder bCryptPasswordEncoder) {
+        return new MyUserDetailService(bCryptPasswordEncoder);
+    }
+
+
 }
