@@ -25,7 +25,7 @@ public class HandleSecuredLoanAction implements Action<HandleSecuredLoanAction.D
         if (actionDto.isRequestingToRepay()) {
             boolean repayOk = updateVisitor.repayLoan();
             if (!repayOk) {
-                log.info("!repayOk");
+                log.warn("!repayOk");
                 setConflictErrorMessage(actionDto, "Repay", "Repay loan with balance not possible, balance too low");
                 return EventOutput.Result.FAILURE;
             }
@@ -38,7 +38,7 @@ public class HandleSecuredLoanAction implements Action<HandleSecuredLoanAction.D
             int randomNumber = random.nextInt(1001);
             boolean pawnOk = updateVisitor.pawnShip(randomNumber);
             if (!pawnOk) {
-                log.info("!pawnOk");
+                log.warn("!pawnOk");
                 setConflictErrorMessage(actionDto, "Pawn", "Ship already pawned, repay first");
                 return EventOutput.Result.FAILURE;
             }

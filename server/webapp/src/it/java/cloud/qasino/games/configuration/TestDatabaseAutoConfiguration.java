@@ -46,7 +46,7 @@
 //    public EntityManagerFactory entityManagerFactory(final DataSource dataSource,
 //                                                     @Value("${param.database.generate.tables:true}") final boolean isGeneratingTables,
 //                                                     @Value("${param.database.show.sql:true}") final boolean isShowingSql) {
-//        log.info("Entity Manager Factory for in-memory database");
+//        log.warn("Entity Manager Factory for in-memory database");
 //        HibernateJpaVendorAdapter vendor = new HibernateJpaVendorAdapter();
 //        vendor.setGenerateDdl(isGeneratingTables);
 //        vendor.setShowSql(isShowingSql);

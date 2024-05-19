@@ -90,7 +90,7 @@ public class IsGameConsistentForGameEvent implements Action<IsGameConsistentForG
             }
         }
         if (!reasonPart.isEmpty()) {
-            log.info("!exists");
+            log.warn("!exists");
             setUnprocessableErrorMessage(actionDto,
                     "Action [" +
                             actionDto.getSuppliedGameEvent() +
@@ -107,7 +107,7 @@ public class IsGameConsistentForGameEvent implements Action<IsGameConsistentForG
                         .filter(p -> p.getSeat() == 1)
                         .findFirst();
         if (player.isEmpty()) {
-            log.info("!seats");
+            log.warn("!seats");
             setUnprocessableErrorMessage(actionDto, "Action [" + actionDto.getSuppliedGameEvent() + "] invalid - no correct seat order for player(s)");
             return false;
         }
@@ -115,7 +115,7 @@ public class IsGameConsistentForGameEvent implements Action<IsGameConsistentForG
     }
     private boolean gameShouldHaveStateInCorrectGameStateGroup(Dto actionDto, List<GameStateGroup> gameStateGroups) {
         if (!(gameStateGroups.contains(actionDto.getQasinoGame().getState().getGroup()))) {
-            log.info("!state");
+            log.warn("!state");
             setUnprocessableErrorMessage(actionDto,
                     "Action [" +
                             actionDto.getSuppliedGameEvent() +
@@ -130,7 +130,7 @@ public class IsGameConsistentForGameEvent implements Action<IsGameConsistentForG
     }
     private boolean gameShouldHaveAnte(Dto actionDto) {
         if (actionDto.getQasinoGame().getAnte() <= 0) {
-            log.info("!ante");
+            log.warn("!ante");
             setUnprocessableErrorMessage(actionDto,
                     "Action [" +
                             actionDto.getSuppliedGameEvent() +
@@ -143,7 +143,7 @@ public class IsGameConsistentForGameEvent implements Action<IsGameConsistentForG
     }
     private boolean gameShouldHaveInitiator(Dto actionDto) {
         if (actionDto.getQasinoGame().getInitiator() == 0) {
-            log.info("!initiator");
+            log.warn("!initiator");
             setUnprocessableErrorMessage(actionDto,
                     "Action [" +
                             actionDto.getSuppliedGameEvent() +
@@ -156,7 +156,7 @@ public class IsGameConsistentForGameEvent implements Action<IsGameConsistentForG
     private boolean gameShouldHavePlayersWithFiches(Dto actionDto) {
         for (Player player : actionDto.getQasinoGamePlayers()) {
             if (player.getFiches() == 0) {
-                log.info("!fiches");
+                log.warn("!fiches");
                 setUnprocessableErrorMessage(actionDto,
                         "Action [" +
                                 actionDto.getSuppliedGameEvent() +
@@ -172,7 +172,7 @@ public class IsGameConsistentForGameEvent implements Action<IsGameConsistentForG
     private boolean gameShouldHaveCardsAndTurn(Dto actionDto) {
         if (actionDto.getActiveTurn() == null ||
                 actionDto.getCardsInTheGameSorted() == null) {
-            log.info("!turn and/or cards");
+            log.warn("!turn and/or cards");
             setUnprocessableErrorMessage(actionDto,
                     "Action [" +
                             actionDto.getSuppliedGameEvent() +
@@ -185,7 +185,7 @@ public class IsGameConsistentForGameEvent implements Action<IsGameConsistentForG
     }
     private boolean gameShouldHaveAResult(Dto actionDto) {
         if (actionDto.getGameResults() == null) {
-            log.info("!turn and/or cards");
+            log.warn("!turn and/or cards");
             setUnprocessableErrorMessage(actionDto,
                     "Action [" +
                             actionDto.getSuppliedGameEvent() +

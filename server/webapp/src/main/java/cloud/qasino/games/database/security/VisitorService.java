@@ -117,7 +117,7 @@ public class VisitorService {
         if (user == null) {
             user = saveUser(search);
         }
-        log.info("createUserIfNotFound: {}",user);
+        log.warn("createUserIfNotFound: {}",user);
         return  user;
     }
 
@@ -127,7 +127,7 @@ public class VisitorService {
         if (admin == null) {
             admin = saveAdmin(search);
         }
-        log.info("createAdminIfNotFound: {}",admin);
+        log.warn("createAdminIfNotFound: {}",admin);
         return admin;
     }
 }

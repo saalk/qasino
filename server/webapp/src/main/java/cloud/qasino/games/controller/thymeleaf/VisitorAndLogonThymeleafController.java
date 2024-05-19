@@ -13,17 +13,13 @@ import cloud.qasino.games.database.repository.GameRepository;
 import cloud.qasino.games.database.repository.PlayerRepository;
 import cloud.qasino.games.database.repository.ResultsRepository;
 import cloud.qasino.games.database.repository.TurnRepository;
-import cloud.qasino.games.database.security.Visitor;
 import cloud.qasino.games.database.security.VisitorRepository;
 import cloud.qasino.games.dto.QasinoFlowDTO;
 import cloud.qasino.games.statemachine.event.EventOutput;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.ui.Model;
-import org.springframework.util.Assert;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -32,8 +28,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import jakarta.servlet.http.HttpServletResponse;
-import java.security.Principal;
-import java.util.List;
+
 import java.util.Optional;
 
 // basic path /qasino
@@ -49,7 +44,7 @@ import java.util.Optional;
 @RestController
 //@Api(tags = {WebConfiguration.QASINO_TAG})
 @Slf4j
-public class VisitorThymeleafController {
+public class VisitorAndLogonThymeleafController {
 
     EventOutput.Result output;
 
@@ -77,7 +72,7 @@ public class VisitorThymeleafController {
     MapQasinoGameTableFromDto mapQasinoGameTableFromDto;
 
     @Autowired
-    public VisitorThymeleafController(
+    public VisitorAndLogonThymeleafController(
             VisitorRepository visitorRepository,
             GameRepository gameRepository,
             PlayerRepository playerRepository,
@@ -90,6 +85,7 @@ public class VisitorThymeleafController {
         this.cardRepository = cardRepository;
         this.turnRepository = turnRepository;
     }
+
 
     @GetMapping("visitor/{visitorId}")
     @ResponseStatus(value = HttpStatus.OK)

@@ -231,7 +231,7 @@ public class QasinoResponseMapper {
         if (!(actionDto.getTable() == null)) {
             pageGamePlay.setTable(actionDto.getTable());
         } else {
-            log.info("tabel is null !!!");
+            log.warn("tabel is null !!!");
         }
         pageGamePlay.setGameResults(actionDto.getGameResults());
     }

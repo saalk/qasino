@@ -21,8 +21,8 @@ public class GameHandler {
     private QasinoStateMachine qasinoStateMachine;
 
     public QasinoResponse qasinoAndVisitor(final Long visitorId) {
-        log.info("########## Start of initialize: " + LocalTime.now());
-        log.info("########## Start of initialize: " + LocalTime.now());
+        log.warn("########## Start of initialize: " + LocalTime.now());
+        log.warn("########## Start of initialize: " + LocalTime.now());
 
         QasinoRequest request = new QasinoRequest(); // pathvariables
         // validate and give 400 if needed
@@ -31,7 +31,7 @@ public class GameHandler {
 //      flowDTO.addQasinoRequest(request);
 
         qasinoStateMachine.handleEvent(START, flowDTO);
-        log.info("########## Start of initialize: " + LocalTime.now());
+        log.warn("########## Start of initialize: " + LocalTime.now());
 
         return new QasinoResponseMapper().map(flowDTO);
     }
