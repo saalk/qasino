@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -35,30 +36,41 @@ class SecurityConfig {
 
     @Bean
     public WebSecurityCustomizer webSecurityCustomizer() {
-        return web -> web.debug(securityDebug).ignoring().requestMatchers("/cssandjs/**", "/images/**", "/authenticate", "/homeNotSignedIn", "/general", "/h2-console/**");
+        return web -> web.debug(securityDebug).ignoring().requestMatchers("/cssandjs/**", "/images/**", "/authenticate/**", "/homeNotSignedIn", "/general", "/h2-console/**");
     }
 
+    //    loginPage() – the custom login page
+    //    loginProcessingUrl() – the URL to submit the username and password to
+    //    defaultSuccessUrl() – the landing page after a successful login
+    //    failureUrl() – the landing page after an unsuccessful login
+    //    logoutUrl() – the custom logout
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.csrf(AbstractHttpConfigurer::disable)
+                .httpBasic(Customizer.withDefaults())
+                .formLogin(Customizer.withDefaults())
                 .authorizeHttpRequests(
-                        auth -> auth.requestMatchers("/","/cssandjs/**", "/images/**", "/authenticate", "/signin", "/signup", "/general", "/homeNotSignedIn", "/h2-console/**").permitAll()
+                        auth -> auth.requestMatchers("/", "/cssandjs/**", "/images/**", "/authenticate/**", "/signin", "/signup", "/general", "/homeNotSignedIn", "/h2-console/**")
+                                .permitAll()
                                 .requestMatchers("/users/**", "/apps/**").hasAuthority("ADMIN")
                                 .requestMatchers("/myapps/**").hasAuthority("CLIENT")
-                                .anyRequest().authenticated()
+                                .anyRequest()
+                                .authenticated()
                 )
                 .formLogin(formLogin -> formLogin
-                        .loginPage("/signin")
-                        .permitAll()
-                        .failureUrl("/signin?error=1")
-                        .loginProcessingUrl("/authenticate")
-                        .permitAll()
+                                .loginPage("/signin")
+                                .loginProcessingUrl("/perform_signin")
+                                .defaultSuccessUrl("/", true)
+                                .failureUrl("/signin?error=true")
+//                        .failureHandler(authenticationFailureHandler())
+
                 )
 //                .rememberMe(rememberMe -> rememberMe.key("remember-me-key"))
-                .logout(logout -> logout.logoutUrl("/")
+                .logout(logout -> logout.logoutUrl("/perform_logout")
                         .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
-                        .permitAll()
+                        .deleteCookies("JSESSIONID")
                         .logoutSuccessUrl("/signin?logout"));
+//                .logoutSuccessHandler(logoutSuccessHandler());
 
         return http.build();
     }

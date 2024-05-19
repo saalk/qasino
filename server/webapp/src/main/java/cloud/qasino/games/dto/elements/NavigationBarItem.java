@@ -10,7 +10,7 @@ import lombok.Setter;
 @Getter
 @Setter
 //@JsonIdentityInfo(generator = JSOGGenerator.class)
-@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+//@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class NavigationBarItem {
 
     @JsonProperty("intSequence")
@@ -22,5 +22,12 @@ public class NavigationBarItem {
     @JsonProperty("stats")
     private String itemStats;
 
+    @Override public String toString() {
+        return "navBarItem" +
+                "(sequence=" + this.itemSequence + ", "+
+                "visible=" + this.itemVisible + ", "+
+                "name=" + this.itemName + ", "+
+                "stats=" + this.itemStats + ")";
+    }
 }
 

@@ -3,9 +3,11 @@ package cloud.qasino.games.dto.enums;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 @Getter
 @Setter
+@ToString
 //@JsonIdentityInfo(generator = JSOGGenerator.class)
 //@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class EnumOverview {

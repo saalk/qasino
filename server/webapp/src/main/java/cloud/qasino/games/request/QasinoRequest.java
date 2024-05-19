@@ -118,7 +118,7 @@ public class QasinoRequest {
         String key;
         String dataName = "pathVariables";
         String pathDataString = StringUtils.join(pathVariables);
-//        log.info(this.getClass().getName() + ": " + dataName + " is " + pathDataString);
+//        log.warn(this.getClass().getName() + ": " + dataName + " is " + pathDataString);
 
         if (pathVariables == null) return true;
 
@@ -182,7 +182,7 @@ public class QasinoRequest {
         String key;
         String dataName = "requestParam";
         String paramDataString = StringUtils.join(requestParam);
-//        log.info(this.getClass().getName() + ": " + dataName + " is " + paramDataString);
+//        log.warn(this.getClass().getName() + ": " + dataName + " is " + paramDataString);
 
         if (requestParam == null) return true;
 

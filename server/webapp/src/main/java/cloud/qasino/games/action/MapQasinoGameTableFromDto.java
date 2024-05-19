@@ -74,7 +74,7 @@ public class MapQasinoGameTableFromDto implements Action<MapQasinoGameTableFromD
                 "] stock/total");
         table.setSeats(mapSeats(actionDto, seats));
         actionDto.setTable(table);
-        log.info("table set");
+        log.warn("table set");
         return EventOutput.Result.SUCCESS;
     }
 
@@ -116,7 +116,7 @@ public class MapQasinoGameTableFromDto implements Action<MapQasinoGameTableFromD
                 seat.setUsername(player.getAiLevel().getLabel() + " " + player.getAvatar().getLabel());
             }
             seats.add(seat);
-            log.info("tabel seat " + seat.getSeatId()+ "set ");
+            log.warn("tabel seat " + seat.getSeatId()+ "set ");
             // is player the winner
 
         }

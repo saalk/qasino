@@ -1,6 +1,7 @@
 package cloud.qasino.games.controller.thymeleaf;
 
 import cloud.qasino.games.database.security.MyUserDetailService;
+import cloud.qasino.games.database.security.MyUserPrincipal;
 import cloud.qasino.games.database.security.Visitor;
 import cloud.qasino.games.database.security.VisitorService;
 import cloud.qasino.games.action.CalculateQasinoStatistics;
@@ -25,6 +26,12 @@ import cloud.qasino.games.web.MessageHelper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.MultiValueMap;
@@ -34,8 +41,10 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.google.common.base.Throwables;
@@ -46,7 +55,11 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import java.security.Principal;
 import java.text.MessageFormat;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.Optional;
+import java.util.Set;
 
 // basic path /qasino
 // basic header @RequestHeader(value "visitor", required = true) int visitorId" // else 400
@@ -98,14 +111,18 @@ public class QasinoAndVisitorThymeleafController {
     @Autowired
     private MyUserDetailService userDetailService;
 
+    private final AuthenticationManager authenticationManager;
+
     @Autowired
     public QasinoAndVisitorThymeleafController(
+            AuthenticationManager authenticationManager,
             VisitorRepository visitorRepository,
             GameRepository gameRepository,
             PlayerRepository playerRepository,
             CardRepository cardRepository,
             TurnRepository turnRepository) {
 
+        this.authenticationManager = authenticationManager;
         this.visitorRepository = visitorRepository;
         this.gameRepository = gameRepository;
         this.playerRepository = playerRepository;
@@ -119,18 +136,47 @@ public class QasinoAndVisitorThymeleafController {
         return "/images/favicon.ico";
     }
 
-    @RequestMapping(value = "signin") // works with get, post, put etc
-    public String signin() {
+    @GetMapping(value = "signin") // works with get, post, put etc
+    public String signin(Model model, @RequestParam(value = "error", required = false) String error) {
+
+        // build response
+        QasinoFlowDTO flowDTO = new QasinoFlowDTO();
+        loadEntitiesToDtoAction.perform(flowDTO);
+        mapQasinoGameTableFromDto.perform(flowDTO);
+        setStatusIndicatorsBaseOnRetrievedDataAction.perform(flowDTO);
+        calculateQasinoStatistics.perform(flowDTO);
+        mapQasinoResponseFromDto.perform(flowDTO);
+        flowDTO.prepareResponseHeaders();
+        QasinoResponse qasinoResponse = flowDTO.getQasinoResponse();
+        if (error != null) {
+            qasinoResponse.setAction("Username or password not recognised");
+        }
+        model.addAttribute(qasinoResponse);
+        log.warn("GetMapping: /signin");
+        log.warn("Model: {}",model);
+
         return SIGNIN_VIEW_LOCATION;
+    }
+
+    @PostMapping(value = "perform_signin") // works with get, post, put etc
+    public ResponseEntity<Void> signin(@RequestBody LoginRequest loginRequest) {
+        Authentication authenticationRequest =
+                UsernamePasswordAuthenticationToken.unauthenticated(loginRequest.username(), loginRequest.password());
+        Authentication authenticationResponse =
+                this.authenticationManager.authenticate(authenticationRequest);
+        return null;
+    }
+
+    public record LoginRequest(String username, String password) {
     }
 
     @GetMapping("signup")
     String signup(Model model, @RequestHeader(value = "X-Requested-With", required = false) String requestedWith) {
         model.addAttribute(new SignupForm());
 
-        log.info("GetMapping: signup");
-        log.info("Model: {}",model);
-        log.info("String: {}",requestedWith);
+        log.warn("GetMapping: signup");
+        log.warn("String: {}",requestedWith);
+        log.warn("Model: {}",model);
 
         if (AjaxUtils.isAjaxRequest(requestedWith)) {
             return SIGNUP_VIEW_LOCATION.concat(" :: signupForm");
@@ -143,18 +189,19 @@ public class QasinoAndVisitorThymeleafController {
             @Valid @ModelAttribute SignupForm signupForm,
             Errors errors, RedirectAttributes ra) {
 
-        log.info("PostMapping: signup");
-        log.info("SignupForm: {}",signupForm);
-        log.info("Errors: {}",errors);
-        log.info("RedirectAttributes: {}",ra);
+        log.warn("PostMapping: signup");
+        log.warn("SignupForm: {}",signupForm);
+        log.warn("RedirectAttributes: {}",ra);
 
         if (errors.hasErrors()) {
+            log.warn("Errors exist!!: {}",errors);
+
             return SIGNUP_VIEW_LOCATION;
         }
         Visitor visitor = visitorService.saveUser(signupForm.createVisitor());
         userDetailService.signin(visitor);
 
-        log.info("visitor: {}",visitor.toString());
+        log.warn("visitor signed in: {}",visitor.toString());
 
         // see /WEB-INF/i18n/messages.properties and /WEB-INF/views/homeSignedIn.html
         MessageHelper.addSuccessAttribute(ra, "signup.success");
@@ -185,8 +232,6 @@ public class QasinoAndVisitorThymeleafController {
             Principal principal,
             HttpServletResponse response) {
 
-
-
         // build response
         QasinoFlowDTO flowDTO = new QasinoFlowDTO();
         loadEntitiesToDtoAction.perform(flowDTO);
@@ -195,15 +240,13 @@ public class QasinoAndVisitorThymeleafController {
         calculateQasinoStatistics.perform(flowDTO);
         mapQasinoResponseFromDto.perform(flowDTO);
         flowDTO.prepareResponseHeaders();
-
-        model.addAttribute(flowDTO.getQasinoResponse());
+        QasinoResponse qasinoResponse = flowDTO.getQasinoResponse();
+        model.addAttribute(qasinoResponse);
         setVaryResponseHeader(response, flowDTO);
-
-        log.info("GetMapping: /");
-        log.info("Model: {}",model);
-        log.info("Principal: {}",principal);
-        log.info("HttpServletResponse: {}",response);
-
+        log.warn("GetMapping: /");
+        log.warn("Principal: {}",principal);
+        log.warn("HttpServletResponse: {}",response.getHeaderNames());
+        log.warn("Model: {}",model);
         return principal != null ? "home/homeSignedIn" : "home/homeNotSignedIn";
     }
 
@@ -214,10 +257,10 @@ public class QasinoAndVisitorThymeleafController {
     public String generalError(HttpServletRequest request, HttpServletResponse response, Model model) {
         // retrieve some useful information from the request
 
-        log.info("RequestMapping: general");
-        log.info("HttpServletRequest: {}",request.toString());
-        log.info("HttpServletResponse: {}",response.toString());
-        log.info("Model: {}",model.toString());
+        log.warn("RequestMapping: general");
+        log.warn("HttpServletRequest: {}",request.toString());
+        log.warn("HttpServletResponse: {}",response.toString());
+        log.warn("Model: {}",model.toString());
 
         Integer statusCode = (Integer) request.getAttribute("jakarta.servlet.error.status_code");
         Throwable throwable = (Throwable) request.getAttribute("jakarta.servlet.error.exception");
@@ -251,5 +294,28 @@ public class QasinoAndVisitorThymeleafController {
                 response.setHeader(name, value);
             }
         });
+    }
+
+    private String getUserName(Principal principal) {
+        if (principal == null) {
+            return "anonymous";
+        } else {
+            final MyUserPrincipal visitor = (MyUserPrincipal) ((Authentication) principal).getPrincipal();
+            return visitor.getUsername();
+        }
+    }
+
+    private Collection<String> getUserRoles(Principal principal) {
+        if (principal == null) {
+            return Arrays.asList("none");
+        } else {
+            Set<String> roles = new HashSet<String>();
+            final MyUserPrincipal visitor = (MyUserPrincipal) ((Authentication) principal).getPrincipal();
+            Collection<? extends GrantedAuthority> authorities = visitor.getAuthorities();
+            for (GrantedAuthority grantedAuthority : authorities) {
+                roles.add(grantedAuthority.getAuthority());
+            }
+            return roles;
+        }
     }
 }

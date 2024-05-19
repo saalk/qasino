@@ -123,7 +123,7 @@ public List<String> getCityNames(List<Company> companyList){
             .map(Address::getCity)
             .map(City::getName)
     //      .distinct() get unique city names        
-            .peek(cityName -> log.info(cityName))
+            .peek(cityName -> log.warn(cityName))
             .toList();
 }
 ```

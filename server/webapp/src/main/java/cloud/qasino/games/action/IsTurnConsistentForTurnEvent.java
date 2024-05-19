@@ -54,7 +54,7 @@ public class IsTurnConsistentForTurnEvent implements Action<IsTurnConsistentForT
 
     private boolean turnShouldHaveCurrentMoveNumberNotZero(Dto actionDto) {
         if (actionDto.getActiveTurn().getCurrentTurnNumber() <= 0) {
-            log.info("!moveNumber");
+            log.warn("!moveNumber");
             setUnprocessableErrorMessage(actionDto, "Action [" + actionDto.getSuppliedTurnEvent() +
                     "] invalid - turn has incorrect number of " + actionDto.getActiveTurn().getCurrentTurnNumber()
             );
@@ -64,7 +64,7 @@ public class IsTurnConsistentForTurnEvent implements Action<IsTurnConsistentForT
     }
     private boolean turnShouldHaveNextPlayer(Dto actionDto) {
         if (actionDto.getNextPlayer() == null) {
-            log.info("!nextplayer");
+            log.warn("!nextplayer");
             setUnprocessableErrorMessage(actionDto, "Action [" + actionDto.getSuppliedTurnEvent() +
                     "] invalid - turn has no next player ");
             return false;
@@ -73,7 +73,7 @@ public class IsTurnConsistentForTurnEvent implements Action<IsTurnConsistentForT
     }
     private boolean turnShouldHaveActivePlayer(Dto actionDto) {
         if (actionDto.getActiveTurn().getActivePlayerId() == 0) {
-            log.info("!initiator");
+            log.warn("!initiator");
             setUnprocessableErrorMessage(actionDto, "Action [" + actionDto.getSuppliedTurnEvent() +
                     "] invalid - turn has no active player ");
             return false;
@@ -82,7 +82,7 @@ public class IsTurnConsistentForTurnEvent implements Action<IsTurnConsistentForT
     }
     private boolean turnShouldHaveActiveHumanPlayer(Dto actionDto) {
         if (!actionDto.getTurnPlayer().isHuman()) {
-            log.info("!human");
+            log.warn("!human");
             setUnprocessableErrorMessage(actionDto, "Action [" + actionDto.getSuppliedTurnEvent() +
                     "] inconsistent - this turn event is not for human player ");
             return false;
@@ -91,7 +91,7 @@ public class IsTurnConsistentForTurnEvent implements Action<IsTurnConsistentForT
     }
     private boolean turnShouldHaveActiveBotPlayer(Dto actionDto) {
         if (actionDto.getTurnPlayer().isHuman()) {
-            log.info("!human");
+            log.warn("!human");
             setUnprocessableErrorMessage(actionDto, "Action [" + actionDto.getSuppliedTurnEvent() +
                     "] inconsistent - this turn event is not for bot player ");
             return false;
