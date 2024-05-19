@@ -8,17 +8,22 @@
 <!--/*  Multiple fragments may be defined in one file */-->
 <div th:fragment="footer">
     <div class="specific-footer">
+
+        <div th:text="${qasino != null && qasino.action != null} ?
+            'Qasino message : ' + ${qasinoResponse.action} :
+            'No messages from qasino'">
+        </div>
         &copy; <span th:text="${#temporals.format(#temporals.createNow(), 'yyyy')}">2017</span>
         Saalk@github.com - trying to beat
         <a href="https://medium.com/@uwehook/sturgeons-law-285c007406db">sturgeon's law</a>
         <br>
-            <ul>
-                <li>Using </li>
-                <li><a href="http://getskeleton.com/">Skeleton css </a></li>
-                <li><a href="https://github.com/necolas/normalize.css">Normalize css </a></li>
-                <li><a href="https://www.thymeleaf.org/">Thymeleaf </a></li>
-                <li><a href="https://spring.io/projects/spring-boot">Springboot </a></li>
-            </ul>
+        <ul>
+            <li>Using</li>
+            <li><a href="http://getskeleton.com/">Skeleton css </a></li>
+            <li><a href="https://github.com/necolas/normalize.css">Normalize css </a></li>
+            <li><a href="https://www.thymeleaf.org/">Thymeleaf </a></li>
+            <li><a href="https://spring.io/projects/spring-boot">Springboot </a></li>
+        </ul>
     </div>
 </div>
 <div th:fragment="footer-admin">
