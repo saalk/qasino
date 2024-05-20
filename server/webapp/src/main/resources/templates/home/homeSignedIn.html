@@ -17,7 +17,7 @@
                 &nbsp;
             </div>
         </th:block>
-        <div class="text-center">
+<!--        <div class="text-center">-->
             <h1>Welcome inside the Qasino!</h1>
             <span th:text="'Some statistics for today: ' + ${#dates.format(#dates.createNow(),'YYYY-MM-dd HH:mm')}"></span>
             <br><br>
@@ -44,9 +44,9 @@
                 </tr>
                 </tbody>
             </table>
-        </div>
+<!--        </div>-->
     </div>
+    <div th:insert="~{fragments/footer :: footer}"></div>
 </div>
-<div th:insert="~{fragments/footer :: footer}"></div>
 </body>
 </html>

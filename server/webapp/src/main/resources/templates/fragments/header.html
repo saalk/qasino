@@ -45,7 +45,7 @@
                         <a class="nav-link active" aria-current="page" href="#" th:href="@{/}" th:text="Home"></a>
                     </li>
                     <li class="nav-item" th:classappend="${module == 'Visitor' ? 'active' : ''}">
-                        <a class="nav-link" href="#" th:href="@{/visitor}" th:text="${qasinoResponse.navBarItems.^[sequence==1].title}">Visitor</a>
+                        <a class="nav-link" href="#" th:href="@{page/visitor}" th:text="${qasinoResponse.navBarItems.^[sequence==1].title}">Visitor</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link disabled" aria-disabled="true"
