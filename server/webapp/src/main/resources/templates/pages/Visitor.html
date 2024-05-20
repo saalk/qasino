@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <title>Qasino in the cloud</title>
+    <th:block th:insert="~{fragments/header :: headerfiles}">
+    </th:block>
+</head>
+<body>
+<!-- the specific part of this html -->
+<div class="container" th:replace="~{fragments/header :: header}"></div>
+<div class="text-center">
+    <h1>Visitor</h1>
+    <h2>
+        <span th::if="${owner['new']}" th:remove="tag">New </span> Owner
+    </h2>
+    <form action="#" th:action="@{/saveStudent}" th:object="${student}"
+          th:method="${owner['new']} ? post : put">
+        <ul>
+            <li th:errors="*{id}"/>
+            <li th:errors="*{name}"/>
+            <li th:errors="*{gender}"/>
+            <li th:errors="*{percentage}"/>
+        </ul>
+        <table border="1">
+            <tr>
+                <td><label th:text="ID"/></td>
+                <td><input type="number" th:field="*{id}"/></td>
+            </tr>
+            <tr>
+                <td><label th:text="Name"/></td>
+                <td><input type="text" th:field="*{name}"/></td>
+            </tr>
+            <tr>
+                <td><label th:text="Gender"/></td>
+                <td><select th:field="*{gender}">
+                    <option th:value="'M'" th:text="Male"></option>
+                    <option th:value="'F'" th:text="Female"></option>
+                </select></td>
+            </tr>
+            <tr>
+                <td><label th:text="Percentage"/></td>
+                <td><select id="percentage" name="percentage">
+                    <option th:each="i : ${#numbers.sequence(0, 100)}" th:value="${i}" th:text="${i}"
+                            th:selected="${i==75}"></option>
+                </select></td>
+            </tr>
+        </table>
+    </form>
+</div>
+<div th:insert="~{fragments/footer :: footer}"></div>
+</body>
+</html>

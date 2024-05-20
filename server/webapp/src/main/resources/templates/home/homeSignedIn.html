@@ -7,46 +7,46 @@
 </head>
 <body>
 <div th:replace="~{fragments/header :: header}"></div>
-<div>
-    <!-- the specific part of this html -->
-    <div class="container">
-        <div class="text-center">
-            <!-- /* Handle the flash message */-->
-            <th:block th:if="${message != null}">
-                <!-- /* The message code is returned from the @Controller */ -->
-                <div th:replace="fragments/alert :: alert (type=${#strings.toLowerCase(message.type)}, message=#{${message.message}(${#authentication.username})})">
-                    &nbsp;
-                </div>
-            </th:block>
-            <div class="text-center">
-                <h1>Welcome inside the Qasino!</h1>
-                <span th:text="'Some statistics for today: ' + ${#dates.format(#dates.createNow(),'YYYY-MM-dd HH:mm')}" ></span>
-                <br><br>
-                <table class="u-full-width">
-                    <thead>
-                        <tr>
-                            <th> Calculation</th>
-                            <th> Table</th>
-                            <th> Filter</th>
-                            <th> Count</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr th:if="${qasinoResponse.statistics.empty}">
-                            <td colspan="2"> No Statistics Available</td>
-                        </tr>
-                        <tr th:each="statistic : ${qasinoResponse.statistics}">
-                            <td><span th:text="${statistic.calculation}"> Calculation </span></td>
-                            <td><span th:text="${statistic.table}"> Table </span></td>
-                            <td><span th:text="${statistic.filter}"> Filter </span></td>
-                            <td><span th:text="${statistic.count}"> Count </span></td>
-                        </tr>
-                    </tbody>
-                </table>
+<!-- the specific part of this html -->
+<div class="container">
+    <div class="text-center">
+        <!-- /* Handle the flash message */-->
+        <th:block th:if="${message != null}">
+            <!-- /* The message code is returned from the @Controller */ -->
+            <div th:replace="fragments/alert :: alert (type=${#strings.toLowerCase(message.type)}, message=#{${message.message}(${#authentication.username})})">
+                &nbsp;
             </div>
+        </th:block>
+        <div class="text-center">
+            <h1>Welcome inside the Qasino!</h1>
+            <span th:text="'Some statistics for today: ' + ${#dates.format(#dates.createNow(),'YYYY-MM-dd HH:mm')}"></span>
+            <br><br>
+            <table class="u-full-width">
+                <thead>
+                <tr>
+                    <th> Calculation</th>
+                    <th> Table</th>
+                    <th> Filter</th>
+                    <th> Count</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:if="${qasinoResponse.statistics.empty}">
+                    <td colspan="2"> No Statistics Available</td>
+                </tr>
+                <!-- #lists is SPEL -->
+                <tr th:unless="${#lists.isEmpty(qasinoResponse.statistics)}"
+                    th:each="statistic : ${qasinoResponse.statistics}">
+                    <td><span th:text="${statistic.calculation}"> Calculation </span></td>
+                    <td><span th:text="${statistic.table}"> Table </span></td>
+                    <td><span th:text="${statistic.filter}"> Filter </span></td>
+                    <td><span th:text="${statistic.count}"> Count </span></td>
+                </tr>
+                </tbody>
+            </table>
         </div>
-        <div th:insert="~{fragments/footer :: footer}"></div>
     </div>
 </div>
+<div th:insert="~{fragments/footer :: footer}"></div>
 </body>
 </html>

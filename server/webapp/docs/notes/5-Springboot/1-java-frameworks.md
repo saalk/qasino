@@ -13,6 +13,7 @@ Back to [Index](0-index.md)
 3. MyBatis - a persistence framework for Java - links Java methods to SQL statements
 4. Play - build lightweight and web-friendly Scala applications for desktop and mobile
 5. Spark Framework - helps you with developing Java-based web applications, microservices, and REST APIs
+6. Thymeleaf - Thymeleaf - a modern server-side Java template engine framework for both web and standalone environments.
 
 ## DI = Dependency injection / inversion principle
 A technique where objects or functions receive other objects or services that is requires instead of creating them internally. 
