@@ -2,7 +2,7 @@ package cloud.qasino.games.response;
 
 import cloud.qasino.games.dto.enums.EnumOverview;
 import cloud.qasino.games.dto.elements.*;
-import cloud.qasino.games.dto.statistics.Statistics;
+import cloud.qasino.games.dto.statistics.Statistic;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -43,6 +43,7 @@ public class QasinoResponse {
     // extra
     @JsonProperty("Enums")
     EnumOverview enumOverview = new EnumOverview();
+
     @JsonProperty("Statistics")
-    Statistics statistics = new Statistics();
+    List<Statistic> statistics;
 }

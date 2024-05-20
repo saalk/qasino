@@ -9,12 +9,14 @@ import cloud.qasino.games.database.repository.PlayerRepository;
 import cloud.qasino.games.database.repository.ResultsRepository;
 import cloud.qasino.games.database.repository.TurnRepository;
 import cloud.qasino.games.database.security.VisitorRepository;
-import cloud.qasino.games.dto.statistics.Statistics;
-import cloud.qasino.games.dto.statistics.SubTotalsGame;
+import cloud.qasino.games.dto.statistics.Statistic;
 import cloud.qasino.games.statemachine.event.EventOutput;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Slf4j
 @Service
@@ -38,23 +40,18 @@ public class CalculateQasinoStatistics implements Action<CalculateQasinoStatisti
     @Override
     public EventOutput.Result perform(Dto actionDto) {
 
-        SubTotalsGame subTotalsGame = new SubTotalsGame();
-        subTotalsGame.totalGamesSetup =
-                gameRepository.countByStates(GameStateGroup.listGameStatesStringsForGameStateGroup(GameStateGroup.SETUP));
-        subTotalsGame.totalGamesPrepared =
-                gameRepository.countByStates(GameStateGroup.listGameStatesStringsForGameStateGroup(GameStateGroup.PREPARED));
-        subTotalsGame.totalGamesPlaying =
-                gameRepository.countByStates(GameStateGroup.listGameStatesStringsForGameStateGroup(GameStateGroup.PLAYING));
-        subTotalsGame.totalsGamesFinished =
-                gameRepository.countByStates(GameStateGroup.listGameStatesStringsForGameStateGroup(GameStateGroup.FINISHED));
+        List<Statistic> statistics = new ArrayList<>();
 
-        Statistics statistics = new Statistics();
-        statistics.setSubTotalsGames(subTotalsGame);
-        statistics.totalLeagues = ((int) leagueRepository.count());
-        statistics.totalVisitors = ((int) visitorRepository.count());
-        statistics.totalGames = ((int) gameRepository.count());
-        statistics.totalPlayers = ((int) playerRepository.count());
-        statistics.totalCards = ((int) cardRepository.count());
+        statistics.add(new Statistic("total","Games","State:SETUP",gameRepository.countByStates(GameStateGroup.listGameStatesStringsForGameStateGroup(GameStateGroup.SETUP))));
+        statistics.add(new Statistic("total","Games","State:PREPARED",gameRepository.countByStates(GameStateGroup.listGameStatesStringsForGameStateGroup(GameStateGroup.PREPARED))));
+        statistics.add(new Statistic("total","Games","State:PLAYING",gameRepository.countByStates(GameStateGroup.listGameStatesStringsForGameStateGroup(GameStateGroup.PLAYING))));
+        statistics.add(new Statistic("total","Games","State:FINISHED",gameRepository.countByStates(GameStateGroup.listGameStatesStringsForGameStateGroup(GameStateGroup.FINISHED))));
+
+        statistics.add(new Statistic("total","Games","All",(int) gameRepository.count()));
+        statistics.add(new Statistic("total","Visitors","All",(int) visitorRepository.count()));
+        statistics.add(new Statistic("total","Players","All",(int) playerRepository.count()));
+        statistics.add(new Statistic("total","Cards","All",(int) cardRepository.count()));
+        statistics.add(new Statistic("total","Leagues","All",(int) leagueRepository.count()));
 
         actionDto.setStatistics(statistics);
 
@@ -63,7 +60,7 @@ public class CalculateQasinoStatistics implements Action<CalculateQasinoStatisti
 
     public interface Dto {
 
-        void setStatistics(Statistics statistics);
+        void setStatistics(List<Statistic> statistics);
 
         // error setters
         // @formatter:off

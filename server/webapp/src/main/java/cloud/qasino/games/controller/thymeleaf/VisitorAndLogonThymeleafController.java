@@ -1,7 +1,7 @@
 package cloud.qasino.games.controller.thymeleaf;
 
 import cloud.qasino.games.action.CalculateQasinoStatistics;
-import cloud.qasino.games.action.FindVisitorIdByAliasAction;
+import cloud.qasino.games.action.FindVisitorIdByAliasOrUsernameAction;
 import cloud.qasino.games.action.HandleSecuredLoanAction;
 import cloud.qasino.games.action.LoadEntitiesToDtoAction;
 import cloud.qasino.games.action.MapQasinoGameTableFromDto;
@@ -57,7 +57,7 @@ public class VisitorAndLogonThymeleafController {
     @Autowired
     LoadEntitiesToDtoAction loadEntitiesToDtoAction;
     @Autowired
-    FindVisitorIdByAliasAction findVisitorIdByAliasAction;
+    FindVisitorIdByAliasOrUsernameAction findVisitorIdByAliasOrUsernameAction;
     @Autowired
     SignUpNewVisitorAction signUpNewVisitorAction;
     @Autowired

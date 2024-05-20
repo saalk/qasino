@@ -17,7 +17,7 @@ import cloud.qasino.games.dto.elements.PageGameSetup;
 import cloud.qasino.games.dto.elements.PageLeague;
 import cloud.qasino.games.dto.elements.PageVisitor;
 import cloud.qasino.games.dto.elements.SectionTable;
-import cloud.qasino.games.dto.statistics.Statistics;
+import cloud.qasino.games.dto.statistics.Statistic;
 import cloud.qasino.games.statemachine.event.EventOutput;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -50,9 +50,9 @@ public class MapQasinoResponseFromDto implements Action<MapQasinoResponseFromDto
 
         // 1: PageVisitor
         NavigationBarItem navigationBarItem = new NavigationBarItem();
-        navigationBarItem.setItemSequence(1);
-        navigationBarItem.setItemName("Logon");
-        navigationBarItem.setItemStats("balance []");
+        navigationBarItem.setSequence(1);
+        navigationBarItem.setTitle("Visitor");
+        navigationBarItem.setStat("balance []");
 
         if (actionDto.getQasinoVisitor() != null) {
             mapVisitorPage(actionDto, navigationBarItem, pageVisitor);
@@ -67,15 +67,15 @@ public class MapQasinoResponseFromDto implements Action<MapQasinoResponseFromDto
             actionDto.setAction("Logon visitor!");
         }
         setupMessage(actionDto, navigationBarItem);
-        navigationBarItem.setItemVisible(actionDto.isShowVisitorPage());
+        navigationBarItem.setVisible(actionDto.isShowVisitorPage());
         navigationBarItems.add(navigationBarItem);
         qasinoResponse.setPageVisitor(pageVisitor);
 
         // 2: GameSetup
         navigationBarItem = new NavigationBarItem();
-        navigationBarItem.setItemSequence(2);
-        navigationBarItem.setItemName("Setup");
-        navigationBarItem.setItemStats("[0/0] bots/humans");
+        navigationBarItem.setSequence(2);
+        navigationBarItem.setTitle("Setup");
+        navigationBarItem.setStat("[0/0] bots/humans");
 
         if (actionDto.getQasinoGame() != null) {
             actionDto.setShowGameSetupPage(true);
@@ -100,15 +100,15 @@ public class MapQasinoResponseFromDto implements Action<MapQasinoResponseFromDto
             }
         }
         setupMessage(actionDto, navigationBarItem);
-        navigationBarItem.setItemVisible(actionDto.isShowGameSetupPage());
+        navigationBarItem.setVisible(actionDto.isShowGameSetupPage());
         navigationBarItems.add(navigationBarItem);
         qasinoResponse.setPageGameSetup(pageGameSetup);
 
         // 3: GamePlay and Results
         navigationBarItem = new NavigationBarItem();
-        navigationBarItem.setItemSequence(3);
-        navigationBarItem.setItemName("Play");
-        navigationBarItem.setItemStats("[0/0] round/move");
+        navigationBarItem.setSequence(3);
+        navigationBarItem.setTitle("Play");
+        navigationBarItem.setStat("[0/0] round/move");
 
         if (actionDto.getQasinoGame() != null) {
             actionDto.setShowGamePlayPage(true);
@@ -131,15 +131,15 @@ public class MapQasinoResponseFromDto implements Action<MapQasinoResponseFromDto
             }
         }
         setupMessage(actionDto, navigationBarItem);
-        navigationBarItem.setItemVisible(actionDto.isShowGamePlayPage());
+        navigationBarItem.setVisible(actionDto.isShowGamePlayPage());
         navigationBarItems.add(navigationBarItem);
         qasinoResponse.setPageGamePlay(pageGamePlay);
 
         // 4: GameInvitatinos
         navigationBarItem = new NavigationBarItem();
-        navigationBarItem.setItemSequence(4);
-        navigationBarItem.setItemName("Invites [0]");
-        navigationBarItem.setItemStats("[0/0] setup/playing");
+        navigationBarItem.setSequence(4);
+        navigationBarItem.setTitle("Invite");
+        navigationBarItem.setStat("[0/0] setup/playing");
         actionDto.setShowGamePlayPage(false);
         if (actionDto.getQasinoGame() != null && actionDto.getQasinoGame().getState().equals(GameState.PENDING_INVITATIONS)) {
             actionDto.setShowGameInvitationsPage(true);
@@ -147,16 +147,16 @@ public class MapQasinoResponseFromDto implements Action<MapQasinoResponseFromDto
             actionDto.setAction(actionDto.getQasinoGame().getState().getNextAction());
             mapGameInvitationsPage(actionDto, navigationBarItem, pageGamesOverview);
         }
-        navigationBarItem.setItemVisible(actionDto.isShowGameInvitationsPage());
+        navigationBarItem.setVisible(actionDto.isShowGameInvitationsPage());
         navigationBarItems.add(navigationBarItem);
         qasinoResponse.setPageGameInvitations(pageGamesOverview);
 
         // 5: Leagues
         navigationBarItem = new NavigationBarItem();
-        navigationBarItem.setItemSequence(5);
-        navigationBarItem.setItemName("Leagues");
-        navigationBarItem.setItemStats("[0] active");
-        navigationBarItem.setItemVisible(false);
+        navigationBarItem.setSequence(5);
+        navigationBarItem.setTitle("League");
+        navigationBarItem.setStat("[0] active");
+        navigationBarItem.setVisible(false);
         if (actionDto.getQasinoGameLeague() != null) {
             actionDto.setShowLeaguesPage(true);
             if (!actionDto.isActionNeeded()) {
@@ -165,7 +165,7 @@ public class MapQasinoResponseFromDto implements Action<MapQasinoResponseFromDto
             }
             mapLeaguesPage(actionDto, navigationBarItem, pageLeague);
         }
-        navigationBarItem.setItemVisible(actionDto.isShowLeaguesPage());
+        navigationBarItem.setVisible(actionDto.isShowLeaguesPage());
         navigationBarItems.add(navigationBarItem);
         qasinoResponse.setPageLeague(pageLeague);
 
@@ -185,8 +185,8 @@ public class MapQasinoResponseFromDto implements Action<MapQasinoResponseFromDto
     // @formatter:off
     private void mapVisitorPage(Dto actionDto, NavigationBarItem navigationBarItem, PageVisitor pageVisitor) {
         // set the nav bar
-        navigationBarItem.setItemName(actionDto.getQasinoVisitor().getUsername());
-        navigationBarItem.setItemStats("balance [" + actionDto.getQasinoVisitor().getBalance() + "]");
+        navigationBarItem.setTitle("Visitor[" + actionDto.getQasinoVisitor().getUsername()+ "]");
+        navigationBarItem.setStat("balance [" + actionDto.getQasinoVisitor().getBalance() + "]");
         pageVisitor.setSelectedVisitor(actionDto.getQasinoVisitor());
         Map<GameState, Integer> gameStateIntegerMap = new HashMap<>();
         for (Game game : actionDto.getInitiatedGamesForVisitor()) {
@@ -203,15 +203,15 @@ public class MapQasinoResponseFromDto implements Action<MapQasinoResponseFromDto
     }
     private void mapGameSetupPage(Dto actionDto, NavigationBarItem navigationBarItem, PageGameSetup pageGameSetup) {
         // set the nav bar
-        navigationBarItem.setItemName("Qasinogame#" +
-                Integer.toHexString((int) actionDto.getQasinoGame().getGameId()));
+        navigationBarItem.setTitle("Setup[" +
+                Integer.toHexString((int) actionDto.getQasinoGame().getGameId())+"]");
         long bots = 0;
         long humans = 0;
         if (actionDto.getQasinoGamePlayers() != null) {
             bots = actionDto.getQasinoGamePlayers().stream().filter(c -> !c.isHuman()).count();
             humans = actionDto.getQasinoGamePlayers().size() - bots;
         }
-        navigationBarItem.setItemStats("[" + bots + "/" + humans + "] bots/humans");
+        navigationBarItem.setStat("[" + bots + "/" + humans + "] bots/humans");
         // set the content
         pageGameSetup.setSelectedGame(actionDto.getQasinoGame());
 
@@ -227,11 +227,11 @@ public class MapQasinoResponseFromDto implements Action<MapQasinoResponseFromDto
     }
     private void mapGamePlayPage(Dto actionDto, NavigationBarItem navigationBarItem, PageGamePlay pageGamePlay) {
         // set the nav bar
-        navigationBarItem.setItemName("Qasinogame#" +
-                Integer.toHexString((int) actionDto.getQasinoGame().getGameId()));
+        navigationBarItem.setTitle("Play[" +
+                Integer.toHexString((int) actionDto.getQasinoGame().getGameId())+"]");
         // TODO FIXXXX .NullPointerException: Cannot invoke "cloud.qasino.games.database.entity.Turn.getCurrentRoundNumber()" because the return value of "cloud.qasino.games.action.MapQasinoResponseFromDto$Dto.getActiveTurn()" is null
         if (actionDto.getActiveTurn() != null) { // games is still being validated
-            navigationBarItem.setItemStats(
+            navigationBarItem.setStat(
                     "[" + actionDto.getActiveTurn().getCurrentRoundNumber() +
                             "/" + actionDto.getActiveTurn().getCurrentTurnNumber() +
                             "] round/turn");
@@ -247,16 +247,16 @@ public class MapQasinoResponseFromDto implements Action<MapQasinoResponseFromDto
     }
     private void mapGameInvitationsPage(Dto actionDto, NavigationBarItem navigationBarItem, PageGameInvitations pageGamesOverview) {
         // set the nav bar
-        navigationBarItem.setItemName("GameInvitations");
-        navigationBarItem.setItemStats("calculating...");
+        navigationBarItem.setTitle("Invite[]");
+        navigationBarItem.setStat("calculating...");
 
         // set the content
         pageGamesOverview.setGameInvitations(null);
     }
     private void mapLeaguesPage(Dto actionDto, NavigationBarItem navigationBarItem, PageLeague pageLeague) {
         // set the nav bar
-        navigationBarItem.setItemName("Leagues#" + Integer.toHexString((int) actionDto.getQasinoGameLeague().getLeagueId()));
-        navigationBarItem.setItemStats("[" + actionDto.getLeaguesForVisitor().size() + "] active");
+        navigationBarItem.setTitle("League[" + Integer.toHexString((int) actionDto.getQasinoGameLeague().getLeagueId())+"]");
+        navigationBarItem.setStat("[" + actionDto.getLeaguesForVisitor().size() + "] active");
         // set the content
         pageLeague.setSelectedLeague(actionDto.getQasinoGameLeague());
         pageLeague.setActiveLeagues(actionDto.getLeaguesForVisitor());
@@ -268,7 +268,7 @@ public class MapQasinoResponseFromDto implements Action<MapQasinoResponseFromDto
 
         // @formatter:off
         // Getters
-        Statistics getStatistics();
+        List<Statistic> getStatistics();
         void setAction(String message);
         String getAction();
         boolean isActionNeeded();

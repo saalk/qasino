@@ -5,21 +5,16 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
-
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 //@JsonIdentityInfo(generator = JSOGGenerator.class)
 //@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
-public class Statistics {
+public class Statistic {
 
-    public int totalVisitors;
-    public int totalGames;
-    @JsonProperty("SubTotalsGame")
-    private SubTotalsGame subTotalsGames;
-    public int totalPlayers;
-    public int totalLeagues;
-    public int totalCards;
+    public String calculation;
+    public String table;
+    public String filter;
+    public int count;
 
 }

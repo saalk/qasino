@@ -13,7 +13,7 @@ import java.util.Optional;
 
 @Slf4j
 @Component
-public class FindVisitorIdByAliasAction implements Action<FindVisitorIdByAliasAction.Dto, EventOutput.Result> {
+public class FindVisitorIdByAliasOrUsernameAction implements Action<FindVisitorIdByAliasOrUsernameAction.Dto, EventOutput.Result> {
 
     @Resource
     VisitorRepository visitorRepository;
@@ -21,6 +21,7 @@ public class FindVisitorIdByAliasAction implements Action<FindVisitorIdByAliasAc
     @Override
     public EventOutput.Result perform(Dto actionDto) {
 
+        Optional<Visitor> foundVisitor;
         // set http to created when done
         if (!(StringUtils.isEmpty(actionDto.getSuppliedAlias()))) {
             int sequence = Math.toIntExact(visitorRepository.countByAlias(actionDto.getSuppliedAlias()));
@@ -32,15 +33,20 @@ public class FindVisitorIdByAliasAction implements Action<FindVisitorIdByAliasAc
                 setNotFoundErrorMessage(actionDto, "alias", String.valueOf(actionDto.getSuppliedAlias()));
                 return EventOutput.Result.FAILURE;
             }
-            Optional<Visitor> foundVisitor = visitorRepository.findVisitorByAliasAndAliasSequence(actionDto.getSuppliedAlias(), 1);
-            if (foundVisitor.isPresent()) {
-                actionDto.setSuppliedVisitorId(foundVisitor.get().getVisitorId());
-            } else {
-                setNotFoundErrorMessage(actionDto, "visitorId", actionDto.getSuppliedAlias());
-                return EventOutput.Result.FAILURE;
-            }
+            foundVisitor = visitorRepository.findVisitorByAliasAndAliasSequence(actionDto.getSuppliedAlias(), 1);
+
+
+        } else if(!(StringUtils.isEmpty(actionDto.getSuppliedUsername()))) {
+            foundVisitor = Optional.ofNullable(visitorRepository.findByUsername(actionDto.getSuppliedUsername()));
         } else {
             setBadRequestErrorMessage(actionDto, "Visitor", String.valueOf(actionDto.getSuppliedAlias()));
+            return EventOutput.Result.FAILURE;
+        }
+
+        if (foundVisitor.isPresent()) {
+            actionDto.setSuppliedVisitorId(foundVisitor.get().getVisitorId());
+        } else {
+            setNotFoundErrorMessage(actionDto, "visitorId", actionDto.getSuppliedAlias());
             return EventOutput.Result.FAILURE;
         }
         return EventOutput.Result.SUCCESS;
@@ -70,6 +76,7 @@ public class FindVisitorIdByAliasAction implements Action<FindVisitorIdByAliasAc
         // @formatter:off
         // Getters
         String getSuppliedAlias();
+        String getSuppliedUsername();
 
         // Setter
         void setSuppliedVisitorId(long id);

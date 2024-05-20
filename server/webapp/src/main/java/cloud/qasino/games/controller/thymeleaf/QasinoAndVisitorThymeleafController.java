@@ -5,7 +5,7 @@ import cloud.qasino.games.database.security.MyUserPrincipal;
 import cloud.qasino.games.database.security.Visitor;
 import cloud.qasino.games.database.security.VisitorService;
 import cloud.qasino.games.action.CalculateQasinoStatistics;
-import cloud.qasino.games.action.FindVisitorIdByAliasAction;
+import cloud.qasino.games.action.FindVisitorIdByAliasOrUsernameAction;
 import cloud.qasino.games.action.HandleSecuredLoanAction;
 import cloud.qasino.games.action.LoadEntitiesToDtoAction;
 import cloud.qasino.games.action.MapQasinoGameTableFromDto;
@@ -31,7 +31,6 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.MultiValueMap;
@@ -39,7 +38,6 @@ import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -58,7 +56,6 @@ import java.text.MessageFormat;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.Optional;
 import java.util.Set;
 
 // basic path /qasino
@@ -88,7 +85,7 @@ public class QasinoAndVisitorThymeleafController {
     @Autowired
     LoadEntitiesToDtoAction loadEntitiesToDtoAction;
     @Autowired
-    FindVisitorIdByAliasAction findVisitorIdByAliasAction;
+    FindVisitorIdByAliasOrUsernameAction findVisitorIdByAliasOrUsernameAction;
     @Autowired
     SignUpNewVisitorAction signUpNewVisitorAction;
     @Autowired
@@ -236,19 +233,30 @@ public class QasinoAndVisitorThymeleafController {
 
         // build response
         QasinoFlowDTO flowDTO = new QasinoFlowDTO();
+        if (principal != null) flowDTO.setPathVariables("username", principal.getName());
+        if (!flowDTO.validateInput()) {
+            flowDTO.prepareResponseHeaders();
+            model.addAttribute("qasino", flowDTO.getQasinoResponse());
+            setVaryResponseHeader(response, flowDTO);
+            return "/";
+        }
+        findVisitorIdByAliasOrUsernameAction.perform(flowDTO);
         loadEntitiesToDtoAction.perform(flowDTO);
         mapQasinoGameTableFromDto.perform(flowDTO);
         setStatusIndicatorsBaseOnRetrievedDataAction.perform(flowDTO);
         calculateQasinoStatistics.perform(flowDTO);
         mapQasinoResponseFromDto.perform(flowDTO);
         flowDTO.prepareResponseHeaders();
+
         QasinoResponse qasinoResponse = flowDTO.getQasinoResponse();
         model.addAttribute(qasinoResponse);
         setVaryResponseHeader(response, flowDTO);
+
         log.warn("GetMapping: /");
         log.warn("Principal: {}",principal);
         log.warn("HttpServletResponse: {}",response.getHeaderNames());
         log.warn("Model: {}",model);
+
         return principal != null ? "home/homeSignedIn" : "home/homeNotSignedIn";
     }
 

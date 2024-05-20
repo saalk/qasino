@@ -20,9 +20,29 @@
             </th:block>
             <div class="text-center">
                 <h1>Welcome inside the Qasino!</h1>
-                <div class="lead">
-                    Start playing games
-                </div>
+                <span th:text="'Some statistics for today: ' + ${#dates.format(#dates.createNow(),'YYYY-MM-dd HH:mm')}" ></span>
+                <br><br>
+                <table class="u-full-width">
+                    <thead>
+                        <tr>
+                            <th> Calculation</th>
+                            <th> Table</th>
+                            <th> Filter</th>
+                            <th> Count</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:if="${qasinoResponse.statistics.empty}">
+                            <td colspan="2"> No Statistics Available</td>
+                        </tr>
+                        <tr th:each="statistic : ${qasinoResponse.statistics}">
+                            <td><span th:text="${statistic.calculation}"> Calculation </span></td>
+                            <td><span th:text="${statistic.table}"> Table </span></td>
+                            <td><span th:text="${statistic.filter}"> Filter </span></td>
+                            <td><span th:text="${statistic.count}"> Count </span></td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
         </div>
         <div th:insert="~{fragments/footer :: footer}"></div>
