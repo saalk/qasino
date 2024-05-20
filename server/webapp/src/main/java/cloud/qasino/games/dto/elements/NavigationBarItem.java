@@ -1,9 +1,5 @@
 package cloud.qasino.games.dto.elements;
 
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.voodoodyne.jackson.jsog.JSOGGenerator;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -13,21 +9,17 @@ import lombok.Setter;
 //@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class NavigationBarItem {
 
-    @JsonProperty("intSequence")
-    private int itemSequence;
-    @JsonProperty("visible")
-    private boolean itemVisible;
-    @JsonProperty("name")
-    private String itemName;
-    @JsonProperty("stats")
-    private String itemStats;
+    public int sequence;
+    public boolean visible;
+    public String title;
+    public String stat;
 
     @Override public String toString() {
         return "navBarItem" +
-                "(sequence=" + this.itemSequence + ", "+
-                "visible=" + this.itemVisible + ", "+
-                "name=" + this.itemName + ", "+
-                "stats=" + this.itemStats + ")";
+                "(sequence=" + this.sequence + ", "+
+                "visible=" + this.visible + ", "+
+                "name=" + this.title + ", "+
+                "stats=" + this.stat + ")";
     }
 }
 

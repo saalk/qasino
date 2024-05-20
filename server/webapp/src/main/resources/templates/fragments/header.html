@@ -38,20 +38,30 @@
                 <img th:src="@{images/qasino/qasino-logo.png}" alt="Logo" width="90" height="70"
                      class="d-inline-block align-text-top">
             </a>
-            <!--            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">-->
-            <!--                <span class="navbar-toggler-icon"></span>-->
-            <!--            </button>-->
-            <!--            <div class="collapse navbar-collapse" id="navbarNav">-->
             <div class="navbar" id="navbarNav">
-                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0"
+                    th:if="${qasinoResponse != null && qasinoResponse.navBarItems != null}">
                     <li class="nav-item" th:classappend="${module == '/home' ? 'active' : ''}">
-                        <a class="nav-link active" aria-current="page" href="#" th:href="@{/}">Home</a>
+                        <a class="nav-link active" aria-current="page" href="#" th:href="@{/}" th:text="Home"></a>
                     </li>
                     <li class="nav-item" th:classappend="${module == 'Visitor' ? 'active' : ''}">
-                        <a class="nav-link" href="#" th:href="@{/visitor}">Visitor</a>
+                        <a class="nav-link" href="#" th:href="@{/visitor}" th:text="${qasinoResponse.navBarItems.^[sequence==1].title}">Visitor</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link disabled" aria-disabled="true">Game</a>
+                        <a class="nav-link disabled" aria-disabled="true"
+                               th:text="${qasinoResponse.navBarItems.^[sequence==2].title}">Setup</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link disabled" aria-disabled="true"
+                           th:text="${qasinoResponse.navBarItems.^[sequence==3].title}">Play</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link disabled" aria-disabled="true"
+                           th:text="${qasinoResponse.navBarItems.^[sequence==4].title}">Invite</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link disabled" aria-disabled="true"
+                           th:text="${qasinoResponse.navBarItems.^[sequence==5].title}">League</a>
                     </li>
                 </ul>
 
@@ -63,28 +73,11 @@
                         <a class="nav-link" href="/logout" th:href="@{#}">Logout</a>
                     </li>
                     <li class="nav-item" sec:authorize="isAuthenticated()">
-                        <span sec:authentication="name"></span>
+                        <a class="nav-link" href="/visitor" th:href="@{/visitor}" sec:authentication="name"></a>
                     </li>
-
                 </ul>
 
-                <!--                <ul class="nav navbar-nav navbar-right">-->
-                <!--                    <li class="nav-item" th:switch="${#authentication}? ${#authorization.expression('isAuthenticated()')} : ${false}">-->
-                <!--                    <span th:case="${false}">-->
-                <!--                        <a class="nav-link" href="/signin" th:href="@{/signin}">-->
-                <!--                        <span class="glyphicon glyphicon-log-in" aria-hidden="true"></span>&nbsp;Sign in-->
-                <!--                        </a>-->
-                <!--                    </span>-->
-                <!--                        <span th:case="${true}">-->
-                <!--                        <a class="nav-link" href="/logout" th:href="@{#}" onclick="$('#form').submit();">-->
-                <!--                        <span class="glyphicon glyphicon-log-out" aria-hidden="true"></span>&nbsp;Logout-->
-                <!--                        </a>-->
-                <!--                        <form style="visibility: hidden" id="form" method="post" action="#"-->
-                <!--                              th:action="@{/logout}"></form>-->
-                <!--                    </span>-->
-                <!--                        <span th:case="*">Should never happen, but who knows...</span>-->
-                <!--                    </li>-->
-                <!--                </ul>-->
+
             </div>
         </div>
     </nav>

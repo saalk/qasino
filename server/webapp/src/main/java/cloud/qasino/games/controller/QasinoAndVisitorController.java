@@ -2,7 +2,7 @@ package cloud.qasino.games.controller;
 
 import cloud.qasino.games.action.CalculateQasinoStatistics;
 import cloud.qasino.games.action.LoadEntitiesToDtoAction;
-import cloud.qasino.games.action.FindVisitorIdByAliasAction;
+import cloud.qasino.games.action.FindVisitorIdByAliasOrUsernameAction;
 import cloud.qasino.games.action.HandleSecuredLoanAction;
 import cloud.qasino.games.action.MapQasinoResponseFromDto;
 import cloud.qasino.games.action.MapQasinoGameTableFromDto;
@@ -25,10 +25,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -62,7 +60,7 @@ public class QasinoAndVisitorController {
     @Autowired
     LoadEntitiesToDtoAction loadEntitiesToDtoAction;
     @Autowired
-    FindVisitorIdByAliasAction findVisitorIdByAliasAction;
+    FindVisitorIdByAliasOrUsernameAction findVisitorIdByAliasOrUsernameAction;
     @Autowired
     SignUpNewVisitorAction signUpNewVisitorAction;
     @Autowired
@@ -160,7 +158,7 @@ public class QasinoAndVisitorController {
             return ResponseEntity.status(HttpStatus.valueOf(flowDTO.getHttpStatus())).headers(flowDTO.getHeaders()).build();
         }
         // logon - get Qasino and all games for visitor
-        output = findVisitorIdByAliasAction.perform(flowDTO);
+        output = findVisitorIdByAliasOrUsernameAction.perform(flowDTO);
         if (output == EventOutput.Result.FAILURE) {
             flowDTO.prepareResponseHeaders();
             return ResponseEntity.status(HttpStatus.valueOf(flowDTO.getHttpStatus())).headers(flowDTO.getHeaders()).build();

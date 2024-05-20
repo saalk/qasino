@@ -6,7 +6,7 @@ import cloud.qasino.games.action.CreateNewGameAction;
 import cloud.qasino.games.action.CreateNewLeagueAction;
 import cloud.qasino.games.action.IsPlayerHuman;
 import cloud.qasino.games.action.LoadEntitiesToDtoAction;
-import cloud.qasino.games.action.FindVisitorIdByAliasAction;
+import cloud.qasino.games.action.FindVisitorIdByAliasOrUsernameAction;
 import cloud.qasino.games.action.HandleSecuredLoanAction;
 import cloud.qasino.games.action.IsGameConsistentForGameEvent;
 import cloud.qasino.games.action.IsGameFinished;
@@ -41,7 +41,7 @@ import cloud.qasino.games.database.entity.enums.player.AiLevel;
 import cloud.qasino.games.database.entity.enums.player.Avatar;
 import cloud.qasino.games.database.entity.enums.player.Role;
 import cloud.qasino.games.dto.elements.SectionTable;
-import cloud.qasino.games.dto.statistics.Statistics;
+import cloud.qasino.games.dto.statistics.Statistic;
 import cloud.qasino.games.response.QasinoResponse;
 import cloud.qasino.games.statemachine.event.GameEvent;
 import cloud.qasino.games.statemachine.event.TurnEvent;
@@ -65,7 +65,7 @@ import java.util.Map;
 @Slf4j
 public class QasinoFlowDTO extends AbstractFlowDTO
         implements
-        FindVisitorIdByAliasAction.Dto,
+        FindVisitorIdByAliasOrUsernameAction.Dto,
         SignUpNewVisitorAction.SignUpNewVisitorActionDTO,
         CreateNewLeagueAction.Dto,
         LoadEntitiesToDtoAction.Dto,
@@ -93,7 +93,7 @@ public class QasinoFlowDTO extends AbstractFlowDTO
 
     // gui
     private QasinoResponse qasinoResponse;
-    private Statistics statistics;
+    private List<Statistic> statistics;
 
     // FRONTEND IDS
     // path params
