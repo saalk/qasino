@@ -9,6 +9,9 @@ import lombok.extern.slf4j.Slf4j;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.apache.commons.lang3.StringUtils.left;
+import static org.apache.commons.lang3.StringUtils.right;
+
 @Data
 @Slf4j
 public class PlayingCard {
@@ -35,11 +38,15 @@ public class PlayingCard {
     private int value;
     private String thumbnailPath;
 
-    public PlayingCard() {
+    public PlayingCard(String rankAndSuit) {
+        if (!isValidCardId(rankAndSuit)) throw new RuntimeException();
+        this.rankAndSuit = rankAndSuit;
+        this.rank = Rank.fromLabel(left(rankAndSuit,1));
+        this.suit = Suit.fromLabel(right(rankAndSuit,1));
+        this.value = calculateValueWithDefaultHighlowFromRank(rank, null);
     }
 
     public PlayingCard(Rank rank, Suit suit) {
-        this();
         if (rank == null || suit == null)
             throw new NullPointerException(rank + ", " + suit);
         this.rank = rank;
@@ -48,7 +55,7 @@ public class PlayingCard {
         final StringBuilder builder = new StringBuilder();
         this.rankAndSuit = builder.append(rank.getLabel()).append(suit.getLabel()).toString();
         this.value = calculateValueWithDefaultHighlowFromRank(rank, null);
-        // todo: set thumbnailPath
+        this.thumbnailPath="static/images/playingcard/svg/clubs-ace.svg";
     }
 
     public static List<PlayingCard> newDeck(int addJokers) {

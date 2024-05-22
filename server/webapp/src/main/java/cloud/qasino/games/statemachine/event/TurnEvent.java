@@ -17,14 +17,14 @@ public enum TurnEvent implements Event {
     // highlow
     HIGHER("higher"),
     LOWER("lower"),
-    PASS("pass"),
     NEXT("next"),
 
-    // blackjack
+    // blackjack,
     DEAL("deal"),
     SPLIT("split"),
 
     // generic
+    PASS("pass"),
     LEAVE("leave"),
 
     // technical
@@ -38,7 +38,9 @@ public enum TurnEvent implements Event {
 
     public static final Map<String, TurnEvent> lookup
             = new HashMap<>();
-    public static final Map<String, TurnEvent> turnEventMapNoError
+    public static final Map<String, TurnEvent> turnEventsHighLow
+            = new HashMap<>();
+    public static final Map<String, TurnEvent> turnEventsBlackJack
             = new HashMap<>();
 
     static {
@@ -48,8 +50,29 @@ public enum TurnEvent implements Event {
 
     static {
         for (TurnEvent turnEvent : EnumSet.allOf(TurnEvent.class))
-            if (!turnEvent.getLabel().equalsIgnoreCase("error"))
-                turnEventMapNoError.put(turnEvent.getLabel(), turnEvent);
+            if (!(
+                    turnEvent == TurnEvent.DEAL ||
+                    turnEvent == TurnEvent.SPLIT ||
+                    turnEvent == TurnEvent.ERROR ||
+                    turnEvent == TurnEvent.DETERMINE_WINNER ||
+                    turnEvent == TurnEvent.END_GAME
+
+            ))
+                turnEventsHighLow.put(turnEvent.getLabel(), turnEvent);
+    }
+
+    static {
+        for (TurnEvent turnEvent : EnumSet.allOf(TurnEvent.class))
+            if (!(
+                    turnEvent == TurnEvent.HIGHER ||
+                            turnEvent == TurnEvent.LOWER ||
+                            turnEvent == TurnEvent.NEXT ||
+                            turnEvent == TurnEvent.ERROR ||
+                            turnEvent == TurnEvent.DETERMINE_WINNER ||
+                            turnEvent == TurnEvent.END_GAME
+
+            ))
+                turnEventsBlackJack.put(turnEvent.getLabel(), turnEvent);
     }
 
     public static TurnEvent fromLabel(String inputLabel) {

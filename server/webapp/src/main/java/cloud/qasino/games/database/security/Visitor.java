@@ -4,16 +4,27 @@ import cloud.qasino.games.database.entity.League;
 import cloud.qasino.games.database.entity.Player;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.voodoodyne.jackson.jsog.JSOGGenerator;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Index;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.ToString;
 import org.hibernate.annotations.DynamicUpdate;
 
-import jakarta.persistence.*;
 import java.time.LocalDateTime;
 import java.time.Month;
 import java.time.format.DateTimeFormatter;
@@ -29,13 +40,13 @@ import java.util.Set;
 @Getter
 @Setter
 @JsonIdentityInfo(generator = JSOGGenerator.class)
-@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+//@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 @Table(name = "visitor", indexes =
         {@Index(name = "visitors_index", columnList = "visitor_id", unique = true),
                 @Index(name = "alias_index", columnList = "alias", unique = false),
                 @Index(name = "username_index", columnList = "username", unique = true)
         })
-public class Visitor{
+public class Visitor {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -53,10 +64,13 @@ public class Visitor{
     @Column(name = "password", length = 60)
     private String password;
 
+    @JsonIgnore
     private boolean enabled;
 
+    @JsonIgnore
     private boolean isUsing2FA;
 
+    @JsonIgnore
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "users_roles", joinColumns = @JoinColumn(name = "visitor_id", referencedColumnName = "visitor_id"), inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "role_id"))
     private Collection<Role> roles;
@@ -64,13 +78,15 @@ public class Visitor{
     // Foreign keys
 
     // Normal fields
-
+    @JsonProperty("alias")
     @Column(name = "alias", length = 50, nullable = false)
     private String alias;
 
+    @JsonProperty("aliasSequence")
     @Column(name = "alias_seq")
     private int aliasSequence;
 
+    @JsonProperty("email")
     @Column(name = "email", length = 50, nullable = true)
     private String email;
 
@@ -93,6 +109,7 @@ public class Visitor{
     @Column(name = "week", length = 3)
     private String week;
 
+    @JsonIgnore
     @Setter(AccessLevel.NONE)
     @Column(name = "weekday", length = 2)
     private int weekday;
@@ -235,6 +252,20 @@ public class Visitor{
         if (o == null || getClass() != o.getClass()) return false;
         Visitor visitor = (Visitor) o;
         return visitorId == visitor.visitorId;
+    }
+
+    @Override
+    public String toString() {
+        return "(" +
+                "visitorId=" + this.visitorId +
+                ", securedLoan=" + this.securedLoan +
+                ", balance=" + this.balance +
+                ", email=" + this.email +
+                ", alias=" + this.alias +
+                ", aliasSequence=" + this.aliasSequence +
+                ", username=" + this.alias +
+                ", firstRole=" + this.roles.stream().findFirst() +
+                ")";
     }
 
     @Override

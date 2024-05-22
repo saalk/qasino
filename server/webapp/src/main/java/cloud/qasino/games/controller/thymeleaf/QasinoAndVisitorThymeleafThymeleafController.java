@@ -1,17 +1,16 @@
 package cloud.qasino.games.controller.thymeleaf;
 
+import cloud.qasino.games.controller.AbstractThymeleafController;
 import cloud.qasino.games.database.security.MyUserDetailService;
 import cloud.qasino.games.database.security.MyUserPrincipal;
 import cloud.qasino.games.database.security.Visitor;
 import cloud.qasino.games.database.security.VisitorService;
 import cloud.qasino.games.action.CalculateQasinoStatistics;
 import cloud.qasino.games.action.FindVisitorIdByAliasOrUsernameAction;
-import cloud.qasino.games.action.HandleSecuredLoanAction;
 import cloud.qasino.games.action.LoadEntitiesToDtoAction;
 import cloud.qasino.games.action.MapQasinoGameTableFromDto;
 import cloud.qasino.games.action.MapQasinoResponseFromDto;
 import cloud.qasino.games.action.SetStatusIndicatorsBaseOnRetrievedDataAction;
-import cloud.qasino.games.action.SignUpNewVisitorAction;
 import cloud.qasino.games.database.repository.CardRepository;
 import cloud.qasino.games.database.repository.GameRepository;
 import cloud.qasino.games.database.repository.PlayerRepository;
@@ -72,7 +71,7 @@ import java.util.Set;
 @ControllerAdvice
 //@Api(tags = {WebConfiguration.QASINO_TAG})
 @Slf4j
-public class QasinoAndVisitorThymeleafController {
+public class QasinoAndVisitorThymeleafThymeleafController extends AbstractThymeleafController {
 
     EventOutput.Result output;
 
@@ -86,10 +85,7 @@ public class QasinoAndVisitorThymeleafController {
     LoadEntitiesToDtoAction loadEntitiesToDtoAction;
     @Autowired
     FindVisitorIdByAliasOrUsernameAction findVisitorIdByAliasOrUsernameAction;
-    @Autowired
-    SignUpNewVisitorAction signUpNewVisitorAction;
-    @Autowired
-    HandleSecuredLoanAction handleSecuredLoanAction;
+
     @Autowired
     SetStatusIndicatorsBaseOnRetrievedDataAction setStatusIndicatorsBaseOnRetrievedDataAction;
     @Autowired
@@ -111,7 +107,7 @@ public class QasinoAndVisitorThymeleafController {
     private final AuthenticationManager authenticationManager;
 
     @Autowired
-    public QasinoAndVisitorThymeleafController(
+    public QasinoAndVisitorThymeleafThymeleafController(
             AuthenticationManager authenticationManager,
             VisitorRepository visitorRepository,
             GameRepository gameRepository,
@@ -130,20 +126,21 @@ public class QasinoAndVisitorThymeleafController {
     @RequestMapping("favicon.ico")
     String favicon() {
 //        return "forward:/images/favicon.ico";
-        return "/images/favicon.ico";
+        return "images/favicon.ico";
     }
 
     @GetMapping(value = "signin") // works with get, post, put etc
     public String signin(Model model, @RequestParam(value = "error", required = false) String error) {
 
-        // build response
         QasinoFlowDTO flowDTO = new QasinoFlowDTO();
+        // build response
         loadEntitiesToDtoAction.perform(flowDTO);
         mapQasinoGameTableFromDto.perform(flowDTO);
         setStatusIndicatorsBaseOnRetrievedDataAction.perform(flowDTO);
         calculateQasinoStatistics.perform(flowDTO);
         mapQasinoResponseFromDto.perform(flowDTO);
         flowDTO.prepareResponseHeaders();
+        // build response
         QasinoResponse qasinoResponse = flowDTO.getQasinoResponse();
         if (error != null) {
             qasinoResponse.setAction("Username or password not recognised");
@@ -173,9 +170,9 @@ public class QasinoAndVisitorThymeleafController {
     String signup(Model model, @RequestHeader(value = "X-Requested-With", required = false) String requestedWith) {
         model.addAttribute(new SignupForm());
 
-        log.warn("GetMapping: signup");
-        log.warn("String: {}",requestedWith);
-        log.warn("Model: {}",model);
+//        log.warn("GetMapping: signup");
+//        log.warn("String: {}",requestedWith);
+//        log.warn("Model: {}",model);
 
         if (AjaxUtils.isAjaxRequest(requestedWith)) {
             return SIGNUP_VIEW_LOCATION.concat(" :: signupForm");
@@ -208,22 +205,6 @@ public class QasinoAndVisitorThymeleafController {
 //        return "redirect:/"+visitor.getVisitorId();
     }
 
-
-//    // move to abstract class
-//    @ModelAttribute
-//    public void addAttributes(final Model model) {
-//        model.addAttribute("welcome", "Welcome to the Qasino in the Cloud!");
-//
-//        // build qasino
-//        QasinoFlowDTO flowDTO = new QasinoFlowDTO();
-//        loadEntitiesToDtoAction.perform(flowDTO);
-//        mapQasinoGameTableFromDto.perform(flowDTO);
-//        setStatusIndicatorsBaseOnRetrievedDataAction.perform(flowDTO);
-//        calculateQasinoStatistics.perform(flowDTO);
-//        mapQasinoResponseFromDto.perform(flowDTO);
-//        flowDTO.prepareResponseHeaders();
-//        model.addAttribute("qasino", flowDTO.getQasinoResponse());
-//    }
 
     @GetMapping({"/"} )
     String index(
@@ -267,10 +248,10 @@ public class QasinoAndVisitorThymeleafController {
     public String generalError(HttpServletRequest request, HttpServletResponse response, Model model) {
         // retrieve some useful information from the request
 
-        log.warn("RequestMapping: general");
-        log.warn("HttpServletRequest: {}",request.toString());
-        log.warn("HttpServletResponse: {}",response.toString());
-        log.warn("Model: {}",model.toString());
+//        log.warn("RequestMapping: general");
+//        log.warn("HttpServletRequest: {}",request.toString());
+//        log.warn("HttpServletResponse: {}",response.toString());
+//        log.warn("Model: {}",model.toString());
 
         Integer statusCode = (Integer) request.getAttribute("jakarta.servlet.error.status_code");
         Throwable throwable = (Throwable) request.getAttribute("jakarta.servlet.error.exception");

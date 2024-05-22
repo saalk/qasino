@@ -1,9 +1,9 @@
 package cloud.qasino.games.statemachine.event;
 
 import cloud.qasino.games.statemachine.event.interfaces.Event;
+import jakarta.persistence.Transient;
 import lombok.Getter;
 
-import jakarta.persistence.Transient;
 import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.Map;
@@ -35,7 +35,7 @@ public enum GameEvent implements Event {
 
     public static final Map<String, GameEvent> lookup
             = new HashMap<>();
-    public static final Map<String, GameEvent> gameEventMapNoError
+    public static final Map<String, GameEvent> gameEventsPossible
             = new HashMap<>();
 
     public static final Set<GameEvent> SETUP_GAME_EVENTS = of(START, INVITE, ACCEPT, VALIDATE);
@@ -44,7 +44,7 @@ public enum GameEvent implements Event {
     public static final Set<GameEvent> ERROR_GAME_EVENTS = of(ABANDON, ERROR);
 
     public static final Set<GameEvent> ALL_GAME_EVENTS = EnumSet.of(START, INVITE, ACCEPT, VALIDATE, SHUFFLE, WINNER,
-            STOP,ABANDON, ERROR);
+            STOP, ABANDON, ERROR);
 
     static {
         for (GameEvent gameEvent : EnumSet.allOf(GameEvent.class))
@@ -53,8 +53,12 @@ public enum GameEvent implements Event {
 
     static {
         for (GameEvent gameEvent : EnumSet.allOf(GameEvent.class))
-            if (!gameEvent.getLabel().equalsIgnoreCase("error"))
-                gameEventMapNoError.put(gameEvent.getLabel(), gameEvent);
+            if (!(gameEvent == GameEvent.ERROR
+                    || gameEvent == GameEvent.ABANDON
+                    || gameEvent == GameEvent.INVITE
+                    || gameEvent == GameEvent.ACCEPT
+                    || gameEvent == GameEvent.WINNER))
+                gameEventsPossible.put(gameEvent.getLabel(), gameEvent);
     }
 
     @Transient

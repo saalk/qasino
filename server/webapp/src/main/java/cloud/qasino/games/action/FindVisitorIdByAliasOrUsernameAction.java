@@ -21,6 +21,10 @@ public class FindVisitorIdByAliasOrUsernameAction implements Action<FindVisitorI
     @Override
     public EventOutput.Result perform(Dto actionDto) {
 
+        if (actionDto.getSuppliedVisitorId() > 0) {
+            return EventOutput.Result.SUCCESS;
+        }
+
         Optional<Visitor> foundVisitor;
         // set http to created when done
         if (!(StringUtils.isEmpty(actionDto.getSuppliedAlias()))) {
@@ -34,20 +38,14 @@ public class FindVisitorIdByAliasOrUsernameAction implements Action<FindVisitorI
                 return EventOutput.Result.FAILURE;
             }
             foundVisitor = visitorRepository.findVisitorByAliasAndAliasSequence(actionDto.getSuppliedAlias(), 1);
-
-
         } else if(!(StringUtils.isEmpty(actionDto.getSuppliedUsername()))) {
             foundVisitor = Optional.ofNullable(visitorRepository.findByUsername(actionDto.getSuppliedUsername()));
         } else {
-            setBadRequestErrorMessage(actionDto, "Visitor", String.valueOf(actionDto.getSuppliedAlias()));
-            return EventOutput.Result.FAILURE;
+            return EventOutput.Result.SUCCESS;
         }
 
         if (foundVisitor.isPresent()) {
             actionDto.setSuppliedVisitorId(foundVisitor.get().getVisitorId());
-        } else {
-            setNotFoundErrorMessage(actionDto, "visitorId", actionDto.getSuppliedAlias());
-            return EventOutput.Result.FAILURE;
         }
         return EventOutput.Result.SUCCESS;
     }
@@ -75,6 +73,7 @@ public class FindVisitorIdByAliasOrUsernameAction implements Action<FindVisitorI
 
         // @formatter:off
         // Getters
+        long getSuppliedVisitorId();
         String getSuppliedAlias();
         String getSuppliedUsername();
 
