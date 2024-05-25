@@ -264,7 +264,7 @@ public class Visitor {
                 ", alias=" + this.alias +
                 ", aliasSequence=" + this.aliasSequence +
                 ", username=" + this.alias +
-                ", firstRole=" + this.roles.stream().findFirst() +
+                ", roles=" + this.roles.stream().toList() +
                 ")";
     }
 

@@ -13,15 +13,11 @@
         <!-- /* Handle the flash message */-->
         <th:block th:if="${message != null}">
             <!-- /* The message code is returned from the @Controller */ -->
-            <div th:replace="fragments/alert :: alert (type=${#strings.toLowerCase(message.type)}, message=#{${message.message}(${#authentication.username})})">
+            <div th:replace="~{fragments/alert :: alert (type=${#strings.toLowerCase(message.type)}, message=#{${message.message}(${#authentication.username})})}">
                 &nbsp;
             </div>
         </th:block>
-        <!--        <div class="text-center">-->
         <h1>Welcome inside our Qasino!</h1>
-<!--        <div th:if="${#request.getParameter('visitorid') != null}">-->
-<!--            <p th:text="'visitorid='${#request.getParameter('visitorid')}" th:unless="${#request.getParameter('visitorid') == null}"></p>-->
-<!--        </div>-->
         <span th:text="'Some statistics for today: ' + ${#dates.format(#dates.createNow(),'YYYY-MM-dd HH:mm')}"></span>
         <br><br>
         <table class="u-full-width">

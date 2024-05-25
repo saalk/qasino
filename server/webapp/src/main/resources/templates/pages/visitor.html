@@ -1,55 +1,92 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" lang="en">
 <head>
+    <title>Qasino visitor</title>
+<!--    <th:block th:insert="~{fragments/header :: headerfiles}">-->
+<!--    </th:block>-->
+
+    <!-- Basic Page Needs -->
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
     <title>Qasino in the cloud</title>
-    <th:block th:insert="~{fragments/header :: headerfiles}">
-    </th:block>
+    <meta name="description" content="A basic structure for card playing games."/>
+    <meta name="author" content="Saalk"/>
+    <!-- Mobile Specific Metas -->
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <!-- FONT -->
+    <link href="//fonts.googleapis.com/css?family=Raleway:400,300,600" rel="stylesheet" type="text/css">
+    <!-- CSS -->
+    <!-- for thymeleaf we only need to specify the path below src/main/resources/static -->
+    <link rel="stylesheet" type="text/css" href="../../static/cssandjs/skeleton/skeleton.css" media="all"
+          th:href="@{/cssandjs/skeleton/skeleton.css}"/>
+    <link rel="stylesheet" type="text/css" href="../../static/cssandjs/skeleton/normalize.css" media="all"
+          th:href="@{/cssandjs/skeleton/normalize.css}"/>
+    <link rel="stylesheet" type="text/css" href="../../static/cssandjs/bootstrap/bootstrap.css" media="all"
+          th:href="@{/cssandjs/bootstrap/bootstrap.css}"/>
+    <link rel="stylesheet" type="text/css" href="../../static/cssandjs/specific.css" media="all"
+          th:href="@{/cssandjs/specific.css}"/>
+    <!--    <link rel="stylesheet" type="text/css"-->
+    <!--    <link rel="stylesheet" type="text/css"-->
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="../../static/images/favicon.ico" th:href="@{/images/favicon.ico}"/>
+    <script type="text/javascript" th:src="@{/cssandjs/jquery.min.js}"></script>
+    <script type="text/javascript" th:src="@{/cssandjs/bootstrap/bootstrap.bundle.min.js}"></script>
+
+
 </head>
 <body>
+<div th:replace="~{fragments/header :: header}"></div>
 <!-- the specific part of this html -->
-<div class="container" th:replace="~{fragments/header :: header}"></div>
-<div class="text-center">
-    <h1>Visitor</h1>
-    <h2>
-        <span th::if="${visitor['new']}" th:remove="tag">New </span> Visitor
-    </h2>
-    <form action="#" method="put" th:action="@{/visitor}" th:object="${qasinoResponse}">
-        <input type="text" th:field="*{pageVisitor.selectedVisitor.balance}">
-        <input type="text" th:field="*{pageVisitor.selectedVisitor.securedLoan}">
-        <input type="text" th:field="*{pageVisitor.selectedVisitor.email}">
-        <input type="text" th:field="*{pageVisitor.selectedVisitor.alias}">
-        <input type="text" th:field="*{pageVisitor.selectedVisitor.aliasSequence}">
-        <input type="text" th:field="*{pageVisitor.selectedVisitor.username}">
-        <input type="hidden" th:value="${pageVisitor.selectedVisitor.visitorId}" name="visitorId"/>
-        <input type="submit">
-    </form>
+<div class="container">
+    <div class="text-center">
+        <h1>Visitor</h1>
+        <div th:if="${qasinoResponse == null}">
+            No qasinoResponse Available
+        </div>
+        <div th:if="${qasinoResponse.pageVisitor} == null}">
+            No pageVisitor Available
+        </div>
+        <!-- #lists is SPEL -->
+        <div th:unless="${qasinoResponse.pageVisitor} == null">
 
-<!--    <form action="#" th:action="@{/saveVisitor}" th:object="${qasinoResponse}"-->
-<!--          th:method="${visitor['new']} ? post : put">-->
-<!--        <ul>-->
-<!--            <li th:errors="*{balance}"/>-->
-<!--            <li th:errors="*{email}"/>-->
-<!--            <li th:errors="*{alias}"/>-->
-<!--        </ul>-->
-<!--        <table border="1">-->
-<!--            <tr>-->
-<!--                <td><label th:text="alias"/></td>-->
-<!--                <td><input type="text" th:field="*{alias}"/></td>-->
-<!--            </tr>-->
-<!--            <tr>-->
-<!--                <td><label th:text="email"/></td>-->
-<!--                <td><input type="text" th:field="*{email}"/></td>-->
-<!--            </tr>-->
-<!--            <tr>-->
-<!--                <td><label th:text="Balance"/></td>-->
-<!--                <td><select id="balance" name="balance">-->
-<!--                    <option th:each="i : ${#numbers.balance(0, 100)}" th:value="${i}" th:text="${i}"-->
-<!--                            th:selected="${i==75}"></option>-->
-<!--                </select></td>-->
-<!--            </tr>-->
-<!--        </table>-->
-<!--    </form>-->
+            <form action="#" method="put" th:action="@{/visitor}" th:object="${qasinoResponse}">
+                <input class="form-control" type="text" th:field="*{pageVisitor}">
+                <input type="text" th:field="*{qasinoResponse.pageVisitor.selectedVisitor.securedLoan}">
+                <input type="text" th:field="*{qasinoResponse.pageVisitor.selectedVisitor.email}">
+                <input type="text" th:field="*{qasinoResponse.pageVisitor.selectedVisitor.alias}">
+                <input type="text" th:field="*{qasinoResponse.pageVisitor.selectedVisitor.aliasSequence}">
+                <input type="text" th:field="*{qasinoResponse.pageVisitor.selectedVisitor.username}">
+                <input type="hidden" th:value="*{pageVisitor.selectedVisitor.visitorId}"/>
+                <input type="submit">
+            </form>
+
+            <!--    <form action="#" th:action="@{/saveVisitor}" th:object="${qasinoResponse}"-->
+            <!--          th:method="${visitor['new']} ? post : put">-->
+            <!--        <ul>-->
+            <!--            <li th:errors="*{balance}"/>-->
+            <!--            <li th:errors="*{email}"/>-->
+            <!--            <li th:errors="*{alias}"/>-->
+            <!--        </ul>-->
+            <!--        <table border="1">-->
+            <!--            <tr>-->
+            <!--                <td><label th:text="alias"/></td>-->
+            <!--                <td><input type="text" th:field="*{alias}"/></td>-->
+            <!--            </tr>-->
+            <!--            <tr>-->
+            <!--                <td><label th:text="email"/></td>-->
+            <!--                <td><input type="text" th:field="*{email}"/></td>-->
+            <!--            </tr>-->
+            <!--            <tr>-->
+            <!--                <td><label th:text="Balance"/></td>-->
+            <!--                <td><select id="balance" name="balance">-->
+            <!--                    <option th:each="i : ${#numbers.balance(0, 100)}" th:value="${i}" th:text="${i}"-->
+            <!--                            th:selected="${i==75}"></option>-->
+            <!--                </select></td>-->
+            <!--            </tr>-->
+            <!--        </table>-->
+            <!--    </form>-->
+        </div>
+    </div>
+    <div th:insert="~{fragments/footer :: footer}"></div>
 </div>
-<div th:insert="~{fragments/footer :: footer}"></div>
 </body>
 </html>

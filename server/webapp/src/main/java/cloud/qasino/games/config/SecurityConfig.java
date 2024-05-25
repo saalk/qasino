@@ -36,7 +36,7 @@ class SecurityConfig {
 
     @Bean
     public WebSecurityCustomizer webSecurityCustomizer() {
-        return web -> web.debug(securityDebug).ignoring().requestMatchers("/cssandjs/**", "/images/**", "/authenticate/**", "/homeNotSignedIn", "/general", "/h2-console/**");
+        return web -> web.debug(securityDebug).ignoring().requestMatchers("/cssandjs/**", "/favicon.ico", "/images/**", "/authenticate/**", "/homeNotSignedIn", "/general", "/h2-console/**");
     }
 
     //    loginPage() – the custom login page
@@ -50,7 +50,7 @@ class SecurityConfig {
                 .httpBasic(Customizer.withDefaults())
                 .formLogin(Customizer.withDefaults())
                 .authorizeHttpRequests(
-                        auth -> auth.requestMatchers("/", "/cssandjs/**", "/images/**", "/authenticate/**", "/signin", "/signup", "/general", "/homeNotSignedIn", "/h2-console/**")
+                        auth -> auth.requestMatchers("/", "/cssandjs/**", "/favicon.ico", "/images/**", "/authenticate/**", "/signin", "/signup", "/general", "/homeNotSignedIn", "/h2-console/**")
                                 .permitAll()
                                 .requestMatchers("/users/**", "/apps/**").hasAuthority("ADMIN")
                                 .requestMatchers("/myapps/**").hasAuthority("CLIENT")

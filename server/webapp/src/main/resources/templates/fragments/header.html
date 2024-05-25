@@ -44,25 +44,29 @@
                     <li class="nav-item" th:classappend="${module == '/home' ? 'active' : ''}">
                         <a class="nav-link active" aria-current="page" href="#" th:href="@{/}" th:text="Home"></a>
                     </li>
-                    <li class="nav-item" th:classappend="${module == 'Visitor' ? 'active' : ''}">
-                        <a class="nav-link" href="pages/visitor"
+                    <li class="nav-item" th:if="${qasinoResponse.params.vid} != null">
+                        <a class="nav-link active" th:href="@{/visitor/{path}(path=${qasinoResponse.params.vid})}"
+                           th:text="${qasinoResponse.navBarItems.^[sequence==1].title}">Visitor[]</a>
+                    </li>
+                    <li class="nav-item" th:if="${qasinoResponse.params.vid} == null">
+                        <a class="nav-link disable"
                            th:text="${qasinoResponse.navBarItems.^[sequence==1].title}">Visitor</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link disabled" href="#" th:href="@{pages/setup}" aria-disabled="true"
-                               th:text="${qasinoResponse.navBarItems.^[sequence==2].title}">Setup</a>
+                        <a class="nav-link disabled" href="#" th:href="@{setup}" aria-disabled="true"
+                           th:text="${qasinoResponse.navBarItems.^[sequence==2].title}">Setup[]</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link disabled" href="#" th:href="@{../pages/play}" aria-disabled="true"
-                           th:text="${qasinoResponse.navBarItems.^[sequence==3].title}">Play</a>
+                        <a class="nav-link disabled" href="#" th:href="@{play}" aria-disabled="true"
+                           th:text="${qasinoResponse.navBarItems.^[sequence==3].title}">Play[]</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link disabled" href="#" th:href="@{../pages/invite}" aria-disabled="true"
-                           th:text="${qasinoResponse.navBarItems.^[sequence==4].title}">Invite</a>
+                        <a class="nav-link disabled" href="#" th:href="@{invite}" aria-disabled="true"
+                           th:text="${qasinoResponse.navBarItems.^[sequence==4].title}">Invite[]</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link disabled" href="#" th:href="@{../pages/league}" aria-disabled="true"
-                           th:text="${qasinoResponse.navBarItems.^[sequence==5].title}">League</a>
+                        <a class="nav-link disabled" href="#" th:href="@{league}" aria-disabled="true"
+                           th:text="${qasinoResponse.navBarItems.^[sequence==5].title}">League[]</a>
                     </li>
                 </ul>
 
@@ -71,10 +75,10 @@
                         <a class="nav-link" href="/signin" th:href="@{/signin}">Sign in</a>
                     </li>
                     <li class="nav-item" sec:authorize="isAuthenticated()">
-                        <a class="nav-link" href="logout" th:href="@{#}">Logout</a>
+                        <a class="nav-link" href="/logout" th:href="@{/logout}">Logout</a>
                     </li>
                     <li class="nav-item" sec:authorize="isAuthenticated()">
-                        <a class="nav-link" th:href="@{pages/visitor}" sec:authentication="name">[]</a>
+                        <a class="nav-link" th:href="@{/visitor/{path}(path=${qasinoResponse.params.vid})}" sec:authentication="name">[]</a>
                     </li>
                 </ul>
 

@@ -4,17 +4,17 @@ import cloud.qasino.games.action.CalculateAndFinishGameAction;
 import cloud.qasino.games.action.CalculateQasinoStatistics;
 import cloud.qasino.games.action.CreateNewGameAction;
 import cloud.qasino.games.action.CreateNewLeagueAction;
-import cloud.qasino.games.action.IsPlayerHuman;
-import cloud.qasino.games.action.LoadEntitiesToDtoAction;
 import cloud.qasino.games.action.FindVisitorIdByAliasOrUsernameAction;
 import cloud.qasino.games.action.HandleSecuredLoanAction;
 import cloud.qasino.games.action.IsGameConsistentForGameEvent;
 import cloud.qasino.games.action.IsGameFinished;
+import cloud.qasino.games.action.IsPlayerHuman;
 import cloud.qasino.games.action.IsTurnConsistentForTurnEvent;
-import cloud.qasino.games.action.PlayGameForType;
-import cloud.qasino.games.action.MapQasinoResponseFromDto;
+import cloud.qasino.games.action.LoadEntitiesToDtoAction;
 import cloud.qasino.games.action.MapQasinoGameTableFromDto;
+import cloud.qasino.games.action.MapQasinoResponseFromDto;
 import cloud.qasino.games.action.PlayFirstTurnAction;
+import cloud.qasino.games.action.PlayGameForType;
 import cloud.qasino.games.action.PlayNextBotTurnAction;
 import cloud.qasino.games.action.PlayNextHumanTurnAction;
 import cloud.qasino.games.action.PrepareGameAction;
@@ -29,9 +29,9 @@ import cloud.qasino.games.database.entity.League;
 import cloud.qasino.games.database.entity.Player;
 import cloud.qasino.games.database.entity.Result;
 import cloud.qasino.games.database.entity.Turn;
-import cloud.qasino.games.database.security.Visitor;
 import cloud.qasino.games.database.entity.enums.card.Face;
 import cloud.qasino.games.database.entity.enums.card.Location;
+import cloud.qasino.games.database.entity.enums.card.PlayingCard;
 import cloud.qasino.games.database.entity.enums.card.Position;
 import cloud.qasino.games.database.entity.enums.game.Style;
 import cloud.qasino.games.database.entity.enums.game.Type;
@@ -40,6 +40,7 @@ import cloud.qasino.games.database.entity.enums.move.Move;
 import cloud.qasino.games.database.entity.enums.player.AiLevel;
 import cloud.qasino.games.database.entity.enums.player.Avatar;
 import cloud.qasino.games.database.entity.enums.player.Role;
+import cloud.qasino.games.database.security.Visitor;
 import cloud.qasino.games.dto.elements.SectionTable;
 import cloud.qasino.games.dto.statistics.Statistic;
 import cloud.qasino.games.response.QasinoResponse;
@@ -110,7 +111,7 @@ public class QasinoFlowDTO extends AbstractFlowDTO
     private GameStateGroup suppliedGameStateGroup;
     // Triggers for playing a Game
     private Move suppliedMove;
-    private List<Card> suppliedCards;   // todo
+    private List<PlayingCard> suppliedCards;   // todo
 
     // FRONTEND request params
     // paging

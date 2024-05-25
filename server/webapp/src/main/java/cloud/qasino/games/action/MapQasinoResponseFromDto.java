@@ -6,6 +6,8 @@ import cloud.qasino.games.database.entity.League;
 import cloud.qasino.games.database.entity.Player;
 import cloud.qasino.games.database.entity.Result;
 import cloud.qasino.games.database.entity.Turn;
+import cloud.qasino.games.database.entity.enums.card.PlayingCard;
+import cloud.qasino.games.database.entity.enums.move.Move;
 import cloud.qasino.games.database.security.Visitor;
 import cloud.qasino.games.database.entity.enums.game.GameState;
 import cloud.qasino.games.database.entity.enums.game.Style;
@@ -19,6 +21,8 @@ import cloud.qasino.games.dto.elements.PageVisitor;
 import cloud.qasino.games.dto.elements.SectionTable;
 import cloud.qasino.games.dto.statistics.Statistic;
 import cloud.qasino.games.statemachine.event.EventOutput;
+import cloud.qasino.games.statemachine.event.GameEvent;
+import cloud.qasino.games.statemachine.event.TurnEvent;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
@@ -66,7 +70,6 @@ public class MapQasinoResponseFromDto implements Action<MapQasinoResponseFromDto
             actionDto.setActionNeeded(true);
             actionDto.setAction("Logon visitor!");
         }
-        setupMessage(actionDto, navigationBarItem);
         navigationBarItem.setVisible(actionDto.isShowVisitorPage());
         navigationBarItems.add(navigationBarItem);
         qasinoResponse.setPageVisitor(pageVisitor);
@@ -99,7 +102,6 @@ public class MapQasinoResponseFromDto implements Action<MapQasinoResponseFromDto
                 actionDto.setAction("Start a new game.");
             }
         }
-        setupMessage(actionDto, navigationBarItem);
         navigationBarItem.setVisible(actionDto.isShowGameSetupPage());
         navigationBarItems.add(navigationBarItem);
         qasinoResponse.setPageGameSetup(pageGameSetup);
@@ -130,7 +132,6 @@ public class MapQasinoResponseFromDto implements Action<MapQasinoResponseFromDto
                 actionDto.setAction("Play a game");
             }
         }
-        setupMessage(actionDto, navigationBarItem);
         navigationBarItem.setVisible(actionDto.isShowGamePlayPage());
         navigationBarItems.add(navigationBarItem);
         qasinoResponse.setPageGamePlay(pageGamePlay);
@@ -173,19 +174,28 @@ public class MapQasinoResponseFromDto implements Action<MapQasinoResponseFromDto
         qasinoResponse.setStatistics(actionDto.getStatistics());
         qasinoResponse.setAction(actionDto.getAction());
         qasinoResponse.setActionNeeded(actionDto.isActionNeeded());
+        qasinoResponse.getParams().setVid(setId(actionDto.getSuppliedVisitorId()));
+        qasinoResponse.getParams().setGid(setId(actionDto.getSuppliedGameId()));
+        qasinoResponse.getParams().setLid(setId(actionDto.getSuppliedLeagueId()));
+        qasinoResponse.getParams().setSuppliedGameEvent(actionDto.getSuppliedGameEvent());
+        qasinoResponse.getParams().setSuppliedTurnEvent(actionDto.getSuppliedTurnEvent());
+        qasinoResponse.getParams().setTpid(setId(actionDto.getSuppliedTurnPlayerId()));
+        qasinoResponse.getParams().setPlayingCards(actionDto.getSuppliedCards());
+
 
         actionDto.setQasinoResponse(qasinoResponse);
         return EventOutput.Result.SUCCESS;
     }
 
-    private static void setupMessage(Dto actionDto, NavigationBarItem navigationBarItem) {
-        // todo
+    private static Long setId(long id) {
+        if (id>0) return id;
+        return Long.valueOf(-1);
     }
 
     // @formatter:off
     private void mapVisitorPage(Dto actionDto, NavigationBarItem navigationBarItem, PageVisitor pageVisitor) {
         // set the nav bar
-        navigationBarItem.setTitle("Visitor[" + actionDto.getQasinoVisitor().getUsername()+ "]");
+        navigationBarItem.setTitle("Visitor[" + actionDto.getQasinoVisitor().getVisitorId()+ "]");
         navigationBarItem.setStat("balance [" + actionDto.getQasinoVisitor().getBalance() + "]");
         pageVisitor.setSelectedVisitor(actionDto.getQasinoVisitor());
         Map<GameState, Integer> gameStateIntegerMap = new HashMap<>();
@@ -280,13 +290,28 @@ public class MapQasinoResponseFromDto implements Action<MapQasinoResponseFromDto
         boolean isShowGameInvitationsPage();
         boolean isShowLeaguesPage();
 
+        // events
+        GameEvent getSuppliedGameEvent();
+        TurnEvent getSuppliedTurnEvent();
+
+
         // visitor
+        boolean isRequestingToRepay();
+         boolean isOfferingShipForPawn();
+        long getSuppliedVisitorId();
+        long getInitiatingPlayerId();
+        long getInvitedPlayerId();
+        long getAcceptedPlayerId();
         Visitor getQasinoVisitor();
         List<League> getLeaguesForVisitor();
         List<Game> getInitiatedGamesForVisitor();
         List<Game> getInvitedGamesForVisitor();
 
         // game setup and play
+        long getSuppliedTurnPlayerId();
+        List<PlayingCard> getSuppliedCards();
+        Move getSuppliedMove();
+        long getSuppliedGameId();
         Game getQasinoGame();
         Turn getActiveTurn();
         SectionTable getTable();
@@ -294,6 +319,7 @@ public class MapQasinoResponseFromDto implements Action<MapQasinoResponseFromDto
         List<Result> getGameResults();
 
         // league
+        long getSuppliedLeagueId();
         League getQasinoGameLeague();
         List<Result> getResultsForLeague();
 
