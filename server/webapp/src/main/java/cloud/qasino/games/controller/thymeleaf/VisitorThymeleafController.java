@@ -96,7 +96,7 @@ public class VisitorThymeleafController extends AbstractThymeleafController {
         this.turnRepository = turnRepository;
     }
 
-    @GetMapping(value = {"visitor/{visitorId}", "visitor/"})
+    @GetMapping("visitor/{visitorId}")
     public String getVisitor(
             Model model,
             @PathVariable("visitorId") Optional<String> id,
@@ -126,7 +126,7 @@ public class VisitorThymeleafController extends AbstractThymeleafController {
         log.warn("Errors: {}", errors);
         log.warn("qasinoResponse: {}", flowDTO.getQasinoResponse());
 
-        return VISITOR_VIEW_LOCATION.concat(" :: qasinoResponse");
+        return VISITOR_VIEW_LOCATION;
     }
 
     @PutMapping("visitor/{visitorId}")

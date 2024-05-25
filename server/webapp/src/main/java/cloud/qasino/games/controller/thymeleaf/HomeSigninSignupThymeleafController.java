@@ -56,7 +56,7 @@ import java.util.Set;
 @Slf4j
 public class HomeSigninSignupThymeleafController extends AbstractThymeleafController {
 
-    private static final String IMAGES_FAVICON_LOCATION = "/images/favicon.ico";
+//    private static final String IMAGES_FAVICON_LOCATION = "static/images/favicon.ico";
     private static final String HOME_SIGNUP_VIEW_LOCATION = "home/signup";
     private static final String HOME_SIGNIN_VIEW_LOCATION = "home/signin";
     private static final String HOME_SIGNED_IN_LOCATION = "home/homeSignedIn";
@@ -78,11 +78,11 @@ public class HomeSigninSignupThymeleafController extends AbstractThymeleafContro
         this.signUpNewVisitorAction = signUpNewVisitorAction;
     }
 
-    @RequestMapping("favicon.ico")
-    String favicon(HttpServletResponse response) {
-//        return "forward:/images/favicon.ico";
-        return IMAGES_FAVICON_LOCATION;
-    }
+//    @RequestMapping("favicon.ico")
+//    String favicon(HttpServletResponse response) {
+////        return "forward:/images/favicon.ico";
+//        return IMAGES_FAVICON_LOCATION;
+//    }
 
     @GetMapping(value = "signin")
     public String signin(
@@ -101,10 +101,10 @@ public class HomeSigninSignupThymeleafController extends AbstractThymeleafContro
         prepareQasinoResponse(response, flowDTO);
         model.addAttribute( flowDTO.getQasinoResponse());
 
-        log.warn("GetMapping: signin");
-        log.warn("Model: {}", model);
-        log.warn("error: {}", error);
-        log.warn("qasinoResponse: {}", flowDTO.getQasinoResponse());
+//        log.warn("GetMapping: signin");
+//        log.warn("Model: {}", model);
+//        log.warn("error: {}", error);
+//        log.warn("qasinoResponse: {}", flowDTO.getQasinoResponse());
 
         return HOME_SIGNIN_VIEW_LOCATION;
     }
@@ -143,11 +143,11 @@ public class HomeSigninSignupThymeleafController extends AbstractThymeleafContro
         model.addAttribute(flowDTO.getQasinoResponse());
         model.addAttribute(new SignupForm());
 
-        log.warn("GetMapping: signup");
-        log.warn("HttpServletResponse: {}", response.getHeaderNames());
-        log.warn("Model: {}", model);
-        log.warn("String: {}",requestedWith);
-        log.warn("qasinoResponse: {}", flowDTO.getQasinoResponse());
+//        log.warn("GetMapping: signup");
+//        log.warn("HttpServletResponse: {}", response.getHeaderNames());
+//        log.warn("Model: {}", model);
+//        log.warn("String: {}",requestedWith);
+//        log.warn("qasinoResponse: {}", flowDTO.getQasinoResponse());
 
 
         if (AjaxUtils.isAjaxRequest(requestedWith)) {
@@ -187,10 +187,10 @@ public class HomeSigninSignupThymeleafController extends AbstractThymeleafContro
         QasinoResponse qasinoResponse = flowDTO.getQasinoResponse();
         model.addAttribute(flowDTO.getQasinoResponse());
 
-        log.warn("PostMapping: signup");
-        log.warn("SignupForm: {}", signupForm);
-        log.warn("RedirectAttributes: {}", ra);
-        log.warn("qasinoResponse: {}", flowDTO.getQasinoResponse());
+//        log.warn("PostMapping: signup");
+//        log.warn("SignupForm: {}", signupForm);
+//        log.warn("RedirectAttributes: {}", ra);
+//        log.warn("qasinoResponse: {}", flowDTO.getQasinoResponse());
 
         // see /WEB-INF/i18n/messages.properties and /WEB-INF/views/homeSignedIn.html
         MessageHelper.addSuccessAttribute(ra, "signup.success");
@@ -220,9 +220,9 @@ public class HomeSigninSignupThymeleafController extends AbstractThymeleafContro
         model.addAttribute(flowDTO.getQasinoResponse());
 
         log.warn("GetMapping: /");
-        log.warn("Principal: {}", principal);
-        log.warn("HttpServletResponse: {}", response.getHeaderNames());
-        log.warn("Model: {}", model);
+//        log.warn("Principal: {}", principal);
+//        log.warn("HttpServletResponse: {}", response.getHeaderNames());
+//        log.warn("Model: {}", model);
         log.warn("qasinoResponse: {}", flowDTO.getQasinoResponse());
 
         return principal != null ? HOME_SIGNED_IN_LOCATION : HOME_NOT_SIGNED_IN_LOCATION;
