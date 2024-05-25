@@ -14,45 +14,91 @@
         <div th:if="${qasinoResponse == null || qasinoResponse.pageVisitor == null}">
             No Data
         </div>
-        <!-- #lists is SPEL -->
         <div th:unless="${qasinoResponse.pageVisitor == null || qasinoResponse.pageVisitor == null}">
 
-            <form action="#" method="put" th:action="@{/visitor}" th:object="${qasinoResponse}">
-                <input class="form-control" type="text" th:field="*{pageVisitor}">
-                <input type="text" th:field="${qasinoResponse.pageVisitor.selectedVisitor.securedLoan}">
-                <input type="text" th:field="${qasinoResponse.pageVisitor.selectedVisitor.email}">
-                <input type="text" th:field="${qasinoResponse.pageVisitor.selectedVisitor.alias}">
-                <input type="text" th:field="${qasinoResponse.pageVisitor.selectedVisitor.aliasSequence}">
-                <input type="text" th:field="${qasinoResponse.pageVisitor.selectedVisitor.username}">
-                <input type="hidden" th:value="${qasinoResponse.pageVisitor.selectedVisitor.visitorId}"/>
-                <input type="submit">
+            <form class="form-narrow form-horizontal" method="post"
+                  th:action="@{${qasinoResponse.pageVisitor.selectedVisitor.balance == 0 ? '/pawn' : '/repay'}}"
+                  th:object="${qasinoResponse}"
+                  th:fragment="QasinoResponse">
+                <!--/* Show general error message when form contains errors */-->
+                <th:block th:if="${#fields.hasErrors('${qasinoResponse.*}')}">
+                    <div th:replace="fragments/alert :: alert (type='danger', message='Form contains errors. Please try again.')">
+                        Alert
+                    </div>
+                </th:block>
+                <fieldset>
+                    <div class="form-group">
+                        <label for="balance" class="col-lg-2 control-label">Balance</label>
+                        <div class="col-lg-10">
+                            <input disabled type="text" class="form-control" id="balance" placeholder="Balance"
+                                   th:field="${qasinoResponse.pageVisitor.selectedVisitor.balance}"/>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-lg-offset-2 col-lg-10">
+                            <button type="submit" class="btn btn-default"
+                                    th:text="${qasinoResponse.pageVisitor.selectedVisitor.balance} == 0 ? 'Pawn':'Repay'">
+                                Pawn or Repay
+                            </button>
+                        </div>
+                    </div>
+                    <input type="hidden" id="visitorId2"
+                           th:field="${qasinoResponse.pageVisitor.selectedVisitor.visitorId}"/>
+                </fieldset>
+            </form>
+            <form class="form-narrow form-horizontal" method="post" th:action="@{/visitor}"
+                  th:object="${qasinoResponse}"
+                  th:fragment="QasinoResponse">
+                <!--/* Show general error message when form contains errors */-->
+                <th:block th:if="${#fields.hasErrors('${qasinoResponse.*}')}">
+                    <div th:replace="fragments/alert :: alert (type='danger', message='Form contains errors. Please try again.')">
+                        Alert
+                    </div>
+                </th:block>
+                <fieldset>
+                    <div class="form-group"
+                         th:classappend="${#fields.hasErrors('${qasinoResponse.pageVisitor.selectedVisitor.username}')}? 'has-error'">
+                        <label for="username" class="col-lg-2 control-label">Username</label>
+                        <div class="col-lg-10">
+                            <input disabled type="text" class="form-control" id="username" placeholder="Username"
+                                   th:field="${qasinoResponse.pageVisitor.selectedVisitor.username}"/>
+                            <span class="help-block"
+                                  th:if="${#fields.hasErrors('${qasinoResponse.pageVisitor.selectedVisitor.username}')}"
+                                  th:errors="${qasinoResponse.pageVisitor.selectedVisitor.username}">Incorrect username</span>
+                        </div>
+                    </div>
+                    <div class="form-group"
+                         th:classappend="${#fields.hasErrors('${qasinoResponse.pageVisitor.selectedVisitor.alias}')}? 'has-error'">
+                        <label for="alias" class="col-lg-2 control-label">Alias</label>
+                        <div class="col-lg-10">
+                            <input type="text" class="form-control" id="alias" placeholder="Alias"
+                                   th:field="${qasinoResponse.pageVisitor.selectedVisitor.alias}"/>
+                            <span class="help-block"
+                                  th:if="${#fields.hasErrors('${qasinoResponse.pageVisitor.selectedVisitor.alias}')}"
+                                  th:errors="${qasinoResponse.pageVisitor.selectedVisitor.alias}">Incorrect alias</span>
+                        </div>
+                    </div>
+                    <div class="form-group"
+                         th:classappend="${#fields.hasErrors('${qasinoResponse.pageVisitor.selectedVisitor.email}')}? 'has-error'">
+                        <label for="email" class="col-lg-2 control-label">Email</label>
+                        <div class="col-lg-10">
+                            <input type="text" class="form-control" id="email" placeholder="Email"
+                                   th:field="${qasinoResponse.pageVisitor.selectedVisitor.email}"/>
+                            <span class="help-block"
+                                  th:if="${#fields.hasErrors('${qasinoResponse.pageVisitor.selectedVisitor.email}')}"
+                                  th:errors="${qasinoResponse.pageVisitor.selectedVisitor.email}">Incorrect email</span>
+                        </div>
+                    </div>
+                    <input type="hidden" id="visitorId"
+                           th:field="${qasinoResponse.pageVisitor.selectedVisitor.visitorId}"/>
+                    <div class="form-group">
+                        <div class="col-lg-offset-2 col-lg-10">
+                            <button type="submit" class="btn btn-default">Save</button>
+                        </div>
+                    </div>
+                </fieldset>
             </form>
 
-            <!--    <form action="#" th:action="@{/saveVisitor}" th:object="${qasinoResponse}"-->
-            <!--          th:method="${visitor['new']} ? post : put">-->
-            <!--        <ul>-->
-            <!--            <li th:errors="*{balance}"/>-->
-            <!--            <li th:errors="*{email}"/>-->
-            <!--            <li th:errors="*{alias}"/>-->
-            <!--        </ul>-->
-            <!--        <table border="1">-->
-            <!--            <tr>-->
-            <!--                <td><label th:text="alias"/></td>-->
-            <!--                <td><input type="text" th:field="*{alias}"/></td>-->
-            <!--            </tr>-->
-            <!--            <tr>-->
-            <!--                <td><label th:text="email"/></td>-->
-            <!--                <td><input type="text" th:field="*{email}"/></td>-->
-            <!--            </tr>-->
-            <!--            <tr>-->
-            <!--                <td><label th:text="Balance"/></td>-->
-            <!--                <td><select id="balance" name="balance">-->
-            <!--                    <option th:each="i : ${#numbers.balance(0, 100)}" th:value="${i}" th:text="${i}"-->
-            <!--                            th:selected="${i==75}"></option>-->
-            <!--                </select></td>-->
-            <!--            </tr>-->
-            <!--        </table>-->
-            <!--    </form>-->
         </div>
     </div>
     <div th:insert="~{fragments/footer :: footer}"></div>

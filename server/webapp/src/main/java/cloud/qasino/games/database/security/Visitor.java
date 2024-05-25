@@ -1,5 +1,6 @@
 package cloud.qasino.games.database.security;
 
+import cloud.qasino.games.controller.thymeleaf.SignupForm;
 import cloud.qasino.games.database.entity.League;
 import cloud.qasino.games.database.entity.Player;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
@@ -24,6 +25,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.DynamicUpdate;
+import org.hibernate.validator.constraints.Email;
+import org.hibernate.validator.constraints.NotBlank;
 
 import java.time.LocalDateTime;
 import java.time.Month;
@@ -48,6 +51,9 @@ import java.util.Set;
         })
 public class Visitor {
 
+    private static final String NOT_BLANK_MESSAGE = "{notBlank.message}";
+    private static final String EMAIL_MESSAGE = "{email.message}";
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "visitor_id", nullable = false)
@@ -57,6 +63,7 @@ public class Visitor {
     @Column(name = "created", length = 25)
     private String created;
 
+    @NotBlank(message = Visitor.NOT_BLANK_MESSAGE)
     @Column(name = "username", length = 25, unique = true)
     private String username;
 
@@ -77,15 +84,18 @@ public class Visitor {
 
     // Foreign keys
 
+
+    @JsonProperty("aliasSequence")
+    @Column(name = "alias_seq")
+    private int aliasSequence;
+    @NotBlank(message = Visitor.NOT_BLANK_MESSAGE)
     // Normal fields
     @JsonProperty("alias")
     @Column(name = "alias", length = 50, nullable = false)
     private String alias;
 
-    @JsonProperty("aliasSequence")
-    @Column(name = "alias_seq")
-    private int aliasSequence;
-
+    @NotBlank(message = Visitor.NOT_BLANK_MESSAGE)
+    @Email(message = Visitor.EMAIL_MESSAGE)
     @JsonProperty("email")
     @Column(name = "email", length = 50, nullable = true)
     private String email;
@@ -256,6 +266,7 @@ public class Visitor {
 
     @Override
     public String toString() {
+        String role = this.roles==null?"null": String.valueOf(this.roles.stream().findFirst());
         return "(" +
                 "visitorId=" + this.visitorId +
                 ", securedLoan=" + this.securedLoan +
@@ -264,7 +275,7 @@ public class Visitor {
                 ", alias=" + this.alias +
                 ", aliasSequence=" + this.aliasSequence +
                 ", username=" + this.alias +
-                ", roles=" + this.roles.stream().toList() +
+                ", roles=" + role +
                 ")";
     }
 

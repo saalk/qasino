@@ -22,6 +22,7 @@ import cloud.qasino.games.action.SetStatusIndicatorsBaseOnRetrievedDataAction;
 import cloud.qasino.games.action.SignUpNewVisitorAction;
 import cloud.qasino.games.action.StopGameAction;
 import cloud.qasino.games.action.UpdateFichesForPlayer;
+import cloud.qasino.games.action.UpdateVisitorAction;
 import cloud.qasino.games.database.entity.Card;
 import cloud.qasino.games.database.entity.CardMove;
 import cloud.qasino.games.database.entity.Game;
@@ -80,6 +81,7 @@ public class QasinoFlowDTO extends AbstractFlowDTO
         IsGameConsistentForGameEvent.Dto,
         IsTurnConsistentForTurnEvent.Dto,
         CalculateAndFinishGameAction.Dto,
+        UpdateVisitorAction.Dto,
         UpdateFichesForPlayer.Dto,
         IsGameFinished.Dto,
         PlayGameForType.Dto,
@@ -380,6 +382,10 @@ public class QasinoFlowDTO extends AbstractFlowDTO
         key = "username";
         if (requestParam.containsKey(key)) {
             this.suppliedUsername = (requestParam.get("username"));
+        }
+        key = "alias";
+        if (requestParam.containsKey(key)) {
+            this.suppliedAlias = (requestParam.get("alias"));
         }
         key = "email";
         if (requestParam.containsKey(key)) {
