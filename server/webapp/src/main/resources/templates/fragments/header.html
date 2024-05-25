@@ -34,12 +34,13 @@
 <div th:fragment="header">
     <nav class="navbar navbar-expand-lg bg-body-tertiary">
         <div class="container-fluid"> <!-- adjusted -->
-            <a class="navbar-brand" href="#">
-                <img th:src="@{/images/qasino/qasino-logo.png}" alt="Logo" width="90" height="70"
-                     class="d-inline-block align-text-top">
-            </a>
             <div class="navbar" id="navbarNav">
-                <ul class="navbar-nav me-auto mb-2 mb-lg-0"
+                <a class="nav navbar navbar-brand" href="#">
+                    <img th:src="@{/images/qasino/qasino-logo.png}" alt="Logo" width="90" height="70"
+                         class="d-inline-block align-text-top">
+                </a>
+<!--                <ul class="navbar-nav me-auto mb-2 mb-lg-0"-->
+                <ul class="nav navbar-nav navbar-left"
                     th:if="${qasinoResponse != null && qasinoResponse.navBarItems != null}">
                     <li class="nav-item" th:classappend="${module == '/home' ? 'active' : ''}">
                         <a class="nav-link active" aria-current="page" href="#" th:href="@{/}" th:text="Home"></a>

@@ -63,7 +63,7 @@ public class MapQasinoResponseFromDto implements Action<MapQasinoResponseFromDto
             actionDto.setShowVisitorPage(true);
             if (actionDto.getQasinoVisitor().getBalance() == 0) {
                 actionDto.setActionNeeded(true);
-                actionDto.setAction("Pawn your ship for fiches.");
+                actionDto.setAction("Pawn your ship for fiches");
             }
         } else {
             actionDto.setShowVisitorPage(false);
@@ -99,7 +99,7 @@ public class MapQasinoResponseFromDto implements Action<MapQasinoResponseFromDto
             actionDto.setShowGameSetupPage(false);
             if (!actionDto.isActionNeeded()) {
                 actionDto.setActionNeeded(true);
-                actionDto.setAction("Start a new game.");
+                actionDto.setAction("Start a new game");
             }
         }
         navigationBarItem.setVisible(actionDto.isShowGameSetupPage());
@@ -258,7 +258,7 @@ public class MapQasinoResponseFromDto implements Action<MapQasinoResponseFromDto
     private void mapGameInvitationsPage(Dto actionDto, NavigationBarItem navigationBarItem, PageGameInvitations pageGamesOverview) {
         // set the nav bar
         navigationBarItem.setTitle("Invite[]");
-        navigationBarItem.setStat("calculating...");
+        navigationBarItem.setStat("calculating..");
 
         // set the content
         pageGamesOverview.setGameInvitations(null);
