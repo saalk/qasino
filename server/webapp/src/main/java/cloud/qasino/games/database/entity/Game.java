@@ -1,26 +1,36 @@
 package cloud.qasino.games.database.entity;
 
+import cloud.qasino.games.database.entity.enums.card.Location;
+import cloud.qasino.games.database.entity.enums.card.PlayingCard;
 import cloud.qasino.games.database.entity.enums.game.GameState;
 import cloud.qasino.games.database.entity.enums.game.Style;
 import cloud.qasino.games.database.entity.enums.game.Type;
-import cloud.qasino.games.database.entity.enums.card.PlayingCard;
-import cloud.qasino.games.database.entity.enums.card.Location;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.voodoodyne.jackson.jsog.JSOGGenerator;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.ForeignKey;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
+import jakarta.persistence.Table;
 import lombok.AccessLevel;
-import lombok.Builder;
 import lombok.Data;
-import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.DynamicUpdate;
 
-import jakarta.persistence.*;
 import java.time.LocalDateTime;
 import java.time.Month;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
@@ -66,11 +76,12 @@ public class Game {
     @Setter(AccessLevel.NONE)
     private GameState state;
 
-    public void setState(GameState state ){
+    public void setState(GameState state) {
         this.previousState = this.state;
         this.state = state;
         setUpdated();
     }
+
     @Enumerated(EnumType.STRING)
     @Column(name = "previous_state", length = 50, nullable = true)
     private GameState previousState;
@@ -137,13 +148,13 @@ public class Game {
         this.ante = 20;
     }
 
-    public Game(League league, long initiator ) {
+    public Game(League league, long initiator) {
         this();
         this.league = league;
         this.initiator = initiator;
     }
 
-    public Game(League league, String type, long initiator ) {
+    public Game(League league, String type, long initiator) {
         this();
         this.league = league;
         this.type = Type.fromLabelWithDefault(type);
@@ -154,6 +165,48 @@ public class Game {
         this(league, type, initiator);
         this.style = Style.fromLabelWithDefault(style).getLabel();
         this.ante = ante;
+    }
+
+    private Game(Game.Builder builder) {
+        this(builder.league, builder.type, builder.visitorId, builder.style, builder.ante);
+    }
+
+    public static class Builder {
+        private String type;
+        private String style;
+        private int ante;
+
+        private long visitorId;
+        private League league;
+
+        public Game.Builder withLeague(League league) {
+            this.league = league;
+            return this;
+        }
+
+        public Game.Builder withVisitorId(long visitorId) {
+            this.visitorId = visitorId;
+            return this;
+        }
+
+        public Game.Builder withStyle(String style) {
+            this.style = style;
+            return this;
+        }
+
+        public Game.Builder withType(String type) {
+            this.type = type;
+            return this;
+        }
+
+        public Game.Builder withAnte(int ante) {
+            this.ante = ante;
+            return this;
+        }
+
+        public Game build() {
+            return new Game(this);
+        }
     }
 
     public void setUpdated() {
@@ -176,7 +229,7 @@ public class Game {
 
         int i = 1;
         for (PlayingCard playingCard : playingCards) {
-            Card card = new Card(playingCard.getRankAndSuit(), this, null, i++, Location.STOCK );
+            Card card = new Card(playingCard.getRankAndSuit(), this, null, i++, Location.STOCK);
             this.cards.add(card);
         }
     }
@@ -248,5 +301,19 @@ public class Game {
         return Objects.hash(gameId);
     }
 
+    @Override
+    public String toString() {
+        return "(" +
+                "gameId=" + this.gameId +
+                ", leagueId=" + this.league.getLeagueId() +
+                ", initiator=" + this.initiator +
+                ", state=" + this.state +
+                ", previousState=" + this.previousState +
+                ", type=" + this.type +
+                ", style=" + this.style +
+                ", ante=" + this.ante +
+                ", turnId=" + this.turn.getTurnId() +
+                ")";
+    }
 }
 

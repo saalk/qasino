@@ -16,6 +16,9 @@
         </div>
         <div th:unless="${qasinoResponse.pageVisitor == null || qasinoResponse.pageVisitor == null}">
             <div th:replace="~{forms/visitor :: pawn}"></div>
+            <div th:if="${qasinoResponse.pageGameSetup.selectedGame == null}">
+                <div th:replace="~{forms/visitor :: game}"></div>
+            </div>
             <div th:replace="~{forms/visitor :: update}"></div>
         </div>
     </div>

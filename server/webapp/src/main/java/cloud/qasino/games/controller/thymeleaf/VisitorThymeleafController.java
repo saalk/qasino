@@ -10,6 +10,10 @@ import cloud.qasino.games.action.SetStatusIndicatorsBaseOnRetrievedDataAction;
 import cloud.qasino.games.action.SignUpNewVisitorAction;
 import cloud.qasino.games.action.UpdateVisitorAction;
 import cloud.qasino.games.controller.AbstractThymeleafController;
+import cloud.qasino.games.database.entity.enums.game.Style;
+import cloud.qasino.games.database.entity.enums.game.Type;
+import cloud.qasino.games.database.entity.enums.player.AiLevel;
+import cloud.qasino.games.database.entity.enums.player.Avatar;
 import cloud.qasino.games.database.repository.CardRepository;
 import cloud.qasino.games.database.repository.GameRepository;
 import cloud.qasino.games.database.repository.PlayerRepository;
@@ -103,14 +107,16 @@ public class VisitorThymeleafController extends AbstractThymeleafController {
     @GetMapping("visitor/{visitorId}")
     public String getVisitor(
             Model model,
-            @PathVariable("visitorId") Optional<String> id,
+            @PathVariable("visitorId") String id,
             @ModelAttribute QasinoResponse qasinoResponse,
+            @ModelAttribute SetupGameForm setupGameForm,
+            BindingResult result,
             Errors errors, RedirectAttributes ra,
             HttpServletResponse response
     ) {
         // 1 - map input
         QasinoFlowDTO flowDTO = new QasinoFlowDTO();
-        if (id.isPresent()) flowDTO.setPathVariables("visitorId", id.get());
+        flowDTO.setPathVariables("visitorId", id);
         // 2 - validate input
         if (!flowDTO.validateInput() || errors.hasErrors()) {
             log.warn("Errors exist!!: {}", errors);
@@ -123,12 +129,19 @@ public class VisitorThymeleafController extends AbstractThymeleafController {
         // 4 - return response
         prepareQasinoResponse(response, flowDTO);
         model.addAttribute(flowDTO.getQasinoResponse());
+        setupGameForm.setVisitorIdFk(id);
+        setupGameForm.setType(Type.HIGHLOW.getLabel());
+        setupGameForm.setStyle(new Style().getLabel());
+        setupGameForm.setAnte("20");
+        setupGameForm.setAvatar(Avatar.ELF.getLabel());
+        setupGameForm.setAiLevel(AiLevel.AVERAGE.getLabel());
+        model.addAttribute(setupGameForm);
 
         log.warn("GetMapping: visitor/{visitorId}");
 //        log.warn("HttpServletResponse: {}", response.getHeaderNames());
 //        log.warn("Model: {}", model);
 //        log.warn("Errors: {}", errors);
-        log.warn("get qasinoResponse: {}", flowDTO.getQasinoResponse());
+//        log.warn("get qasinoResponse: {}", flowDTO.getQasinoResponse());
 
         return VISITOR_VIEW_LOCATION;
     }
@@ -143,7 +156,7 @@ public class VisitorThymeleafController extends AbstractThymeleafController {
             HttpServletResponse response
     ) {
         log.warn("PostMapping: /visitor");
-        log.warn("post in qasinoResponse: {}", qasinoResponse);
+//        log.warn("post in qasinoResponse: {}", qasinoResponse);
 
         // 1 - map input
         QasinoFlowDTO flowDTO = new QasinoFlowDTO();
@@ -165,7 +178,7 @@ public class VisitorThymeleafController extends AbstractThymeleafController {
         // 4 - return response
         prepareQasinoResponse(response, flowDTO);
         model.addAttribute(flowDTO.getQasinoResponse());
-        log.warn("post out qasinoResponse: {}", flowDTO.getQasinoResponse());
+//        log.warn("post out qasinoResponse: {}", flowDTO.getQasinoResponse());
         return "redirect:visitor/" + flowDTO.getQasinoResponse().getPageVisitor().getSelectedVisitor().getVisitorId();
     }
 
@@ -193,7 +206,7 @@ public class VisitorThymeleafController extends AbstractThymeleafController {
         prepareQasinoResponse(response, flowDTO);
         model.addAttribute(flowDTO.getQasinoResponse());
         log.warn("PostMapping: /pawn");
-        log.warn("Model: {}", model);
+//        log.warn("Model: {}", model);
         return "redirect:visitor/" + flowDTO.getQasinoResponse().getPageVisitor().getSelectedVisitor().getVisitorId();
     }
 
@@ -221,7 +234,7 @@ public class VisitorThymeleafController extends AbstractThymeleafController {
         prepareQasinoResponse(response, flowDTO);
         model.addAttribute(flowDTO.getQasinoResponse());
         log.warn("PostMapping: /repay");
-        log.warn("Model: {}", model);
+//        log.warn("Model: {}", model);
         return "redirect:visitor/" + flowDTO.getQasinoResponse().getPageVisitor().getSelectedVisitor().getVisitorId();
     }
 
@@ -253,7 +266,7 @@ public class VisitorThymeleafController extends AbstractThymeleafController {
         prepareQasinoResponse(response, flowDTO);
         model.addAttribute(flowDTO.getQasinoResponse());
         log.warn("DeleteMapping: /visitor");
-        log.warn("Model: {}", model);
+//        log.warn("Model: {}", model);
         return "redirect:/logout";
     }
 
