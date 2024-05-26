@@ -11,13 +11,13 @@
 <div class="container">
     <div class="text-center">
         <h1>Visitor</h1>
-        <div th:if="${qasinoResponse == null || qasinoResponse.pageVisitor == null}">
-            No Data
+        <div th:if="${qasinoResponse.params.vid == -1}">
+            No (Visitor) Data
         </div>
-        <div th:unless="${qasinoResponse.pageVisitor == null || qasinoResponse.pageVisitor == null}">
+        <div th:unless="${qasinoResponse.params.vid == -1}">
             <div th:replace="~{forms/visitor :: pawn}"></div>
-            <div th:if="${qasinoResponse.pageGameSetup.selectedGame == null}">
-                <div th:replace="~{forms/visitor :: game}"></div>
+            <div th:if="${qasinoResponse.pageGameSetup.selectedGame.gameId == 0}">
+                <div th:replace="~{forms/setup :: start}"></div>
             </div>
             <div th:replace="~{forms/visitor :: update}"></div>
         </div>

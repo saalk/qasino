@@ -133,6 +133,7 @@ public class Player {
         this.seat = seat;
         this.aiLevel = aiLevel;
     }
+
     public Player(Visitor visitor, Game game, Role role, int fiches, int seat, Avatar avatar, AiLevel aiLevel) {
         this(visitor, game, role, fiches, seat);
 
@@ -144,6 +145,13 @@ public class Player {
             this.human = false;
         }
         this.winner = false;
+    }
+
+    public static Player buildDummyBot() {
+        return new Player(null, null,Role.BOT,50, 2, Avatar.GOBLIN,AiLevel.DUMB);
+    }
+    public static Player buildDummyHuman() {
+        return new Player(null, null,Role.INITIATOR,50, 1, Avatar.ELF,AiLevel.HUMAN);
     }
 
     // todo LOW make unittest
@@ -172,5 +180,23 @@ public class Player {
     public int hashCode() {
         return Objects.hash(playerId);
     }
+
+    @Override
+    public String toString() {
+        return "(" +
+                "playerId=" + this.playerId +
+                ", visitorId=" + (this.visitor == null? "": this.visitor.getVisitorId()) +
+                ", gameId=" + (this.game == null? "": this.game.getGameId()) +
+                ", human=" + this.human +
+                ", role=" + this.role.getLabel() +
+                ", fiches=" + this.fiches +
+                ", seat=" + this.seat +
+                ", avatar=" + this.avatar +
+                ", aiLevel=" + this.aiLevel +
+                ", winner=" + this.winner +
+                ", resultId=" + (this.result == null? "": this.result.getResultId()) +
+                ")";
+    }
+
 }
 

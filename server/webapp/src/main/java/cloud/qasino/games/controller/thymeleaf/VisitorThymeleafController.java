@@ -64,11 +64,6 @@ public class VisitorThymeleafController extends AbstractThymeleafController {
     EventOutput.Result output;
 
     private VisitorRepository visitorRepository;
-    private GameRepository gameRepository;
-    private PlayerRepository playerRepository;
-    private CardRepository cardRepository;
-    private TurnRepository turnRepository;
-    private ResultsRepository resultsRepository;
 
     @Autowired
     LoadEntitiesToDtoAction loadEntitiesToDtoAction;
@@ -80,28 +75,13 @@ public class VisitorThymeleafController extends AbstractThymeleafController {
     UpdateVisitorAction updateVisitorAction;
     @Autowired
     HandleSecuredLoanAction handleSecuredLoanAction;
-    @Autowired
-    SetStatusIndicatorsBaseOnRetrievedDataAction setStatusIndicatorsBaseOnRetrievedDataAction;
-    @Autowired
-    CalculateQasinoStatistics calculateQasinoStatistics;
-    @Autowired
-    MapQasinoResponseFromDto mapQasinoResponseFromDto;
-    @Autowired
-    MapQasinoGameTableFromDto mapQasinoGameTableFromDto;
 
     @Autowired
     public VisitorThymeleafController(
-            VisitorRepository visitorRepository,
-            GameRepository gameRepository,
-            PlayerRepository playerRepository,
-            CardRepository cardRepository,
-            TurnRepository turnRepository) {
+            VisitorRepository visitorRepository
+            ) {
 
         this.visitorRepository = visitorRepository;
-        this.gameRepository = gameRepository;
-        this.playerRepository = playerRepository;
-        this.cardRepository = cardRepository;
-        this.turnRepository = turnRepository;
     }
 
     @GetMapping("visitor/{visitorId}")
@@ -109,7 +89,6 @@ public class VisitorThymeleafController extends AbstractThymeleafController {
             Model model,
             @PathVariable("visitorId") String id,
             @ModelAttribute QasinoResponse qasinoResponse,
-            @ModelAttribute SetupGameForm setupGameForm,
             BindingResult result,
             Errors errors, RedirectAttributes ra,
             HttpServletResponse response
@@ -129,20 +108,7 @@ public class VisitorThymeleafController extends AbstractThymeleafController {
         // 4 - return response
         prepareQasinoResponse(response, flowDTO);
         model.addAttribute(flowDTO.getQasinoResponse());
-        setupGameForm.setVisitorIdFk(id);
-        setupGameForm.setType(Type.HIGHLOW.getLabel());
-        setupGameForm.setStyle(new Style().getLabel());
-        setupGameForm.setAnte("20");
-        setupGameForm.setAvatar(Avatar.ELF.getLabel());
-        setupGameForm.setAiLevel(AiLevel.AVERAGE.getLabel());
-        model.addAttribute(setupGameForm);
-
-        log.warn("GetMapping: visitor/{visitorId}");
-//        log.warn("HttpServletResponse: {}", response.getHeaderNames());
-//        log.warn("Model: {}", model);
-//        log.warn("Errors: {}", errors);
-//        log.warn("get qasinoResponse: {}", flowDTO.getQasinoResponse());
-
+        log.warn("Model: ", model);
         return VISITOR_VIEW_LOCATION;
     }
 
@@ -206,7 +172,6 @@ public class VisitorThymeleafController extends AbstractThymeleafController {
         prepareQasinoResponse(response, flowDTO);
         model.addAttribute(flowDTO.getQasinoResponse());
         log.warn("PostMapping: /pawn");
-//        log.warn("Model: {}", model);
         return "redirect:visitor/" + flowDTO.getQasinoResponse().getPageVisitor().getSelectedVisitor().getVisitorId();
     }
 

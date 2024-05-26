@@ -1,6 +1,5 @@
 package cloud.qasino.games.database.security;
 
-import cloud.qasino.games.controller.thymeleaf.SignupForm;
 import cloud.qasino.games.database.entity.League;
 import cloud.qasino.games.database.entity.Player;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
@@ -32,6 +31,7 @@ import java.time.LocalDateTime;
 import java.time.Month;
 import java.time.format.DateTimeFormatter;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.Random;
@@ -159,6 +159,19 @@ public class Visitor {
         this.alias = builder.alias;
         this.aliasSequence = builder.aliasSequence;
         this.email = builder.email;
+    }
+
+    public static Visitor buildDummy() {
+        return new Builder()
+                .withAlias("Alias")
+                .withAliasSequence(1)
+                .withBalance(0)
+                .withEmail("email@acme.com")
+                .withPassword("password")
+                .withRoles(Collections.singleton(new Role("ROLE_USER")))
+                .withSecuredLoan(0)
+                .withUsername("username")
+                .build();
     }
 
     public static class Builder {

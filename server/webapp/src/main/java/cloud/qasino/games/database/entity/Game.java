@@ -168,7 +168,17 @@ public class Game {
     }
 
     private Game(Game.Builder builder) {
-        this(builder.league, builder.type, builder.visitorId, builder.style, builder.ante);
+        this(builder.league, builder.type, builder.initiator, builder.style, builder.ante);
+    }
+
+    public static Game buildDummy() {
+        return new Game.Builder()
+                .withType(Type.HIGHLOW.getLabel())
+                .withStyle("hr3tn3")
+                .withAnte(20)
+                .withInitiator(-1)
+                .withLeague(null)
+                .build();
     }
 
     public static class Builder {
@@ -176,7 +186,7 @@ public class Game {
         private String style;
         private int ante;
 
-        private long visitorId;
+        private long initiator;
         private League league;
 
         public Game.Builder withLeague(League league) {
@@ -184,8 +194,8 @@ public class Game {
             return this;
         }
 
-        public Game.Builder withVisitorId(long visitorId) {
-            this.visitorId = visitorId;
+        public Game.Builder withInitiator(long initiator) {
+            this.initiator = initiator;
             return this;
         }
 
@@ -305,14 +315,14 @@ public class Game {
     public String toString() {
         return "(" +
                 "gameId=" + this.gameId +
-                ", leagueId=" + this.league.getLeagueId() +
+                ", leagueId=" + (this.league == null? "": this.league.getLeagueId()) +
                 ", initiator=" + this.initiator +
                 ", state=" + this.state +
                 ", previousState=" + this.previousState +
                 ", type=" + this.type +
                 ", style=" + this.style +
                 ", ante=" + this.ante +
-                ", turnId=" + this.turn.getTurnId() +
+                ", turnId=" + (this.turn == null? "": this.turn.getTurnId()) +
                 ")";
     }
 }

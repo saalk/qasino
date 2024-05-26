@@ -7,6 +7,12 @@ import cloud.qasino.games.database.entity.Player;
 import cloud.qasino.games.database.entity.Result;
 import cloud.qasino.games.database.entity.Turn;
 import cloud.qasino.games.database.entity.enums.card.PlayingCard;
+import cloud.qasino.games.database.entity.enums.game.style.AnteToWin;
+import cloud.qasino.games.database.entity.enums.game.style.BettingStrategy;
+import cloud.qasino.games.database.entity.enums.game.style.DeckConfiguration;
+import cloud.qasino.games.database.entity.enums.game.style.OneTimeInsurance;
+import cloud.qasino.games.database.entity.enums.game.style.RoundsToWin;
+import cloud.qasino.games.database.entity.enums.game.style.TurnsToWin;
 import cloud.qasino.games.database.entity.enums.move.Move;
 import cloud.qasino.games.database.security.Visitor;
 import cloud.qasino.games.database.entity.enums.game.GameState;
@@ -69,6 +75,8 @@ public class MapQasinoResponseFromDto implements Action<MapQasinoResponseFromDto
             actionDto.setShowVisitorPage(false);
             actionDto.setActionNeeded(true);
             actionDto.setAction("Logon visitor!");
+            // set up dummy visitor
+            pageVisitor.setSelectedVisitor(Visitor.buildDummy());
         }
         navigationBarItem.setVisible(actionDto.isShowVisitorPage());
         navigationBarItems.add(navigationBarItem);
@@ -101,6 +109,17 @@ public class MapQasinoResponseFromDto implements Action<MapQasinoResponseFromDto
                 actionDto.setActionNeeded(true);
                 actionDto.setAction("Start a new game");
             }
+            // set up dummy game and styles
+            pageGameSetup.setSelectedGame(Game.buildDummy());
+            pageGameSetup.setAnteToWin(AnteToWin.TIMES_3_WINS);
+            pageGameSetup.setBettingStrategy(BettingStrategy.REGULAR);
+            pageGameSetup.setDeckConfiguration(DeckConfiguration.RANDOM_SUIT);
+            pageGameSetup.setOneTimeInsurance(OneTimeInsurance.HALF_ANTE);
+            pageGameSetup.setRoundsToWin(RoundsToWin.TWO_ROUNDS);
+            pageGameSetup.setTurnsToWin(TurnsToWin.THREE_IN_A_ROW_WINS);
+
+            pageGameSetup.setBotPlayer(Player.buildDummyBot());
+            pageGameSetup.setHumanPlayer(Player.buildDummyHuman());
         }
         navigationBarItem.setVisible(actionDto.isShowGameSetupPage());
         navigationBarItems.add(navigationBarItem);
@@ -165,6 +184,9 @@ public class MapQasinoResponseFromDto implements Action<MapQasinoResponseFromDto
                 actionDto.setAction("Manage your leagues");
             }
             mapLeaguesPage(actionDto, navigationBarItem, pageLeague);
+        } else {
+            // set up dummy league
+            pageLeague.setSelectedLeague(League.buildDummy());
         }
         navigationBarItem.setVisible(actionDto.isShowLeaguesPage());
         navigationBarItems.add(navigationBarItem);

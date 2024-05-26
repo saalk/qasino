@@ -1,5 +1,6 @@
 package cloud.qasino.games.database.entity;
 
+import cloud.qasino.games.database.entity.enums.player.AiLevel;
 import cloud.qasino.games.database.security.Visitor;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -99,6 +100,10 @@ public class League {
         endLeagueThisMonth(); //default
     }
 
+    public static League buildDummy() {
+        return new League(null, "league name", 1);
+    }
+
     public boolean endLeagueDaysFromNow(int days) {
         if (!this.isActive()) return false;
         LocalDateTime localDateAndTime = LocalDateTime.now().plus(Period.ofDays(days));
@@ -167,5 +172,17 @@ public class League {
     public int hashCode() {
         return Objects.hash(leagueId);
     }
+
+    @Override
+    public String toString() {
+        return "(" +
+                "leagueId=" + this.leagueId +
+                ", visitorId=" + (this.visitor == null? "": this.visitor.getVisitorId()) +
+                ", name=" + this.name +
+                ", nameSequence=" + this.nameSequence +
+                ", active=" + this.active +
+                ")";
+    }
+
 }
 
