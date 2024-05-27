@@ -11,16 +11,23 @@ import cloud.qasino.games.database.repository.GameRepository;
 import cloud.qasino.games.database.repository.PlayerRepository;
 import cloud.qasino.games.database.repository.ResultsRepository;
 import cloud.qasino.games.database.repository.TurnRepository;
+import cloud.qasino.games.database.security.Visitor;
 import cloud.qasino.games.database.security.VisitorRepository;
 import cloud.qasino.games.dto.QasinoFlowDTO;
 import cloud.qasino.games.statemachine.event.EventOutput;
+import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
+import java.security.Principal;
+import java.util.Optional;
 
 public class AbstractThymeleafController {
+
+    @Resource
+    VisitorRepository visitorRepository;
 
 //    EventOutput.Result output;
 
@@ -42,6 +49,11 @@ public class AbstractThymeleafController {
     MapQasinoResponseFromDto mapQasinoResponseFromDto;
     @Autowired
     MapQasinoGameTableFromDto mapQasinoGameTableFromDto;
+
+    public String getPricipalVisitorId(Principal principal) {
+        Visitor visitor = visitorRepository.findByUsername(principal.getName());
+        return String.valueOf(visitor.getVisitorId());
+    }
 
     public void prepareQasinoResponse(HttpServletResponse response, QasinoFlowDTO flowDTO) {
 
@@ -96,7 +108,7 @@ public class AbstractThymeleafController {
         if (flowDTO.getActiveTurn() != null) {
             response.setHeader("Q-Turn-Id", String.valueOf(flowDTO.getActiveTurn().getTurnId()));
         }
-        if (flowDTO.getHttpStatus() > 299) {
+//        if (flowDTO.getHttpStatus() > 299) {
 
             // also add error to header
 //            addKeyValueToHeader(flowDTO.getErrorKey(), flowDTO.getErrorValue());
@@ -115,6 +127,6 @@ public class AbstractThymeleafController {
 //                    response.setHeader(name, value);
 //                }
 //            });
-        }
+//        }
     }
 }

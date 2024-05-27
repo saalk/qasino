@@ -74,7 +74,11 @@ public class LoadEntitiesToDtoAction implements Action<LoadEntitiesToDtoAction.D
     public EventOutput.Result perform(Dto actionDto) {
 
         gameId = actionDto.getSuppliedGameId();
+//        log.warn("Errors gameId!!: {}", actionDto.getSuppliedGameId());
+
         visitorId = actionDto.getSuppliedVisitorId();
+//        log.warn("Errors visitorId!!: {}", actionDto.getSuppliedVisitorId());
+
         if (!(visitorId == 0)) {
             EventOutput.Result response = getVisitorSupplied(actionDto, visitorId);
             if (response.equals(EventOutput.Result.FAILURE)) {
@@ -147,6 +151,8 @@ public class LoadEntitiesToDtoAction implements Action<LoadEntitiesToDtoAction.D
         if (foundVisitor.isPresent()) {
             actionDto.setQasinoVisitor(foundVisitor.get());
         } else {
+//            log.warn("Errors id!!: {}", id);
+
             setNotFoundErrorMessage(actionDto, "visitorId", String.valueOf(id), "Visitor");
             return EventOutput.Result.FAILURE;
         }
@@ -268,7 +274,7 @@ public class LoadEntitiesToDtoAction implements Action<LoadEntitiesToDtoAction.D
         actionDto.setErrorKey(id);
         actionDto.setErrorValue(value);
         actionDto.setNotFoundErrorMessage("[" + entity + "] not found for id [" + value + "]");
-        log.warn("Errors setNotFoundErrorMessage!!: {}", actionDto.getErrorMessage());
+//        log.warn("Errors setNotFoundErrorMessage!!: {}", actionDto.getErrorMessage());
 
     }
 

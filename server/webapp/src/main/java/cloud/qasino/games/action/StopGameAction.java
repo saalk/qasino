@@ -27,8 +27,9 @@ public class StopGameAction implements Action<StopGameAction.Dto, EventOutput.Re
     public EventOutput.Result perform(Dto actionDto) {
 
         if (actionDto.getSuppliedGameEvent().equals(GameEvent.STOP)) {
-            actionDto.getQasinoGame().setState(GameState.QUIT);
-            gameRepository.save(actionDto.getQasinoGame());
+            Game game = actionDto.getQasinoGame();
+            game.setState(GameState.QUIT);
+            gameRepository.save(game);
             return EventOutput.Result.SUCCESS;
         }
         return EventOutput.Result.FAILURE;

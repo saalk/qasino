@@ -16,7 +16,7 @@
         </div>
         <div th:unless="${qasinoResponse.params.vid == -1}">
             <div th:replace="~{forms/visitor :: pawn-or-repay}"></div>
-            <div th:if="${qasinoResponse.pageGameSetup.selectedGame.gameId == 0}">
+            <div th:if="${qasinoResponse.params.vid == 0}">
                 <div th:replace="~{forms/setup :: start}"></div>
             </div>
             <div th:replace="~{forms/visitor :: update}"></div>

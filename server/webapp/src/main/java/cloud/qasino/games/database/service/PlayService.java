@@ -149,16 +149,16 @@ public class PlayService {
     }
     public Game prepareExistingGame(Game game, Visitor initiator, Type type, League league, String style, int ante) {
         // update game
-        if (!(initiator == null)) {
-            game.setInitiator(initiator.getVisitorId());
-        }
+//        if (!(initiator == null)) {
+//            game.setInitiator(initiator.getVisitorId());
+//        }
+//        if (!(type == null)) {
+//            game.setType(type);
+//        }
         if (!(league == null)) {
             game.setLeague(league);
         }
-        if (!(type == null)) {
-            game.setType(type);
-        }
-        if (!(style.isEmpty())) {
+        if (!(style == null)) {
             game.setStyle(style);
         }
         if (!(ante == 0)) {

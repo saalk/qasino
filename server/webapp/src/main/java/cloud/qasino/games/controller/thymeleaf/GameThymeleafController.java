@@ -84,9 +84,8 @@ public class GameThymeleafController extends AbstractThymeleafController {
         // 1 - map input
         QasinoFlowDTO flowDTO = new QasinoFlowDTO();
         flowDTO.setPathVariables(
+                "visitorId", getPricipalVisitorId(principal),
                 "gameId", id);
-        flowDTO.setPathVariables("username", principal.getName());
-        findVisitorIdByAliasOrUsernameAction.perform(flowDTO);
         // 2 - validate input
         if (!flowDTO.validateInput() || errors.hasErrors()) {
             log.warn("Errors validateInput!!: {}", errors);
@@ -117,9 +116,8 @@ public class GameThymeleafController extends AbstractThymeleafController {
         // 1 - map input
         QasinoFlowDTO flowDTO = new QasinoFlowDTO();
         flowDTO.setPathVariables(
+                "visitorId", getPricipalVisitorId(principal),
                 "gameId", id);
-        flowDTO.setPathVariables("username", principal.getName());
-        findVisitorIdByAliasOrUsernameAction.perform(flowDTO);
         // 2 - validate input
         if (!flowDTO.validateInput() || errors.hasErrors()) {
             log.warn("Errors validateInput!!: {}", errors);
@@ -151,15 +149,12 @@ public class GameThymeleafController extends AbstractThymeleafController {
         QasinoFlowDTO flowDTO = new QasinoFlowDTO();
         flowDTO.setPathVariables(
                 "gameId", id,
+                "visitorId", getPricipalVisitorId(principal),
                 "type", qasinoResponse.getPageGameSetup().getSelectedGame().getType().getLabel(),
                 "style", qasinoResponse.getPageGameSetup().getSelectedGame().getStyle(),
-//                "ante", String.valueOf(qasinoResponse.getPageGameSetup().getSelectedGame().getAnte()),
                 "avatar", qasinoResponse.getPageGameSetup().getHumanPlayer().getAvatar().getLabel(),
-
                 "gameEvent", "start"
         );
-        flowDTO.setPathVariables("username", principal.getName());
-        findVisitorIdByAliasOrUsernameAction.perform(flowDTO);
         if (qasinoResponse.getParams().getLid() > 0) {
             flowDTO.setPathVariables("leagueId", String.valueOf(qasinoResponse.getParams().getLid()));
         }
@@ -198,7 +193,7 @@ public class GameThymeleafController extends AbstractThymeleafController {
         // 4 - return response
         prepareQasinoResponse(response, flowDTO);
         model.addAttribute(flowDTO.getQasinoResponse());
-        log.warn("Model !!: {}", model);
+//        log.warn("Model !!: {}", model);
         return "redirect:visitor";
     }
 
@@ -218,15 +213,10 @@ public class GameThymeleafController extends AbstractThymeleafController {
         QasinoFlowDTO flowDTO = new QasinoFlowDTO();
         flowDTO.setPathVariables(
                 "gameId", id,
-//                "type", qasinoResponse.getPageGameSetup().getSelectedGame().getType().getLabel(),
-//                "style", qasinoResponse.getPageGameSetup().getSelectedGame().getStyle(),
+                "visitorId", getPricipalVisitorId(principal),
                 "ante", String.valueOf(qasinoResponse.getPageGameSetup().getSelectedGame().getAnte()),
-//                "avatar", qasinoResponse.getPageGameSetup().getHumanPlayer().getAvatar().getLabel(),
                 "gameEvent", "validate"
         );
-        flowDTO.setPathVariables("username", principal.getName());
-        findVisitorIdByAliasOrUsernameAction.perform(flowDTO);
-
         if (qasinoResponse.getParams().getLid() > 0) {
             flowDTO.setPathVariables("leagueId", String.valueOf(qasinoResponse.getParams().getLid()));
         }
@@ -265,8 +255,7 @@ public class GameThymeleafController extends AbstractThymeleafController {
         // 4 - return response
         prepareQasinoResponse(response, flowDTO);
         model.addAttribute(flowDTO.getQasinoResponse());
-
-        log.warn("Model !!: {}", model);
+//        log.warn("Model !!: {}", model);
         return "redirect:/setup/" + qasinoResponse.getPageGameSetup().getSelectedGame().getGameId();
     }
 
@@ -285,11 +274,10 @@ public class GameThymeleafController extends AbstractThymeleafController {
         QasinoFlowDTO flowDTO = new QasinoFlowDTO();
         flowDTO.setPathVariables(
                 "gameId", id,
+                "visitorId", getPricipalVisitorId(principal),
                 "avatar", qasinoResponse.getPageGameSetup().getBotPlayer().getAvatar().getLabel(),
                 "aiLevel", qasinoResponse.getPageGameSetup().getBotPlayer().getAiLevel().getLabel()
         );
-        flowDTO.setPathVariables("username", principal.getName());
-        findVisitorIdByAliasOrUsernameAction.perform(flowDTO);
         // 2 - validate input
         if (!flowDTO.validateInput() || errors.hasErrors()) {
             log.warn("Errors validateInput!!: {}", errors);
@@ -329,7 +317,7 @@ public class GameThymeleafController extends AbstractThymeleafController {
         // 4 - return response
         prepareQasinoResponse(response, flowDTO);
         model.addAttribute(flowDTO.getQasinoResponse());
-        log.warn("Model !!: {}", model);
+//        log.warn("Model !!: {}", model);
         return "redirect:/setup/" + qasinoResponse.getPageGameSetup().getSelectedGame().getGameId();
     }
 
@@ -347,8 +335,10 @@ public class GameThymeleafController extends AbstractThymeleafController {
 
         // 1 - map input
         QasinoFlowDTO flowDTO = new QasinoFlowDTO();
-        flowDTO.setPathVariables("username", principal.getName());
-        findVisitorIdByAliasOrUsernameAction.perform(flowDTO);
+        flowDTO.setPathVariables(
+                "visitorId", getPricipalVisitorId(principal),
+                "gameId", id
+        );
         // 2 - validate input
         if (!flowDTO.validateInput() || errors.hasErrors()) {
             log.warn("Errors validateInput!!: {}", errors);
@@ -374,7 +364,7 @@ public class GameThymeleafController extends AbstractThymeleafController {
         // 4 - return response
         prepareQasinoResponse(response, flowDTO);
         model.addAttribute(flowDTO.getQasinoResponse());
-        log.warn("Model !!: {}", model);
+//        log.warn("Model !!: {}", model);
         return "redirect:visitor";
     }
 }

@@ -40,8 +40,6 @@ public class FindVisitorIdByAliasOrUsernameAction implements Action<FindVisitorI
             foundVisitor = visitorRepository.findVisitorByAliasAndAliasSequence(actionDto.getSuppliedAlias(), 1);
         } else if (!(StringUtils.isEmpty(actionDto.getSuppliedUsername()))) {
             foundVisitor = Optional.ofNullable(visitorRepository.findByUsername(actionDto.getSuppliedUsername()));
-            log.warn("debug foundVisitor {}:", foundVisitor.toString());
-            log.warn("debug getSuppliedUsername {}:", actionDto.getSuppliedUsername());
         } else {
             return EventOutput.Result.SUCCESS;
         }

@@ -116,16 +116,14 @@ public class TurnAndCardMoveThymeleafContoller extends AbstractThymeleafControll
             BindingResult result,
             Errors errors, RedirectAttributes ra,
             HttpServletResponse response
-//            @RequestHeader("turnPlayerId") String pId,
     ) {
         // 1 - map input
         QasinoFlowDTO flowDTO = new QasinoFlowDTO();
         flowDTO.setPathVariables(
                 "gameId", id,
+                "visitorId", getPricipalVisitorId(principal),
                 "gameEvent", "shuffle"
         );
-        flowDTO.setPathVariables("username", principal.getName());
-        findVisitorIdByAliasOrUsernameAction.perform(flowDTO);
         // 2 - validate input
         if (!flowDTO.validateInput()) {
             log.warn("Errors validateInput!!: {}", errors);
@@ -183,14 +181,12 @@ public class TurnAndCardMoveThymeleafContoller extends AbstractThymeleafControll
         // 1 - map input
         QasinoFlowDTO flowDTO = new QasinoFlowDTO();
         flowDTO.setPathVariables(
+                "visitorId", getPricipalVisitorId(principal),
                 "gameId", id,
-                "turnPlayerId", String.valueOf(qasinoResponse.getPageGameSetup().getSelectedGame().getGameId()),
-
+                "turnPlayerId", String.valueOf(qasinoResponse.getPageGamePlay().getTable().getCurrentTurn().getActivePlayerId()),
                 "gameEvent", "turn",
                 "turnEvent", trigger
         );
-        flowDTO.setPathVariables("username", principal.getName());
-        findVisitorIdByAliasOrUsernameAction.perform(flowDTO);
         // 2 - validate input
         if (!flowDTO.validateInput()) {
             log.warn("Errors validateInput!!: {}", errors);
@@ -249,7 +245,8 @@ public class TurnAndCardMoveThymeleafContoller extends AbstractThymeleafControll
     @PostMapping(value = "stop/{gameId}")
     public String stopPlayingTheGame(
             Model model,
-            @Valid @ModelAttribute QasinoResponse qasinoResponse,
+            Principal principal,
+            @ModelAttribute QasinoResponse qasinoResponse,
             BindingResult result,
             Errors errors, RedirectAttributes ra,
             HttpServletResponse response
@@ -257,9 +254,8 @@ public class TurnAndCardMoveThymeleafContoller extends AbstractThymeleafControll
         // 1 - map input
         QasinoFlowDTO flowDTO = new QasinoFlowDTO();
         flowDTO.setPathVariables(
-                "visitorId", String.valueOf(qasinoResponse.getParams().getVid()),
+                "visitorId", getPricipalVisitorId(principal),
                 "gameId", String.valueOf(qasinoResponse.getPageGameSetup().getSelectedGame().getGameId()),
-
                 "gameEvent", "stop"
         );
         // 2 - validate input
@@ -285,7 +281,6 @@ public class TurnAndCardMoveThymeleafContoller extends AbstractThymeleafControll
             model.addAttribute(flowDTO.getQasinoResponse());
             return "redirect:/setup/" + qasinoResponse.getPageGameSetup().getSelectedGame().getGameId();
         }
-
         stopGameAction.perform(flowDTO);
         if (output == EventOutput.Result.SUCCESS) {
             output = calculateAndFinishGameAction.perform(flowDTO);

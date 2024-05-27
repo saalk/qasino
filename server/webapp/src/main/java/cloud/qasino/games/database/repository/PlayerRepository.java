@@ -33,6 +33,13 @@ public interface PlayerRepository extends JpaRepository<Player, Long> {
     //@Query("SELECT count(p) FROM playerS p WHERE p.game_id = ?1")
     int countByGame(Game game);
 
+    public final static String COUNT_AILEVEL =
+            "SELECT count(*) FROM \"player\" as p WHERE p.\"is_human\" = :human " +
+            "AND p.\"ai_level\" = :aiLevel ";
+
+    @Query(value = COUNT_AILEVEL, nativeQuery = true)
+    Integer countByAiLevel(@Param(value = "human") String human, @Param(value = "aiLevel") String aiLevel);
+
     //@Query("SELECT * FROM playerS p WHERE p.game_id = ?1")
     List<Player> findByGame(Game game);
 

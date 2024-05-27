@@ -106,6 +106,7 @@ public class QasinoFlowDTO extends AbstractFlowDTO
     private long initiatingPlayerId;
     private long invitedPlayerId;
     private long acceptedPlayerId;
+    private long declinedPlayerId;
     private long suppliedTurnPlayerId;
     // triggers for the Game
     private GameEvent suppliedGameEvent;
@@ -329,6 +330,14 @@ public class QasinoFlowDTO extends AbstractFlowDTO
         if (pathVariables.containsKey(key)) {
             if (isValueForPrimaryKeyValid(key, pathVariables.get(key), dataName, pathDataString)) {
                 this.suppliedLeagueId = Long.parseLong(pathVariables.get(key));
+            } else {
+                return false;
+            }
+        }
+        key = "declinedPlayerId";
+        if (pathVariables.containsKey(key)) {
+            if (isValueForPrimaryKeyValid(key, pathVariables.get(key), dataName, pathDataString)) {
+                this.declinedPlayerId = Long.parseLong(pathVariables.get(key));
             } else {
                 return false;
             }

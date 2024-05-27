@@ -3,6 +3,8 @@ package cloud.qasino.games.action;
 import cloud.qasino.games.action.interfaces.Action;
 import cloud.qasino.games.database.entity.Game;
 import cloud.qasino.games.database.entity.League;
+import cloud.qasino.games.database.repository.GameRepository;
+import cloud.qasino.games.database.repository.LeagueRepository;
 import cloud.qasino.games.database.security.Visitor;
 import cloud.qasino.games.database.entity.enums.game.Type;
 import cloud.qasino.games.database.entity.enums.player.AiLevel;
@@ -20,14 +22,15 @@ public class PrepareGameAction implements Action<PrepareGameAction.Dto, EventOut
 
     @Autowired
     PlayService playService;
+
     @Override
     public EventOutput.Result perform(Dto actionDto) {
 
         // update Game
         actionDto.setQasinoGame(playService.prepareExistingGame(
                 actionDto.getQasinoGame(),
-                actionDto.getQasinoVisitor(),
-                actionDto.getQasinoGame().getType(),
+                null,
+                null,
                 actionDto.getQasinoGameLeague(),
                 actionDto.getSuppliedStyle(),
                 actionDto.getSuppliedAnte()));
@@ -51,6 +54,7 @@ public class PrepareGameAction implements Action<PrepareGameAction.Dto, EventOut
         // @formatter:off
         // Getters
         League getQasinoGameLeague();
+        long getSuppliedLeagueId();
         int getSuppliedAnte();
         Avatar getSuppliedAvatar();
         AiLevel getSuppliedAiLevel();

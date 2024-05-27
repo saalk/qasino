@@ -12,12 +12,12 @@
     <div class="text-center">
         <h1>Setup</h1>
         <div th:if="${qasinoResponse.params.gid == -1}">
-            No (Game) Data
+            Setup a new game
         </div>
         <div th:unless="${qasinoResponse.params.gid == -1 || qasinoResponse.pageGameSetup.gameStateGroup == SETUP}">
+            Finish or stop playing the current game
             <div th:replace="~{forms/setup :: update-or-stop}"></div>
             <div th:replace="~{forms/setup :: validate-or-shuffle}"></div>
-
         </div>
     </div>
     <div th:insert="~{fragments/footer :: footer}"></div>

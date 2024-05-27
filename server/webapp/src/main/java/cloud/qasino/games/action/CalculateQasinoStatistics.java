@@ -47,9 +47,12 @@ public class CalculateQasinoStatistics implements Action<CalculateQasinoStatisti
         statistics.add(new Statistic("total","Games","State:PLAYING",gameRepository.countByStates(GameStateGroup.listGameStatesStringsForGameStateGroup(GameStateGroup.PLAYING))));
         statistics.add(new Statistic("total","Games","State:FINISHED",gameRepository.countByStates(GameStateGroup.listGameStatesStringsForGameStateGroup(GameStateGroup.FINISHED))));
 
-        statistics.add(new Statistic("total","Games","All",(int) gameRepository.count()));
+//        statistics.add(new Statistic("total","Games","All",(int) gameRepository.count()));
         statistics.add(new Statistic("total","Visitors","All",(int) visitorRepository.count()));
-        statistics.add(new Statistic("total","Players","All",(int) playerRepository.count()));
+        statistics.add(new Statistic("total","Players","AiLevel:HUMAN",(int) playerRepository.countByAiLevel("true","HUMAN")));
+        statistics.add(new Statistic("total","Players","AiLevel:DUMB",(int) playerRepository.countByAiLevel("false","DUMB")));
+        statistics.add(new Statistic("total","Players","AiLevel:AVERAGE",(int) playerRepository.countByAiLevel("false","AVERAGE")));
+        statistics.add(new Statistic("total","Players","AiLevel:SMART",(int) playerRepository.countByAiLevel("false","SMART")));
         statistics.add(new Statistic("total","Cards","All",(int) cardRepository.count()));
         statistics.add(new Statistic("total","Leagues","All",(int) leagueRepository.count()));
 

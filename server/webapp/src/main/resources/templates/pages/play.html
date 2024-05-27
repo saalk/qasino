@@ -12,10 +12,14 @@
     <div class="text-center">
         <h1>Play</h1>
         <div th:if="${qasinoResponse.params.gid == -1}">
-            No (Game) Data
+            No Game to play
         </div>
-        <div th:unless="${qasinoResponse.params.gid == -1}">
-            Finish setting up the game
+        <div th:if="${qasinoResponse.params.gid > 0 && qasinoResponse.pageGamePlay.selectedGame == null}">
+            Finish setting up the current game
+        </div>
+        <div th:if="${qasinoResponse.params.gid > 0 && qasinoResponse.pageGamePlay.selectedGame != null}">
+            Under constuction ...
+            <div th:replace="~{forms/setup :: update-or-stop}"></div>
         </div>
     </div>
     <div th:insert="~{fragments/footer :: footer}"></div>
