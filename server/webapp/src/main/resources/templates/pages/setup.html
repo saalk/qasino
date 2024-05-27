@@ -15,7 +15,7 @@
             No (Game) Data
         </div>
         <div th:unless="${qasinoResponse.params.gid == -1 || qasinoResponse.pageGameSetup.gameStateGroup == SETUP}">
-            <div th:replace="~{forms/setup :: update}"></div>
+            <div th:replace="~{forms/setup :: update-or-stop}"></div>
             <div th:replace="~{forms/setup :: validate-or-shuffle}"></div>
 
         </div>

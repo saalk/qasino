@@ -4,11 +4,11 @@ import cloud.qasino.games.action.interfaces.Action;
 import cloud.qasino.games.database.security.Visitor;
 import cloud.qasino.games.database.security.VisitorRepository;
 import cloud.qasino.games.statemachine.event.EventOutput;
+import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 
-import jakarta.annotation.Resource;
 import java.util.Optional;
 
 @Slf4j
@@ -38,14 +38,19 @@ public class FindVisitorIdByAliasOrUsernameAction implements Action<FindVisitorI
                 return EventOutput.Result.FAILURE;
             }
             foundVisitor = visitorRepository.findVisitorByAliasAndAliasSequence(actionDto.getSuppliedAlias(), 1);
-        } else if(!(StringUtils.isEmpty(actionDto.getSuppliedUsername()))) {
+        } else if (!(StringUtils.isEmpty(actionDto.getSuppliedUsername()))) {
             foundVisitor = Optional.ofNullable(visitorRepository.findByUsername(actionDto.getSuppliedUsername()));
+            log.warn("debug foundVisitor {}:", foundVisitor.toString());
+            log.warn("debug getSuppliedUsername {}:", actionDto.getSuppliedUsername());
         } else {
             return EventOutput.Result.SUCCESS;
         }
 
         if (foundVisitor.isPresent()) {
             actionDto.setSuppliedVisitorId(foundVisitor.get().getVisitorId());
+        } else {
+            setNotFoundErrorMessage(actionDto, "visitor", String.valueOf(actionDto.getSuppliedAlias()));
+            return EventOutput.Result.FAILURE;
         }
         return EventOutput.Result.SUCCESS;
     }

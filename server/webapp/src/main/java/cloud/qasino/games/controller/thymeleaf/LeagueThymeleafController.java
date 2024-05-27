@@ -1,6 +1,7 @@
 package cloud.qasino.games.controller.thymeleaf;
 
 import cloud.qasino.games.action.CreateNewLeagueAction;
+import cloud.qasino.games.action.FindVisitorIdByAliasOrUsernameAction;
 import cloud.qasino.games.action.LoadEntitiesToDtoAction;
 import cloud.qasino.games.controller.AbstractThymeleafController;
 import cloud.qasino.games.database.repository.LeagueRepository;
@@ -23,6 +24,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.security.Principal;
+
 @Controller
 @ControllerAdvice
 //@Api(tags = {WebConfiguration.QASINO_TAG})
@@ -42,6 +45,8 @@ public class LeagueThymeleafController extends AbstractThymeleafController {
     LoadEntitiesToDtoAction loadEntitiesToDtoAction;
     @Autowired
     CreateNewLeagueAction createNewLeagueAction;
+    @Autowired
+    FindVisitorIdByAliasOrUsernameAction findVisitorIdByAliasOrUsernameAction;
 
     @Autowired
     public LeagueThymeleafController(
@@ -53,17 +58,18 @@ public class LeagueThymeleafController extends AbstractThymeleafController {
     @GetMapping("/league/{leagueId}")
     public String getLeague(
             Model model,
+            Principal principal,
             @ModelAttribute QasinoResponse qasinoResponse,
             BindingResult result,
             Errors errors, RedirectAttributes ra,
             HttpServletResponse response,
-
-            @RequestHeader("visitorId") String vId,
             @PathVariable("leagueId") String id
     ) {
         // 1 - map input
         QasinoFlowDTO flowDTO = new QasinoFlowDTO();
-        flowDTO.setPathVariables("visitorId", vId, "leagueId", id);
+        flowDTO.setPathVariables("leagueId", id);
+        flowDTO.setPathVariables("username", principal.getName());
+        findVisitorIdByAliasOrUsernameAction.perform(flowDTO);
         // 2 - validate input
         if (!flowDTO.validateInput() || errors.hasErrors()) {
             log.warn("Errors exist!!: {}", errors);
@@ -77,7 +83,7 @@ public class LeagueThymeleafController extends AbstractThymeleafController {
         prepareQasinoResponse(response, flowDTO);
         model.addAttribute(flowDTO.getQasinoResponse());
 
-        log.warn("GetMapping: visitor/{visitorId}");
+        log.warn("GetMapping: visitor");
 //        log.warn("HttpServletResponse: {}", response.getHeaderNames());
 //        log.warn("Model: {}", model);
 //        log.warn("Errors: {}", errors);
@@ -88,6 +94,7 @@ public class LeagueThymeleafController extends AbstractThymeleafController {
     @PostMapping(value = "league")
     public String putLeague(
             Model model,
+            Principal principal,
             @ModelAttribute QasinoResponse qasinoResponse,
             BindingResult result,
             Errors errors, RedirectAttributes ra,
@@ -96,38 +103,38 @@ public class LeagueThymeleafController extends AbstractThymeleafController {
         // 1 - map input
         QasinoFlowDTO flowDTO = new QasinoFlowDTO();
         flowDTO.setPathVariables(
-                "visitorId", String.valueOf(qasinoResponse.getPageVisitor().getSelectedVisitor().getVisitorId()),
                 "leagueName", qasinoResponse.getPageLeague().getSelectedLeague().getName()
         );
+        flowDTO.setPathVariables("username", principal.getName());
+        findVisitorIdByAliasOrUsernameAction.perform(flowDTO);
         // 2 - validate input
         if (!flowDTO.validateInput() || errors.hasErrors()) {
             log.warn("Errors exist!!: {}", errors);
             prepareQasinoResponse(response, flowDTO);
 //            flowDTO.setAction("Username incorrect");
             model.addAttribute(flowDTO.getQasinoResponse());
-            return "redirect:visitor/" + flowDTO.getQasinoResponse().getPageVisitor().getSelectedVisitor().getVisitorId();
+            return "redirect:visitor";
         }
         // 3 - process
         // get all entities
         output = loadEntitiesToDtoAction.perform(flowDTO);
         if (output == EventOutput.Result.FAILURE) {
             flowDTO.prepareResponseHeaders();
-
-            return "redirect:league/" + flowDTO.getQasinoResponse().getPageLeague().getSelectedLeague().getLeagueId();
+            return "redirect:visitor";
 //            return ResponseEntity.status(HttpStatus.valueOf(flowDTO.getHttpStatus())).headers(flowDTO.getHeaders()).build();
         }
         // create - League for Visitor
         output = createNewLeagueAction.perform(flowDTO);
         if (output == EventOutput.Result.FAILURE) {
             flowDTO.prepareResponseHeaders();
-            return "redirect:league/" + flowDTO.getQasinoResponse().getPageLeague().getSelectedLeague().getLeagueId();
+            return "redirect:visitor";
 //            return ResponseEntity.status(HttpStatus.valueOf(flowDTO.getHttpStatus())).headers(flowDTO.getHeaders()).build();
         }
         // 4 - return response
         prepareQasinoResponse(response, flowDTO);
         model.addAttribute(flowDTO.getQasinoResponse());
 
-        log.warn("GetMapping: visitor/{visitorId}");
+        log.warn("PostMapping: league");
 //        log.warn("HttpServletResponse: {}", response.getHeaderNames());
 //        log.warn("Model: {}", model);
 //        log.warn("Errors: {}", errors);
@@ -138,17 +145,18 @@ public class LeagueThymeleafController extends AbstractThymeleafController {
     @DeleteMapping("/league/{leagueId}")
     public String deleteLeague(
             Model model,
+            Principal principal,
             @ModelAttribute QasinoResponse qasinoResponse,
             BindingResult result,
             Errors errors, RedirectAttributes ra,
             HttpServletResponse response,
-
-            @RequestHeader("visitorId") String vId,
             @PathVariable("leagueId") String id
     ) {
         // 1 - map input
         QasinoFlowDTO flowDTO = new QasinoFlowDTO();
-        flowDTO.setPathVariables("visitorId", vId, "leagueId", id);
+        flowDTO.setPathVariables("leagueId", id);
+        flowDTO.setPathVariables("username", principal.getName());
+        findVisitorIdByAliasOrUsernameAction.perform(flowDTO);
         // 2 - validate input
         if (!flowDTO.validateInput() || errors.hasErrors()) {
             log.warn("Errors exist!!: {}", errors);
@@ -161,7 +169,7 @@ public class LeagueThymeleafController extends AbstractThymeleafController {
         output = loadEntitiesToDtoAction.perform(flowDTO);
         if (output == EventOutput.Result.FAILURE) {
             flowDTO.prepareResponseHeaders();
-            return "redirect:visitor/" + flowDTO.getQasinoResponse().getPageVisitor().getSelectedVisitor().getVisitorId();
+            return "redirect:visitor";
 //            return ResponseEntity.status(HttpStatus.valueOf(flowDTO.getHttpStatus())).headers(flowDTO.getHeaders()).build();
         }
         // delete
@@ -172,13 +180,13 @@ public class LeagueThymeleafController extends AbstractThymeleafController {
         prepareQasinoResponse(response, flowDTO);
         model.addAttribute(flowDTO.getQasinoResponse());
 
-        log.warn("GetMapping: visitor/{visitorId}");
+        log.warn("DeleteMapping: /league/{leagueId}");
 //        log.warn("HttpServletResponse: {}", response.getHeaderNames());
 //        log.warn("Model: {}", model);
 //        log.warn("Errors: {}", errors);
         log.warn("get qasinoResponse: {}", flowDTO.getQasinoResponse());
 
-        return "redirect:visitor/" + flowDTO.getQasinoResponse().getPageVisitor().getSelectedVisitor().getVisitorId();
+        return "redirect:visitor";
     }
 }
 

@@ -27,7 +27,7 @@ public class PrepareGameAction implements Action<PrepareGameAction.Dto, EventOut
         actionDto.setQasinoGame(playService.prepareExistingGame(
                 actionDto.getQasinoGame(),
                 actionDto.getQasinoVisitor(),
-                actionDto.getSuppliedType(),
+                actionDto.getQasinoGame().getType(),
                 actionDto.getQasinoGameLeague(),
                 actionDto.getSuppliedStyle(),
                 actionDto.getSuppliedAnte()));

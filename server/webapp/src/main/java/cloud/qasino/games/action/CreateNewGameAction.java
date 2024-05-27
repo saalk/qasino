@@ -27,7 +27,7 @@ public class CreateNewGameAction implements Action<CreateNewGameAction.Dto, Even
                 actionDto.getSuppliedType().getLabel(),
                 actionDto.getQasinoVisitor(),
                 actionDto.getQasinoGameLeague(),
-                actionDto.getSuppliedAiLevel(),
+                AiLevel.HUMAN,
                 actionDto.getSuppliedStyle(),
                 String.valueOf(actionDto.getSuppliedAnte()),
                 actionDto.getSuppliedAvatar())

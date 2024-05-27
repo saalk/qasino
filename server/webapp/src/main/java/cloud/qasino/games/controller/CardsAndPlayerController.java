@@ -52,7 +52,7 @@ public class CardsAndPlayerController {
         this.playerRepository = playerRepository;
     }
 
-    @DeleteMapping("/card/{rankSuit}/game/{gameId}")
+    @DeleteMapping("card/{rankSuit}/game/{gameId}")
     public ResponseEntity deletePlayingCardForGame(
             @RequestHeader("visitorId") String vId,
             @PathVariable("gameId") String id,
@@ -125,7 +125,7 @@ public class CardsAndPlayerController {
     }
 
     @GetMapping(
-            value = "/card/{rankAndSuit}/image",
+            value = "card/{rankAndSuit}/image",
             produces = MediaType.IMAGE_JPEG_VALUE
     )
     public @ResponseBody
@@ -137,7 +137,7 @@ public class CardsAndPlayerController {
         return IOUtils.toByteArray(in);
     }
 
-    @GetMapping("/player/{playerId}")
+    @GetMapping("player/{playerId}")
     public ResponseEntity<Optional<Player>> getPlayer(
             @RequestHeader("visitorId") String vId,
             @PathVariable("playerId") String id
@@ -165,7 +165,7 @@ public class CardsAndPlayerController {
         }
     }
 
-    @PutMapping(value = "/player/{playerId}")
+    @PutMapping(value = "player/{playerId}")
     public ResponseEntity<Player> updatePlayer(
             @RequestHeader("visitorId") String vId,
             @PathVariable("playerId") String id,
@@ -211,7 +211,7 @@ public class CardsAndPlayerController {
         return ResponseEntity.ok().headers(headers).body(updatedPlayer);
     }
 
-    @PutMapping(value = "/player/{playerId}/{order}")
+    @PutMapping(value = "player/{playerId}/{order}")
     public ResponseEntity<Game> updateSequence(
             @RequestHeader("visitorId") String vId,
             @PathVariable("playerId") String id,
@@ -258,7 +258,7 @@ public class CardsAndPlayerController {
         //return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).headers(headers).build();
     }
 
-    @DeleteMapping("/player/{playerId}")
+    @DeleteMapping("player/{playerId}")
     public ResponseEntity<Player> deletePlayer(
             @RequestHeader("visitorId") String vId,
             @PathVariable("playerId") String id

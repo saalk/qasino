@@ -77,54 +77,66 @@ public class LoadEntitiesToDtoAction implements Action<LoadEntitiesToDtoAction.D
         visitorId = actionDto.getSuppliedVisitorId();
         if (!(visitorId == 0)) {
             EventOutput.Result response = getVisitorSupplied(actionDto, visitorId);
-            if (response.equals(EventOutput.Result.FAILURE)) return response;
+            if (response.equals(EventOutput.Result.FAILURE)) {
+                setNotFoundErrorMessage(actionDto, "visitorId", String.valueOf(visitorId), "Visitor");
+                return response;
+            }
             if (gameId == 0) { // BR2
                 findGameByVisitorSupplied(actionDto, visitorId);
             }
         } else { // BR1
-            setNotFoundErrorMessage(actionDto, "visitorId", String.valueOf(0), "Visitor");
+            setNotFoundErrorMessage(actionDto, "visitorId", String.valueOf(visitorId), "Visitor");
             return EventOutput.Result.FAILURE;
         }
 
         gameId = actionDto.getSuppliedGameId();
         if (!(gameId == 0)) { // BR3 BR4 BR6
             EventOutput.Result response = getGameSupplied(actionDto, gameId);
-            if (response.equals(EventOutput.Result.FAILURE)) return response;
+            if (response.equals(EventOutput.Result.FAILURE)) {
+                setNotFoundErrorMessage(actionDto, "gameId", String.valueOf(gameId), "Game");
+                return response;
+            }
         }
 
         turnPlayerId = actionDto.getSuppliedTurnPlayerId();
         if (!(turnPlayerId == 0)) { // BR5
             EventOutput.Result response = getTurnPlayerSupplied(actionDto, turnPlayerId);
-            if (response.equals(EventOutput.Result.FAILURE)) return response;
+            if (response.equals(EventOutput.Result.FAILURE)) {
+                setNotFoundErrorMessage(actionDto, "turnPlayerId", String.valueOf(turnPlayerId), "Turn");
+                return response;
+            }
         }
 
         leagueId = actionDto.getSuppliedLeagueId();
         if (!(leagueId == 0)) {
             EventOutput.Result response = getLeagueSupplied(actionDto, leagueId);
-            if (response.equals(EventOutput.Result.FAILURE)) return response;
+            if (response.equals(EventOutput.Result.FAILURE)) {
+                setNotFoundErrorMessage(actionDto, "leagueId", String.valueOf(leagueId), "League");
+                return response;
+            }
         }
 
-//        BR7
-//        Long id = actionDto.getAcceptedPlayerId();
-//        if (!(id == 0)) {
-//            Optional<Player> foundPlayer = playerRepository.findById(Long.parseLong(String.valueOf(id)));
-//            if (foundPlayer.isPresent()) {
-//                actionDto.setAcceptedPlayer(foundPlayer.get());
-//            } else {
-//                setErrorMessageNotFound(actionDto, "acceptedPlayerId", String.valueOf(id));
-//                return EventOutput.Result.FAILURE;
-//            }
-//        }
-//        id = actionDto.getInvitedPlayerId();
-//        if (!(id == 0)) {
-//            Optional<Player> foundPlayer = playerRepository.findById(Long.parseLong(String.valueOf(id)));
-//            if (foundPlayer.isPresent()) {
-//                actionDto.setInvitedPlayer(foundPlayer.get());
-//            } else {
-//                setErrorMessageNotFound(actionDto, "invitedPlayerId", String.valueOf(id));
-//                return EventOutput.Result.FAILURE;
-//            }
-//        }
+        // BR7
+        Long id = actionDto.getAcceptedPlayerId();
+        if (!(id == 0)) {
+            Optional<Player> foundPlayer = playerRepository.findById(Long.parseLong(String.valueOf(id)));
+            if (foundPlayer.isPresent()) {
+                actionDto.setAcceptedPlayer(foundPlayer.get());
+            } else {
+                setNotFoundErrorMessage(actionDto, "acceptedPlayerId", String.valueOf(id), "AcceptedPlayer");
+                return EventOutput.Result.FAILURE;
+            }
+        }
+        id = actionDto.getInvitedPlayerId();
+        if (!(id == 0)) {
+            Optional<Player> foundPlayer = playerRepository.findById(Long.parseLong(String.valueOf(id)));
+            if (foundPlayer.isPresent()) {
+                actionDto.setInvitedPlayer(foundPlayer.get());
+            } else {
+                setNotFoundErrorMessage(actionDto, "invitedPlayerId", String.valueOf(id), "InvitedPlayer");
+                return EventOutput.Result.FAILURE;
+            }
+        }
 
         return EventOutput.Result.SUCCESS;
     }
@@ -256,11 +268,15 @@ public class LoadEntitiesToDtoAction implements Action<LoadEntitiesToDtoAction.D
         actionDto.setErrorKey(id);
         actionDto.setErrorValue(value);
         actionDto.setNotFoundErrorMessage("[" + entity + "] not found for id [" + value + "]");
+        log.warn("Errors setNotFoundErrorMessage!!: {}", actionDto.getErrorMessage());
+
     }
 
     public interface Dto {
 
         // @formatter:off
+        String getErrorMessage();
+
         // Getters
         int getSuppliedPage();
         int getSuppliedMaxPerPage();

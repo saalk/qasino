@@ -223,7 +223,7 @@ public class HomeSigninSignupThymeleafController extends AbstractThymeleafContro
 //        log.warn("Principal: {}", principal);
 //        log.warn("HttpServletResponse: {}", response.getHeaderNames());
 //        log.warn("Model: {}", model);
-        log.warn("qasinoResponse: {}", flowDTO.getQasinoResponse());
+//        log.warn("qasinoResponse: {}", flowDTO.getQasinoResponse());
 
         return principal != null ? HOME_SIGNED_IN_LOCATION : HOME_NOT_SIGNED_IN_LOCATION;
     }

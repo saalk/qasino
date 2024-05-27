@@ -39,6 +39,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.security.Principal;
 import java.util.Optional;
 
 // basic path /qasino
@@ -85,10 +86,10 @@ public class VisitorThymeleafController extends AbstractThymeleafController {
         this.visitorRepository = visitorRepository;
     }
 
-    @GetMapping("visitor/{visitorId}")
+    @GetMapping("visitor")
     public String getVisitor(
             Model model,
-            @PathVariable("visitorId") String id,
+            Principal principal,
             @ModelAttribute QasinoResponse qasinoResponse,
             BindingResult result,
             Errors errors, RedirectAttributes ra,
@@ -96,10 +97,11 @@ public class VisitorThymeleafController extends AbstractThymeleafController {
     ) {
         // 1 - map input
         QasinoFlowDTO flowDTO = new QasinoFlowDTO();
-        flowDTO.setPathVariables("visitorId", id);
+        flowDTO.setPathVariables("username", principal.getName());
+        findVisitorIdByAliasOrUsernameAction.perform(flowDTO);
         // 2 - validate input
         if (!flowDTO.validateInput() || errors.hasErrors()) {
-            log.warn("Errors exist!!: {}", errors);
+            log.warn("Errors validateInput!!: {}", errors);
             prepareQasinoResponse(response, flowDTO);
 //            flowDTO.setAction("Username incorrect");
             model.addAttribute(flowDTO.getQasinoResponse());
@@ -109,7 +111,7 @@ public class VisitorThymeleafController extends AbstractThymeleafController {
         // 4 - return response
         prepareQasinoResponse(response, flowDTO);
         model.addAttribute(flowDTO.getQasinoResponse());
-        log.warn("Model: ", model);
+        log.warn("Model => ", model);
         return VISITOR_VIEW_LOCATION;
     }
 
@@ -122,7 +124,7 @@ public class VisitorThymeleafController extends AbstractThymeleafController {
             BindingResult result,
             HttpServletResponse response
     ) {
-        log.warn("PostMapping: /visitor");
+        log.warn("PostMapping: visitor");
 //        log.warn("post in qasinoResponse: {}", qasinoResponse);
 
         // 1 - map input
@@ -135,6 +137,7 @@ public class VisitorThymeleafController extends AbstractThymeleafController {
         );
         // 2 - validate input
         if (!flowDTO.validateInput() || result.hasErrors()) {
+            log.warn("Errors validateInput!!: {}", errors);
             prepareQasinoResponse(response, flowDTO);
             model.addAttribute(flowDTO.getQasinoResponse());
             return VISITOR_VIEW_LOCATION;
@@ -146,7 +149,7 @@ public class VisitorThymeleafController extends AbstractThymeleafController {
         prepareQasinoResponse(response, flowDTO);
         model.addAttribute(flowDTO.getQasinoResponse());
 //        log.warn("post out qasinoResponse: {}", flowDTO.getQasinoResponse());
-        return "redirect:visitor/" + flowDTO.getQasinoResponse().getPageVisitor().getSelectedVisitor().getVisitorId();
+        return "redirect:visitor";
     }
 
     @PostMapping(value = "pawn")
@@ -162,6 +165,7 @@ public class VisitorThymeleafController extends AbstractThymeleafController {
         flowDTO.setPathVariables("visitorId", String.valueOf(qasinoResponse.getPageVisitor().getSelectedVisitor().getVisitorId()), "pawn", "true");
         // 2 - validate input
         if (!flowDTO.validateInput()) {
+            log.warn("Errors exist!!: {}", errors);
             prepareQasinoResponse(response, flowDTO);
             model.addAttribute(flowDTO.getQasinoResponse());
             return VISITOR_VIEW_LOCATION;
@@ -173,7 +177,7 @@ public class VisitorThymeleafController extends AbstractThymeleafController {
         prepareQasinoResponse(response, flowDTO);
         model.addAttribute(flowDTO.getQasinoResponse());
         log.warn("PostMapping: /pawn");
-        return "redirect:visitor/" + flowDTO.getQasinoResponse().getPageVisitor().getSelectedVisitor().getVisitorId();
+        return "redirect:visitor";
     }
 
     @PostMapping(value = "repay")
@@ -189,6 +193,7 @@ public class VisitorThymeleafController extends AbstractThymeleafController {
         flowDTO.setPathVariables("visitorId", String.valueOf(qasinoResponse.getPageVisitor().getSelectedVisitor().getVisitorId()), "repay", "true");
         // 2 - validate input
         if (!flowDTO.validateInput()) {
+            log.warn("Errors exist!!: {}", errors);
             prepareQasinoResponse(response, flowDTO);
             model.addAttribute(flowDTO.getQasinoResponse());
             return VISITOR_VIEW_LOCATION;
@@ -201,10 +206,10 @@ public class VisitorThymeleafController extends AbstractThymeleafController {
         model.addAttribute(flowDTO.getQasinoResponse());
         log.warn("PostMapping: /repay");
 //        log.warn("Model: {}", model);
-        return "redirect:visitor/" + flowDTO.getQasinoResponse().getPageVisitor().getSelectedVisitor().getVisitorId();
+        return "redirect:visitor";
     }
 
-    @DeleteMapping("/visitor")
+    @DeleteMapping("visitor")
     public String deleteVisitor(
             Model model,
 //            @PathVariable("visitorId") Optional<String> id,
@@ -217,7 +222,8 @@ public class VisitorThymeleafController extends AbstractThymeleafController {
         flowDTO.setPathVariables("visitorId", String.valueOf(qasinoResponse.getPageVisitor().getSelectedVisitor().getVisitorId()));
         // 2 - validate input
         if (!flowDTO.validateInput()) {
-            flowDTO.prepareResponseHeaders();
+            log.warn("Errors validateInput!!: {}", errors);
+            prepareQasinoResponse(response, flowDTO);
             model.addAttribute(flowDTO.getQasinoResponse());
             return VISITOR_VIEW_LOCATION;
         }

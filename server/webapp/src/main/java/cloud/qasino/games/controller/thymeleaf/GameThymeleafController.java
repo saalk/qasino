@@ -1,6 +1,7 @@
 package cloud.qasino.games.controller.thymeleaf;
 
 import cloud.qasino.games.action.CreateNewGameAction;
+import cloud.qasino.games.action.FindVisitorIdByAliasOrUsernameAction;
 import cloud.qasino.games.action.IsGameConsistentForGameEvent;
 import cloud.qasino.games.action.LoadEntitiesToDtoAction;
 import cloud.qasino.games.action.PrepareGameAction;
@@ -16,7 +17,6 @@ import cloud.qasino.games.dto.QasinoFlowDTO;
 import cloud.qasino.games.response.QasinoResponse;
 import cloud.qasino.games.statemachine.event.EventOutput;
 import jakarta.servlet.http.HttpServletResponse;
-import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -29,10 +29,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.security.Principal;
 import java.util.Optional;
 
 @Controller
@@ -58,6 +57,8 @@ public class GameThymeleafController extends AbstractThymeleafController {
     CreateNewGameAction createNewGameAction;
     @Autowired
     PrepareGameAction prepareGameAction;
+    @Autowired
+    FindVisitorIdByAliasOrUsernameAction findVisitorIdByAliasOrUsernameAction;
 
     @Autowired
     public GameThymeleafController(
@@ -71,22 +72,26 @@ public class GameThymeleafController extends AbstractThymeleafController {
     @GetMapping("setup/{gameId}")
     public String getGameSetup(
             Model model,
+            Principal principal,
             @PathVariable("gameId") String id,
             @ModelAttribute QasinoResponse qasinoResponse,
             BindingResult result,
             Errors errors, RedirectAttributes ra,
             HttpServletResponse response
     ) {
+        log.warn("GetMapping: setup/{gameId}");
+
         // 1 - map input
         QasinoFlowDTO flowDTO = new QasinoFlowDTO();
         flowDTO.setPathVariables(
-                "visitorId", String.valueOf(qasinoResponse.getParams().getVid()),
                 "gameId", id);
+        flowDTO.setPathVariables("username", principal.getName());
+        findVisitorIdByAliasOrUsernameAction.perform(flowDTO);
         // 2 - validate input
         if (!flowDTO.validateInput() || errors.hasErrors()) {
-            log.warn("Errors exist!!: {}", errors);
+            log.warn("Errors validateInput!!: {}", errors);
+            log.warn("Model !!: {}", model);
             prepareQasinoResponse(response, flowDTO);
-//            flowDTO.setAction("Username incorrect");
             model.addAttribute(flowDTO.getQasinoResponse());
             return SETUP_VIEW_LOCATION;
         }
@@ -94,33 +99,32 @@ public class GameThymeleafController extends AbstractThymeleafController {
         // 4 - return response
         prepareQasinoResponse(response, flowDTO);
         model.addAttribute(flowDTO.getQasinoResponse());
-        log.warn("GetMapping: setup/{gameId}");
-//        log.warn("HttpServletResponse: {}", response.getHeaderNames());
-//        log.warn("Model: {}", model);
-//        log.warn("Errors: {}", errors);
-        log.warn("get qasinoResponse: {}", flowDTO.getQasinoResponse());
+        log.warn("Model !!: {}", model);
         return SETUP_VIEW_LOCATION;
     }
 
     @GetMapping("play/{gameId}")
     public String getGamePlay(
             Model model,
+            Principal principal,
             @PathVariable("gameId") String id,
             @ModelAttribute QasinoResponse qasinoResponse,
             BindingResult result,
             Errors errors, RedirectAttributes ra,
             HttpServletResponse response
     ) {
+        log.warn("GetMapping: play/{gameId}");
         // 1 - map input
         QasinoFlowDTO flowDTO = new QasinoFlowDTO();
         flowDTO.setPathVariables(
-                "visitorId", String.valueOf(qasinoResponse.getParams().getVid()),
                 "gameId", id);
+        flowDTO.setPathVariables("username", principal.getName());
+        findVisitorIdByAliasOrUsernameAction.perform(flowDTO);
         // 2 - validate input
         if (!flowDTO.validateInput() || errors.hasErrors()) {
-            log.warn("Errors exist!!: {}", errors);
+            log.warn("Errors validateInput!!: {}", errors);
+            log.warn("Model !!: {}", model);
             prepareQasinoResponse(response, flowDTO);
-//            flowDTO.setAction("Username incorrect");
             model.addAttribute(flowDTO.getQasinoResponse());
             return PLAY_VIEW_LOCATION;
         }
@@ -128,123 +132,131 @@ public class GameThymeleafController extends AbstractThymeleafController {
         // 4 - return response
         prepareQasinoResponse(response, flowDTO);
         model.addAttribute(flowDTO.getQasinoResponse());
-        log.warn("GetMapping: setup/{gameId}");
-//        log.warn("HttpServletResponse: {}", response.getHeaderNames());
-//        log.warn("Model: {}", model);
-//        log.warn("Errors: {}", errors);
-        log.warn("get qasinoResponse: {}", flowDTO.getQasinoResponse());
+        log.warn("Model !!: {}", model);
         return PLAY_VIEW_LOCATION;
     }
 
-    @PostMapping(value = "game/start")
+    @PostMapping(value = "start/{gameId}")
     public String startGame(
             Model model,
-            @Valid @ModelAttribute QasinoResponse qasinoResponse,
+            Principal principal,
+            @PathVariable("gameId") String id,
+            @ModelAttribute QasinoResponse qasinoResponse,
             BindingResult result,
             Errors errors, RedirectAttributes ra,
             HttpServletResponse response
     ) {
-        log.warn("PostMapping: /game/start");
-
+        log.warn("PostMapping: start/{gameId}");
         // 1 - map input
         QasinoFlowDTO flowDTO = new QasinoFlowDTO();
         flowDTO.setPathVariables(
-                "visitorId", String.valueOf(qasinoResponse.getParams().getVid()),
+                "gameId", id,
                 "type", qasinoResponse.getPageGameSetup().getSelectedGame().getType().getLabel(),
                 "style", qasinoResponse.getPageGameSetup().getSelectedGame().getStyle(),
-                "ante", String.valueOf(qasinoResponse.getPageGameSetup().getSelectedGame().getAnte()),
+//                "ante", String.valueOf(qasinoResponse.getPageGameSetup().getSelectedGame().getAnte()),
                 "avatar", qasinoResponse.getPageGameSetup().getHumanPlayer().getAvatar().getLabel(),
 
                 "gameEvent", "start"
         );
+        flowDTO.setPathVariables("username", principal.getName());
+        findVisitorIdByAliasOrUsernameAction.perform(flowDTO);
         if (qasinoResponse.getParams().getLid() > 0) {
             flowDTO.setPathVariables("leagueId", String.valueOf(qasinoResponse.getParams().getLid()));
         }
-
         if (qasinoResponse.getPageGameSetup().getBotPlayer().getAiLevel() != null) {
             flowDTO.setPathVariables("aiLevel", qasinoResponse.getPageGameSetup().getBotPlayer().getAiLevel().getLabel());
         }
         // 2 - validate input
         if (!flowDTO.validateInput()) {
-            log.warn("Errors exist!!: {}", errors);
-            log.warn("HttpServletResponse: {}", response.getHeaderNames());
-            log.warn("Model: {}", model);
-            log.warn("Errors: {}", errors);
+            log.warn("Errors validateInput!!: {}", errors);
+            log.warn("Model !!: {}", model);
             prepareQasinoResponse(response, flowDTO);
-//            flowDTO.setAction("Username incorrect");
             model.addAttribute(flowDTO.getQasinoResponse());
-            return "redirect:/visitor/" + flowDTO.getSuppliedVisitorId();
+            return "redirect:visitor/" + flowDTO.getSuppliedVisitorId();
         }
         // 3 - process
         output = loadEntitiesToDtoAction.perform(flowDTO);
         if (output == EventOutput.Result.FAILURE) {
-            flowDTO.prepareResponseHeaders();
-            return "redirect:/visitor/" + flowDTO.getSuppliedVisitorId();
+            log.warn("Errors loadEntitiesToDtoAction!!: {}", errors);
+            log.warn("Model !!: {}", model);
+            prepareQasinoResponse(response, flowDTO);
+            model.addAttribute(flowDTO.getQasinoResponse());
+            return "redirect:visitor/" + flowDTO.getSuppliedVisitorId();
 //            return ResponseEntity.status(HttpStatus.valueOf(flowDTO.getHttpStatus())).headers(flowDTO.getHeaders()).build();
         }
         // create or update the game
         output = isGameConsistentForGameEvent.perform(flowDTO);
         if (output == EventOutput.Result.FAILURE) {
-            flowDTO.prepareResponseHeaders();
-            return "redirect:/visitor/" + flowDTO.getSuppliedVisitorId();
+            log.warn("Errors isGameConsistentForGameEvent!!: {}", errors);
+            log.warn("Model !!: {}", model);
+            prepareQasinoResponse(response, flowDTO);
+            model.addAttribute(flowDTO.getQasinoResponse());
+            return "redirect:visitor/" + flowDTO.getSuppliedVisitorId();
 //            return ResponseEntity.status(HttpStatus.valueOf(flowDTO.getHttpStatus())).headers(flowDTO.getHeaders()).build();
         }
         createNewGameAction.perform(flowDTO);
         // 4 - return response
         prepareQasinoResponse(response, flowDTO);
         model.addAttribute(flowDTO.getQasinoResponse());
-        log.warn("PostMapping: /game/start");
-//        log.warn("HttpServletResponse: {}", response.getHeaderNames());
-//        log.warn("Model: {}", model);
-//        log.warn("Errors: {}", errors);
-        return "redirect:/visitor/" + flowDTO.getSuppliedVisitorId();
+        log.warn("Model !!: {}", model);
+        return "redirect:visitor";
     }
 
-    @PostMapping(value = "/game/validate")
+    @PostMapping(value = "validate/{gameId}")
     public String validateGame(
             Model model,
+            Principal principal,
+            @PathVariable("gameId") String id,
             @ModelAttribute QasinoResponse qasinoResponse,
             BindingResult result,
             Errors errors, RedirectAttributes ra,
             HttpServletResponse response
     ) {
+        log.warn("PostMapping: validate/{gameId}");
+
         // 1 - map input
         QasinoFlowDTO flowDTO = new QasinoFlowDTO();
         flowDTO.setPathVariables(
-                "visitorId", String.valueOf(qasinoResponse.getParams().getVid()),
-                "type", qasinoResponse.getPageGameSetup().getSelectedGame().getType().getLabel(),
-                "style", qasinoResponse.getPageGameSetup().getSelectedGame().getStyle(),
+                "gameId", id,
+//                "type", qasinoResponse.getPageGameSetup().getSelectedGame().getType().getLabel(),
+//                "style", qasinoResponse.getPageGameSetup().getSelectedGame().getStyle(),
                 "ante", String.valueOf(qasinoResponse.getPageGameSetup().getSelectedGame().getAnte()),
-                "avatar", qasinoResponse.getPageGameSetup().getHumanPlayer().getAvatar().getLabel(),
-
+//                "avatar", qasinoResponse.getPageGameSetup().getHumanPlayer().getAvatar().getLabel(),
                 "gameEvent", "validate"
         );
+        flowDTO.setPathVariables("username", principal.getName());
+        findVisitorIdByAliasOrUsernameAction.perform(flowDTO);
+
         if (qasinoResponse.getParams().getLid() > 0) {
             flowDTO.setPathVariables("leagueId", String.valueOf(qasinoResponse.getParams().getLid()));
         }
-
-        if (qasinoResponse.getPageGameSetup().getBotPlayer().getAiLevel() != null) {
+        if (!(qasinoResponse.getPageGameSetup().getBotPlayer() == null)) {
             flowDTO.setPathVariables("aiLevel", qasinoResponse.getPageGameSetup().getBotPlayer().getAiLevel().getLabel());
         }
         // 2 - validate input
         if (!flowDTO.validateInput() || errors.hasErrors()) {
-            log.warn("Errors exist!!: {}", errors);
+            log.warn("Errors validateInput!!: {}", errors);
+            log.warn("Model !!: {}", model);
             prepareQasinoResponse(response, flowDTO);
-//            flowDTO.setAction("Username incorrect");
             model.addAttribute(flowDTO.getQasinoResponse());
             return "redirect:/setup/" + qasinoResponse.getPageGameSetup().getSelectedGame().getGameId();
         }
         // 3 - process
         output = loadEntitiesToDtoAction.perform(flowDTO);
         if (output == EventOutput.Result.FAILURE) {
-            flowDTO.prepareResponseHeaders();
+            log.warn("Errors loadEntitiesToDtoAction!!: {}", errors);
+            log.warn("Model !!: {}", model);
+            prepareQasinoResponse(response, flowDTO);
             model.addAttribute(flowDTO.getQasinoResponse());
             return "redirect:/setup/" + qasinoResponse.getPageGameSetup().getSelectedGame().getGameId();
             //            return ResponseEntity.status(HttpStatus.valueOf(flowDTO.getHttpStatus())).headers(flowDTO.getHeaders()).build();
         }
         output = isGameConsistentForGameEvent.perform(flowDTO);
         if (output == EventOutput.Result.FAILURE) {
-            flowDTO.prepareResponseHeaders();
+            log.warn("Errors isGameConsistentForGameEvent!!: {}", errors);
+            log.warn("Model !!: {}", model);
+            prepareQasinoResponse(response, flowDTO);
+            model.addAttribute(flowDTO.getQasinoResponse());
             return "redirect:/setup/" + qasinoResponse.getPageGameSetup().getSelectedGame().getGameId();
             //            return ResponseEntity.status(HttpStatus.valueOf(flowDTO.getHttpStatus())).headers(flowDTO.getHeaders()).build();
         }
@@ -254,52 +266,47 @@ public class GameThymeleafController extends AbstractThymeleafController {
         prepareQasinoResponse(response, flowDTO);
         model.addAttribute(flowDTO.getQasinoResponse());
 
-        log.warn("PostMapping: /game/validate");
-//        log.warn("HttpServletResponse: {}", response.getHeaderNames());
-//        log.warn("Model: {}", model);
-//        log.warn("Errors: {}", errors);
-        log.warn("get qasinoResponse: {}", flowDTO.getQasinoResponse());
+        log.warn("Model !!: {}", model);
         return "redirect:/setup/" + qasinoResponse.getPageGameSetup().getSelectedGame().getGameId();
     }
 
-    @PostMapping(value = "/game/add/bot")
+    @PostMapping(value = "bot/{gameId}")
     public String addBotPLayerForAGame(
             Model model,
+            Principal principal,
+            @PathVariable("gameId") String id,
             @ModelAttribute QasinoResponse qasinoResponse,
             BindingResult result,
             Errors errors, RedirectAttributes ra,
-            HttpServletResponse response,
+            HttpServletResponse response) {
 
-            @RequestHeader("visitorId") String vId,
-            @PathVariable("gameId") String id,
-            @RequestParam(name = "aiLevel", defaultValue = "average") String aiLevel,
-            @RequestParam(name = "avatar", defaultValue = "elf") String avatar) {
-
+        log.warn("PostMapping: bot/{gameId}");
         // 1 - map input
         QasinoFlowDTO flowDTO = new QasinoFlowDTO();
         flowDTO.setPathVariables(
-                "visitorId", String.valueOf(qasinoResponse.getPageVisitor().getSelectedVisitor().getVisitorId()),
-                "gameId", String.valueOf(qasinoResponse.getPageGameSetup().getSelectedGame().getGameId()),
-                "aiLevel", String.valueOf(qasinoResponse.getPageGameSetup().getBotPlayer().getAiLevel().getLabel()),
+                "gameId", id,
                 "avatar", qasinoResponse.getPageGameSetup().getBotPlayer().getAvatar().getLabel(),
-
-                "gameEvent", "validate"
+                "aiLevel", qasinoResponse.getPageGameSetup().getBotPlayer().getAiLevel().getLabel()
         );
+        flowDTO.setPathVariables("username", principal.getName());
+        findVisitorIdByAliasOrUsernameAction.perform(flowDTO);
         // 2 - validate input
         if (!flowDTO.validateInput() || errors.hasErrors()) {
-            log.warn("Errors exist!!: {}", errors);
+            log.warn("Errors validateInput!!: {}", errors);
+            log.warn("Model !!: {}", model);
             prepareQasinoResponse(response, flowDTO);
-//            flowDTO.setAction("Username incorrect");
             model.addAttribute(flowDTO.getQasinoResponse());
             return "redirect:/setup/" + qasinoResponse.getPageGameSetup().getSelectedGame().getGameId();
         }
         // 3 - process
+        String aiLevel = qasinoResponse.getPageGameSetup().getBotPlayer().getAiLevel().getLabel();
+        String avatar = qasinoResponse.getPageGameSetup().getBotPlayer().getAvatar().getLabel();
         // rules - AiLevel bot cannot be Human
         if (AiLevel.fromLabelWithDefault(aiLevel) == AiLevel.HUMAN)
             // todo LOW split username and number
             return "redirect:/setup/" + qasinoResponse.getPageGameSetup().getSelectedGame().getGameId();
         //            return ResponseEntity.status(HttpStatus.CONFLICT).headers(headers).build();
-        long gameId = Long.parseLong(id);
+        long gameId = Long.parseLong(String.valueOf(qasinoResponse.getParams().getGid()));
         Optional<Game> foundGame = gameRepository.findById(gameId);
         if (!foundGame.isPresent()) {
             return "redirect:/setup/" + qasinoResponse.getPageGameSetup().getSelectedGame().getGameId();
@@ -322,43 +329,43 @@ public class GameThymeleafController extends AbstractThymeleafController {
         // 4 - return response
         prepareQasinoResponse(response, flowDTO);
         model.addAttribute(flowDTO.getQasinoResponse());
-
-        log.warn("PostMapping: /game/add/bot");
-//        log.warn("HttpServletResponse: {}", response.getHeaderNames());
-//        log.warn("Model: {}", model);
-//        log.warn("Errors: {}", errors);
-        log.warn("get qasinoResponse: {}", flowDTO.getQasinoResponse());
+        log.warn("Model !!: {}", model);
         return "redirect:/setup/" + qasinoResponse.getPageGameSetup().getSelectedGame().getGameId();
     }
 
-    @DeleteMapping("/game/{gameId}")
+    @DeleteMapping("game/{gameId}")
     public String deleteGame(
             Model model,
+            Principal principal,
             @ModelAttribute QasinoResponse qasinoResponse,
             BindingResult result,
             Errors errors, RedirectAttributes ra,
             HttpServletResponse response,
-
-            @RequestHeader("visitorId") String vId,
             @PathVariable("gameId") String id
     ) {
+        log.warn("DeleteMapping: game/{gameId}");
+
         // 1 - map input
         QasinoFlowDTO flowDTO = new QasinoFlowDTO();
-        flowDTO.setPathVariables("visitorId", vId, "gameId", id);
+        flowDTO.setPathVariables("username", principal.getName());
+        findVisitorIdByAliasOrUsernameAction.perform(flowDTO);
         // 2 - validate input
         if (!flowDTO.validateInput() || errors.hasErrors()) {
-            log.warn("Errors exist!!: {}", errors);
+            log.warn("Errors validateInput!!: {}", errors);
+            log.warn("Model !!: {}", model);
             prepareQasinoResponse(response, flowDTO);
-//            flowDTO.setAction("Username incorrect");
             model.addAttribute(flowDTO.getQasinoResponse());
-            return "redirect:/visitor/" + flowDTO.getQasinoResponse().getPageVisitor().getSelectedVisitor().getVisitorId();
+            return "redirect:visitor";
         }
         // 3 - process
         // get all entities
         output = loadEntitiesToDtoAction.perform(flowDTO);
         if (output == EventOutput.Result.FAILURE) {
-            flowDTO.prepareResponseHeaders();
-            return "redirect:/visitor/" + flowDTO.getQasinoResponse().getPageVisitor().getSelectedVisitor().getVisitorId();
+            log.warn("Errors loadEntitiesToDtoAction!!: {}", errors);
+            log.warn("Model !!: {}", model);
+            prepareQasinoResponse(response, flowDTO);
+            model.addAttribute(flowDTO.getQasinoResponse());
+            return "redirect:visitor";
 //            return ResponseEntity.status(HttpStatus.valueOf(flowDTO.getHttpStatus())).headers(flowDTO.getHeaders()).build();
         }
         // delete
@@ -367,16 +374,9 @@ public class GameThymeleafController extends AbstractThymeleafController {
         // 4 - return response
         prepareQasinoResponse(response, flowDTO);
         model.addAttribute(flowDTO.getQasinoResponse());
-
-        log.warn("GetMapping: visitor/{visitorId}");
-//        log.warn("HttpServletResponse: {}", response.getHeaderNames());
-//        log.warn("Model: {}", model);
-//        log.warn("Errors: {}", errors);
-        log.warn("get qasinoResponse: {}", flowDTO.getQasinoResponse());
-
-        return "redirect:/visitor/" + flowDTO.getQasinoResponse().getPageVisitor().getSelectedVisitor().getVisitorId();
+        log.warn("Model !!: {}", model);
+        return "redirect:visitor";
     }
-
 }
 
 

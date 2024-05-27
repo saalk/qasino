@@ -48,7 +48,7 @@
                     </li>
 
                     <li class="nav-item" th:if="${qasinoResponse.params.vid} != null">
-                        <a class="nav-link active" th:href="@{/visitor/{path}(path=${qasinoResponse.params.vid})}"
+                        <a class="nav-link active" th:href="@{/visitor}"
                            th:text="${qasinoResponse.navBarItems.^[sequence==1].title}">Visitor[]</a>
                     </li>
                     <li class="nav-item" th:if="${qasinoResponse.params.vid} == null">
@@ -98,7 +98,7 @@
                         <a class="nav-link" href="/logout" th:href="@{/logout}">Logout</a>
                     </li>
                     <li class="nav-item" sec:authorize="isAuthenticated()">
-                        <a class="nav-link" th:href="@{/visitor/{path}(path=${qasinoResponse.params.vid})}" sec:authentication="name">[]</a>
+                        <a class="nav-link" th:href="@{/visitor}" sec:authentication="name">[]</a>
                     </li>
                 </ul>
 

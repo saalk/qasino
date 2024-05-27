@@ -5,7 +5,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
 </head>
 <body>
-<div th:fragment="pawn">
+<div th:fragment="pawn-or-repay">
     <!-- the specific part of this html -->
     <form class="form-narrow form-horizontal" method="post"
           th:action="@{${qasinoResponse.pageVisitor.selectedVisitor.balance == 0 ? '/pawn' : '/repay'}}"

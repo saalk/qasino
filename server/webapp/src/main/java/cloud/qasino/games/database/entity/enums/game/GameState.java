@@ -18,18 +18,18 @@ import java.util.Map;
 public enum GameState implements LabeledEnum {
 
     // SETUP
-    INITIALIZED("initialized", "Setup or change ante, League and Players", GameStateGroup.SETUP),
-    PENDING_INVITATIONS("pending_invitations", "Awaiting invitations", GameStateGroup.SETUP),
-    PREPARED("prepared", "Validated, start shuffling.", GameStateGroup.PREPARED),
+    INITIALIZED("initialized", "Game started, validate the game setup", GameStateGroup.SETUP),
+    PENDING_INVITATIONS("pending_invitations", "Awaiting player invitations", GameStateGroup.SETUP),
+    PREPARED("prepared", "Game validated, start shuffling", GameStateGroup.PREPARED),
 
     // HIGHLOW
-    STARTED("started", "Proceed with first Move", GameStateGroup.PLAYING),
-    NEXT_PLAYER("next_player", "Proceed with next Player", GameStateGroup.PLAYING),
-    NEXT_TURN("next_turn", "Proceed with another turn for same Player", GameStateGroup.PLAYING),
+    STARTED("started", "Game shuffled, proceed with a move", GameStateGroup.PLAYING),
+    NEXT_PLAYER("next_player", "Proceed to next player", GameStateGroup.PLAYING),
+    NEXT_TURN("next_turn", "Do another move", GameStateGroup.PLAYING),
 
     // ENDED
-    FINISHED("finished", "Show Results", GameStateGroup.FINISHED),
-    QUIT("quit", "Game stopped by player", GameStateGroup.FINISHED),
+    FINISHED("finished", "Game finished, view results", GameStateGroup.FINISHED),
+    QUIT("quit", "Game stopped", GameStateGroup.FINISHED),
     CANCELLED("cancelled", "Game abandoned", GameStateGroup.FINISHED),
 
     // ERROR

@@ -10,12 +10,12 @@
 <!-- the specific part of this html -->
 <div class="container">
     <div class="text-center">
-        <h1>Setup</h1>
+        <h1>Play</h1>
         <div th:if="${qasinoResponse.params.gid == -1}">
             No (Game) Data
         </div>
         <div th:unless="${qasinoResponse.params.gid == -1}">
-            Play
+            Finish setting up the game
         </div>
     </div>
     <div th:insert="~{fragments/footer :: footer}"></div>
