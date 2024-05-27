@@ -31,6 +31,8 @@ public class LeagueThymeleafController extends AbstractThymeleafController {
 
     private static final String VISITOR_VIEW_LOCATION = "pages/visitor";
     private static final String SETUP_VIEW_LOCATION = "pages/setup";
+    private static final String PLAY_VIEW_LOCATION = "pages/play";
+    private static final String LEAGUE_VIEW_LOCATION = "pages/league";
 
     private LeagueRepository leagueRepository;
 
@@ -45,9 +47,7 @@ public class LeagueThymeleafController extends AbstractThymeleafController {
     public LeagueThymeleafController(
             LeagueRepository leagueRepository
     ) {
-
         this.leagueRepository = leagueRepository;
-
     }
 
     @GetMapping("/league/{leagueId}")
@@ -82,7 +82,7 @@ public class LeagueThymeleafController extends AbstractThymeleafController {
 //        log.warn("Model: {}", model);
 //        log.warn("Errors: {}", errors);
         log.warn("get qasinoResponse: {}", flowDTO.getQasinoResponse());
-        return "redirect:league/" + id;
+        return LEAGUE_VIEW_LOCATION;
     }
 
     @PostMapping(value = "league")

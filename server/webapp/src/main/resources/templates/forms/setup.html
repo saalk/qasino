@@ -82,5 +82,115 @@
         </fieldset>
     </form>
 </div>
+
+<div th:fragment="update">
+    <form class="form-narrow form-horizontal" method="post"
+          th:object="${qasinoResponse}"
+          th:fragment="QasinoResponse"
+          th:action="@{/game/validate}">
+        <!--/* Show general error message when form contains errors */-->
+        <th:block th:if="${#fields.hasErrors('${qasinoResponse.*}')}">
+            <div th:replace="fragments/alert :: alert (type='danger', message='Form contains errors. Please try again.')">
+                Alert
+            </div>
+        </th:block>
+        <fieldset>
+            <div class="form-group"
+                 th:classappend="${#fields.hasErrors('${qasinoResponse.pageGameSetup.selectedGame.type}')}? 'has-error'">
+                <label for="type3" class="col-lg-2 control-label">Type</label>
+                <div class="col-lg-10">
+                    <input disabled type="text" class="form-control" id="type3" placeholder="Type"
+                           th:field="${qasinoResponse.pageGameSetup.selectedGame.type}"/>
+                    <span class="help-block"
+                          th:if="${#fields.hasErrors('${qasinoResponse.pageGameSetup.selectedGame.type}')}"
+                          th:errors="${qasinoResponse.pageGameSetup.selectedGame.type}">Incorrect type</span>
+                </div>
+            </div>
+            <div class="form-group"
+                 th:classappend="${#fields.hasErrors('${qasinoResponse.pageGameSetup.botPlayer.aiLevel}')}? 'has-error'">
+                <label for="aiLevel2" class="col-lg-2 control-label">AiLevel</label>
+                <div class="col-lg-10">
+                    <input type="text" class="form-control" id="aiLevel2" placeholder="AiLevel"
+                           th:field="${qasinoResponse.pageGameSetup.botPlayer.aiLevel}"/>
+                    <span class="help-block"
+                          th:if="${#fields.hasErrors('${qasinoResponse.pageGameSetup.botPlayer.aiLevel}')}"
+                          th:errors="${qasinoResponse.pageGameSetup.botPlayer.aiLevel}">Incorrect AiLevel</span>
+                </div>
+            </div>
+            <div class="form-group"
+                 th:classappend="${#fields.hasErrors('${qasinoResponse.pageGameSetup.selectedGame.style}')}? 'has-error'">
+                <label for="style2" class="col-lg-2 control-label">Style</label>
+                <div class="col-lg-10">
+                    <input disabled type="text" class="form-control" id="style2" placeholder="Style"
+                           th:field="${qasinoResponse.pageGameSetup.selectedGame.style}"/>
+                    <span class="help-block"
+                          th:if="${#fields.hasErrors('${qasinoResponse.pageGameSetup.selectedGame.style}')}"
+                          th:errors="${qasinoResponse.pageGameSetup.selectedGame.style}">Incorrect style</span>
+                </div>
+            </div>
+            <div class="form-group"
+                 th:classappend="${#fields.hasErrors('${qasinoResponse.pageGameSetup.selectedGame.ante}')}? 'has-error'">
+                <label for="ante2" class="col-lg-2 control-label">Ante</label>
+                <div class="col-lg-10">
+                    <input type="text" class="form-control" id="ante2" placeholder="Ante"
+                           th:field="${qasinoResponse.pageGameSetup.selectedGame.initiator}"/>
+                    <span class="help-block"
+                          th:if="${#fields.hasErrors('${qasinoResponse.pageGameSetup.selectedGame.ante}')}"
+                          th:errors="${qasinoResponse.pageGameSetup.selectedGame.ante}">Incorrect ante</span>
+                </div>
+            </div>
+            <div class="form-group"
+                 th:classappend="${#fields.hasErrors('${qasinoResponse.pageGameSetup.humanPlayer.avatar}')}? 'has-error'">
+                <label for="avatar2" class="col-lg-2 control-label">Avatar</label>
+                <div class="col-lg-10">
+                    <input type="text" class="form-control" id="avatar2" placeholder="Avatar"
+                           th:field="${qasinoResponse.pageGameSetup.humanPlayer.avatar}"/>
+                    <span class="help-block"
+                          th:if="${#fields.hasErrors('${qasinoResponse.pageGameSetup.humanPlayer.avatar}')}"
+                          th:errors="${qasinoResponse.pageGameSetup.humanPlayer.avatar}">Incorrect avatar</span>
+                </div>
+            </div>
+            <input type="hidden" id="initiator2"
+                   th:field="${qasinoResponse.params.vid}"/>
+            <div class="form-group">
+                <div class="col-lg-offset-2 col-lg-10">
+                    <button type="submit" class="btn btn-default">Update</button>
+                </div>
+            </div>
+        </fieldset>
+    </form>
+</div>
+<div th:fragment="validate-or-shuffle">
+    <form class="form-narrow form-horizontal" method="post"
+          th:object="${qasinoResponse}"
+          th:fragment="QasinoResponse"
+          th:action="@{${qasinoResponse.pageGameSetup.selectedGame.state != PREPARED ? '/game/validate' : '/game/shuffle'}}">
+        <!--/* Show general error message when form contains errors */-->
+        <th:block th:if="${#fields.hasErrors('${qasinoResponse.*}')}">
+            <div th:replace="fragments/alert :: alert (type='danger', message='Form contains errors. Please try again.')">
+                Alert
+            </div>
+        </th:block>
+        <fieldset>
+            <div class="form-group">
+                <label for="type2" class="col-lg-2 control-label">Type</label>
+                <div class="col-lg-10">
+                    <input disabled type="text" class="form-control" id="type2" placeholder="Type"
+                           th:field="${qasinoResponse.pageGameSetup.selectedGame.type}"/>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-lg-offset-2 col-lg-10">
+                    <button type="submit" class="btn btn-default"
+                            th:text="${qasinoResponse.pageGameSetup.selectedGame.state} != PREPARED ? 'Validate':'Shuffle'">
+                        Validate or Shuffle
+                    </button>
+                </div>
+            </div>
+            <input type="hidden" id="gameId"
+                   th:field="${qasinoResponse.pageGameSetup.selectedGame.gameId}"/>
+        </fieldset>
+    </form>
+</div>
 </body>
 </html>

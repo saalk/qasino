@@ -7,6 +7,7 @@ import cloud.qasino.games.database.entity.Player;
 import cloud.qasino.games.database.entity.Result;
 import cloud.qasino.games.database.entity.Turn;
 import cloud.qasino.games.database.entity.enums.card.PlayingCard;
+import cloud.qasino.games.database.entity.enums.game.gamestate.GameStateGroup;
 import cloud.qasino.games.database.entity.enums.game.style.AnteToWin;
 import cloud.qasino.games.database.entity.enums.game.style.BettingStrategy;
 import cloud.qasino.games.database.entity.enums.game.style.DeckConfiguration;
@@ -111,6 +112,7 @@ public class MapQasinoResponseFromDto implements Action<MapQasinoResponseFromDto
             }
             // set up dummy game and styles
             pageGameSetup.setSelectedGame(Game.buildDummy());
+            pageGameSetup.setGameStateGroup(GameStateGroup.SETUP);
             pageGameSetup.setAnteToWin(AnteToWin.TIMES_3_WINS);
             pageGameSetup.setBettingStrategy(BettingStrategy.REGULAR);
             pageGameSetup.setDeckConfiguration(DeckConfiguration.RANDOM_SUIT);
@@ -246,6 +248,7 @@ public class MapQasinoResponseFromDto implements Action<MapQasinoResponseFromDto
         navigationBarItem.setStat("[" + bots + "/" + humans + "] bots/humans");
         // set the content
         pageGameSetup.setSelectedGame(actionDto.getQasinoGame());
+        pageGameSetup.setGameStateGroup(actionDto.getQasinoGame().getState().getGroup());
 
         Style style = Style.fromLabelWithDefault(actionDto.getQasinoGame().getStyle());
         pageGameSetup.setAnteToWin(style.getAnteToWin());
@@ -270,6 +273,8 @@ public class MapQasinoResponseFromDto implements Action<MapQasinoResponseFromDto
         }
         // set the content
         pageGamePlay.setSelectedGame(actionDto.getQasinoGame());
+        pageGamePlay.setGameStateGroup(actionDto.getQasinoGame().getState().getGroup());
+
         if (!(actionDto.getTable() == null)) {
             pageGamePlay.setTable(actionDto.getTable());
         } else {

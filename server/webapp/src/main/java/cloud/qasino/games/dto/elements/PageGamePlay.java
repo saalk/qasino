@@ -2,6 +2,7 @@ package cloud.qasino.games.dto.elements;
 
 import cloud.qasino.games.database.entity.Game;
 import cloud.qasino.games.database.entity.Result;
+import cloud.qasino.games.database.entity.enums.game.gamestate.GameStateGroup;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -26,7 +27,7 @@ public class PageGamePlay {
     // Main - 1
     @JsonProperty("GamePlay")
     private Game selectedGame;
-
+    private GameStateGroup gameStateGroup;
     // Stats
     @JsonProperty("Table")
     private SectionTable table;

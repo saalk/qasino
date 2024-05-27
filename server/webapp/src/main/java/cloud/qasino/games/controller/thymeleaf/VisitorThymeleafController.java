@@ -59,6 +59,7 @@ public class VisitorThymeleafController extends AbstractThymeleafController {
 
     private static final String VISITOR_VIEW_LOCATION = "pages/visitor";
     private static final String SETUP_VIEW_LOCATION = "pages/setup";
+    private static final String PLAY_VIEW_LOCATION = "pages/play";
 
 
     EventOutput.Result output;

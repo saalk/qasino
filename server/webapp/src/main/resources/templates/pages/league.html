@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <title>Qasino in the cloud</title>
+    <th:block th:insert="~{fragments/header :: headerfiles}">
+    </th:block>
+</head>
+<body>
+<div th:replace="~{fragments/header :: header}"></div>
+<!-- the specific part of this html -->
+<div class="container">
+    <div class="text-center">
+        <h1>Setup</h1>
+        <div th:if="${qasinoResponse.params.lid == -1}">
+            No (League) Data
+        </div>
+        <div th:unless="${qasinoResponse.params.lid == -1}">
+            League
+        </div>
+    </div>
+    <div th:insert="~{fragments/footer :: footer}"></div>
+</div>
+</body>
+</html>
