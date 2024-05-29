@@ -135,4 +135,16 @@ public class Turn {
         return Objects.hash(turnId);
     }
 
+    @Override
+    public String toString() {
+        return "(" +
+                "turnId=" + this.turnId +
+                ", activePlayerId=" + (this.activePlayerId) +
+                ", currentRoundNumber=" + this.currentRoundNumber +
+                ", currentTurnNumber=" + this.currentTurnNumber +
+                ", gameId=" + (this.game == null? "": this.game.getGameId()) +
+                ", weekday=" + this.weekday +
+                ")";
+    }
+
 }

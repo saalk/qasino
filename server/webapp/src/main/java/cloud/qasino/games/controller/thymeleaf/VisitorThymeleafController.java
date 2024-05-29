@@ -125,6 +125,8 @@ public class VisitorThymeleafController extends AbstractThymeleafController {
             HttpServletResponse response
     ) {
         log.warn("PostMapping: visitor");
+        log.warn("QasinoResponse {} !!", qasinoResponse );
+
 //        log.warn("post in qasinoResponse: {}", qasinoResponse);
 
         // 1 - map input

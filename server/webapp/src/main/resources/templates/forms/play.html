@@ -110,12 +110,16 @@
 </div>
 <div th:fragment="results-table">
     <fieldset>
-        <div class="form-group">Result
+<!--        <div class="form-group">Result-->
+<!--        </div>-->
+        <div class="form-group">
+            <label class="col-lg-2 control-label">Result</label>
         </div>
         <table class="u-full-width">
             <thead>
             <tr>
-                <th>Player</th>
+                <th>Seat</th>
+                <th>Avatar</th>
                 <th>Day ended</th>
                 <th>FichesWon</th>
                 <th>IsWinner?</th>
@@ -128,8 +132,8 @@
             <!-- #lists is SPEL -->
             <tr th:unless="${#lists.isEmpty(qasinoResponse.pageGamePlay.gameResults)}"
                 th:each="result : ${qasinoResponse.pageGamePlay.gameResults}">
-                <td><span th:text="${result.player.seat}">Player</span></td>
                 <td><span th:text="${result.player.seat}">Seat</span></td>
+                <td><span th:text="${result.player.avatarName}">AvatarName</span></td>
                 <td><span th:text="${result.weekday}">Day ended</span></td>
                 <td><span th:text="${result.fichesWon}">FichesWon</span></td>
                 <td><span th:text="${result.winner}">IsWinner?</span></td>

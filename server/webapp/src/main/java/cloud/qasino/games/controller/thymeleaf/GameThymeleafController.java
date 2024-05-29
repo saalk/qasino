@@ -17,6 +17,7 @@ import cloud.qasino.games.dto.QasinoFlowDTO;
 import cloud.qasino.games.response.QasinoResponse;
 import cloud.qasino.games.statemachine.event.EventOutput;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -141,12 +142,14 @@ public class GameThymeleafController extends AbstractThymeleafController {
             Model model,
             Principal principal,
             @PathVariable("gameId") String id,
-            @ModelAttribute QasinoResponse qasinoResponse,
+            @Valid @ModelAttribute QasinoResponse qasinoResponse,
             BindingResult result,
             Errors errors, RedirectAttributes ra,
             HttpServletResponse response
     ) {
         log.warn("PostMapping: start/{gameId}");
+        log.warn("QasinoResponse {} !!", qasinoResponse );
+
         // 1 - map input
         QasinoFlowDTO flowDTO = new QasinoFlowDTO();
         flowDTO.setPathVariables(

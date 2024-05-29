@@ -127,6 +127,8 @@ public class Result {
                 "resultId=" + this.resultId +
                 ", visitorId=" + (this.visitor == null? "": this.visitor.getVisitorId()) +
                 ", playerId=" + (this.player == null? "": this.player.getPlayerId()) +
+                ", playerSeat=" + (this.player == null? "": this.player.getSeat()) +
+                ", playerAvatarName=" + (this.player == null? "": this.player.getAvatarName()) +
                 ", gameId=" + (this.game == null? "": this.game.getGameId()) +
                 ", type=" + this.type +
                 ", weekday=" + this.weekday +
