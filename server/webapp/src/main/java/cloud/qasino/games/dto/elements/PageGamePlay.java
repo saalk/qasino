@@ -26,14 +26,14 @@ public class PageGamePlay {
 
     // Main - 1
     @JsonProperty("GamePlay")
-    private Game selectedGame;
-    private GameStateGroup gameStateGroup;
+    public Game selectedGame;
+    public GameStateGroup gameStateGroup;
     // Stats
     @JsonProperty("Table")
-    private SectionTable table;
+    public SectionTable table;
 
     @JsonProperty("GameResults")
-    private List<Result> gameResults;
+    public List<Result> gameResults;
 
 
 }

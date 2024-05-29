@@ -27,7 +27,6 @@ public class MapQasinoGameTableFromDto implements Action<MapQasinoGameTableFromD
     public EventOutput.Result perform(Dto actionDto) {
 
         SectionTable table = new SectionTable();
-        List<SectionSeat> seats = new ArrayList<>();
 
         if ((actionDto.getActiveTurn() == null)) {
             if ((actionDto.getQasinoGame() != null)) {
@@ -40,27 +39,28 @@ public class MapQasinoGameTableFromDto implements Action<MapQasinoGameTableFromD
             return EventOutput.Result.SUCCESS;
         }
         table.setCurrentTurn(actionDto.getActiveTurn());
-        table.setPossibleMoves(new ArrayList<>());
+        List<Move> moves = new ArrayList<>();
         switch (actionDto.getQasinoGame().getType()) {
             case HIGHLOW -> {
                 if (actionDto.getTurnPlayer().getAiLevel().equals(AiLevel.HUMAN)) {
-                    table.getPossibleMoves().add(Move.HIGHER);
-                    table.getPossibleMoves().add(Move.LOWER);
-                    table.getPossibleMoves().add(Move.PASS);
+                    moves.add(Move.HIGHER);
+                    moves.add(Move.LOWER);
+                    moves.add(Move.PASS);
                 } else {
-                    table.getPossibleMoves().add(Move.NEXT);
+                    moves.add(Move.NEXT);
                 }
             }
             case BLACKJACK -> {
                 if (actionDto.getTurnPlayer().getAiLevel().equals(AiLevel.HUMAN)) {
-                    table.getPossibleMoves().add(Move.DEAL);
-                    table.getPossibleMoves().add(Move.DOUBLE);
-                    table.getPossibleMoves().add(Move.STAND);
+                    moves.add(Move.DEAL);
+                    moves.add(Move.DOUBLE);
+                    moves.add(Move.STAND);
                 } else {
-                    table.getPossibleMoves().add(Move.NEXT);
+                    moves.add(Move.NEXT);
                 }
             }
         }
+        table.setPossibleMoves(moves);
         List<Card> stockNotInHand =
                 actionDto.getCardsInTheGameSorted()
                         .stream()
@@ -72,14 +72,16 @@ public class MapQasinoGameTableFromDto implements Action<MapQasinoGameTableFromD
                 "[" + stockNotInHand.size() +
                 "/" + actionDto.getCardsInTheGameSorted().size() +
                 "] stock/total");
-        table.setSeats(mapSeats(actionDto, seats));
+        table.setSeats(null);
+        table.setSeats(mapSeats(actionDto));
         actionDto.setTable(table);
-        log.warn("table set");
+//        log.warn("table set");
         return EventOutput.Result.SUCCESS;
     }
 
-    private List<SectionSeat> mapSeats(Dto actionDto, List<SectionSeat> seats) {
+    private List<SectionSeat> mapSeats(Dto actionDto) {
 
+        List<SectionSeat> seats = new ArrayList<>();
         for (Player player : actionDto.getQasinoGamePlayers()) {
             SectionSeat seat = new SectionSeat();
             // seat stats
@@ -116,7 +118,7 @@ public class MapQasinoGameTableFromDto implements Action<MapQasinoGameTableFromD
                 seat.setUsername(player.getAiLevel().getLabel() + " " + player.getAvatar().getLabel());
             }
             seats.add(seat);
-            log.warn("tabel seat " + seat.getSeatId()+ "set ");
+//            log.warn("tabel seat " + seat.getSeatId()+ "set ");
             // is player the winner
 
         }

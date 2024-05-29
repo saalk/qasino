@@ -10,12 +10,14 @@
 <!-- the specific part of this html -->
 <div class="container">
     <div class="text-center">
-        <h1>Setup</h1>
+        <h1 th:text="${'Setup - '+qasinoResponse.navBarItems.^[sequence==2].stat}">Setup</h1>
         <div th:if="${qasinoResponse.params.gid == -1}">
             Setup a new game
         </div>
-        <div th:unless="${qasinoResponse.params.gid == -1 || qasinoResponse.pageGameSetup.gameStateGroup == SETUP}">
-            Finish or stop playing the current game
+        <div th:if="${qasinoResponse.params.gid} > 0 and ${qasinoResponse.params.gsg} != 'SETUP'">
+            Setup another game
+        </div>
+        <div th:if="${qasinoResponse.params.gid} > 0 and ${qasinoResponse.params.gsg} != 'FINISHED'">
             <div th:replace="~{forms/setup :: update-or-stop}"></div>
             <div th:replace="~{forms/setup :: validate-or-shuffle}"></div>
         </div>

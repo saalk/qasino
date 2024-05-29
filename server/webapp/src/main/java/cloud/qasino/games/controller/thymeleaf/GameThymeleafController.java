@@ -98,7 +98,8 @@ public class GameThymeleafController extends AbstractThymeleafController {
         // 4 - return response
         prepareQasinoResponse(response, flowDTO);
         model.addAttribute(flowDTO.getQasinoResponse());
-        log.warn("Model !!: {}", model);
+//        log.warn("QasinoResponse !! {}", prettyPrintJson(flowDTO.getQasinoResponse()));
+        log.warn("model !! {}", model);
         return SETUP_VIEW_LOCATION;
     }
 
@@ -130,7 +131,8 @@ public class GameThymeleafController extends AbstractThymeleafController {
         // 4 - return response
         prepareQasinoResponse(response, flowDTO);
         model.addAttribute(flowDTO.getQasinoResponse());
-        log.warn("Model !!: {}", model);
+//        log.warn("QasinoResponse !! {}", prettyPrintJson(flowDTO.getQasinoResponse()));
+        log.warn("model !! {}", model);
         return PLAY_VIEW_LOCATION;
     }
 
@@ -167,7 +169,7 @@ public class GameThymeleafController extends AbstractThymeleafController {
             log.warn("Model !!: {}", model);
             prepareQasinoResponse(response, flowDTO);
             model.addAttribute(flowDTO.getQasinoResponse());
-            return "redirect:visitor/" + flowDTO.getSuppliedVisitorId();
+            return "redirect:/visitor";
         }
         // 3 - process
         output = loadEntitiesToDtoAction.perform(flowDTO);
@@ -176,7 +178,7 @@ public class GameThymeleafController extends AbstractThymeleafController {
             log.warn("Model !!: {}", model);
             prepareQasinoResponse(response, flowDTO);
             model.addAttribute(flowDTO.getQasinoResponse());
-            return "redirect:visitor/" + flowDTO.getSuppliedVisitorId();
+            return "redirect:/visitor";
 //            return ResponseEntity.status(HttpStatus.valueOf(flowDTO.getHttpStatus())).headers(flowDTO.getHeaders()).build();
         }
         // create or update the game
@@ -186,7 +188,7 @@ public class GameThymeleafController extends AbstractThymeleafController {
             log.warn("Model !!: {}", model);
             prepareQasinoResponse(response, flowDTO);
             model.addAttribute(flowDTO.getQasinoResponse());
-            return "redirect:visitor/" + flowDTO.getSuppliedVisitorId();
+            return "redirect:/visitor";
 //            return ResponseEntity.status(HttpStatus.valueOf(flowDTO.getHttpStatus())).headers(flowDTO.getHeaders()).build();
         }
         createNewGameAction.perform(flowDTO);
@@ -194,7 +196,7 @@ public class GameThymeleafController extends AbstractThymeleafController {
         prepareQasinoResponse(response, flowDTO);
         model.addAttribute(flowDTO.getQasinoResponse());
 //        log.warn("Model !!: {}", model);
-        return "redirect:visitor";
+        return "redirect:/visitor";
     }
 
     @PostMapping(value = "validate/{gameId}")
@@ -345,7 +347,7 @@ public class GameThymeleafController extends AbstractThymeleafController {
             log.warn("Model !!: {}", model);
             prepareQasinoResponse(response, flowDTO);
             model.addAttribute(flowDTO.getQasinoResponse());
-            return "redirect:visitor";
+            return "redirect:/visitor";
         }
         // 3 - process
         // get all entities
@@ -355,7 +357,7 @@ public class GameThymeleafController extends AbstractThymeleafController {
             log.warn("Model !!: {}", model);
             prepareQasinoResponse(response, flowDTO);
             model.addAttribute(flowDTO.getQasinoResponse());
-            return "redirect:visitor";
+            return "redirect:/visitor";
 //            return ResponseEntity.status(HttpStatus.valueOf(flowDTO.getHttpStatus())).headers(flowDTO.getHeaders()).build();
         }
         // delete
@@ -365,7 +367,7 @@ public class GameThymeleafController extends AbstractThymeleafController {
         prepareQasinoResponse(response, flowDTO);
         model.addAttribute(flowDTO.getQasinoResponse());
 //        log.warn("Model !!: {}", model);
-        return "redirect:visitor";
+        return "redirect:/visitor";
     }
 }
 

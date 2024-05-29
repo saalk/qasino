@@ -17,16 +17,16 @@
                 &nbsp;
             </div>
         </th:block>
-        <h1>Welcome inside our Qasino!</h1>
-        <span th:text="'Some statistics for today: ' + ${#dates.format(#dates.createNow(),'YYYY-MM-dd HH:mm')}"></span>
+        <h1>Welcome to the Qasino floor!</h1>
+        <span th:text="'What happened until today: ' + ${#dates.format(#dates.createNow(),'YYYY-MM-dd HH:mm')}"></span>
         <br><br>
         <table class="u-full-width">
             <thead>
             <tr>
-                <th> Calculation</th>
-                <th> Table</th>
-                <th> Filter</th>
-                <th> Count</th>
+                <th>Calculation</th>
+                <th>Table</th>
+                <th>Filter</th>
+                <th>Count</th>
             </tr>
             </thead>
             <tbody>

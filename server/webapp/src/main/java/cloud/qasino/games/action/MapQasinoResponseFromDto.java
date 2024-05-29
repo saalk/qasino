@@ -99,9 +99,14 @@ public class MapQasinoResponseFromDto implements Action<MapQasinoResponseFromDto
                     actionDto.setAction(actionDto.getQasinoGame().getState().getNextAction());
                     mapGameSetupPage(actionDto, navigationBarItem, pageGameSetup);
                 }
-                case PLAYING, FINISHED, ERROR -> {
+                case PLAYING -> {
                     actionDto.setActionNeeded(false);
                     actionDto.setShowGameSetupPage(false);
+                }
+                case FINISHED, ERROR -> {
+                    actionDto.setActionNeeded(false);
+                    actionDto.setShowGameSetupPage(false);
+                    setupDummyGameAndPLayers(pageGameSetup);
                 }
             }
         } else {
@@ -110,18 +115,7 @@ public class MapQasinoResponseFromDto implements Action<MapQasinoResponseFromDto
                 actionDto.setActionNeeded(true);
                 actionDto.setAction("Start a new game");
             }
-            // set up dummy game and styles
-            pageGameSetup.setSelectedGame(Game.buildDummy());
-            pageGameSetup.setGameStateGroup(GameStateGroup.SETUP);
-            pageGameSetup.setAnteToWin(AnteToWin.TIMES_3_WINS);
-            pageGameSetup.setBettingStrategy(BettingStrategy.REGULAR);
-            pageGameSetup.setDeckConfiguration(DeckConfiguration.RANDOM_SUIT);
-            pageGameSetup.setOneTimeInsurance(OneTimeInsurance.HALF_ANTE);
-            pageGameSetup.setRoundsToWin(RoundsToWin.TWO_ROUNDS);
-            pageGameSetup.setTurnsToWin(TurnsToWin.THREE_IN_A_ROW_WINS);
-
-            pageGameSetup.setBotPlayer(Player.buildDummyBot());
-            pageGameSetup.setHumanPlayer(Player.buildDummyHuman());
+            setupDummyGameAndPLayers(pageGameSetup);
         }
         navigationBarItem.setVisible(actionDto.isShowGameSetupPage());
         navigationBarItems.add(navigationBarItem);
@@ -200,6 +194,11 @@ public class MapQasinoResponseFromDto implements Action<MapQasinoResponseFromDto
         qasinoResponse.setActionNeeded(actionDto.isActionNeeded());
         qasinoResponse.getParams().setVid(setId(actionDto.getSuppliedVisitorId()));
         qasinoResponse.getParams().setGid(setId(actionDto.getSuppliedGameId()));
+        if (qasinoResponse.getParams().gid >0) {
+            qasinoResponse.getParams().setGsg(String.valueOf(actionDto.getQasinoGame().getState().getGroup()));
+        } else {
+            qasinoResponse.getParams().setGsg(GameStateGroup.ERROR.getLabel());
+        }
         qasinoResponse.getParams().setLid(setId(actionDto.getSuppliedLeagueId()));
         qasinoResponse.getParams().setSuppliedGameEvent(actionDto.getSuppliedGameEvent());
         qasinoResponse.getParams().setSuppliedTurnEvent(actionDto.getSuppliedTurnEvent());
@@ -211,6 +210,20 @@ public class MapQasinoResponseFromDto implements Action<MapQasinoResponseFromDto
         return EventOutput.Result.SUCCESS;
     }
 
+    private static void setupDummyGameAndPLayers(PageGameSetup pageGameSetup) {
+        // set up dummy game and styles
+        pageGameSetup.setSelectedGame(Game.buildDummy());
+        pageGameSetup.setGameStateGroup(GameStateGroup.SETUP);
+        pageGameSetup.setAnteToWin(AnteToWin.TIMES_3_WINS);
+        pageGameSetup.setBettingStrategy(BettingStrategy.REGULAR);
+        pageGameSetup.setDeckConfiguration(DeckConfiguration.RANDOM_SUIT);
+        pageGameSetup.setOneTimeInsurance(OneTimeInsurance.HALF_ANTE);
+        pageGameSetup.setRoundsToWin(RoundsToWin.TWO_ROUNDS);
+        pageGameSetup.setTurnsToWin(TurnsToWin.THREE_IN_A_ROW_WINS);
+
+        pageGameSetup.setBotPlayer(Player.buildDummyBot());
+        pageGameSetup.setHumanPlayer(Player.buildDummyHuman());
+    }
     private static Long setId(long id) {
         if (id>0) return id;
         return Long.valueOf(-1);
@@ -280,11 +293,12 @@ public class MapQasinoResponseFromDto implements Action<MapQasinoResponseFromDto
         } else {
             log.warn("tabel is null !!!");
         }
+        // TODO results dont show!!
         pageGamePlay.setGameResults(actionDto.getGameResults());
     }
     private void mapGameInvitationsPage(Dto actionDto, NavigationBarItem navigationBarItem, PageGameInvitations pageGamesOverview) {
         // set the nav bar
-        navigationBarItem.setTitle("Invite[]");
+        navigationBarItem.setTitle("Invites[]");
         navigationBarItem.setStat("calculating..");
 
         // set the content

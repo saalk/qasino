@@ -183,7 +183,7 @@ public class TurnAndCardMoveThymeleafContoller extends AbstractThymeleafControll
         flowDTO.setPathVariables(
                 "visitorId", getPricipalVisitorId(principal),
                 "gameId", id,
-                "turnPlayerId", String.valueOf(qasinoResponse.getPageGamePlay().getTable().getCurrentTurn().getActivePlayerId()),
+//                "turnPlayerId", String.valueOf(qasinoResponse.getPageGamePlay().getTable().getCurrentTurn().getActivePlayerId()),
                 "gameEvent", "turn",
                 "turnEvent", trigger
         );
@@ -246,6 +246,7 @@ public class TurnAndCardMoveThymeleafContoller extends AbstractThymeleafControll
     public String stopPlayingTheGame(
             Model model,
             Principal principal,
+            @PathVariable("gameId") String id,
             @ModelAttribute QasinoResponse qasinoResponse,
             BindingResult result,
             Errors errors, RedirectAttributes ra,
@@ -255,7 +256,7 @@ public class TurnAndCardMoveThymeleafContoller extends AbstractThymeleafControll
         QasinoFlowDTO flowDTO = new QasinoFlowDTO();
         flowDTO.setPathVariables(
                 "visitorId", getPricipalVisitorId(principal),
-                "gameId", String.valueOf(qasinoResponse.getPageGameSetup().getSelectedGame().getGameId()),
+                "gameId", id,
                 "gameEvent", "stop"
         );
         // 2 - validate input
@@ -292,7 +293,7 @@ public class TurnAndCardMoveThymeleafContoller extends AbstractThymeleafControll
 //        log.warn("HttpServletResponse: {}", response.getHeaderNames());
 //        log.warn("Model: {}", model);
 //        log.warn("Errors: {}", errors);
-        return "redirect:/setup/" + qasinoResponse.getPageGameSetup().getSelectedGame().getGameId();
+        return "redirect:/visitor";
     }
 }
 

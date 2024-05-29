@@ -6,15 +6,12 @@ import cloud.qasino.games.action.LoadEntitiesToDtoAction;
 import cloud.qasino.games.action.MapQasinoGameTableFromDto;
 import cloud.qasino.games.action.MapQasinoResponseFromDto;
 import cloud.qasino.games.action.SetStatusIndicatorsBaseOnRetrievedDataAction;
-import cloud.qasino.games.database.repository.CardRepository;
-import cloud.qasino.games.database.repository.GameRepository;
-import cloud.qasino.games.database.repository.PlayerRepository;
-import cloud.qasino.games.database.repository.ResultsRepository;
-import cloud.qasino.games.database.repository.TurnRepository;
 import cloud.qasino.games.database.security.Visitor;
 import cloud.qasino.games.database.security.VisitorRepository;
 import cloud.qasino.games.dto.QasinoFlowDTO;
-import cloud.qasino.games.statemachine.event.EventOutput;
+import cloud.qasino.games.response.QasinoResponse;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +19,6 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
 import java.security.Principal;
-import java.util.Optional;
 
 public class AbstractThymeleafController {
 
@@ -49,6 +45,15 @@ public class AbstractThymeleafController {
     MapQasinoResponseFromDto mapQasinoResponseFromDto;
     @Autowired
     MapQasinoGameTableFromDto mapQasinoGameTableFromDto;
+
+    public String prettyPrintJson(QasinoResponse qasinoResponse) {
+        ObjectMapper objectMapper = new ObjectMapper();
+        try {
+            return objectMapper.writeValueAsString(qasinoResponse);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
     public String getPricipalVisitorId(Principal principal) {
         Visitor visitor = visitorRepository.findByUsername(principal.getName());

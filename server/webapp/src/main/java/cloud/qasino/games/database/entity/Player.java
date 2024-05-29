@@ -79,6 +79,10 @@ public class Player {
     private Avatar avatar;
 
     @Enumerated(EnumType.STRING)
+    @Column(name = "avatar_name", nullable = true, length = 50)
+    private String avatarName;
+
+    @Enumerated(EnumType.STRING)
     @Column(name = "ai_level", nullable = true, length = 50)
     private AiLevel aiLevel;
 
@@ -138,6 +142,7 @@ public class Player {
         this(visitor, game, role, fiches, seat);
 
         this.avatar = avatar;
+        this.avatarName = "avararName";
         this.aiLevel = aiLevel;
         if (aiLevel == AiLevel.HUMAN) {
             this.human = true;
@@ -154,7 +159,6 @@ public class Player {
         return new Player(null, null,Role.INITIATOR,50, 1, Avatar.ELF,AiLevel.HUMAN);
     }
 
-    // todo LOW make unittest
     public boolean humanOrNot(AiLevel aiLevel) {
         return AiLevel.HUMAN.equals(aiLevel);
     }

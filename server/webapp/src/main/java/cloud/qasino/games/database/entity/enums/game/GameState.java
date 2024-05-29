@@ -28,9 +28,9 @@ public enum GameState implements LabeledEnum {
     NEXT_TURN("next_turn", "Do another move", GameStateGroup.PLAYING),
 
     // ENDED
-    FINISHED("finished", "Game finished, view results", GameStateGroup.FINISHED),
-    QUIT("quit", "Game stopped", GameStateGroup.FINISHED),
-    CANCELLED("cancelled", "Game abandoned", GameStateGroup.FINISHED),
+    FINISHED("finished", "Game finished, view results and start a new one", GameStateGroup.FINISHED),
+    QUIT("quit", "Game stopped, start a new one", GameStateGroup.FINISHED),
+    CANCELLED("cancelled", "Game abandoned, start a new one", GameStateGroup.FINISHED),
 
     // ERROR
     ERROR("error", "Game in error", GameStateGroup.ERROR);

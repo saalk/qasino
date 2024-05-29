@@ -25,6 +25,48 @@
   foreground-color: lightgreen;
 }
 
+td.no-line {
+  border-bottom: 0px;
+}
+
+th.no-line {
+  border-bottom: 0px;
+}
+
+@media (min-width: 992px) {
+    .col-lg-13 {
+    flex: 0 0 auto;
+    width: 130%;
+    }
+    .col-lg-14 {
+    flex: 0 0 auto;
+    width: 140%;
+    }
+    .col-lg-15 {
+    flex: 0 0 auto;
+    width: 150%;
+    }
+    .col-lg-16 {
+    flex: 0 0 auto;
+    width: 160%;
+    }
+    .col-lg-17 {
+    flex: 0 0 auto;
+    width: 170%;
+    }
+    .col-lg-18 {
+    flex: 0 0 auto;
+    width: 180%;
+    }
+    .col-lg-19 {
+    flex: 0 0 auto;
+    width: 190%;
+    }
+    .col-lg-20 {
+    flex: 0 0 auto;
+    width: 200%;
+    }
+}
 /* Header
 –––––––––––––––––––––––––––––––––––––––––––––––––– */
 specific-header {

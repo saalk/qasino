@@ -39,7 +39,6 @@ public class SetStatusIndicatorsBaseOnRetrievedDataAction implements Action<SetS
 //        if (!(actionDto.getQasinoGameLeague() == null)) {
 //            actionDto.setShowLeaguesPage(true);
 //        }
-//        // todo implement friends
 //        actionDto.setShowGameInvitationsPage(false);
 
         return EventOutput.Result.SUCCESS;

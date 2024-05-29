@@ -10,7 +10,7 @@
 <!-- the specific part of this html -->
 <div class="container">
     <div class="text-center">
-        <h1>Play</h1>
+        <h1 th:text="${'Play - '+qasinoResponse.navBarItems.^[sequence==3].stat}">Play</h1>
         <div th:if="${qasinoResponse.params.gid == -1}">
             No Game to play
         </div>
@@ -18,8 +18,11 @@
             Finish setting up the current game
         </div>
         <div th:if="${qasinoResponse.params.gid > 0 && qasinoResponse.pageGamePlay.selectedGame != null}">
-            Under constuction ...
-            <div th:replace="~{forms/setup :: update-or-stop}"></div>
+            <div th:replace="~{forms/play :: selected-game}"></div>
+            <div th:replace="~{forms/play :: seats-form}"></div>
+        </div>
+        <div th:if="${qasinoResponse.params.gid > 0 && qasinoResponse.pageGamePlay.selectedGame != null}">
+            <div th:replace="~{forms/play :: results-table}"></div>
         </div>
     </div>
     <div th:insert="~{fragments/footer :: footer}"></div>

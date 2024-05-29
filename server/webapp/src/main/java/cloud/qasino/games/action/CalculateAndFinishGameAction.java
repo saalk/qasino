@@ -6,6 +6,7 @@ import cloud.qasino.games.database.entity.CardMove;
 import cloud.qasino.games.database.entity.Game;
 import cloud.qasino.games.database.entity.Player;
 import cloud.qasino.games.database.entity.Result;
+import cloud.qasino.games.database.entity.enums.game.gamestate.GameStateGroup;
 import cloud.qasino.games.database.security.Visitor;
 import cloud.qasino.games.database.repository.CardMoveRepository;
 import cloud.qasino.games.database.repository.CardRepository;
@@ -42,6 +43,18 @@ public class CalculateAndFinishGameAction implements Action<CalculateAndFinishGa
 
     @Override
     public EventOutput.Result perform(CalculateAndFinishGameAction.Dto actionDto) {
+
+        List<Result> results = resultsRepository.findAllByGame(actionDto.getQasinoGame());
+        if (results != null) {
+            actionDto.setGameResults(results);
+            return EventOutput.Result.SUCCESS;
+        } else if (actionDto.getQasinoGame() == null) {
+            actionDto.setGameResults(null);
+            return EventOutput.Result.SUCCESS;
+        } else if (actionDto.getQasinoGame().getState().getGroup() != GameStateGroup.FINISHED) {
+            actionDto.setGameResults(null);
+            return EventOutput.Result.SUCCESS;
+        }
 
         HashMap<Long, Integer> playerProfit = new HashMap<>();
         List<Player> players = actionDto.getQasinoGame().getPlayers();
@@ -100,6 +113,7 @@ public class CalculateAndFinishGameAction implements Action<CalculateAndFinishGa
         List<CardMove> getAllCardMovesForTheGame();
         Game getQasinoGame();
         Visitor getQasinoVisitor();
+        long getSuppliedGameId();
 
         // Setters
         void setGameResults(List<Result> results);

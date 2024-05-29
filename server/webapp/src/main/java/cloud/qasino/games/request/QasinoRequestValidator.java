@@ -44,7 +44,7 @@ public class QasinoRequestValidator {
     private GameStateGroup suppliedGameStateGroup;
     // Triggers for playing a Game
     private Move suppliedMove;
-    private List<Card> suppliedCards;   // todo
+    private List<Card> suppliedCards;
 
     // FRONTEND request params
     // paging

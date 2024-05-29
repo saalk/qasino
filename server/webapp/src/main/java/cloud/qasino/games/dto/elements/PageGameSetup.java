@@ -30,14 +30,14 @@ public class PageGameSetup {
 
     // Main - 1,2
     @JsonProperty("GameInSetup")
-    private Game selectedGame;
-    private GameStateGroup gameStateGroup;
+    public Game selectedGame;
+    public GameStateGroup gameStateGroup;
 
     @JsonProperty("BotPlayer")
-    private Player botPlayer;
+    public Player botPlayer;
 
     @JsonProperty("HumanPlayer")
-    private Player humanPlayer;
+    public Player humanPlayer;
 
     // TODO selections per type are default for now
     @JsonProperty("AnteToWin")

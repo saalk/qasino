@@ -113,21 +113,21 @@ public class LeagueThymeleafController extends AbstractThymeleafController {
             prepareQasinoResponse(response, flowDTO);
 //            flowDTO.setAction("Username incorrect");
             model.addAttribute(flowDTO.getQasinoResponse());
-            return "redirect:visitor";
+            return "redirect:/visitor";
         }
         // 3 - process
         // get all entities
         output = loadEntitiesToDtoAction.perform(flowDTO);
         if (output == EventOutput.Result.FAILURE) {
             flowDTO.prepareResponseHeaders();
-            return "redirect:visitor";
+            return "redirect:/visitor";
 //            return ResponseEntity.status(HttpStatus.valueOf(flowDTO.getHttpStatus())).headers(flowDTO.getHeaders()).build();
         }
         // create - League for Visitor
         output = createNewLeagueAction.perform(flowDTO);
         if (output == EventOutput.Result.FAILURE) {
             flowDTO.prepareResponseHeaders();
-            return "redirect:visitor";
+            return "redirect:/visitor";
 //            return ResponseEntity.status(HttpStatus.valueOf(flowDTO.getHttpStatus())).headers(flowDTO.getHeaders()).build();
         }
         // 4 - return response
@@ -163,13 +163,13 @@ public class LeagueThymeleafController extends AbstractThymeleafController {
             prepareQasinoResponse(response, flowDTO);
 //            flowDTO.setAction("Username incorrect");
             model.addAttribute(flowDTO.getQasinoResponse());
-            return "redirect:visitor/" + flowDTO.getQasinoResponse().getPageVisitor().getSelectedVisitor().getVisitorId();
+            return "redirect:/visitor/" + flowDTO.getQasinoResponse().getPageVisitor().getSelectedVisitor().getVisitorId();
         }
         // get all entities
         output = loadEntitiesToDtoAction.perform(flowDTO);
         if (output == EventOutput.Result.FAILURE) {
             flowDTO.prepareResponseHeaders();
-            return "redirect:visitor";
+            return "redirect:/visitor";
 //            return ResponseEntity.status(HttpStatus.valueOf(flowDTO.getHttpStatus())).headers(flowDTO.getHeaders()).build();
         }
         // delete
@@ -186,7 +186,7 @@ public class LeagueThymeleafController extends AbstractThymeleafController {
 //        log.warn("Errors: {}", errors);
         log.warn("get qasinoResponse: {}", flowDTO.getQasinoResponse());
 
-        return "redirect:visitor";
+        return "redirect:/visitor";
     }
 }
 

@@ -215,6 +215,8 @@ public class LoadEntitiesToDtoAction implements Action<LoadEntitiesToDtoAction.D
 //                                .filter(p -> p.getSeat() == 1)
 //                                .findFirst().get().getPlayerId());
             }
+            actionDto.setGameResults(resultsRepository.findAllByGame(actionDto.getQasinoGame()));
+
         } else {
             setNotFoundErrorMessage(actionDto, "gameId", String.valueOf(id), "Game");
             return EventOutput.Result.FAILURE;
@@ -245,6 +247,7 @@ public class LoadEntitiesToDtoAction implements Action<LoadEntitiesToDtoAction.D
                 // this player is also next player
                 actionDto.setNextPlayer(actionDto.getTurnPlayer());
             }
+
         } else {
             setNotFoundErrorMessage(actionDto, "turnPlayerId", String.valueOf(id), "TurnPlayer");
             return EventOutput.Result.FAILURE;
@@ -321,6 +324,7 @@ public class LoadEntitiesToDtoAction implements Action<LoadEntitiesToDtoAction.D
         void setQasinoGame(Game game);
         void setQasinoGamePlayers(List<Player> players);
         void setActiveTurn(Turn turn);
+        void setGameResults(List<Result> results);
 
         void setCardsInTheGameSorted(List<Card> cards);
         void setAllCardMovesForTheGame(List<CardMove> cardMoves);
