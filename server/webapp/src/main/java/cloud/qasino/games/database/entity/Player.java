@@ -78,7 +78,6 @@ public class Player {
     @Column(name = "avatar", nullable = true, length = 50)
     private Avatar avatar;
 
-    @Enumerated(EnumType.STRING)
     @Column(name = "avatar_name", nullable = true, length = 50)
     private String avatarName;
 
