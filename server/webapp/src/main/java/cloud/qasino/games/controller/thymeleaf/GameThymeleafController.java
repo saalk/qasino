@@ -137,7 +137,7 @@ public class GameThymeleafController extends AbstractThymeleafController {
         return PLAY_VIEW_LOCATION;
     }
 
-    @PostMapping(value = "start/{gameId}")
+    @PostMapping("start/{gameId}")
     public String startGame(
             Model model,
             Principal principal,
@@ -163,7 +163,7 @@ public class GameThymeleafController extends AbstractThymeleafController {
         if (qasinoResponse.getParams().getLid() > 0) {
             flowDTO.setPathVariables("leagueId", String.valueOf(qasinoResponse.getParams().getLid()));
         }
-        if (qasinoResponse.getPageGameSetup().getBotPlayer().getAiLevel() != null) {
+        if (qasinoResponse.getPageGameSetup().getBotPlayer() != null) {
             flowDTO.setPathVariables("aiLevel", qasinoResponse.getPageGameSetup().getBotPlayer().getAiLevel().getLabel());
         }
         // 2 - validate input
@@ -202,7 +202,7 @@ public class GameThymeleafController extends AbstractThymeleafController {
         return "redirect:/visitor";
     }
 
-    @PostMapping(value = "validate/{gameId}")
+    @PostMapping("validate/{gameId}")
     public String validateGame(
             Model model,
             Principal principal,
@@ -213,6 +213,8 @@ public class GameThymeleafController extends AbstractThymeleafController {
             HttpServletResponse response
     ) {
         log.warn("PostMapping: validate/{gameId}");
+        log.warn("ante {} !!", (qasinoResponse.getPageGameSetup().getSelectedGame().getAnte()) );
+
 
         // 1 - map input
         QasinoFlowDTO flowDTO = new QasinoFlowDTO();
@@ -225,15 +227,15 @@ public class GameThymeleafController extends AbstractThymeleafController {
         if (qasinoResponse.getParams().getLid() > 0) {
             flowDTO.setPathVariables("leagueId", String.valueOf(qasinoResponse.getParams().getLid()));
         }
-        if (!(qasinoResponse.getPageGameSetup().getBotPlayer() == null)) {
+        if ((qasinoResponse.getPageGameSetup().getBotPlayer() != null && qasinoResponse.getPageGameSetup().getBotPlayer().getAiLevel() != null)) {
             flowDTO.setPathVariables("aiLevel", qasinoResponse.getPageGameSetup().getBotPlayer().getAiLevel().getLabel());
         }
         // 2 - validate input
         if (!flowDTO.validateInput() || errors.hasErrors()) {
             log.warn("Errors validateInput!!: {}", errors);
-            log.warn("Model !!: {}", model);
             prepareQasinoResponse(response, flowDTO);
             model.addAttribute(flowDTO.getQasinoResponse());
+            log.warn("Model !!: {}", model);
             return "redirect:/setup/" + qasinoResponse.getPageGameSetup().getSelectedGame().getGameId();
         }
         // 3 - process
@@ -264,7 +266,7 @@ public class GameThymeleafController extends AbstractThymeleafController {
         return "redirect:/setup/" + qasinoResponse.getPageGameSetup().getSelectedGame().getGameId();
     }
 
-    @PostMapping(value = "bot/{gameId}")
+    @PostMapping("bot/{gameId}")
     public String addBotPLayerForAGame(
             Model model,
             Principal principal,

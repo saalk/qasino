@@ -68,6 +68,8 @@ public class LoadEntitiesToDtoAction implements Action<LoadEntitiesToDtoAction.D
     long visitorId;
     long gameId;
     long turnPlayerId;
+    long invitedPlayerId;
+    long acceptedPlayerId;
     long leagueId;
 
     @Override
@@ -79,13 +81,13 @@ public class LoadEntitiesToDtoAction implements Action<LoadEntitiesToDtoAction.D
         visitorId = actionDto.getSuppliedVisitorId();
 //        log.warn("Errors visitorId!!: {}", actionDto.getSuppliedVisitorId());
 
-        if (!(visitorId == 0)) {
+        if (visitorId > 0) {
             EventOutput.Result response = getVisitorSupplied(actionDto, visitorId);
             if (response.equals(EventOutput.Result.FAILURE)) {
                 setNotFoundErrorMessage(actionDto, "visitorId", String.valueOf(visitorId), "Visitor");
                 return response;
             }
-            if (gameId == 0) { // BR2
+            if (gameId <= 0) { // BR2
                 findGameByVisitorSupplied(actionDto, visitorId);
             }
         } else { // BR1
@@ -94,16 +96,18 @@ public class LoadEntitiesToDtoAction implements Action<LoadEntitiesToDtoAction.D
         }
 
         gameId = actionDto.getSuppliedGameId();
-        if (!(gameId == 0)) { // BR3 BR4 BR6
+        if (gameId > 0) { // BR3 BR4 BR6
             EventOutput.Result response = getGameSupplied(actionDto, gameId);
             if (response.equals(EventOutput.Result.FAILURE)) {
                 setNotFoundErrorMessage(actionDto, "gameId", String.valueOf(gameId), "Game");
                 return response;
             }
+//            actionDto.setSuppliedTurnPlayerId(-1);
         }
 
         turnPlayerId = actionDto.getSuppliedTurnPlayerId();
-        if (!(turnPlayerId == 0)) { // BR5
+
+        if (turnPlayerId > 0) { // BR5
             EventOutput.Result response = getTurnPlayerSupplied(actionDto, turnPlayerId);
             if (response.equals(EventOutput.Result.FAILURE)) {
                 setNotFoundErrorMessage(actionDto, "turnPlayerId", String.valueOf(turnPlayerId), "Turn");
@@ -112,7 +116,7 @@ public class LoadEntitiesToDtoAction implements Action<LoadEntitiesToDtoAction.D
         }
 
         leagueId = actionDto.getSuppliedLeagueId();
-        if (!(leagueId == 0)) {
+        if (leagueId > 0) {
             EventOutput.Result response = getLeagueSupplied(actionDto, leagueId);
             if (response.equals(EventOutput.Result.FAILURE)) {
                 setNotFoundErrorMessage(actionDto, "leagueId", String.valueOf(leagueId), "League");
@@ -121,23 +125,24 @@ public class LoadEntitiesToDtoAction implements Action<LoadEntitiesToDtoAction.D
         }
 
         // BR7
-        Long id = actionDto.getAcceptedPlayerId();
-        if (!(id == 0)) {
-            Optional<Player> foundPlayer = playerRepository.findById(Long.parseLong(String.valueOf(id)));
+        acceptedPlayerId = actionDto.getAcceptedPlayerId();
+        if (acceptedPlayerId > 0) {
+            Optional<Player> foundPlayer = playerRepository.findById(Long.parseLong(String.valueOf(acceptedPlayerId)));
             if (foundPlayer.isPresent()) {
                 actionDto.setAcceptedPlayer(foundPlayer.get());
             } else {
-                setNotFoundErrorMessage(actionDto, "acceptedPlayerId", String.valueOf(id), "AcceptedPlayer");
+                setNotFoundErrorMessage(actionDto, "acceptedPlayerId", String.valueOf(acceptedPlayerId), "AcceptedPlayer");
                 return EventOutput.Result.FAILURE;
             }
         }
-        id = actionDto.getInvitedPlayerId();
-        if (!(id == 0)) {
-            Optional<Player> foundPlayer = playerRepository.findById(Long.parseLong(String.valueOf(id)));
+
+        invitedPlayerId = actionDto.getInvitedPlayerId();
+        if (invitedPlayerId > 0) {
+            Optional<Player> foundPlayer = playerRepository.findById(Long.parseLong(String.valueOf(invitedPlayerId)));
             if (foundPlayer.isPresent()) {
                 actionDto.setInvitedPlayer(foundPlayer.get());
             } else {
-                setNotFoundErrorMessage(actionDto, "invitedPlayerId", String.valueOf(id), "InvitedPlayer");
+                setNotFoundErrorMessage(actionDto, "invitedPlayerId", String.valueOf(invitedPlayerId), "InvitedPlayer");
                 return EventOutput.Result.FAILURE;
             }
         }
@@ -152,7 +157,6 @@ public class LoadEntitiesToDtoAction implements Action<LoadEntitiesToDtoAction.D
             actionDto.setQasinoVisitor(foundVisitor.get());
         } else {
 //            log.warn("Errors id!!: {}", id);
-
             setNotFoundErrorMessage(actionDto, "visitorId", String.valueOf(id), "Visitor");
             return EventOutput.Result.FAILURE;
         }
@@ -162,11 +166,8 @@ public class LoadEntitiesToDtoAction implements Action<LoadEntitiesToDtoAction.D
 //                    Sort.Order.asc("a.\"type\""),
 //                    Sort.Order.desc("a.\"updated\""))
         );
-        actionDto.setInitiatedGamesForVisitor(gameRepository.findByInitiator(id));
-        actionDto.setInvitedGamesForVisitor(gameRepository.findAllInvitedGamesForVisitorWithPage(id,
-                pageable));
-
-
+        actionDto.setInitiatedGamesForVisitor(gameRepository.findAllGamesForInitiatorWithPage(id, pageable));
+        actionDto.setInvitedGamesForVisitor(gameRepository.findAllInvitedGamesForVisitorWithPage(id, pageable));
 //                    ,
 //                    Sort.by(
 //                            Sort.Order.desc("a.\"created\""))
@@ -196,16 +197,17 @@ public class LoadEntitiesToDtoAction implements Action<LoadEntitiesToDtoAction.D
                 actionDto.setSuppliedLeagueId(actionDto.getQasinoGame().getLeague().getLeagueId());
             }
             // TODO check which works
-//            actionDto.setQasinoGamePlayers(playerRepository.findByGame(actionDto.getQasinoGame()));
             // BR5
-            actionDto.setQasinoGamePlayers(foundGame.get().getPlayers());
+            actionDto.setQasinoGamePlayers(playerRepository.findByGame(actionDto.getQasinoGame()));
+//            actionDto.setQasinoGamePlayers(foundGame.get().getPlayers());
             // TODO dont know why this is needed
-//            actionDto.getQasinoGame().setPlayers(actionDto.getQasinoGamePlayers());
+            actionDto.getQasinoGame().setPlayers(actionDto.getQasinoGamePlayers());
             // when in validate there are no cards yet so this results in null
             actionDto.setCardsInTheGameSorted(cardRepository.findByGameOrderBySequenceAsc(actionDto.getQasinoGame()));
             actionDto.setActiveTurn(foundGame.get().getTurn());
             if (actionDto.getActiveTurn() != null) {
                 actionDto.setSuppliedTurnPlayerId(actionDto.getActiveTurn().getActivePlayerId());
+
                 actionDto.setAllCardMovesForTheGame(foundGame.get().getTurn().getCardMoves());
             } else {
                 // TODO check if this is needed
@@ -225,8 +227,9 @@ public class LoadEntitiesToDtoAction implements Action<LoadEntitiesToDtoAction.D
     }
     private EventOutput.Result getTurnPlayerSupplied(Dto actionDto, long id) {
         Optional<Player> foundPlayer = playerRepository.findById(id);
-        if (foundPlayer.isPresent()) {
-            gameId = (foundPlayer.get().getGame().getGameId());
+
+//        if (!foundPlayer.isEmpty()) {
+//            gameId = (foundPlayer.get().getGame().getGameId());
             actionDto.setTurnPlayer(foundPlayer.get());
             // find next player
             int nextSeat = foundPlayer.get().getSeat() + 1;
@@ -248,10 +251,10 @@ public class LoadEntitiesToDtoAction implements Action<LoadEntitiesToDtoAction.D
                 actionDto.setNextPlayer(actionDto.getTurnPlayer());
             }
 
-        } else {
-            setNotFoundErrorMessage(actionDto, "turnPlayerId", String.valueOf(id), "TurnPlayer");
-            return EventOutput.Result.FAILURE;
-        }
+//        } else {
+//            setNotFoundErrorMessage(actionDto, "turnPlayerId", String.valueOf(id), "TurnPlayer");
+//            return EventOutput.Result.FAILURE;
+//        }
         return EventOutput.Result.SUCCESS;
     }
     private EventOutput.Result getLeagueSupplied(Dto actionDto, long id) {

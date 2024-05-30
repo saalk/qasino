@@ -17,7 +17,7 @@
         <div th:unless="${qasinoResponse.params.vid == -1}">
             <div th:replace="~{forms/visitor :: pawn-or-repay}"></div>
             <div th:if="${qasinoResponse.params.gsg} == 'FINISHED' or ${qasinoResponse.params.gid <1}">
-                <div th:replace="~{forms/setup :: start}"></div>
+                <div th:replace="~{forms/start :: start}"></div>
             </div>
             <div th:replace="~{forms/visitor :: update}"></div>
         </div>

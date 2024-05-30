@@ -7,6 +7,8 @@ import cloud.qasino.games.database.entity.Player;
 import cloud.qasino.games.database.entity.Result;
 import cloud.qasino.games.database.entity.Turn;
 import cloud.qasino.games.database.entity.enums.card.PlayingCard;
+import cloud.qasino.games.database.entity.enums.game.GameState;
+import cloud.qasino.games.database.entity.enums.game.Style;
 import cloud.qasino.games.database.entity.enums.game.gamestate.GameStateGroup;
 import cloud.qasino.games.database.entity.enums.game.style.AnteToWin;
 import cloud.qasino.games.database.entity.enums.game.style.BettingStrategy;
@@ -16,9 +18,6 @@ import cloud.qasino.games.database.entity.enums.game.style.RoundsToWin;
 import cloud.qasino.games.database.entity.enums.game.style.TurnsToWin;
 import cloud.qasino.games.database.entity.enums.move.Move;
 import cloud.qasino.games.database.security.Visitor;
-import cloud.qasino.games.database.entity.enums.game.GameState;
-import cloud.qasino.games.database.entity.enums.game.Style;
-import cloud.qasino.games.response.QasinoResponse;
 import cloud.qasino.games.dto.elements.NavigationBarItem;
 import cloud.qasino.games.dto.elements.PageGameInvitations;
 import cloud.qasino.games.dto.elements.PageGamePlay;
@@ -27,6 +26,7 @@ import cloud.qasino.games.dto.elements.PageLeague;
 import cloud.qasino.games.dto.elements.PageVisitor;
 import cloud.qasino.games.dto.elements.SectionTable;
 import cloud.qasino.games.dto.statistics.Statistic;
+import cloud.qasino.games.response.QasinoResponse;
 import cloud.qasino.games.statemachine.event.EventOutput;
 import cloud.qasino.games.statemachine.event.GameEvent;
 import cloud.qasino.games.statemachine.event.TurnEvent;
@@ -190,11 +190,15 @@ public class MapQasinoResponseFromDto implements Action<MapQasinoResponseFromDto
 
         qasinoResponse.setNavBarItems(navigationBarItems);
         qasinoResponse.setStatistics(actionDto.getStatistics());
-        qasinoResponse.setAction(actionDto.getAction());
+        if (actionDto.getErrorMessage().isEmpty()) {
+            qasinoResponse.setAction(actionDto.getAction());
+        } else {
+            qasinoResponse.setAction(actionDto.getErrorMessage());
+        }
         qasinoResponse.setActionNeeded(actionDto.isActionNeeded());
         qasinoResponse.getParams().setVid(setId(actionDto.getSuppliedVisitorId()));
         qasinoResponse.getParams().setGid(setId(actionDto.getSuppliedGameId()));
-        if (qasinoResponse.getParams().gid >0) {
+        if (qasinoResponse.getParams().gid > 0) {
             qasinoResponse.getParams().setGsg(String.valueOf(actionDto.getQasinoGame().getState().getGroup()));
         } else {
             qasinoResponse.getParams().setGsg(GameStateGroup.ERROR.getLabel());
@@ -224,8 +228,9 @@ public class MapQasinoResponseFromDto implements Action<MapQasinoResponseFromDto
         pageGameSetup.setBotPlayer(Player.buildDummyBot());
         pageGameSetup.setHumanPlayer(Player.buildDummyHuman());
     }
+
     private static Long setId(long id) {
-        if (id>0) return id;
+        if (id > 0) return id;
         return Long.valueOf(-1);
     }
 
@@ -319,6 +324,8 @@ public class MapQasinoResponseFromDto implements Action<MapQasinoResponseFromDto
 
         // @formatter:off
         // Getters
+        String getErrorMessage();
+
         List<Statistic> getStatistics();
         void setAction(String message);
         String getAction();
@@ -338,7 +345,7 @@ public class MapQasinoResponseFromDto implements Action<MapQasinoResponseFromDto
 
         // visitor
         boolean isRequestingToRepay();
-         boolean isOfferingShipForPawn();
+        boolean isOfferingShipForPawn();
         long getSuppliedVisitorId();
         long getInitiatingPlayerId();
         long getInvitedPlayerId();

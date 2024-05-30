@@ -14,12 +14,14 @@
         <div th:if="${qasinoResponse.params.gid == -1}">
             Setup a new game
         </div>
-        <div th:if="${qasinoResponse.params.gid} > 0 and ${qasinoResponse.params.gsg} != 'SETUP'">
-            Setup another game
+        <div th:if="${qasinoResponse.params.gid} > 0 and ${qasinoResponse.params.gsg} == 'PLAYING'">
+            Finish playing the current game
         </div>
-        <div th:if="${qasinoResponse.params.gid} > 0 and ${qasinoResponse.params.gsg} != 'FINISHED'">
+        <div th:if="${qasinoResponse.params.gid} > 0 and ${qasinoResponse.params.gsg} != 'FINISHED' and ${qasinoResponse.params.gsg} != 'PLAYING'">
             <div th:replace="~{forms/setup :: update-or-stop}"></div>
-            <div th:replace="~{forms/setup :: validate-or-shuffle}"></div>
+        </div>
+        <div th:if="${qasinoResponse.params.gid} > 0 and ${qasinoResponse.params.gsg} != 'FINISHED' and ${qasinoResponse.params.gsg} != 'PLAYING'">
+            <div th:replace="~{forms/validate :: validate-or-shuffle}"></div>
         </div>
     </div>
     <div th:insert="~{fragments/footer :: footer}"></div>

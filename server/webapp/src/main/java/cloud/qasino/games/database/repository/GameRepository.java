@@ -35,6 +35,16 @@ public interface GameRepository extends JpaRepository<Game, Long> {
                     "WHERE g.\"year\" = :year " +
                     "AND g.\"month\" = :month ";
 
+
+    public final static String FIND_ALL_BY_INITIATOR_ID =
+            "SELECT * FROM \"game\" as a " +
+                    "WHERE a.\"initiator\" = :initiator " +
+                    "ORDER BY a.\"updated\" DESC ";
+    public final static String COUNT_ALL_BY_INITIATOR_ID =
+            "SELECT count(*) FROM \"game\" as a " +
+                    "WHERE a.\"initiator\" = :initiator ";
+
+
     public final static String FIND_ALL_INVITED_BY_VISITOR_ID =
             "SELECT a.* FROM \"game\" as a JOIN \"player\" as b " +
                     "WHERE a.\"game_id\" = b.\"game_id\" " +
@@ -106,6 +116,11 @@ public interface GameRepository extends JpaRepository<Game, Long> {
     // special finds
     List<Game> findGamesByLeague(League league);
 
+    @Query(value = FIND_ALL_BY_INITIATOR_ID, countQuery = COUNT_ALL_BY_INITIATOR_ID, nativeQuery = true)
+    public List<Game> findAllGamesForInitiatorWithPage(
+            @Param("initiator") long initiator,
+            Pageable pageable);
+
     List<Game> findByInitiator(long initiator);
 
     // list with paging
@@ -132,6 +147,7 @@ public interface GameRepository extends JpaRepository<Game, Long> {
             @Param("visitorId") long visitorId,
             Pageable pageable);
 
+    // TODO - FIX ME
     @Query(value = FIND_ALL_INITIATED_BY_VISITOR_ID, countQuery = COUNT_ALL_INITIATED_BY_VISITOR_ID, nativeQuery = true)
     public List<Game> findAllInitiatedGamesForVisitorWithPage(
             @Param("visitorId") long visitorId,

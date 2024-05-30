@@ -137,6 +137,7 @@ public class MapQasinoGameTableFromDto implements Action<MapQasinoGameTableFromD
 
         // Setters
         void setActiveTurn(Turn turn);
+        void setTurnPlayer(Player turnPlayer);
         void setTable(SectionTable table);
 
         // error setters
