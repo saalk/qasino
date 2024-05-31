@@ -11,7 +11,7 @@ import cloud.qasino.games.action.LoadEntitiesToDtoAction;
 import cloud.qasino.games.action.MapQasinoGameTableFromDto;
 import cloud.qasino.games.action.MapQasinoResponseFromDto;
 import cloud.qasino.games.action.PlayFirstTurnAction;
-import cloud.qasino.games.action.PlayGameForType;
+import cloud.qasino.games.action.StartGameForType;
 import cloud.qasino.games.action.PlayNextBotTurnAction;
 import cloud.qasino.games.action.PlayNextHumanTurnAction;
 import cloud.qasino.games.action.SetStatusIndicatorsBaseOnRetrievedDataAction;
@@ -60,7 +60,7 @@ public class TurnAndCardMoveThymeleafController extends AbstractThymeleafControl
     @Autowired
     CalculateAndFinishGameAction calculateAndFinishGameAction;
     @Autowired
-    PlayGameForType playGameForType;
+    StartGameForType startGameForType;
     @Autowired
     PlayFirstTurnAction playFirstTurnAction;
     @Autowired
@@ -145,7 +145,7 @@ public class TurnAndCardMoveThymeleafController extends AbstractThymeleafControl
             model.addAttribute(flowDTO.getQasinoResponse());
             return "redirect:/setup/" + qasinoResponse.getPageGameSetup().getSelectedGame().getGameId();
         }
-        playGameForType.perform(flowDTO);
+        startGameForType.perform(flowDTO);
         mapQasinoGameTableFromDto.perform(flowDTO);
         playFirstTurnAction.perform(flowDTO);
         // get all entities and build reponse

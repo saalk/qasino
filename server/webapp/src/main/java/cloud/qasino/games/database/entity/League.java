@@ -100,8 +100,9 @@ public class League {
         endLeagueThisMonth(); //default
     }
 
-    public static League buildDummy() {
-        return new League(null, "league name", 1);
+    public static League buildDummy(Visitor visitor, String leagueName) {
+        if (leagueName.isEmpty()) leagueName="leagueName";
+        return new League(visitor, leagueName, 1);
     }
 
     public boolean endLeagueDaysFromNow(int days) {

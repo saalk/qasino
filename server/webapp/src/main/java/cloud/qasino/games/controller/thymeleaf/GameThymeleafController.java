@@ -13,6 +13,7 @@ import cloud.qasino.games.database.entity.enums.player.Avatar;
 import cloud.qasino.games.database.entity.enums.player.Role;
 import cloud.qasino.games.database.repository.GameRepository;
 import cloud.qasino.games.database.repository.PlayerRepository;
+import cloud.qasino.games.database.service.PlayerService;
 import cloud.qasino.games.dto.QasinoFlowDTO;
 import cloud.qasino.games.response.QasinoResponse;
 import cloud.qasino.games.statemachine.event.EventOutput;
@@ -44,6 +45,9 @@ public class GameThymeleafController extends AbstractThymeleafController {
     private static final String VISITOR_VIEW_LOCATION = "pages/visitor";
     private static final String SETUP_VIEW_LOCATION = "pages/setup";
     private static final String PLAY_VIEW_LOCATION = "pages/play";
+
+    @Autowired
+    PlayerService playerService;
 
     private GameRepository gameRepository;
     private PlayerRepository playerRepository;
@@ -198,7 +202,8 @@ public class GameThymeleafController extends AbstractThymeleafController {
         // 4 - return response
         prepareQasinoResponse(response, flowDTO);
         model.addAttribute(flowDTO.getQasinoResponse());
-//        log.warn("Model !!: {}", model);
+//        log.warn("QasinoResponse !! {}", prettyPrintJson(flowDTO.getQasinoResponse()));
+//        log.warn("model !! {}", model);
         return "redirect:/visitor";
     }
 
@@ -213,8 +218,6 @@ public class GameThymeleafController extends AbstractThymeleafController {
             HttpServletResponse response
     ) {
         log.warn("PostMapping: validate/{gameId}");
-        log.warn("ante {} !!", (qasinoResponse.getPageGameSetup().getSelectedGame().getAnte()) );
-
 
         // 1 - map input
         QasinoFlowDTO flowDTO = new QasinoFlowDTO();
@@ -262,7 +265,8 @@ public class GameThymeleafController extends AbstractThymeleafController {
         // 4 - return response
         prepareQasinoResponse(response, flowDTO);
         model.addAttribute(flowDTO.getQasinoResponse());
-//        log.warn("Model !!: {}", model);
+//        log.warn("QasinoResponse !! {}", prettyPrintJson(flowDTO.getQasinoResponse()));
+//        log.warn("model !! {}", model);
         return "redirect:/setup/" + qasinoResponse.getPageGameSetup().getSelectedGame().getGameId();
     }
 
@@ -277,6 +281,7 @@ public class GameThymeleafController extends AbstractThymeleafController {
             HttpServletResponse response) {
 
         log.warn("PostMapping: bot/{gameId}");
+
         // 1 - map input
         QasinoFlowDTO flowDTO = new QasinoFlowDTO();
         flowDTO.setPathVariables(
@@ -294,37 +299,13 @@ public class GameThymeleafController extends AbstractThymeleafController {
             return "redirect:/setup/" + qasinoResponse.getPageGameSetup().getSelectedGame().getGameId();
         }
         // 3 - process
-        String aiLevel = qasinoResponse.getPageGameSetup().getBotPlayer().getAiLevel().getLabel();
-        String avatar = qasinoResponse.getPageGameSetup().getBotPlayer().getAvatar().getLabel();
-        // rules - AiLevel bot cannot be Human
-        if (AiLevel.fromLabelWithDefault(aiLevel) == AiLevel.HUMAN)
-            // todo LOW split username and number
-            return "redirect:/setup/" + qasinoResponse.getPageGameSetup().getSelectedGame().getGameId();
-        //            return ResponseEntity.status(HttpStatus.CONFLICT).headers(headers).build();
-        long gameId = Long.parseLong(String.valueOf(qasinoResponse.getParams().getGid()));
-        Optional<Game> foundGame = gameRepository.findById(gameId);
-        if (!foundGame.isPresent()) {
-            return "redirect:/setup/" + qasinoResponse.getPageGameSetup().getSelectedGame().getGameId();
-            //            return ResponseEntity.status(HttpStatus.NOT_FOUND).headers(headers).build();
-        }
-        Game linkedGame = foundGame.get();
-
-        // logic
-        int sequenceCalculated = playerRepository.countByGame(foundGame.get()) + 1;
-        int fiches = (int) (Math.random() * 1000 + 1);
-
-        Player createdAi = new Player(
-                null, linkedGame, Role.BOT, fiches, sequenceCalculated,
-                Avatar.fromLabelWithDefault(avatar), AiLevel.fromLabelWithDefault(aiLevel));
-        createdAi = playerRepository.save(createdAi);
-        if (createdAi.getPlayerId() == 0) {
-            return "redirect:/setup/" + qasinoResponse.getPageGameSetup().getSelectedGame().getGameId();
-            //            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).headers(headers).build();
-        }
+        Player bot = playerService.addBotPlayerToAGame(flowDTO.getQasinoGame(), flowDTO.getSuppliedAvatar(), flowDTO.getSuppliedAiLevel());
+        playerRepository.save(bot);
         // 4 - return response
         prepareQasinoResponse(response, flowDTO);
         model.addAttribute(flowDTO.getQasinoResponse());
-//        log.warn("Model !!: {}", model);
+//        log.warn("QasinoResponse !! {}", prettyPrintJson(flowDTO.getQasinoResponse()));
+//        log.warn("model !! {}", model);
         return "redirect:/setup/" + qasinoResponse.getPageGameSetup().getSelectedGame().getGameId();
     }
 
@@ -371,7 +352,8 @@ public class GameThymeleafController extends AbstractThymeleafController {
         // 4 - return response
         prepareQasinoResponse(response, flowDTO);
         model.addAttribute(flowDTO.getQasinoResponse());
-//        log.warn("Model !!: {}", model);
+//        log.warn("QasinoResponse !! {}", prettyPrintJson(flowDTO.getQasinoResponse()));
+//        log.warn("model !! {}", model);
         return "redirect:/visitor";
     }
 }

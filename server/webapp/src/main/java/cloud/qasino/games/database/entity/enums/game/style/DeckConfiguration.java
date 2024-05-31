@@ -1,8 +1,8 @@
 package cloud.qasino.games.database.entity.enums.game.style;
 
+import jakarta.validation.constraints.Pattern;
 import lombok.Getter;
 
-import jakarta.validation.constraints.Pattern;
 import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.Map;
@@ -10,11 +10,14 @@ import java.util.Map;
 @Getter
 public enum DeckConfiguration {
 
-    ALL_THREE_JOKER("3", "Complete with three jokers"),
-    ALL_TWO_JOKER("2", "Complete with two jokers"),
-    ALL_ONE_JOKER("1", "Complete with one joker"),
-    ALL_NO_JOKERS("a", "No jokers"),
-    RANDOM_SUIT("r", "Randomw suit");
+    ALL_THREE_JOKERS("3", "Normal deck with 3 jokers"),
+    ALL_TWO_JOKERS("2", "Normal deck with 2 jokers"),
+    ALL_ONE_JOKER("1", "Normal deck with 1 jokers"),
+    ALL_NO_JOKER("n", "Normal deck without jokers"),
+    RANDOM_SUIT_THREE_JOKERS("u", "Random suit only with 3 jokers"),
+    RANDOM_SUIT_TWO_JOKERS("t", "Random suit only with 2 jokers"),
+    RANDOM_SUIT_ONE_JOKER("s", "Random suit only with 1 jokers"),
+    RANDOM_SUIT_NO_JOKER("r", "Random suit only without jokers");
 
     /**
      * A static HashMap lookup with key + value is created to use in a getter
@@ -22,7 +25,6 @@ public enum DeckConfiguration {
      */
     public static final Map<String, DeckConfiguration> lookup
             = new HashMap<>();
-
     static {
         for (DeckConfiguration deckConfiguration : EnumSet.allOf(DeckConfiguration.class))
             lookup.put(deckConfiguration.getLabel(), deckConfiguration);
@@ -49,7 +51,7 @@ public enum DeckConfiguration {
 
     public static DeckConfiguration fromLabelWithDefault(String label) {
         DeckConfiguration deckConfiguration = fromLabel(label);
-        if (deckConfiguration == null) return DeckConfiguration.ALL_THREE_JOKER;
+        if (deckConfiguration == null) return DeckConfiguration.RANDOM_SUIT_TWO_JOKERS;
         return deckConfiguration;
     }
 

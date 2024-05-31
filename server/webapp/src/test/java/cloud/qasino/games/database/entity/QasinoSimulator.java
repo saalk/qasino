@@ -1,10 +1,18 @@
 package cloud.qasino.games.database.entity;
 
+import cloud.qasino.games.database.entity.enums.card.Location;
+import cloud.qasino.games.database.entity.enums.card.PlayingCard;
 import cloud.qasino.games.database.entity.enums.player.AiLevel;
+import cloud.qasino.games.database.entity.enums.player.Avatar;
 import cloud.qasino.games.database.entity.enums.player.Role;
 import cloud.qasino.games.database.security.Visitor;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 public abstract class QasinoSimulator {
+
 
     Visitor visitor;
     League league;
@@ -15,21 +23,24 @@ public abstract class QasinoSimulator {
     Result result;
 
     QasinoSimulator() {
-        visitor = new Visitor.Builder()
-                .withUsername("Julie")
-                .withPassword("Julie")
-                .withEmail("Julie@domain.com")
-                .withAlias("Julie")
-                .withAliasSequence(1)
-                .build();
-        league = new League(visitor, "leagueName", 1);
-        game = new Game(league, visitor.getVisitorId());
-        game.shuffleGame(0);
+        visitor = Visitor.buildDummy("username","Alias");
+        league = League.buildDummy(visitor,"leagueName");
+        game = Game.buildDummy(league, visitor.getVisitorId());
+        List<Card> cards = new ArrayList<>();
+        List<PlayingCard> playingCards = PlayingCard.createDeckWithXJokers(0);
+        Collections.shuffle(playingCards);
+        int i = 1;
+        for (PlayingCard playingCard : playingCards) {
+            Card card = new Card(playingCard.getRankAndSuit(), game, null, i++, Location.STOCK);
+            cards.add(card);
+        }
+        game.setCards(cards);
 
         // add the visitor as player for the game
-        player = new Player(visitor, game, Role.INITIATOR, 50, 1);
+        player = Player.buildDummyHuman(visitor, game, Avatar.ELF);
+
         // add a bot as player for the game
-        bot = new Player(game, 50, 2, AiLevel.AVERAGE);
+        bot = Player.buildDummyBot(game, Avatar.GOBLIN, AiLevel.AVERAGE);
 
         // first turn
         turn = new Turn(game, player.getPlayerId());

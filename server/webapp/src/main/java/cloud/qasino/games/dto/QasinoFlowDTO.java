@@ -14,7 +14,7 @@ import cloud.qasino.games.action.LoadEntitiesToDtoAction;
 import cloud.qasino.games.action.MapQasinoGameTableFromDto;
 import cloud.qasino.games.action.MapQasinoResponseFromDto;
 import cloud.qasino.games.action.PlayFirstTurnAction;
-import cloud.qasino.games.action.PlayGameForType;
+import cloud.qasino.games.action.StartGameForType;
 import cloud.qasino.games.action.PlayNextBotTurnAction;
 import cloud.qasino.games.action.PlayNextHumanTurnAction;
 import cloud.qasino.games.action.PrepareGameAction;
@@ -84,7 +84,7 @@ public class QasinoFlowDTO extends AbstractFlowDTO
         UpdateVisitorAction.Dto,
         UpdateFichesForPlayer.Dto,
         IsGameFinished.Dto,
-        PlayGameForType.Dto,
+        StartGameForType.Dto,
         CreateNewGameAction.Dto,
         PrepareGameAction.Dto,
         StopGameAction.Dto,
@@ -104,9 +104,12 @@ public class QasinoFlowDTO extends AbstractFlowDTO
     private long suppliedGameId;
     private long suppliedLeagueId;
     private long initiatingPlayerId;
+
+    private long invitedVisitorId;
     private long invitedPlayerId;
     private long acceptedPlayerId;
     private long declinedPlayerId;
+
     private long suppliedTurnPlayerId;
     // triggers for the Game
     private GameEvent suppliedGameEvent;
@@ -154,6 +157,7 @@ public class QasinoFlowDTO extends AbstractFlowDTO
     private Game qasinoGame;
     private List<Player> qasinoGamePlayers;
     // the individual player
+    private Visitor invitedVisitor;
     private Player invitedPlayer;
     private Player acceptedPlayer;
     private Player initiatingPlayer;
@@ -314,6 +318,14 @@ public class QasinoFlowDTO extends AbstractFlowDTO
         if (pathVariables.containsKey(key)) {
             if (isValueForPrimaryKeyValid(key, pathVariables.get(key), dataName, pathDataString)) {
                 this.suppliedLeagueId = Long.parseLong(pathVariables.get(key));
+            } else {
+                return false;
+            }
+        }
+        key = "invitedVisitorId";
+        if (pathVariables.containsKey(key)) {
+            if (isValueForPrimaryKeyValid(key, pathVariables.get(key), dataName, pathDataString)) {
+                this.invitedVisitorId = Long.parseLong(pathVariables.get(key));
             } else {
                 return false;
             }

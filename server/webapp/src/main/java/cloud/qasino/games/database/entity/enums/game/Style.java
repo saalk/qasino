@@ -20,7 +20,7 @@ public class Style {
         this.label = "nr3tnn";
         this.anteToWin = AnteToWin.NA;
         this.bettingStrategy = BettingStrategy.REGULAR;
-        this.deckConfiguration = DeckConfiguration.ALL_THREE_JOKER;
+        this.deckConfiguration = DeckConfiguration.ALL_THREE_JOKERS;
         this.oneTimeInsurance = OneTimeInsurance.TENTH_ANTE;
         this.roundsToWin = RoundsToWin.NA;
         this.turnsToWin = TurnsToWin.NA;
@@ -46,7 +46,7 @@ public class Style {
 
         AnteToWin anteToWin = AnteToWin.NA;
         BettingStrategy bettingStrategy = BettingStrategy.REGULAR;
-        DeckConfiguration deckConfiguration = DeckConfiguration.ALL_THREE_JOKER;
+        DeckConfiguration deckConfiguration = DeckConfiguration.ALL_THREE_JOKERS;
         OneTimeInsurance oneTimeInsurance = OneTimeInsurance.TENTH_ANTE;
         RoundsToWin roundsToWin = RoundsToWin.NA;
         TurnsToWin turnsToWin = TurnsToWin.NA;

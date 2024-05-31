@@ -8,7 +8,7 @@ import cloud.qasino.games.database.entity.Turn;
 import cloud.qasino.games.database.entity.enums.card.Face;
 import cloud.qasino.games.database.entity.enums.game.Type;
 import cloud.qasino.games.database.entity.enums.move.Move;
-import cloud.qasino.games.database.service.PlayService;
+import cloud.qasino.games.database.service.TurnAndCardMoveService;
 import cloud.qasino.games.dto.elements.SectionTable;
 import cloud.qasino.games.statemachine.event.EventOutput;
 import lombok.extern.slf4j.Slf4j;
@@ -22,7 +22,7 @@ import java.util.List;
 public class PlayFirstTurnAction implements Action<PlayFirstTurnAction.Dto, EventOutput.Result> {
 
     @Autowired
-    PlayService playService;
+    TurnAndCardMoveService turnAndCardMoveService;
 
     @Override
     public EventOutput.Result perform(Dto actionDto) {
@@ -44,7 +44,7 @@ public class PlayFirstTurnAction implements Action<PlayFirstTurnAction.Dto, Even
                             .filter(p -> p.getSeat() == 1)
                             .findFirst().get());
         }
-        Turn activeTurn = playService.dealCardToPlayer(
+        Turn activeTurn = turnAndCardMoveService.dealCardToPlayer(
                 actionDto.getQasinoGame(),
                 null,
                 actionDto.getTurnPlayer(),
@@ -53,7 +53,7 @@ public class PlayFirstTurnAction implements Action<PlayFirstTurnAction.Dto, Even
                 1);
         actionDto.setActiveTurn(activeTurn); // can be null
         actionDto.setSuppliedTurnPlayerId(activeTurn.getActivePlayerId()); // can be null
-        actionDto.setAllCardMovesForTheGame(playService.getCardMovesForGame(actionDto.getQasinoGame())); // can be null
+        actionDto.setAllCardMovesForTheGame(turnAndCardMoveService.getCardMovesForGame(actionDto.getQasinoGame())); // can be null
 
         return EventOutput.Result.SUCCESS;
     }

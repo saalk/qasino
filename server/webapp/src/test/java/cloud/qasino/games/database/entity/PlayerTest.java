@@ -13,15 +13,15 @@ class PlayerTest extends QasinoSimulator {
     public void givenQasinoPlayer_whenCreated_thenReturnValidObjectValues() {
 
         assertThat(player.getVisitor()).isEqualTo(visitor);
-        assertThat(player.getFiches()).isEqualTo(50);
-        assertThat(player.getSeat()).isEqualTo(1);
+        assertThat(player.getFiches()).isEqualTo(99);
+        assertThat(player.getSeat()).isEqualTo(99);
         // However ai players are no visitors!
         assertThat(player.isHuman()).isEqualTo(true);
         assertThat(player.isWinner()).isEqualTo(false);
 
         assertNull(bot.getVisitor());
-        assertThat(bot.getFiches()).isEqualTo(50);
-        assertThat(bot.getSeat()).isEqualTo(2);
+        assertThat(bot.getFiches()).isEqualTo(99);
+        assertThat(bot.getSeat()).isEqualTo(99);
         // However ai players are no visitors!
         assertThat(bot.isHuman()).isEqualTo(false);
         assertThat(bot.isWinner()).isEqualTo(false);

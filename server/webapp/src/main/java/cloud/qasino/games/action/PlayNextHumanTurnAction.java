@@ -8,7 +8,7 @@ import cloud.qasino.games.database.entity.Turn;
 import cloud.qasino.games.database.entity.enums.card.Face;
 import cloud.qasino.games.database.entity.enums.game.Type;
 import cloud.qasino.games.database.entity.enums.move.Move;
-import cloud.qasino.games.database.service.PlayService;
+import cloud.qasino.games.database.service.TurnAndCardMoveService;
 import cloud.qasino.games.dto.elements.SectionTable;
 import cloud.qasino.games.statemachine.event.EventOutput;
 import cloud.qasino.games.statemachine.event.TurnEvent;
@@ -23,7 +23,7 @@ import java.util.List;
 public class PlayNextHumanTurnAction implements Action<PlayNextHumanTurnAction.Dto, EventOutput.Result> {
 
     @Autowired
-    PlayService playService;
+    TurnAndCardMoveService turnAndCardMoveService;
 
     @Override
     public EventOutput.Result perform(Dto actionDto) {
@@ -47,7 +47,7 @@ public class PlayNextHumanTurnAction implements Action<PlayNextHumanTurnAction.D
                 activeMove = Move.HIGHER;
                 // update round +1 start with turn 0
                 activeTurn.setCurrentTurnNumber(activeTurn.getCurrentTurnNumber() + 1);
-                activeTurn = playService.dealCardToPlayer(
+                activeTurn = turnAndCardMoveService.dealCardToPlayer(
                         actionDto.getQasinoGame(),
                         activeTurn,
                         activePlayer,
@@ -58,7 +58,7 @@ public class PlayNextHumanTurnAction implements Action<PlayNextHumanTurnAction.D
             case LOWER -> {
                 activeMove = Move.LOWER;
                 activeTurn.setCurrentTurnNumber(activeTurn.getCurrentTurnNumber() + 1);
-                activeTurn = playService.dealCardToPlayer(
+                activeTurn = turnAndCardMoveService.dealCardToPlayer(
                         actionDto.getQasinoGame(),
                         activeTurn,
                         activePlayer,
@@ -76,7 +76,7 @@ public class PlayNextHumanTurnAction implements Action<PlayNextHumanTurnAction.D
                 // update round +1 start with turn 0
                 activeTurn.setCurrentRoundNumber(activeTurn.getCurrentRoundNumber() + 1);
                 activeTurn.setCurrentTurnNumber(1);
-                activeTurn = playService.dealCardToPlayer(
+                activeTurn = turnAndCardMoveService.dealCardToPlayer(
                         actionDto.getQasinoGame(),
                         activeTurn,
                         actionDto.getNextPlayer(),
@@ -99,7 +99,7 @@ public class PlayNextHumanTurnAction implements Action<PlayNextHumanTurnAction.D
             actionDto.setSuppliedTurnEvent(TurnEvent.END_GAME);
         }
         actionDto.setActiveTurn(activeTurn); // can be null
-        actionDto.setAllCardMovesForTheGame(playService.getCardMovesForGame(actionDto.getQasinoGame())); // can be null
+        actionDto.setAllCardMovesForTheGame(turnAndCardMoveService.getCardMovesForGame(actionDto.getQasinoGame())); // can be null
 
         return EventOutput.Result.SUCCESS;
     }

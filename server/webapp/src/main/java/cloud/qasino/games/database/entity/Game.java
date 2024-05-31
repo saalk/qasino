@@ -171,13 +171,13 @@ public class Game {
         this(builder.league, builder.type, builder.initiator, builder.style, builder.ante);
     }
 
-    public static Game buildDummy() {
+    public static Game buildDummy(League league, long initiator) {
         return new Game.Builder()
                 .withType(Type.HIGHLOW.getLabel())
                 .withStyle("hr3tn3")
                 .withAnte(20)
-                .withInitiator(-1)
-                .withLeague(null)
+                .withInitiator(initiator)
+                .withLeague(league)
                 .build();
     }
 
@@ -236,7 +236,6 @@ public class Game {
 
         List<PlayingCard> playingCards = PlayingCard.createDeckWithXJokers(jokers);
         Collections.shuffle(playingCards);
-
         int i = 1;
         for (PlayingCard playingCard : playingCards) {
             Card card = new Card(playingCard.getRankAndSuit(), this, null, i++, Location.STOCK);

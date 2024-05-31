@@ -17,6 +17,8 @@ import cloud.qasino.games.database.entity.enums.game.style.OneTimeInsurance;
 import cloud.qasino.games.database.entity.enums.game.style.RoundsToWin;
 import cloud.qasino.games.database.entity.enums.game.style.TurnsToWin;
 import cloud.qasino.games.database.entity.enums.move.Move;
+import cloud.qasino.games.database.entity.enums.player.AiLevel;
+import cloud.qasino.games.database.entity.enums.player.Avatar;
 import cloud.qasino.games.database.security.Visitor;
 import cloud.qasino.games.dto.elements.NavigationBarItem;
 import cloud.qasino.games.dto.elements.PageGameInvitations;
@@ -77,7 +79,7 @@ public class MapQasinoResponseFromDto implements Action<MapQasinoResponseFromDto
             actionDto.setActionNeeded(true);
             actionDto.setAction("Logon visitor!");
             // set up dummy visitor
-            pageVisitor.setSelectedVisitor(Visitor.buildDummy());
+            pageVisitor.setSelectedVisitor(Visitor.buildDummy("username","Alias"));
         }
         navigationBarItem.setVisible(actionDto.isShowVisitorPage());
         navigationBarItems.add(navigationBarItem);
@@ -182,7 +184,7 @@ public class MapQasinoResponseFromDto implements Action<MapQasinoResponseFromDto
             mapLeaguesPage(actionDto, navigationBarItem, pageLeague);
         } else {
             // set up dummy league
-            pageLeague.setSelectedLeague(League.buildDummy());
+            pageLeague.setSelectedLeague(League.buildDummy(null,"leagueName"));
         }
         navigationBarItem.setVisible(actionDto.isShowLeaguesPage());
         navigationBarItems.add(navigationBarItem);
@@ -216,17 +218,17 @@ public class MapQasinoResponseFromDto implements Action<MapQasinoResponseFromDto
 
     private static void setupDummyGameAndPLayers(PageGameSetup pageGameSetup) {
         // set up dummy game and styles
-        pageGameSetup.setSelectedGame(Game.buildDummy());
+        pageGameSetup.setSelectedGame(Game.buildDummy(null, -1));
         pageGameSetup.setGameStateGroup(GameStateGroup.SETUP);
         pageGameSetup.setAnteToWin(AnteToWin.TIMES_3_WINS);
         pageGameSetup.setBettingStrategy(BettingStrategy.REGULAR);
-        pageGameSetup.setDeckConfiguration(DeckConfiguration.RANDOM_SUIT);
+        pageGameSetup.setDeckConfiguration(DeckConfiguration.RANDOM_SUIT_THREE_JOKERS);
         pageGameSetup.setOneTimeInsurance(OneTimeInsurance.HALF_ANTE);
         pageGameSetup.setRoundsToWin(RoundsToWin.TWO_ROUNDS);
         pageGameSetup.setTurnsToWin(TurnsToWin.THREE_IN_A_ROW_WINS);
 
-        pageGameSetup.setBotPlayer(Player.buildDummyBot());
-        pageGameSetup.setHumanPlayer(Player.buildDummyHuman());
+        pageGameSetup.setBotPlayer(Player.buildDummyBot(null, Avatar.GOBLIN, AiLevel.AVERAGE));
+        pageGameSetup.setHumanPlayer(Player.buildDummyHuman(null, null, Avatar.ELF));
     }
 
     private static Long setId(long id) {

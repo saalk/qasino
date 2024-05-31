@@ -1,11 +1,13 @@
 package cloud.qasino.games;
 
+import cloud.qasino.games.database.entity.Card;
 import cloud.qasino.games.database.entity.CardMove;
 import cloud.qasino.games.database.entity.Game;
 import cloud.qasino.games.database.entity.League;
 import cloud.qasino.games.database.entity.Player;
 import cloud.qasino.games.database.entity.Turn;
 import cloud.qasino.games.database.entity.enums.card.Location;
+import cloud.qasino.games.database.entity.enums.card.PlayingCard;
 import cloud.qasino.games.database.entity.enums.game.GameState;
 import cloud.qasino.games.database.entity.enums.move.Move;
 import cloud.qasino.games.database.entity.enums.player.AiLevel;
@@ -30,6 +32,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 @Component
@@ -76,67 +79,51 @@ public class QuickTestAtStartup implements ApplicationRunner {
     public void tests() {
 
         // A new visitor with 2 friends arrive
-        Visitor visitor = new Visitor.Builder()
-                .withUsername("user1")
-                .withPassword("user1")
-                .withEmail("user@email.com")
-                .withAlias("User1")
-                .withAliasSequence(1)
-                .build();
+        Visitor visitor = Visitor.buildDummy("user1", "User1");
+        Visitor friend1 = Visitor.buildDummy("friend1", "Friend1");
+        Visitor friend2 = Visitor.buildDummy("friend2", "Friend2");
 
         int pawn = Visitor.pawnShipValue(0);
         visitor.pawnShip(pawn);
         visitor = visitorService.saveUser(visitor);
 
-        Visitor friend1 = new Visitor.Builder()
-                .withUsername("friend1")
-                .withPassword("friend1")
-                .withEmail("friend1@email.com")
-                .withAlias("Friend1")
-                .withAliasSequence(1)
-                .build();
         pawn = Visitor.pawnShipValue(0);
         friend1.pawnShip(pawn);
         friend1 = visitorService.saveUser(friend1);
 
-        Visitor friend2 =
-                new Visitor.Builder()
-                        .withUsername("friend2")
-                        .withPassword("friend2")
-                        .withEmail("friend2@email.com")
-                        .withAlias("Friend2")
-                        .withAliasSequence(1)
-                        .build();
         pawn = Visitor.pawnShipValue(0);
         friend2.pawnShip(pawn);
         friend2 = visitorService.saveUser(friend2);
 
         // The visitor starts a league
-        League league = new League(visitor, "defaultLeague", 1);
+        League league = League.buildDummy(visitor,"");
         league.endLeagueThisMonth();
         leagueRepository.save(league);
 
         // The qasino starts a NEW game in the league initiated by the visitor
-        Game game = new Game(league, "highlow", visitor.getVisitorId(), " ", 100);
-        game.shuffleGame(0);
-        game.setState(GameState.INITIALIZED);
+        Game game = Game.buildDummy(league, visitor.getVisitorId());
+
+        List<Card> cards = new ArrayList<>();
+        List<PlayingCard> playingCards = PlayingCard.createDeckWithXJokers(0);
+        Collections.shuffle(playingCards);
+        int i = 1;
+        for (PlayingCard playingCard : playingCards) {
+            Card card = new Card(playingCard.getRankAndSuit(), game, null, i++, Location.STOCK);
+            cards.add(card);
+        }
+        game.setCards(cards);
         game = gameRepository.save(game);
         cardRepository.saveAll(game.getCards()); // todo check this
 
         // The visitor initiates a game adding a bot also
         List<Player> visitorAndBot = new ArrayList<>();
-        // seat 1 - human visitor player with role initiator
-        visitorAndBot.add(playerRepository.save(new Player(visitor, game, Role.INITIATOR,
-                visitor.getBalance(), 1, Avatar.ELF, AiLevel.HUMAN)));
+
+        // seat 1 - human visitor
+        visitorAndBot.add(playerRepository.save(Player.buildDummyHuman(visitor, game, Avatar.ELF)));
         // seat 2 - bot player with same fiches as visitor
-        visitorAndBot.add(playerRepository.save(new Player(null, game, Role.BOT, visitor.getBalance(), 2,
-                Avatar.GOBLIN, AiLevel.AVERAGE)));
-        // The visitor invites 2 friends also
+        visitorAndBot.add(playerRepository.save(Player.buildDummyBot(game, Avatar.ELF, AiLevel.AVERAGE)));
         // seat 3 and 4 - Invite friend 1 and 2 to the game as player
-        visitorAndBot.add(playerRepository.save(new Player(friend1, game, Role.INVITED, friend1.getBalance(), 3,
-                Avatar.GOBLIN, AiLevel.HUMAN)));
-        visitorAndBot.add(playerRepository.save(new Player(friend2, game, Role.INVITED, friend2.getBalance(), 4,
-                Avatar.GOBLIN, AiLevel.HUMAN)));
+        visitorAndBot.add(playerRepository.save(Player.buildDummyInvitee(visitor, game, Avatar.ELF)));
         game.setPlayers(visitorAndBot);
         game.setState(GameState.PENDING_INVITATIONS);
 
@@ -162,6 +149,5 @@ public class QuickTestAtStartup implements ApplicationRunner {
         CardMove cardMove = new CardMove(turn, visitorAndBot.get(0), 0, Move.DEAL,
                 Location.HAND, "details");
         cardMoveRepository.save(cardMove);
-
     }
 }

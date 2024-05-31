@@ -11,6 +11,7 @@ import jakarta.persistence.Transient;
 import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Random;
 
 /**
  * <H1>Suit</H1>
@@ -33,14 +34,27 @@ public enum Suit implements LabeledEnum {
     SPADES("S"),
     JOKERS("R");
 
+    private static final Random SUIT = new Random();
+    private static final Suit[] suits = values();
+    // declare a method inside an enum class body that is static
+    // and returns an enum value. This method will call nextInt()
+    // from a Random object
+    public static Suit randomSuit()  {
+        // Inside randomDirection(), we call the method nextInt() with an
+        // integer argument. The nextInt() method returns a random number
+        // to access the directions array; therefore, we need to make sure
+        // the integer is not out of the bounds of the array by passing a
+        // bound argument to nextInt(). The bound argument is the total
+        // number of directions, which will not exceed the size of the array.
+        return suits[SUIT.nextInt(suits.length)];
+    }
+
     public static final Map<String, Suit> suitMapNoError = new HashMap<>();
     private static final Map<String, Suit> lookup = new HashMap<>();
-
     static {
         for (Suit suit : EnumSet.allOf(Suit.class))
             lookup.put(suit.getLabel(), suit);
     }
-
     static {
         for (Suit suit : EnumSet.allOf(Suit.class))
             if (!suit.getLabel().toLowerCase().equals("error"))

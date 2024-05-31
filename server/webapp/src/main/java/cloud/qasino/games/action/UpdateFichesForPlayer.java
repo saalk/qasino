@@ -10,7 +10,7 @@ import cloud.qasino.games.database.entity.enums.move.Move;
 import cloud.qasino.games.database.repository.CardMoveRepository;
 import cloud.qasino.games.database.repository.CardRepository;
 import cloud.qasino.games.database.repository.PlayerRepository;
-import cloud.qasino.games.database.service.PlayService;
+import cloud.qasino.games.database.service.TurnAndCardMoveService;
 import cloud.qasino.games.statemachine.event.EventOutput;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,7 +32,7 @@ public class UpdateFichesForPlayer implements Action<UpdateFichesForPlayer.Dto, 
     PlayerRepository playerRepository;
 
     @Autowired
-    PlayService playService;
+    TurnAndCardMoveService turnAndCardMoveService;
 
     @Override
     public EventOutput.Result perform(Dto actionDto) {
@@ -79,7 +79,7 @@ public class UpdateFichesForPlayer implements Action<UpdateFichesForPlayer.Dto, 
         cardMoveRepository.save(cardMove);
         actionDto.getTurnPlayer().setFiches(cardMove.getEndFiches());
         playerRepository.save(actionDto.getTurnPlayer());
-        actionDto.setAllCardMovesForTheGame(playService.getCardMovesForGame(actionDto.getQasinoGame())); // can be null
+        actionDto.setAllCardMovesForTheGame(turnAndCardMoveService.getCardMovesForGame(actionDto.getQasinoGame())); // can be null
     }
 
     private int calculateWinOrLoss(Dto actionDto, Move move, Card previous, Card current) {

@@ -68,6 +68,7 @@ public class LoadEntitiesToDtoAction implements Action<LoadEntitiesToDtoAction.D
     long visitorId;
     long gameId;
     long turnPlayerId;
+    long invitedVisitorId;
     long invitedPlayerId;
     long acceptedPlayerId;
     long leagueId;
@@ -125,6 +126,17 @@ public class LoadEntitiesToDtoAction implements Action<LoadEntitiesToDtoAction.D
         }
 
         // BR7
+        invitedVisitorId = actionDto.getAcceptedPlayerId();
+        if (invitedVisitorId > 0) {
+            Optional<Visitor> foundVisitor = visitorRepository.findById(Long.parseLong(String.valueOf(invitedVisitorId)));
+            if (foundVisitor.isPresent()) {
+                actionDto.setInvitedVisitor(foundVisitor.get());
+            } else {
+                setNotFoundErrorMessage(actionDto, "invitedVisitorId", String.valueOf(invitedVisitorId), "InvitedVisitor");
+                return EventOutput.Result.FAILURE;
+            }
+        }
+
         acceptedPlayerId = actionDto.getAcceptedPlayerId();
         if (acceptedPlayerId > 0) {
             Optional<Player> foundPlayer = playerRepository.findById(Long.parseLong(String.valueOf(acceptedPlayerId)));
@@ -313,6 +325,7 @@ public class LoadEntitiesToDtoAction implements Action<LoadEntitiesToDtoAction.D
         // Setters
         void setQasinoVisitor(Visitor visitor);
 
+        void setInvitedVisitor(Visitor visitor);
         void setInvitedPlayer(Player player);
         void setAcceptedPlayer(Player player);
 

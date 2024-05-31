@@ -69,10 +69,13 @@ public class PlayingCard {
             throw new MyNPException("PlayingCard","rank [" + rank + "] suit [" + suit + "]");
         this.rank = rank;
         this.suit = suit;
-        final StringBuilder builder = new StringBuilder();
-        this.rankAndSuit = builder.append(rank.getLabel()).append(suit.getLabel()).toString();
+        this.rankAndSuit = rank.getLabel()+suit.getLabel();
         this.value = calculateValueWithDefaultHighlowFromRank(rank, null);
-        this.thumbnailPath = "static/images/playingcard/svg/clubs-ace.svg";
+        this.thumbnailPath = "static/images/playingcard/svg/" +
+                this.rank.getLabel().toLowerCase() +
+                "-" +
+                this.suit.getLabel().toLowerCase() +
+                ".svg";
     }
 
     // Then Static methods - they can be called without creating an instance
@@ -82,6 +85,23 @@ public class PlayingCard {
             newDeck.add(joker);
         }
         newDeck.addAll(normalCardDeckNoJoker);
+        return newDeck;
+    }
+    public static List<PlayingCard> createDeckForRandomSuitWithXJokers(int addJokers) {
+        Suit randomSuit = Suit.randomSuit();
+        return createDeckForSuitWithXJokers(randomSuit, addJokers);
+    }
+    public static List<PlayingCard> createDeckForSuitWithXJokers(Suit suit, int addJokers) {
+        List<PlayingCard> newDeck = new ArrayList<>(); // static so init all the time
+        for (int i = 0; i < addJokers; i++) {
+            newDeck.add(joker);
+        }
+        switch (suit) {
+            case CLUBS -> newDeck.addAll(clubsDeckNoJoker);
+            case DIAMONDS -> newDeck.addAll(diamondsDeckNoJoker);
+            case HEARTS -> newDeck.addAll(heartsDeckNoJoker);
+            case SPADES -> newDeck.addAll(spadesDeckNoJoker);
+            }
         return newDeck;
     }
     public static boolean isValid2LetterCardId(String rankAndSuit) {
@@ -164,6 +184,5 @@ public class PlayingCard {
                     throw new MyBusinessException("This type is not forseen [" + type + "]");
         }
     }
-    // @formatter:on
 
 }

@@ -7,18 +7,16 @@ import cloud.qasino.games.database.entity.Game;
 import cloud.qasino.games.database.entity.Player;
 import cloud.qasino.games.database.entity.Result;
 import cloud.qasino.games.database.entity.enums.game.gamestate.GameStateGroup;
-import cloud.qasino.games.database.security.Visitor;
 import cloud.qasino.games.database.repository.CardMoveRepository;
 import cloud.qasino.games.database.repository.CardRepository;
 import cloud.qasino.games.database.repository.ResultsRepository;
+import cloud.qasino.games.database.security.Visitor;
 import cloud.qasino.games.database.security.VisitorRepository;
-import cloud.qasino.games.database.service.PlayService;
 import cloud.qasino.games.statemachine.event.EventOutput;
+import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import jakarta.annotation.Resource;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -37,9 +35,6 @@ public class CalculateAndFinishGameAction implements Action<CalculateAndFinishGa
     ResultsRepository resultsRepository;
     @Resource
     VisitorRepository visitorRepository;
-
-    @Autowired
-    PlayService playService;
 
     @Override
     public EventOutput.Result perform(CalculateAndFinishGameAction.Dto actionDto) {

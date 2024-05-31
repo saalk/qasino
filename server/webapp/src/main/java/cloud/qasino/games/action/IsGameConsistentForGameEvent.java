@@ -8,11 +8,9 @@ import cloud.qasino.games.database.entity.Result;
 import cloud.qasino.games.database.entity.Turn;
 import cloud.qasino.games.database.security.Visitor;
 import cloud.qasino.games.database.entity.enums.game.gamestate.GameStateGroup;
-import cloud.qasino.games.database.service.PlayService;
 import cloud.qasino.games.statemachine.event.EventOutput;
 import cloud.qasino.games.statemachine.event.GameEvent;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -32,8 +30,6 @@ import java.util.Optional;
  * @return Result.SUCCESS or FAILURE (404) when not found
  */
 public class IsGameConsistentForGameEvent implements Action<IsGameConsistentForGameEvent.Dto, EventOutput.Result> {
-    @Autowired
-    PlayService playService;
 
     @Override
     public EventOutput.Result perform(Dto actionDto) {

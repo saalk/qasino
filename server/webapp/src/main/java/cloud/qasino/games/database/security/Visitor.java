@@ -161,16 +161,18 @@ public class Visitor {
         this.email = builder.email;
     }
 
-    public static Visitor buildDummy() {
+    public static Visitor buildDummy(String username, String alias) {
+        if (username.isEmpty()) username = "username";
+        if (alias.isEmpty()) username = "Alias";
         return new Builder()
-                .withAlias("Alias")
+                .withAlias(alias)
                 .withAliasSequence(1)
                 .withBalance(0)
                 .withEmail("email@acme.com")
                 .withPassword("password")
                 .withRoles(Collections.singleton(new Role("ROLE_USER")))
                 .withSecuredLoan(0)
-                .withUsername("username")
+                .withUsername(username)
                 .build();
     }
 

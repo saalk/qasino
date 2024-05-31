@@ -7,7 +7,7 @@ import cloud.qasino.games.database.security.Visitor;
 import cloud.qasino.games.database.entity.enums.game.Type;
 import cloud.qasino.games.database.entity.enums.player.AiLevel;
 import cloud.qasino.games.database.entity.enums.player.Avatar;
-import cloud.qasino.games.database.service.PlayService;
+import cloud.qasino.games.database.service.GameService;
 import cloud.qasino.games.statemachine.event.EventOutput;
 import cloud.qasino.games.statemachine.event.GameEvent;
 import lombok.extern.slf4j.Slf4j;
@@ -19,15 +19,15 @@ import org.springframework.stereotype.Component;
 public class CreateNewGameAction implements Action<CreateNewGameAction.Dto, EventOutput.Result> {
 
     @Autowired
-    PlayService playService;
+    GameService gameService;
+
     @Override
     public EventOutput.Result perform(Dto actionDto) {
 
-        actionDto.setQasinoGame(playService.setupNewGameWithPlayers(
+        actionDto.setQasinoGame(gameService.setupNewGameWithPlayerInitiator(
                 actionDto.getSuppliedType().getLabel(),
                 actionDto.getQasinoVisitor(),
                 actionDto.getQasinoGameLeague(),
-                AiLevel.HUMAN,
                 actionDto.getSuppliedStyle(),
                 String.valueOf(actionDto.getSuppliedAnte()),
                 actionDto.getSuppliedAvatar())
