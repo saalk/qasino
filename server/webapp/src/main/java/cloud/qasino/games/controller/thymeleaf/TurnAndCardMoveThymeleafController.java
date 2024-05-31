@@ -190,7 +190,7 @@ public class TurnAndCardMoveThymeleafController extends AbstractThymeleafControl
             log.warn("Errors validateInput!!: {}", errors);
             prepareQasinoResponse(response, flowDTO);
             model.addAttribute(flowDTO.getQasinoResponse());
-            return "redirect:/play/" + qasinoResponse.getPageGameSetup().getSelectedGame().getGameId();
+            return "redirect:/play/" + qasinoResponse.getPageGamePlay().getSelectedGame().getGameId();
         }
         // 3 - process
         output = loadEntitiesToDtoAction.perform(flowDTO);
@@ -198,7 +198,7 @@ public class TurnAndCardMoveThymeleafController extends AbstractThymeleafControl
             log.warn("Errors loadEntitiesToDtoAction!!: {}", errors);
             prepareQasinoResponse(response, flowDTO);
             model.addAttribute(flowDTO.getQasinoResponse());
-            return "redirect:/play/" + qasinoResponse.getPageGameSetup().getSelectedGame().getGameId();
+            return "redirect:/play/" + qasinoResponse.getPageGamePlay().getSelectedGame().getGameId();
         }
         mapQasinoGameTableFromDto.perform(flowDTO);
 
@@ -208,14 +208,14 @@ public class TurnAndCardMoveThymeleafController extends AbstractThymeleafControl
             log.warn("Errors isGameConsistentForGameEvent!!: {}", errors);
             prepareQasinoResponse(response, flowDTO);
             model.addAttribute(flowDTO.getQasinoResponse());
-            return "redirect:/play/" + qasinoResponse.getPageGameSetup().getSelectedGame().getGameId();
+            return "redirect:/play/" + qasinoResponse.getPageGamePlay().getSelectedGame().getGameId();
         }
         output = isTurnConsistentForTurnEvent.perform(flowDTO);
         if (output == EventOutput.Result.FAILURE) {
             log.warn("Errors isTurnConsistentForTurnEvent!!: {}", errors);
             prepareQasinoResponse(response, flowDTO);
             model.addAttribute(flowDTO.getQasinoResponse());
-            return "redirect:/play/" + qasinoResponse.getPageGameSetup().getSelectedGame().getGameId();
+            return "redirect:/play/" + qasinoResponse.getPageGamePlay().getSelectedGame().getGameId();
         }
 //        output = canPlayerStillPlay.perform(flowDTO); // for now stop after one round
         mapQasinoGameTableFromDto.perform(flowDTO);
@@ -237,7 +237,7 @@ public class TurnAndCardMoveThymeleafController extends AbstractThymeleafControl
 //        log.warn("HttpServletResponse: {}", response.getHeaderNames());
 //        log.warn("Model: {}", model);
 //        log.warn("Errors: {}", errors);
-        return "redirect:/play/" + qasinoResponse.getPageGameSetup().getSelectedGame().getGameId();
+        return "redirect:/play/" + qasinoResponse.getPageGamePlay().getSelectedGame().getGameId();
     }
 
     @PostMapping(value = "stop/{gameId}")
@@ -262,7 +262,7 @@ public class TurnAndCardMoveThymeleafController extends AbstractThymeleafControl
             log.warn("Errors validateInput!!: {}", errors);
             prepareQasinoResponse(response, flowDTO);
             model.addAttribute(flowDTO.getQasinoResponse());
-            return "redirect:/setup/" + qasinoResponse.getPageGameSetup().getSelectedGame().getGameId();
+            return "redirect:/setup/" + qasinoResponse.getPageGamePlay().getSelectedGame().getGameId();
         }
         // 3 - process
         output = loadEntitiesToDtoAction.perform(flowDTO);
@@ -270,7 +270,7 @@ public class TurnAndCardMoveThymeleafController extends AbstractThymeleafControl
             log.warn("Errors loadEntitiesToDtoAction!!: {}", errors);
             prepareQasinoResponse(response, flowDTO);
             model.addAttribute(flowDTO.getQasinoResponse());
-            return "redirect:/setup/" + qasinoResponse.getPageGameSetup().getSelectedGame().getGameId();
+            return "redirect:/setup/" + qasinoResponse.getPageGamePlay().getSelectedGame().getGameId();
         }
         // logic
         output = isGameConsistentForGameEvent.perform(flowDTO);
@@ -278,7 +278,7 @@ public class TurnAndCardMoveThymeleafController extends AbstractThymeleafControl
             log.warn("Errors isGameConsistentForGameEvent!!: {}", errors);
             prepareQasinoResponse(response, flowDTO);
             model.addAttribute(flowDTO.getQasinoResponse());
-            return "redirect:/setup/" + qasinoResponse.getPageGameSetup().getSelectedGame().getGameId();
+            return "redirect:/setup/" + qasinoResponse.getPageGamePlay().getSelectedGame().getGameId();
         }
         stopGameAction.perform(flowDTO);
         if (output == EventOutput.Result.SUCCESS) {

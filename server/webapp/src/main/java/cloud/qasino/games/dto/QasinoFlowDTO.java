@@ -45,6 +45,7 @@ import cloud.qasino.games.database.entity.enums.player.Role;
 import cloud.qasino.games.database.security.Visitor;
 import cloud.qasino.games.dto.elements.SectionTable;
 import cloud.qasino.games.dto.statistics.Statistic;
+import cloud.qasino.games.exception.MyBusinessException;
 import cloud.qasino.games.response.QasinoResponse;
 import cloud.qasino.games.statemachine.event.GameEvent;
 import cloud.qasino.games.statemachine.event.TurnEvent;
@@ -58,6 +59,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -277,8 +279,12 @@ public class QasinoFlowDTO extends AbstractFlowDTO
     private Map<String, String> requestParams = new HashMap<>();
 
     public void setPathVariables(String... pathVariables) {
-        if (pathVariables == null) return;
-        if (pathVariables.length % 2 != 0) return;
+        if (pathVariables == null) {
+            throw new MyBusinessException("No pathVariables [" + Arrays.toString(pathVariables) + "]");
+        };
+        if (pathVariables.length % 2 != 0) {
+            throw new MyBusinessException("PathVariables not even [" + Arrays.toString(pathVariables) + "]");
+        };
         for (int i = 0; i < pathVariables.length; i = i + 2) {
             this.pathVariables.put(pathVariables[i], pathVariables[i + 1]);
         }
@@ -297,7 +303,7 @@ public class QasinoFlowDTO extends AbstractFlowDTO
         String key;
         String dataName = "pathVariables";
         String pathDataString = StringUtils.join(pathVariables);
-//        log.warn(this.getClass().getName() + ": " + dataName + " is " + pathDataString);
+        log.warn(this.getClass().getName() + ": " + dataName + " is " + pathDataString);
 
         if (pathVariables == null) return true;
 
@@ -377,7 +383,7 @@ public class QasinoFlowDTO extends AbstractFlowDTO
         String key;
         String dataName = "requestParam";
         String paramDataString = StringUtils.join(requestParam);
-//        log.warn(this.getClass().getName() + ": " + dataName + " is " + paramDataString);
+        log.warn(this.getClass().getName() + ": " + dataName + " is " + paramDataString);
 
         if (requestParam == null) return true;
 

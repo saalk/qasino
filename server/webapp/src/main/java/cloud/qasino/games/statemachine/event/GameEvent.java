@@ -41,7 +41,7 @@ public enum GameEvent implements Event {
             = new HashMap<>();
     static {
         for (GameEvent gameEvent : EnumSet.allOf(GameEvent.class))
-            lookup.put(gameEvent.getLabel(), gameEvent);
+            lookup.put(String.valueOf(gameEvent).toLowerCase(), gameEvent);
     }
 
     public static final List<GameEvent> START_GAME_EVENTS = Arrays.asList(START);

@@ -176,7 +176,7 @@ public class Player {
                 ", visitorId=" + (this.visitor == null? "": this.visitor.getVisitorId()) +
                 ", gameId=" + (this.game == null? "": this.game.getGameId()) +
                 ", human=" + this.human +
-                ", role=" + this.role == null ? "": this.role.getLabel() +
+                ", role=" + (this.role == null ? "": this.role.getLabel()) +
                 ", fiches=" + this.fiches +
                 ", seat=" + this.seat +
                 ", avatar=" + this.avatar +

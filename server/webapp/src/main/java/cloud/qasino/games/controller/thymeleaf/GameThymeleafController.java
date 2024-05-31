@@ -15,6 +15,7 @@ import cloud.qasino.games.database.repository.GameRepository;
 import cloud.qasino.games.database.repository.PlayerRepository;
 import cloud.qasino.games.database.service.PlayerService;
 import cloud.qasino.games.dto.QasinoFlowDTO;
+import cloud.qasino.games.exception.MyBusinessException;
 import cloud.qasino.games.response.QasinoResponse;
 import cloud.qasino.games.statemachine.event.EventOutput;
 import jakarta.servlet.http.HttpServletResponse;
@@ -34,6 +35,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.security.Principal;
+import java.util.Arrays;
 import java.util.Optional;
 
 @Controller
@@ -152,7 +154,7 @@ public class GameThymeleafController extends AbstractThymeleafController {
             HttpServletResponse response
     ) {
         log.warn("PostMapping: start/{visitorId}");
-        log.warn("QasinoResponse {} !!", qasinoResponse );
+//        log.warn("QasinoResponse {} !!", qasinoResponse );
 
         // 1 - map input
         QasinoFlowDTO flowDTO = new QasinoFlowDTO();
@@ -172,11 +174,12 @@ public class GameThymeleafController extends AbstractThymeleafController {
         }
         // 2 - validate input
         if (!flowDTO.validateInput()) {
-            log.warn("Errors validateInput!!: {}", errors);
-            log.warn("Model !!: {}", model);
+//            log.warn("Errors validateInput!!: {}", errors);
+            log.warn("QasinoResponse {} !!", qasinoResponse );
             prepareQasinoResponse(response, flowDTO);
             model.addAttribute(flowDTO.getQasinoResponse());
-            return "redirect:/visitor";
+            throw new MyBusinessException("validateInput problem [" + flowDTO.getErrorMessage() + "]");
+//            return "redirect:/visitor";
         }
         // 3 - process
         output = loadEntitiesToDtoAction.perform(flowDTO);
