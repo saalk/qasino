@@ -100,7 +100,7 @@ public class PlayService {
     public Game addCardsToGame(Game activeGame, int jokers) {
         if (!activeGame.getCards().isEmpty()) return activeGame;
 
-        List<PlayingCard> playingCards = PlayingCard.newDeck(jokers);
+        List<PlayingCard> playingCards = PlayingCard.createDeckWithXJokers(jokers);
         Collections.shuffle(playingCards);
         List<Card> cards = new ArrayList<>();
         int i = 1;

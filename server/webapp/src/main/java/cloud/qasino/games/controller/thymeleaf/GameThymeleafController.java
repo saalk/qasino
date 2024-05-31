@@ -147,14 +147,14 @@ public class GameThymeleafController extends AbstractThymeleafController {
             Errors errors, RedirectAttributes ra,
             HttpServletResponse response
     ) {
-        log.warn("PostMapping: start/{gameId}");
+        log.warn("PostMapping: start/{visitorId}");
         log.warn("QasinoResponse {} !!", qasinoResponse );
 
         // 1 - map input
         QasinoFlowDTO flowDTO = new QasinoFlowDTO();
         flowDTO.setPathVariables(
-                "gameId", id,
                 "visitorId", getPricipalVisitorId(principal),
+                "ante", String.valueOf(qasinoResponse.getPageGameSetup().getSelectedGame().getAnte()),
                 "type", qasinoResponse.getPageGameSetup().getSelectedGame().getType().getLabel(),
                 "style", qasinoResponse.getPageGameSetup().getSelectedGame().getStyle(),
                 "avatar", qasinoResponse.getPageGameSetup().getHumanPlayer().getAvatar().getLabel(),

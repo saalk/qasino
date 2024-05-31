@@ -234,7 +234,7 @@ public class Game {
 
     public void shuffleGame(int jokers) {
 
-        List<PlayingCard> playingCards = PlayingCard.newDeck(jokers);
+        List<PlayingCard> playingCards = PlayingCard.createDeckWithXJokers(jokers);
         Collections.shuffle(playingCards);
 
         int i = 1;

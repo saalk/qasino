@@ -5,10 +5,10 @@ import cloud.qasino.games.database.entity.Card;
 import cloud.qasino.games.database.entity.Game;
 import cloud.qasino.games.database.entity.Player;
 import cloud.qasino.games.database.entity.Turn;
-import cloud.qasino.games.database.security.Visitor;
 import cloud.qasino.games.database.entity.enums.move.Move;
 import cloud.qasino.games.database.entity.enums.player.AiLevel;
 import cloud.qasino.games.database.entity.enums.player.Role;
+import cloud.qasino.games.database.security.Visitor;
 import cloud.qasino.games.dto.elements.SectionSeat;
 import cloud.qasino.games.dto.elements.SectionTable;
 import cloud.qasino.games.statemachine.event.EventOutput;
@@ -31,13 +31,26 @@ public class MapQasinoGameTableFromDto implements Action<MapQasinoGameTableFromD
         if ((actionDto.getActiveTurn() == null)) {
             if ((actionDto.getQasinoGame() != null)) {
                 actionDto.setActiveTurn(actionDto.getQasinoGame().getTurn());
+                if ((actionDto.getActiveTurn() == null)) {
+                    // when game is quit before started
+                    table.setPossibleMoves(null);
+                    table.setCountStockAndTotal(
+                            "[ 0 / 0 ] stock/total");
+                    table.setCurrentTurn(null);
+                    table.setSeats(null);
+                    return EventOutput.Result.SUCCESS;
+                }
             } else {
+                // when game is quit before started
+                table.setPossibleMoves(null);
+                table.setCountStockAndTotal(
+                        "[ 0 / 0 ] stock/total");
+                table.setCurrentTurn(null);
+                table.setSeats(null);
                 return EventOutput.Result.SUCCESS;
             }
         }
-        if ((actionDto.getActiveTurn() == null)) {
-            return EventOutput.Result.SUCCESS;
-        }
+
         table.setCurrentTurn(actionDto.getActiveTurn());
         List<Move> moves = new ArrayList<>();
         switch (actionDto.getQasinoGame().getType()) {

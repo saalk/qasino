@@ -150,7 +150,7 @@
         </tr>
         </thead>
         <tbody>
-        <tr th:if="${qasinoResponse.pageGamePlay.table.possibleMoves.empty} or ${qasinoResponse.params.gsg} != 'PLAYING'">
+        <tr th:if="${qasinoResponse.pageGamePlay.table.possibleMoves == null} or ${qasinoResponse.pageGamePlay.table.possibleMoves.empty} or ${qasinoResponse.params.gsg} != 'PLAYING'">
             <td class="no-line" colspan="2">No moves available...</td>
         </tr>
         <tr>
@@ -160,7 +160,7 @@
                 <!--                <div class="form-group col-lg-10">-->
                 <div class="col-lg-10">
                     <button th:text="${move}"
-                            th:action="@{/move/{turnEvent}/{gameId}(turnEvent=${move}, gameId=${qasinoResponse.params.gid})}"
+                            th:formaction="@{/turn/{turnEvent}/{gameId}(turnEvent=${move}, gameId=${qasinoResponse.params.gid})}"
                             type="submit" class="btn btn-default">Button
                     </button>
                 </div>

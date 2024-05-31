@@ -31,7 +31,7 @@ public enum Suit implements LabeledEnum {
     DIAMONDS("D"),
     HEARTS("H"),
     SPADES("S"),
-    JOKERS("J");
+    JOKERS("R");
 
     public static final Map<String, Suit> suitMapNoError = new HashMap<>();
     private static final Map<String, Suit> lookup = new HashMap<>();

@@ -55,7 +55,7 @@ public class MapQasinoResponseFromDto implements Action<MapQasinoResponseFromDto
         PageLeague pageLeague = new PageLeague();
 
         // special for gameplay
-        SectionTable table = new SectionTable();
+//        SectionTable table = new SectionTable();
         actionDto.setActionNeeded(false);
         actionDto.setAction("No suggestions");
 
@@ -190,7 +190,7 @@ public class MapQasinoResponseFromDto implements Action<MapQasinoResponseFromDto
 
         qasinoResponse.setNavBarItems(navigationBarItems);
         qasinoResponse.setStatistics(actionDto.getStatistics());
-        if (actionDto.getErrorMessage().isEmpty()) {
+        if (actionDto.getErrorReason().isEmpty()) {
             qasinoResponse.setAction(actionDto.getAction());
         } else {
             qasinoResponse.setAction(actionDto.getErrorMessage());
@@ -325,6 +325,7 @@ public class MapQasinoResponseFromDto implements Action<MapQasinoResponseFromDto
         // @formatter:off
         // Getters
         String getErrorMessage();
+        String getErrorReason();
 
         List<Statistic> getStatistics();
         void setAction(String message);

@@ -57,6 +57,7 @@ public class UpdateFichesForPlayer implements Action<UpdateFichesForPlayer.Dto, 
                             setConflictErrorMessage(actionDto, "Move", String.valueOf(cardMove.getMove()));
                             return EventOutput.Result.FAILURE;
                         }
+
                         updateWinOfLoss(actionDto, cardMove, previousCardMoveCard.orElse(null));
                     }
                     previousCardMoveCard = cardRepository.findById(cardMove.getCardId());

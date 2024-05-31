@@ -14,49 +14,35 @@ import java.util.List;
 @Repository
 public interface PlayerRepository extends JpaRepository<Player, Long> {
 
-    public final static String FIND_PLAYERS_INVITED_FOR_A_GAME =
-            "SELECT * FROM \"game\" a JOIN \"player\" b " +
-                    "WHERE a.\"game_id\" = b.\"game_id\" " +
-                    "AND b.\"role\" IN ('INVITED','ACCEPTED','REJECTED') ";
-    public final static String COUNT_PLAYERS_INVITED_FOR_A_GAME =
-            "SELECT count(*) FROM \"game\" a JOIN \"player\" b " +
-                    "WHERE a.\"game_id\" = b.\"game_id\" " +
-                    "AND a.\"role\" IN ('INVITED','ACCEPTED','REJECTED') ";
+    // @formatter:off
 
-    //@Query("SELECT * FROM playerS p WHERE p.game_id = ?1")
+    // BASIC FINDS
+    @Query(value = "SELECT * FROM \"player\" ORDER BY \"player_id\"", countQuery = "SELECT count(*) FROM \"player\"", nativeQuery = true)
+    Page<Player> findAllPlayersWithPage(Pageable pageable);
+    List<Player> findByGame(Game game);
+
+    // SPECIAL FINDS
+    String  FIND_PLAYERS_INVITED_FOR_A_GAME = "SELECT        * FROM \"game\" a JOIN \"player\" b WHERE a.\"game_id\" = b.\"game_id\" AND b.\"role\" IN ('INVITED','ACCEPTED','REJECTED') ";
+    String COUNT_PLAYERS_INVITED_FOR_A_GAME = "SELECT count(*) FROM \"game\" a JOIN \"player\" b WHERE a.\"game_id\" = b.\"game_id\" AND a.\"role\" IN ('INVITED','ACCEPTED','REJECTED') ";
+    @Query(value = FIND_PLAYERS_INVITED_FOR_A_GAME, countQuery = COUNT_PLAYERS_INVITED_FOR_A_GAME, nativeQuery = true)
+    public List<Player> findAllPlayersInvitedForAGame(@Param("gameId") long gameId, Pageable pageable);
+
+    String FIND_PLAYERS_FOR_A_GAME_ORDER_BY_SEAT = "SELECT * FROM \"player\" p WHERE p.\"game_id\" = :game_id ORDER BY \"seat\" ASC";
     List<Player> findByGameOrderBySeatAsc(Game game);
-
-
-    //@Query("SELECT * FROM player p ORDER BY /"created/" desc WHERE p.visitor_id = ?1")
+    String FIND_PLAYERS_FOR_A_GAME_ORDER_BY_CREATED = "SELECT * FROM \"player\" p WHERE p.\"game_id\" = :game_id ORDER BY \"created\" ASC";
     List<Player> findByGameOrderByCreatedDesc(Game game);
 
-    //@Query("SELECT count(p) FROM playerS p WHERE p.game_id = ?1")
+    // SPECIAL COUNTS
+    String COUNT_ALL_PLAYERS_FOR_A_GAME = "SELECT count(*) FROM \"game\" a WHERE a.\"game_id\" = :game_id ";
     int countByGame(Game game);
+    String COUNT_ALL_AILEVEL_PLAYERS_FOR_A_GAME = "SELECT count(*) FROM \"game\" a WHERE a.\"game_id\" = :game_id ";
 
-    public final static String COUNT_AILEVEL =
-            "SELECT count(*) FROM \"player\" as p WHERE p.\"is_human\" = :human " +
-            "AND p.\"ai_level\" = :aiLevel ";
-
+    String COUNT_AILEVEL = "SELECT count(*) FROM \"player\" as p WHERE p.\"is_human\" = :human AND p.\"ai_level\" = :aiLevel ";
     @Query(value = COUNT_AILEVEL, nativeQuery = true)
     Integer countByAiLevel(@Param(value = "human") String human, @Param(value = "aiLevel") String aiLevel);
 
-    //@Query("SELECT * FROM playerS p WHERE p.game_id = ?1")
-    List<Player> findByGame(Game game);
+    String COUNT_BOTS_FOR_A_GAME = "SELECT count(*) FROM \"player\" as p WHERE p.\"is_human\" = false WHERE a.\"game_id\" = b.\"game_id\" ";
+    @Query(value = COUNT_BOTS_FOR_A_GAME, nativeQuery = true)
+    Integer countBotsForAGame(@Param("gameId") long gameId);
 
-
-    // special finds
-
-    @Query(
-            value = "SELECT * FROM \"player\" ORDER BY \"player_id\"",
-            countQuery = "SELECT count(*) FROM \"player\"",
-            nativeQuery = true)
-    Page<Player> findAllPlayersWithPage(Pageable pageable);
-
-    @Query(
-            value = FIND_PLAYERS_INVITED_FOR_A_GAME,
-            countQuery = COUNT_PLAYERS_INVITED_FOR_A_GAME,
-            nativeQuery = true)
-    public List<Player> findAllPlayersInvitedForAGame(
-            @Param("gameId") long gameId,
-            Pageable pageable);
 }
