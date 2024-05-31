@@ -20,7 +20,7 @@ class GameTest extends QasinoSimulator {
 
         assertThat(game.getInitiator()).isEqualTo(visitor.getVisitorId());
         assertThat(game.getType()).isEqualTo(Type.HIGHLOW);
-        assertThat(game.getAnte()).isEqualTo(00);
+        assertThat(game.getAnte()).isEqualTo(20);
         assertThat(game.getState()).isEqualTo(GameState.INITIALIZED);
 
         // changes
