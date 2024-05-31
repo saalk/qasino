@@ -12,13 +12,13 @@ import jakarta.annotation.Resource;
 
 @Slf4j
 @Component
-public class SignUpNewVisitorAction implements Action<SignUpNewVisitorAction.SignUpNewVisitorActionDTO, EventOutput.Result> {
+public class SignUpNewVisitorAction implements Action<SignUpNewVisitorAction.Dto, EventOutput.Result> {
 
     @Resource
     VisitorRepository visitorRepository;
 
     @Override
-    public EventOutput.Result perform(SignUpNewVisitorActionDTO actionDto) {
+    public EventOutput.Result perform(Dto actionDto) {
 
         if (!(StringUtils.isEmpty(actionDto.getSuppliedAlias()))) {
             int sequence = Math.toIntExact(visitorRepository.countByAlias(actionDto.getSuppliedAlias()));
@@ -43,19 +43,19 @@ public class SignUpNewVisitorAction implements Action<SignUpNewVisitorAction.Sig
         return EventOutput.Result.SUCCESS;
     }
 
-     private void setBadRequestErrorMessage(SignUpNewVisitorActionDTO actionDto, String id, String value) {
+     private void setBadRequestErrorMessage(Dto actionDto, String id, String value) {
         actionDto.setErrorKey(id);
         actionDto.setErrorValue(value);
         actionDto.setBadRequestErrorMessage("empty");
     }
 
-    private void setConflictErrorMessage(SignUpNewVisitorActionDTO actionDto, String id, String value) {
+    private void setConflictErrorMessage(Dto actionDto, String id, String value) {
         actionDto.setErrorKey(id);
         actionDto.setErrorValue(value);
         actionDto.setConflictErrorMessage("username [" + value + "] not available any more");
     }
 
-    public interface SignUpNewVisitorActionDTO {
+    public interface Dto {
 
         // @formatter:off
         // Getters

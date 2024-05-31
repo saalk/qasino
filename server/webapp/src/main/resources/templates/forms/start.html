@@ -71,5 +71,32 @@
         </fieldset>
     </form>
 </div>
+<div th:fragment="btn-game-row">
+    <table class="u-full-width">
+        <thead>
+        <tr>
+            <th class="no-line">Possible games actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:if="${qasinoResponse.params.possibleGameEvents == null} or ${qasinoResponse.params.possibleGameEvents.empty}">
+            <td class="no-line" colspan="2">No actions available...</td>
+        </tr>
+        <tr>
+            <td class="no-line"
+                th:unless="${#lists.isEmpty(qasinoResponse.params.possibleGameEvents)}"
+                th:each="action : ${qasinoResponse.params.possibleGameEvents}">
+                <!--                <div class="form-group col-lg-10">-->
+                <div class="col-lg-10">
+                    <button th:text="${turn}"
+                            th:formaction="@{/{action}/{gameId}/{gameId}(turnEvent=${action}, gameId=${qasinoResponse.params.gid})}"
+                            type="submit" class="btn btn-default">Button
+                    </button>
+                </div>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
 </body>
 </html>

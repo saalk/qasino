@@ -150,17 +150,17 @@
         </tr>
         </thead>
         <tbody>
-        <tr th:if="${qasinoResponse.pageGamePlay.table.possibleMoves == null} or ${qasinoResponse.pageGamePlay.table.possibleMoves.empty} or ${qasinoResponse.params.gsg} != 'PLAYING'">
+        <tr th:if="${qasinoResponse.params.possibleTurnEvents == null} or ${qasinoResponse.params.possibleTurnEvents.empty}">
             <td class="no-line" colspan="2">No moves available...</td>
         </tr>
         <tr>
             <td class="no-line"
-                th:unless="${#lists.isEmpty(qasinoResponse.pageGamePlay.table.possibleMoves)} or ${qasinoResponse.params.gsg} != 'PLAYING'"
-                th:each="move : ${qasinoResponse.pageGamePlay.table.possibleMoves}">
+                th:unless="${#lists.isEmpty(qasinoResponse.params.possibleTurnEvents)}"
+                th:each="turn : ${qasinoResponse.params.possibleTurnEvents}">
                 <!--                <div class="form-group col-lg-10">-->
                 <div class="col-lg-10">
-                    <button th:text="${move}"
-                            th:formaction="@{/turn/{turnEvent}/{gameId}(turnEvent=${move}, gameId=${qasinoResponse.params.gid})}"
+                    <button th:text="${turn}"
+                            th:formaction="@{/turn/{turnEvent}/{gameId}(turnEvent=${turn}, gameId=${qasinoResponse.params.gid})}"
                             type="submit" class="btn btn-default">Button
                     </button>
                 </div>

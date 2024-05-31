@@ -11,11 +11,11 @@ import java.util.List;
 
 @Slf4j
 @Component
-public class SetStatusIndicatorsBaseOnRetrievedDataAction implements Action<SetStatusIndicatorsBaseOnRetrievedDataAction.SetStatusIndicatorsBaseOnRetrievedDataDTO, EventOutput.Result> {
+public class SetStatusIndicatorsBaseOnRetrievedDataAction implements Action<SetStatusIndicatorsBaseOnRetrievedDataAction.Dto, EventOutput.Result> {
 
 
     @Override
-    public EventOutput.Result perform(SetStatusIndicatorsBaseOnRetrievedDataDTO actionDto) {
+    public EventOutput.Result perform(Dto actionDto) {
 
 //        actionDto.setShowVisitorPage(false);
 //        actionDto.setShowGameSetupPage(false);
@@ -44,7 +44,7 @@ public class SetStatusIndicatorsBaseOnRetrievedDataAction implements Action<SetS
         return EventOutput.Result.SUCCESS;
     }
 
-    public interface SetStatusIndicatorsBaseOnRetrievedDataDTO {
+    public interface Dto {
 
         // @formatter:off
         // Getters

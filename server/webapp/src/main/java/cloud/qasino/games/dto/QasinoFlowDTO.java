@@ -4,6 +4,7 @@ import cloud.qasino.games.action.CalculateAndFinishGameAction;
 import cloud.qasino.games.action.CalculateQasinoStatistics;
 import cloud.qasino.games.action.CreateNewGameAction;
 import cloud.qasino.games.action.CreateNewLeagueAction;
+import cloud.qasino.games.action.DeterminePossibleEvents;
 import cloud.qasino.games.action.FindVisitorIdByAliasOrUsernameAction;
 import cloud.qasino.games.action.HandleSecuredLoanAction;
 import cloud.qasino.games.action.IsGameConsistentForGameEvent;
@@ -67,29 +68,31 @@ import java.util.Map;
 @Slf4j
 public class QasinoFlowDTO extends AbstractFlowDTO
         implements
-        FindVisitorIdByAliasOrUsernameAction.Dto,
-        SignUpNewVisitorAction.SignUpNewVisitorActionDTO,
-        CreateNewLeagueAction.Dto,
-        LoadEntitiesToDtoAction.Dto,
+        CalculateAndFinishGameAction.Dto,
         CalculateQasinoStatistics.Dto,
+        CreateNewGameAction.Dto,
+        CreateNewLeagueAction.Dto,
+        DeterminePossibleEvents.Dto,
+        FindVisitorIdByAliasOrUsernameAction.Dto,
         HandleSecuredLoanAction.Dto,
-        SetStatusIndicatorsBaseOnRetrievedDataAction.SetStatusIndicatorsBaseOnRetrievedDataDTO,
+        IsGameConsistentForGameEvent.Dto,
+        IsTurnConsistentForTurnEvent.Dto,
+        IsGameFinished.Dto,
+        IsPlayerHuman.Dto,
+        LoadEntitiesToDtoAction.Dto,
         MapQasinoResponseFromDto.Dto,
         MapQasinoGameTableFromDto.Dto,
         PlayNextHumanTurnAction.Dto,
         PlayNextBotTurnAction.Dto,
-        IsGameConsistentForGameEvent.Dto,
-        IsTurnConsistentForTurnEvent.Dto,
-        CalculateAndFinishGameAction.Dto,
-        UpdateVisitorAction.Dto,
-        UpdateFichesForPlayer.Dto,
-        IsGameFinished.Dto,
-        StartGameForType.Dto,
-        CreateNewGameAction.Dto,
+        PlayFirstTurnAction.Dto,
         PrepareGameAction.Dto,
+        SetStatusIndicatorsBaseOnRetrievedDataAction.Dto,
+        SignUpNewVisitorAction.Dto,
+        StartGameForType.Dto,
         StopGameAction.Dto,
-        IsPlayerHuman.Dto,
-        PlayFirstTurnAction.Dto {
+        UpdateVisitorAction.Dto,
+        UpdateFichesForPlayer.Dto
+{
     // suppress lombok setter for these fixed values
     @Setter(AccessLevel.NONE)
     private String applicationName = "qasino";
@@ -175,6 +178,8 @@ public class QasinoFlowDTO extends AbstractFlowDTO
     private Turn activeTurn;
     private List<Card> cardsInTheGameSorted;
     private List<CardMove> allCardMovesForTheGame;
+    private List<TurnEvent> possibleTurnEvents;
+    private List<GameEvent> possibleGameEvents;
 
     // NAVIGATION based on RETRIEVED DATA
     public boolean showVisitorPage;

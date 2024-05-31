@@ -27,6 +27,7 @@ import cloud.qasino.games.dto.elements.PageGameSetup;
 import cloud.qasino.games.dto.elements.PageLeague;
 import cloud.qasino.games.dto.elements.PageVisitor;
 import cloud.qasino.games.dto.elements.SectionTable;
+import cloud.qasino.games.dto.enums.Params;
 import cloud.qasino.games.dto.statistics.Statistic;
 import cloud.qasino.games.response.QasinoResponse;
 import cloud.qasino.games.statemachine.event.EventOutput;
@@ -198,18 +199,7 @@ public class MapQasinoResponseFromDto implements Action<MapQasinoResponseFromDto
             qasinoResponse.setAction(actionDto.getErrorMessage());
         }
         qasinoResponse.setActionNeeded(actionDto.isActionNeeded());
-        qasinoResponse.getParams().setVid(setId(actionDto.getSuppliedVisitorId()));
-        qasinoResponse.getParams().setGid(setId(actionDto.getSuppliedGameId()));
-        if (qasinoResponse.getParams().gid > 0) {
-            qasinoResponse.getParams().setGsg(String.valueOf(actionDto.getQasinoGame().getState().getGroup()));
-        } else {
-            qasinoResponse.getParams().setGsg(GameStateGroup.ERROR.getLabel());
-        }
-        qasinoResponse.getParams().setLid(setId(actionDto.getSuppliedLeagueId()));
-        qasinoResponse.getParams().setSuppliedGameEvent(actionDto.getSuppliedGameEvent());
-        qasinoResponse.getParams().setSuppliedTurnEvent(actionDto.getSuppliedTurnEvent());
-        qasinoResponse.getParams().setTpid(setId(actionDto.getSuppliedTurnPlayerId()));
-        qasinoResponse.getParams().setPlayingCards(actionDto.getSuppliedCards());
+        qasinoResponse.setParams(setParams(actionDto));
 
 
         actionDto.setQasinoResponse(qasinoResponse);
@@ -230,7 +220,24 @@ public class MapQasinoResponseFromDto implements Action<MapQasinoResponseFromDto
         pageGameSetup.setBotPlayer(Player.buildDummyBot(null, Avatar.GOBLIN, AiLevel.AVERAGE));
         pageGameSetup.setHumanPlayer(Player.buildDummyHuman(null, null, Avatar.ELF));
     }
-
+    private static Params setParams(Dto actionDto) {
+        Params params = new Params();
+        params.setVid(setId(actionDto.getSuppliedVisitorId()));
+        params.setGid(setId(actionDto.getSuppliedGameId()));
+        if (params.gid > 0) {
+            params.setGsg(String.valueOf(actionDto.getQasinoGame().getState().getGroup()));
+        } else {
+            params.setGsg(GameStateGroup.ERROR.getLabel());
+        }
+        params.setLid(setId(actionDto.getSuppliedLeagueId()));
+        params.setSuppliedGameEvent(actionDto.getSuppliedGameEvent());
+        params.setSuppliedTurnEvent(actionDto.getSuppliedTurnEvent());
+        params.setTpid(setId(actionDto.getSuppliedTurnPlayerId()));
+        params.setSuppliedPlayingCards(actionDto.getSuppliedCards());
+        params.setPossibleGameEvents(actionDto.getPossibleGameEvents());
+        params.setPossibleTurnEvents(actionDto.getPossibleTurnEvents());
+        return params;
+    }
     private static Long setId(long id) {
         if (id > 0) return id;
         return Long.valueOf(-1);
@@ -344,6 +351,8 @@ public class MapQasinoResponseFromDto implements Action<MapQasinoResponseFromDto
         // events
         GameEvent getSuppliedGameEvent();
         TurnEvent getSuppliedTurnEvent();
+        List<GameEvent> getPossibleGameEvents();
+        List<TurnEvent> getPossibleTurnEvents();
 
 
         // visitor

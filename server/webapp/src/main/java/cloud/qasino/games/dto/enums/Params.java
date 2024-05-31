@@ -9,9 +9,9 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 
 @Getter
 @Setter
@@ -35,10 +35,9 @@ public class Params {
     public GameStateGroup suppliedGameStateGroup = GameStateGroup.ERROR;
 
     // Triggers for playing a Game
-    public List<PlayingCard> playingCards = Collections.singletonList(PlayingCard.getPlayingCardFromCardId("JR"));   // todo
+    public List<PlayingCard> suppliedPlayingCards = Collections.singletonList(PlayingCard.getPlayingCardFromCardId("JR"));   // todo
 
-    Map<String, GameEvent> gameEventsPossible = GameEvent.gameEventsPossible;
-    Map<String, TurnEvent> turnEventsHighLow = TurnEvent.turnEventsHighLow;
-//    Map<String, TurnEvent> turnEventsBlackJack = TurnEvent.turnEventsBlackJack;
+    List<GameEvent> possibleGameEvents = new ArrayList<>();
+    List<TurnEvent> possibleTurnEvents = new ArrayList<>();
 
 }

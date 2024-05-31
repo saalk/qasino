@@ -4,8 +4,12 @@ import cloud.qasino.games.statemachine.event.interfaces.Event;
 import lombok.Getter;
 
 import jakarta.persistence.Transient;
+
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.EnumSet;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -17,62 +21,34 @@ public enum TurnEvent implements Event {
     // highlow
     HIGHER("higher"),
     LOWER("lower"),
-    NEXT("next"),
 
     // blackjack,
     DEAL("deal"),
     SPLIT("split"),
+    STAND("stand"),
 
-    // generic
+    // generic,
+    NEXT("next"), // only for bot player
     PASS("pass"),
     LEAVE("leave"),
 
-    // technical
+    // technical internal events
     ERROR("error"),
     DETERMINE_WINNER("determine_winner"),
     END_GAME("end_game"),; // system events
 
-    public static final Set<TurnEvent> blackJackTurn = of(DEAL, SPLIT, LEAVE);
-    public static final Set<TurnEvent> highLowTurn = of(HIGHER, LOWER, PASS, LEAVE, NEXT);
-    public static final Set<TurnEvent> systemTurn = of(DETERMINE_WINNER, END_GAME);
+    public static final List<TurnEvent> blackJackPossibleHumanTurn = Arrays.asList(DEAL, SPLIT, LEAVE);
+    public static final List<TurnEvent> blackJackPossibleBotTurn = List.of(NEXT);
+    public static final List<TurnEvent> highLowPossibleHumanTurns = Arrays.asList(HIGHER, LOWER, PASS, LEAVE);
+    public static final List<TurnEvent> highLowPossibleBotTurns = List.of(NEXT);
+    public static final List<TurnEvent> systemTurn = Arrays.asList(DETERMINE_WINNER, END_GAME);
 
     public static final Map<String, TurnEvent> lookup
-            = new HashMap<>();
-    public static final Map<String, TurnEvent> turnEventsHighLow
-            = new HashMap<>();
-    public static final Map<String, TurnEvent> turnEventsBlackJack
             = new HashMap<>();
 
     static {
         for (TurnEvent turnEvent : EnumSet.allOf(TurnEvent.class))
             lookup.put(turnEvent.getLabel(), turnEvent);
-    }
-
-    static {
-        for (TurnEvent turnEvent : EnumSet.allOf(TurnEvent.class))
-            if (!(
-                    turnEvent == TurnEvent.DEAL ||
-                    turnEvent == TurnEvent.SPLIT ||
-                    turnEvent == TurnEvent.ERROR ||
-                    turnEvent == TurnEvent.DETERMINE_WINNER ||
-                    turnEvent == TurnEvent.END_GAME
-
-            ))
-                turnEventsHighLow.put(turnEvent.getLabel(), turnEvent);
-    }
-
-    static {
-        for (TurnEvent turnEvent : EnumSet.allOf(TurnEvent.class))
-            if (!(
-                    turnEvent == TurnEvent.HIGHER ||
-                            turnEvent == TurnEvent.LOWER ||
-                            turnEvent == TurnEvent.NEXT ||
-                            turnEvent == TurnEvent.ERROR ||
-                            turnEvent == TurnEvent.DETERMINE_WINNER ||
-                            turnEvent == TurnEvent.END_GAME
-
-            ))
-                turnEventsBlackJack.put(turnEvent.getLabel(), turnEvent);
     }
 
     public static TurnEvent fromLabel(String inputLabel) {

@@ -33,18 +33,16 @@ public class MapQasinoGameTableFromDto implements Action<MapQasinoGameTableFromD
                 actionDto.setActiveTurn(actionDto.getQasinoGame().getTurn());
                 if ((actionDto.getActiveTurn() == null)) {
                     // when game is quit before started
-                    table.setPossibleMoves(null);
                     table.setCountStockAndTotal(
-                            "[ 0 / 0 ] stock/total");
+                            "[-/-] stock/total");
                     table.setCurrentTurn(null);
                     table.setSeats(null);
                     return EventOutput.Result.SUCCESS;
                 }
             } else {
                 // when game is quit before started
-                table.setPossibleMoves(null);
                 table.setCountStockAndTotal(
-                        "[ 0 / 0 ] stock/total");
+                        "[-/-] stock/total");
                 table.setCurrentTurn(null);
                 table.setSeats(null);
                 return EventOutput.Result.SUCCESS;
@@ -52,28 +50,6 @@ public class MapQasinoGameTableFromDto implements Action<MapQasinoGameTableFromD
         }
 
         table.setCurrentTurn(actionDto.getActiveTurn());
-        List<Move> moves = new ArrayList<>();
-        switch (actionDto.getQasinoGame().getType()) {
-            case HIGHLOW -> {
-                if (actionDto.getTurnPlayer().getAiLevel().equals(AiLevel.HUMAN)) {
-                    moves.add(Move.HIGHER);
-                    moves.add(Move.LOWER);
-                    moves.add(Move.PASS);
-                } else {
-                    moves.add(Move.NEXT);
-                }
-            }
-            case BLACKJACK -> {
-                if (actionDto.getTurnPlayer().getAiLevel().equals(AiLevel.HUMAN)) {
-                    moves.add(Move.DEAL);
-                    moves.add(Move.DOUBLE);
-                    moves.add(Move.STAND);
-                } else {
-                    moves.add(Move.NEXT);
-                }
-            }
-        }
-        table.setPossibleMoves(moves);
         List<Card> stockNotInHand =
                 actionDto.getCardsInTheGameSorted()
                         .stream()
