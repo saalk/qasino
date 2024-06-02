@@ -85,8 +85,9 @@ public class MapQasinoGameTableFromDtoAction implements Action<MapQasinoGameTabl
             // player stats
             seat.setSeatPlayerId(player.getPlayerId());
             seat.setSeatPlayer(player);
+            seat.setSeatVisitor(player.getVisitor());
             seat.setSeatFiches(player.getFiches());
-            // todo double or nothing? then time the turn in round
+            // TODO make double or nothing work
             seat.setSeatCurrentBet(actionDto.getQasinoGame().getAnte());
             seat.setSeatPlayerAvatar(player.getAvatar());
             seat.setSeatPlayerAiLevel(player.getAiLevel());
@@ -104,8 +105,10 @@ public class MapQasinoGameTableFromDtoAction implements Action<MapQasinoGameTabl
             if (player.isHuman()) {
                 seat.setVisitorId(player.getVisitor().getVisitorId());
                 seat.setUsername(player.getVisitor().getUsername());
+                seat.setSeatStartBalance(player.getVisitor().getBalance());
             } else {
                 seat.setVisitorId(0);
+                seat.setSeatStartBalance(0);
                 seat.setUsername(player.getAiLevel().getLabel() + " " + player.getAvatar().getLabel());
             }
             seats.add(seat);

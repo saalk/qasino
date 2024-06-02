@@ -19,14 +19,13 @@ public class Style {
     TurnsToWin turnsToWin;
 
     public Style() {
-        this.label = "nr3tnn";
+        this.label = "nrrn22";
         this.anteToWin = AnteToWin.NA;
         this.bettingStrategy = BettingStrategy.REGULAR;
-        this.deckConfiguration = DeckConfiguration.ALL_THREE_JOKERS;
-        this.oneTimeInsurance = OneTimeInsurance.TENTH_ANTE;
-        this.roundsToWin = RoundsToWin.NA;
-        this.turnsToWin = TurnsToWin.NA;
-
+        this.deckConfiguration = DeckConfiguration.RANDOM_SUIT_NO_JOKER;
+        this.oneTimeInsurance = OneTimeInsurance.NO;
+        this.roundsToWin = RoundsToWin.TWO_ROUNDS;
+        this.turnsToWin = TurnsToWin.TWO_IN_A_ROW_WINS;
     }
 
     public Style(String label, AnteToWin anteToWin, BettingStrategy bettingStrategy, DeckConfiguration deckConfiguration, OneTimeInsurance oneTimeInsurance, RoundsToWin roundsToWin, TurnsToWin turnsToWin) {
@@ -48,12 +47,12 @@ public class Style {
 
         AnteToWin anteToWin = AnteToWin.NA;
         BettingStrategy bettingStrategy = BettingStrategy.REGULAR;
-        DeckConfiguration deckConfiguration = DeckConfiguration.ALL_THREE_JOKERS;
-        OneTimeInsurance oneTimeInsurance = OneTimeInsurance.TENTH_ANTE;
-        RoundsToWin roundsToWin = RoundsToWin.NA;
-        TurnsToWin turnsToWin = TurnsToWin.NA;
+        DeckConfiguration deckConfiguration = DeckConfiguration.RANDOM_SUIT_NO_JOKER;
+        OneTimeInsurance oneTimeInsurance = OneTimeInsurance.NO;
+        RoundsToWin roundsToWin = RoundsToWin.TWO_ROUNDS;
+        TurnsToWin turnsToWin = TurnsToWin.TWO_IN_A_ROW_WINS;
 
-        StringBuilder newLabel = new StringBuilder("hr3tn3");
+        StringBuilder newLabel = new StringBuilder("nrrn22");
 
         final int len = label.length();
         char pos;

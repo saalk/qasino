@@ -84,7 +84,7 @@
             <th>Seat</th>
             <th>IsPlaying?</th>
             <th>AiLevel</th>
-            <th>Balance</th>
+            <th>Start balance</th>
             <th>Fiches</th>
             <th>CurrentBet</th>
             <th>Hand</th>
@@ -100,7 +100,7 @@
             <td><span th:text="${seat.seatId}">Seat</span></td>
             <td><span th:text="${seat.isPlaying}">isPlaying</span></td>
             <td><span th:text="${seat.seatPlayerAiLevel}">AiLevel</span></td>
-            <td><span th:text="${seat.seatPlayer.fiches}">Balance</span></td>
+            <td><span th:text="${seat.seatStartBalance}">Start balance</span></td>
             <td><span th:text="${seat.seatFiches}">Fiches</span></td>
             <td><span th:text="${seat.seatCurrentBet}">CurrentBet</span></td>
             <td><span th:text="${seat.stringCardsInHand}">Hand</span></td>
