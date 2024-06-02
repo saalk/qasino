@@ -429,6 +429,10 @@ public class QasinoFlowDTO extends AbstractFlowDTO
         if (requestParam.containsKey(key)) {
             this.suppliedUsername = (requestParam.get("username"));
         }
+        key = "password";
+        if (requestParam.containsKey(key)) {
+            this.suppliedPassword = (requestParam.get("password"));
+        }
         key = "alias";
         if (requestParam.containsKey(key)) {
             this.suppliedAlias = (requestParam.get("alias"));

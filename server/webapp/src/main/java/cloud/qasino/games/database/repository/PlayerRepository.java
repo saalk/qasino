@@ -23,8 +23,8 @@ public interface PlayerRepository extends JpaRepository<Player, Long> {
     List<Player> findByGame(Game game);
 
     // SPECIAL FINDS
-    String  FIND_PLAYERS_INVITED_FOR_A_GAME = "SELECT        * FROM \"game\" a JOIN \"player\" b WHERE a.\"game_id\" = b.\"game_id\" AND b.\"role\" IN ('INVITED','ACCEPTED','REJECTED') ";
-    String COUNT_PLAYERS_INVITED_FOR_A_GAME = "SELECT count(*) FROM \"game\" a JOIN \"player\" b WHERE a.\"game_id\" = b.\"game_id\" AND a.\"role\" IN ('INVITED','ACCEPTED','REJECTED') ";
+    String  FIND_PLAYERS_INVITED_FOR_A_GAME = "SELECT      b.* FROM \"game\" as a JOIN \"player\" as b WHERE a.\"game_id\" = b.\"game_id\" AND b.\"role\" IN ('INVITED','ACCEPTED','REJECTED') AND a.\"game_id\" = :gameId ";
+    String COUNT_PLAYERS_INVITED_FOR_A_GAME = "SELECT count(*) FROM \"game\" as a JOIN \"player\" as b WHERE a.\"game_id\" = b.\"game_id\" AND a.\"role\" IN ('INVITED','ACCEPTED','REJECTED') AND a.\"game_id\" = :gameId ";
     @Query(value = FIND_PLAYERS_INVITED_FOR_A_GAME, countQuery = COUNT_PLAYERS_INVITED_FOR_A_GAME, nativeQuery = true)
     public List<Player> findAllPlayersInvitedForAGame(@Param("gameId") long gameId, Pageable pageable);
 

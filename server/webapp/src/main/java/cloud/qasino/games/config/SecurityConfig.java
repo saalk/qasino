@@ -50,7 +50,7 @@ class SecurityConfig {
                 .httpBasic(Customizer.withDefaults())
                 .formLogin(Customizer.withDefaults())
                 .authorizeHttpRequests(
-                        auth -> auth.requestMatchers("/", "/cssandjs/**", "/favicon.ico", "/images/**", "/authenticate/**", "/signin", "/signup", "/general", "/homeNotSignedIn", "/h2-console/**")
+                        auth -> auth.requestMatchers("/", "/cssandjs/**", "/favicon.ico", "/images/**", "/authenticate/**","/register", "/signin", "/signup", "/general", "/homeNotSignedIn", "/h2-console/**")
                                 .permitAll()
                                 .requestMatchers("/users/**", "/apps/**").hasAuthority("ADMIN")
                                 .requestMatchers("/myapps/**").hasAuthority("CLIENT")
@@ -58,10 +58,10 @@ class SecurityConfig {
                                 .authenticated()
                 )
                 .formLogin(formLogin -> formLogin
-                                .loginPage("/signin")
+                                .loginPage("/register")
                                 .loginProcessingUrl("/perform_signin")
                                 .defaultSuccessUrl("/", true)
-                                .failureUrl("/signin?error=true")
+                                .failureUrl("/register?error=true")
 //                        .failureHandler(authenticationFailureHandler())
 
                 )

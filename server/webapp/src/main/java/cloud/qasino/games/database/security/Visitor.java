@@ -89,6 +89,7 @@ public class Visitor {
     @Column(name = "alias_seq")
     private int aliasSequence;
     @NotBlank(message = Visitor.NOT_BLANK_MESSAGE)
+
     // Normal fields
     @JsonProperty("alias")
     @Column(name = "alias", length = 50, nullable = false)

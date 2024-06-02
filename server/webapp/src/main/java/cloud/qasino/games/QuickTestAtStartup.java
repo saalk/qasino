@@ -34,6 +34,7 @@ import org.springframework.stereotype.Component;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Random;
 
 @Component
 @Slf4j
@@ -78,10 +79,12 @@ public class QuickTestAtStartup implements ApplicationRunner {
 
     public void tests() {
 
+        Random rand = new Random();
+        int rand_int1 = rand.nextInt(100000);
         // A new visitor with 2 friends arrive
-        Visitor visitor = Visitor.buildDummy("user1", "User1");
-        Visitor friend1 = Visitor.buildDummy("friend1", "Friend1");
-        Visitor friend2 = Visitor.buildDummy("friend2", "Friend2");
+        Visitor visitor = Visitor.buildDummy("user1" + rand_int1, "User1" + rand_int1);
+        Visitor friend1 = Visitor.buildDummy("friend1"+ rand_int1, "Friend1" + rand_int1);
+        Visitor friend2 = Visitor.buildDummy("friend2"+ rand_int1, "Friend2" + rand_int1);
 
         int pawn = Visitor.pawnShipValue(0);
         visitor.pawnShip(pawn);

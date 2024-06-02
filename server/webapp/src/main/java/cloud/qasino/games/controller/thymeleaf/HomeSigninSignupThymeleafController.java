@@ -58,8 +58,9 @@ import java.util.Set;
 @Slf4j
 public class HomeSigninSignupThymeleafController extends AbstractThymeleafController {
 
-//    private static final String IMAGES_FAVICON_LOCATION = "static/images/favicon.ico";
+    //    private static final String IMAGES_FAVICON_LOCATION = "static/images/favicon.ico";
     private static final String HOME_SIGNUP_VIEW_LOCATION = "home/signup";
+    private static final String HOME_SIGNUP_VIEW_LOCATION2 = "home/register";
     private static final String HOME_SIGNIN_VIEW_LOCATION = "home/signin";
     private static final String HOME_SIGNED_IN_LOCATION = "home/homeSignedIn";
     private static final String HOME_NOT_SIGNED_IN_LOCATION = "home/homeNotSignedIn";
@@ -94,6 +95,8 @@ public class HomeSigninSignupThymeleafController extends AbstractThymeleafContro
             @RequestParam(value = "error", required = false) String error,
             HttpServletResponse response
     ) {
+        log.warn("GetMapping: /signin");
+
         // 1 - map input
         QasinoFlowDTO flowDTO = new QasinoFlowDTO();
         flowDTO.setPathVariables(
@@ -101,7 +104,7 @@ public class HomeSigninSignupThymeleafController extends AbstractThymeleafContro
         );
         // 2 - validate input
         if (!flowDTO.isInputValid() || error != null) {
-            throw new MyNPException("103 gameEvent","sign_on [" + flowDTO.getSuppliedUsername() + "]");
+            throw new MyNPException("103 gameEvent", "sign_on [" + flowDTO.getSuppliedUsername() + "]");
 //            prepareQasinoResponse(response, flowDTO);
 //            model.addAttribute(flowDTO.getQasinoResponse());
 //            return "redirect:/";
@@ -109,7 +112,7 @@ public class HomeSigninSignupThymeleafController extends AbstractThymeleafContro
         // 3 - process
         // 4 - return response
         prepareQasinoResponse(response, flowDTO);
-        model.addAttribute( flowDTO.getQasinoResponse());
+        model.addAttribute(flowDTO.getQasinoResponse());
 
 //        log.warn("GetMapping: signin");
 //        log.warn("Model: {}", model);
@@ -124,6 +127,9 @@ public class HomeSigninSignupThymeleafController extends AbstractThymeleafContro
             @RequestBody LoginRequest loginRequest,
             HttpServletResponse response
     ) {
+        log.warn("PostMapping: /perform_signin");
+
+
         Authentication authenticationRequest =
                 UsernamePasswordAuthenticationToken.unauthenticated(loginRequest.username(), loginRequest.password());
         Authentication authenticationResponse =
@@ -136,13 +142,16 @@ public class HomeSigninSignupThymeleafController extends AbstractThymeleafContro
     public record LoginRequest(String username, String password) {
     }
 
-    @GetMapping("signup")
+    @GetMapping({"register"})
+//    @GetMapping({"signup", "register"})
     String signup(
             Model model,
             @RequestHeader(value = "X-Requested-With", required = false)
             String requestedWith,
             HttpServletResponse response
     ) {
+
+        log.warn("GetMapping: /register");
 
         // 1 - map input
         QasinoFlowDTO flowDTO = new QasinoFlowDTO();
@@ -151,7 +160,7 @@ public class HomeSigninSignupThymeleafController extends AbstractThymeleafContro
         // 4 - return response
         prepareQasinoResponse(response, flowDTO);
         model.addAttribute(flowDTO.getQasinoResponse());
-        model.addAttribute(new SignupForm());
+//        model.addAttribute(new SignupForm());
 
 //        log.warn("GetMapping: signup");
 //        log.warn("HttpServletResponse: {}", response.getHeaderNames());
@@ -161,9 +170,9 @@ public class HomeSigninSignupThymeleafController extends AbstractThymeleafContro
 
 
         if (AjaxUtils.isAjaxRequest(requestedWith)) {
-            return HOME_SIGNUP_VIEW_LOCATION.concat(" :: signupForm");
+            return HOME_SIGNUP_VIEW_LOCATION2.concat(" :: qasinoResponse");
         }
-        return HOME_SIGNUP_VIEW_LOCATION;
+        return HOME_SIGNUP_VIEW_LOCATION2;
     }
 
     @PostMapping("signup")
@@ -173,6 +182,7 @@ public class HomeSigninSignupThymeleafController extends AbstractThymeleafContro
             Errors errors, RedirectAttributes ra,
             HttpServletResponse response
     ) {
+        log.warn("PostMapping: /signup");
 
         // 1 - map input
         QasinoFlowDTO flowDTO = new QasinoFlowDTO();
@@ -190,11 +200,59 @@ public class HomeSigninSignupThymeleafController extends AbstractThymeleafContro
             model.addAttribute(signupForm);
             return HOME_SIGNUP_VIEW_LOCATION;
         }
+        log.warn("PostMapping","sign_on psw [" + flowDTO.getSuppliedPassword() + "]");
+
         // 3 - process
         signUpNewVisitorAction.perform(flowDTO);
         // 4 - return response
         prepareQasinoResponse(response, flowDTO);
         QasinoResponse qasinoResponse = flowDTO.getQasinoResponse();
+        model.addAttribute(flowDTO.getQasinoResponse());
+
+//        log.warn("PostMapping: signup");
+//        log.warn("SignupForm: {}", signupForm);
+//        log.warn("RedirectAttributes: {}", ra);
+//        log.warn("qasinoResponse: {}", flowDTO.getQasinoResponse());
+
+        // see /WEB-INF/i18n/messages.properties and /WEB-INF/views/homeSignedIn.html
+        MessageHelper.addSuccessAttribute(ra, "signup.success");
+        return "redirect:/";
+    }
+
+    @PostMapping("register")
+    public String register(
+            Model model,
+            @ModelAttribute QasinoResponse qasinoResponse,
+            Errors errors, RedirectAttributes ra,
+            HttpServletResponse response
+    ) {
+
+        log.warn("PostMapping: /register");
+
+        // 1 - map input
+        QasinoFlowDTO flowDTO = new QasinoFlowDTO();
+        flowDTO.setPathVariables(
+                "username", qasinoResponse.getPageVisitor().getSelectedVisitor().getUsername(),
+                "alias", qasinoResponse.getPageVisitor().getSelectedVisitor().getAlias(),
+                "email", qasinoResponse.getPageVisitor().getSelectedVisitor().getEmail(),
+                "password", qasinoResponse.getPageVisitor().getSelectedVisitor().getPassword());
+        // 2 - validate input
+        if (!flowDTO.isInputValid() || errors.hasErrors()) {
+            log.warn("Errors exist!!: {}", errors);
+            log.warn("qasinoResponse: {}", flowDTO.getQasinoResponse());
+
+            prepareQasinoResponse(response, flowDTO);
+//            flowDTO.setAction("Username incorrect");
+            model.addAttribute(flowDTO.getQasinoResponse());
+//            model.addAttribute(signupForm);
+            return HOME_SIGNUP_VIEW_LOCATION2;
+        }
+        // 3 - process
+        signUpNewVisitorAction.perform(flowDTO);
+        // 4 - return response
+        prepareQasinoResponse(response, flowDTO);
+        qasinoResponse = flowDTO.getQasinoResponse();
+
         model.addAttribute(flowDTO.getQasinoResponse());
 
 //        log.warn("PostMapping: signup");
@@ -214,6 +272,8 @@ public class HomeSigninSignupThymeleafController extends AbstractThymeleafContro
             Principal principal,
             HttpServletResponse response) {
 
+        log.warn("GetMapping: /");
+
         // 1 - map input
         QasinoFlowDTO flowDTO = new QasinoFlowDTO();
         if (principal != null) flowDTO.setPathVariables("username", principal.getName());
@@ -229,7 +289,6 @@ public class HomeSigninSignupThymeleafController extends AbstractThymeleafContro
         prepareQasinoResponse(response, flowDTO);
         model.addAttribute(flowDTO.getQasinoResponse());
 
-        log.warn("GetMapping: /");
 //        log.warn("Principal: {}", principal);
 //        log.warn("HttpServletResponse: {}", response.getHeaderNames());
 //        log.warn("Model: {}", model);
