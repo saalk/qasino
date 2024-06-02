@@ -247,7 +247,7 @@ public class LoadEntitiesToDtoAction implements Action<LoadEntitiesToDtoAction.D
 //                                .filter(p -> p.getSeat() == 1)
 //                                .findFirst().get().getPlayerId());
             }
-            actionDto.setGameResults(resultsRepository.findAllByGame(actionDto.getQasinoGame()));
+            actionDto.setGameResults(resultsRepository.findByGame(actionDto.getQasinoGame()));
 
         } else {
             throw new MyNPException("256 getGameSupplied","id [" + id + "]");

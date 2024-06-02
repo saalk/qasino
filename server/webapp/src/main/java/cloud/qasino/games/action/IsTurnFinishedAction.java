@@ -1,11 +1,9 @@
 package cloud.qasino.games.action;
 
 import cloud.qasino.games.action.interfaces.Action;
-import cloud.qasino.games.action.util.ActionUtils;
 import cloud.qasino.games.database.entity.Game;
 import cloud.qasino.games.database.entity.enums.game.GameState;
 import cloud.qasino.games.database.repository.GameRepository;
-import cloud.qasino.games.dto.QasinoFlowDTO;
 import cloud.qasino.games.statemachine.event.EventOutput;
 import cloud.qasino.games.statemachine.event.GameEvent;
 import cloud.qasino.games.statemachine.event.TurnEvent;
@@ -25,7 +23,7 @@ public class IsTurnFinishedAction implements Action<IsTurnFinishedAction.Dto, Ev
     public EventOutput.Result perform(Dto actionDto) {
 
         if (actionDto.getSuppliedTurnEvent().equals(TurnEvent.PASS)) {
-            actionDto.getQasinoGame().setState(GameState.NEXT_PLAYER);
+            actionDto.getQasinoGame().setState(GameState.INITIATOR_MOVE);
             gameRepository.save(actionDto.getQasinoGame());
             return EventOutput.Result.SUCCESS;
         }

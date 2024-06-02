@@ -19,6 +19,7 @@ public interface PlayerRepository extends JpaRepository<Player, Long> {
     // BASIC FINDS
     @Query(value = "SELECT * FROM \"player\" ORDER BY \"player_id\"", countQuery = "SELECT count(*) FROM \"player\"", nativeQuery = true)
     Page<Player> findAllPlayersWithPage(Pageable pageable);
+
     List<Player> findByGame(Game game);
 
     // SPECIAL FINDS

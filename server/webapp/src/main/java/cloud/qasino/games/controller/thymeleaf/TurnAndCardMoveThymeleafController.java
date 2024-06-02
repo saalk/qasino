@@ -17,6 +17,7 @@ import cloud.qasino.games.action.SetStatusIndicatorsBaseOnRetrievedDataAction;
 import cloud.qasino.games.action.StartGameForTypeAction;
 import cloud.qasino.games.action.StopGameAction;
 import cloud.qasino.games.action.UpdateFichesForPlayerAction;
+import cloud.qasino.games.action.UpdatePlayingStateForGame;
 import cloud.qasino.games.controller.AbstractThymeleafController;
 import cloud.qasino.games.database.repository.CardMoveRepository;
 import cloud.qasino.games.database.repository.CardRepository;
@@ -71,12 +72,6 @@ public class TurnAndCardMoveThymeleafController extends AbstractThymeleafControl
     @Autowired
     LoadEntitiesToDtoAction loadEntitiesToDtoAction;
     @Autowired
-    SetStatusIndicatorsBaseOnRetrievedDataAction setStatusIndicatorsBaseOnRetrievedDataAction;
-    @Autowired
-    CalculateQasinoStatisticsAction calculateQasinoStatisticsAction;
-    @Autowired
-    MapQasinoResponseFromDtoAction mapQasinoResponseFromDtoAction;
-    @Autowired
     MapQasinoGameTableFromDtoAction mapQasinoGameTableFromDtoAction;
     @Autowired
     PlayNextHumanTurnAction playNextHumanTurnAction;
@@ -85,13 +80,8 @@ public class TurnAndCardMoveThymeleafController extends AbstractThymeleafControl
     @Autowired
     PlayNextBotTurnAction playNextBotTurnAction;
     @Autowired
-    FindVisitorIdByAliasOrUsernameAction findVisitorIdByAliasOrUsernameAction;
+    UpdatePlayingStateForGame updatePlayingStateForGame;
 
-    private GameRepository gameRepository;
-    private PlayerRepository playerRepository;
-    private CardRepository cardRepository;
-    private TurnRepository turnRepository;
-    private CardMoveRepository cardMoveRepository;
 
     @Autowired
     public TurnAndCardMoveThymeleafController(
@@ -101,11 +91,6 @@ public class TurnAndCardMoveThymeleafController extends AbstractThymeleafControl
             TurnRepository turnRepository,
             CardMoveRepository cardMoveRepository
     ) {
-        this.gameRepository = gameRepository;
-        this.playerRepository = playerRepository;
-        this.cardRepository = cardRepository;
-        this.turnRepository = turnRepository;
-        this.cardMoveRepository = cardMoveRepository;
     }
 
     @PostMapping(value = "shuffle/{gameId}")
@@ -208,6 +193,7 @@ public class TurnAndCardMoveThymeleafController extends AbstractThymeleafControl
 //        result = canPlayerStillPlay.perform(flowDTO); // for now stop after one round
         mapQasinoGameTableFromDtoAction.perform(flowDTO);
         result = isPlayerHumanAction.perform(flowDTO);
+        updatePlayingStateForGame.perform(flowDTO);
         if (SUCCESS.equals(result)) {
             playNextHumanTurnAction.perform(flowDTO);
         } else {
@@ -224,7 +210,7 @@ public class TurnAndCardMoveThymeleafController extends AbstractThymeleafControl
 //        log.warn("HttpServletResponse: {}", response.getHeaderNames());
 //        log.warn("Model: {}", model);
 //        log.warn("Errors: {}", errors);
-        log.warn("qasinoResponse: {}", flowDTO.getQasinoResponse());
+//        log.warn("qasinoResponse: {}", flowDTO.getQasinoResponse());
         return "redirect:/play/" + flowDTO.getSuppliedGameId();
     }
 

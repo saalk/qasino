@@ -23,6 +23,7 @@ import cloud.qasino.games.action.SetStatusIndicatorsBaseOnRetrievedDataAction;
 import cloud.qasino.games.action.SignUpNewVisitorAction;
 import cloud.qasino.games.action.StopGameAction;
 import cloud.qasino.games.action.UpdateFichesForPlayerAction;
+import cloud.qasino.games.action.UpdatePlayingStateForGame;
 import cloud.qasino.games.action.UpdateStyleForGame;
 import cloud.qasino.games.action.UpdateVisitorAction;
 import cloud.qasino.games.database.entity.Card;
@@ -101,6 +102,7 @@ public class QasinoFlowDTO extends AbstractFlowDTO
         StopGameAction.Dto,
         UpdateVisitorAction.Dto,
         UpdateStyleForGame.Dto,
+        UpdatePlayingStateForGame.Dto,
         UpdateFichesForPlayerAction.Dto
 {
     // suppress lombok setter for these fixed values
