@@ -79,15 +79,15 @@ public class MapQasinoGameTableFromDtoAction implements Action<MapQasinoGameTabl
             seat.setSeatId(player.getSeat());
             seat.setPlaying(player.getPlayerId() == actionDto.getActiveTurn().getActivePlayerId());
             // todo which one to choose
-            seat.setSeatPlayerTheInitiator(player.getPlayerId() ==
-                    actionDto.getQasinoGame().getInitiator());
+//            seat.setSeatPlayerTheInitiator(player.getPlayerId() ==
+//                    actionDto.getQasinoGame().getInitiator());
             seat.setSeatPlayerTheInitiator(player.getRole() == Role.INITIATOR);
             // player stats
             seat.setSeatPlayerId(player.getPlayerId());
             seat.setSeatPlayer(player);
             seat.setSeatFiches(player.getFiches());
             // todo double or nothing? then time the turn in round
-            seat.setSeatCurrentBet(player.getFiches());
+            seat.setSeatCurrentBet(actionDto.getQasinoGame().getAnte());
             seat.setSeatPlayerAvatar(player.getAvatar());
             seat.setSeatPlayerAiLevel(player.getAiLevel());
             // player cards and moves

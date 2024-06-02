@@ -70,7 +70,7 @@ public class InvitationsThymeleafController extends AbstractThymeleafController 
                 "gameEvent", "invite"
         );
         // 2 - validate input
-        if (!flowDTO.validateInput() || errors.hasErrors()) {
+        if (!flowDTO.isInputValid() || errors.hasErrors()) {
             log.warn("Errors exist!!: {}", errors);
             prepareQasinoResponse(response, flowDTO);
             model.addAttribute(flowDTO.getQasinoResponse());
@@ -117,7 +117,7 @@ public class InvitationsThymeleafController extends AbstractThymeleafController 
                 "gameEvent", "invite"
         );
         // 2 - validate input
-        if (!flowDTO.validateInput() || errors.hasErrors()) {
+        if (!flowDTO.isInputValid() || errors.hasErrors()) {
             log.warn("Errors exist!!: {}", errors);
             prepareQasinoResponse(response, flowDTO);
 //            flowDTO.setAction("Username incorrect");
@@ -156,7 +156,7 @@ public class InvitationsThymeleafController extends AbstractThymeleafController 
                 "gameEvent", "decline"
         );
         // 2 - validate input
-        if (!flowDTO.validateInput() || errors.hasErrors()) {
+        if (!flowDTO.isInputValid() || errors.hasErrors()) {
             log.warn("Errors exist!!: {}", errors);
             prepareQasinoResponse(response, flowDTO);
 //            flowDTO.setAction("Username incorrect");

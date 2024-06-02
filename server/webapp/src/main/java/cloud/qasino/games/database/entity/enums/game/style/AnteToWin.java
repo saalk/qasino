@@ -11,8 +11,9 @@ import java.util.Map;
 public enum AnteToWin {
 
 // todo determine what to do here : bet vs ante ration?
-    NA("n", "not applicable"),
+    NA("n", "No amount wil win directly"),
     TIMES_3_WINS("3", "Triple your ante and win direct"),
+    TIMES_4_WINS("4", "4 Times your ante wins direct"),
     TIMES_5_WINS("5", "5 Times your ante wins direct");
 
     /**

@@ -306,7 +306,7 @@ public class QasinoFlowDTO extends AbstractFlowDTO
 
     // VALIDATE INPUT - TODO move out of DTO
     // @formatter:off
-    public boolean validateInput() {
+    public boolean isInputValid() {
         if (!validatePathVariables(this.pathVariables)
                 | !validateRequestParams(this.requestParams)) {
             return false;
@@ -596,7 +596,7 @@ public class QasinoFlowDTO extends AbstractFlowDTO
             if (isValueForEnumKeyValid(key, requestParam.get(
                             key), dataName,
                     paramDataString)) {
-                this.suppliedAvatar = Avatar.fromLabel(requestParam.get(key));
+                this.suppliedAnteToWin = AnteToWin.valueOf(requestParam.get(key));
             } else {
                 return false;
             }
@@ -606,7 +606,7 @@ public class QasinoFlowDTO extends AbstractFlowDTO
             if (isValueForEnumKeyValid(key, requestParam.get(
                             key), dataName,
                     paramDataString)) {
-                this.suppliedBettingStrategy = BettingStrategy.fromLabel(requestParam.get(key));
+                this.suppliedBettingStrategy = BettingStrategy.valueOf(requestParam.get(key));
             } else {
                 return false;
             }
@@ -616,7 +616,7 @@ public class QasinoFlowDTO extends AbstractFlowDTO
             if (isValueForEnumKeyValid(key, requestParam.get(
                             key), dataName,
                     paramDataString)) {
-                this.suppliedDeckConfiguration = DeckConfiguration.fromLabel(requestParam.get(key));
+                this.suppliedDeckConfiguration = DeckConfiguration.valueOf(requestParam.get(key));
             } else {
                 return false;
             }
@@ -626,7 +626,7 @@ public class QasinoFlowDTO extends AbstractFlowDTO
             if (isValueForEnumKeyValid(key, requestParam.get(
                             key), dataName,
                     paramDataString)) {
-                this.suppliedOneTimeInsurance = OneTimeInsurance.fromLabel(requestParam.get(key));
+                this.suppliedOneTimeInsurance = OneTimeInsurance.valueOf(requestParam.get(key));
             } else {
                 return false;
             }
@@ -636,8 +636,12 @@ public class QasinoFlowDTO extends AbstractFlowDTO
             if (isValueForEnumKeyValid(key, requestParam.get(
                             key), dataName,
                     paramDataString)) {
-                this.suppliedRoundsToWin = RoundsToWin.fromLabel(requestParam.get(key));
+                log.warn("rounds to win requestParam valid");
+
+                this.suppliedRoundsToWin = RoundsToWin.valueOf(requestParam.get(key));
             } else {
+                log.warn("rounds to win not valid");
+
                 return false;
             }
         }
@@ -646,7 +650,7 @@ public class QasinoFlowDTO extends AbstractFlowDTO
             if (isValueForEnumKeyValid(key, requestParam.get(
                             key), dataName,
                     paramDataString)) {
-                this.suppliedTurnsToWin = TurnsToWin.fromLabel(requestParam.get(key));
+                this.suppliedTurnsToWin = TurnsToWin.valueOf(requestParam.get(key));
             } else {
                 return false;
             }
@@ -750,27 +754,27 @@ public class QasinoFlowDTO extends AbstractFlowDTO
                 }
                 break;
             case "bettingStrategy":
-                if (AnteToWin.fromName(value) !=null) {
+                if (BettingStrategy.fromName(value) !=null) {
                     return true;
                 }
                 break;
             case "deckConfiguration":
-                if (AnteToWin.fromName(value) !=null) {
+                if (DeckConfiguration.fromName(value) !=null) {
                     return true;
                 }
                 break;
             case "oneTimeInsurance":
-                if (AnteToWin.fromName(value) !=null) {
+                if (OneTimeInsurance.fromName(value) !=null) {
                     return true;
                 }
                 break;
             case "roundsToWin":
-                if (AnteToWin.fromName(value) !=null) {
+                if (RoundsToWin.fromName(value) !=null) {
                     return true;
                 }
                 break;
             case "turnsToWin":
-                if (AnteToWin.fromName(value) !=null) {
+                if (TurnsToWin.fromName(value) !=null) {
                     return true;
                 }
                 break;
@@ -779,7 +783,7 @@ public class QasinoFlowDTO extends AbstractFlowDTO
 
         this.setErrorKey(key);
         this.setErrorValue(value);
-        setBadRequestErrorMessage("No valid emun");
+        setBadRequestErrorMessage("Not a valid emun value supplied");
         return false;
     }
     // @formatter:on

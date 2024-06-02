@@ -3,11 +3,14 @@ package cloud.qasino.games.database.entity.enums.game.style;
 import lombok.Getter;
 
 import jakarta.validation.constraints.Pattern;
+import lombok.extern.slf4j.Slf4j;
+
 import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.Map;
 
 @Getter
+@Slf4j
 public enum RoundsToWin {
 
     NA ("n","Not applicable"),

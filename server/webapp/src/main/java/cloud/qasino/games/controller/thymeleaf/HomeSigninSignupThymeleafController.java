@@ -24,12 +24,10 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -102,7 +100,7 @@ public class HomeSigninSignupThymeleafController extends AbstractThymeleafContro
                 "gameEvent", "sign_on"
         );
         // 2 - validate input
-        if (!flowDTO.validateInput() || error != null) {
+        if (!flowDTO.isInputValid() || error != null) {
             throw new MyNPException("103 gameEvent","sign_on [" + flowDTO.getSuppliedUsername() + "]");
 //            prepareQasinoResponse(response, flowDTO);
 //            model.addAttribute(flowDTO.getQasinoResponse());
@@ -184,7 +182,7 @@ public class HomeSigninSignupThymeleafController extends AbstractThymeleafContro
                 "email", signupForm.getEmail(),
                 "password", signupForm.getPassword());
         // 2 - validate input
-        if (!flowDTO.validateInput() || errors.hasErrors()) {
+        if (!flowDTO.isInputValid() || errors.hasErrors()) {
             log.warn("Errors exist!!: {}", errors);
             prepareQasinoResponse(response, flowDTO);
 //            flowDTO.setAction("Username incorrect");
@@ -220,7 +218,7 @@ public class HomeSigninSignupThymeleafController extends AbstractThymeleafContro
         QasinoFlowDTO flowDTO = new QasinoFlowDTO();
         if (principal != null) flowDTO.setPathVariables("username", principal.getName());
         // 2 - validate input
-        if (!flowDTO.validateInput()) {
+        if (!flowDTO.isInputValid()) {
             prepareQasinoResponse(response, flowDTO);
 //            flowDTO.setAction("Username incorrect");
             model.addAttribute(flowDTO.getQasinoResponse());

@@ -14,7 +14,6 @@ import cloud.qasino.games.database.service.PlayerService;
 import cloud.qasino.games.dto.QasinoFlowDTO;
 import cloud.qasino.games.exception.MyBusinessException;
 import cloud.qasino.games.response.QasinoResponse;
-import cloud.qasino.games.statemachine.event.EventOutput;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
@@ -95,7 +94,7 @@ public class GameThymeleafController extends AbstractThymeleafController {
                 "visitorId", getPricipalVisitorId(principal),
                 "gameId", id);
         // 2 - validate input
-        if (!flowDTO.validateInput() || errors.hasErrors()) {
+        if (!flowDTO.isInputValid() || errors.hasErrors()) {
             log.warn("Errors validateInput!!: {}", errors);
             log.warn("Model !!: {}", model);
             prepareQasinoResponse(response, flowDTO);
@@ -128,7 +127,7 @@ public class GameThymeleafController extends AbstractThymeleafController {
                 "visitorId", getPricipalVisitorId(principal),
                 "gameId", id);
         // 2 - validate input
-        if (!flowDTO.validateInput() || errors.hasErrors()) {
+        if (!flowDTO.isInputValid() || errors.hasErrors()) {
             log.warn("Errors validateInput!!: {}", errors);
             log.warn("Model !!: {}", model);
             prepareQasinoResponse(response, flowDTO);
@@ -174,7 +173,7 @@ public class GameThymeleafController extends AbstractThymeleafController {
             flowDTO.setPathVariables("aiLevel", qasinoResponse.getPageGameSetup().getBotPlayer().getAiLevel().getLabel());
         }
         // 2 - validate input
-        if (!flowDTO.validateInput()) {
+        if (!flowDTO.isInputValid()) {
 //            log.warn("Errors validateInput!!: {}", errors);
             log.warn("QasinoResponse {} !!", qasinoResponse );
             prepareQasinoResponse(response, flowDTO);
@@ -240,7 +239,7 @@ public class GameThymeleafController extends AbstractThymeleafController {
             flowDTO.setPathVariables("aiLevel", qasinoResponse.getPageGameSetup().getBotPlayer().getAiLevel().getLabel());
         }
         // 2 - validate input
-        if (!flowDTO.validateInput() || errors.hasErrors()) {
+        if (!flowDTO.isInputValid() || errors.hasErrors()) {
             log.warn("Errors validateInput!!: {}", errors);
             prepareQasinoResponse(response, flowDTO);
             model.addAttribute(flowDTO.getQasinoResponse());
@@ -298,23 +297,23 @@ public class GameThymeleafController extends AbstractThymeleafController {
         if ((qasinoResponse.getPageGameSetup().getAnteToWin() != null)) {
             flowDTO.setPathVariables("anteToWin", qasinoResponse.getPageGameSetup().getAnteToWin().name());
         }
-        if ((qasinoResponse.getPageGameSetup().getAnteToWin() != null)) {
+        if ((qasinoResponse.getPageGameSetup().getBettingStrategy() != null)) {
             flowDTO.setPathVariables("bettingStrategy", qasinoResponse.getPageGameSetup().getBettingStrategy().name());
         }
-        if ((qasinoResponse.getPageGameSetup().getAnteToWin() != null)) {
+        if ((qasinoResponse.getPageGameSetup().getDeckConfiguration() != null)) {
             flowDTO.setPathVariables("deckConfiguration", qasinoResponse.getPageGameSetup().getDeckConfiguration().name());
         }
-        if ((qasinoResponse.getPageGameSetup().getAnteToWin() != null)) {
+        if ((qasinoResponse.getPageGameSetup().getOneTimeInsurance() != null)) {
             flowDTO.setPathVariables("oneTimeInsurance", qasinoResponse.getPageGameSetup().getOneTimeInsurance().name());
         }
-        if ((qasinoResponse.getPageGameSetup().getAnteToWin() != null)) {
+        if ((qasinoResponse.getPageGameSetup().getRoundsToWin() != null)) {
             flowDTO.setPathVariables("roundsToWin", qasinoResponse.getPageGameSetup().getRoundsToWin().name());
         }
-        if ((qasinoResponse.getPageGameSetup().getAnteToWin() != null)) {
+        if ((qasinoResponse.getPageGameSetup().getTurnsToWin() != null)) {
             flowDTO.setPathVariables("turnsToWin", qasinoResponse.getPageGameSetup().getTurnsToWin().name());
         }
         // 2 - validate input
-        if (!flowDTO.validateInput() || errors.hasErrors()) {
+        if (!flowDTO.isInputValid() && errors.hasErrors()) {
             log.warn("Errors validateInput!!: {}", errors);
             prepareQasinoResponse(response, flowDTO);
             model.addAttribute(flowDTO.getQasinoResponse());
@@ -328,8 +327,7 @@ public class GameThymeleafController extends AbstractThymeleafController {
             log.warn("Model !!: {}", model);
             prepareQasinoResponse(response, flowDTO);
             model.addAttribute(flowDTO.getQasinoResponse());
-            return "redirect:/setup/" + qasinoResponse.getPageGameSetup().getSelectedGame().getGameId();
-            //            return ResponseEntity.status(HttpStatus.valueOf(flowDTO.getHttpStatus())).headers(flowDTO.getHeaders()).build();
+            return "redirect:/setup/" + id;
         }
         updateStyleForGame.perform(flowDTO);
         // 4 - return response
@@ -337,7 +335,7 @@ public class GameThymeleafController extends AbstractThymeleafController {
         model.addAttribute(flowDTO.getQasinoResponse());
 //        log.warn("QasinoResponse !! {}", prettyPrintJson(flowDTO.getQasinoResponse()));
 //        log.warn("model !! {}", model);
-        return "redirect:/setup/" + qasinoResponse.getPageGameSetup().getSelectedGame().getGameId();
+        return "redirect:/setup/" + id;
     }
 
 
@@ -362,7 +360,7 @@ public class GameThymeleafController extends AbstractThymeleafController {
                 "aiLevel", qasinoResponse.getPageGameSetup().getBotPlayer().getAiLevel().getLabel()
         );
         // 2 - validate input
-        if (!flowDTO.validateInput() || errors.hasErrors()) {
+        if (!flowDTO.isInputValid() || errors.hasErrors()) {
             log.warn("Errors validateInput!!: {}", errors);
             log.warn("Model !!: {}", model);
             prepareQasinoResponse(response, flowDTO);
@@ -399,7 +397,7 @@ public class GameThymeleafController extends AbstractThymeleafController {
                 "gameId", id
         );
         // 2 - validate input
-        if (!flowDTO.validateInput() || errors.hasErrors()) {
+        if (!flowDTO.isInputValid() || errors.hasErrors()) {
             log.warn("Errors validateInput!!: {}", errors);
             log.warn("Model !!: {}", model);
             prepareQasinoResponse(response, flowDTO);

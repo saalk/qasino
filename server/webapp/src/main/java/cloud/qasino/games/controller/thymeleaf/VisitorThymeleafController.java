@@ -86,7 +86,7 @@ public class VisitorThymeleafController extends AbstractThymeleafController {
         QasinoFlowDTO flowDTO = new QasinoFlowDTO();
         flowDTO.setPathVariables("visitorId", getPricipalVisitorId(principal));
         // 2 - validate input
-        if (!flowDTO.validateInput() || errors.hasErrors()) {
+        if (!flowDTO.isInputValid() || errors.hasErrors()) {
             log.warn("Errors validateInput!!: {}", errors);
             prepareQasinoResponse(response, flowDTO);
 //            flowDTO.setAction("Username incorrect");
@@ -127,7 +127,7 @@ public class VisitorThymeleafController extends AbstractThymeleafController {
                 "email", qasinoResponse.getPageVisitor().getSelectedVisitor().getEmail()
         );
         // 2 - validate input
-        if (!flowDTO.validateInput() || errors.hasErrors()) {
+        if (!flowDTO.isInputValid() || errors.hasErrors()) {
             log.warn("Errors validateInput!!: {}", errors);
             prepareQasinoResponse(response, flowDTO);
             model.addAttribute(flowDTO.getQasinoResponse());
@@ -155,7 +155,7 @@ public class VisitorThymeleafController extends AbstractThymeleafController {
         QasinoFlowDTO flowDTO = new QasinoFlowDTO();
         flowDTO.setPathVariables("visitorId", String.valueOf(qasinoResponse.getPageVisitor().getSelectedVisitor().getVisitorId()), "pawn", "true");
         // 2 - validate input
-        if (!flowDTO.validateInput()) {
+        if (!flowDTO.isInputValid()) {
             log.warn("Errors exist!!: {}", errors);
             prepareQasinoResponse(response, flowDTO);
             model.addAttribute(flowDTO.getQasinoResponse());
@@ -183,7 +183,7 @@ public class VisitorThymeleafController extends AbstractThymeleafController {
         QasinoFlowDTO flowDTO = new QasinoFlowDTO();
         flowDTO.setPathVariables("visitorId", String.valueOf(qasinoResponse.getPageVisitor().getSelectedVisitor().getVisitorId()), "repay", "true");
         // 2 - validate input
-        if (!flowDTO.validateInput()) {
+        if (!flowDTO.isInputValid()) {
             log.warn("Errors exist!!: {}", errors);
             prepareQasinoResponse(response, flowDTO);
             model.addAttribute(flowDTO.getQasinoResponse());
@@ -212,7 +212,7 @@ public class VisitorThymeleafController extends AbstractThymeleafController {
         QasinoFlowDTO flowDTO = new QasinoFlowDTO();
         flowDTO.setPathVariables("visitorId", String.valueOf(qasinoResponse.getPageVisitor().getSelectedVisitor().getVisitorId()));
         // 2 - validate input
-        if (!flowDTO.validateInput()) {
+        if (!flowDTO.isInputValid()) {
             log.warn("Errors validateInput!!: {}", errors);
             prepareQasinoResponse(response, flowDTO);
             model.addAttribute(flowDTO.getQasinoResponse());

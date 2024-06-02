@@ -21,6 +21,9 @@
             <div th:replace="~{forms/setup :: update-or-stop}"></div>
         </div>
         <div th:if="${qasinoResponse.params.gid} > 0 and ${qasinoResponse.params.gsg} != 'FINISHED' and ${qasinoResponse.params.gsg} != 'PLAYING'">
+            <div th:replace="~{forms/setup :: dropdown-list-roundsToWin}"></div>
+        </div>
+        <div th:if="${qasinoResponse.params.gid} > 0 and ${qasinoResponse.params.gsg} != 'FINISHED' and ${qasinoResponse.params.gsg} != 'PLAYING'">
             <div th:replace="~{forms/validate :: validate-or-shuffle}"></div>
         </div>
     </div>

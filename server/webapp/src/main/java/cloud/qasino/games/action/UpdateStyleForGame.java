@@ -49,15 +49,16 @@ public class UpdateStyleForGame implements Action<UpdateStyleForGame.Dto, EventO
         if (actionDto.getSuppliedOneTimeInsurance()!=null) {
             style.setOneTimeInsurance(actionDto.getSuppliedOneTimeInsurance());
         }
-        if (actionDto.getSuppliedRoundsToWin()!=null) {
+        if (actionDto.getSuppliedRoundsToWin() != null) {
             style.setRoundsToWin(actionDto.getSuppliedRoundsToWin());
         }
         if (actionDto.getSuppliedTurnsToWin()!=null) {
             style.setTurnsToWin(actionDto.getSuppliedTurnsToWin());
         }
+        style.setLabel(style.updateLabelFromEnums());
 
         actionDto.getQasinoGame().setStyle(style.getLabel());
-        gameRepository.save(actionDto.getQasinoGame());
+        actionDto.setQasinoGame(gameRepository.save(actionDto.getQasinoGame()));
 
         return EventOutput.Result.SUCCESS;
     }

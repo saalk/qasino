@@ -26,7 +26,6 @@ import cloud.qasino.games.database.repository.TurnRepository;
 import cloud.qasino.games.dto.QasinoFlowDTO;
 import cloud.qasino.games.response.QasinoResponse;
 import cloud.qasino.games.statemachine.event.EventOutput;
-import cloud.qasino.games.statemachine.event.EventOutput.Result;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -129,7 +128,7 @@ public class TurnAndCardMoveThymeleafController extends AbstractThymeleafControl
                 "gameEvent", "shuffle"
         );
         // 2 - validate input
-        if (!flowDTO.validateInput()) {
+        if (!flowDTO.isInputValid()) {
             log.warn("Errors validateInput!!: {}", errors);
             prepareQasinoResponse(response, flowDTO);
             model.addAttribute(flowDTO.getQasinoResponse());
@@ -181,7 +180,7 @@ public class TurnAndCardMoveThymeleafController extends AbstractThymeleafControl
                 "turnEvent", trigger.toLowerCase()
         );
         // 2 - validate input
-        if (!flowDTO.validateInput()) {
+        if (!flowDTO.isInputValid()) {
             log.warn("Errors validateInput!!: {}", errors);
             prepareQasinoResponse(response, flowDTO);
             model.addAttribute(flowDTO.getQasinoResponse());
@@ -249,7 +248,7 @@ public class TurnAndCardMoveThymeleafController extends AbstractThymeleafControl
                 "gameEvent", "stop"
         );
         // 2 - validate input
-        if (!flowDTO.validateInput()) {
+        if (!flowDTO.isInputValid()) {
             log.warn("Errors validateInput!!: {}", errors);
             prepareQasinoResponse(response, flowDTO);
             model.addAttribute(flowDTO.getQasinoResponse());
