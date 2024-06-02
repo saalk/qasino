@@ -1,6 +1,7 @@
 package cloud.qasino.games.action;
 
 import cloud.qasino.games.action.interfaces.Action;
+import cloud.qasino.games.action.util.ActionUtils;
 import cloud.qasino.games.database.entity.Game;
 import cloud.qasino.games.database.entity.Player;
 import cloud.qasino.games.database.entity.Turn;
@@ -11,6 +12,7 @@ import cloud.qasino.games.database.repository.PlayerRepository;
 import cloud.qasino.games.database.repository.ResultsRepository;
 import cloud.qasino.games.database.repository.TurnRepository;
 import cloud.qasino.games.database.security.VisitorRepository;
+import cloud.qasino.games.dto.QasinoFlowDTO;
 import cloud.qasino.games.statemachine.event.EventOutput;
 import cloud.qasino.games.statemachine.event.GameEvent;
 import cloud.qasino.games.statemachine.event.TurnEvent;
@@ -33,7 +35,7 @@ import static cloud.qasino.games.statemachine.event.TurnEvent.highLowPossibleHum
 
 @Slf4j
 @Component
-public class DeterminePossibleEvents implements Action<DeterminePossibleEvents.Dto, EventOutput.Result> {
+public class DeterminePossibleEventsAction implements Action<DeterminePossibleEventsAction.Dto, EventOutput.Result> {
 
     @Resource
     GameRepository gameRepository;
@@ -111,6 +113,8 @@ public class DeterminePossibleEvents implements Action<DeterminePossibleEvents.D
 
         // @formatter:off
         String getErrorMessage();
+        GameEvent getSuppliedGameEvent();
+        TurnEvent getSuppliedTurnEvent();
 
         // Getters
         Game getQasinoGame();

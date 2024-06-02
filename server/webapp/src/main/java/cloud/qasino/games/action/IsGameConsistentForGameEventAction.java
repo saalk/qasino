@@ -1,6 +1,7 @@
 package cloud.qasino.games.action;
 
 import cloud.qasino.games.action.interfaces.Action;
+import cloud.qasino.games.action.util.ActionUtils;
 import cloud.qasino.games.database.entity.Card;
 import cloud.qasino.games.database.entity.Game;
 import cloud.qasino.games.database.entity.Player;
@@ -8,8 +9,10 @@ import cloud.qasino.games.database.entity.Result;
 import cloud.qasino.games.database.entity.Turn;
 import cloud.qasino.games.database.security.Visitor;
 import cloud.qasino.games.database.entity.enums.game.gamestate.GameStateGroup;
+import cloud.qasino.games.dto.QasinoFlowDTO;
 import cloud.qasino.games.statemachine.event.EventOutput;
 import cloud.qasino.games.statemachine.event.GameEvent;
+import cloud.qasino.games.statemachine.event.TurnEvent;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
@@ -29,7 +32,7 @@ import java.util.Optional;
  * BR1)
  * @return Result.SUCCESS or FAILURE (404) when not found
  */
-public class IsGameConsistentForGameEvent implements Action<IsGameConsistentForGameEvent.Dto, EventOutput.Result> {
+public class IsGameConsistentForGameEventAction implements Action<IsGameConsistentForGameEventAction.Dto, EventOutput.Result> {
 
     @Override
     public EventOutput.Result perform(Dto actionDto) {
@@ -67,6 +70,7 @@ public class IsGameConsistentForGameEvent implements Action<IsGameConsistentForG
                 if (noError) noError = gameShouldHaveCardsAndTurn(actionDto);
             }
         }
+//        log.warn("isGameConsistentForGameEvent noerror {}", noError);
         return noError ? EventOutput.Result.SUCCESS : EventOutput.Result.FAILURE;
     }
 
@@ -192,6 +196,14 @@ public class IsGameConsistentForGameEvent implements Action<IsGameConsistentForG
         }
         return true;
     }
+
+    public EventOutput failure(Dto actionDto) {
+        return new EventOutput(EventOutput.Result.FAILURE, actionDto.getSuppliedGameEvent(), actionDto.getSuppliedTurnEvent());
+    }
+    public EventOutput success(Dto actionDto) {
+        return new EventOutput(EventOutput.Result.FAILURE, actionDto.getSuppliedGameEvent(), actionDto.getSuppliedTurnEvent());
+    }
+
     // @formatter:on
 
     private void setUnprocessableErrorMessage(Dto actionDto, String reason) {
@@ -203,11 +215,14 @@ public class IsGameConsistentForGameEvent implements Action<IsGameConsistentForG
     public interface Dto {
 
         // @formatter:off
+        String getErrorMessage();
+        GameEvent getSuppliedGameEvent();
+        TurnEvent getSuppliedTurnEvent();
+
         // Getters
         List<Player> getQasinoGamePlayers();
         Visitor getQasinoVisitor();
         List<Game> getInitiatedGamesForVisitor();
-        GameEvent getSuppliedGameEvent();
         Game getQasinoGame();
         Turn getActiveTurn();
         List<Card> getCardsInTheGameSorted();

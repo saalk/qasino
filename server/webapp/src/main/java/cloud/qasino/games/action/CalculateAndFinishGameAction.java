@@ -9,10 +9,14 @@ import cloud.qasino.games.database.entity.Result;
 import cloud.qasino.games.database.entity.enums.game.gamestate.GameStateGroup;
 import cloud.qasino.games.database.repository.CardMoveRepository;
 import cloud.qasino.games.database.repository.CardRepository;
+import cloud.qasino.games.database.repository.PlayerRepository;
 import cloud.qasino.games.database.repository.ResultsRepository;
 import cloud.qasino.games.database.security.Visitor;
 import cloud.qasino.games.database.security.VisitorRepository;
+import cloud.qasino.games.dto.QasinoFlowDTO;
 import cloud.qasino.games.statemachine.event.EventOutput;
+import cloud.qasino.games.statemachine.event.GameEvent;
+import cloud.qasino.games.statemachine.event.TurnEvent;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -35,6 +39,8 @@ public class CalculateAndFinishGameAction implements Action<CalculateAndFinishGa
     ResultsRepository resultsRepository;
     @Resource
     VisitorRepository visitorRepository;
+    @Resource
+    PlayerRepository playerRepository;
 
     @Override
     public EventOutput.Result perform(CalculateAndFinishGameAction.Dto actionDto) {
@@ -75,6 +81,7 @@ public class CalculateAndFinishGameAction implements Action<CalculateAndFinishGa
         for (Map.Entry<Long, Integer> en : playerProfitSortedOnValue.entrySet()) {
             Player player = ActionUtils.findPlayerByPlayerId(players, en.getKey());
             boolean won = false;
+            // first player wins
             if (winner == null) {
                 winner = player;
                 won = true;
@@ -104,6 +111,9 @@ public class CalculateAndFinishGameAction implements Action<CalculateAndFinishGa
 
         // @formatter:off
         // Getters
+        String getErrorMessage();
+        GameEvent getSuppliedGameEvent();
+        TurnEvent getSuppliedTurnEvent();
 
         List<CardMove> getAllCardMovesForTheGame();
         Game getQasinoGame();

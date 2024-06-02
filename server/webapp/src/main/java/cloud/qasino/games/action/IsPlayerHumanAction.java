@@ -1,10 +1,14 @@
 package cloud.qasino.games.action;
 
 import cloud.qasino.games.action.interfaces.Action;
+import cloud.qasino.games.action.util.ActionUtils;
 import cloud.qasino.games.database.entity.Game;
 import cloud.qasino.games.database.entity.Player;
 import cloud.qasino.games.database.repository.GameRepository;
+import cloud.qasino.games.dto.QasinoFlowDTO;
 import cloud.qasino.games.statemachine.event.EventOutput;
+import cloud.qasino.games.statemachine.event.GameEvent;
+import cloud.qasino.games.statemachine.event.TurnEvent;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
@@ -12,7 +16,7 @@ import jakarta.annotation.Resource;
 
 @Slf4j
 @Component
-public class IsPlayerHuman implements Action<IsPlayerHuman.Dto, EventOutput.Result> {
+public class IsPlayerHumanAction implements Action<IsPlayerHumanAction.Dto, EventOutput.Result> {
 
     @Resource
     GameRepository gameRepository;
@@ -33,7 +37,12 @@ public class IsPlayerHuman implements Action<IsPlayerHuman.Dto, EventOutput.Resu
     }
 
     public interface Dto {
+
         // @formatter:off
+        String getErrorMessage();
+        GameEvent getSuppliedGameEvent();
+        TurnEvent getSuppliedTurnEvent();
+
         // Getters
         Player getTurnPlayer();
         Game getQasinoGame();

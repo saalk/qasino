@@ -1,10 +1,14 @@
 package cloud.qasino.games.action;
 
 import cloud.qasino.games.action.interfaces.Action;
+import cloud.qasino.games.action.util.ActionUtils;
 import cloud.qasino.games.database.entity.Game;
 import cloud.qasino.games.database.entity.Player;
 import cloud.qasino.games.database.service.GameService;
+import cloud.qasino.games.dto.QasinoFlowDTO;
 import cloud.qasino.games.statemachine.event.EventOutput;
+import cloud.qasino.games.statemachine.event.GameEvent;
+import cloud.qasino.games.statemachine.event.TurnEvent;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -13,7 +17,7 @@ import java.util.List;
 
 @Slf4j
 @Component
-public class StartGameForType implements Action<StartGameForType.Dto, EventOutput.Result> {
+public class StartGameForTypeAction implements Action<StartGameForTypeAction.Dto, EventOutput.Result> {
 
     @Autowired
     GameService gameService;
@@ -29,6 +33,10 @@ public class StartGameForType implements Action<StartGameForType.Dto, EventOutpu
     public interface Dto {
 
         // @formatter:off
+        String getErrorMessage();
+        GameEvent getSuppliedGameEvent();
+        TurnEvent getSuppliedTurnEvent();
+
         // Getters
         List<Player> getQasinoGamePlayers();
         Game getQasinoGame();

@@ -1,24 +1,11 @@
 package cloud.qasino.games.controller.thymeleaf;
 
-import cloud.qasino.games.action.CalculateQasinoStatistics;
 import cloud.qasino.games.action.FindVisitorIdByAliasOrUsernameAction;
 import cloud.qasino.games.action.HandleSecuredLoanAction;
 import cloud.qasino.games.action.LoadEntitiesToDtoAction;
-import cloud.qasino.games.action.MapQasinoGameTableFromDto;
-import cloud.qasino.games.action.MapQasinoResponseFromDto;
-import cloud.qasino.games.action.SetStatusIndicatorsBaseOnRetrievedDataAction;
 import cloud.qasino.games.action.SignUpNewVisitorAction;
 import cloud.qasino.games.action.UpdateVisitorAction;
 import cloud.qasino.games.controller.AbstractThymeleafController;
-import cloud.qasino.games.database.entity.enums.game.Style;
-import cloud.qasino.games.database.entity.enums.game.Type;
-import cloud.qasino.games.database.entity.enums.player.AiLevel;
-import cloud.qasino.games.database.entity.enums.player.Avatar;
-import cloud.qasino.games.database.repository.CardRepository;
-import cloud.qasino.games.database.repository.GameRepository;
-import cloud.qasino.games.database.repository.PlayerRepository;
-import cloud.qasino.games.database.repository.ResultsRepository;
-import cloud.qasino.games.database.repository.TurnRepository;
 import cloud.qasino.games.database.security.VisitorRepository;
 import cloud.qasino.games.dto.QasinoFlowDTO;
 import cloud.qasino.games.response.QasinoResponse;
@@ -35,12 +22,12 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.security.Principal;
-import java.util.Optional;
+
+import static cloud.qasino.games.statemachine.event.EventOutput.Result.FAILURE;
 
 // basic path /qasino
 // basic header @RequestHeader(value "visitor", required = true) int visitorId" // else 400
@@ -63,7 +50,7 @@ public class VisitorThymeleafController extends AbstractThymeleafController {
     private static final String PLAY_VIEW_LOCATION = "pages/play";
 
 
-    EventOutput.Result output;
+    EventOutput.Result result;
 
     private VisitorRepository visitorRepository;
 
@@ -91,7 +78,7 @@ public class VisitorThymeleafController extends AbstractThymeleafController {
             Model model,
             Principal principal,
             @ModelAttribute QasinoResponse qasinoResponse,
-            BindingResult result,
+            BindingResult bindingResult,
             Errors errors, RedirectAttributes ra,
             HttpServletResponse response
     ) {
@@ -110,7 +97,7 @@ public class VisitorThymeleafController extends AbstractThymeleafController {
         // 4 - return response
         prepareQasinoResponse(response, flowDTO);
         model.addAttribute(flowDTO.getQasinoResponse());
-        log.warn("Model => ", model);
+//        log.warn("Model => ", model);
         return VISITOR_VIEW_LOCATION;
     }
 
@@ -121,7 +108,7 @@ public class VisitorThymeleafController extends AbstractThymeleafController {
 //            @PathVariable("visitorId") Optional<String> id,
             @Valid @ModelAttribute QasinoResponse qasinoResponse,
             Errors errors, RedirectAttributes ra,
-            BindingResult result,
+            BindingResult bindingResult,
             HttpServletResponse response
     ) {
         log.warn("PostMapping: visitor");
@@ -140,7 +127,7 @@ public class VisitorThymeleafController extends AbstractThymeleafController {
                 "email", qasinoResponse.getPageVisitor().getSelectedVisitor().getEmail()
         );
         // 2 - validate input
-        if (!flowDTO.validateInput() || result.hasErrors()) {
+        if (!flowDTO.validateInput() || errors.hasErrors()) {
             log.warn("Errors validateInput!!: {}", errors);
             prepareQasinoResponse(response, flowDTO);
             model.addAttribute(flowDTO.getQasinoResponse());
@@ -232,8 +219,8 @@ public class VisitorThymeleafController extends AbstractThymeleafController {
             return VISITOR_VIEW_LOCATION;
         }
         // 3 - process
-        output = loadEntitiesToDtoAction.perform(flowDTO);
-        if (!(output == EventOutput.Result.FAILURE)) {
+        result = loadEntitiesToDtoAction.perform(flowDTO);
+        if (!(FAILURE.equals(result))) {
             flowDTO.prepareResponseHeaders();
             visitorRepository.deleteById(flowDTO.getSuppliedVisitorId());
             flowDTO.setSuppliedVisitorId(0);

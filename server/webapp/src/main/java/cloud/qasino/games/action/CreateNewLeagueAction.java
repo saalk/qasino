@@ -1,10 +1,14 @@
 package cloud.qasino.games.action;
 
 import cloud.qasino.games.action.interfaces.Action;
+import cloud.qasino.games.action.util.ActionUtils;
 import cloud.qasino.games.database.entity.League;
 import cloud.qasino.games.database.security.Visitor;
 import cloud.qasino.games.database.repository.LeagueRepository;
+import cloud.qasino.games.dto.QasinoFlowDTO;
 import cloud.qasino.games.statemachine.event.EventOutput;
+import cloud.qasino.games.statemachine.event.GameEvent;
+import cloud.qasino.games.statemachine.event.TurnEvent;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
@@ -55,6 +59,9 @@ public class CreateNewLeagueAction implements Action<CreateNewLeagueAction.Dto, 
     public interface Dto {
 
         // @formatter:off
+        String getErrorMessage();
+        GameEvent getSuppliedGameEvent();
+        TurnEvent getSuppliedTurnEvent();
         // Getters
         String getSuppliedLeagueName();
         Visitor getQasinoVisitor();

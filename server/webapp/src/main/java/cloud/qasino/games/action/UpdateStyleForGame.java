@@ -1,15 +1,21 @@
 package cloud.qasino.games.action;
 
 import cloud.qasino.games.action.interfaces.Action;
-import cloud.qasino.games.action.util.ActionUtils;
 import cloud.qasino.games.database.entity.Game;
 import cloud.qasino.games.database.entity.League;
-import cloud.qasino.games.database.security.Visitor;
+import cloud.qasino.games.database.entity.enums.game.Style;
 import cloud.qasino.games.database.entity.enums.game.Type;
+import cloud.qasino.games.database.entity.enums.game.style.AnteToWin;
+import cloud.qasino.games.database.entity.enums.game.style.BettingStrategy;
+import cloud.qasino.games.database.entity.enums.game.style.DeckConfiguration;
+import cloud.qasino.games.database.entity.enums.game.style.OneTimeInsurance;
+import cloud.qasino.games.database.entity.enums.game.style.RoundsToWin;
+import cloud.qasino.games.database.entity.enums.game.style.TurnsToWin;
 import cloud.qasino.games.database.entity.enums.player.AiLevel;
 import cloud.qasino.games.database.entity.enums.player.Avatar;
+import cloud.qasino.games.database.repository.GameRepository;
+import cloud.qasino.games.database.security.Visitor;
 import cloud.qasino.games.database.service.GameService;
-import cloud.qasino.games.dto.QasinoFlowDTO;
 import cloud.qasino.games.statemachine.event.EventOutput;
 import cloud.qasino.games.statemachine.event.GameEvent;
 import cloud.qasino.games.statemachine.event.TurnEvent;
@@ -17,22 +23,42 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import static cloud.qasino.games.database.entity.enums.game.Style.fromLabelWithDefault;
+
 @Slf4j
 @Component
-public class PrepareGameAction implements Action<PrepareGameAction.Dto, EventOutput.Result> {
+public class UpdateStyleForGame implements Action<UpdateStyleForGame.Dto, EventOutput.Result> {
 
     @Autowired
-    GameService gameService;
+    GameRepository gameRepository;
 
     @Override
     public EventOutput.Result perform(Dto actionDto) {
 
         // update Game
-        actionDto.setQasinoGame(gameService.prepareExistingGame(
-                actionDto.getQasinoGame(),
-                actionDto.getQasinoGameLeague(),
-                actionDto.getSuppliedStyle(),
-                actionDto.getSuppliedAnte()));
+        Style style = fromLabelWithDefault(actionDto.getQasinoGame().getStyle());
+        if (actionDto.getSuppliedAnteToWin()!=null) {
+            style.setAnteToWin(actionDto.getSuppliedAnteToWin());
+        }
+        if (actionDto.getSuppliedBettingStrategy()!=null) {
+            style.setBettingStrategy(actionDto.getSuppliedBettingStrategy());
+        }
+        if (actionDto.getSuppliedDeckConfiguration()!=null) {
+            style.setDeckConfiguration(actionDto.getSuppliedDeckConfiguration());
+        }
+        if (actionDto.getSuppliedOneTimeInsurance()!=null) {
+            style.setOneTimeInsurance(actionDto.getSuppliedOneTimeInsurance());
+        }
+        if (actionDto.getSuppliedRoundsToWin()!=null) {
+            style.setRoundsToWin(actionDto.getSuppliedRoundsToWin());
+        }
+        if (actionDto.getSuppliedTurnsToWin()!=null) {
+            style.setTurnsToWin(actionDto.getSuppliedTurnsToWin());
+        }
+
+        actionDto.getQasinoGame().setStyle(style.getLabel());
+        gameRepository.save(actionDto.getQasinoGame());
+
         return EventOutput.Result.SUCCESS;
     }
 
@@ -56,12 +82,16 @@ public class PrepareGameAction implements Action<PrepareGameAction.Dto, EventOut
         TurnEvent getSuppliedTurnEvent();
 
         // Getters
+        AnteToWin getSuppliedAnteToWin();
+        BettingStrategy getSuppliedBettingStrategy();
+        DeckConfiguration getSuppliedDeckConfiguration();
+        OneTimeInsurance getSuppliedOneTimeInsurance();
+        RoundsToWin getSuppliedRoundsToWin();
+        TurnsToWin getSuppliedTurnsToWin();
+
+
         League getQasinoGameLeague();
-        long getSuppliedLeagueId();
         int getSuppliedAnte();
-        Avatar getSuppliedAvatar();
-        AiLevel getSuppliedAiLevel();
-        Type getSuppliedType();
         String getSuppliedStyle();
         Visitor getQasinoVisitor();
 

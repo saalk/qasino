@@ -2,15 +2,12 @@ package cloud.qasino.games.controller.thymeleaf;
 
 import cloud.qasino.games.action.CreateNewGameAction;
 import cloud.qasino.games.action.FindVisitorIdByAliasOrUsernameAction;
-import cloud.qasino.games.action.IsGameConsistentForGameEvent;
+import cloud.qasino.games.action.IsGameConsistentForGameEventAction;
 import cloud.qasino.games.action.LoadEntitiesToDtoAction;
 import cloud.qasino.games.action.PrepareGameAction;
+import cloud.qasino.games.action.UpdateStyleForGame;
 import cloud.qasino.games.controller.AbstractThymeleafController;
-import cloud.qasino.games.database.entity.Game;
 import cloud.qasino.games.database.entity.Player;
-import cloud.qasino.games.database.entity.enums.player.AiLevel;
-import cloud.qasino.games.database.entity.enums.player.Avatar;
-import cloud.qasino.games.database.entity.enums.player.Role;
 import cloud.qasino.games.database.repository.GameRepository;
 import cloud.qasino.games.database.repository.PlayerRepository;
 import cloud.qasino.games.database.service.PlayerService;
@@ -35,8 +32,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.security.Principal;
-import java.util.Arrays;
-import java.util.Optional;
+
+import static cloud.qasino.games.statemachine.event.EventOutput.*;
+import static cloud.qasino.games.statemachine.event.EventOutput.Result.*;
 
 @Controller
 @ControllerAdvice
@@ -54,18 +52,21 @@ public class GameThymeleafController extends AbstractThymeleafController {
     private GameRepository gameRepository;
     private PlayerRepository playerRepository;
 
-    EventOutput.Result output;
+    Result result;
 
     @Autowired
     LoadEntitiesToDtoAction loadEntitiesToDtoAction;
     @Autowired
-    IsGameConsistentForGameEvent isGameConsistentForGameEvent;
+    IsGameConsistentForGameEventAction isGameConsistentForGameEventAction;
     @Autowired
     CreateNewGameAction createNewGameAction;
     @Autowired
     PrepareGameAction prepareGameAction;
     @Autowired
     FindVisitorIdByAliasOrUsernameAction findVisitorIdByAliasOrUsernameAction;
+    @Autowired
+    UpdateStyleForGame updateStyleForGame;
+
 
     @Autowired
     public GameThymeleafController(
@@ -82,7 +83,7 @@ public class GameThymeleafController extends AbstractThymeleafController {
             Principal principal,
             @PathVariable("gameId") String id,
             @ModelAttribute QasinoResponse qasinoResponse,
-            BindingResult result,
+            BindingResult bindingResult,
             Errors errors, RedirectAttributes ra,
             HttpServletResponse response
     ) {
@@ -116,7 +117,7 @@ public class GameThymeleafController extends AbstractThymeleafController {
             Principal principal,
             @PathVariable("gameId") String id,
             @ModelAttribute QasinoResponse qasinoResponse,
-            BindingResult result,
+            BindingResult bindingResult,
             Errors errors, RedirectAttributes ra,
             HttpServletResponse response
     ) {
@@ -149,7 +150,7 @@ public class GameThymeleafController extends AbstractThymeleafController {
             Principal principal,
             @PathVariable("gameId") String id,
             @Valid @ModelAttribute QasinoResponse qasinoResponse,
-            BindingResult result,
+            BindingResult bindingResult,
             Errors errors, RedirectAttributes ra,
             HttpServletResponse response
     ) {
@@ -182,18 +183,20 @@ public class GameThymeleafController extends AbstractThymeleafController {
 //            return "redirect:/visitor";
         }
         // 3 - process
-        output = loadEntitiesToDtoAction.perform(flowDTO);
-        if (output == EventOutput.Result.FAILURE) {
+        result = loadEntitiesToDtoAction.perform(flowDTO);
+        if (FAILURE.equals(result)) {
             log.warn("Errors loadEntitiesToDtoAction!!: {}", errors);
             log.warn("Model !!: {}", model);
             prepareQasinoResponse(response, flowDTO);
             model.addAttribute(flowDTO.getQasinoResponse());
-            return "redirect:/visitor";
+//            return "redirect:/visitor";
+            throw new MyBusinessException("loadEntitiesToDtoAction problem [" + flowDTO.getErrorMessage() + "]");
+
 //            return ResponseEntity.status(HttpStatus.valueOf(flowDTO.getHttpStatus())).headers(flowDTO.getHeaders()).build();
         }
         // create or update the game
-        output = isGameConsistentForGameEvent.perform(flowDTO);
-        if (output == EventOutput.Result.FAILURE) {
+        result = isGameConsistentForGameEventAction.perform(flowDTO);
+        if (FAILURE.equals(result)) {
             log.warn("Errors isGameConsistentForGameEvent!!: {}", errors);
             log.warn("Model !!: {}", model);
             prepareQasinoResponse(response, flowDTO);
@@ -216,7 +219,7 @@ public class GameThymeleafController extends AbstractThymeleafController {
             Principal principal,
             @PathVariable("gameId") String id,
             @ModelAttribute QasinoResponse qasinoResponse,
-            BindingResult result,
+            BindingResult bindingResult,
             Errors errors, RedirectAttributes ra,
             HttpServletResponse response
     ) {
@@ -245,8 +248,8 @@ public class GameThymeleafController extends AbstractThymeleafController {
             return "redirect:/setup/" + qasinoResponse.getPageGameSetup().getSelectedGame().getGameId();
         }
         // 3 - process
-        output = loadEntitiesToDtoAction.perform(flowDTO);
-        if (output == EventOutput.Result.FAILURE) {
+        result = loadEntitiesToDtoAction.perform(flowDTO);
+        if (FAILURE.equals(result)) {
             log.warn("Errors loadEntitiesToDtoAction!!: {}", errors);
             log.warn("Model !!: {}", model);
             prepareQasinoResponse(response, flowDTO);
@@ -254,8 +257,8 @@ public class GameThymeleafController extends AbstractThymeleafController {
             return "redirect:/setup/" + qasinoResponse.getPageGameSetup().getSelectedGame().getGameId();
             //            return ResponseEntity.status(HttpStatus.valueOf(flowDTO.getHttpStatus())).headers(flowDTO.getHeaders()).build();
         }
-        output = isGameConsistentForGameEvent.perform(flowDTO);
-        if (output == EventOutput.Result.FAILURE) {
+        result = isGameConsistentForGameEventAction.perform(flowDTO);
+        if (FAILURE.equals(result)) {
             log.warn("Errors isGameConsistentForGameEvent!!: {}", errors);
             log.warn("Model !!: {}", model);
             prepareQasinoResponse(response, flowDTO);
@@ -273,13 +276,78 @@ public class GameThymeleafController extends AbstractThymeleafController {
         return "redirect:/setup/" + qasinoResponse.getPageGameSetup().getSelectedGame().getGameId();
     }
 
+    @PostMapping("style/{gameId}")
+    public String styleGame(
+            Model model,
+            Principal principal,
+            @PathVariable("gameId") String id,
+            @ModelAttribute QasinoResponse qasinoResponse,
+            BindingResult bindingResult,
+            Errors errors, RedirectAttributes ra,
+            HttpServletResponse response
+    ) {
+        log.warn("PostMapping: style/{gameId}");
+
+        // 1 - map input
+        QasinoFlowDTO flowDTO = new QasinoFlowDTO();
+        flowDTO.setPathVariables(
+                "gameId", id,
+                "visitorId", getPricipalVisitorId(principal),
+                "gameEvent", "validate"
+        );
+        if ((qasinoResponse.getPageGameSetup().getAnteToWin() != null)) {
+            flowDTO.setPathVariables("anteToWin", qasinoResponse.getPageGameSetup().getAnteToWin().name());
+        }
+        if ((qasinoResponse.getPageGameSetup().getAnteToWin() != null)) {
+            flowDTO.setPathVariables("bettingStrategy", qasinoResponse.getPageGameSetup().getBettingStrategy().name());
+        }
+        if ((qasinoResponse.getPageGameSetup().getAnteToWin() != null)) {
+            flowDTO.setPathVariables("deckConfiguration", qasinoResponse.getPageGameSetup().getDeckConfiguration().name());
+        }
+        if ((qasinoResponse.getPageGameSetup().getAnteToWin() != null)) {
+            flowDTO.setPathVariables("oneTimeInsurance", qasinoResponse.getPageGameSetup().getOneTimeInsurance().name());
+        }
+        if ((qasinoResponse.getPageGameSetup().getAnteToWin() != null)) {
+            flowDTO.setPathVariables("roundsToWin", qasinoResponse.getPageGameSetup().getRoundsToWin().name());
+        }
+        if ((qasinoResponse.getPageGameSetup().getAnteToWin() != null)) {
+            flowDTO.setPathVariables("turnsToWin", qasinoResponse.getPageGameSetup().getTurnsToWin().name());
+        }
+        // 2 - validate input
+        if (!flowDTO.validateInput() || errors.hasErrors()) {
+            log.warn("Errors validateInput!!: {}", errors);
+            prepareQasinoResponse(response, flowDTO);
+            model.addAttribute(flowDTO.getQasinoResponse());
+            log.warn("Model !!: {}", model);
+            return "redirect:/setup/" + qasinoResponse.getPageGameSetup().getSelectedGame().getGameId();
+        }
+        // 3 - process
+        result = loadEntitiesToDtoAction.perform(flowDTO);
+        if (FAILURE.equals(result)) {
+            log.warn("Errors loadEntitiesToDtoAction!!: {}", errors);
+            log.warn("Model !!: {}", model);
+            prepareQasinoResponse(response, flowDTO);
+            model.addAttribute(flowDTO.getQasinoResponse());
+            return "redirect:/setup/" + qasinoResponse.getPageGameSetup().getSelectedGame().getGameId();
+            //            return ResponseEntity.status(HttpStatus.valueOf(flowDTO.getHttpStatus())).headers(flowDTO.getHeaders()).build();
+        }
+        updateStyleForGame.perform(flowDTO);
+        // 4 - return response
+        prepareQasinoResponse(response, flowDTO);
+        model.addAttribute(flowDTO.getQasinoResponse());
+//        log.warn("QasinoResponse !! {}", prettyPrintJson(flowDTO.getQasinoResponse()));
+//        log.warn("model !! {}", model);
+        return "redirect:/setup/" + qasinoResponse.getPageGameSetup().getSelectedGame().getGameId();
+    }
+
+
     @PostMapping("bot/{gameId}")
     public String addBotPLayerForAGame(
             Model model,
             Principal principal,
             @PathVariable("gameId") String id,
             @ModelAttribute QasinoResponse qasinoResponse,
-            BindingResult result,
+            BindingResult bindingResult,
             Errors errors, RedirectAttributes ra,
             HttpServletResponse response) {
 
@@ -317,7 +385,7 @@ public class GameThymeleafController extends AbstractThymeleafController {
             Model model,
             Principal principal,
             @ModelAttribute QasinoResponse qasinoResponse,
-            BindingResult result,
+            BindingResult bindingResult,
             Errors errors, RedirectAttributes ra,
             HttpServletResponse response,
             @PathVariable("gameId") String id
@@ -340,8 +408,8 @@ public class GameThymeleafController extends AbstractThymeleafController {
         }
         // 3 - process
         // get all entities
-        output = loadEntitiesToDtoAction.perform(flowDTO);
-        if (output == EventOutput.Result.FAILURE) {
+        result = loadEntitiesToDtoAction.perform(flowDTO);
+        if (FAILURE.equals(result)) {
             log.warn("Errors loadEntitiesToDtoAction!!: {}", errors);
             log.warn("Model !!: {}", model);
             prepareQasinoResponse(response, flowDTO);

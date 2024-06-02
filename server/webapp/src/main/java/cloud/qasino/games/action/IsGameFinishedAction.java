@@ -1,10 +1,13 @@
 package cloud.qasino.games.action;
 
 import cloud.qasino.games.action.interfaces.Action;
+import cloud.qasino.games.action.util.ActionUtils;
 import cloud.qasino.games.database.entity.Game;
 import cloud.qasino.games.database.entity.enums.game.GameState;
 import cloud.qasino.games.database.repository.GameRepository;
+import cloud.qasino.games.dto.QasinoFlowDTO;
 import cloud.qasino.games.statemachine.event.EventOutput;
+import cloud.qasino.games.statemachine.event.GameEvent;
 import cloud.qasino.games.statemachine.event.TurnEvent;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -13,7 +16,7 @@ import jakarta.annotation.Resource;
 
 @Slf4j
 @Component
-public class IsGameFinished implements Action<IsGameFinished.Dto, EventOutput.Result> {
+public class IsGameFinishedAction implements Action<IsGameFinishedAction.Dto, EventOutput.Result> {
 
     @Resource
     GameRepository gameRepository;
@@ -36,9 +39,13 @@ public class IsGameFinished implements Action<IsGameFinished.Dto, EventOutput.Re
     }
 
     public interface Dto {
+
         // @formatter:off
-        // Getters
+        String getErrorMessage();
+        GameEvent getSuppliedGameEvent();
         TurnEvent getSuppliedTurnEvent();
+
+        // Getters
         Game getQasinoGame();
         // Setters
         void setQasinoGame(Game game);

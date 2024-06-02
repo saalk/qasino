@@ -1,20 +1,9 @@
 package cloud.qasino.games.controller.thymeleaf;
 
-import cloud.qasino.games.action.CreateNewGameAction;
-import cloud.qasino.games.action.CreateNewLeagueAction;
-import cloud.qasino.games.action.IsGameConsistentForGameEvent;
 import cloud.qasino.games.action.LoadEntitiesToDtoAction;
-import cloud.qasino.games.action.PrepareGameAction;
 import cloud.qasino.games.controller.AbstractThymeleafController;
-import cloud.qasino.games.database.entity.Game;
 import cloud.qasino.games.database.entity.Player;
-import cloud.qasino.games.database.entity.enums.player.AiLevel;
-import cloud.qasino.games.database.entity.enums.player.Avatar;
-import cloud.qasino.games.database.entity.enums.player.Role;
-import cloud.qasino.games.database.repository.GameRepository;
 import cloud.qasino.games.database.repository.PlayerRepository;
-import cloud.qasino.games.database.security.Visitor;
-import cloud.qasino.games.database.security.VisitorRepository;
 import cloud.qasino.games.database.service.PlayerService;
 import cloud.qasino.games.dto.QasinoFlowDTO;
 import cloud.qasino.games.response.QasinoResponse;
@@ -34,8 +23,6 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.security.Principal;
-import java.util.List;
-import java.util.Optional;
 
 @Controller
 @ControllerAdvice
@@ -50,7 +37,7 @@ public class InvitationsThymeleafController extends AbstractThymeleafController 
 
     private PlayerRepository playerRepository;
 
-    EventOutput.Result output;
+    EventOutput.Result result;
 
     @Autowired
     LoadEntitiesToDtoAction loadEntitiesToDtoAction;
@@ -67,7 +54,7 @@ public class InvitationsThymeleafController extends AbstractThymeleafController 
             @PathVariable("otherVisitorId") String vid,
             @PathVariable("gameId") String gid,
             @ModelAttribute QasinoResponse qasinoResponse,
-            BindingResult result,
+            BindingResult bindingResult,
             Errors errors, RedirectAttributes ra,
             HttpServletResponse response) {
 
@@ -90,8 +77,8 @@ public class InvitationsThymeleafController extends AbstractThymeleafController 
             return "redirect:setup/" + qasinoResponse.getPageGameSetup().getSelectedGame().getGameId();
         }
         // 3 - process
-        output = loadEntitiesToDtoAction.perform(flowDTO);
-        if (output == EventOutput.Result.FAILURE) {
+        result = loadEntitiesToDtoAction.perform(flowDTO);
+        if (EventOutput.Result.FAILURE.equals(result)) {
             log.warn("Errors loadEntitiesToDtoAction!!: {}", errors);
             log.warn("Model !!: {}", model);
             prepareQasinoResponse(response, flowDTO);
@@ -114,7 +101,7 @@ public class InvitationsThymeleafController extends AbstractThymeleafController 
             Principal principal,
             @PathVariable("gameId") String gid,
             @ModelAttribute QasinoResponse qasinoResponse,
-            BindingResult result,
+            BindingResult bindingResult,
             Errors errors, RedirectAttributes ra,
             HttpServletResponse response) {
 
@@ -154,7 +141,7 @@ public class InvitationsThymeleafController extends AbstractThymeleafController 
             Principal principal,
             @PathVariable("gameId") String id,
             @ModelAttribute QasinoResponse qasinoResponse,
-            BindingResult result,
+            BindingResult bindingResult,
             Errors errors, RedirectAttributes ra,
             HttpServletResponse response) {
 

@@ -1,6 +1,7 @@
 package cloud.qasino.games.action;
 
 import cloud.qasino.games.action.interfaces.Action;
+import cloud.qasino.games.action.util.ActionUtils;
 import cloud.qasino.games.database.entity.Game;
 import cloud.qasino.games.database.entity.League;
 import cloud.qasino.games.database.entity.Player;
@@ -20,6 +21,7 @@ import cloud.qasino.games.database.entity.enums.move.Move;
 import cloud.qasino.games.database.entity.enums.player.AiLevel;
 import cloud.qasino.games.database.entity.enums.player.Avatar;
 import cloud.qasino.games.database.security.Visitor;
+import cloud.qasino.games.dto.QasinoFlowDTO;
 import cloud.qasino.games.dto.elements.NavigationBarItem;
 import cloud.qasino.games.dto.elements.PageGameInvitations;
 import cloud.qasino.games.dto.elements.PageGamePlay;
@@ -43,7 +45,7 @@ import java.util.Map;
 
 @Slf4j
 @Component
-public class MapQasinoResponseFromDto implements Action<MapQasinoResponseFromDto.Dto, EventOutput.Result> {
+public class MapQasinoResponseFromDtoAction implements Action<MapQasinoResponseFromDtoAction.Dto, EventOutput.Result> {
 
     @Override
     public EventOutput.Result perform(Dto actionDto) {
@@ -332,8 +334,11 @@ public class MapQasinoResponseFromDto implements Action<MapQasinoResponseFromDto
     public interface Dto {
 
         // @formatter:off
-        // Getters
         String getErrorMessage();
+        GameEvent getSuppliedGameEvent();
+        TurnEvent getSuppliedTurnEvent();
+
+        // Getters
         String getErrorReason();
 
         List<Statistic> getStatistics();
@@ -349,8 +354,6 @@ public class MapQasinoResponseFromDto implements Action<MapQasinoResponseFromDto
         boolean isShowLeaguesPage();
 
         // events
-        GameEvent getSuppliedGameEvent();
-        TurnEvent getSuppliedTurnEvent();
         List<GameEvent> getPossibleGameEvents();
         List<TurnEvent> getPossibleTurnEvents();
 

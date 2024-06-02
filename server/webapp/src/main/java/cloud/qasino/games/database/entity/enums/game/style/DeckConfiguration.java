@@ -41,6 +41,9 @@ public enum DeckConfiguration {
         this.description = description;
     }
 
+    public static DeckConfiguration fromName(String name) {
+        return DeckConfiguration.valueOf(name.toUpperCase());
+    }
     public static DeckConfiguration fromLabel(String inputLabel) {
         return lookup.get(inputLabel.toLowerCase());
     }

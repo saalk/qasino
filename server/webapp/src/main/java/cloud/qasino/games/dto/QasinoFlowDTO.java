@@ -1,28 +1,29 @@
 package cloud.qasino.games.dto;
 
 import cloud.qasino.games.action.CalculateAndFinishGameAction;
-import cloud.qasino.games.action.CalculateQasinoStatistics;
+import cloud.qasino.games.action.CalculateQasinoStatisticsAction;
 import cloud.qasino.games.action.CreateNewGameAction;
 import cloud.qasino.games.action.CreateNewLeagueAction;
-import cloud.qasino.games.action.DeterminePossibleEvents;
+import cloud.qasino.games.action.DeterminePossibleEventsAction;
 import cloud.qasino.games.action.FindVisitorIdByAliasOrUsernameAction;
 import cloud.qasino.games.action.HandleSecuredLoanAction;
-import cloud.qasino.games.action.IsGameConsistentForGameEvent;
-import cloud.qasino.games.action.IsGameFinished;
-import cloud.qasino.games.action.IsPlayerHuman;
-import cloud.qasino.games.action.IsTurnConsistentForTurnEvent;
+import cloud.qasino.games.action.IsGameConsistentForGameEventAction;
+import cloud.qasino.games.action.IsGameFinishedAction;
+import cloud.qasino.games.action.IsPlayerHumanAction;
+import cloud.qasino.games.action.IsTurnConsistentForTurnEventAction;
 import cloud.qasino.games.action.LoadEntitiesToDtoAction;
-import cloud.qasino.games.action.MapQasinoGameTableFromDto;
-import cloud.qasino.games.action.MapQasinoResponseFromDto;
+import cloud.qasino.games.action.MapQasinoGameTableFromDtoAction;
+import cloud.qasino.games.action.MapQasinoResponseFromDtoAction;
 import cloud.qasino.games.action.PlayFirstTurnAction;
-import cloud.qasino.games.action.StartGameForType;
+import cloud.qasino.games.action.StartGameForTypeAction;
 import cloud.qasino.games.action.PlayNextBotTurnAction;
 import cloud.qasino.games.action.PlayNextHumanTurnAction;
 import cloud.qasino.games.action.PrepareGameAction;
 import cloud.qasino.games.action.SetStatusIndicatorsBaseOnRetrievedDataAction;
 import cloud.qasino.games.action.SignUpNewVisitorAction;
 import cloud.qasino.games.action.StopGameAction;
-import cloud.qasino.games.action.UpdateFichesForPlayer;
+import cloud.qasino.games.action.UpdateFichesForPlayerAction;
+import cloud.qasino.games.action.UpdateStyleForGame;
 import cloud.qasino.games.action.UpdateVisitorAction;
 import cloud.qasino.games.database.entity.Card;
 import cloud.qasino.games.database.entity.CardMove;
@@ -38,6 +39,12 @@ import cloud.qasino.games.database.entity.enums.card.Position;
 import cloud.qasino.games.database.entity.enums.game.Style;
 import cloud.qasino.games.database.entity.enums.game.Type;
 import cloud.qasino.games.database.entity.enums.game.gamestate.GameStateGroup;
+import cloud.qasino.games.database.entity.enums.game.style.AnteToWin;
+import cloud.qasino.games.database.entity.enums.game.style.BettingStrategy;
+import cloud.qasino.games.database.entity.enums.game.style.DeckConfiguration;
+import cloud.qasino.games.database.entity.enums.game.style.OneTimeInsurance;
+import cloud.qasino.games.database.entity.enums.game.style.RoundsToWin;
+import cloud.qasino.games.database.entity.enums.game.style.TurnsToWin;
 import cloud.qasino.games.database.entity.enums.move.Move;
 import cloud.qasino.games.database.entity.enums.player.AiLevel;
 import cloud.qasino.games.database.entity.enums.player.Avatar;
@@ -71,29 +78,30 @@ import java.util.Map;
 public class QasinoFlowDTO extends AbstractFlowDTO
         implements
         CalculateAndFinishGameAction.Dto,
-        CalculateQasinoStatistics.Dto,
+        CalculateQasinoStatisticsAction.Dto,
         CreateNewGameAction.Dto,
         CreateNewLeagueAction.Dto,
-        DeterminePossibleEvents.Dto,
+        DeterminePossibleEventsAction.Dto,
         FindVisitorIdByAliasOrUsernameAction.Dto,
         HandleSecuredLoanAction.Dto,
-        IsGameConsistentForGameEvent.Dto,
-        IsTurnConsistentForTurnEvent.Dto,
-        IsGameFinished.Dto,
-        IsPlayerHuman.Dto,
+        IsGameConsistentForGameEventAction.Dto,
+        IsTurnConsistentForTurnEventAction.Dto,
+        IsGameFinishedAction.Dto,
+        IsPlayerHumanAction.Dto,
         LoadEntitiesToDtoAction.Dto,
-        MapQasinoResponseFromDto.Dto,
-        MapQasinoGameTableFromDto.Dto,
+        MapQasinoResponseFromDtoAction.Dto,
+        MapQasinoGameTableFromDtoAction.Dto,
         PlayNextHumanTurnAction.Dto,
         PlayNextBotTurnAction.Dto,
         PlayFirstTurnAction.Dto,
         PrepareGameAction.Dto,
         SetStatusIndicatorsBaseOnRetrievedDataAction.Dto,
         SignUpNewVisitorAction.Dto,
-        StartGameForType.Dto,
+        StartGameForTypeAction.Dto,
         StopGameAction.Dto,
         UpdateVisitorAction.Dto,
-        UpdateFichesForPlayer.Dto
+        UpdateStyleForGame.Dto,
+        UpdateFichesForPlayerAction.Dto
 {
     // suppress lombok setter for these fixed values
     @Setter(AccessLevel.NONE)
@@ -147,6 +155,12 @@ public class QasinoFlowDTO extends AbstractFlowDTO
     // game
     private Type suppliedType; // highlow
     private String suppliedStyle; // maxrounds etc
+    private AnteToWin suppliedAnteToWin; // maxrounds etc
+    private BettingStrategy suppliedBettingStrategy; // maxrounds etc
+    private DeckConfiguration suppliedDeckConfiguration; // maxrounds etc
+    private OneTimeInsurance suppliedOneTimeInsurance; // maxrounds etc
+    private RoundsToWin suppliedRoundsToWin; // maxrounds etc
+    private TurnsToWin suppliedTurnsToWin; // maxrounds etc
     private int suppliedAnte; // inleg
     private int suppliedJokers;
     // cardMove
@@ -303,7 +317,6 @@ public class QasinoFlowDTO extends AbstractFlowDTO
         String key;
         String dataName = "pathVariables";
         String pathDataString = StringUtils.join(pathVariables);
-        log.warn(this.getClass().getName() + ": " + dataName + " is " + pathDataString);
 
         if (pathVariables == null) return true;
 
@@ -383,7 +396,6 @@ public class QasinoFlowDTO extends AbstractFlowDTO
         String key;
         String dataName = "requestParam";
         String paramDataString = StringUtils.join(requestParam);
-        log.warn(this.getClass().getName() + ": " + dataName + " is " + paramDataString);
 
         if (requestParam == null) return true;
 
@@ -579,6 +591,66 @@ public class QasinoFlowDTO extends AbstractFlowDTO
                 return false;
             }
         }
+        key = "anteToWin";
+        if (requestParam.containsKey(key)) {
+            if (isValueForEnumKeyValid(key, requestParam.get(
+                            key), dataName,
+                    paramDataString)) {
+                this.suppliedAvatar = Avatar.fromLabel(requestParam.get(key));
+            } else {
+                return false;
+            }
+        }
+        key = "bettingStrategy";
+        if (requestParam.containsKey(key)) {
+            if (isValueForEnumKeyValid(key, requestParam.get(
+                            key), dataName,
+                    paramDataString)) {
+                this.suppliedBettingStrategy = BettingStrategy.fromLabel(requestParam.get(key));
+            } else {
+                return false;
+            }
+        }
+        key = "deckConfiguration";
+        if (requestParam.containsKey(key)) {
+            if (isValueForEnumKeyValid(key, requestParam.get(
+                            key), dataName,
+                    paramDataString)) {
+                this.suppliedDeckConfiguration = DeckConfiguration.fromLabel(requestParam.get(key));
+            } else {
+                return false;
+            }
+        }
+        key = "oneTimeInsurance";
+        if (requestParam.containsKey(key)) {
+            if (isValueForEnumKeyValid(key, requestParam.get(
+                            key), dataName,
+                    paramDataString)) {
+                this.suppliedOneTimeInsurance = OneTimeInsurance.fromLabel(requestParam.get(key));
+            } else {
+                return false;
+            }
+        }
+        key = "roundsToWin";
+        if (requestParam.containsKey(key)) {
+            if (isValueForEnumKeyValid(key, requestParam.get(
+                            key), dataName,
+                    paramDataString)) {
+                this.suppliedRoundsToWin = RoundsToWin.fromLabel(requestParam.get(key));
+            } else {
+                return false;
+            }
+        }
+        key = "turnsToWin";
+        if (requestParam.containsKey(key)) {
+            if (isValueForEnumKeyValid(key, requestParam.get(
+                            key), dataName,
+                    paramDataString)) {
+                this.suppliedTurnsToWin = TurnsToWin.fromLabel(requestParam.get(key));
+            } else {
+                return false;
+            }
+        }
         return true;
     }
     boolean isValueForPrimaryKeyValid(String key, String value, String dataName, String dataToValidate) {
@@ -668,10 +740,41 @@ public class QasinoFlowDTO extends AbstractFlowDTO
                 break;
             case "style":
                 // TODO never in error due to a default
-                if (!Style.fromLabelWithDefault(value).equals(null)) {
+                if (Style.fromLabelWithDefault(value)!=null) {
                     return true;
                 }
                 break;
+            case "anteToWin":
+                if (AnteToWin.fromName(value) !=null) {
+                    return true;
+                }
+                break;
+            case "bettingStrategy":
+                if (AnteToWin.fromName(value) !=null) {
+                    return true;
+                }
+                break;
+            case "deckConfiguration":
+                if (AnteToWin.fromName(value) !=null) {
+                    return true;
+                }
+                break;
+            case "oneTimeInsurance":
+                if (AnteToWin.fromName(value) !=null) {
+                    return true;
+                }
+                break;
+            case "roundsToWin":
+                if (AnteToWin.fromName(value) !=null) {
+                    return true;
+                }
+                break;
+            case "turnsToWin":
+                if (AnteToWin.fromName(value) !=null) {
+                    return true;
+                }
+                break;
+
         }
 
         this.setErrorKey(key);

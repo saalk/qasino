@@ -26,6 +26,8 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.security.Principal;
 
+import static cloud.qasino.games.statemachine.event.EventOutput.Result.FAILURE;
+
 @Controller
 @ControllerAdvice
 //@Api(tags = {WebConfiguration.QASINO_TAG})
@@ -39,7 +41,7 @@ public class LeagueThymeleafController extends AbstractThymeleafController {
 
     private LeagueRepository leagueRepository;
 
-    EventOutput.Result output;
+    EventOutput.Result result;
 
     @Autowired
     LoadEntitiesToDtoAction loadEntitiesToDtoAction;
@@ -60,7 +62,7 @@ public class LeagueThymeleafController extends AbstractThymeleafController {
             Model model,
             Principal principal,
             @ModelAttribute QasinoResponse qasinoResponse,
-            BindingResult result,
+            BindingResult bindingResult,
             Errors errors, RedirectAttributes ra,
             HttpServletResponse response,
             @PathVariable("leagueId") String id
@@ -96,7 +98,7 @@ public class LeagueThymeleafController extends AbstractThymeleafController {
             Model model,
             Principal principal,
             @ModelAttribute QasinoResponse qasinoResponse,
-            BindingResult result,
+            BindingResult bindingResult,
             Errors errors, RedirectAttributes ra,
             HttpServletResponse response
     ) {
@@ -117,15 +119,15 @@ public class LeagueThymeleafController extends AbstractThymeleafController {
         }
         // 3 - process
         // get all entities
-        output = loadEntitiesToDtoAction.perform(flowDTO);
-        if (output == EventOutput.Result.FAILURE) {
+        result = loadEntitiesToDtoAction.perform(flowDTO);
+        if (FAILURE.equals(result)) {
             flowDTO.prepareResponseHeaders();
             return "redirect:/visitor";
 //            return ResponseEntity.status(HttpStatus.valueOf(flowDTO.getHttpStatus())).headers(flowDTO.getHeaders()).build();
         }
         // create - League for Visitor
-        output = createNewLeagueAction.perform(flowDTO);
-        if (output == EventOutput.Result.FAILURE) {
+        result = createNewLeagueAction.perform(flowDTO);
+        if (FAILURE.equals(result)) {
             flowDTO.prepareResponseHeaders();
             return "redirect:/visitor";
 //            return ResponseEntity.status(HttpStatus.valueOf(flowDTO.getHttpStatus())).headers(flowDTO.getHeaders()).build();
@@ -147,7 +149,7 @@ public class LeagueThymeleafController extends AbstractThymeleafController {
             Model model,
             Principal principal,
             @ModelAttribute QasinoResponse qasinoResponse,
-            BindingResult result,
+            BindingResult bindingResult,
             Errors errors, RedirectAttributes ra,
             HttpServletResponse response,
             @PathVariable("leagueId") String id
@@ -163,11 +165,11 @@ public class LeagueThymeleafController extends AbstractThymeleafController {
             prepareQasinoResponse(response, flowDTO);
 //            flowDTO.setAction("Username incorrect");
             model.addAttribute(flowDTO.getQasinoResponse());
-            return "redirect:/visitor/" + flowDTO.getQasinoResponse().getPageVisitor().getSelectedVisitor().getVisitorId();
+            return "redirect:/visitor";
         }
         // get all entities
-        output = loadEntitiesToDtoAction.perform(flowDTO);
-        if (output == EventOutput.Result.FAILURE) {
+        result = loadEntitiesToDtoAction.perform(flowDTO);
+        if (FAILURE.equals(result)) {
             flowDTO.prepareResponseHeaders();
             return "redirect:/visitor";
 //            return ResponseEntity.status(HttpStatus.valueOf(flowDTO.getHttpStatus())).headers(flowDTO.getHeaders()).build();

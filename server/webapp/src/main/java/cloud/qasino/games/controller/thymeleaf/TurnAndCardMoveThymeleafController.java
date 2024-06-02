@@ -1,22 +1,22 @@
 package cloud.qasino.games.controller.thymeleaf;
 
 import cloud.qasino.games.action.CalculateAndFinishGameAction;
-import cloud.qasino.games.action.CalculateQasinoStatistics;
+import cloud.qasino.games.action.CalculateQasinoStatisticsAction;
 import cloud.qasino.games.action.FindVisitorIdByAliasOrUsernameAction;
-import cloud.qasino.games.action.IsGameConsistentForGameEvent;
-import cloud.qasino.games.action.IsGameFinished;
-import cloud.qasino.games.action.IsPlayerHuman;
-import cloud.qasino.games.action.IsTurnConsistentForTurnEvent;
+import cloud.qasino.games.action.IsGameConsistentForGameEventAction;
+import cloud.qasino.games.action.IsGameFinishedAction;
+import cloud.qasino.games.action.IsPlayerHumanAction;
+import cloud.qasino.games.action.IsTurnConsistentForTurnEventAction;
 import cloud.qasino.games.action.LoadEntitiesToDtoAction;
-import cloud.qasino.games.action.MapQasinoGameTableFromDto;
-import cloud.qasino.games.action.MapQasinoResponseFromDto;
+import cloud.qasino.games.action.MapQasinoGameTableFromDtoAction;
+import cloud.qasino.games.action.MapQasinoResponseFromDtoAction;
 import cloud.qasino.games.action.PlayFirstTurnAction;
-import cloud.qasino.games.action.StartGameForType;
 import cloud.qasino.games.action.PlayNextBotTurnAction;
 import cloud.qasino.games.action.PlayNextHumanTurnAction;
 import cloud.qasino.games.action.SetStatusIndicatorsBaseOnRetrievedDataAction;
+import cloud.qasino.games.action.StartGameForTypeAction;
 import cloud.qasino.games.action.StopGameAction;
-import cloud.qasino.games.action.UpdateFichesForPlayer;
+import cloud.qasino.games.action.UpdateFichesForPlayerAction;
 import cloud.qasino.games.controller.AbstractThymeleafController;
 import cloud.qasino.games.database.repository.CardMoveRepository;
 import cloud.qasino.games.database.repository.CardRepository;
@@ -26,6 +26,7 @@ import cloud.qasino.games.database.repository.TurnRepository;
 import cloud.qasino.games.dto.QasinoFlowDTO;
 import cloud.qasino.games.response.QasinoResponse;
 import cloud.qasino.games.statemachine.event.EventOutput;
+import cloud.qasino.games.statemachine.event.EventOutput.Result;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,26 +42,29 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.security.Principal;
 
+import static cloud.qasino.games.statemachine.event.EventOutput.Result.FAILURE;
+import static cloud.qasino.games.statemachine.event.EventOutput.Result.SUCCESS;
+
 @Controller
 @ControllerAdvice
 //@Api(tags = {WebConfiguration.QASINO_TAG})
 @Slf4j
 public class TurnAndCardMoveThymeleafController extends AbstractThymeleafController {
 
-    EventOutput.Result output;
+    EventOutput.Result result;
 
     @Autowired
-    IsGameConsistentForGameEvent isGameConsistentForGameEvent;
+    IsGameConsistentForGameEventAction isGameConsistentForGameEventAction;
     @Autowired
-    IsTurnConsistentForTurnEvent isTurnConsistentForTurnEvent;
+    IsTurnConsistentForTurnEventAction isTurnConsistentForTurnEventAction;
     @Autowired
-    IsGameFinished isGameFinished;
+    IsGameFinishedAction isGameFinishedAction;
     @Autowired
-    UpdateFichesForPlayer updateFichesForPlayer;
+    UpdateFichesForPlayerAction updateFichesForPlayerAction;
     @Autowired
     CalculateAndFinishGameAction calculateAndFinishGameAction;
     @Autowired
-    StartGameForType startGameForType;
+    StartGameForTypeAction startGameForTypeAction;
     @Autowired
     PlayFirstTurnAction playFirstTurnAction;
     @Autowired
@@ -70,15 +74,15 @@ public class TurnAndCardMoveThymeleafController extends AbstractThymeleafControl
     @Autowired
     SetStatusIndicatorsBaseOnRetrievedDataAction setStatusIndicatorsBaseOnRetrievedDataAction;
     @Autowired
-    CalculateQasinoStatistics calculateQasinoStatistics;
+    CalculateQasinoStatisticsAction calculateQasinoStatisticsAction;
     @Autowired
-    MapQasinoResponseFromDto mapQasinoResponseFromDto;
+    MapQasinoResponseFromDtoAction mapQasinoResponseFromDtoAction;
     @Autowired
-    MapQasinoGameTableFromDto mapQasinoGameTableFromDto;
+    MapQasinoGameTableFromDtoAction mapQasinoGameTableFromDtoAction;
     @Autowired
     PlayNextHumanTurnAction playNextHumanTurnAction;
     @Autowired
-    IsPlayerHuman isPlayerHuman;
+    IsPlayerHumanAction isPlayerHumanAction;
     @Autowired
     PlayNextBotTurnAction playNextBotTurnAction;
     @Autowired
@@ -111,10 +115,12 @@ public class TurnAndCardMoveThymeleafController extends AbstractThymeleafControl
             Principal principal,
             @PathVariable("gameId") String id,
             @ModelAttribute QasinoResponse qasinoResponse,
-            BindingResult result,
+            BindingResult bindingResult,
             Errors errors, RedirectAttributes ra,
             HttpServletResponse response
     ) {
+        log.warn("PostMapping: shuffle/{gameId}");
+
         // 1 - map input
         QasinoFlowDTO flowDTO = new QasinoFlowDTO();
         flowDTO.setPathVariables(
@@ -130,40 +136,26 @@ public class TurnAndCardMoveThymeleafController extends AbstractThymeleafControl
             return "redirect:/setup/" + qasinoResponse.getPageGameSetup().getSelectedGame().getGameId();
         }
         // 3 - process
-        output = loadEntitiesToDtoAction.perform(flowDTO);
-        if (output == EventOutput.Result.FAILURE) {
-            log.warn("Errors loadEntitiesToDtoAction!!: {}", errors);
-            prepareQasinoResponse(response, flowDTO);
-            model.addAttribute(flowDTO.getQasinoResponse());
-            return "redirect:/setup/" + qasinoResponse.getPageGameSetup().getSelectedGame().getGameId();
-        }
-        // 3 - process
-        output = isGameConsistentForGameEvent.perform(flowDTO);
-        if (output == EventOutput.Result.FAILURE) {
+        loadEntitiesToDtoAction.perform(flowDTO);
+        result = isGameConsistentForGameEventAction.perform(flowDTO);
+        if (FAILURE.equals(result)) {
             log.warn("Errors isGameConsistentForGameEvent!!: {}", errors);
             prepareQasinoResponse(response, flowDTO);
             model.addAttribute(flowDTO.getQasinoResponse());
-            return "redirect:/setup/" + qasinoResponse.getPageGameSetup().getSelectedGame().getGameId();
+            return "redirect:/setup/" + flowDTO.getSuppliedGameId();
         }
-        startGameForType.perform(flowDTO);
-        mapQasinoGameTableFromDto.perform(flowDTO);
+        startGameForTypeAction.perform(flowDTO);
+        mapQasinoGameTableFromDtoAction.perform(flowDTO);
         playFirstTurnAction.perform(flowDTO);
         // get all entities and build reponse
-        output = loadEntitiesToDtoAction.perform(flowDTO);
-        if (output == EventOutput.Result.FAILURE) {
-            log.warn("Errors loadEntitiesToDtoAction!!: {}", errors);
-            prepareQasinoResponse(response, flowDTO);
-            model.addAttribute(flowDTO.getQasinoResponse());
-            return "redirect:/setup/" + qasinoResponse.getPageGameSetup().getSelectedGame().getGameId();
-        }
+        loadEntitiesToDtoAction.perform(flowDTO);
         // 4 - return response
         prepareQasinoResponse(response, flowDTO);
         model.addAttribute(flowDTO.getQasinoResponse());
-        log.warn("PostMapping: shuffle/{gameId}");
 //        log.warn("HttpServletResponse: {}", response.getHeaderNames());
-        log.warn("Model: {}", model);
+//        log.warn("Model: {}", model);
 //        log.warn("Errors: {}", errors);
-        return "redirect:/setup/" + qasinoResponse.getPageGameSetup().getSelectedGame().getGameId();
+        return "redirect:/setup/" + flowDTO.getSuppliedGameId();
     }
 
     @PostMapping(value = "turn/{turnEvent}/{gameId}")
@@ -172,10 +164,13 @@ public class TurnAndCardMoveThymeleafController extends AbstractThymeleafControl
             Principal principal,
             @PathVariable("gameId") String id,
             @ModelAttribute QasinoResponse qasinoResponse,
-            BindingResult result,
+            BindingResult bindingResult,
             Errors errors, RedirectAttributes ra,
             HttpServletResponse response,
             @PathVariable("turnEvent") String trigger) {
+
+        log.warn("PostMapping: turn/{turnEvent}/{gameId}");
+
         // 1 - map input
         QasinoFlowDTO flowDTO = new QasinoFlowDTO();
         flowDTO.setPathVariables(
@@ -183,61 +178,55 @@ public class TurnAndCardMoveThymeleafController extends AbstractThymeleafControl
                 "gameId", id,
 //                "turnPlayerId", String.valueOf(qasinoResponse.getPageGamePlay().getTable().getCurrentTurn().getActivePlayerId()),
                 "gameEvent", "turn",
-                "turnEvent", trigger
+                "turnEvent", trigger.toLowerCase()
         );
         // 2 - validate input
         if (!flowDTO.validateInput()) {
             log.warn("Errors validateInput!!: {}", errors);
             prepareQasinoResponse(response, flowDTO);
             model.addAttribute(flowDTO.getQasinoResponse());
-            return "redirect:/play/" + qasinoResponse.getPageGamePlay().getSelectedGame().getGameId();
+            return "redirect:/play/" + id;
         }
         // 3 - process
-        output = loadEntitiesToDtoAction.perform(flowDTO);
-        if (output == EventOutput.Result.FAILURE) {
-            log.warn("Errors loadEntitiesToDtoAction!!: {}", errors);
-            prepareQasinoResponse(response, flowDTO);
-            model.addAttribute(flowDTO.getQasinoResponse());
-            return "redirect:/play/" + qasinoResponse.getPageGamePlay().getSelectedGame().getGameId();
-        }
-        mapQasinoGameTableFromDto.perform(flowDTO);
+        loadEntitiesToDtoAction.perform(flowDTO);
+        mapQasinoGameTableFromDtoAction.perform(flowDTO);
 
         // logic
-        output = isGameConsistentForGameEvent.perform(flowDTO);
-        if (output == EventOutput.Result.FAILURE) {
+        result = isGameConsistentForGameEventAction.perform(flowDTO);
+        if (EventOutput.Result.FAILURE.equals(result)) {
             log.warn("Errors isGameConsistentForGameEvent!!: {}", errors);
             prepareQasinoResponse(response, flowDTO);
             model.addAttribute(flowDTO.getQasinoResponse());
             return "redirect:/play/" + qasinoResponse.getPageGamePlay().getSelectedGame().getGameId();
         }
-        output = isTurnConsistentForTurnEvent.perform(flowDTO);
-        if (output == EventOutput.Result.FAILURE) {
+        result = isTurnConsistentForTurnEventAction.perform(flowDTO);
+        if (EventOutput.Result.FAILURE.equals(result)) {
             log.warn("Errors isTurnConsistentForTurnEvent!!: {}", errors);
             prepareQasinoResponse(response, flowDTO);
             model.addAttribute(flowDTO.getQasinoResponse());
-            return "redirect:/play/" + qasinoResponse.getPageGamePlay().getSelectedGame().getGameId();
+            return "redirect:/play/" + flowDTO.getSuppliedGameId();
         }
-//        output = canPlayerStillPlay.perform(flowDTO); // for now stop after one round
-        mapQasinoGameTableFromDto.perform(flowDTO);
-        output = isPlayerHuman.perform(flowDTO);
-        if (output == EventOutput.Result.SUCCESS) {
+//        result = canPlayerStillPlay.perform(flowDTO); // for now stop after one round
+        mapQasinoGameTableFromDtoAction.perform(flowDTO);
+        result = isPlayerHumanAction.perform(flowDTO);
+        if (SUCCESS.equals(result)) {
             playNextHumanTurnAction.perform(flowDTO);
         } else {
             playNextBotTurnAction.perform(flowDTO);
         }
-        updateFichesForPlayer.perform(flowDTO);
-        output = isGameFinished.perform(flowDTO);
-        if (output == EventOutput.Result.SUCCESS) {
-            output = calculateAndFinishGameAction.perform(flowDTO);
+        updateFichesForPlayerAction.perform(flowDTO);
+        result = isGameFinishedAction.perform(flowDTO);
+        if (SUCCESS.equals(result)) {
+            result = calculateAndFinishGameAction.perform(flowDTO);
         }
         // 4 - return response
         prepareQasinoResponse(response, flowDTO);
         model.addAttribute(flowDTO.getQasinoResponse());
-        log.warn("PostMapping: turn/{turnEvent}/{gameId}");
 //        log.warn("HttpServletResponse: {}", response.getHeaderNames());
 //        log.warn("Model: {}", model);
 //        log.warn("Errors: {}", errors);
-        return "redirect:/play/" + qasinoResponse.getPageGamePlay().getSelectedGame().getGameId();
+        log.warn("qasinoResponse: {}", flowDTO.getQasinoResponse());
+        return "redirect:/play/" + flowDTO.getSuppliedGameId();
     }
 
     @PostMapping(value = "stop/{gameId}")
@@ -246,10 +235,12 @@ public class TurnAndCardMoveThymeleafController extends AbstractThymeleafControl
             Principal principal,
             @PathVariable("gameId") String id,
             @ModelAttribute QasinoResponse qasinoResponse,
-            BindingResult result,
+            BindingResult bindingResult,
             Errors errors, RedirectAttributes ra,
             HttpServletResponse response
     ) {
+        log.warn("PostMapping: stop/{gameId}");
+
         // 1 - map input
         QasinoFlowDTO flowDTO = new QasinoFlowDTO();
         flowDTO.setPathVariables(
@@ -262,32 +253,24 @@ public class TurnAndCardMoveThymeleafController extends AbstractThymeleafControl
             log.warn("Errors validateInput!!: {}", errors);
             prepareQasinoResponse(response, flowDTO);
             model.addAttribute(flowDTO.getQasinoResponse());
-            return "redirect:/setup/" + qasinoResponse.getPageGamePlay().getSelectedGame().getGameId();
+            return "redirect:/setup/" + flowDTO.getSuppliedGameId();
         }
         // 3 - process
-        output = loadEntitiesToDtoAction.perform(flowDTO);
-        if (output == EventOutput.Result.FAILURE) {
-            log.warn("Errors loadEntitiesToDtoAction!!: {}", errors);
+        loadEntitiesToDtoAction.perform(flowDTO);
+        result = isGameConsistentForGameEventAction.perform(flowDTO);
+        if (FAILURE.equals(result)) {
+            log.warn("264 Errors isGameConsistentForGameEvent!!: {}", errors);
             prepareQasinoResponse(response, flowDTO);
             model.addAttribute(flowDTO.getQasinoResponse());
-            return "redirect:/setup/" + qasinoResponse.getPageGamePlay().getSelectedGame().getGameId();
+            return "redirect:/setup/" + flowDTO.getSuppliedGameId();
         }
-        // logic
-        output = isGameConsistentForGameEvent.perform(flowDTO);
-        if (output == EventOutput.Result.FAILURE) {
-            log.warn("Errors isGameConsistentForGameEvent!!: {}", errors);
-            prepareQasinoResponse(response, flowDTO);
-            model.addAttribute(flowDTO.getQasinoResponse());
-            return "redirect:/setup/" + qasinoResponse.getPageGamePlay().getSelectedGame().getGameId();
-        }
-        stopGameAction.perform(flowDTO);
-        if (output == EventOutput.Result.SUCCESS) {
-            output = calculateAndFinishGameAction.perform(flowDTO);
+        result = stopGameAction.perform(flowDTO);
+        if (SUCCESS.equals(result)) {
+            result = calculateAndFinishGameAction.perform(flowDTO);
         }
         // 4 - return response
         prepareQasinoResponse(response, flowDTO);
         model.addAttribute(flowDTO.getQasinoResponse());
-        log.warn("PostMapping: stop/{gameId}");
 //        log.warn("HttpServletResponse: {}", response.getHeaderNames());
 //        log.warn("Model: {}", model);
 //        log.warn("Errors: {}", errors);

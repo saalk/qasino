@@ -37,6 +37,10 @@ public enum AnteToWin {
         this.description = description;
     }
 
+    public static AnteToWin fromName(String name) {
+        return AnteToWin.valueOf(name.toUpperCase());
+    }
+
     public static AnteToWin fromLabel(String inputLabel) {
         return lookup.get(inputLabel.toLowerCase());
     }

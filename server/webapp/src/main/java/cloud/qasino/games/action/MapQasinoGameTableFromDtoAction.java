@@ -1,17 +1,19 @@
 package cloud.qasino.games.action;
 
 import cloud.qasino.games.action.interfaces.Action;
+import cloud.qasino.games.action.util.ActionUtils;
 import cloud.qasino.games.database.entity.Card;
 import cloud.qasino.games.database.entity.Game;
 import cloud.qasino.games.database.entity.Player;
 import cloud.qasino.games.database.entity.Turn;
-import cloud.qasino.games.database.entity.enums.move.Move;
-import cloud.qasino.games.database.entity.enums.player.AiLevel;
 import cloud.qasino.games.database.entity.enums.player.Role;
 import cloud.qasino.games.database.security.Visitor;
+import cloud.qasino.games.dto.QasinoFlowDTO;
 import cloud.qasino.games.dto.elements.SectionSeat;
 import cloud.qasino.games.dto.elements.SectionTable;
 import cloud.qasino.games.statemachine.event.EventOutput;
+import cloud.qasino.games.statemachine.event.GameEvent;
+import cloud.qasino.games.statemachine.event.TurnEvent;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
@@ -21,7 +23,7 @@ import java.util.stream.Collectors;
 
 @Slf4j
 @Component
-public class MapQasinoGameTableFromDto implements Action<MapQasinoGameTableFromDto.Dto, EventOutput.Result> {
+public class MapQasinoGameTableFromDtoAction implements Action<MapQasinoGameTableFromDtoAction.Dto, EventOutput.Result> {
 
     @Override
     public EventOutput.Result perform(Dto actionDto) {
@@ -115,7 +117,12 @@ public class MapQasinoGameTableFromDto implements Action<MapQasinoGameTableFromD
     }
 
     public interface Dto {
+
         // @formatter:off
+        String getErrorMessage();
+        GameEvent getSuppliedGameEvent();
+        TurnEvent getSuppliedTurnEvent();
+
         // Getters
         Game getQasinoGame();
         Visitor getQasinoVisitor();

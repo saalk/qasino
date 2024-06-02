@@ -36,7 +36,9 @@ public enum RoundsToWin {
         this.label = label;
         this.description = description;
     }
-
+    public static RoundsToWin fromName(String name) {
+        return RoundsToWin.valueOf(name.toUpperCase());
+    }
     public static RoundsToWin fromLabel(String inputLabel) {
         return lookup.get(inputLabel.toLowerCase());
     }

@@ -5,7 +5,9 @@ import cloud.qasino.games.controller.AbstractThymeleafController;
 import cloud.qasino.games.database.security.MyUserDetailService;
 import cloud.qasino.games.database.security.MyUserPrincipal;
 import cloud.qasino.games.dto.QasinoFlowDTO;
+import cloud.qasino.games.exception.MyNPException;
 import cloud.qasino.games.response.QasinoResponse;
+import cloud.qasino.games.statemachine.event.EventOutput;
 import cloud.qasino.games.web.AjaxUtils;
 import cloud.qasino.games.web.MessageHelper;
 import com.google.common.base.Throwables;
@@ -22,10 +24,12 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -63,6 +67,8 @@ public class HomeSigninSignupThymeleafController extends AbstractThymeleafContro
     private static final String HOME_NOT_SIGNED_IN_LOCATION = "home/homeNotSignedIn";
     private static final String ERROR_GENERAL_LOCATION = "error/general";
 
+    EventOutput.Result result;
+
     @Autowired
     SignUpNewVisitorAction signUpNewVisitorAction;
     @Autowired
@@ -92,9 +98,15 @@ public class HomeSigninSignupThymeleafController extends AbstractThymeleafContro
     ) {
         // 1 - map input
         QasinoFlowDTO flowDTO = new QasinoFlowDTO();
+        flowDTO.setPathVariables(
+                "gameEvent", "sign_on"
+        );
         // 2 - validate input
-        if (error != null) {
-            flowDTO.setAction("Username or password not recognised");
+        if (!flowDTO.validateInput() || error != null) {
+            throw new MyNPException("103 gameEvent","sign_on [" + flowDTO.getSuppliedUsername() + "]");
+//            prepareQasinoResponse(response, flowDTO);
+//            model.addAttribute(flowDTO.getQasinoResponse());
+//            return "redirect:/";
         }
         // 3 - process
         // 4 - return response

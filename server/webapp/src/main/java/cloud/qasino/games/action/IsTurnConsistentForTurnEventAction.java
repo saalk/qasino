@@ -5,6 +5,7 @@ import cloud.qasino.games.database.entity.Player;
 import cloud.qasino.games.database.entity.Turn;
 import cloud.qasino.games.database.security.VisitorRepository;
 import cloud.qasino.games.statemachine.event.EventOutput;
+import cloud.qasino.games.statemachine.event.GameEvent;
 import cloud.qasino.games.statemachine.event.TurnEvent;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -13,7 +14,7 @@ import jakarta.annotation.Resource;
 
 @Slf4j
 @Component
-public class IsTurnConsistentForTurnEvent implements Action<IsTurnConsistentForTurnEvent.Dto, EventOutput.Result> {
+public class IsTurnConsistentForTurnEventAction implements Action<IsTurnConsistentForTurnEventAction.Dto, EventOutput.Result> {
 
     @Resource
     VisitorRepository visitorRepository;
@@ -38,7 +39,7 @@ public class IsTurnConsistentForTurnEvent implements Action<IsTurnConsistentForT
                 noError = turnShouldHaveActiveHumanPlayer(actionDto);
                 if (noError) noError = turnShouldHaveNextPlayer(actionDto);
             }
-            case NEXT -> {
+            case BOT -> {
                 noError = turnShouldHaveActiveBotPlayer(actionDto);
                 if (noError) noError = turnShouldHaveNextPlayer(actionDto);
             }
@@ -50,6 +51,7 @@ public class IsTurnConsistentForTurnEvent implements Action<IsTurnConsistentForT
             }
         }
         return noError ? EventOutput.Result.SUCCESS : EventOutput.Result.FAILURE;
+
     }
 
     private boolean turnShouldHaveCurrentMoveNumberNotZero(Dto actionDto) {
@@ -108,8 +110,11 @@ public class IsTurnConsistentForTurnEvent implements Action<IsTurnConsistentForT
     public interface Dto {
 
         // @formatter:off
-        // Getters
+        String getErrorMessage();
+        GameEvent getSuppliedGameEvent();
         TurnEvent getSuppliedTurnEvent();
+
+        // Getters
         Turn getActiveTurn();
         Player getTurnPlayer();
         Player getNextPlayer();

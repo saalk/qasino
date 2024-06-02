@@ -1,6 +1,7 @@
 package cloud.qasino.games.action;
 
 import cloud.qasino.games.action.interfaces.Action;
+import cloud.qasino.games.action.util.ActionUtils;
 import cloud.qasino.games.database.entity.Card;
 import cloud.qasino.games.database.entity.CardMove;
 import cloud.qasino.games.database.entity.Game;
@@ -11,7 +12,10 @@ import cloud.qasino.games.database.repository.CardMoveRepository;
 import cloud.qasino.games.database.repository.CardRepository;
 import cloud.qasino.games.database.repository.PlayerRepository;
 import cloud.qasino.games.database.service.TurnAndCardMoveService;
+import cloud.qasino.games.dto.QasinoFlowDTO;
 import cloud.qasino.games.statemachine.event.EventOutput;
+import cloud.qasino.games.statemachine.event.GameEvent;
+import cloud.qasino.games.statemachine.event.TurnEvent;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -22,7 +26,7 @@ import java.util.Optional;
 
 @Slf4j
 @Component
-public class UpdateFichesForPlayer implements Action<UpdateFichesForPlayer.Dto, EventOutput.Result> {
+public class UpdateFichesForPlayerAction implements Action<UpdateFichesForPlayerAction.Dto, EventOutput.Result> {
 
     @Resource
     CardMoveRepository cardMoveRepository;
@@ -38,18 +42,10 @@ public class UpdateFichesForPlayer implements Action<UpdateFichesForPlayer.Dto, 
     public EventOutput.Result perform(Dto actionDto) {
 
         Optional<Card> previousCardMoveCard = Optional.of(new Card());
-        for (CardMove cardMove : actionDto.getAllCardMovesForTheGame()) {
-            if (!(cardMove.getPlayerId() == actionDto.getTurnPlayer().getPlayerId())) {
-                continue; // not the correct player
-            }
+        CardMove previousCardMove;
+        List<CardMove> cardMoves = cardMoveRepository.findByplayerIdOrderBySequenceAsc(actionDto.getTurnPlayer().getPlayerId());
+        for (CardMove cardMove : cardMoves) {
             switch (cardMove.getMove()) {
-                case DEAL -> {
-                    if (cardMove.getBet() != 0) {
-                        setErrorMessageConflictWithDeal(actionDto, "Move", String.valueOf(cardMove.getMove()));
-                        return EventOutput.Result.FAILURE;
-                    }
-                    previousCardMoveCard = cardRepository.findById(cardMove.getCardId());
-                }
                 case HIGHER, LOWER -> {
                     if (cardMove.getBet() == 0) {
                         // calculation needed
@@ -57,13 +53,12 @@ public class UpdateFichesForPlayer implements Action<UpdateFichesForPlayer.Dto, 
                             setConflictErrorMessage(actionDto, "Move", String.valueOf(cardMove.getMove()));
                             return EventOutput.Result.FAILURE;
                         }
-
                         updateWinOfLoss(actionDto, cardMove, previousCardMoveCard.orElse(null));
                     }
-                    previousCardMoveCard = cardRepository.findById(cardMove.getCardId());
-
                 }
             }
+            previousCardMove = cardMove;
+            previousCardMoveCard = cardRepository.findById(cardMove.getCardId());
         }
         return EventOutput.Result.SUCCESS;
     }
@@ -81,7 +76,6 @@ public class UpdateFichesForPlayer implements Action<UpdateFichesForPlayer.Dto, 
         playerRepository.save(actionDto.getTurnPlayer());
         actionDto.setAllCardMovesForTheGame(turnAndCardMoveService.getCardMovesForGame(actionDto.getQasinoGame())); // can be null
     }
-
     private int calculateWinOrLoss(Dto actionDto, Move move, Card previous, Card current) {
         int previousValue = PlayingCard.calculateValueWithDefaultHighlow(previous.getRankSuit(), actionDto.getQasinoGame().getType());
         int currentValue = PlayingCard.calculateValueWithDefaultHighlow(current.getRankSuit(), actionDto.getQasinoGame().getType());
@@ -120,8 +114,11 @@ public class UpdateFichesForPlayer implements Action<UpdateFichesForPlayer.Dto, 
     public interface Dto {
 
         // @formatter:off
-        // Getters
+        String getErrorMessage();
+        GameEvent getSuppliedGameEvent();
+        TurnEvent getSuppliedTurnEvent();
 
+        // Getters
         List<CardMove> getAllCardMovesForTheGame();
         Game getQasinoGame();
         Player getTurnPlayer();

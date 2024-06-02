@@ -1,11 +1,11 @@
 package cloud.qasino.games.controller;
 
-import cloud.qasino.games.action.CalculateQasinoStatistics;
-import cloud.qasino.games.action.DeterminePossibleEvents;
+import cloud.qasino.games.action.CalculateQasinoStatisticsAction;
+import cloud.qasino.games.action.DeterminePossibleEventsAction;
 import cloud.qasino.games.action.FindVisitorIdByAliasOrUsernameAction;
 import cloud.qasino.games.action.LoadEntitiesToDtoAction;
-import cloud.qasino.games.action.MapQasinoGameTableFromDto;
-import cloud.qasino.games.action.MapQasinoResponseFromDto;
+import cloud.qasino.games.action.MapQasinoGameTableFromDtoAction;
+import cloud.qasino.games.action.MapQasinoResponseFromDtoAction;
 import cloud.qasino.games.action.SetStatusIndicatorsBaseOnRetrievedDataAction;
 import cloud.qasino.games.database.security.Visitor;
 import cloud.qasino.games.database.security.VisitorRepository;
@@ -26,14 +26,6 @@ public class AbstractThymeleafController {
     @Resource
     VisitorRepository visitorRepository;
 
-//    EventOutput.Result output;
-
-//    private VisitorRepository visitorRepository;
-//    private GameRepository gameRepository;
-//    private PlayerRepository playerRepository;
-//    private CardRepository cardRepository;
-//    private TurnRepository turnRepository;
-//    private ResultsRepository resultsRepository;
     @Autowired
     LoadEntitiesToDtoAction loadEntitiesToDtoAction;
     @Autowired
@@ -41,13 +33,13 @@ public class AbstractThymeleafController {
     @Autowired
     SetStatusIndicatorsBaseOnRetrievedDataAction setStatusIndicatorsBaseOnRetrievedDataAction;
     @Autowired
-    CalculateQasinoStatistics calculateQasinoStatistics;
+    CalculateQasinoStatisticsAction calculateQasinoStatisticsAction;
     @Autowired
-    MapQasinoResponseFromDto mapQasinoResponseFromDto;
+    MapQasinoResponseFromDtoAction mapQasinoResponseFromDtoAction;
     @Autowired
-    MapQasinoGameTableFromDto mapQasinoGameTableFromDto;
+    MapQasinoGameTableFromDtoAction mapQasinoGameTableFromDtoAction;
     @Autowired
-    DeterminePossibleEvents determinePossibleEvents;
+    DeterminePossibleEventsAction determinePossibleEvents;
 
     public String prettyPrintJson(QasinoResponse qasinoResponse) {
         ObjectMapper objectMapper = new ObjectMapper();
@@ -68,10 +60,10 @@ public class AbstractThymeleafController {
         findVisitorIdByAliasOrUsernameAction.perform(flowDTO);
         loadEntitiesToDtoAction.perform(flowDTO);
         determinePossibleEvents.perform(flowDTO);
-        mapQasinoGameTableFromDto.perform(flowDTO);
+        mapQasinoGameTableFromDtoAction.perform(flowDTO);
         setStatusIndicatorsBaseOnRetrievedDataAction.perform(flowDTO);
-        calculateQasinoStatistics.perform(flowDTO);
-        mapQasinoResponseFromDto.perform(flowDTO);
+        calculateQasinoStatisticsAction.perform(flowDTO);
+        mapQasinoResponseFromDtoAction.perform(flowDTO);
         setHttpResponseHeader(response, flowDTO);
 
     }
