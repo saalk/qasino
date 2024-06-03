@@ -4,9 +4,9 @@ import cloud.qasino.games.action.interfaces.Action;
 import cloud.qasino.games.database.entity.Player;
 import cloud.qasino.games.database.entity.Turn;
 import cloud.qasino.games.database.security.VisitorRepository;
-import cloud.qasino.games.statemachine.event.EventOutput;
-import cloud.qasino.games.statemachine.event.GameEvent;
-import cloud.qasino.games.statemachine.event.TurnEvent;
+import cloud.qasino.games.pattern.statemachine.event.EventOutput;
+import cloud.qasino.games.pattern.statemachine.event.GameEvent;
+import cloud.qasino.games.pattern.statemachine.event.TurnEvent;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 

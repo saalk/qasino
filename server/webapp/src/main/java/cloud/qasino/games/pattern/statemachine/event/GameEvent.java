@@ -1,6 +1,6 @@
-package cloud.qasino.games.statemachine.event;
+package cloud.qasino.games.pattern.statemachine.event;
 
-import cloud.qasino.games.statemachine.event.interfaces.Event;
+import cloud.qasino.games.pattern.statemachine.event.interfaces.Event;
 import jakarta.persistence.Transient;
 import lombok.Getter;
 

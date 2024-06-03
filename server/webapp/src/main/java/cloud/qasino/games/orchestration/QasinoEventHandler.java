@@ -3,15 +3,15 @@ package cloud.qasino.games.orchestration;
 import cloud.qasino.games.action.interfaces.Action;
 import cloud.qasino.games.action.interfaces.ActionOutput;
 import cloud.qasino.games.database.entity.enums.game.GameState;
-import cloud.qasino.games.statemachine.event.interfaces.AbstractFlowDTO;
-import cloud.qasino.games.statemachine.event.interfaces.Event;
+import cloud.qasino.games.pattern.statemachine.event.interfaces.AbstractFlowDTO;
+import cloud.qasino.games.pattern.statemachine.event.interfaces.Event;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationContext;
 
 import java.util.Collection;
 import java.util.List;
 
-import static cloud.qasino.games.statemachine.event.GameEvent.START;
+import static cloud.qasino.games.pattern.statemachine.event.GameEvent.START;
 
 @Slf4j
 public class QasinoEventHandler {

@@ -9,7 +9,7 @@ import cloud.qasino.games.controller.AbstractThymeleafController;
 import cloud.qasino.games.database.security.VisitorRepository;
 import cloud.qasino.games.dto.QasinoFlowDTO;
 import cloud.qasino.games.response.QasinoResponse;
-import cloud.qasino.games.statemachine.event.EventOutput;
+import cloud.qasino.games.pattern.statemachine.event.EventOutput;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
@@ -27,7 +27,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.security.Principal;
 
-import static cloud.qasino.games.statemachine.event.EventOutput.Result.FAILURE;
+import static cloud.qasino.games.pattern.statemachine.event.EventOutput.Result.FAILURE;
 
 // basic path /qasino
 // basic header @RequestHeader(value "visitor", required = true) int visitorId" // else 400

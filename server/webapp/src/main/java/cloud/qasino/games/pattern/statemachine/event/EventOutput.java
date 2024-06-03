@@ -1,4 +1,4 @@
-package cloud.qasino.games.statemachine.event;
+package cloud.qasino.games.pattern.statemachine.event;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

@@ -13,6 +13,7 @@ import cloud.qasino.games.database.repository.PlayerRepository;
 import cloud.qasino.games.database.service.PlayerService;
 import cloud.qasino.games.dto.QasinoFlowDTO;
 import cloud.qasino.games.exception.MyBusinessException;
+import cloud.qasino.games.pattern.statemachine.event.EventOutput;
 import cloud.qasino.games.response.QasinoResponse;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
@@ -32,8 +33,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.security.Principal;
 
-import static cloud.qasino.games.statemachine.event.EventOutput.*;
-import static cloud.qasino.games.statemachine.event.EventOutput.Result.*;
+import static cloud.qasino.games.pattern.statemachine.event.EventOutput.Result.FAILURE;
 
 @Controller
 @ControllerAdvice
@@ -51,7 +51,7 @@ public class GameThymeleafController extends AbstractThymeleafController {
     private GameRepository gameRepository;
     private PlayerRepository playerRepository;
 
-    Result result;
+    EventOutput.Result result;
 
     @Autowired
     LoadEntitiesToDtoAction loadEntitiesToDtoAction;

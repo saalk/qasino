@@ -1,7 +1,6 @@
 package cloud.qasino.games.action;
 
 import cloud.qasino.games.action.interfaces.Action;
-import cloud.qasino.games.action.util.ActionUtils;
 import cloud.qasino.games.database.entity.Game;
 import cloud.qasino.games.database.entity.Player;
 import cloud.qasino.games.database.entity.Turn;
@@ -12,10 +11,9 @@ import cloud.qasino.games.database.repository.PlayerRepository;
 import cloud.qasino.games.database.repository.ResultsRepository;
 import cloud.qasino.games.database.repository.TurnRepository;
 import cloud.qasino.games.database.security.VisitorRepository;
-import cloud.qasino.games.dto.QasinoFlowDTO;
-import cloud.qasino.games.statemachine.event.EventOutput;
-import cloud.qasino.games.statemachine.event.GameEvent;
-import cloud.qasino.games.statemachine.event.TurnEvent;
+import cloud.qasino.games.pattern.statemachine.event.EventOutput;
+import cloud.qasino.games.pattern.statemachine.event.GameEvent;
+import cloud.qasino.games.pattern.statemachine.event.TurnEvent;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -23,14 +21,14 @@ import org.springframework.stereotype.Component;
 import java.util.ArrayList;
 import java.util.List;
 
-import static cloud.qasino.games.statemachine.event.GameEvent.PLAYING_GAME_EVENTS;
-import static cloud.qasino.games.statemachine.event.GameEvent.PREPARED_GAME_EVENTS;
-import static cloud.qasino.games.statemachine.event.GameEvent.SETUP_GAME_EVENTS;
-import static cloud.qasino.games.statemachine.event.GameEvent.START_GAME_EVENTS;
-import static cloud.qasino.games.statemachine.event.TurnEvent.blackJackPossibleBotTurn;
-import static cloud.qasino.games.statemachine.event.TurnEvent.blackJackPossibleHumanTurn;
-import static cloud.qasino.games.statemachine.event.TurnEvent.highLowPossibleBotTurns;
-import static cloud.qasino.games.statemachine.event.TurnEvent.highLowPossibleHumanTurns;
+import static cloud.qasino.games.pattern.statemachine.event.GameEvent.PLAYING_GAME_EVENTS;
+import static cloud.qasino.games.pattern.statemachine.event.GameEvent.PREPARED_GAME_EVENTS;
+import static cloud.qasino.games.pattern.statemachine.event.GameEvent.SETUP_GAME_EVENTS;
+import static cloud.qasino.games.pattern.statemachine.event.GameEvent.START_GAME_EVENTS;
+import static cloud.qasino.games.pattern.statemachine.event.TurnEvent.blackJackPossibleBotTurn;
+import static cloud.qasino.games.pattern.statemachine.event.TurnEvent.blackJackPossibleHumanTurn;
+import static cloud.qasino.games.pattern.statemachine.event.TurnEvent.highLowPossibleBotTurns;
+import static cloud.qasino.games.pattern.statemachine.event.TurnEvent.highLowPossibleHumanTurns;
 
 
 @Slf4j

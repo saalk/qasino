@@ -7,7 +7,7 @@ import cloud.qasino.games.database.repository.PlayerRepository;
 import cloud.qasino.games.database.service.PlayerService;
 import cloud.qasino.games.dto.QasinoFlowDTO;
 import cloud.qasino.games.response.QasinoResponse;
-import cloud.qasino.games.statemachine.event.EventOutput;
+import cloud.qasino.games.pattern.statemachine.event.EventOutput;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;

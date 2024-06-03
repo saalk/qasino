@@ -1,6 +1,6 @@
-package cloud.qasino.games.statemachine.trigger;
+package cloud.qasino.games.pattern_statemachine.trigger;
 
-import cloud.qasino.games.statemachine.event.GameEvent;
+import cloud.qasino.games.pattern.statemachine.event.GameEvent;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;

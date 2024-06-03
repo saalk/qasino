@@ -7,7 +7,7 @@ import cloud.qasino.games.database.security.MyUserPrincipal;
 import cloud.qasino.games.dto.QasinoFlowDTO;
 import cloud.qasino.games.exception.MyNPException;
 import cloud.qasino.games.response.QasinoResponse;
-import cloud.qasino.games.statemachine.event.EventOutput;
+import cloud.qasino.games.pattern.statemachine.event.EventOutput;
 import cloud.qasino.games.web.AjaxUtils;
 import cloud.qasino.games.web.MessageHelper;
 import com.google.common.base.Throwables;

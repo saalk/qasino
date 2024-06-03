@@ -4,14 +4,14 @@ import cloud.qasino.games.action.interfaces.Action;
 import cloud.qasino.games.orchestration.interfaces.EventHandlingResponse;
 import cloud.qasino.games.orchestration.interfaces.Expression;
 import cloud.qasino.games.database.entity.enums.game.GameState;
-import cloud.qasino.games.statemachine.event.GameEvent;
-import cloud.qasino.games.statemachine.event.interfaces.Event;
+import cloud.qasino.games.pattern.statemachine.event.GameEvent;
+import cloud.qasino.games.pattern.statemachine.event.interfaces.Event;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.*;
 
-import static cloud.qasino.games.statemachine.event.GameEvent.START;
-import static cloud.qasino.games.statemachine.event.EventOutput.Result.SUCCESS;
+import static cloud.qasino.games.pattern.statemachine.event.GameEvent.START;
+import static cloud.qasino.games.pattern.statemachine.event.EventOutput.Result.SUCCESS;
 
 /**
  * Contains states, events handled by certain states, actions to be carried out and transitions.

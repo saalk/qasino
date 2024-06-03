@@ -1,19 +1,15 @@
 package cloud.qasino.games.controller.thymeleaf;
 
 import cloud.qasino.games.action.CalculateAndFinishGameAction;
-import cloud.qasino.games.action.CalculateQasinoStatisticsAction;
-import cloud.qasino.games.action.FindVisitorIdByAliasOrUsernameAction;
 import cloud.qasino.games.action.IsGameConsistentForGameEventAction;
 import cloud.qasino.games.action.IsGameFinishedAction;
 import cloud.qasino.games.action.IsPlayerHumanAction;
 import cloud.qasino.games.action.IsTurnConsistentForTurnEventAction;
 import cloud.qasino.games.action.LoadEntitiesToDtoAction;
 import cloud.qasino.games.action.MapQasinoGameTableFromDtoAction;
-import cloud.qasino.games.action.MapQasinoResponseFromDtoAction;
 import cloud.qasino.games.action.PlayFirstTurnAction;
 import cloud.qasino.games.action.PlayNextBotTurnAction;
 import cloud.qasino.games.action.PlayNextHumanTurnAction;
-import cloud.qasino.games.action.SetStatusIndicatorsBaseOnRetrievedDataAction;
 import cloud.qasino.games.action.StartGameForTypeAction;
 import cloud.qasino.games.action.StopGameAction;
 import cloud.qasino.games.action.UpdateFichesForPlayerAction;
@@ -26,7 +22,7 @@ import cloud.qasino.games.database.repository.PlayerRepository;
 import cloud.qasino.games.database.repository.TurnRepository;
 import cloud.qasino.games.dto.QasinoFlowDTO;
 import cloud.qasino.games.response.QasinoResponse;
-import cloud.qasino.games.statemachine.event.EventOutput;
+import cloud.qasino.games.pattern.statemachine.event.EventOutput;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,8 +38,8 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.security.Principal;
 
-import static cloud.qasino.games.statemachine.event.EventOutput.Result.FAILURE;
-import static cloud.qasino.games.statemachine.event.EventOutput.Result.SUCCESS;
+import static cloud.qasino.games.pattern.statemachine.event.EventOutput.Result.FAILURE;
+import static cloud.qasino.games.pattern.statemachine.event.EventOutput.Result.SUCCESS;
 
 @Controller
 @ControllerAdvice

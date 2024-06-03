@@ -1,8 +1,10 @@
-package cloud.qasino.games.statemachine;
+package cloud.qasino.games.pattern.statemachine;
 
 import cloud.qasino.games.action.LoadEntitiesToDtoAction;
-import cloud.qasino.games.statemachine.event.interfaces.AbstractFlowDTO;
-import cloud.qasino.games.statemachine.event.interfaces.Event;
+import cloud.qasino.games.pattern.statemachine.event.EventOutput;
+import cloud.qasino.games.pattern.statemachine.event.GameEvent;
+import cloud.qasino.games.pattern.statemachine.event.interfaces.AbstractFlowDTO;
+import cloud.qasino.games.pattern.statemachine.event.interfaces.Event;
 import cloud.qasino.games.orchestration.OrchestrationConfig;
 import cloud.qasino.games.orchestration.QasinoEventHandler;
 import org.springframework.context.ApplicationContext;
@@ -12,9 +14,6 @@ import jakarta.annotation.PostConstruct;
 import jakarta.annotation.Resource;
 
 import static cloud.qasino.games.database.entity.enums.game.GameState.*;
-import static cloud.qasino.games.statemachine.event.GameEvent.START;
-import static cloud.qasino.games.statemachine.event.EventOutput.Result.FAILURE;
-import static cloud.qasino.games.statemachine.event.EventOutput.Result.SUCCESS;
 
 @Component
 public class QasinoStateMachine { // implements QasinoAsyncConfiguration.ASyncEventHandler {
@@ -31,14 +30,14 @@ public class QasinoStateMachine { // implements QasinoAsyncConfiguration.ASyncEv
 
         qasinoConfiguration
                 .onState(INITIALIZED)
-                .onEvent(START)
+                .onEvent(GameEvent.START)
                 .perform(LoadEntitiesToDtoAction.class)
-                .onResult(FAILURE, ERROR)   //Move catches RunTime Exceptions. So we need this.
+                .onResult(EventOutput.Result.FAILURE, ERROR)   //Move catches RunTime Exceptions. So we need this.
                 .perform(LoadEntitiesToDtoAction.class)
                 .perform(LoadEntitiesToDtoAction.class)
-                .onResult(FAILURE, ERROR)
+                .onResult(EventOutput.Result.FAILURE, ERROR)
                 .perform(LoadEntitiesToDtoAction.class)
-                .onResult(SUCCESS, PREPARED);
+                .onResult(EventOutput.Result.SUCCESS, PREPARED);
     }
 
     // The Application Context is Spring's advanced container. Similar to BeanFactory,

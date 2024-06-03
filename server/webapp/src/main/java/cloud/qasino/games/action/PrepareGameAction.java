@@ -1,7 +1,6 @@
 package cloud.qasino.games.action;
 
 import cloud.qasino.games.action.interfaces.Action;
-import cloud.qasino.games.action.util.ActionUtils;
 import cloud.qasino.games.database.entity.Game;
 import cloud.qasino.games.database.entity.League;
 import cloud.qasino.games.database.security.Visitor;
@@ -9,10 +8,9 @@ import cloud.qasino.games.database.entity.enums.game.Type;
 import cloud.qasino.games.database.entity.enums.player.AiLevel;
 import cloud.qasino.games.database.entity.enums.player.Avatar;
 import cloud.qasino.games.database.service.GameService;
-import cloud.qasino.games.dto.QasinoFlowDTO;
-import cloud.qasino.games.statemachine.event.EventOutput;
-import cloud.qasino.games.statemachine.event.GameEvent;
-import cloud.qasino.games.statemachine.event.TurnEvent;
+import cloud.qasino.games.pattern.statemachine.event.EventOutput;
+import cloud.qasino.games.pattern.statemachine.event.GameEvent;
+import cloud.qasino.games.pattern.statemachine.event.TurnEvent;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;

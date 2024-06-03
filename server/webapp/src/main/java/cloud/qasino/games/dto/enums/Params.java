@@ -2,8 +2,8 @@ package cloud.qasino.games.dto.enums;
 
 import cloud.qasino.games.database.entity.enums.card.PlayingCard;
 import cloud.qasino.games.database.entity.enums.game.gamestate.GameStateGroup;
-import cloud.qasino.games.statemachine.event.GameEvent;
-import cloud.qasino.games.statemachine.event.TurnEvent;
+import cloud.qasino.games.pattern.statemachine.event.GameEvent;
+import cloud.qasino.games.pattern.statemachine.event.TurnEvent;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;

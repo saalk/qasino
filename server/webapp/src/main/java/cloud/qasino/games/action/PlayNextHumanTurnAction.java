@@ -1,7 +1,6 @@
 package cloud.qasino.games.action;
 
 import cloud.qasino.games.action.interfaces.Action;
-import cloud.qasino.games.action.util.ActionUtils;
 import cloud.qasino.games.database.entity.CardMove;
 import cloud.qasino.games.database.entity.Game;
 import cloud.qasino.games.database.entity.Player;
@@ -10,14 +9,12 @@ import cloud.qasino.games.database.entity.enums.card.Face;
 import cloud.qasino.games.database.entity.enums.card.Location;
 import cloud.qasino.games.database.entity.enums.game.Style;
 import cloud.qasino.games.database.entity.enums.game.Type;
-import cloud.qasino.games.database.entity.enums.game.style.RoundsToWin;
 import cloud.qasino.games.database.entity.enums.move.Move;
 import cloud.qasino.games.database.service.TurnAndCardMoveService;
-import cloud.qasino.games.dto.QasinoFlowDTO;
 import cloud.qasino.games.dto.elements.SectionTable;
-import cloud.qasino.games.statemachine.event.EventOutput;
-import cloud.qasino.games.statemachine.event.GameEvent;
-import cloud.qasino.games.statemachine.event.TurnEvent;
+import cloud.qasino.games.pattern.statemachine.event.EventOutput;
+import cloud.qasino.games.pattern.statemachine.event.GameEvent;
+import cloud.qasino.games.pattern.statemachine.event.TurnEvent;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;

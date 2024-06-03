@@ -2,7 +2,7 @@ package cloud.qasino.games.config;
 
 import cloud.qasino.games.database.entity.enums.game.style.*;
 import cloud.qasino.games.database.entity.enums.game.GameState;
-import cloud.qasino.games.statemachine.event.GameEvent;
+import cloud.qasino.games.pattern.statemachine.event.GameEvent;
 import cloud.qasino.games.database.entity.enums.move.Move;
 import cloud.qasino.games.database.entity.enums.game.Type;
 import cloud.qasino.games.database.entity.enums.player.AiLevel;
