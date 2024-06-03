@@ -5,7 +5,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
 </head>
 <body>
-<div th:fragment="update-or-stop">
+<div th:fragment="update-or-stop-or-bot">
     <form class="form-narrow form-horizontal" method="post"
           th:object="${qasinoResponse}"
           th:fragment="QasinoResponse"
@@ -19,13 +19,24 @@
         <fieldset>
             <div class="form-group"
                  th:classappend="${#fields.hasErrors('${qasinoResponse.pageGameSetup.botPlayer.aiLevel}')}? 'has-error'">
-                <label for="aiLevel2" class="col-lg-2 control-label">AiLevel bot player</label>
+                <label for="aiLevel" class="col-lg-2 control-label">Bot player AiLevel</label>
                 <div class="col-lg-10">
-                    <input type="text" class="form-control" id="aiLevel2" placeholder="AiLevel"
+                    <input type="text" class="form-control" id="aiLevel" placeholder="AiLevel"
                            th:field="${qasinoResponse.pageGameSetup.botPlayer.aiLevel}"/>
                     <span class="help-block"
                           th:if="${#fields.hasErrors('${qasinoResponse.pageGameSetup.botPlayer.aiLevel}')}"
                           th:errors="${qasinoResponse.pageGameSetup.botPlayer.aiLevel}">Incorrect AiLevel</span>
+                </div>
+            </div>
+            <div class="form-group"
+                 th:classappend="${#fields.hasErrors('${qasinoResponse.pageGameSetup.botPlayer.avatar}')}? 'has-error'">
+                <label for="avatar" class="col-lg-2 control-label">Bot players Avatar</label>
+                <div class="col-lg-10">
+                    <input type="text" class="form-control" id="avatar" placeholder="Avatar"
+                           th:field="${qasinoResponse.pageGameSetup.botPlayer.avatar}"/>
+                    <span class="help-block"
+                          th:if="${#fields.hasErrors('${qasinoResponse.pageGameSetup.botPlayer.avatar}')}"
+                          th:errors="${qasinoResponse.pageGameSetup.botPlayer.avatar}">Incorrect Avatar</span>
                 </div>
             </div>
             <div class="form-group"
@@ -56,6 +67,13 @@
             <div class="form-group">
                 <div class="col-lg-offset-2 col-lg-10">
                     <button type="submit" class="btn btn-default">Update</button>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-lg-offset-2 col-lg-10">
+                    <button th:formaction="@{/bot/{path}(path=${qasinoResponse.pageGameSetup.selectedGame.gameId})}"
+                            type="submit" class="btn btn-default">Add bot
+                    </button>
                 </div>
             </div>
             <div class="form-group">

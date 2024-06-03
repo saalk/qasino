@@ -96,7 +96,7 @@ public class PlayerService {
         return repository.save(player);
     }
     public Player addBotPlayerToAGame(Game game, Avatar avatar, AiLevel aiLevel) {
-        if (aiLevel != null && aiLevel != AiLevel.HUMAN) {
+        if (aiLevel != null && aiLevel == AiLevel.HUMAN) {
             throw new MyBusinessException("addBotPlayerToAGame", "this aiLevel cannot become a bot player [" + aiLevel + "]");
         }
         List<Player> allPlayersForTheGame = repository.findByGame(game);

@@ -12,9 +12,10 @@ import lombok.NoArgsConstructor;
 //@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Statistic {
 
-    public String calculation;
+//    public String calculation;
     public String table;
     public String filter;
     public int count;
+    public int visitor;
 
 }

@@ -21,6 +21,7 @@ public interface GameRepository extends JpaRepository<Game, Long> {
     public final static String COUNT_ALL = "SELECT count(*) FROM \"game\"";
     public final static String FIND_STATES = "SELECT * FROM \"game\" as g WHERE g.\"state\" IN :states";
     public final static String COUNT_STATES = "SELECT count(*) FROM \"game\" as g WHERE g.\"state\" IN (:states)";
+    public final static String COUNT_STATES_FOR_INITIATOR = "SELECT count(*) FROM \"game\" as g WHERE g.\"state\" IN (:states) AND g.\"initiator\" = :initiator ";
     public final static String COUNT_TODAY =
             "SELECT count(*) FROM \"game\" as g " +
                     "WHERE g.\"year\" = :year " +
@@ -103,6 +104,10 @@ public interface GameRepository extends JpaRepository<Game, Long> {
 
     @Query(value = COUNT_STATES, nativeQuery = true)
     Integer countByStates(@Param(value = "states") String[] states);
+
+    @Query(value = COUNT_STATES_FOR_INITIATOR, nativeQuery = true)
+    Integer countByStatesForInitiator(@Param(value = "states") String[] states, @Param(value = "initiator") long initiator);
+
 
     @Query(value = COUNT_TODAY, nativeQuery = true)
     Integer countByToday(String year, String month, String weekday);

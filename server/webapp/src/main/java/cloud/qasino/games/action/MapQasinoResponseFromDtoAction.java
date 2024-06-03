@@ -307,7 +307,7 @@ public class MapQasinoResponseFromDtoAction implements Action<MapQasinoResponseF
         if (!(actionDto.getTable() == null)) {
             pageGamePlay.setTable(actionDto.getTable());
         } else {
-            log.warn("tabel is null !!!");
+//            log.warn("tabel is null !!!");
         }
         // TODO results dont show!!
         pageGamePlay.setGameResults(actionDto.getGameResults());

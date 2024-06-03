@@ -44,21 +44,55 @@ public class CalculateQasinoStatisticsAction implements Action<CalculateQasinoSt
     @Override
     public EventOutput.Result perform(Dto actionDto) {
 
+        // @formatter:off
         List<Statistic> statistics = new ArrayList<>();
+        long initiator = actionDto.getSuppliedVisitorId();
+        statistics.add(new Statistic("Games","State:SETUP",
+                gameRepository.countByStates(GameStateGroup.listGameStatesStringsForGameStateGroup(GameStateGroup.SETUP)),
+                gameRepository.countByStatesForInitiator(GameStateGroup.listGameStatesStringsForGameStateGroup(GameStateGroup.SETUP),initiator)
+                ));
+        statistics.add(new Statistic("Games","State:PREPARED",
+                gameRepository.countByStates(GameStateGroup.listGameStatesStringsForGameStateGroup(GameStateGroup.PREPARED)),
+                gameRepository.countByStatesForInitiator(GameStateGroup.listGameStatesStringsForGameStateGroup(GameStateGroup.PREPARED),initiator)
+        ));
+        statistics.add(new Statistic("Games","State:PLAYING",
+                gameRepository.countByStates(GameStateGroup.listGameStatesStringsForGameStateGroup(GameStateGroup.PLAYING)),
+                gameRepository.countByStatesForInitiator(GameStateGroup.listGameStatesStringsForGameStateGroup(GameStateGroup.PLAYING),initiator)
+                ));
+        statistics.add(new Statistic("Games","State:FINISHED",
+                gameRepository.countByStates(GameStateGroup.listGameStatesStringsForGameStateGroup(GameStateGroup.FINISHED)),
+                gameRepository.countByStatesForInitiator(GameStateGroup.listGameStatesStringsForGameStateGroup(GameStateGroup.FINISHED),initiator)
+                ));
 
-        statistics.add(new Statistic("total","Games","State:SETUP",gameRepository.countByStates(GameStateGroup.listGameStatesStringsForGameStateGroup(GameStateGroup.SETUP))));
-        statistics.add(new Statistic("total","Games","State:PREPARED",gameRepository.countByStates(GameStateGroup.listGameStatesStringsForGameStateGroup(GameStateGroup.PREPARED))));
-        statistics.add(new Statistic("total","Games","State:PLAYING",gameRepository.countByStates(GameStateGroup.listGameStatesStringsForGameStateGroup(GameStateGroup.PLAYING))));
-        statistics.add(new Statistic("total","Games","State:FINISHED",gameRepository.countByStates(GameStateGroup.listGameStatesStringsForGameStateGroup(GameStateGroup.FINISHED))));
-
-//        statistics.add(new Statistic("total","Games","All",(int) gameRepository.count()));
-        statistics.add(new Statistic("total","Visitors","All",(int) visitorRepository.count()));
-        statistics.add(new Statistic("total","Players","AiLevel:HUMAN",(int) playerRepository.countByAiLevel("true","HUMAN")));
-        statistics.add(new Statistic("total","Players","AiLevel:DUMB",(int) playerRepository.countByAiLevel("false","DUMB")));
-        statistics.add(new Statistic("total","Players","AiLevel:AVERAGE",(int) playerRepository.countByAiLevel("false","AVERAGE")));
-        statistics.add(new Statistic("total","Players","AiLevel:SMART",(int) playerRepository.countByAiLevel("false","SMART")));
-        statistics.add(new Statistic("total","Cards","All",(int) cardRepository.count()));
-        statistics.add(new Statistic("total","Leagues","All",(int) leagueRepository.count()));
+//      statistics.add(new Statistic("total","Games","All",(int) gameRepository.count()));
+        statistics.add(new Statistic("Visitors","All",
+                (int) visitorRepository.count(),
+                1
+                ));
+        statistics.add(new Statistic("Players","AiLevel:HUMAN",
+                playerRepository.countByAiLevel("true","HUMAN"),
+                playerRepository.countByAiLevelForInitiator("true","HUMAN",String.valueOf(initiator))
+                ));
+        statistics.add(new Statistic("Players","AiLevel:DUMB",
+                playerRepository.countByAiLevel("false","DUMB"),
+                playerRepository.countByAiLevelForInitiator("false","DUMB",String.valueOf(initiator))
+                ));
+        statistics.add(new Statistic("Players","AiLevel:AVERAGE",
+                playerRepository.countByAiLevel("false","AVERAGE"),
+                playerRepository.countByAiLevelForInitiator("false","AVERAGE",String.valueOf(initiator))
+                ));
+        statistics.add(new Statistic("Players","AiLevel:SMART",
+                playerRepository.countByAiLevel("false","SMART"),
+                playerRepository.countByAiLevelForInitiator("false","SMART",String.valueOf(initiator))
+                ));
+        statistics.add(new Statistic("Cards","All",
+                (int) cardRepository.count(),
+                cardRepository.countCardsForInitiator(String.valueOf(initiator))
+                ));
+        statistics.add(new Statistic("Leagues","All",
+                (int) leagueRepository.count(),
+                leagueRepository.countLeaguesForInitiator(String.valueOf(initiator))
+                ));
 
         actionDto.setStatistics(statistics);
 
@@ -70,6 +104,7 @@ public class CalculateQasinoStatisticsAction implements Action<CalculateQasinoSt
         void setStatistics(List<Statistic> statistics);
         String getErrorMessage();
         GameEvent getSuppliedGameEvent();
+        long getSuppliedVisitorId();
         TurnEvent getSuppliedTurnEvent();
 
         // error setters

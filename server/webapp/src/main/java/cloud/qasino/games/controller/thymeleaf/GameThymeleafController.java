@@ -368,6 +368,7 @@ public class GameThymeleafController extends AbstractThymeleafController {
             return "redirect:/setup/" + qasinoResponse.getPageGameSetup().getSelectedGame().getGameId();
         }
         // 3 - process
+        loadEntitiesToDtoAction.perform(flowDTO);
         Player bot = playerService.addBotPlayerToAGame(flowDTO.getQasinoGame(), flowDTO.getSuppliedAvatar(), flowDTO.getSuppliedAiLevel());
         playerRepository.save(bot);
         // 4 - return response

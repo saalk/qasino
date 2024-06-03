@@ -42,6 +42,12 @@ public interface PlayerRepository extends JpaRepository<Player, Long> {
     @Query(value = COUNT_AILEVEL, nativeQuery = true)
     Integer countByAiLevel(@Param(value = "human") String human, @Param(value = "aiLevel") String aiLevel);
 
+    String COUNT_AILEVEL_FOR_INITIATOR = "SELECT count(*) FROM \"player\" as p JOIN \"game\" as g  WHERE p.\"game_id\" = g.\"game_id\" AND p.\"is_human\" = :human AND p.\"ai_level\" = :aiLevel " +
+            "AND g.\"initiator\" = :initiator";
+    @Query(value = COUNT_AILEVEL_FOR_INITIATOR, nativeQuery = true)
+    Integer countByAiLevelForInitiator(@Param(value = "human") String human, @Param(value = "aiLevel") String aiLevel, @Param(value = "initiator") String initiator);
+
+
     String COUNT_BOTS_FOR_A_GAME = "SELECT count(*) FROM \"player\" as p WHERE p.\"is_human\" = false WHERE a.\"game_id\" = b.\"game_id\" ";
     @Query(value = COUNT_BOTS_FOR_A_GAME, nativeQuery = true)
     Integer countBotsForAGame(@Param("gameId") long gameId);

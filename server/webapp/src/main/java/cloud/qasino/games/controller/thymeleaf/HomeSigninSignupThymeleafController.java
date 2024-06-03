@@ -13,7 +13,6 @@ import cloud.qasino.games.web.MessageHelper;
 import com.google.common.base.Throwables;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -59,8 +58,7 @@ import java.util.Set;
 public class HomeSigninSignupThymeleafController extends AbstractThymeleafController {
 
     //    private static final String IMAGES_FAVICON_LOCATION = "static/images/favicon.ico";
-    private static final String HOME_SIGNUP_VIEW_LOCATION = "home/signup";
-    private static final String HOME_SIGNUP_VIEW_LOCATION2 = "home/register";
+    private static final String HOME_SIGNUP_VIEW_LOCATION = "home/register";
     private static final String HOME_SIGNIN_VIEW_LOCATION = "home/signin";
     private static final String HOME_SIGNED_IN_LOCATION = "home/homeSignedIn";
     private static final String HOME_NOT_SIGNED_IN_LOCATION = "home/homeNotSignedIn";
@@ -170,53 +168,9 @@ public class HomeSigninSignupThymeleafController extends AbstractThymeleafContro
 
 
         if (AjaxUtils.isAjaxRequest(requestedWith)) {
-            return HOME_SIGNUP_VIEW_LOCATION2.concat(" :: qasinoResponse");
+            return HOME_SIGNUP_VIEW_LOCATION.concat(" :: qasinoResponse");
         }
-        return HOME_SIGNUP_VIEW_LOCATION2;
-    }
-
-    @PostMapping("signup")
-    public String signup(
-            Model model,
-            @Valid @ModelAttribute SignupForm signupForm,
-            Errors errors, RedirectAttributes ra,
-            HttpServletResponse response
-    ) {
-        log.warn("PostMapping: /signup");
-
-        // 1 - map input
-        QasinoFlowDTO flowDTO = new QasinoFlowDTO();
-        flowDTO.setPathVariables(
-                "username", signupForm.getUsername(),
-                "alias", signupForm.getAlias(),
-                "email", signupForm.getEmail(),
-                "password", signupForm.getPassword());
-        // 2 - validate input
-        if (!flowDTO.isInputValid() || errors.hasErrors()) {
-            log.warn("Errors exist!!: {}", errors);
-            prepareQasinoResponse(response, flowDTO);
-//            flowDTO.setAction("Username incorrect");
-            model.addAttribute(flowDTO.getQasinoResponse());
-            model.addAttribute(signupForm);
-            return HOME_SIGNUP_VIEW_LOCATION;
-        }
-        log.warn("PostMapping","sign_on psw [" + flowDTO.getSuppliedPassword() + "]");
-
-        // 3 - process
-        signUpNewVisitorAction.perform(flowDTO);
-        // 4 - return response
-        prepareQasinoResponse(response, flowDTO);
-        QasinoResponse qasinoResponse = flowDTO.getQasinoResponse();
-        model.addAttribute(flowDTO.getQasinoResponse());
-
-//        log.warn("PostMapping: signup");
-//        log.warn("SignupForm: {}", signupForm);
-//        log.warn("RedirectAttributes: {}", ra);
-//        log.warn("qasinoResponse: {}", flowDTO.getQasinoResponse());
-
-        // see /WEB-INF/i18n/messages.properties and /WEB-INF/views/homeSignedIn.html
-        MessageHelper.addSuccessAttribute(ra, "signup.success");
-        return "redirect:/";
+        return HOME_SIGNUP_VIEW_LOCATION;
     }
 
     @PostMapping("register")
@@ -245,7 +199,7 @@ public class HomeSigninSignupThymeleafController extends AbstractThymeleafContro
 //            flowDTO.setAction("Username incorrect");
             model.addAttribute(flowDTO.getQasinoResponse());
 //            model.addAttribute(signupForm);
-            return HOME_SIGNUP_VIEW_LOCATION2;
+            return HOME_SIGNUP_VIEW_LOCATION;
         }
         // 3 - process
         signUpNewVisitorAction.perform(flowDTO);
@@ -264,7 +218,6 @@ public class HomeSigninSignupThymeleafController extends AbstractThymeleafContro
         MessageHelper.addSuccessAttribute(ra, "signup.success");
         return "redirect:/";
     }
-
 
     @GetMapping({"/"})
     String index(
