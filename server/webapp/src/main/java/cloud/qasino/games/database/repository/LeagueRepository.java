@@ -16,6 +16,11 @@ public interface LeagueRepository extends JpaRepository<League, Long> {
     //@Query("SELECT count(u) FROM League u where u.LeagueName = ?1")
     Long countByName(String leagueName);
 
+    String COUNT_LEAGUES_FOR_INITIATOR = "SELECT count(*) FROM \"league\" as l WHERE l.\"visitor_id\" = :initiator";
+    @Query(value = COUNT_LEAGUES_FOR_INITIATOR, nativeQuery = true)
+    Integer countLeaguesForInitiator(@Param(value = "initiator") String initiator);
+
+
     Optional<League> findLeagueByLeagueId(Long leagueId);
     Optional<League> findLeagueByNameAndNameSequence(String leagueName, int leagueNameSequence);
 

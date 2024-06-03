@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <title>Register</title>
+    <th:block th:insert="~{fragments/header :: headerfiles}">
+    </th:block>
+</head>
+<body>
+<div th:replace="~{fragments/header :: header}"></div>
+<div>
+    <form class="form-narrow form-horizontal" method="post" th:action="@{/register}" th:object="${qasinoResponse}"
+          th:fragment="qasinoResponse">
+        <!--/* Show general error message when form contains errors */-->
+        <th:block th:if="${#fields.hasErrors('${qasinoResponse.*}')}">
+            <div th:replace="fragments/alert :: alert (type='danger', message='Form contains errors. Please try again.')">
+                Alert
+            </div>
+        </th:block>
+        <fieldset>
+            <legend>Please Register</legend>
+            <div class="form-group"
+                 th:classappend="${#fields.hasErrors('${qasinoResponse.pageVisitor.selectedVisitor.email}')}? 'has-error'">
+                <label for="email" class="col-lg-2 control-label">Email</label>
+                <div class="col-lg-10">
+                    <input type="text" class="form-control" id="email" placeholder="Email"
+                           th:field="${qasinoResponse.pageVisitor.selectedVisitor.email}"/>
+                    <span class="help-block"
+                          th:if="${#fields.hasErrors('${qasinoResponse.pageVisitor.selectedVisitor.email}')}"
+                          th:errors="${qasinoResponse.pageVisitor.selectedVisitor.email}">Incorrect email</span>
+                </div>
+            </div>
+            <div class="form-group"
+                 th:classappend="${#fields.hasErrors('${qasinoResponse.pageVisitor.selectedVisitor.username}')}? 'has-error'">
+                <label for="username" class="col-lg-2 control-label">Username</label>
+                <div class="col-lg-10">
+                    <input type="text" class="form-control" id="username" placeholder="Username"
+                           th:field="${qasinoResponse.pageVisitor.selectedVisitor.username}"/>
+                    <span class="help-block"
+                          th:if="${#fields.hasErrors('${qasinoResponse.pageVisitor.selectedVisitor.username}')}"
+                          th:errors="${qasinoResponse.pageVisitor.selectedVisitor.username}">Incorrect username</span>
+                </div>
+            </div>
+            <div class="form-group"
+                 th:classappend="${#fields.hasErrors('${qasinoResponse.pageVisitor.selectedVisitor.alias}')}? 'has-error'">
+                <label for="alias" class="col-lg-2 control-label">Alias</label>
+                <div class="col-lg-10">
+                    <input type="text" class="form-control" id="alias" placeholder="Alias"
+                           th:field="${qasinoResponse.pageVisitor.selectedVisitor.alias}"/>
+                    <span class="help-block"
+                          th:if="${#fields.hasErrors('${qasinoResponse.pageVisitor.selectedVisitor.alias}')}"
+                          th:errors="${qasinoResponse.pageVisitor.selectedVisitor.alias}">Incorrect alias</span>
+                </div>
+            </div>
+            <div class="form-group"
+                 th:classappend="${#fields.hasErrors('${qasinoResponse.pageVisitor.selectedVisitor.password}')}? 'has-error'">
+                <label for="password" class="col-lg-2 control-label">Password</label>
+                <div class="col-lg-10">
+                    <input type="password" class="form-control" id="password" placeholder="Password"
+                           th:field="${qasinoResponse.pageVisitor.selectedVisitor.password}"/>
+                    <span class="help-block"
+                          th:if="${#fields.hasErrors('${qasinoResponse.pageVisitor.selectedVisitor.password}')}"
+                          th:errors="${qasinoResponse.pageVisitor.selectedVisitor.password}">Incorrect password</span>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-lg-offset-2 col-lg-10">
+                    <button type="submit" class="btn btn-default">Register</button>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-lg-offset-2 col-lg-10">
+                    <p>Been here before? <a href="/signin" th:href="@{/signin}">Logon</a></p>
+                </div>
+            </div>
+        </fieldset>
+    </form>
+    <div th:insert="~{fragments/footer :: footer}"></div>
+</div>
+</body>
+</html>

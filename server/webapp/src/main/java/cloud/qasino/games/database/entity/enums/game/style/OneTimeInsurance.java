@@ -36,7 +36,9 @@ public enum OneTimeInsurance {
         this.label = label;
         this.description = description;
     }
-
+    public static OneTimeInsurance fromName(String name) {
+        return OneTimeInsurance.valueOf(name.toUpperCase());
+    }
     public static OneTimeInsurance fromLabel(String inputLabel) {
         return lookup.get(inputLabel.toLowerCase());
     }

@@ -18,19 +18,20 @@ import java.util.Map;
 public enum GameState implements LabeledEnum {
 
     // SETUP
-    INITIALIZED("initialized", "Setup or change ante, League and Players", GameStateGroup.SETUP),
-    PENDING_INVITATIONS("pending_invitations", "Awaiting invitations", GameStateGroup.SETUP),
-    PREPARED("prepared", "Validated, start shuffling.", GameStateGroup.PREPARED),
+    INITIALIZED("initialized", "Game started, validate the game setup", GameStateGroup.SETUP),
+    PENDING_INVITATIONS("pending_invitations", "Awaiting player invitations", GameStateGroup.SETUP),
+    PREPARED("prepared", "Game validated, start shuffling", GameStateGroup.PREPARED),
 
     // HIGHLOW
-    STARTED("started", "Proceed with first Move", GameStateGroup.PLAYING),
-    NEXT_PLAYER("next_player", "Proceed with next Player", GameStateGroup.PLAYING),
-    NEXT_TURN("next_turn", "Proceed with another turn for same Player", GameStateGroup.PLAYING),
+    STARTED("started", "Game shuffled, proceed with a move", GameStateGroup.PLAYING),
+    INITIATOR_MOVE("initiator_move", "Play a move", GameStateGroup.PLAYING),
+    INVITEE_MOVE("invitee_move", "Waiting for invitee to do a move", GameStateGroup.PLAYING),
+    BOT_MOVE("bot_move", "Push the bot player to do a next move", GameStateGroup.PLAYING),
 
     // ENDED
-    FINISHED("finished", "Show Results", GameStateGroup.FINISHED),
-    QUIT("quit", "Game stopped by player", GameStateGroup.FINISHED),
-    CANCELLED("cancelled", "Game abandoned", GameStateGroup.FINISHED),
+    FINISHED("finished", "Game finished, view results and start a new one", GameStateGroup.FINISHED),
+    QUIT("quit", "Game stopped, start a new one", GameStateGroup.FINISHED),
+    CANCELLED("cancelled", "Game abandoned, start a new one", GameStateGroup.FINISHED),
 
     // ERROR
     ERROR("error", "Game in error", GameStateGroup.ERROR);

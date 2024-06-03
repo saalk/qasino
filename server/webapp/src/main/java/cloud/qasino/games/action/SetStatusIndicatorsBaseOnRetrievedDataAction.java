@@ -1,9 +1,13 @@
 package cloud.qasino.games.action;
 
 import cloud.qasino.games.action.interfaces.Action;
+import cloud.qasino.games.action.util.ActionUtils;
 import cloud.qasino.games.database.entity.*;
 import cloud.qasino.games.database.security.Visitor;
+import cloud.qasino.games.dto.QasinoFlowDTO;
 import cloud.qasino.games.statemachine.event.EventOutput;
+import cloud.qasino.games.statemachine.event.GameEvent;
+import cloud.qasino.games.statemachine.event.TurnEvent;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
@@ -11,11 +15,11 @@ import java.util.List;
 
 @Slf4j
 @Component
-public class SetStatusIndicatorsBaseOnRetrievedDataAction implements Action<SetStatusIndicatorsBaseOnRetrievedDataAction.SetStatusIndicatorsBaseOnRetrievedDataDTO, EventOutput.Result> {
+public class SetStatusIndicatorsBaseOnRetrievedDataAction implements Action<SetStatusIndicatorsBaseOnRetrievedDataAction.Dto, EventOutput.Result> {
 
 
     @Override
-    public EventOutput.Result perform(SetStatusIndicatorsBaseOnRetrievedDataDTO actionDto) {
+    public EventOutput.Result perform(Dto actionDto) {
 
 //        actionDto.setShowVisitorPage(false);
 //        actionDto.setShowGameSetupPage(false);
@@ -39,15 +43,18 @@ public class SetStatusIndicatorsBaseOnRetrievedDataAction implements Action<SetS
 //        if (!(actionDto.getQasinoGameLeague() == null)) {
 //            actionDto.setShowLeaguesPage(true);
 //        }
-//        // todo implement friends
 //        actionDto.setShowGameInvitationsPage(false);
 
         return EventOutput.Result.SUCCESS;
     }
 
-    public interface SetStatusIndicatorsBaseOnRetrievedDataDTO {
+    public interface Dto {
 
         // @formatter:off
+        String getErrorMessage();
+        GameEvent getSuppliedGameEvent();
+        TurnEvent getSuppliedTurnEvent();
+
         // Getters
         Visitor getQasinoVisitor();
         Player getInvitedPlayer();

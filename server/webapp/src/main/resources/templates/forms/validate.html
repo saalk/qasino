@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <title>Qasino in the Cloud</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+</head>
+<body>
+<div th:fragment="validate-or-shuffle">
+    <form class="form-narrow form-horizontal" method="post"
+          th:object="${qasinoResponse}"
+          th:fragment="QasinoResponse">
+        <!--/* Show general error message when form contains errors */-->
+        <th:block th:if="${#fields.hasErrors('${qasinoResponse.*}')}">
+            <div th:replace="fragments/alert :: alert (type='danger', message='Form contains errors. Please try again.')">
+                Alert
+            </div>
+        </th:block>
+        <fieldset>
+            <div class="form-group">
+                <label for="type2" class="col-lg-2 control-label">Game</label>
+                <div class="col-lg-10">
+                    <input disabled type="text" class="form-control" id="type2" placeholder="Type"
+                           th:field="${qasinoResponse.pageGameSetup.selectedGame.type}"/>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="state" class="col-lg-2 control-label">State</label>
+                <div class="col-lg-10">
+                    <input disabled type="text" class="form-control" id="state" placeholder="State"
+                           th:field="${qasinoResponse.pageGameSetup.selectedGame.state}"/>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-lg-offset-2 col-lg-10" th:if="${qasinoResponse.params.gsg} == 'SETUP'">
+                    <button class="btn btn-default" th:formaction="@{/validate/{path}(path=${qasinoResponse.pageGameSetup.selectedGame.gameId})}" type="submit">
+                        Validate
+                    </button>
+                </div>
+                <div class="col-lg-offset-2 col-lg-10" th:if="${qasinoResponse.params.gsg} == 'PREPARED'">
+                    <button class="btn btn-default" th:formaction="@{/shuffle/{path}(path=${qasinoResponse.pageGameSetup.selectedGame.gameId})}" type="submit">
+                        Shuffle
+                    </button>
+                </div>
+            </div>
+            <input type="hidden" id="gameId"
+                   th:field="${qasinoResponse.pageGameSetup.selectedGame.gameId}"/>
+        </fieldset>
+    </form>
+</div>
+</body>
+</html>

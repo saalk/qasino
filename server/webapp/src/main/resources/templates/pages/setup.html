@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <title>Qasino in the cloud</title>
+    <th:block th:insert="~{fragments/header :: headerfiles}">
+    </th:block>
+</head>
+<body>
+<div th:replace="~{fragments/header :: header}"></div>
+<!-- the specific part of this html -->
+<div class="container">
+    <div class="text-center">
+        <h1 th:text="${'Setup - '+qasinoResponse.navBarItems.^[sequence==2].stat}">Setup</h1>
+        <div th:if="${qasinoResponse.params.gid == -1}">
+            Setup a new game
+        </div>
+        <div th:if="${qasinoResponse.params.gid} > 0 and ${qasinoResponse.params.gsg} == 'PLAYING'">
+            Continue with playing the current game
+        </div>
+        <div th:if="${qasinoResponse.params.gid} > 0 and ${qasinoResponse.params.gsg} != 'FINISHED' and ${qasinoResponse.params.gsg} != 'PLAYING'">
+            <div th:replace="~{forms/setup :: update-or-stop-or-bot}"></div>
+        </div>
+        <div th:if="${qasinoResponse.params.gid} > 0 and ${qasinoResponse.params.gsg} != 'FINISHED' and ${qasinoResponse.params.gsg} != 'PLAYING'">
+            <div th:replace="~{forms/setup :: dropdown-list-styles}"></div>
+        </div>
+        <div th:if="${qasinoResponse.params.gid} > 0 and ${qasinoResponse.params.gsg} != 'FINISHED' and ${qasinoResponse.params.gsg} != 'PLAYING'">
+            <div th:replace="~{forms/validate :: validate-or-shuffle}"></div>
+        </div>
+    </div>
+    <div th:insert="~{fragments/footer :: footer}"></div>
+</div>
+</body>
+</html>

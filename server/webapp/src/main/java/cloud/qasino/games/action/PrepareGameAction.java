@@ -1,15 +1,18 @@
 package cloud.qasino.games.action;
 
 import cloud.qasino.games.action.interfaces.Action;
+import cloud.qasino.games.action.util.ActionUtils;
 import cloud.qasino.games.database.entity.Game;
 import cloud.qasino.games.database.entity.League;
 import cloud.qasino.games.database.security.Visitor;
 import cloud.qasino.games.database.entity.enums.game.Type;
 import cloud.qasino.games.database.entity.enums.player.AiLevel;
 import cloud.qasino.games.database.entity.enums.player.Avatar;
-import cloud.qasino.games.database.service.PlayService;
+import cloud.qasino.games.database.service.GameService;
+import cloud.qasino.games.dto.QasinoFlowDTO;
 import cloud.qasino.games.statemachine.event.EventOutput;
 import cloud.qasino.games.statemachine.event.GameEvent;
+import cloud.qasino.games.statemachine.event.TurnEvent;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -19,15 +22,14 @@ import org.springframework.stereotype.Component;
 public class PrepareGameAction implements Action<PrepareGameAction.Dto, EventOutput.Result> {
 
     @Autowired
-    PlayService playService;
+    GameService gameService;
+
     @Override
     public EventOutput.Result perform(Dto actionDto) {
 
         // update Game
-        actionDto.setQasinoGame(playService.prepareExistingGame(
+        actionDto.setQasinoGame(gameService.prepareExistingGame(
                 actionDto.getQasinoGame(),
-                actionDto.getQasinoVisitor(),
-                actionDto.getSuppliedType(),
                 actionDto.getQasinoGameLeague(),
                 actionDto.getSuppliedStyle(),
                 actionDto.getSuppliedAnte()));
@@ -49,8 +51,13 @@ public class PrepareGameAction implements Action<PrepareGameAction.Dto, EventOut
     public interface Dto {
 
         // @formatter:off
+        String getErrorMessage();
+        GameEvent getSuppliedGameEvent();
+        TurnEvent getSuppliedTurnEvent();
+
         // Getters
         League getQasinoGameLeague();
+        long getSuppliedLeagueId();
         int getSuppliedAnte();
         Avatar getSuppliedAvatar();
         AiLevel getSuppliedAiLevel();
@@ -58,7 +65,6 @@ public class PrepareGameAction implements Action<PrepareGameAction.Dto, EventOut
         String getSuppliedStyle();
         Visitor getQasinoVisitor();
 
-        GameEvent getSuppliedGameEvent();
         Game getQasinoGame();
 
         // Setter

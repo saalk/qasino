@@ -4,17 +4,17 @@ import cloud.qasino.games.database.entity.enums.game.style.*;
 import lombok.Getter;
 import lombok.ToString;
 
-import java.util.Map;
+import java.util.List;
 
 @Getter
 @ToString
 public class StyleEnums {
 
-    Map<String, AnteToWin> anteToWin = AnteToWin.lookup;
-    Map<String, BettingStrategy> bettingStrategy = BettingStrategy.lookup;
-    Map<String, DeckConfiguration> deckConfiguration = DeckConfiguration.lookup;
-    Map<String, OneTimeInsurance> oneTimeInsurance = OneTimeInsurance.lookup;
-    Map<String, RoundsToWin> roundsToWin = RoundsToWin.lookup;
-    Map<String, TurnsToWin> turnsToWinMap = TurnsToWin.lookup;
+    List<AnteToWin> anteToWinList = List.of(AnteToWin.values());
+    List<BettingStrategy> bettingStrategyList = List.of(BettingStrategy.values());
+    List<DeckConfiguration> deckConfigurationList = List.of(DeckConfiguration.values());
+    List<OneTimeInsurance> oneTimeInsuranceList = List.of(OneTimeInsurance.values());
+    List<RoundsToWin> roundsToWinList = List.of(RoundsToWin.values());
+    List<TurnsToWin> turnsToWinList = List.of(TurnsToWin.values());
 
 }

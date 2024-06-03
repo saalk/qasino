@@ -1,63 +1,96 @@
 package cloud.qasino.games.action;
 
 import cloud.qasino.games.action.interfaces.Action;
+import cloud.qasino.games.action.util.ActionUtils;
+import cloud.qasino.games.database.security.Role;
 import cloud.qasino.games.database.security.Visitor;
+import cloud.qasino.games.database.security.VisitorService;
+import cloud.qasino.games.dto.QasinoFlowDTO;
+import cloud.qasino.games.exception.MyNPException;
 import cloud.qasino.games.statemachine.event.EventOutput;
 import cloud.qasino.games.database.security.VisitorRepository;
+import cloud.qasino.games.statemachine.event.GameEvent;
+import cloud.qasino.games.statemachine.event.TurnEvent;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import jakarta.annotation.Resource;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 @Slf4j
 @Component
-public class SignUpNewVisitorAction implements Action<SignUpNewVisitorAction.SignUpNewVisitorActionDTO, EventOutput.Result> {
+public class SignUpNewVisitorAction implements Action<SignUpNewVisitorAction.Dto, EventOutput.Result> {
 
     @Resource
     VisitorRepository visitorRepository;
 
+    @Autowired
+    private VisitorService visitorService;
+
+
     @Override
-    public EventOutput.Result perform(SignUpNewVisitorActionDTO actionDto) {
+    public EventOutput.Result perform(Dto actionDto) {
 
         if (!(StringUtils.isEmpty(actionDto.getSuppliedAlias()))) {
             int sequence = Math.toIntExact(visitorRepository.countByAlias(actionDto.getSuppliedAlias()));
-            if (sequence != 0) {
-                setConflictErrorMessage(actionDto, "alias", String.valueOf(actionDto.getSuppliedAlias()));
-                return EventOutput.Result.FAILURE;
-            }
+            sequence++;
             // todo LOW split alias and number
-            Visitor createdVisitor = visitorRepository.save(
-                    new Visitor.Builder()
-                            .withUsername(actionDto.getSuppliedUsername())
-                            .withPassword(actionDto.getSuppliedPassword())
-                            .withEmail(actionDto.getSuppliedEmail())
-                            .withAlias(actionDto.getSuppliedAlias())
-                            .withAliasSequence(1)
-                            .build());
+            if (
+                    actionDto.getSuppliedAlias()==null ||
+                    actionDto.getSuppliedEmail()==null ||
+                    actionDto.getSuppliedPassword()==null ||
+                    actionDto.getSuppliedUsername()==null ||
+                    actionDto.getSuppliedAlias().isEmpty() ||
+                    actionDto.getSuppliedEmail().isEmpty() ||
+                    actionDto.getSuppliedPassword().isEmpty() ||
+                    actionDto.getSuppliedUsername().isEmpty()
+            ){
+                throw new MyNPException("SignUpNewVisitorAction","sign_on [" + actionDto.getSuppliedPassword() + "]");
+            }
+//            Visitor visitor = Visitor.buildDummy(actionDto.getSuppliedUsername(), actionDto.getSuppliedAlias());
+            Visitor createdVisitor = visitorService.saveUser(new Visitor.Builder()
+                    .withAlias(actionDto.getSuppliedAlias())
+                    .withAliasSequence(sequence)
+                    .withBalance(0)
+                    .withEmail(actionDto.getSuppliedEmail())
+                    .withPassword(actionDto.getSuppliedPassword())
+                    .withRoles(Collections.singleton(new Role("ROLE_USER")))
+                    .withSecuredLoan(0)
+                    .withUsername(actionDto.getSuppliedUsername())
+                    .build());
             actionDto.setSuppliedVisitorId(createdVisitor.getVisitorId());
         } else {
             setBadRequestErrorMessage(actionDto, "username", String.valueOf(actionDto.getSuppliedUsername()));
-            return EventOutput.Result.FAILURE;
+            throw new MyNPException("103 gameEvent","sign_on [" + actionDto.getSuppliedAlias() + "]");
+//            return EventOutput.Result.FAILURE;
         }
         return EventOutput.Result.SUCCESS;
     }
 
-     private void setBadRequestErrorMessage(SignUpNewVisitorActionDTO actionDto, String id, String value) {
+     private void setBadRequestErrorMessage(Dto actionDto, String id, String value) {
         actionDto.setErrorKey(id);
         actionDto.setErrorValue(value);
         actionDto.setBadRequestErrorMessage("empty");
     }
 
-    private void setConflictErrorMessage(SignUpNewVisitorActionDTO actionDto, String id, String value) {
+    private void setConflictErrorMessage(Dto actionDto, String id, String value) {
         actionDto.setErrorKey(id);
         actionDto.setErrorValue(value);
         actionDto.setConflictErrorMessage("username [" + value + "] not available any more");
     }
 
-    public interface SignUpNewVisitorActionDTO {
+    public interface Dto {
 
         // @formatter:off
+        String getErrorMessage();
+        GameEvent getSuppliedGameEvent();
+        TurnEvent getSuppliedTurnEvent();
+
         // Getters
         String getSuppliedUsername();
         String getSuppliedPassword();

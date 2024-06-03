@@ -18,9 +18,7 @@ public class SectionTable {
 
     @JsonProperty("CurrentTurn")
     private Turn currentTurn;
-    @JsonProperty("PossibleMoves")
-    private List<Move> possibleMoves;
-    //    @JsonIgnore
+//    @JsonIgnore
 //    @JsonProperty("CardsInStock")
 //    private List<Card> cardsInStockNotInHand;
     @JsonProperty("Stock")

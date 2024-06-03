@@ -1,16 +1,22 @@
 package cloud.qasino.games.action;
 
 import cloud.qasino.games.action.interfaces.Action;
+import cloud.qasino.games.action.util.ActionUtils;
 import cloud.qasino.games.database.entity.CardMove;
 import cloud.qasino.games.database.entity.Game;
 import cloud.qasino.games.database.entity.Player;
 import cloud.qasino.games.database.entity.Turn;
 import cloud.qasino.games.database.entity.enums.card.Face;
+import cloud.qasino.games.database.entity.enums.card.Location;
+import cloud.qasino.games.database.entity.enums.game.Style;
 import cloud.qasino.games.database.entity.enums.game.Type;
 import cloud.qasino.games.database.entity.enums.move.Move;
-import cloud.qasino.games.database.service.PlayService;
+import cloud.qasino.games.database.repository.CardMoveRepository;
+import cloud.qasino.games.database.service.TurnAndCardMoveService;
+import cloud.qasino.games.dto.QasinoFlowDTO;
 import cloud.qasino.games.dto.elements.SectionTable;
 import cloud.qasino.games.statemachine.event.EventOutput;
+import cloud.qasino.games.statemachine.event.GameEvent;
 import cloud.qasino.games.statemachine.event.TurnEvent;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +29,10 @@ import java.util.List;
 public class PlayNextBotTurnAction implements Action<PlayNextBotTurnAction.Dto, EventOutput.Result> {
 
     @Autowired
-    PlayService playService;
+    TurnAndCardMoveService turnAndCardMoveService;
+    @Autowired
+    CardMoveRepository cardMoveRepository;
+
 
     @Override
     public EventOutput.Result perform(Dto actionDto) {
@@ -34,11 +43,17 @@ public class PlayNextBotTurnAction implements Action<PlayNextBotTurnAction.Dto, 
             return EventOutput.Result.FAILURE;
         }
         // prepare local data
+        Game activeGame = actionDto.getQasinoGame();
         Turn activeTurn = actionDto.getActiveTurn();
         Player activePlayer = actionDto.getTurnPlayer();
         Move activeMove = Move.PASS;
 
-        List<CardMove> cardMoves = playService.getCardMovesForPlayer(activePlayer);
+        isTurnEqualToTurnsToWin(actionDto, activeGame, activeTurn);
+        if (actionDto.getSuppliedTurnEvent() == TurnEvent.END_GAME) {
+            return EventOutput.Result.SUCCESS;
+        }
+
+        List<CardMove> cardMoves = cardMoveRepository.findByplayerIdOrderBySequenceAsc(activePlayer.getPlayerId());
         // TODO calculate moves since DEAL
         // TODO get the last card value
 
@@ -73,7 +88,7 @@ public class PlayNextBotTurnAction implements Action<PlayNextBotTurnAction.Dto, 
                     }
                 } else {
                     // smart move
-                    if (playService.getValueLastCardMove(cardMoves) < 6) {
+                    if (turnAndCardMoveService.getValueLastCardMove(cardMoves) < 6) {
                         activeMove = Move.HIGHER;
                     } else {
                         activeMove = Move.HIGHER;
@@ -85,7 +100,7 @@ public class PlayNextBotTurnAction implements Action<PlayNextBotTurnAction.Dto, 
                     activeMove = Move.PASS;
                 } else {
                     // smart move
-                    if (playService.getValueLastCardMove(cardMoves) < 6) {
+                    if (turnAndCardMoveService.getValueLastCardMove(cardMoves) < 6) {
                         activeMove = Move.HIGHER;
                     } else {
                         activeMove = Move.HIGHER;
@@ -101,25 +116,31 @@ public class PlayNextBotTurnAction implements Action<PlayNextBotTurnAction.Dto, 
             case HIGHER -> {
                 // update round +1 start with turn 0
                 activeTurn.setCurrentTurnNumber(activeTurn.getCurrentTurnNumber() + 1);
-                activeTurn = playService.dealCardToPlayer(
+                activeTurn = turnAndCardMoveService.dealCardToPlayer(
                         actionDto.getQasinoGame(),
                         activeTurn,
                         activePlayer,
                         activeMove,
                         Face.UP,
+                        Location.HAND,
                         1);
             }
             case LOWER -> {
                 activeTurn.setCurrentTurnNumber(activeTurn.getCurrentTurnNumber() + 1);
-                activeTurn = playService.dealCardToPlayer(
+                activeTurn = turnAndCardMoveService.dealCardToPlayer(
                         actionDto.getQasinoGame(),
                         activeTurn,
                         activePlayer,
                         activeMove,
                         Face.UP,
+                        Location.HAND,
                         1);
             }
             case PASS -> {
+                isRoundEqualToRoundsToWin(actionDto, activeGame, activeTurn);
+                if (actionDto.getSuppliedTurnEvent() == TurnEvent.END_GAME) {
+                    return EventOutput.Result.SUCCESS;
+                }
                 activeMove = Move.DEAL;
                 // TODO only one round for now do not start with first player again
                 if (actionDto.getNextPlayer() == null) {
@@ -129,12 +150,13 @@ public class PlayNextBotTurnAction implements Action<PlayNextBotTurnAction.Dto, 
                 // update round +1 start with turn 0
                 activeTurn.setCurrentRoundNumber(activeTurn.getCurrentRoundNumber() + 1);
                 activeTurn.setCurrentTurnNumber(1);
-                activeTurn = playService.dealCardToPlayer(
+                activeTurn = turnAndCardMoveService.dealCardToPlayer(
                         actionDto.getQasinoGame(),
                         activeTurn,
                         actionDto.getNextPlayer(),
                         activeMove,
                         Face.UP,
+                        Location.HAND,
                         1);
                 actionDto.setTurnPlayer(actionDto.getNextPlayer());
                 actionDto.setActiveTurn(activeTurn);
@@ -152,9 +174,48 @@ public class PlayNextBotTurnAction implements Action<PlayNextBotTurnAction.Dto, 
             actionDto.setSuppliedTurnEvent(TurnEvent.END_GAME);
         }
         actionDto.setActiveTurn(activeTurn); // can be null
-        actionDto.setAllCardMovesForTheGame(playService.getCardMovesForGame(actionDto.getQasinoGame())); // can be null
+        actionDto.setAllCardMovesForTheGame(turnAndCardMoveService.getCardMovesForGame(actionDto.getQasinoGame())); // can be null
 
         return EventOutput.Result.SUCCESS;
+    }
+
+    private static void isRoundEqualToRoundsToWin(PlayNextBotTurnAction.Dto actionDto, Game activeGame, Turn activeTurn) {
+        switch (Style.fromLabelWithDefault(activeGame.getStyle()).getRoundsToWin()){
+            case ONE_ROUND -> {
+                if (activeTurn.getCurrentRoundNumber() == 1) {
+                    actionDto.setSuppliedTurnEvent(TurnEvent.END_GAME);
+                }
+            }
+            case TWO_ROUNDS -> {
+                if (activeTurn.getCurrentRoundNumber() == 2) {
+                    actionDto.setSuppliedTurnEvent(TurnEvent.END_GAME);
+                }
+            }
+            case THREE_ROUNDS -> {
+                if (activeTurn.getCurrentRoundNumber() == 3) {
+                    actionDto.setSuppliedTurnEvent(TurnEvent.END_GAME);
+                }
+            }
+        }
+    }
+    private static void isTurnEqualToTurnsToWin(PlayNextBotTurnAction.Dto actionDto, Game activeGame, Turn activeTurn) {
+        switch (Style.fromLabelWithDefault(activeGame.getStyle()).getTurnsToWin()){
+            case ONE_WINS -> {
+                if (activeTurn.getCurrentTurnNumber() == 1) {
+                    actionDto.setSuppliedTurnEvent(TurnEvent.END_GAME);
+                }
+            }
+            case TWO_IN_A_ROW_WINS -> {
+                if (activeTurn.getCurrentTurnNumber() == 2) {
+                    actionDto.setSuppliedTurnEvent(TurnEvent.END_GAME);
+                }
+            }
+            case THREE_IN_A_ROW_WINS -> {
+                if (activeTurn.getCurrentTurnNumber() == 3) {
+                    actionDto.setSuppliedTurnEvent(TurnEvent.END_GAME);
+                }
+            }
+        }
     }
 
     private void setConflictErrorMessage(Dto actionDto, String id, String value) {
@@ -172,13 +233,16 @@ public class PlayNextBotTurnAction implements Action<PlayNextBotTurnAction.Dto, 
     public interface Dto {
 
         // @formatter:off
+        String getErrorMessage();
+        GameEvent getSuppliedGameEvent();
+        TurnEvent getSuppliedTurnEvent();
+
         // Getters
         Game getQasinoGame();
         SectionTable getTable();
         Turn getActiveTurn();
         Player getTurnPlayer();
         Player getNextPlayer();
-        TurnEvent getSuppliedTurnEvent();
 
         // Setters
         void setTurnPlayer(Player turnPlayer);

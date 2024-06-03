@@ -10,25 +10,25 @@ import static org.junit.jupiter.api.Assertions.*;
 class PlayingCardTest {
 
     @Test
-    void callNewDeckShouldBecomeCorrectNumberOfCards() {
+    void callCreateDeckWithXJokersShouldBecomeCorrectNumberOfCards() {
 
-        List<PlayingCard> testDeckNoJokers = PlayingCard.newDeck(0);
-        List<PlayingCard> testDeckOneJokers = PlayingCard.newDeck(1);
-        List<PlayingCard> testDeckTwoJokers = PlayingCard.newDeck(2);
+        List<PlayingCard> testDeckNoJokers = PlayingCard.createDeckWithXJokers(0);
+        List<PlayingCard> testDeckOneJokers = PlayingCard.createDeckWithXJokers(1);
+        List<PlayingCard> testDeckTwoJokers = PlayingCard.createDeckWithXJokers(2);
 
         // assert statements
         assertEquals(52, testDeckNoJokers.size());
         assertEquals(53, testDeckOneJokers.size());
         assertEquals(54, testDeckTwoJokers.size());
-        assertEquals(52, PlayingCard.normalCardDeck.size());
+        assertEquals(52, PlayingCard.normalCardDeckNoJoker.size());
 
     }
 
     @Test
     void callIsValidCardShouldGiveCorrectBoolean() {
 
-        boolean valid = PlayingCard.isValidCardId("AS");
-        boolean inValid = PlayingCard.isValidCardId("XX");
+        boolean valid = PlayingCard.isValid2LetterCardId("AS");
+        boolean inValid = PlayingCard.isValid2LetterCardId("XX");
 
         // assert statements
         assertTrue(valid);

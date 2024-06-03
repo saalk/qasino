@@ -7,6 +7,7 @@ import cloud.qasino.games.database.security.Visitor;
 import com.fasterxml.jackson.annotation.*;
 import com.voodoodyne.jackson.jsog.JSOGGenerator;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.DynamicUpdate;
@@ -78,6 +79,9 @@ public class Player {
     @Column(name = "avatar", nullable = true, length = 50)
     private Avatar avatar;
 
+    @Column(name = "avatar_name", nullable = true, length = 50)
+    private String avatarName;
+
     @Enumerated(EnumType.STRING)
     @Column(name = "ai_level", nullable = true, length = 50)
     private AiLevel aiLevel;
@@ -97,58 +101,50 @@ public class Player {
     // HO: A Player holds one or more Card after dealing
     @OneToMany(mappedBy = "hand", cascade = CascadeType.DETACH)
     // just a reference, the actual fk column is in "game" not here !
-    private List<Card> cards = new ArrayList<>();
+    final private List<Card> cards = new ArrayList<>();
 
     public Player() {
         LocalDateTime localDateAndTime = LocalDateTime.now();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd-HH:mm-ssSSS-nnnnnnnnn");
         String result = localDateAndTime.format(formatter);
         this.created = result.substring(0, 20);
-        this.role = Role.INITIATOR;
-        this.winner = false;
         this.human = true;
+        this.winner = false;
         this.seat = 1;
     }
 
-    // visitor
-    public Player(Visitor visitor, Game game, Role role, int fiches, int seat) {
+    public Player(Visitor visitor, Game game, Role role, int fiches, int seat, Avatar avatar, String avatarName, AiLevel aiLevel) {
         this();
         this.visitor = visitor;
+        this.game = game;
         this.role = role;
-        this.game = game;
-        this.fiches = fiches;
-        this.seat = seat;
-        this.aiLevel = AiLevel.HUMAN;
-        this.human = true;
-    }
 
-    // bot
-    public Player(Game game, int fiches, int seat, AiLevel aiLevel) {
-        this();
-        this.visitor = null;
-        this.role = Role.BOT;
-        this.game = game;
-        this.human = false;
         this.fiches = fiches;
         this.seat = seat;
-        this.aiLevel = aiLevel;
-    }
-    public Player(Visitor visitor, Game game, Role role, int fiches, int seat, Avatar avatar, AiLevel aiLevel) {
-        this(visitor, game, role, fiches, seat);
 
         this.avatar = avatar;
+        this.avatarName = avatarName;
         this.aiLevel = aiLevel;
+
         if (aiLevel == AiLevel.HUMAN) {
             this.human = true;
         } else {
             this.human = false;
         }
-        this.winner = false;
     }
 
-    // todo LOW make unittest
-    public boolean humanOrNot(AiLevel aiLevel) {
-        return AiLevel.HUMAN.equals(aiLevel);
+    public static Player buildDummyBot(Game game, Avatar avatar, AiLevel aiLevel) {
+        if (avatar == null) avatar = Avatar.GOBLIN;
+        if (aiLevel == null) aiLevel = AiLevel.AVERAGE;
+        return new Player(null, game, Role.BOT, 99, 99, avatar, "avatarName", aiLevel);
+    }
+    public static Player buildDummyHuman(Visitor visitor, Game game, Avatar avatar) {
+        if (avatar == null) avatar = Avatar.GOBLIN;
+        return new Player(visitor, game, Role.INITIATOR,99, 99, avatar, "avatarName", AiLevel.HUMAN);
+    }
+    public static Player buildDummyInvitee(Visitor visitor, Game game, Avatar avatar) {
+        if (avatar == null) avatar = Avatar.GOBLIN;
+        return new Player(visitor, game, Role.INVITED,99, 99, avatar, "avatarName", AiLevel.HUMAN);
     }
 
     public void setAiLevel(AiLevel aiLevel) {
@@ -172,5 +168,23 @@ public class Player {
     public int hashCode() {
         return Objects.hash(playerId);
     }
+
+    @Override
+    public String toString() {
+        return "(" +
+                "playerId=" + this.playerId +
+                ", visitorId=" + (this.visitor == null? "": this.visitor.getVisitorId()) +
+                ", gameId=" + (this.game == null? "": this.game.getGameId()) +
+                ", human=" + this.human +
+                ", role=" + (this.role == null ? "": this.role.getLabel()) +
+                ", fiches=" + this.fiches +
+                ", seat=" + this.seat +
+                ", avatar=" + this.avatar +
+                ", aiLevel=" + this.aiLevel +
+                ", winner=" + this.winner +
+                ", resultId=" + (this.result == null? "": this.result.getResultId()) +
+                ")";
+    }
+
 }
 

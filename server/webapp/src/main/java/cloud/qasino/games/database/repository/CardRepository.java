@@ -23,6 +23,12 @@ public interface CardRepository extends JpaRepository<Card, Long> {
     // counters
     int countByGame(Game game);
 
+    String COUNT_CARDS_FOR_INITIATOR = "SELECT count(*) FROM \"card\" as c JOIN \"game\" as g WHERE c.\"game_id\" = g.\"game_id\" " +
+            "AND g.\"initiator\" = :initiator";
+    @Query(value = COUNT_CARDS_FOR_INITIATOR, nativeQuery = true)
+    Integer countCardsForInitiator(@Param(value = "initiator") String initiator);
+
+
     // lists
     List<Card> findByGame(Game game);
     List<Card> findByRankSuit(String rankSuit);

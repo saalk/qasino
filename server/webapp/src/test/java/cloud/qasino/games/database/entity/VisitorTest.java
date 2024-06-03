@@ -10,8 +10,8 @@ public class VisitorTest extends QasinoSimulator{
     @Test
     public void givenQasinoVisitor_whenCreated_thenReturnValidObjectValues() {
 
-        assertThat(visitor.getUsername()).isEqualTo("Julie");
-        assertThat(visitor.getEmail()).isEqualTo("Julie@domain.com");
+        assertThat(visitor.getUsername()).isEqualTo("username");
+        assertThat(visitor.getEmail()).isEqualTo("email@acme.com");
         assertThat(visitor.getBalance()).isEqualTo(0);
         assertThat(visitor.getAliasSequence()).isEqualTo(1);
 

@@ -38,6 +38,9 @@ public enum TurnsToWin {
         this.description = description;
     }
 
+    public static TurnsToWin fromName(String name) {
+        return TurnsToWin.valueOf(name.toUpperCase());
+    }
     public static TurnsToWin fromLabel(String inputLabel) {
         return lookup.get(inputLabel.toLowerCase());
     }

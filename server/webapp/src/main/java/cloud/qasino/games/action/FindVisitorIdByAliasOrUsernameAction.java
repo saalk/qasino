@@ -1,14 +1,19 @@
 package cloud.qasino.games.action;
 
 import cloud.qasino.games.action.interfaces.Action;
+import cloud.qasino.games.action.util.ActionUtils;
 import cloud.qasino.games.database.security.Visitor;
 import cloud.qasino.games.database.security.VisitorRepository;
+import cloud.qasino.games.dto.QasinoFlowDTO;
+import cloud.qasino.games.exception.MyNPException;
 import cloud.qasino.games.statemachine.event.EventOutput;
+import cloud.qasino.games.statemachine.event.GameEvent;
+import cloud.qasino.games.statemachine.event.TurnEvent;
+import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 
-import jakarta.annotation.Resource;
 import java.util.Optional;
 
 @Slf4j
@@ -20,6 +25,10 @@ public class FindVisitorIdByAliasOrUsernameAction implements Action<FindVisitorI
 
     @Override
     public EventOutput.Result perform(Dto actionDto) {
+
+        if (actionDto.getSuppliedVisitorId() > 0) {
+            return EventOutput.Result.SUCCESS;
+        }
 
         Optional<Visitor> foundVisitor;
         // set http to created when done
@@ -34,20 +43,19 @@ public class FindVisitorIdByAliasOrUsernameAction implements Action<FindVisitorI
                 return EventOutput.Result.FAILURE;
             }
             foundVisitor = visitorRepository.findVisitorByAliasAndAliasSequence(actionDto.getSuppliedAlias(), 1);
-
-
-        } else if(!(StringUtils.isEmpty(actionDto.getSuppliedUsername()))) {
+        } else if (!(StringUtils.isEmpty(actionDto.getSuppliedUsername()))) {
             foundVisitor = Optional.ofNullable(visitorRepository.findByUsername(actionDto.getSuppliedUsername()));
         } else {
-            setBadRequestErrorMessage(actionDto, "Visitor", String.valueOf(actionDto.getSuppliedAlias()));
-            return EventOutput.Result.FAILURE;
+            return EventOutput.Result.SUCCESS;
         }
 
         if (foundVisitor.isPresent()) {
             actionDto.setSuppliedVisitorId(foundVisitor.get().getVisitorId());
         } else {
-            setNotFoundErrorMessage(actionDto, "visitorId", actionDto.getSuppliedAlias());
-            return EventOutput.Result.FAILURE;
+            throw new MyNPException("55 FindVisitorIdByAliasOrUsernameAction","actionDto.getSuppliedUsername() [" + actionDto.getSuppliedUsername() + "]");
+
+//            setNotFoundErrorMessage(actionDto, "visitor", String.valueOf(actionDto.getSuppliedAlias()));
+//            return EventOutput.Result.FAILURE;
         }
         return EventOutput.Result.SUCCESS;
     }
@@ -74,7 +82,12 @@ public class FindVisitorIdByAliasOrUsernameAction implements Action<FindVisitorI
     public interface Dto {
 
         // @formatter:off
+        String getErrorMessage();
+        GameEvent getSuppliedGameEvent();
+        TurnEvent getSuppliedTurnEvent();
+
         // Getters
+        long getSuppliedVisitorId();
         String getSuppliedAlias();
         String getSuppliedUsername();
 

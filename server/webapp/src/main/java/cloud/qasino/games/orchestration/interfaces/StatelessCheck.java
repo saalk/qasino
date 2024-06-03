@@ -10,11 +10,17 @@ public abstract class StatelessCheck<T extends AbstractFlowDTO> extends Abstract
     protected EventOutput execution(final Object... eventOutput) {
         final boolean success = check((T) eventOutput[0]);
         if (success) {
-            return new EventOutput(EventOutput.Result.SUCCESS, null);
+            return new EventOutput(EventOutput.Result.SUCCESS, null, null);
         } else {
-            return new EventOutput(EventOutput.Result.FAILURE, null);
+            return new EventOutput(EventOutput.Result.FAILURE, null, null);
         }
     }
 
     protected abstract boolean check(final T flowDto);
+    protected String getGameEvent(final T flowDto) {
+        return flowDto.getCurrentGameEvent().toString();
+    };
+    protected String getTurnEvent(final T flowDto) {
+        return flowDto.getCurrentGameEvent().toString();
+    };
 }

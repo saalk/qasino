@@ -5,6 +5,7 @@ import cloud.qasino.games.database.entity.CardMove;
 import cloud.qasino.games.database.entity.Player;
 import cloud.qasino.games.database.entity.enums.player.AiLevel;
 import cloud.qasino.games.database.entity.enums.player.Avatar;
+import cloud.qasino.games.database.security.Visitor;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
@@ -34,10 +35,15 @@ public class SectionSeat {
     private long seatPlayerId;
     @JsonProperty("Player")
     private Player seatPlayer;
+    @JsonProperty("Visitor")
+    private Visitor seatVisitor;
+    @JsonProperty("start")
+    private int seatStartBalance;
     @JsonProperty("fiches")
     private int seatFiches;
     @JsonProperty("bet")
     private int seatCurrentBet;
+
     @JsonProperty("Avatar")
     private Avatar seatPlayerAvatar;
     @JsonProperty("AiLevel")

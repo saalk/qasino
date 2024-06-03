@@ -36,7 +36,7 @@ class QasinoResponseFlowDTOTest {
 
         QasinoFlowDTO flow = new QasinoFlowDTO();
         flow.setRequestParams(tester);
-        boolean result = flow.validateInput();
+        boolean result = flow.isInputValid();
 
         assertThat(result);
         assertThat(flow.isRequestingToRepay());

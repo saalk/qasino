@@ -2,22 +2,27 @@ package cloud.qasino.games.action;
 
 import cloud.qasino.games.action.interfaces.Action;
 import cloud.qasino.games.action.util.ActionUtils;
+import cloud.qasino.games.database.entity.Card;
 import cloud.qasino.games.database.entity.CardMove;
 import cloud.qasino.games.database.entity.Game;
 import cloud.qasino.games.database.entity.Player;
 import cloud.qasino.games.database.entity.Result;
-import cloud.qasino.games.database.security.Visitor;
+import cloud.qasino.games.database.entity.enums.game.gamestate.GameStateGroup;
 import cloud.qasino.games.database.repository.CardMoveRepository;
 import cloud.qasino.games.database.repository.CardRepository;
+import cloud.qasino.games.database.repository.PlayerRepository;
 import cloud.qasino.games.database.repository.ResultsRepository;
+import cloud.qasino.games.database.security.Visitor;
 import cloud.qasino.games.database.security.VisitorRepository;
-import cloud.qasino.games.database.service.PlayService;
+import cloud.qasino.games.database.service.TurnAndCardMoveService;
+import cloud.qasino.games.dto.QasinoFlowDTO;
 import cloud.qasino.games.statemachine.event.EventOutput;
+import cloud.qasino.games.statemachine.event.GameEvent;
+import cloud.qasino.games.statemachine.event.TurnEvent;
+import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import jakarta.annotation.Resource;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -29,7 +34,7 @@ import java.util.Optional;
 public class CalculateAndFinishGameAction implements Action<CalculateAndFinishGameAction.Dto, EventOutput.Result> {
 
     @Resource
-    CardMoveRepository cardMoveRepository;
+    TurnAndCardMoveService turnAndCardMoveService;
     @Resource
     CardRepository cardRepository;
     @Resource
@@ -37,52 +42,77 @@ public class CalculateAndFinishGameAction implements Action<CalculateAndFinishGa
     @Resource
     VisitorRepository visitorRepository;
 
-    @Autowired
-    PlayService playService;
-
     @Override
     public EventOutput.Result perform(CalculateAndFinishGameAction.Dto actionDto) {
 
-        HashMap<Long, Integer> playerProfit = new HashMap<>();
-        List<Player> players = actionDto.getQasinoGame().getPlayers();
-        Optional<Visitor> initiator = visitorRepository.findVisitorByVisitorId(actionDto.getQasinoGame().getInitiator());
+        List<Result> results = resultsRepository.findByGame(actionDto.getQasinoGame());
 
-        for (Player player : players) {
-            playerProfit.put(player.getPlayerId(), 0);
+        if (!(results.isEmpty())) {
+            actionDto.setGameResults(results);
+            return EventOutput.Result.SUCCESS;
+        } else if (actionDto.getQasinoGame() == null) {
+            actionDto.setGameResults(null);
+
+            return EventOutput.Result.SUCCESS;
+        } else if (actionDto.getQasinoGame().getState().getGroup() != GameStateGroup.FINISHED) {
+            actionDto.setGameResults(null);
+            return EventOutput.Result.SUCCESS;
         }
+
+        // make a players profit list
+        HashMap<Long, Integer> playersProfit = new HashMap<>();
+        List<Player> players = actionDto.getQasinoGame().getPlayers();
+        for (Player player : players) {
+            playersProfit.put(player.getPlayerId(), 0);
+        }
+
+        // get all the card moves sorted
+        actionDto.setAllCardMovesForTheGame(turnAndCardMoveService.getCardMovesForGame(actionDto.getQasinoGame()));
         if (actionDto.getAllCardMovesForTheGame() == null || players.isEmpty()) {
             // some error happened - just stop calculating
             return EventOutput.Result.SUCCESS;
         }
-        // calculate all players profits
-        for (CardMove cardMove : actionDto.getAllCardMovesForTheGame()) {
-            int start = playerProfit.get(cardMove.getPlayerId());
-            int profit = start + (cardMove.getEndFiches() - cardMove.getStartFiches());
-            playerProfit.replace(cardMove.getPlayerId(), profit);
+
+        // calculate all players profits - loop cardMoves per player
+        for (Player player : players) {
+            // iterate per player - should be same as end - begin
+            for (CardMove cardMove : actionDto.getAllCardMovesForTheGame()) {
+                if (cardMove.getPlayerId() != player.getPlayerId()) {
+                    continue; // go to next move
+                }
+                int currentProfit = playersProfit.get(cardMove.getPlayerId());
+                int addProfit = currentProfit + (cardMove.getEndFiches() - cardMove.getStartFiches());
+                playersProfit.replace(cardMove.getPlayerId(), addProfit);
+            }
         }
-        // rank and create results
-        HashMap<Long, Integer> playerProfitSortedOnValue = ActionUtils.sortByValue(playerProfit);
+
+        // rank playersProfit by highest desc and create results
+        HashMap<Long, Integer> playerProfitSortedOnValue = ActionUtils.sortByValue(playersProfit);
 
         Player winner = null;
         for (Map.Entry<Long, Integer> en : playerProfitSortedOnValue.entrySet()) {
+
             Player player = ActionUtils.findPlayerByPlayerId(players, en.getKey());
             boolean won = false;
+            // first player has highest profit and thus wins !!
             if (winner == null) {
                 winner = player;
                 won = true;
             }
             // en.getKey()
             // en.getValue()
+            Optional<Visitor> initiator = visitorRepository.findVisitorByVisitorId(actionDto.getQasinoGame().getInitiator());
+            Visitor initiatorFound = initiator.isPresent() ? initiator.get() : null;
             resultsRepository.save(new Result(
                     player,
-                    initiator.get(),
+                    initiatorFound,
                     actionDto.getQasinoGame(),
                     actionDto.getQasinoGame().getType(),
                     en.getValue(),
                     won
             ));
         }
-        actionDto.setGameResults(resultsRepository.findAllByGame(actionDto.getQasinoGame()));
+        actionDto.setGameResults(resultsRepository.findByGame(actionDto.getQasinoGame()));
         return EventOutput.Result.SUCCESS;
     }
 
@@ -96,12 +126,17 @@ public class CalculateAndFinishGameAction implements Action<CalculateAndFinishGa
 
         // @formatter:off
         // Getters
+        String getErrorMessage();
+        GameEvent getSuppliedGameEvent();
+        TurnEvent getSuppliedTurnEvent();
 
-        List<CardMove> getAllCardMovesForTheGame();
         Game getQasinoGame();
         Visitor getQasinoVisitor();
+        long getSuppliedGameId();
+        List<CardMove> getAllCardMovesForTheGame();
 
         // Setters
+        void setAllCardMovesForTheGame(List<CardMove> cardMoves);
         void setGameResults(List<Result> results);
 
         // error setters

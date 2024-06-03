@@ -121,5 +121,20 @@ public class Result {
         return Objects.hash(resultId);
     }
 
+    @Override
+    public String toString() {
+        return "(" +
+                "resultId=" + this.resultId +
+                ", visitorId=" + (this.visitor == null? "": this.visitor.getVisitorId()) +
+                ", playerId=" + (this.player == null? "": this.player.getPlayerId()) +
+                ", playerSeat=" + (this.player == null? "": this.player.getSeat()) +
+                ", playerAvatarName=" + (this.player == null? "": this.player.getAvatarName()) +
+                ", gameId=" + (this.game == null? "": this.game.getGameId()) +
+                ", type=" + this.type +
+                ", weekday=" + this.weekday +
+                ", fichesWon=" + this.fichesWon +
+                ", winner=" + this.winner +
+                ")";
+    }
 }
 

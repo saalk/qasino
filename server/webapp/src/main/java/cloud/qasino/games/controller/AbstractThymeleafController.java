@@ -1,0 +1,133 @@
+package cloud.qasino.games.controller;
+
+import cloud.qasino.games.action.CalculateQasinoStatisticsAction;
+import cloud.qasino.games.action.DeterminePossibleEventsAction;
+import cloud.qasino.games.action.FindVisitorIdByAliasOrUsernameAction;
+import cloud.qasino.games.action.LoadEntitiesToDtoAction;
+import cloud.qasino.games.action.MapQasinoGameTableFromDtoAction;
+import cloud.qasino.games.action.MapQasinoResponseFromDtoAction;
+import cloud.qasino.games.action.SetStatusIndicatorsBaseOnRetrievedDataAction;
+import cloud.qasino.games.database.security.Visitor;
+import cloud.qasino.games.database.security.VisitorRepository;
+import cloud.qasino.games.dto.QasinoFlowDTO;
+import cloud.qasino.games.response.QasinoResponse;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.annotation.Resource;
+import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+
+import java.net.URI;
+import java.security.Principal;
+
+public class AbstractThymeleafController {
+
+    @Resource
+    VisitorRepository visitorRepository;
+
+    @Autowired
+    LoadEntitiesToDtoAction loadEntitiesToDtoAction;
+    @Autowired
+    FindVisitorIdByAliasOrUsernameAction findVisitorIdByAliasOrUsernameAction;
+    @Autowired
+    SetStatusIndicatorsBaseOnRetrievedDataAction setStatusIndicatorsBaseOnRetrievedDataAction;
+    @Autowired
+    CalculateQasinoStatisticsAction calculateQasinoStatisticsAction;
+    @Autowired
+    MapQasinoResponseFromDtoAction mapQasinoResponseFromDtoAction;
+    @Autowired
+    MapQasinoGameTableFromDtoAction mapQasinoGameTableFromDtoAction;
+    @Autowired
+    DeterminePossibleEventsAction determinePossibleEvents;
+
+    public String prettyPrintJson(QasinoResponse qasinoResponse) {
+        ObjectMapper objectMapper = new ObjectMapper();
+        try {
+            return objectMapper.writeValueAsString(qasinoResponse);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public String getPricipalVisitorId(Principal principal) {
+        Visitor visitor = visitorRepository.findByUsername(principal.getName());
+        return String.valueOf(visitor.getVisitorId());
+    }
+
+    public void prepareQasinoResponse(HttpServletResponse response, QasinoFlowDTO flowDTO) {
+
+        findVisitorIdByAliasOrUsernameAction.perform(flowDTO);
+        loadEntitiesToDtoAction.perform(flowDTO);
+        determinePossibleEvents.perform(flowDTO);
+        mapQasinoGameTableFromDtoAction.perform(flowDTO);
+        setStatusIndicatorsBaseOnRetrievedDataAction.perform(flowDTO);
+        calculateQasinoStatisticsAction.perform(flowDTO);
+        mapQasinoResponseFromDtoAction.perform(flowDTO);
+        setHttpResponseHeader(response, flowDTO);
+
+    }
+
+    //    private HttpHeaders headers = new HttpHeaders();
+//    private Object payloadData;
+    private URI uri;
+
+//    public void addKeyValueToHeader(String key, String value) {
+//        this.headers.add(key, value);
+//    }
+
+    private void setHttpResponseHeader(HttpServletResponse response, QasinoFlowDTO flowDTO) {
+        uri = ServletUriComponentsBuilder.fromCurrentRequest()
+                .path("")
+                .buildAndExpand(flowDTO.getPathVariables(), flowDTO.getRequestParams())
+                .toUri();
+//        this.headers.add("URI", String.valueOf(uri));
+        response.setHeader("Q-Uri", String.valueOf(uri));
+        response.setHeader("Q-Visitor-Id", "-1");
+        response.setHeader("Q-Game-Id", "-1");
+        response.setHeader("Q-League-Id", "-1");
+        response.setHeader("Q-Turn-Player-Id", "-1");
+        response.setHeader("Q-Turn-Id", "-1");
+
+        response.setHeader("Q-Error-Key", "");
+        response.setHeader("Q-Error-Value", "");
+        response.setHeader("Q-Error-Reason", "");
+        response.setHeader("Q-Error-Message-Id", "");
+
+        if (flowDTO.getQasinoVisitor() != null) {
+            response.setHeader("Q-Visitor-Id", String.valueOf(flowDTO.getQasinoVisitor().getVisitorId()));
+        }
+        if (flowDTO.getQasinoGame() != null) {
+            response.setHeader("Q-Game-Id", String.valueOf(flowDTO.getQasinoGame().getGameId()));
+        }
+        if (flowDTO.getQasinoGameLeague() != null) {
+            response.setHeader("Q-League-Id", String.valueOf(flowDTO.getQasinoGameLeague().getLeagueId()));
+        }
+        if (flowDTO.getTurnPlayer() != null) {
+            response.setHeader("Q-Turn-Player-Id", String.valueOf(flowDTO.getTurnPlayer().getPlayerId()));
+        }
+        if (flowDTO.getActiveTurn() != null) {
+            response.setHeader("Q-Turn-Id", String.valueOf(flowDTO.getActiveTurn().getTurnId()));
+        }
+//        if (flowDTO.getHttpStatus() > 299) {
+
+            // also add error to header
+//            addKeyValueToHeader(flowDTO.getErrorKey(), flowDTO.getErrorValue());
+//            addKeyValueToHeader("Error", flowDTO.getErrorMessage());
+            if (!flowDTO.getErrorReason().isEmpty()) {
+                // also add error to header
+                response.setHeader("Q-Error-Key", flowDTO.getErrorKey());
+                response.setHeader("Q-Error-Value", flowDTO.getErrorValue());
+                response.setHeader("Q-Error-Reason", flowDTO.getErrorReason());
+                response.setHeader("Q-Error-Message-Id", flowDTO.getErrorMessage());
+            }
+
+//            MultiValueMap<String, String> headers = flowDTO.getHeaders();
+//            headers.forEach((name, values) -> {
+//                for (String value : values) {
+//                    response.setHeader(name, value);
+//                }
+//            });
+//        }
+    }
+}

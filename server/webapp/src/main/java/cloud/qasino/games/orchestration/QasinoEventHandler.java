@@ -37,7 +37,7 @@ public class QasinoEventHandler {
 
     public <T extends AbstractFlowDTO> T handleEvent(Event event, T flowDTO) {
         log.warn((label != null ? label + ": " : "") + "handling event " + event);
-        flowDTO.setCurrentEvent(event);
+        flowDTO.setCurrentGameEvent(event);
         handleBeforeEventActions(flowDTO);
         log.warn((label != null ? label + ": " : "") + "handling event " + event + " for state " + flowDTO.getCurrentState());
 

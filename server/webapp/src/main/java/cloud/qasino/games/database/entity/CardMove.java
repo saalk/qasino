@@ -151,4 +151,22 @@ public class CardMove {
         return Objects.hash(cardMoveId);
     }
 
+    @Override
+    public String toString() {
+        return "(" +
+                "cardMoveId=" + this.cardMoveId +
+                ", turnId=" + this.turn.getTurnId() +
+                ", playerId=" + this.playerId +
+                ", cardId=" + this.cardId +
+                ", move=" + this.move.getLabel() +
+                ", cardMoveDetails=" + this.cardMoveDetails +
+                ", sequence=" + this.sequence +
+                ", location=" + (this.location.getLabel()) +
+                ", bet=" + (this.bet) +
+                ", startFiches=" + this.startFiches +
+                ", endFiches=" + this.endFiches +
+                ")";
+    }
+
+
 }

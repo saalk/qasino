@@ -18,8 +18,8 @@ public class NavigationBarItem {
         return "navBarItem" +
                 "(sequence=" + this.sequence + ", "+
                 "visible=" + this.visible + ", "+
-                "name=" + this.title + ", "+
-                "stats=" + this.stat + ")";
+                "title=" + this.title + ", "+
+                "stat=" + this.stat + ")";
     }
 }
 

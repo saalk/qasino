@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.voodoodyne.jackson.jsog.JSOGGenerator;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.DynamicUpdate;
@@ -133,6 +134,18 @@ public class Turn {
     @Override
     public int hashCode() {
         return Objects.hash(turnId);
+    }
+
+    @Override
+    public String toString() {
+        return "(" +
+                "turnId=" + this.turnId +
+                ", activePlayerId=" + (this.activePlayerId) +
+                ", currentRoundNumber=" + this.currentRoundNumber +
+                ", currentTurnNumber=" + this.currentTurnNumber +
+                ", gameId=" + (this.game == null? "": this.game.getGameId()) +
+                ", weekday=" + this.weekday +
+                ")";
     }
 
 }

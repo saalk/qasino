@@ -41,7 +41,7 @@ public abstract class QasinoItSimulator {
         String label = "nr3tnn";
         AnteToWin anteToWin = AnteToWin.NA;
         BettingStrategy bettingStrategy = BettingStrategy.REGULAR;
-        DeckConfiguration deckConfiguration = DeckConfiguration.ALL_THREE_JOKER;
+        DeckConfiguration deckConfiguration = DeckConfiguration.ALL_THREE_JOKERS;
         OneTimeInsurance oneTimeInsurance = OneTimeInsurance.TENTH_ANTE;
         RoundsToWin roundsToWin = RoundsToWin.NA;
         TurnsToWin turnsToWin = TurnsToWin.NA;

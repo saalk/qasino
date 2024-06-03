@@ -34,7 +34,11 @@ public enum BettingStrategy {
         this.label = label;
         this.description = description;
     }
-    
+
+    public static BettingStrategy fromName(String name) {
+        return BettingStrategy.valueOf(name.toUpperCase());
+    }
+
     public static BettingStrategy fromLabel(String label) {
             return lookup.get(label.toLowerCase());
     }

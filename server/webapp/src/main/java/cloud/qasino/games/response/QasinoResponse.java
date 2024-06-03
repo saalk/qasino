@@ -2,6 +2,7 @@ package cloud.qasino.games.response;
 
 import cloud.qasino.games.dto.enums.EnumOverview;
 import cloud.qasino.games.dto.elements.*;
+import cloud.qasino.games.dto.enums.Params;
 import cloud.qasino.games.dto.statistics.Statistic;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
@@ -25,25 +26,25 @@ public class QasinoResponse {
     @JsonProperty("NavBarItems")
     private List<NavigationBarItem> navBarItems;
 
-    @JsonProperty("VisitorPage")
+    // Params
+    @JsonProperty("Params")
+    private Params params = new Params();
+
+    // Forms
+    @JsonProperty("PageVisitor")
     private PageVisitor pageVisitor;
-
-    @JsonProperty("GameSetupPage")
+    @JsonProperty("PageGameSetup")
     private PageGameSetup pageGameSetup;
-
-    @JsonProperty("GamePlayPage")
+    @JsonProperty("PageGamePlay")
     private PageGamePlay pageGamePlay;
-
-    @JsonProperty("GameInvitationsPage")
+    @JsonProperty("PageGameInvitations")
     private PageGameInvitations pageGameInvitations;
-
-    @JsonProperty("LeaguesPage")
+    @JsonProperty("PageLeague")
     private PageLeague pageLeague;
 
     // extra
-    @JsonProperty("Enums")
+    @JsonProperty("EnumOverview")
     EnumOverview enumOverview = new EnumOverview();
-
     @JsonProperty("Statistics")
     List<Statistic> statistics;
 }
