@@ -174,7 +174,7 @@ public class Game {
     public static Game buildDummy(League league, long initiator) {
         return new Game.Builder()
                 .withType(Type.HIGHLOW.getLabel())
-                .withStyle("nrtn13")
+                .withStyle("nrrn22")
                 // ante, bet, deck, ins, rounds, turn
                 .withAnte(20)
                 .withInitiator(initiator)
