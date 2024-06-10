@@ -70,16 +70,16 @@ public class VisitorDTO {
     // for view
     private int balance;
     private int securedLoan;
-    private boolean IsRepayPossible;
+    private boolean isRepayPossible;
 
     private int year;
     private Month month;
     private String week;
     private int weekday;
 
-//    private List<Game> initiatedGamesForVisitor;
-//    private List<Game> invitedGamesForVisitor;
-//    private List<League> leaguesForVisitor;
+    private List<Game> initiatedGamesForVisitor;
+    private List<Game> invitedGamesForVisitor;
+    private List<League> leaguesForVisitor;
 
 }
 
