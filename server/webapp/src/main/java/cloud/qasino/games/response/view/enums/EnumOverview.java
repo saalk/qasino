@@ -1,4 +1,4 @@
-package cloud.qasino.games.dto.enums;
+package cloud.qasino.games.response.view.enums;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;

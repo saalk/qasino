@@ -11,7 +11,7 @@ import cloud.qasino.games.database.entity.enums.game.Style;
 import cloud.qasino.games.database.entity.enums.game.Type;
 import cloud.qasino.games.database.entity.enums.move.Move;
 import cloud.qasino.games.database.service.TurnAndCardMoveService;
-import cloud.qasino.games.dto.elements.SectionTable;
+import cloud.qasino.games.response.view.SectionTable;
 import cloud.qasino.games.pattern.statemachine.event.EventOutput;
 import cloud.qasino.games.pattern.statemachine.event.GameEvent;
 import cloud.qasino.games.pattern.statemachine.event.TurnEvent;

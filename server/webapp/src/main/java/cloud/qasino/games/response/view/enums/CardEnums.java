@@ -1,4 +1,4 @@
-package cloud.qasino.games.dto.enums;
+package cloud.qasino.games.response.view.enums;
 
 import cloud.qasino.games.database.entity.enums.card.Face;
 import cloud.qasino.games.database.entity.enums.card.Location;

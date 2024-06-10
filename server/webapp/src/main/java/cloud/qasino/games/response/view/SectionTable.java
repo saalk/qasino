@@ -1,7 +1,6 @@
-package cloud.qasino.games.dto.elements;
+package cloud.qasino.games.response.view;
 
 import cloud.qasino.games.database.entity.Turn;
-import cloud.qasino.games.database.entity.enums.move.Move;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

@@ -1,4 +1,4 @@
-package cloud.qasino.games.dto.elements;
+package cloud.qasino.games.response.view;
 
 import cloud.qasino.games.database.entity.Game;
 import com.fasterxml.jackson.annotation.JsonProperty;

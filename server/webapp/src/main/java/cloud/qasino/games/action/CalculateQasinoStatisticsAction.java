@@ -9,7 +9,7 @@ import cloud.qasino.games.database.repository.PlayerRepository;
 import cloud.qasino.games.database.repository.ResultsRepository;
 import cloud.qasino.games.database.repository.TurnRepository;
 import cloud.qasino.games.database.security.VisitorRepository;
-import cloud.qasino.games.dto.statistics.Statistic;
+import cloud.qasino.games.response.view.statistics.Statistic;
 import cloud.qasino.games.pattern.statemachine.event.EventOutput;
 import cloud.qasino.games.pattern.statemachine.event.GameEvent;
 import cloud.qasino.games.pattern.statemachine.event.TurnEvent;
