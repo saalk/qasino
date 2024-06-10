@@ -6,24 +6,20 @@ import cloud.qasino.games.database.entity.League;
 import cloud.qasino.games.database.entity.enums.card.Location;
 import cloud.qasino.games.database.entity.enums.card.PlayingCard;
 import cloud.qasino.games.database.entity.enums.game.GameState;
-import cloud.qasino.games.database.entity.enums.game.Style;
-import cloud.qasino.games.database.entity.enums.game.Type;
 import cloud.qasino.games.database.entity.enums.player.Avatar;
 import cloud.qasino.games.database.repository.CardRepository;
 import cloud.qasino.games.database.repository.GameRepository;
 import cloud.qasino.games.database.repository.PlayerRepository;
 import cloud.qasino.games.database.security.Visitor;
 import cloud.qasino.games.exception.MyBusinessException;
+import cloud.qasino.games.pattern.factory.Deck;
+import cloud.qasino.games.pattern.factory.DeckFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-
-import static cloud.qasino.games.database.entity.enums.card.PlayingCard.createDeckForRandomSuitWithXJokers;
-import static cloud.qasino.games.database.entity.enums.card.PlayingCard.createDeckWithXJokers;
 
 @Service
 public class GameService {
@@ -71,19 +67,9 @@ public class GameService {
         if (!activeGame.getCards().isEmpty())
             throw new MyBusinessException("addAndShuffleCardsForAGame", "this game already has cards [" + activeGame.getGameId() + "]");
 
-        List<PlayingCard> playingCards;
-        switch (Style.fromLabelWithDefault(activeGame.getStyle()).getDeckConfiguration()) {
-            case ALL_THREE_JOKERS -> playingCards = createDeckWithXJokers(3);
-            case ALL_TWO_JOKERS -> playingCards = createDeckWithXJokers(2);
-            case ALL_ONE_JOKER -> playingCards = createDeckWithXJokers(1);
-            case ALL_NO_JOKER -> playingCards = createDeckWithXJokers(0);
-            case RANDOM_SUIT_THREE_JOKERS -> playingCards = createDeckForRandomSuitWithXJokers(3);
-            case RANDOM_SUIT_TWO_JOKERS -> playingCards = createDeckForRandomSuitWithXJokers(2);
-            case RANDOM_SUIT_ONE_JOKER -> playingCards = createDeckForRandomSuitWithXJokers(1);
-            case RANDOM_SUIT_NO_JOKER -> playingCards = createDeckForRandomSuitWithXJokers(0);
-            default -> playingCards = createDeckWithXJokers(3);
-        }
-        Collections.shuffle(playingCards);
+        Deck deck = DeckFactory.createShuffledDeck(activeGame, 0);
+        List<PlayingCard> playingCards = deck.getPlayingCards();
+
         List<Card> cards = new ArrayList<>();
         int i = 1;
         for (PlayingCard playingCard : playingCards) {

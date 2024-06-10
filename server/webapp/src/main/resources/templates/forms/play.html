@@ -183,14 +183,14 @@
         <fieldset>
             <div class="form-group"
                  th:classappend="${#fields.hasErrors('${qasinoResponse.pageGamePlay.table.stringCardsInStockNotInHand}')}? 'has-error'">
-                <label for="deck" th:text="${'Deck - '+qasinoResponse.pageGamePlay.table.countStockAndTotal}"
+                <label for="deckInterface" th:text="${'Deck - '+qasinoResponse.pageGamePlay.table.countStockAndTotal}"
                        class="col-lg-2 control-label">Placeholder</label>
                 <div class="col-lg-17">
-                    <input readonly type="text" class="form-control" id="deck" placeholder="Deck"
+                    <input readonly type="text" class="form-control" id="deckInterface" placeholder="Deck"
                            th:field="${qasinoResponse.pageGamePlay.table.stringCardsInStockNotInHand}"/>
                     <span class="help-block"
                           th:if="${#fields.hasErrors('${qasinoResponse.pageGamePlay.table.stringCardsInStockNotInHand}')}"
-                          th:errors="${qasinoResponse.pageGamePlay.table.stringCardsInStockNotInHand}">Incorrect deck</span>
+                          th:errors="${qasinoResponse.pageGamePlay.table.stringCardsInStockNotInHand}">Incorrect deckInterface</span>
                 </div>
                 <div th:replace="~{forms/play :: seats-table}"></div>
                 <!--                <input type="hidden" id="gameid2"-->

@@ -1,4 +1,4 @@
-package cloud.qasino.games.dto.statistics;
+package cloud.qasino.games.dto.view.statistics;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;

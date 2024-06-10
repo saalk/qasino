@@ -1,4 +1,4 @@
-package cloud.qasino.games.dto.enums;
+package cloud.qasino.games.dto.view.enums;
 
 import cloud.qasino.games.database.entity.enums.player.AiLevel;
 import cloud.qasino.games.database.entity.enums.player.Avatar;

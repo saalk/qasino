@@ -1,4 +1,4 @@
-package cloud.qasino.games.dto.enums;
+package cloud.qasino.games.dto.view.enums;
 
 import cloud.qasino.games.database.entity.enums.card.PlayingCard;
 import cloud.qasino.games.database.entity.enums.game.gamestate.GameStateGroup;

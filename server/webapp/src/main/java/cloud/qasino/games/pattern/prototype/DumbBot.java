@@ -16,8 +16,6 @@ public class DumbBot extends Bot<DumbBot> {
         super(visitor, game, role, fiches, seat, avatar, avatarName, aiLevel);
     }
 
-
-
     @Override
     public DumbBot clone() throws CloneNotSupportedException {
         // Cast to DumbBot as super returns Object

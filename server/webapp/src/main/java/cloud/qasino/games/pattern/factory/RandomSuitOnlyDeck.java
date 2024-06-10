@@ -1,18 +1,21 @@
 package cloud.qasino.games.pattern.factory;
 
-import cloud.qasino.games.database.entity.enums.card.PlayingCard;
+import lombok.Data;
 
 import java.util.Collections;
-import java.util.List;
 
 import static cloud.qasino.games.database.entity.enums.card.PlayingCard.createDeckForRandomSuitWithXJokers;
 
-public class RandomSuitOnlyDeck {
+public class RandomSuitOnlyDeck extends Deck {
 
-    List<PlayingCard> deck;
-
-    RandomSuitOnlyDeck(int jokers) {
-        deck = createDeckForRandomSuitWithXJokers(jokers);
-        Collections.shuffle(deck);
+    @Override
+    public void create(int jokers) {
+        playingCards = createDeckForRandomSuitWithXJokers(jokers);
     }
+    @Override
+    public void shuffle() {
+        if (playingCards == null) return;
+        Collections.shuffle(playingCards);
+    }
+
 }

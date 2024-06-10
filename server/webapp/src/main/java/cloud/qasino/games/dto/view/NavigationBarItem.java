@@ -1,4 +1,4 @@
-package cloud.qasino.games.dto.elements;
+package cloud.qasino.games.dto.view;
 
 import lombok.Getter;
 import lombok.Setter;

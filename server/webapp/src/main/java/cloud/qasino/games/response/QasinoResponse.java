@@ -1,9 +1,9 @@
 package cloud.qasino.games.response;
 
-import cloud.qasino.games.dto.enums.EnumOverview;
-import cloud.qasino.games.dto.elements.*;
-import cloud.qasino.games.dto.enums.Params;
-import cloud.qasino.games.dto.statistics.Statistic;
+import cloud.qasino.games.dto.view.enums.EnumOverview;
+import cloud.qasino.games.dto.view.*;
+import cloud.qasino.games.dto.view.enums.Params;
+import cloud.qasino.games.dto.view.statistics.Statistic;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
