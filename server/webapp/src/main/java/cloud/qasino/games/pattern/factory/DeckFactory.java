@@ -1,41 +1,68 @@
 package cloud.qasino.games.pattern.factory;
 
 import cloud.qasino.games.database.entity.Game;
-import cloud.qasino.games.database.entity.enums.card.PlayingCard;
 import cloud.qasino.games.database.entity.enums.game.Style;
 import cloud.qasino.games.database.entity.enums.game.style.DeckConfiguration;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import static cloud.qasino.games.database.entity.enums.card.PlayingCard.normalCardDeckNoJoker;
+import cloud.qasino.games.exception.MyNPException;
 
 public class DeckFactory {
 
-    public List<PlayingCard> createDeck(Game preparedGame, int jokers) {
+    public static Deck createShuffledDeck(Game preparedGame, int inputJokers) {
 
         // default is nrrn22 => pos 3 = DeckConfiguration.RANDOM_SUIT_NO_JOKER
         DeckConfiguration configuration = Style.fromLabelWithDefault(preparedGame.getStyle()).getDeckConfiguration();
         switch (configuration) {
 
-            case ALL_THREE_JOKERS, ALL_TWO_JOKERS, ALL_ONE_JOKER, ALL_NO_JOKER -> {
-                return new RegularDeck(jokers).deck;
+            case ALL_THREE_JOKERS -> {
+                RegularDeck deck = new RegularDeck();
+                deck.create(3);
+                deck.shuffle();
+                return deck;
             }
-            case RANDOM_SUIT_THREE_JOKERS, RANDOM_SUIT_TWO_JOKERS, RANDOM_SUIT_ONE_JOKER, RANDOM_SUIT_NO_JOKER -> {
-                return new RandomSuitOnlyDeck(jokers).deck;
+            case ALL_TWO_JOKERS -> {
+                RegularDeck deck = new RegularDeck();
+                deck.create(2);
+                deck.shuffle();
+                return deck;
+            }
+            case ALL_ONE_JOKER -> {
+                RegularDeck deck = new RegularDeck();
+                deck.create(1);
+                deck.shuffle();
+                return deck;
+            }
+            case ALL_NO_JOKER -> {
+                RegularDeck deck = new RegularDeck();
+                deck.create(0);
+                deck.shuffle();
+                return deck;
+            }
+            case RANDOM_SUIT_THREE_JOKERS -> {
+                RandomSuitOnlyDeck deck = new RandomSuitOnlyDeck();
+                deck.create(3);
+                deck.shuffle();
+                return deck;
+            }
+            case RANDOM_SUIT_TWO_JOKERS -> {
+                RandomSuitOnlyDeck deck = new RandomSuitOnlyDeck();
+                deck.create(2);
+                deck.shuffle();
+                return deck;
+            }
+            case RANDOM_SUIT_ONE_JOKER -> {
+                RandomSuitOnlyDeck deck = new RandomSuitOnlyDeck();
+                deck.create(1);
+                deck.shuffle();
+                return deck;
+            }
+            case RANDOM_SUIT_NO_JOKER -> {
+                RandomSuitOnlyDeck deck = new RandomSuitOnlyDeck();
+                deck.create(0);
+                deck.shuffle();
+                return deck;
             }
 
         }
-        return new RegularDeck(jokers).deck;
+        throw new MyNPException("preparedGame","preparedGame [" + preparedGame + "]");
     }
-
-    List<PlayingCard> createDeckWithXJokers(int addJokers) {
-        List<PlayingCard> newDeck = new ArrayList<>(); // static so init all the time
-        for (int i = 0; i < addJokers; i++) {
-//            newDeck.add(joker);
-        }
-        newDeck.addAll(normalCardDeckNoJoker);
-        return newDeck;
-    }
-
 }
