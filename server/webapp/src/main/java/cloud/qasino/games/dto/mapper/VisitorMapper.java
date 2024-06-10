@@ -19,6 +19,22 @@ public abstract class VisitorMapper {
     @Mapping(target = "repayPossible", source = "visitor", qualifiedByName = "canRepay")
     public abstract VisitorDTO visitorToVisitorDTO(Visitor visitor);
 
+    @Mapping(target = "created", ignore = true)
+    @Mapping(target = "enabled", ignore = true)
+    @Mapping(target = "using2FA", ignore = true)
+    @Mapping(target = "aliasSequence", ignore = true)
+    @Mapping(target = "balance", ignore = true)
+    @Mapping(target = "securedLoan", ignore = true)
+    @Mapping(target = "year", ignore = true)
+    @Mapping(target = "month", ignore = true)
+    @Mapping(target = "week", ignore = true)
+    @Mapping(target = "weekday", ignore = true)
+    @Mapping(target = "players", ignore = true)
+    @Mapping(target = "leagues", ignore = true)
+    @Mapping(target = "roles", ignore = true)
+    public abstract Visitor visitorDTOToVisitor(VisitorDTO visitor);
+
+
     @Named("canRepay")
     protected boolean canRepay(Visitor visitor){
         return visitor.getBalance() >= visitor.getSecuredLoan();
