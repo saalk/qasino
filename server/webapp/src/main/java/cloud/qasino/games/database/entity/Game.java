@@ -233,16 +233,16 @@ public class Game {
         this.weekday = localDateAndTime.getDayOfMonth();
     }
 
-    public void shuffleGame(int jokers) {
-
-        List<PlayingCard> playingCards = PlayingCard.createDeckWithXJokers(jokers);
-        Collections.shuffle(playingCards);
-        int i = 1;
-        for (PlayingCard playingCard : playingCards) {
-            Card card = new Card(playingCard.getRankAndSuit(), this, null, i++, Location.STOCK);
-            this.cards.add(card);
-        }
-    }
+//    public void shuffleGame(int jokers) {
+//
+//        List<PlayingCard> playingCards = PlayingCard.createDeckWithXJokers(jokers);
+//        Collections.shuffle(playingCards);
+//        int i = 1;
+//        for (PlayingCard playingCard : playingCards) {
+//            Card card = new Card(playingCard.getRankAndSuit(), this, null, i++, Location.STOCK);
+//            this.cards.add(card);
+//        }
+//    }
 
     // TODO LOW make this work with up / down and playerId
     // TODO error, a bot is no player !!!

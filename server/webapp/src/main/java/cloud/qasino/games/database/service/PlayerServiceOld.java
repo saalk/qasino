@@ -18,7 +18,7 @@ import java.util.stream.Collectors;
 import static cloud.qasino.games.config.Constants.DEFAULT_PAWN_SHIP_BOT;
 
 @Service
-public class PlayerService {
+public class PlayerServiceOld {
 
     // @formatter:off
     @Autowired private PlayerRepository repository;

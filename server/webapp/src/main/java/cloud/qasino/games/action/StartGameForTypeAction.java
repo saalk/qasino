@@ -3,7 +3,7 @@ package cloud.qasino.games.action;
 import cloud.qasino.games.action.interfaces.Action;
 import cloud.qasino.games.database.entity.Game;
 import cloud.qasino.games.database.entity.Player;
-import cloud.qasino.games.database.service.GameService;
+import cloud.qasino.games.database.service.GameServiceOld;
 import cloud.qasino.games.pattern.statemachine.event.EventOutput;
 import cloud.qasino.games.pattern.statemachine.event.GameEvent;
 import cloud.qasino.games.pattern.statemachine.event.TurnEvent;
@@ -18,13 +18,13 @@ import java.util.List;
 public class StartGameForTypeAction implements Action<StartGameForTypeAction.Dto, EventOutput.Result> {
 
     @Autowired
-    GameService gameService;
+    GameServiceOld gameServiceOld;
 
     @Override
     public EventOutput.Result perform(Dto actionDto) {
 
         // update a Game : create Cards for game according to the style and shuffle them
-        actionDto.setQasinoGame(gameService.addAndShuffleCardsForAGame(actionDto.getQasinoGame()));
+        actionDto.setQasinoGame(gameServiceOld.addAndShuffleCardsForAGame(actionDto.getQasinoGame()));
         return EventOutput.Result.SUCCESS;
     }
 

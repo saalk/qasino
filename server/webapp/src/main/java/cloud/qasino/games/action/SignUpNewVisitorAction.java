@@ -3,7 +3,7 @@ package cloud.qasino.games.action;
 import cloud.qasino.games.action.interfaces.Action;
 import cloud.qasino.games.database.security.Role;
 import cloud.qasino.games.database.security.Visitor;
-import cloud.qasino.games.database.security.VisitorService;
+import cloud.qasino.games.database.security.VisitorServiceOld;
 import cloud.qasino.games.exception.MyNPException;
 import cloud.qasino.games.pattern.statemachine.event.EventOutput;
 import cloud.qasino.games.database.security.VisitorRepository;
@@ -26,7 +26,7 @@ public class SignUpNewVisitorAction implements Action<SignUpNewVisitorAction.Dto
     VisitorRepository visitorRepository;
 
     @Autowired
-    private VisitorService visitorService;
+    private VisitorServiceOld visitorServiceOld;
 
 
     @Override
@@ -49,7 +49,7 @@ public class SignUpNewVisitorAction implements Action<SignUpNewVisitorAction.Dto
                 throw new MyNPException("SignUpNewVisitorAction","sign_on [" + actionDto.getSuppliedPassword() + "]");
             }
 //            Visitor visitor = Visitor.buildDummy(actionDto.getSuppliedUsername(), actionDto.getSuppliedAlias());
-            Visitor createdVisitor = visitorService.saveUser(new Visitor.Builder()
+            Visitor createdVisitor = visitorServiceOld.saveUser(new Visitor.Builder()
                     .withAlias(actionDto.getSuppliedAlias())
                     .withAliasSequence(sequence)
                     .withBalance(0)

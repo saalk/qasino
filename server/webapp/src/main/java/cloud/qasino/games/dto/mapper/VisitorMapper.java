@@ -8,7 +8,7 @@ import org.mapstruct.Named;
 import org.mapstruct.factory.Mappers;
 
 @Mapper
-public abstract class VisitorMapper {
+public interface VisitorMapper {
 
 //    VisitorMapper INSTANCE = Mappers.getMapper(VisitorMapper.class);
 
@@ -17,7 +17,7 @@ public abstract class VisitorMapper {
     @Mapping(target = "admin", source = "visitor", qualifiedByName = "isTheAdmin")
     @Mapping(target = "user", source = "visitor", qualifiedByName = "isTheUser")
     @Mapping(target = "repayPossible", source = "visitor", qualifiedByName = "canRepay")
-    public abstract VisitorDTO visitorToVisitorDTO(Visitor visitor);
+    VisitorDTO visitorToVisitorDTO(Visitor visitor);
 
     @Mapping(target = "created", ignore = true)
     @Mapping(target = "enabled", ignore = true)
@@ -32,19 +32,18 @@ public abstract class VisitorMapper {
     @Mapping(target = "players", ignore = true)
     @Mapping(target = "leagues", ignore = true)
     @Mapping(target = "roles", ignore = true)
-    public abstract Visitor visitorDTOToVisitor(VisitorDTO visitor);
-
+    Visitor visitorDTOToVisitor(VisitorDTO visitor);
 
     @Named("canRepay")
-    protected boolean canRepay(Visitor visitor){
+    default boolean canRepay(Visitor visitor){
         return visitor.getBalance() >= visitor.getSecuredLoan();
     }
     @Named("isTheAdmin")
-    protected boolean isTheAdmin(Visitor visitor){
+    default boolean isTheAdmin(Visitor visitor){
         return false;
     }
     @Named("isTheUser")
-    protected boolean isTheUser(Visitor visitor){
+    default boolean isTheUser(Visitor visitor){
         return true;
     }
 }

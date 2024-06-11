@@ -10,7 +10,7 @@ import cloud.qasino.games.controller.AbstractThymeleafController;
 import cloud.qasino.games.database.entity.Player;
 import cloud.qasino.games.database.repository.GameRepository;
 import cloud.qasino.games.database.repository.PlayerRepository;
-import cloud.qasino.games.database.service.PlayerService;
+import cloud.qasino.games.database.service.PlayerServiceOld;
 import cloud.qasino.games.dto.QasinoFlowDTO;
 import cloud.qasino.games.exception.MyBusinessException;
 import cloud.qasino.games.pattern.statemachine.event.EventOutput;
@@ -46,7 +46,7 @@ public class GameThymeleafController extends AbstractThymeleafController {
     private static final String PLAY_VIEW_LOCATION = "pages/play";
 
     @Autowired
-    PlayerService playerService;
+    PlayerServiceOld playerServiceOld;
 
     private GameRepository gameRepository;
     private PlayerRepository playerRepository;
@@ -369,7 +369,7 @@ public class GameThymeleafController extends AbstractThymeleafController {
         }
         // 3 - process
         loadEntitiesToDtoAction.perform(flowDTO);
-        Player bot = playerService.addBotPlayerToAGame(flowDTO.getQasinoGame(), flowDTO.getSuppliedAvatar(), flowDTO.getSuppliedAiLevel());
+        Player bot = playerServiceOld.addBotPlayerToAGame(flowDTO.getQasinoGame(), flowDTO.getSuppliedAvatar(), flowDTO.getSuppliedAiLevel());
         playerRepository.save(bot);
         // 4 - return response
         prepareQasinoResponse(response, flowDTO);

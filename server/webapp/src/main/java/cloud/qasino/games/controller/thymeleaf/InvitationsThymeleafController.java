@@ -4,7 +4,7 @@ import cloud.qasino.games.action.LoadEntitiesToDtoAction;
 import cloud.qasino.games.controller.AbstractThymeleafController;
 import cloud.qasino.games.database.entity.Player;
 import cloud.qasino.games.database.repository.PlayerRepository;
-import cloud.qasino.games.database.service.PlayerService;
+import cloud.qasino.games.database.service.PlayerServiceOld;
 import cloud.qasino.games.dto.QasinoFlowDTO;
 import cloud.qasino.games.response.QasinoResponse;
 import cloud.qasino.games.pattern.statemachine.event.EventOutput;
@@ -33,7 +33,7 @@ public class InvitationsThymeleafController extends AbstractThymeleafController 
     private static final String INVITES_VIEW_LOCATION = "pages/invites";
 
     @Autowired
-    PlayerService playerService;
+    PlayerServiceOld playerServiceOld;
 
     private PlayerRepository playerRepository;
 
@@ -85,7 +85,7 @@ public class InvitationsThymeleafController extends AbstractThymeleafController 
             model.addAttribute(flowDTO.getQasinoResponse());
             return "redirect:/setup/" + qasinoResponse.getPageGameSetup().getSelectedGame().getGameId();
         }
-        Player invitee = playerService.addInvitedHumanPlayerToAGame(flowDTO.getInvitedVisitor(), flowDTO.getQasinoGame(), flowDTO.getSuppliedAvatar());
+        Player invitee = playerServiceOld.addInvitedHumanPlayerToAGame(flowDTO.getInvitedVisitor(), flowDTO.getQasinoGame(), flowDTO.getSuppliedAvatar());
         playerRepository.save(invitee);
 
         // 4 - return response
@@ -125,7 +125,7 @@ public class InvitationsThymeleafController extends AbstractThymeleafController 
             return "redirect:setup/" + qasinoResponse.getPageGameSetup().getSelectedGame().getGameId();
         }
         // 3 - process
-        Player accepted = playerService.acceptInvitationForAGame(flowDTO.getAcceptedPlayer());
+        Player accepted = playerServiceOld.acceptInvitationForAGame(flowDTO.getAcceptedPlayer());
         playerRepository.save(accepted);
 
         // 4 - return response
@@ -164,7 +164,7 @@ public class InvitationsThymeleafController extends AbstractThymeleafController 
             return "redirect:setup/" + qasinoResponse.getPageGameSetup().getSelectedGame().getGameId();
         }
         // 3 - process
-        Player rejected = playerService.rejectInvitationForAGame(flowDTO.getAcceptedPlayer());
+        Player rejected = playerServiceOld.rejectInvitationForAGame(flowDTO.getAcceptedPlayer());
         playerRepository.save(rejected);
 
         // 4 - return response

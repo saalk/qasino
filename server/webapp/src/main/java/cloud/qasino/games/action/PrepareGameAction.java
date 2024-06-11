@@ -7,7 +7,7 @@ import cloud.qasino.games.database.security.Visitor;
 import cloud.qasino.games.database.entity.enums.game.Type;
 import cloud.qasino.games.database.entity.enums.player.AiLevel;
 import cloud.qasino.games.database.entity.enums.player.Avatar;
-import cloud.qasino.games.database.service.GameService;
+import cloud.qasino.games.database.service.GameServiceOld;
 import cloud.qasino.games.pattern.statemachine.event.EventOutput;
 import cloud.qasino.games.pattern.statemachine.event.GameEvent;
 import cloud.qasino.games.pattern.statemachine.event.TurnEvent;
@@ -20,13 +20,13 @@ import org.springframework.stereotype.Component;
 public class PrepareGameAction implements Action<PrepareGameAction.Dto, EventOutput.Result> {
 
     @Autowired
-    GameService gameService;
+    GameServiceOld gameServiceOld;
 
     @Override
     public EventOutput.Result perform(Dto actionDto) {
 
         // update Game
-        actionDto.setQasinoGame(gameService.prepareExistingGame(
+        actionDto.setQasinoGame(gameServiceOld.prepareExistingGame(
                 actionDto.getQasinoGame(),
                 actionDto.getQasinoGameLeague(),
                 actionDto.getSuppliedStyle(),

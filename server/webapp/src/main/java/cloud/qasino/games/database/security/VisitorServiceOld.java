@@ -2,9 +2,6 @@ package cloud.qasino.games.database.security;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Scope;
-import org.springframework.context.annotation.ScopedProxyMode;
-import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,7 +17,7 @@ import java.util.List;
 //@Scope(proxyMode = ScopedProxyMode.TARGET_CLASS)
 //@Secured("ROLE_USER")
 @Slf4j
-public class VisitorService {
+public class VisitorServiceOld {
 
     @Autowired
     private PrivilegeRepository privilegeRepository;
@@ -33,7 +30,7 @@ public class VisitorService {
 
     private PasswordEncoder encoder;
 
-    public VisitorService(PasswordEncoder passwordEncoder) {
+    public VisitorServiceOld(PasswordEncoder passwordEncoder) {
         this.encoder = passwordEncoder;
     }
 

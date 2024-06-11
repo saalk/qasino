@@ -21,7 +21,7 @@ import cloud.qasino.games.database.repository.PlayerRepository;
 import cloud.qasino.games.database.repository.TurnRepository;
 import cloud.qasino.games.database.security.Visitor;
 import cloud.qasino.games.database.security.VisitorRepository;
-import cloud.qasino.games.database.security.VisitorService;
+import cloud.qasino.games.database.security.VisitorServiceOld;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -44,7 +44,7 @@ public class QuickTestAtStartup implements ApplicationRunner {
     private String activeProfiles;
 
     @Autowired
-    private VisitorService visitorService;
+    private VisitorServiceOld visitorServiceOld;
 
     @Autowired
     VisitorRepository visitorRepository;
@@ -88,15 +88,15 @@ public class QuickTestAtStartup implements ApplicationRunner {
 
         int pawn = Visitor.pawnShipValue(0);
         visitor.pawnShip(pawn);
-        visitor = visitorService.saveUser(visitor);
+        visitor = visitorServiceOld.saveUser(visitor);
 
         pawn = Visitor.pawnShipValue(0);
         friend1.pawnShip(pawn);
-        friend1 = visitorService.saveUser(friend1);
+        friend1 = visitorServiceOld.saveUser(friend1);
 
         pawn = Visitor.pawnShipValue(0);
         friend2.pawnShip(pawn);
-        friend2 = visitorService.saveUser(friend2);
+        friend2 = visitorServiceOld.saveUser(friend2);
 
         // The visitor starts a league
         League league = League.buildDummy(visitor,"");

@@ -10,9 +10,7 @@ import cloud.qasino.games.database.entity.enums.player.Avatar;
 import cloud.qasino.games.database.repository.CardRepository;
 import cloud.qasino.games.database.repository.GameRepository;
 import cloud.qasino.games.database.repository.PlayerRepository;
-import cloud.qasino.games.dto.GameDTO;
-import cloud.qasino.games.dto.VisitorDTO;
-import cloud.qasino.games.dto.mapper.GameMapper;
+import cloud.qasino.games.database.security.Visitor;
 import cloud.qasino.games.exception.MyBusinessException;
 import cloud.qasino.games.pattern.factory.Deck;
 import cloud.qasino.games.pattern.factory.DeckFactory;
@@ -20,28 +18,36 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 @Service
-public class GameService {
+public class GameServiceOld {
 
     // @formatter:off
     @Autowired private GameRepository gameRepository;
     @Autowired private CardRepository cardRepository;
     @Autowired private PlayerRepository playerRepository;
     @Autowired private PlayerServiceOld playerServiceOld;
-    GameMapper gameMapper;
 
+    // Since Java 8, there are several static methods added to the Comparator interface
+    // that can take lambda expressions to create a Comparator object.
+    // We can use its comparing() method to construct a Comparator
 
-    public GameDTO setupNewGameWithPlayerInitiator(GameDTO gameDto, VisitorDTO visitorDTO) {
-        Game game = gameMapper.gameDTOToGame(gameDto);
-        game.setInitiator(visitorDTO.getVisitorId());
-        Game newGame = gameRepository.save(game);
-        // TODO
-        playerServiceOld.addHumanVisitorPlayerToAGame(null, newGame, Avatar.ELF);
-        GameDTO gameDTO = gameMapper.gameToGameDTO(newGame);
+    // This Comparator can compare seats and can be passed to a compare function
+    public static Comparator<Game> gameAnteComparator() {
+        return Comparator.comparing(Game::getAnte);
+    }
 
-        return gameDTO;
+    public Game setupNewGameWithPlayerInitiator(String type, Visitor initiator, League league, String style, String ante, Avatar avatar) {
+        Game newGame = gameRepository.save(new Game(
+                league,
+                type,
+                initiator.getVisitorId(),
+                style,
+                Integer.parseInt(ante)));
+        playerServiceOld.addHumanVisitorPlayerToAGame(initiator, newGame, avatar);
+        return gameRepository.getReferenceById(newGame.getGameId());
     }
     public Game prepareExistingGame(Game game, League league, String style, int ante) {
         // You cannot change the initiator or the type
