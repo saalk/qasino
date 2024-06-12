@@ -5,7 +5,7 @@ import cloud.qasino.games.controller.AbstractThymeleafController;
 import cloud.qasino.games.database.entity.Player;
 import cloud.qasino.games.database.repository.PlayerRepository;
 import cloud.qasino.games.database.service.PlayerServiceOld;
-import cloud.qasino.games.dto.QasinoFlowDTO;
+import cloud.qasino.games.dto.QasinoFlowDto;
 import cloud.qasino.games.response.QasinoResponse;
 import cloud.qasino.games.pattern.statemachine.event.EventOutput;
 import jakarta.servlet.http.HttpServletResponse;
@@ -61,8 +61,8 @@ public class InvitationsThymeleafController extends AbstractThymeleafController 
         log.warn("PostMapping: /invite/{otherVisitorId}/game/{gameId}");
 
         // 1 - map input
-        QasinoFlowDTO flowDTO = new QasinoFlowDTO();
-        flowDTO.setPathVariables(
+        QasinoFlowDto flowDto = new QasinoFlowDto();
+        flowDto.setPathVariables(
                 "visitorId", getPricipalVisitorId(principal),
                 "invitedVisitorId", vid,
                 "gameId", gid,
@@ -70,28 +70,28 @@ public class InvitationsThymeleafController extends AbstractThymeleafController 
                 "gameEvent", "invite"
         );
         // 2 - validate input
-        if (!flowDTO.isInputValid() || errors.hasErrors()) {
+        if (!flowDto.isInputValid() || errors.hasErrors()) {
             log.warn("Errors exist!!: {}", errors);
-            prepareQasinoResponse(response, flowDTO);
-            model.addAttribute(flowDTO.getQasinoResponse());
+            prepareQasinoResponse(response, flowDto);
+            model.addAttribute(flowDto.getQasinoResponse());
             return "redirect:setup/" + qasinoResponse.getPageGameSetup().getSelectedGame().getGameId();
         }
         // 3 - process
-        result = loadEntitiesToDtoAction.perform(flowDTO);
+        result = loadEntitiesToDtoAction.perform(flowDto);
         if (EventOutput.Result.FAILURE.equals(result)) {
             log.warn("Errors loadEntitiesToDtoAction!!: {}", errors);
             log.warn("Model !!: {}", model);
-            prepareQasinoResponse(response, flowDTO);
-            model.addAttribute(flowDTO.getQasinoResponse());
+            prepareQasinoResponse(response, flowDto);
+            model.addAttribute(flowDto.getQasinoResponse());
             return "redirect:/setup/" + qasinoResponse.getPageGameSetup().getSelectedGame().getGameId();
         }
-        Player invitee = playerServiceOld.addInvitedHumanPlayerToAGame(flowDTO.getInvitedVisitor(), flowDTO.getQasinoGame(), flowDTO.getSuppliedAvatar());
+        Player invitee = playerServiceOld.addInvitedHumanPlayerToAGame(flowDto.getInvitedVisitor(), flowDto.getQasinoGame(), flowDto.getSuppliedAvatar());
         playerRepository.save(invitee);
 
         // 4 - return response
-        prepareQasinoResponse(response, flowDTO);
-        model.addAttribute(flowDTO.getQasinoResponse());
-        log.warn("get qasinoResponse: {}", flowDTO.getQasinoResponse());
+        prepareQasinoResponse(response, flowDto);
+        model.addAttribute(flowDto.getQasinoResponse());
+        log.warn("get qasinoResponse: {}", flowDto.getQasinoResponse());
         return "redirect:setup/" + qasinoResponse.getPageGameSetup().getSelectedGame().getGameId();
     }
 
@@ -108,8 +108,8 @@ public class InvitationsThymeleafController extends AbstractThymeleafController 
         log.warn("PostMapping: /accept/{gameId}");
 
         // 1 - map input
-        QasinoFlowDTO flowDTO = new QasinoFlowDTO();
-        flowDTO.setPathVariables(
+        QasinoFlowDto flowDto = new QasinoFlowDto();
+        flowDto.setPathVariables(
                 "gameId", gid,
                 "visitorId", getPricipalVisitorId(principal),
                 "acceptedPlayerId", getPricipalVisitorId(principal),
@@ -117,21 +117,21 @@ public class InvitationsThymeleafController extends AbstractThymeleafController 
                 "gameEvent", "invite"
         );
         // 2 - validate input
-        if (!flowDTO.isInputValid() || errors.hasErrors()) {
+        if (!flowDto.isInputValid() || errors.hasErrors()) {
             log.warn("Errors exist!!: {}", errors);
-            prepareQasinoResponse(response, flowDTO);
-//            flowDTO.setAction("Username incorrect");
-            model.addAttribute(flowDTO.getQasinoResponse());
+            prepareQasinoResponse(response, flowDto);
+//            flowDto.setAction("Username incorrect");
+            model.addAttribute(flowDto.getQasinoResponse());
             return "redirect:setup/" + qasinoResponse.getPageGameSetup().getSelectedGame().getGameId();
         }
         // 3 - process
-        Player accepted = playerServiceOld.acceptInvitationForAGame(flowDTO.getAcceptedPlayer());
+        Player accepted = playerServiceOld.acceptInvitationForAGame(flowDto.getAcceptedPlayer());
         playerRepository.save(accepted);
 
         // 4 - return response
-        prepareQasinoResponse(response, flowDTO);
-        model.addAttribute(flowDTO.getQasinoResponse());
-        log.warn("qasinoResponse: {}", flowDTO.getQasinoResponse());
+        prepareQasinoResponse(response, flowDto);
+        model.addAttribute(flowDto.getQasinoResponse());
+        log.warn("qasinoResponse: {}", flowDto.getQasinoResponse());
         return "redirect:invitations/";
     }
 
@@ -148,29 +148,29 @@ public class InvitationsThymeleafController extends AbstractThymeleafController 
         log.warn("PostMapping: /decline/{gameId}");
 
         // 1 - map input
-        QasinoFlowDTO flowDTO = new QasinoFlowDTO();
-        flowDTO.setPathVariables(
+        QasinoFlowDto flowDto = new QasinoFlowDto();
+        flowDto.setPathVariables(
                 "gameId", id,
                 "visitorId", getPricipalVisitorId(principal),
                 "declinedPlayerId", getPricipalVisitorId(principal),
                 "gameEvent", "decline"
         );
         // 2 - validate input
-        if (!flowDTO.isInputValid() || errors.hasErrors()) {
+        if (!flowDto.isInputValid() || errors.hasErrors()) {
             log.warn("Errors exist!!: {}", errors);
-            prepareQasinoResponse(response, flowDTO);
-//            flowDTO.setAction("Username incorrect");
-            model.addAttribute(flowDTO.getQasinoResponse());
+            prepareQasinoResponse(response, flowDto);
+//            flowDto.setAction("Username incorrect");
+            model.addAttribute(flowDto.getQasinoResponse());
             return "redirect:setup/" + qasinoResponse.getPageGameSetup().getSelectedGame().getGameId();
         }
         // 3 - process
-        Player rejected = playerServiceOld.rejectInvitationForAGame(flowDTO.getAcceptedPlayer());
+        Player rejected = playerServiceOld.rejectInvitationForAGame(flowDto.getAcceptedPlayer());
         playerRepository.save(rejected);
 
         // 4 - return response
-        prepareQasinoResponse(response, flowDTO);
-        model.addAttribute(flowDTO.getQasinoResponse());
-        log.warn("qasinoResponse: {}", flowDTO.getQasinoResponse());
+        prepareQasinoResponse(response, flowDto);
+        model.addAttribute(flowDto.getQasinoResponse());
+        log.warn("qasinoResponse: {}", flowDto.getQasinoResponse());
         return "redirect:invitations/";
     }
 }

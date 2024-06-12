@@ -11,7 +11,7 @@ import cloud.qasino.games.database.entity.Player;
 import cloud.qasino.games.database.repository.GameRepository;
 import cloud.qasino.games.database.repository.PlayerRepository;
 import cloud.qasino.games.database.service.PlayerServiceOld;
-import cloud.qasino.games.dto.QasinoFlowDTO;
+import cloud.qasino.games.dto.QasinoFlowDto;
 import cloud.qasino.games.exception.MyBusinessException;
 import cloud.qasino.games.pattern.statemachine.event.EventOutput;
 import cloud.qasino.games.response.QasinoResponse;
@@ -89,23 +89,23 @@ public class GameThymeleafController extends AbstractThymeleafController {
         log.warn("GetMapping: setup/{gameId}");
 
         // 1 - map input
-        QasinoFlowDTO flowDTO = new QasinoFlowDTO();
-        flowDTO.setPathVariables(
+        QasinoFlowDto flowDto = new QasinoFlowDto();
+        flowDto.setPathVariables(
                 "visitorId", getPricipalVisitorId(principal),
                 "gameId", id);
         // 2 - validate input
-        if (!flowDTO.isInputValid() || errors.hasErrors()) {
+        if (!flowDto.isInputValid() || errors.hasErrors()) {
             log.warn("Errors validateInput!!: {}", errors);
             log.warn("Model !!: {}", model);
-            prepareQasinoResponse(response, flowDTO);
-            model.addAttribute(flowDTO.getQasinoResponse());
+            prepareQasinoResponse(response, flowDto);
+            model.addAttribute(flowDto.getQasinoResponse());
             return SETUP_VIEW_LOCATION;
         }
         // 3 - process
         // 4 - return response
-        prepareQasinoResponse(response, flowDTO);
-        model.addAttribute(flowDTO.getQasinoResponse());
-//        log.warn("QasinoResponse !! {}", prettyPrintJson(flowDTO.getQasinoResponse()));
+        prepareQasinoResponse(response, flowDto);
+        model.addAttribute(flowDto.getQasinoResponse());
+//        log.warn("QasinoResponse !! {}", prettyPrintJson(flowDto.getQasinoResponse()));
         log.warn("model !! {}", model);
         return SETUP_VIEW_LOCATION;
     }
@@ -122,23 +122,23 @@ public class GameThymeleafController extends AbstractThymeleafController {
     ) {
         log.warn("GetMapping: play/{gameId}");
         // 1 - map input
-        QasinoFlowDTO flowDTO = new QasinoFlowDTO();
-        flowDTO.setPathVariables(
+        QasinoFlowDto flowDto = new QasinoFlowDto();
+        flowDto.setPathVariables(
                 "visitorId", getPricipalVisitorId(principal),
                 "gameId", id);
         // 2 - validate input
-        if (!flowDTO.isInputValid() || errors.hasErrors()) {
+        if (!flowDto.isInputValid() || errors.hasErrors()) {
             log.warn("Errors validateInput!!: {}", errors);
             log.warn("Model !!: {}", model);
-            prepareQasinoResponse(response, flowDTO);
-            model.addAttribute(flowDTO.getQasinoResponse());
+            prepareQasinoResponse(response, flowDto);
+            model.addAttribute(flowDto.getQasinoResponse());
             return PLAY_VIEW_LOCATION;
         }
         // 3 - process
         // 4 - return response
-        prepareQasinoResponse(response, flowDTO);
-        model.addAttribute(flowDTO.getQasinoResponse());
-//        log.warn("QasinoResponse !! {}", prettyPrintJson(flowDTO.getQasinoResponse()));
+        prepareQasinoResponse(response, flowDto);
+        model.addAttribute(flowDto.getQasinoResponse());
+//        log.warn("QasinoResponse !! {}", prettyPrintJson(flowDto.getQasinoResponse()));
         log.warn("model !! {}", model);
         return PLAY_VIEW_LOCATION;
     }
@@ -157,8 +157,8 @@ public class GameThymeleafController extends AbstractThymeleafController {
 //        log.warn("QasinoResponse {} !!", qasinoResponse );
 
         // 1 - map input
-        QasinoFlowDTO flowDTO = new QasinoFlowDTO();
-        flowDTO.setPathVariables(
+        QasinoFlowDto flowDto = new QasinoFlowDto();
+        flowDto.setPathVariables(
                 "visitorId", getPricipalVisitorId(principal),
                 "ante", String.valueOf(qasinoResponse.getPageGameSetup().getSelectedGame().getAnte()),
                 "type", qasinoResponse.getPageGameSetup().getSelectedGame().getType().getLabel(),
@@ -167,47 +167,47 @@ public class GameThymeleafController extends AbstractThymeleafController {
                 "gameEvent", "start"
         );
         if (qasinoResponse.getParams().getLid() > 0) {
-            flowDTO.setPathVariables("leagueId", String.valueOf(qasinoResponse.getParams().getLid()));
+            flowDto.setPathVariables("leagueId", String.valueOf(qasinoResponse.getParams().getLid()));
         }
         if (qasinoResponse.getPageGameSetup().getBotPlayer() != null) {
-            flowDTO.setPathVariables("aiLevel", qasinoResponse.getPageGameSetup().getBotPlayer().getAiLevel().getLabel());
+            flowDto.setPathVariables("aiLevel", qasinoResponse.getPageGameSetup().getBotPlayer().getAiLevel().getLabel());
         }
         // 2 - validate input
-        if (!flowDTO.isInputValid()) {
+        if (!flowDto.isInputValid()) {
 //            log.warn("Errors validateInput!!: {}", errors);
             log.warn("QasinoResponse {} !!", qasinoResponse );
-            prepareQasinoResponse(response, flowDTO);
-            model.addAttribute(flowDTO.getQasinoResponse());
-            throw new MyBusinessException("validateInput problem [" + flowDTO.getErrorMessage() + "]");
+            prepareQasinoResponse(response, flowDto);
+            model.addAttribute(flowDto.getQasinoResponse());
+            throw new MyBusinessException("validateInput problem [" + flowDto.getErrorMessage() + "]");
 //            return "redirect:/visitor";
         }
         // 3 - process
-        result = loadEntitiesToDtoAction.perform(flowDTO);
+        result = loadEntitiesToDtoAction.perform(flowDto);
         if (FAILURE.equals(result)) {
             log.warn("Errors loadEntitiesToDtoAction!!: {}", errors);
             log.warn("Model !!: {}", model);
-            prepareQasinoResponse(response, flowDTO);
-            model.addAttribute(flowDTO.getQasinoResponse());
+            prepareQasinoResponse(response, flowDto);
+            model.addAttribute(flowDto.getQasinoResponse());
 //            return "redirect:/visitor";
-            throw new MyBusinessException("loadEntitiesToDtoAction problem [" + flowDTO.getErrorMessage() + "]");
+            throw new MyBusinessException("loadEntitiesToDtoAction problem [" + flowDto.getErrorMessage() + "]");
 
-//            return ResponseEntity.status(HttpStatus.valueOf(flowDTO.getHttpStatus())).headers(flowDTO.getHeaders()).build();
+//            return ResponseEntity.status(HttpStatus.valueOf(flowDto.getHttpStatus())).headers(flowDto.getHeaders()).build();
         }
         // create or update the game
-        result = isGameConsistentForGameEventAction.perform(flowDTO);
+        result = isGameConsistentForGameEventAction.perform(flowDto);
         if (FAILURE.equals(result)) {
             log.warn("Errors isGameConsistentForGameEvent!!: {}", errors);
             log.warn("Model !!: {}", model);
-            prepareQasinoResponse(response, flowDTO);
-            model.addAttribute(flowDTO.getQasinoResponse());
+            prepareQasinoResponse(response, flowDto);
+            model.addAttribute(flowDto.getQasinoResponse());
             return "redirect:/visitor";
-//            return ResponseEntity.status(HttpStatus.valueOf(flowDTO.getHttpStatus())).headers(flowDTO.getHeaders()).build();
+//            return ResponseEntity.status(HttpStatus.valueOf(flowDto.getHttpStatus())).headers(flowDto.getHeaders()).build();
         }
-        createNewGameAction.perform(flowDTO);
+        createNewGameAction.perform(flowDto);
         // 4 - return response
-        prepareQasinoResponse(response, flowDTO);
-        model.addAttribute(flowDTO.getQasinoResponse());
-//        log.warn("QasinoResponse !! {}", prettyPrintJson(flowDTO.getQasinoResponse()));
+        prepareQasinoResponse(response, flowDto);
+        model.addAttribute(flowDto.getQasinoResponse());
+//        log.warn("QasinoResponse !! {}", prettyPrintJson(flowDto.getQasinoResponse()));
 //        log.warn("model !! {}", model);
         return "redirect:/visitor";
     }
@@ -225,52 +225,52 @@ public class GameThymeleafController extends AbstractThymeleafController {
         log.warn("PostMapping: validate/{gameId}");
 
         // 1 - map input
-        QasinoFlowDTO flowDTO = new QasinoFlowDTO();
-        flowDTO.setPathVariables(
+        QasinoFlowDto flowDto = new QasinoFlowDto();
+        flowDto.setPathVariables(
                 "gameId", id,
                 "visitorId", getPricipalVisitorId(principal),
                 "ante", String.valueOf(qasinoResponse.getPageGameSetup().getSelectedGame().getAnte()),
                 "gameEvent", "validate"
         );
         if (qasinoResponse.getParams().getLid() > 0) {
-            flowDTO.setPathVariables("leagueId", String.valueOf(qasinoResponse.getParams().getLid()));
+            flowDto.setPathVariables("leagueId", String.valueOf(qasinoResponse.getParams().getLid()));
         }
         if ((qasinoResponse.getPageGameSetup().getBotPlayer() != null && qasinoResponse.getPageGameSetup().getBotPlayer().getAiLevel() != null)) {
-            flowDTO.setPathVariables("aiLevel", qasinoResponse.getPageGameSetup().getBotPlayer().getAiLevel().getLabel());
+            flowDto.setPathVariables("aiLevel", qasinoResponse.getPageGameSetup().getBotPlayer().getAiLevel().getLabel());
         }
         // 2 - validate input
-        if (!flowDTO.isInputValid() || errors.hasErrors()) {
+        if (!flowDto.isInputValid() || errors.hasErrors()) {
             log.warn("Errors validateInput!!: {}", errors);
-            prepareQasinoResponse(response, flowDTO);
-            model.addAttribute(flowDTO.getQasinoResponse());
+            prepareQasinoResponse(response, flowDto);
+            model.addAttribute(flowDto.getQasinoResponse());
             log.warn("Model !!: {}", model);
             return "redirect:/setup/" + qasinoResponse.getPageGameSetup().getSelectedGame().getGameId();
         }
         // 3 - process
-        result = loadEntitiesToDtoAction.perform(flowDTO);
+        result = loadEntitiesToDtoAction.perform(flowDto);
         if (FAILURE.equals(result)) {
             log.warn("Errors loadEntitiesToDtoAction!!: {}", errors);
             log.warn("Model !!: {}", model);
-            prepareQasinoResponse(response, flowDTO);
-            model.addAttribute(flowDTO.getQasinoResponse());
+            prepareQasinoResponse(response, flowDto);
+            model.addAttribute(flowDto.getQasinoResponse());
             return "redirect:/setup/" + qasinoResponse.getPageGameSetup().getSelectedGame().getGameId();
-            //            return ResponseEntity.status(HttpStatus.valueOf(flowDTO.getHttpStatus())).headers(flowDTO.getHeaders()).build();
+            //            return ResponseEntity.status(HttpStatus.valueOf(flowDto.getHttpStatus())).headers(flowDto.getHeaders()).build();
         }
-        result = isGameConsistentForGameEventAction.perform(flowDTO);
+        result = isGameConsistentForGameEventAction.perform(flowDto);
         if (FAILURE.equals(result)) {
             log.warn("Errors isGameConsistentForGameEvent!!: {}", errors);
             log.warn("Model !!: {}", model);
-            prepareQasinoResponse(response, flowDTO);
-            model.addAttribute(flowDTO.getQasinoResponse());
+            prepareQasinoResponse(response, flowDto);
+            model.addAttribute(flowDto.getQasinoResponse());
             return "redirect:/setup/" + qasinoResponse.getPageGameSetup().getSelectedGame().getGameId();
-            //            return ResponseEntity.status(HttpStatus.valueOf(flowDTO.getHttpStatus())).headers(flowDTO.getHeaders()).build();
+            //            return ResponseEntity.status(HttpStatus.valueOf(flowDto.getHttpStatus())).headers(flowDto.getHeaders()).build();
         }
         // update game
-        prepareGameAction.perform(flowDTO);
+        prepareGameAction.perform(flowDto);
         // 4 - return response
-        prepareQasinoResponse(response, flowDTO);
-        model.addAttribute(flowDTO.getQasinoResponse());
-//        log.warn("QasinoResponse !! {}", prettyPrintJson(flowDTO.getQasinoResponse()));
+        prepareQasinoResponse(response, flowDto);
+        model.addAttribute(flowDto.getQasinoResponse());
+//        log.warn("QasinoResponse !! {}", prettyPrintJson(flowDto.getQasinoResponse()));
 //        log.warn("model !! {}", model);
         return "redirect:/setup/" + qasinoResponse.getPageGameSetup().getSelectedGame().getGameId();
     }
@@ -288,52 +288,52 @@ public class GameThymeleafController extends AbstractThymeleafController {
         log.warn("PostMapping: style/{gameId}");
 
         // 1 - map input
-        QasinoFlowDTO flowDTO = new QasinoFlowDTO();
-        flowDTO.setPathVariables(
+        QasinoFlowDto flowDto = new QasinoFlowDto();
+        flowDto.setPathVariables(
                 "gameId", id,
                 "visitorId", getPricipalVisitorId(principal),
                 "gameEvent", "validate"
         );
         if ((qasinoResponse.getPageGameSetup().getAnteToWin() != null)) {
-            flowDTO.setPathVariables("anteToWin", qasinoResponse.getPageGameSetup().getAnteToWin().name());
+            flowDto.setPathVariables("anteToWin", qasinoResponse.getPageGameSetup().getAnteToWin().name());
         }
         if ((qasinoResponse.getPageGameSetup().getBettingStrategy() != null)) {
-            flowDTO.setPathVariables("bettingStrategy", qasinoResponse.getPageGameSetup().getBettingStrategy().name());
+            flowDto.setPathVariables("bettingStrategy", qasinoResponse.getPageGameSetup().getBettingStrategy().name());
         }
         if ((qasinoResponse.getPageGameSetup().getDeckConfiguration() != null)) {
-            flowDTO.setPathVariables("deckConfiguration", qasinoResponse.getPageGameSetup().getDeckConfiguration().name());
+            flowDto.setPathVariables("deckConfiguration", qasinoResponse.getPageGameSetup().getDeckConfiguration().name());
         }
         if ((qasinoResponse.getPageGameSetup().getOneTimeInsurance() != null)) {
-            flowDTO.setPathVariables("oneTimeInsurance", qasinoResponse.getPageGameSetup().getOneTimeInsurance().name());
+            flowDto.setPathVariables("oneTimeInsurance", qasinoResponse.getPageGameSetup().getOneTimeInsurance().name());
         }
         if ((qasinoResponse.getPageGameSetup().getRoundsToWin() != null)) {
-            flowDTO.setPathVariables("roundsToWin", qasinoResponse.getPageGameSetup().getRoundsToWin().name());
+            flowDto.setPathVariables("roundsToWin", qasinoResponse.getPageGameSetup().getRoundsToWin().name());
         }
         if ((qasinoResponse.getPageGameSetup().getTurnsToWin() != null)) {
-            flowDTO.setPathVariables("turnsToWin", qasinoResponse.getPageGameSetup().getTurnsToWin().name());
+            flowDto.setPathVariables("turnsToWin", qasinoResponse.getPageGameSetup().getTurnsToWin().name());
         }
         // 2 - validate input
-        if (!flowDTO.isInputValid() && errors.hasErrors()) {
+        if (!flowDto.isInputValid() && errors.hasErrors()) {
             log.warn("Errors validateInput!!: {}", errors);
-            prepareQasinoResponse(response, flowDTO);
-            model.addAttribute(flowDTO.getQasinoResponse());
+            prepareQasinoResponse(response, flowDto);
+            model.addAttribute(flowDto.getQasinoResponse());
             log.warn("Model !!: {}", model);
             return "redirect:/setup/" + qasinoResponse.getPageGameSetup().getSelectedGame().getGameId();
         }
         // 3 - process
-        result = loadEntitiesToDtoAction.perform(flowDTO);
+        result = loadEntitiesToDtoAction.perform(flowDto);
         if (FAILURE.equals(result)) {
             log.warn("Errors loadEntitiesToDtoAction!!: {}", errors);
             log.warn("Model !!: {}", model);
-            prepareQasinoResponse(response, flowDTO);
-            model.addAttribute(flowDTO.getQasinoResponse());
+            prepareQasinoResponse(response, flowDto);
+            model.addAttribute(flowDto.getQasinoResponse());
             return "redirect:/setup/" + id;
         }
-        updateStyleForGame.perform(flowDTO);
+        updateStyleForGame.perform(flowDto);
         // 4 - return response
-        prepareQasinoResponse(response, flowDTO);
-        model.addAttribute(flowDTO.getQasinoResponse());
-//        log.warn("QasinoResponse !! {}", prettyPrintJson(flowDTO.getQasinoResponse()));
+        prepareQasinoResponse(response, flowDto);
+        model.addAttribute(flowDto.getQasinoResponse());
+//        log.warn("QasinoResponse !! {}", prettyPrintJson(flowDto.getQasinoResponse()));
 //        log.warn("model !! {}", model);
         return "redirect:/setup/" + id;
     }
@@ -352,29 +352,29 @@ public class GameThymeleafController extends AbstractThymeleafController {
         log.warn("PostMapping: bot/{gameId}");
 
         // 1 - map input
-        QasinoFlowDTO flowDTO = new QasinoFlowDTO();
-        flowDTO.setPathVariables(
+        QasinoFlowDto flowDto = new QasinoFlowDto();
+        flowDto.setPathVariables(
                 "gameId", id,
                 "visitorId", getPricipalVisitorId(principal),
                 "avatar", qasinoResponse.getPageGameSetup().getBotPlayer().getAvatar().getLabel(),
                 "aiLevel", qasinoResponse.getPageGameSetup().getBotPlayer().getAiLevel().getLabel()
         );
         // 2 - validate input
-        if (!flowDTO.isInputValid() || errors.hasErrors()) {
+        if (!flowDto.isInputValid() || errors.hasErrors()) {
             log.warn("Errors validateInput!!: {}", errors);
             log.warn("Model !!: {}", model);
-            prepareQasinoResponse(response, flowDTO);
-            model.addAttribute(flowDTO.getQasinoResponse());
+            prepareQasinoResponse(response, flowDto);
+            model.addAttribute(flowDto.getQasinoResponse());
             return "redirect:/setup/" + qasinoResponse.getPageGameSetup().getSelectedGame().getGameId();
         }
         // 3 - process
-        loadEntitiesToDtoAction.perform(flowDTO);
-        Player bot = playerServiceOld.addBotPlayerToAGame(flowDTO.getQasinoGame(), flowDTO.getSuppliedAvatar(), flowDTO.getSuppliedAiLevel());
+        loadEntitiesToDtoAction.perform(flowDto);
+        Player bot = playerServiceOld.addBotPlayerToAGame(flowDto.getQasinoGame(), flowDto.getSuppliedAvatar(), flowDto.getSuppliedAiLevel());
         playerRepository.save(bot);
         // 4 - return response
-        prepareQasinoResponse(response, flowDTO);
-        model.addAttribute(flowDTO.getQasinoResponse());
-//        log.warn("QasinoResponse !! {}", prettyPrintJson(flowDTO.getQasinoResponse()));
+        prepareQasinoResponse(response, flowDto);
+        model.addAttribute(flowDto.getQasinoResponse());
+//        log.warn("QasinoResponse !! {}", prettyPrintJson(flowDto.getQasinoResponse()));
 //        log.warn("model !! {}", model);
         return "redirect:/setup/" + qasinoResponse.getPageGameSetup().getSelectedGame().getGameId();
     }
@@ -392,37 +392,37 @@ public class GameThymeleafController extends AbstractThymeleafController {
         log.warn("DeleteMapping: game/{gameId}");
 
         // 1 - map input
-        QasinoFlowDTO flowDTO = new QasinoFlowDTO();
-        flowDTO.setPathVariables(
+        QasinoFlowDto flowDto = new QasinoFlowDto();
+        flowDto.setPathVariables(
                 "visitorId", getPricipalVisitorId(principal),
                 "gameId", id
         );
         // 2 - validate input
-        if (!flowDTO.isInputValid() || errors.hasErrors()) {
+        if (!flowDto.isInputValid() || errors.hasErrors()) {
             log.warn("Errors validateInput!!: {}", errors);
             log.warn("Model !!: {}", model);
-            prepareQasinoResponse(response, flowDTO);
-            model.addAttribute(flowDTO.getQasinoResponse());
+            prepareQasinoResponse(response, flowDto);
+            model.addAttribute(flowDto.getQasinoResponse());
             return "redirect:/visitor";
         }
         // 3 - process
         // get all entities
-        result = loadEntitiesToDtoAction.perform(flowDTO);
+        result = loadEntitiesToDtoAction.perform(flowDto);
         if (FAILURE.equals(result)) {
             log.warn("Errors loadEntitiesToDtoAction!!: {}", errors);
             log.warn("Model !!: {}", model);
-            prepareQasinoResponse(response, flowDTO);
-            model.addAttribute(flowDTO.getQasinoResponse());
+            prepareQasinoResponse(response, flowDto);
+            model.addAttribute(flowDto.getQasinoResponse());
             return "redirect:/visitor";
-//            return ResponseEntity.status(HttpStatus.valueOf(flowDTO.getHttpStatus())).headers(flowDTO.getHeaders()).build();
+//            return ResponseEntity.status(HttpStatus.valueOf(flowDto.getHttpStatus())).headers(flowDto.getHeaders()).build();
         }
         // delete
-        gameRepository.deleteById(flowDTO.getSuppliedGameId());
-        flowDTO.setQasinoGame(null);
+        gameRepository.deleteById(flowDto.getSuppliedGameId());
+        flowDto.setQasinoGame(null);
         // 4 - return response
-        prepareQasinoResponse(response, flowDTO);
-        model.addAttribute(flowDTO.getQasinoResponse());
-//        log.warn("QasinoResponse !! {}", prettyPrintJson(flowDTO.getQasinoResponse()));
+        prepareQasinoResponse(response, flowDto);
+        model.addAttribute(flowDto.getQasinoResponse());
+//        log.warn("QasinoResponse !! {}", prettyPrintJson(flowDto.getQasinoResponse()));
 //        log.warn("model !! {}", model);
         return "redirect:/visitor";
     }

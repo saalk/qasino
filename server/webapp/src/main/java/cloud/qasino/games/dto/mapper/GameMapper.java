@@ -9,7 +9,7 @@ import cloud.qasino.games.database.entity.enums.game.style.DeckConfiguration;
 import cloud.qasino.games.database.entity.enums.game.style.OneTimeInsurance;
 import cloud.qasino.games.database.entity.enums.game.style.RoundsToWin;
 import cloud.qasino.games.database.entity.enums.game.style.TurnsToWin;
-import cloud.qasino.games.dto.GameDTO;
+import cloud.qasino.games.dto.GameDto;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Named;
@@ -25,7 +25,7 @@ public interface GameMapper {
     @Mapping(target = "oneTimeInsurance", source = "game", qualifiedByName = "oneTimeInsurance")
     @Mapping(target = "roundsToWin", source = "game", qualifiedByName = "roundsToWin")
     @Mapping(target = "turnsToWin", source = "game", qualifiedByName = "turnsToWin")
-    GameDTO gameToGameDTO(Game game);
+    GameDto gameToGameDto(Game game);
 
     @Mapping(target = "state", ignore = true)
     @Mapping(target = "style", ignore = true)
@@ -36,7 +36,7 @@ public interface GameMapper {
     @Mapping(target = "month", ignore = true)
     @Mapping(target = "week", ignore = true)
     @Mapping(target = "weekday", ignore = true)
-    Game gameDTOToGame(GameDTO game);
+    Game gameDtoToGame(GameDto game);
 
     @Named("isActivatePlayerInitiator")
     default boolean activatePlayerInitiator(Game game) {

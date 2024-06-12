@@ -1,6 +1,6 @@
 package cloud.qasino.games.database.security;
 
-import cloud.qasino.games.dto.VisitorDTO;
+import cloud.qasino.games.dto.VisitorDto;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -44,11 +44,11 @@ public class MyUserDetailService implements UserDetailsService {
         return principal;
     }
 
-    public UserDetails loadUserByUsername(VisitorDTO visitorDTO) throws UsernameNotFoundException {
-        final Visitor visitor = visitorRepository.findByUsername(visitorDTO.getUsername());
+    public UserDetails loadUserByUsername(VisitorDto visitorDto) throws UsernameNotFoundException {
+        final Visitor visitor = visitorRepository.findByUsername(visitorDto.getUsername());
         log.warn("visitor found: {}",visitor.toString());
         if (visitor == null) {
-            throw new UsernameNotFoundException("Visitor [" + visitorDTO.getUsername() + "] not found");
+            throw new UsernameNotFoundException("Visitor [" + visitorDto.getUsername() + "] not found");
         }
         MyUserPrincipal principal = new MyUserPrincipal(visitor);
         log.warn("Principal found: {}", principal.toString());

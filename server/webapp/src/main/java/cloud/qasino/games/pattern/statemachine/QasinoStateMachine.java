@@ -3,7 +3,7 @@ package cloud.qasino.games.pattern.statemachine;
 import cloud.qasino.games.action.LoadEntitiesToDtoAction;
 import cloud.qasino.games.pattern.statemachine.event.EventOutput;
 import cloud.qasino.games.pattern.statemachine.event.GameEvent;
-import cloud.qasino.games.pattern.statemachine.event.interfaces.AbstractFlowDTO;
+import cloud.qasino.games.pattern.statemachine.event.interfaces.AbstractFlowDto;
 import cloud.qasino.games.pattern.statemachine.event.interfaces.Event;
 import cloud.qasino.games.orchestration.OrchestrationConfig;
 import cloud.qasino.games.orchestration.QasinoEventHandler;
@@ -54,9 +54,9 @@ public class QasinoStateMachine { // implements QasinoAsyncConfiguration.ASyncEv
         eventHandler = new QasinoEventHandler(qasinoConfiguration, applicationContext);
     }
 
-    public <T extends AbstractFlowDTO> T handleEvent(Event event, T dto) {
-        eventHandler.handleEvent(event, dto);
-        return dto;
+    public <T extends AbstractFlowDto> T handleEvent(Event event, T Dto) {
+        eventHandler.handleEvent(event, Dto);
+        return Dto;
     }
 
 }

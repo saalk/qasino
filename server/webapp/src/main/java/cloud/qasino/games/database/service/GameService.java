@@ -10,8 +10,8 @@ import cloud.qasino.games.database.entity.enums.player.Avatar;
 import cloud.qasino.games.database.repository.CardRepository;
 import cloud.qasino.games.database.repository.GameRepository;
 import cloud.qasino.games.database.repository.PlayerRepository;
-import cloud.qasino.games.dto.GameDTO;
-import cloud.qasino.games.dto.VisitorDTO;
+import cloud.qasino.games.dto.GameDto;
+import cloud.qasino.games.dto.VisitorDto;
 import cloud.qasino.games.dto.mapper.GameMapper;
 import cloud.qasino.games.exception.MyBusinessException;
 import cloud.qasino.games.pattern.factory.Deck;
@@ -32,18 +32,17 @@ public class GameService {
     @Autowired private PlayerServiceOld playerServiceOld;
     GameMapper gameMapper;
 
-
-    public GameDTO setupNewGameWithPlayerInitiator(GameDTO gameDto, VisitorDTO visitorDTO) {
-        Game game = gameMapper.gameDTOToGame(gameDto);
-        game.setInitiator(visitorDTO.getVisitorId());
+    public GameDto setupNewGameWithPlayerInitiator(GameDto gameDto, VisitorDto visitorDto) {
+        Game game = gameMapper.gameDtoToGame(gameDto);
+        game.setInitiator(visitorDto.getVisitorId());
         Game newGame = gameRepository.save(game);
         // TODO
         playerServiceOld.addHumanVisitorPlayerToAGame(null, newGame, Avatar.ELF);
-        GameDTO gameDTO = gameMapper.gameToGameDTO(newGame);
-
-        return gameDTO;
+        return gameMapper.gameToGameDto(newGame);
     }
-    public Game prepareExistingGame(Game game, League league, String style, int ante) {
+
+    public GameDto prepareExistingGame(GameDto gameDto, League league, String style, int ante) {
+        Game game = gameMapper.gameDtoToGame(gameDto);
         // You cannot change the initiator or the type
         if (!(league == null)) {
             game.setLeague(league);
@@ -55,38 +54,26 @@ public class GameService {
             game.setAnte(ante);
         }
         game.setState(GameState.PREPARED);
-        return gameRepository.save(game);
+        Game newGame = gameRepository.save(game);
+        return  gameMapper.gameToGameDto(newGame);
     }
-    public Game addAndShuffleCardsForAGame(Game activeGame) {
-        if (!activeGame.getCards().isEmpty())
-            throw new MyBusinessException("addAndShuffleCardsForAGame", "this game already has cards [" + activeGame.getGameId() + "]");
 
-        Deck deck = DeckFactory.createShuffledDeck(activeGame, 0);
+    public GameDto addAndShuffleCardsForAGame(GameDto gameDto) {
+        Game game = gameMapper.gameDtoToGame(gameDto);
+        if (!game.getCards().isEmpty())
+            throw new MyBusinessException("addAndShuffleCardsForAGame", "this game already has cards [" + game.getGameId() + "]");
+        Deck deck = DeckFactory.createShuffledDeck(game, 0);
         List<PlayingCard> playingCards = deck.getPlayingCards();
-
-//        switch (Style.fromLabelWithDefault(activeGame.getStyle()).getDeckConfiguration()) {
-//            case ALL_THREE_JOKERS -> playingCards = createDeckWithXJokers(3);
-//            case ALL_TWO_JOKERS -> playingCards = createDeckWithXJokers(2);
-//            case ALL_ONE_JOKER -> playingCards = createDeckWithXJokers(1);
-//            case ALL_NO_JOKER -> playingCards = createDeckWithXJokers(0);
-//            case RANDOM_SUIT_THREE_JOKERS -> playingCards = createDeckForRandomSuitWithXJokers(3);
-//            case RANDOM_SUIT_TWO_JOKERS -> playingCards = createDeckForRandomSuitWithXJokers(2);
-//            case RANDOM_SUIT_ONE_JOKER -> playingCards = createDeckForRandomSuitWithXJokers(1);
-//            case RANDOM_SUIT_NO_JOKER -> playingCards = createDeckForRandomSuitWithXJokers(0);
-//            default -> playingCards = createDeckWithXJokers(3);
-//        }
-//        Collections.shuffle(playingCards);
         List<Card> cards = new ArrayList<>();
         int i = 1;
         for (PlayingCard playingCard : playingCards) {
-            Card card = new Card(playingCard.getRankAndSuit(), activeGame, null, i++, Location.STOCK);
+            Card card = new Card(playingCard.getRankAndSuit(), game, null, i++, Location.STOCK);
             cards.add(card);
             cardRepository.save(card);
         }
-        activeGame.setState(GameState.STARTED);
-        activeGame.setCards(cards);
-        activeGame = gameRepository.save(activeGame);
-        return activeGame;
+        game.setState(GameState.STARTED);
+        game.setCards(cards);
+        game = gameRepository.save(game);
+        return gameMapper.gameToGameDto(game);
     }
-
 }

@@ -49,7 +49,7 @@ import cloud.qasino.games.database.entity.enums.game.style.TurnsToWin;
 import cloud.qasino.games.database.entity.enums.move.Move;
 import cloud.qasino.games.database.entity.enums.player.AiLevel;
 import cloud.qasino.games.database.entity.enums.player.Avatar;
-import cloud.qasino.games.database.entity.enums.player.Role;
+import cloud.qasino.games.database.entity.enums.player.PlayerState;
 import cloud.qasino.games.database.security.Visitor;
 import cloud.qasino.games.response.view.SectionTable;
 import cloud.qasino.games.response.view.statistics.Statistic;
@@ -57,7 +57,7 @@ import cloud.qasino.games.exception.MyBusinessException;
 import cloud.qasino.games.response.QasinoResponse;
 import cloud.qasino.games.pattern.statemachine.event.GameEvent;
 import cloud.qasino.games.pattern.statemachine.event.TurnEvent;
-import cloud.qasino.games.pattern.statemachine.event.interfaces.AbstractFlowDTO;
+import cloud.qasino.games.pattern.statemachine.event.interfaces.AbstractFlowDto;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
@@ -76,7 +76,7 @@ import java.util.Map;
 @Getter
 @Setter
 @Slf4j
-public class QasinoFlowDTO extends AbstractFlowDTO
+public class QasinoFlowDto extends AbstractFlowDto
         implements
         CalculateAndFinishGameAction.Dto,
         CalculateQasinoStatisticsAction.Dto,
@@ -150,7 +150,7 @@ public class QasinoFlowDTO extends AbstractFlowDTO
     private String suppliedLeagueEnd;    // todo monthsEnd, thisMonday, x days.
     private Boolean suppliedLeagueClose; // todo null, or true/false
     // player
-    private Role suppliedRole; // bot, initiator or guest
+    private PlayerState suppliedPlayerState; // bot, initiator or guest
     private int suppliedFiches;
     private Avatar suppliedAvatar;
     private AiLevel suppliedAiLevel; // human or ai
@@ -210,7 +210,7 @@ public class QasinoFlowDTO extends AbstractFlowDTO
     private String action;
     private boolean actionNeeded;
 
-    // EXCEPTION - - TODO move out of DTO
+    // EXCEPTION - - TODO move out of Dto
     // 400 bad request "malformed entity syntax" - eg null, zero, not numeric or invalid enum
     // 404 not found "unknown id" - eg id not in db
     // 409 conflict "update sent at the wrong time" eg state not valid now/anymore
@@ -289,7 +289,7 @@ public class QasinoFlowDTO extends AbstractFlowDTO
     }
     // @formatter:on
 
-    // INPUT // TODO move out of DTO
+    // INPUT // TODO move out of Dto
     @Setter(AccessLevel.NONE)
     private Map<String, String> pathVariables = new HashMap<>();
     private Map<String, String> requestParams = new HashMap<>();
@@ -306,7 +306,7 @@ public class QasinoFlowDTO extends AbstractFlowDTO
         }
     }
 
-    // VALIDATE INPUT - TODO move out of DTO
+    // VALIDATE INPUT - TODO move out of Dto
     // @formatter:off
     public boolean isInputValid() {
         if (!validatePathVariables(this.pathVariables)
@@ -455,7 +455,7 @@ public class QasinoFlowDTO extends AbstractFlowDTO
             if (isValueForEnumKeyValid(key, requestParam.get(
                             key), dataName,
                     paramDataString)) {
-                this.suppliedRole = Role.fromLabel(requestParam.get(key));
+                this.suppliedPlayerState = PlayerState.fromLabel(requestParam.get(key));
             } else {
                 return false;
             }
@@ -693,7 +693,7 @@ public class QasinoFlowDTO extends AbstractFlowDTO
         switch (key) {
 
             case "role":
-                if (!(Role.fromLabelWithDefault(value) == Role.ERROR)) {
+                if (!(PlayerState.fromLabelWithDefault(value) == PlayerState.ERROR)) {
                     return true;
                 }
                 break;

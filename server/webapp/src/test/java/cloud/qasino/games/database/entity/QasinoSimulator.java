@@ -4,7 +4,6 @@ import cloud.qasino.games.database.entity.enums.card.Location;
 import cloud.qasino.games.database.entity.enums.card.PlayingCard;
 import cloud.qasino.games.database.entity.enums.player.AiLevel;
 import cloud.qasino.games.database.entity.enums.player.Avatar;
-import cloud.qasino.games.database.entity.enums.player.Role;
 import cloud.qasino.games.database.security.Visitor;
 
 import java.util.ArrayList;

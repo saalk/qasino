@@ -5,7 +5,7 @@ import cloud.qasino.games.action.FindVisitorIdByAliasOrUsernameAction;
 import cloud.qasino.games.action.LoadEntitiesToDtoAction;
 import cloud.qasino.games.controller.AbstractThymeleafController;
 import cloud.qasino.games.database.repository.LeagueRepository;
-import cloud.qasino.games.dto.QasinoFlowDTO;
+import cloud.qasino.games.dto.QasinoFlowDto;
 import cloud.qasino.games.response.QasinoResponse;
 import cloud.qasino.games.pattern.statemachine.event.EventOutput;
 import jakarta.servlet.http.HttpServletResponse;
@@ -67,28 +67,28 @@ public class LeagueThymeleafController extends AbstractThymeleafController {
             @PathVariable("leagueId") String id
     ) {
         // 1 - map input
-        QasinoFlowDTO flowDTO = new QasinoFlowDTO();
-        flowDTO.setPathVariables("leagueId", id);
-        flowDTO.setPathVariables("username", principal.getName());
-        findVisitorIdByAliasOrUsernameAction.perform(flowDTO);
+        QasinoFlowDto flowDto = new QasinoFlowDto();
+        flowDto.setPathVariables("leagueId", id);
+        flowDto.setPathVariables("username", principal.getName());
+        findVisitorIdByAliasOrUsernameAction.perform(flowDto);
         // 2 - validate input
-        if (!flowDTO.isInputValid() || errors.hasErrors()) {
+        if (!flowDto.isInputValid() || errors.hasErrors()) {
             log.warn("Errors exist!!: {}", errors);
-            prepareQasinoResponse(response, flowDTO);
-//            flowDTO.setAction("Username incorrect");
-            model.addAttribute(flowDTO.getQasinoResponse());
+            prepareQasinoResponse(response, flowDto);
+//            flowDto.setAction("Username incorrect");
+            model.addAttribute(flowDto.getQasinoResponse());
             return "redirect:league/" + id;
         }
         // get all entities
         // 4 - return response
-        prepareQasinoResponse(response, flowDTO);
-        model.addAttribute(flowDTO.getQasinoResponse());
+        prepareQasinoResponse(response, flowDto);
+        model.addAttribute(flowDto.getQasinoResponse());
 
         log.warn("GetMapping: visitor");
 //        log.warn("HttpServletResponse: {}", response.getHeaderNames());
 //        log.warn("Model: {}", model);
 //        log.warn("Errors: {}", errors);
-        log.warn("get qasinoResponse: {}", flowDTO.getQasinoResponse());
+        log.warn("get qasinoResponse: {}", flowDto.getQasinoResponse());
         return LEAGUE_VIEW_LOCATION;
     }
 
@@ -102,45 +102,45 @@ public class LeagueThymeleafController extends AbstractThymeleafController {
             HttpServletResponse response
     ) {
         // 1 - map input
-        QasinoFlowDTO flowDTO = new QasinoFlowDTO();
-        flowDTO.setPathVariables(
+        QasinoFlowDto flowDto = new QasinoFlowDto();
+        flowDto.setPathVariables(
                 "leagueName", qasinoResponse.getPageLeague().getSelectedLeague().getName()
         );
-        flowDTO.setPathVariables("username", principal.getName());
-        findVisitorIdByAliasOrUsernameAction.perform(flowDTO);
+        flowDto.setPathVariables("username", principal.getName());
+        findVisitorIdByAliasOrUsernameAction.perform(flowDto);
         // 2 - validate input
-        if (!flowDTO.isInputValid() || errors.hasErrors()) {
+        if (!flowDto.isInputValid() || errors.hasErrors()) {
             log.warn("Errors exist!!: {}", errors);
-            prepareQasinoResponse(response, flowDTO);
-//            flowDTO.setAction("Username incorrect");
-            model.addAttribute(flowDTO.getQasinoResponse());
+            prepareQasinoResponse(response, flowDto);
+//            flowDto.setAction("Username incorrect");
+            model.addAttribute(flowDto.getQasinoResponse());
             return "redirect:/visitor";
         }
         // 3 - process
         // get all entities
-        result = loadEntitiesToDtoAction.perform(flowDTO);
+        result = loadEntitiesToDtoAction.perform(flowDto);
         if (FAILURE.equals(result)) {
-            flowDTO.prepareResponseHeaders();
+            flowDto.prepareResponseHeaders();
             return "redirect:/visitor";
-//            return ResponseEntity.status(HttpStatus.valueOf(flowDTO.getHttpStatus())).headers(flowDTO.getHeaders()).build();
+//            return ResponseEntity.status(HttpStatus.valueOf(flowDto.getHttpStatus())).headers(flowDto.getHeaders()).build();
         }
         // create - League for Visitor
-        result = createNewLeagueAction.perform(flowDTO);
+        result = createNewLeagueAction.perform(flowDto);
         if (FAILURE.equals(result)) {
-            flowDTO.prepareResponseHeaders();
+            flowDto.prepareResponseHeaders();
             return "redirect:/visitor";
-//            return ResponseEntity.status(HttpStatus.valueOf(flowDTO.getHttpStatus())).headers(flowDTO.getHeaders()).build();
+//            return ResponseEntity.status(HttpStatus.valueOf(flowDto.getHttpStatus())).headers(flowDto.getHeaders()).build();
         }
         // 4 - return response
-        prepareQasinoResponse(response, flowDTO);
-        model.addAttribute(flowDTO.getQasinoResponse());
+        prepareQasinoResponse(response, flowDto);
+        model.addAttribute(flowDto.getQasinoResponse());
 
         log.warn("PostMapping: league");
 //        log.warn("HttpServletResponse: {}", response.getHeaderNames());
 //        log.warn("Model: {}", model);
 //        log.warn("Errors: {}", errors);
-        log.warn("get qasinoResponse: {}", flowDTO.getQasinoResponse());
-        return "redirect:league/" + flowDTO.getQasinoResponse().getPageLeague().getSelectedLeague().getLeagueId();
+        log.warn("get qasinoResponse: {}", flowDto.getQasinoResponse());
+        return "redirect:league/" + flowDto.getQasinoResponse().getPageLeague().getSelectedLeague().getLeagueId();
     }
 
     @DeleteMapping("/league/{leagueId}")
@@ -154,38 +154,38 @@ public class LeagueThymeleafController extends AbstractThymeleafController {
             @PathVariable("leagueId") String id
     ) {
         // 1 - map input
-        QasinoFlowDTO flowDTO = new QasinoFlowDTO();
-        flowDTO.setPathVariables("leagueId", id);
-        flowDTO.setPathVariables("username", principal.getName());
-        findVisitorIdByAliasOrUsernameAction.perform(flowDTO);
+        QasinoFlowDto flowDto = new QasinoFlowDto();
+        flowDto.setPathVariables("leagueId", id);
+        flowDto.setPathVariables("username", principal.getName());
+        findVisitorIdByAliasOrUsernameAction.perform(flowDto);
         // 2 - validate input
-        if (!flowDTO.isInputValid() || errors.hasErrors()) {
+        if (!flowDto.isInputValid() || errors.hasErrors()) {
             log.warn("Errors exist!!: {}", errors);
-            prepareQasinoResponse(response, flowDTO);
-//            flowDTO.setAction("Username incorrect");
-            model.addAttribute(flowDTO.getQasinoResponse());
+            prepareQasinoResponse(response, flowDto);
+//            flowDto.setAction("Username incorrect");
+            model.addAttribute(flowDto.getQasinoResponse());
             return "redirect:/visitor";
         }
         // get all entities
-        result = loadEntitiesToDtoAction.perform(flowDTO);
+        result = loadEntitiesToDtoAction.perform(flowDto);
         if (FAILURE.equals(result)) {
-            flowDTO.prepareResponseHeaders();
+            flowDto.prepareResponseHeaders();
             return "redirect:/visitor";
-//            return ResponseEntity.status(HttpStatus.valueOf(flowDTO.getHttpStatus())).headers(flowDTO.getHeaders()).build();
+//            return ResponseEntity.status(HttpStatus.valueOf(flowDto.getHttpStatus())).headers(flowDto.getHeaders()).build();
         }
         // delete
         // TODO check if league does not have games any more..
-        leagueRepository.deleteById(flowDTO.getSuppliedLeagueId());
-        flowDTO.setQasinoGameLeague(null);
+        leagueRepository.deleteById(flowDto.getSuppliedLeagueId());
+        flowDto.setQasinoGameLeague(null);
         // 4 - return response
-        prepareQasinoResponse(response, flowDTO);
-        model.addAttribute(flowDTO.getQasinoResponse());
+        prepareQasinoResponse(response, flowDto);
+        model.addAttribute(flowDto.getQasinoResponse());
 
         log.warn("DeleteMapping: /league/{leagueId}");
 //        log.warn("HttpServletResponse: {}", response.getHeaderNames());
 //        log.warn("Model: {}", model);
 //        log.warn("Errors: {}", errors);
-        log.warn("get qasinoResponse: {}", flowDTO.getQasinoResponse());
+        log.warn("get qasinoResponse: {}", flowDto.getQasinoResponse());
 
         return "redirect:/visitor";
     }

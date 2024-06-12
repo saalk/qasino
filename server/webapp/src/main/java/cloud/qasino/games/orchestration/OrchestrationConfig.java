@@ -170,7 +170,7 @@ public class OrchestrationConfig {
 
     /**
      * Configures a transition to a next state if a certain exception type (or supertype) is caught while performing an action
-     * Sets (frontend) response on DTO
+     * Sets (frontend) response on Dto
      *
      * @param exceptionClass
      * @param nextState
@@ -225,7 +225,7 @@ public class OrchestrationConfig {
     }
 
     /**
-     * Configures a default response to be set on DTO in case flow does not result in other specific response
+     * Configures a default response to be set on Dto in case flow does not result in other specific response
      *
      * @param defaultResponse
      * @return
@@ -554,7 +554,7 @@ public class OrchestrationConfig {
         }
 
         /**
-         * @param response to be set on DTO
+         * @param response to be set on Dto
          */
         public ActionConfig onResult(final Object expectedResult, final GameState nextState, final EventHandlingResponse
                 response) {
@@ -564,7 +564,7 @@ public class OrchestrationConfig {
         /**
          * @param expectedResult
          * @param nextState
-         * @param response       to be set on DTO
+         * @param response       to be set on Dto
          * @param nextEvent      to be fired immidiately after transition
          * @return
          */

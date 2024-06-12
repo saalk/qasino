@@ -10,7 +10,7 @@ import cloud.qasino.games.database.entity.enums.game.gamestate.GameStateGroup;
 import cloud.qasino.games.database.entity.enums.move.Move;
 import cloud.qasino.games.database.entity.enums.player.AiLevel;
 import cloud.qasino.games.database.entity.enums.player.Avatar;
-import cloud.qasino.games.database.entity.enums.player.Role;
+import cloud.qasino.games.database.entity.enums.player.PlayerState;
 import cloud.qasino.games.pattern.statemachine.event.GameEvent;
 import cloud.qasino.games.pattern.statemachine.event.TurnEvent;
 import lombok.AccessLevel;
@@ -60,7 +60,7 @@ public class QasinoRequest {
     private String suppliedLeagueEnd;    // todo monthsEnd, thisMonday, x days.
     private Boolean suppliedLeagueClose; // todo null, or true/false
     // player
-    private Role suppliedRole; // bot, initiator or guest
+    private PlayerState suppliedPlayerState; // bot, initiator or guest
     private int suppliedFiches;
     private Avatar suppliedAvatar;
     private AiLevel suppliedAiLevel; // human or ai
@@ -232,7 +232,7 @@ public class QasinoRequest {
             if (isValueForEnumKeyValid(key, requestParam.get(
                             key), dataName,
                     paramDataString)) {
-                this.suppliedRole = Role.fromLabel(requestParam.get(key));
+                this.suppliedPlayerState = PlayerState.fromLabel(requestParam.get(key));
             } else {
                 return false;
             }
@@ -406,7 +406,7 @@ public class QasinoRequest {
         switch (key) {
 
             case "role":
-                if (!(Role.fromLabelWithDefault(value) == Role.ERROR)) {
+                if (!(PlayerState.fromLabelWithDefault(value) == PlayerState.ERROR)) {
                     return true;
                 }
                 break;

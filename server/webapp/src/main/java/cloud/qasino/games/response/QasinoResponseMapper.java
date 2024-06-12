@@ -3,7 +3,7 @@ package cloud.qasino.games.response;
 import cloud.qasino.games.database.entity.Game;
 import cloud.qasino.games.database.entity.enums.game.GameState;
 import cloud.qasino.games.database.entity.enums.game.Style;
-import cloud.qasino.games.dto.QasinoFlowDTO;
+import cloud.qasino.games.dto.QasinoFlowDto;
 import cloud.qasino.games.response.view.NavigationBarItem;
 import cloud.qasino.games.response.view.PageGameInvitations;
 import cloud.qasino.games.response.view.PageGamePlay;
@@ -23,7 +23,7 @@ import java.util.Map;
 @Component
 public class QasinoResponseMapper {
 
-    public QasinoResponse map(QasinoFlowDTO actionDto) {
+    public QasinoResponse map(QasinoFlowDto actionDto) {
 
         QasinoResponse qasinoResponse = new QasinoResponse();
 
@@ -168,12 +168,12 @@ public class QasinoResponseMapper {
         return qasinoResponse;
     }
 
-    private static void setupMessage(QasinoFlowDTO actionDto, NavigationBarItem navigationBarItem) {
+    private static void setupMessage(QasinoFlowDto actionDto, NavigationBarItem navigationBarItem) {
         // todo
     }
 
     // @formatter:off
-    private void mapVisitorPage(QasinoFlowDTO actionDto, NavigationBarItem navigationBarItem, PageVisitor pageVisitor) {
+    private void mapVisitorPage(QasinoFlowDto actionDto, NavigationBarItem navigationBarItem, PageVisitor pageVisitor) {
         // set the nav bar
         navigationBarItem.setTitle("Visitor[" + actionDto.getQasinoVisitor().getUsername()+ "]");
         navigationBarItem.setStat("balance[" + actionDto.getQasinoVisitor().getBalance() + "]");
@@ -191,7 +191,7 @@ public class QasinoResponseMapper {
         }
         pageVisitor.setInvitedGamesPerState(gameStateIntegerMap);
     }
-    private void mapGameSetupPage(QasinoFlowDTO actionDto, NavigationBarItem navigationBarItem, PageGameSetup pageGameSetup) {
+    private void mapGameSetupPage(QasinoFlowDto actionDto, NavigationBarItem navigationBarItem, PageGameSetup pageGameSetup) {
         // set the nav bar
         navigationBarItem.setTitle("Setup[" +
                 Integer.toHexString((int) actionDto.getQasinoGame().getGameId())+"]");
@@ -215,7 +215,7 @@ public class QasinoResponseMapper {
 
         pageGameSetup.setLeaguesToSelect(null);
     }
-    private void mapGamePlayPage(QasinoFlowDTO actionDto, NavigationBarItem navigationBarItem, PageGamePlay pageGamePlay) {
+    private void mapGamePlayPage(QasinoFlowDto actionDto, NavigationBarItem navigationBarItem, PageGamePlay pageGamePlay) {
         // set the nav bar
         navigationBarItem.setTitle("Play[" +
                 Integer.toHexString((int) actionDto.getQasinoGame().getGameId())+"]");
@@ -235,7 +235,7 @@ public class QasinoResponseMapper {
         }
         pageGamePlay.setGameResults(actionDto.getGameResults());
     }
-    private void mapGameInvitationsPage(QasinoFlowDTO actionDto, NavigationBarItem navigationBarItem, PageGameInvitations pageGamesOverview) {
+    private void mapGameInvitationsPage(QasinoFlowDto actionDto, NavigationBarItem navigationBarItem, PageGameInvitations pageGamesOverview) {
         // set the nav bar
         navigationBarItem.setTitle("Invite[]");
         navigationBarItem.setStat("calculating...");
@@ -243,7 +243,7 @@ public class QasinoResponseMapper {
         // set the content
         pageGamesOverview.setGameInvitations(null);
     }
-    private void mapLeaguesPage(QasinoFlowDTO actionDto, NavigationBarItem navigationBarItem, PageLeague pageLeague) {
+    private void mapLeaguesPage(QasinoFlowDto actionDto, NavigationBarItem navigationBarItem, PageLeague pageLeague) {
         // set the nav bar
         navigationBarItem.setTitle("League[" + Integer.toHexString((int) actionDto.getQasinoGameLeague().getLeagueId())+"]");
         navigationBarItem.setStat("[" + actionDto.getLeaguesForVisitor().size() + "] active");

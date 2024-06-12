@@ -27,7 +27,7 @@ Web Server examples are Apache HTTPS, Nginx and Microsoft IIS.
 
 # Spring Container
 All the Java web frameworks are built on top of servlet api. In a web application, three files 
-play a vital role. Usually, we chain them in order as: web.xml -> applicationContext.xml -> spring-servlet.xml.
+play a vital playerState. Usually, we chain them in order as: web.xml -> applicationContext.xml -> spring-servlet.xml.
 
 In the Spring container, beans declared in ApplicationContext.xml.
 

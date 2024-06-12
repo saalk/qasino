@@ -4,7 +4,7 @@ import cloud.qasino.games.request.QasinoRequest;
 import cloud.qasino.games.response.QasinoResponse;
 import cloud.qasino.games.response.QasinoResponseMapper;
 import cloud.qasino.games.pattern.statemachine.QasinoStateMachine;
-import cloud.qasino.games.dto.QasinoFlowDTO;
+import cloud.qasino.games.dto.QasinoFlowDto;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
@@ -26,14 +26,14 @@ public class GameHandler {
 
         QasinoRequest request = new QasinoRequest(); // pathvariables
         // validate and give 400 if needed
-        QasinoFlowDTO flowDTO = new QasinoFlowDTO();
-        flowDTO.setSuppliedVisitorId(visitorId);
-//      flowDTO.addQasinoRequest(request);
+        QasinoFlowDto flowDto = new QasinoFlowDto();
+        flowDto.setSuppliedVisitorId(visitorId);
+//      flowDto.addQasinoRequest(request);
 
-        qasinoStateMachine.handleEvent(START, flowDTO);
+        qasinoStateMachine.handleEvent(START, flowDto);
         log.warn("########## Start of initialize: " + LocalTime.now());
 
-        return new QasinoResponseMapper().map(flowDTO);
+        return new QasinoResponseMapper().map(flowDto);
     }
 
 }

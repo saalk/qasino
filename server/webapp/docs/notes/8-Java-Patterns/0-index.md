@@ -6,6 +6,7 @@ Index of JAVA
 - [Structural](3-Structural.md)
 - [Behavioural](4-Behavioural.md)
 - [Others](5-Others.md)
+- [Enterprise](6-Enterprise.md)
 
  
 

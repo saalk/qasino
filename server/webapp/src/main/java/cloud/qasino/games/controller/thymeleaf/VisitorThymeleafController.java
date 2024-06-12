@@ -7,7 +7,7 @@ import cloud.qasino.games.action.SignUpNewVisitorAction;
 import cloud.qasino.games.action.UpdateVisitorAction;
 import cloud.qasino.games.controller.AbstractThymeleafController;
 import cloud.qasino.games.database.security.VisitorRepository;
-import cloud.qasino.games.dto.QasinoFlowDTO;
+import cloud.qasino.games.dto.QasinoFlowDto;
 import cloud.qasino.games.response.QasinoResponse;
 import cloud.qasino.games.pattern.statemachine.event.EventOutput;
 import jakarta.servlet.http.HttpServletResponse;
@@ -83,20 +83,20 @@ public class VisitorThymeleafController extends AbstractThymeleafController {
             HttpServletResponse response
     ) {
         // 1 - map input
-        QasinoFlowDTO flowDTO = new QasinoFlowDTO();
-        flowDTO.setPathVariables("visitorId", getPricipalVisitorId(principal));
+        QasinoFlowDto flowDto = new QasinoFlowDto();
+        flowDto.setPathVariables("visitorId", getPricipalVisitorId(principal));
         // 2 - validate input
-        if (!flowDTO.isInputValid() || errors.hasErrors()) {
+        if (!flowDto.isInputValid() || errors.hasErrors()) {
             log.warn("Errors validateInput!!: {}", errors);
-            prepareQasinoResponse(response, flowDTO);
-//            flowDTO.setAction("Username incorrect");
-            model.addAttribute(flowDTO.getQasinoResponse());
+            prepareQasinoResponse(response, flowDto);
+//            flowDto.setAction("Username incorrect");
+            model.addAttribute(flowDto.getQasinoResponse());
             return VISITOR_VIEW_LOCATION;
         }
         // 3 - process
         // 4 - return response
-        prepareQasinoResponse(response, flowDTO);
-        model.addAttribute(flowDTO.getQasinoResponse());
+        prepareQasinoResponse(response, flowDto);
+        model.addAttribute(flowDto.getQasinoResponse());
 //        log.warn("Model => ", model);
         return VISITOR_VIEW_LOCATION;
     }
@@ -117,8 +117,8 @@ public class VisitorThymeleafController extends AbstractThymeleafController {
 //        log.warn("post in qasinoResponse: {}", qasinoResponse);
 
         // 1 - map input
-        QasinoFlowDTO flowDTO = new QasinoFlowDTO();
-        flowDTO.setPathVariables(
+        QasinoFlowDto flowDto = new QasinoFlowDto();
+        flowDto.setPathVariables(
                 "visitorId", getPricipalVisitorId(principal),
 
                 "visitorId", String.valueOf(qasinoResponse.getPageVisitor().getSelectedVisitor().getVisitorId()),
@@ -127,19 +127,19 @@ public class VisitorThymeleafController extends AbstractThymeleafController {
                 "email", qasinoResponse.getPageVisitor().getSelectedVisitor().getEmail()
         );
         // 2 - validate input
-        if (!flowDTO.isInputValid() || errors.hasErrors()) {
+        if (!flowDto.isInputValid() || errors.hasErrors()) {
             log.warn("Errors validateInput!!: {}", errors);
-            prepareQasinoResponse(response, flowDTO);
-            model.addAttribute(flowDTO.getQasinoResponse());
+            prepareQasinoResponse(response, flowDto);
+            model.addAttribute(flowDto.getQasinoResponse());
             return VISITOR_VIEW_LOCATION;
         }
         // 3 - process
-        loadEntitiesToDtoAction.perform(flowDTO);
-        updateVisitorAction.perform(flowDTO);
+        loadEntitiesToDtoAction.perform(flowDto);
+        updateVisitorAction.perform(flowDto);
         // 4 - return response
-        prepareQasinoResponse(response, flowDTO);
-        model.addAttribute(flowDTO.getQasinoResponse());
-//        log.warn("post out qasinoResponse: {}", flowDTO.getQasinoResponse());
+        prepareQasinoResponse(response, flowDto);
+        model.addAttribute(flowDto.getQasinoResponse());
+//        log.warn("post out qasinoResponse: {}", flowDto.getQasinoResponse());
         return "redirect:/visitor";
     }
 
@@ -152,21 +152,21 @@ public class VisitorThymeleafController extends AbstractThymeleafController {
             HttpServletResponse response
     ) {
         // 1 - map input
-        QasinoFlowDTO flowDTO = new QasinoFlowDTO();
-        flowDTO.setPathVariables("visitorId", String.valueOf(qasinoResponse.getPageVisitor().getSelectedVisitor().getVisitorId()), "pawn", "true");
+        QasinoFlowDto flowDto = new QasinoFlowDto();
+        flowDto.setPathVariables("visitorId", String.valueOf(qasinoResponse.getPageVisitor().getSelectedVisitor().getVisitorId()), "pawn", "true");
         // 2 - validate input
-        if (!flowDTO.isInputValid()) {
+        if (!flowDto.isInputValid()) {
             log.warn("Errors exist!!: {}", errors);
-            prepareQasinoResponse(response, flowDTO);
-            model.addAttribute(flowDTO.getQasinoResponse());
+            prepareQasinoResponse(response, flowDto);
+            model.addAttribute(flowDto.getQasinoResponse());
             return VISITOR_VIEW_LOCATION;
         }
         // 3 - process
-        loadEntitiesToDtoAction.perform(flowDTO);
-        handleSecuredLoanAction.perform(flowDTO);
+        loadEntitiesToDtoAction.perform(flowDto);
+        handleSecuredLoanAction.perform(flowDto);
         // 4 - return response
-        prepareQasinoResponse(response, flowDTO);
-        model.addAttribute(flowDTO.getQasinoResponse());
+        prepareQasinoResponse(response, flowDto);
+        model.addAttribute(flowDto.getQasinoResponse());
         log.warn("PostMapping: /pawn");
         return "redirect:/visitor";
     }
@@ -180,21 +180,21 @@ public class VisitorThymeleafController extends AbstractThymeleafController {
             HttpServletResponse response
     ) {
         // 1 - map input
-        QasinoFlowDTO flowDTO = new QasinoFlowDTO();
-        flowDTO.setPathVariables("visitorId", String.valueOf(qasinoResponse.getPageVisitor().getSelectedVisitor().getVisitorId()), "repay", "true");
+        QasinoFlowDto flowDto = new QasinoFlowDto();
+        flowDto.setPathVariables("visitorId", String.valueOf(qasinoResponse.getPageVisitor().getSelectedVisitor().getVisitorId()), "repay", "true");
         // 2 - validate input
-        if (!flowDTO.isInputValid()) {
+        if (!flowDto.isInputValid()) {
             log.warn("Errors exist!!: {}", errors);
-            prepareQasinoResponse(response, flowDTO);
-            model.addAttribute(flowDTO.getQasinoResponse());
+            prepareQasinoResponse(response, flowDto);
+            model.addAttribute(flowDto.getQasinoResponse());
             return VISITOR_VIEW_LOCATION;
         }
         // 3 - process
-        loadEntitiesToDtoAction.perform(flowDTO);
-        handleSecuredLoanAction.perform(flowDTO);
+        loadEntitiesToDtoAction.perform(flowDto);
+        handleSecuredLoanAction.perform(flowDto);
         // 4 - return response
-        prepareQasinoResponse(response, flowDTO);
-        model.addAttribute(flowDTO.getQasinoResponse());
+        prepareQasinoResponse(response, flowDto);
+        model.addAttribute(flowDto.getQasinoResponse());
         log.warn("PostMapping: /repay");
 //        log.warn("Model: {}", model);
         return "redirect:/visitor";
@@ -209,25 +209,25 @@ public class VisitorThymeleafController extends AbstractThymeleafController {
             HttpServletResponse response
     ) {
         // 1 - map input
-        QasinoFlowDTO flowDTO = new QasinoFlowDTO();
-        flowDTO.setPathVariables("visitorId", String.valueOf(qasinoResponse.getPageVisitor().getSelectedVisitor().getVisitorId()));
+        QasinoFlowDto flowDto = new QasinoFlowDto();
+        flowDto.setPathVariables("visitorId", String.valueOf(qasinoResponse.getPageVisitor().getSelectedVisitor().getVisitorId()));
         // 2 - validate input
-        if (!flowDTO.isInputValid()) {
+        if (!flowDto.isInputValid()) {
             log.warn("Errors validateInput!!: {}", errors);
-            prepareQasinoResponse(response, flowDTO);
-            model.addAttribute(flowDTO.getQasinoResponse());
+            prepareQasinoResponse(response, flowDto);
+            model.addAttribute(flowDto.getQasinoResponse());
             return VISITOR_VIEW_LOCATION;
         }
         // 3 - process
-        result = loadEntitiesToDtoAction.perform(flowDTO);
+        result = loadEntitiesToDtoAction.perform(flowDto);
         if (!(FAILURE.equals(result))) {
-            flowDTO.prepareResponseHeaders();
-            visitorRepository.deleteById(flowDTO.getSuppliedVisitorId());
-            flowDTO.setSuppliedVisitorId(0);
+            flowDto.prepareResponseHeaders();
+            visitorRepository.deleteById(flowDto.getSuppliedVisitorId());
+            flowDto.setSuppliedVisitorId(0);
         }
         // 4 - return response
-        prepareQasinoResponse(response, flowDTO);
-        model.addAttribute(flowDTO.getQasinoResponse());
+        prepareQasinoResponse(response, flowDto);
+        model.addAttribute(flowDto.getQasinoResponse());
         log.warn("DeleteMapping: /visitor");
 //        log.warn("Model: {}", model);
         return "redirect:/logout";

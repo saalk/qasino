@@ -10,7 +10,7 @@ import java.util.Map;
 import java.util.Set;
 
 @Getter
-public enum Role implements LabeledEnum {
+public enum PlayerState implements LabeledEnum {
 
     @Column(name = "role", length = 25)
     INITIATOR("initiator"),
@@ -24,49 +24,49 @@ public enum Role implements LabeledEnum {
      * A static HashMap lookup with key + value is created to use in a getter
      * to fromLabel the Enum based on the name eg. key "Low" -> value AiLevel.DUMB
      */
-    public static final Map<String, Role> lookup
+    public static final Map<String, PlayerState> lookup
             = new HashMap<>();
     static {
-        for(Role role : EnumSet.allOf(Role.class))
-            lookup.put(role.getLabel(), role);
+        for(PlayerState playerState : EnumSet.allOf(PlayerState.class))
+            lookup.put(playerState.getLabel(), playerState);
     }
-    public static final Map<String, Role> roleMapNoError
+    public static final Map<String, PlayerState> roleMapNoError
             = new HashMap<>();
     static {
-        for(Role role : EnumSet.allOf(Role.class))
-            if (!role.getLabel().toLowerCase().equals("error"))
-                roleMapNoError.put(role.getLabel(), role);
+        for(PlayerState playerState : EnumSet.allOf(PlayerState.class))
+            if (!playerState.getLabel().toLowerCase().equals("error"))
+                roleMapNoError.put(playerState.getLabel(), playerState);
     }
 
     private String label;
 
-    Role() {
+    PlayerState() {
         this.label = "error";
     }
 
-    Role(String label) {
+    PlayerState(String label) {
         this();
         this.label = label;
     }
 
-    public static Role fromLabel(String inputLabel) {
+    public static PlayerState fromLabel(String inputLabel) {
         return lookup.get(inputLabel.toLowerCase());
     }
 
-    public static Role fromLabel(char character) {
+    public static PlayerState fromLabel(char character) {
         return fromLabel(Character.toString(character));
     }
 
-    public static Role fromLabelWithDefault(String label) {
-        Role role = fromLabel(label);
-        if (role == null) return Role.ERROR;
-        return role;
+    public static PlayerState fromLabelWithDefault(String label) {
+        PlayerState playerState = fromLabel(label);
+        if (playerState == null) return PlayerState.ERROR;
+        return playerState;
     }
 
-    public static Role fromLabelWithDefault(char character) {
+    public static PlayerState fromLabelWithDefault(char character) {
         return fromLabelWithDefault(Character.toString(character));
     }
 
-    public static Set<Role> roleListActivePlayer = EnumSet.of(INITIATOR, BOT, ACCEPTED);
+    public static Set<PlayerState> playerStateListActivePlayer = EnumSet.of(INITIATOR, BOT, ACCEPTED);
 
 }

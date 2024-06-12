@@ -4,7 +4,7 @@ import cloud.qasino.games.action.SignUpNewVisitorAction;
 import cloud.qasino.games.controller.AbstractThymeleafController;
 import cloud.qasino.games.database.security.MyUserDetailService;
 import cloud.qasino.games.database.security.MyUserPrincipal;
-import cloud.qasino.games.dto.QasinoFlowDTO;
+import cloud.qasino.games.dto.QasinoFlowDto;
 import cloud.qasino.games.exception.MyNPException;
 import cloud.qasino.games.response.QasinoResponse;
 import cloud.qasino.games.pattern.statemachine.event.EventOutput;
@@ -96,26 +96,26 @@ public class HomeSigninSignupThymeleafController extends AbstractThymeleafContro
         log.warn("GetMapping: /signin");
 
         // 1 - map input
-        QasinoFlowDTO flowDTO = new QasinoFlowDTO();
-        flowDTO.setPathVariables(
+        QasinoFlowDto flowDto = new QasinoFlowDto();
+        flowDto.setPathVariables(
                 "gameEvent", "sign_on"
         );
         // 2 - validate input
-        if (!flowDTO.isInputValid() || error != null) {
-            throw new MyNPException("103 gameEvent", "sign_on [" + flowDTO.getSuppliedUsername() + "]");
-//            prepareQasinoResponse(response, flowDTO);
-//            model.addAttribute(flowDTO.getQasinoResponse());
+        if (!flowDto.isInputValid() || error != null) {
+            throw new MyNPException("103 gameEvent", "sign_on [" + flowDto.getSuppliedUsername() + "]");
+//            prepareQasinoResponse(response, flowDto);
+//            model.addAttribute(flowDto.getQasinoResponse());
 //            return "redirect:/";
         }
         // 3 - process
         // 4 - return response
-        prepareQasinoResponse(response, flowDTO);
-        model.addAttribute(flowDTO.getQasinoResponse());
+        prepareQasinoResponse(response, flowDto);
+        model.addAttribute(flowDto.getQasinoResponse());
 
 //        log.warn("GetMapping: signin");
 //        log.warn("Model: {}", model);
 //        log.warn("error: {}", error);
-//        log.warn("qasinoResponse: {}", flowDTO.getQasinoResponse());
+//        log.warn("qasinoResponse: {}", flowDto.getQasinoResponse());
 
         return HOME_SIGNIN_VIEW_LOCATION;
     }
@@ -152,19 +152,19 @@ public class HomeSigninSignupThymeleafController extends AbstractThymeleafContro
         log.warn("GetMapping: /register");
 
         // 1 - map input
-        QasinoFlowDTO flowDTO = new QasinoFlowDTO();
+        QasinoFlowDto flowDto = new QasinoFlowDto();
         // 2 - validate input
         // 3 - process
         // 4 - return response
-        prepareQasinoResponse(response, flowDTO);
-        model.addAttribute(flowDTO.getQasinoResponse());
+        prepareQasinoResponse(response, flowDto);
+        model.addAttribute(flowDto.getQasinoResponse());
 //        model.addAttribute(new SignupForm());
 
 //        log.warn("GetMapping: signup");
 //        log.warn("HttpServletResponse: {}", response.getHeaderNames());
 //        log.warn("Model: {}", model);
 //        log.warn("String: {}",requestedWith);
-//        log.warn("qasinoResponse: {}", flowDTO.getQasinoResponse());
+//        log.warn("qasinoResponse: {}", flowDto.getQasinoResponse());
 
 
         if (AjaxUtils.isAjaxRequest(requestedWith)) {
@@ -184,35 +184,35 @@ public class HomeSigninSignupThymeleafController extends AbstractThymeleafContro
         log.warn("PostMapping: /register");
 
         // 1 - map input
-        QasinoFlowDTO flowDTO = new QasinoFlowDTO();
-        flowDTO.setPathVariables(
+        QasinoFlowDto flowDto = new QasinoFlowDto();
+        flowDto.setPathVariables(
                 "username", qasinoResponse.getPageVisitor().getSelectedVisitor().getUsername(),
                 "alias", qasinoResponse.getPageVisitor().getSelectedVisitor().getAlias(),
                 "email", qasinoResponse.getPageVisitor().getSelectedVisitor().getEmail(),
                 "password", qasinoResponse.getPageVisitor().getSelectedVisitor().getPassword());
         // 2 - validate input
-        if (!flowDTO.isInputValid() || errors.hasErrors()) {
+        if (!flowDto.isInputValid() || errors.hasErrors()) {
             log.warn("Errors exist!!: {}", errors);
-            log.warn("qasinoResponse: {}", flowDTO.getQasinoResponse());
+            log.warn("qasinoResponse: {}", flowDto.getQasinoResponse());
 
-            prepareQasinoResponse(response, flowDTO);
-//            flowDTO.setAction("Username incorrect");
-            model.addAttribute(flowDTO.getQasinoResponse());
+            prepareQasinoResponse(response, flowDto);
+//            flowDto.setAction("Username incorrect");
+            model.addAttribute(flowDto.getQasinoResponse());
 //            model.addAttribute(signupForm);
             return HOME_SIGNUP_VIEW_LOCATION;
         }
         // 3 - process
-        signUpNewVisitorAction.perform(flowDTO);
+        signUpNewVisitorAction.perform(flowDto);
         // 4 - return response
-        prepareQasinoResponse(response, flowDTO);
-        qasinoResponse = flowDTO.getQasinoResponse();
+        prepareQasinoResponse(response, flowDto);
+        qasinoResponse = flowDto.getQasinoResponse();
 
-        model.addAttribute(flowDTO.getQasinoResponse());
+        model.addAttribute(flowDto.getQasinoResponse());
 
 //        log.warn("PostMapping: signup");
 //        log.warn("SignupForm: {}", signupForm);
 //        log.warn("RedirectAttributes: {}", ra);
-//        log.warn("qasinoResponse: {}", flowDTO.getQasinoResponse());
+//        log.warn("qasinoResponse: {}", flowDto.getQasinoResponse());
 
         // see /WEB-INF/i18n/messages.properties and /WEB-INF/views/homeSignedIn.html
         MessageHelper.addSuccessAttribute(ra, "signup.success");
@@ -228,24 +228,24 @@ public class HomeSigninSignupThymeleafController extends AbstractThymeleafContro
         log.warn("GetMapping: /");
 
         // 1 - map input
-        QasinoFlowDTO flowDTO = new QasinoFlowDTO();
-        if (principal != null) flowDTO.setPathVariables("username", principal.getName());
+        QasinoFlowDto flowDto = new QasinoFlowDto();
+        if (principal != null) flowDto.setPathVariables("username", principal.getName());
         // 2 - validate input
-        if (!flowDTO.isInputValid()) {
-            prepareQasinoResponse(response, flowDTO);
-//            flowDTO.setAction("Username incorrect");
-            model.addAttribute(flowDTO.getQasinoResponse());
+        if (!flowDto.isInputValid()) {
+            prepareQasinoResponse(response, flowDto);
+//            flowDto.setAction("Username incorrect");
+            model.addAttribute(flowDto.getQasinoResponse());
             return principal != null ? HOME_SIGNED_IN_LOCATION : HOME_NOT_SIGNED_IN_LOCATION;
         }
         // 3 - process
         // 4 - return response
-        prepareQasinoResponse(response, flowDTO);
-        model.addAttribute(flowDTO.getQasinoResponse());
+        prepareQasinoResponse(response, flowDto);
+        model.addAttribute(flowDto.getQasinoResponse());
 
 //        log.warn("Principal: {}", principal);
 //        log.warn("HttpServletResponse: {}", response.getHeaderNames());
 //        log.warn("Model: {}", model);
-//        log.warn("qasinoResponse: {}", flowDTO.getQasinoResponse());
+//        log.warn("qasinoResponse: {}", flowDto.getQasinoResponse());
 
         return principal != null ? HOME_SIGNED_IN_LOCATION : HOME_NOT_SIGNED_IN_LOCATION;
     }

@@ -1,20 +1,19 @@
 package cloud.qasino.games.database.service;
 
-import cloud.qasino.games.database.repository.PlayerRepository;
+import cloud.qasino.games.database.repository.LeagueRepository;
 import cloud.qasino.games.database.security.Privilege;
 import cloud.qasino.games.database.security.PrivilegeRepository;
 import cloud.qasino.games.database.security.Role;
 import cloud.qasino.games.database.security.RoleRepository;
 import cloud.qasino.games.database.security.Visitor;
 import cloud.qasino.games.database.security.VisitorRepository;
-import cloud.qasino.games.dto.VisitorDTO;
+import cloud.qasino.games.dto.VisitorDto;
 import cloud.qasino.games.dto.mapper.VisitorMapper;
 import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.repository.Query;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,54 +27,57 @@ import java.util.Optional;
 
 @Service
 @Slf4j
-public class VisitorService {
+public class VisitorAndLeaguesService {
 
     // @formatter:off
     @Autowired private VisitorRepository visitorRepository;
     @Autowired private RoleRepository roleRepository;
     @Autowired private PrivilegeRepository privilegeRepository;
-    @Autowired private PlayerRepository playerRepository;
+    @Autowired private LeagueRepository leagueRepository;
     VisitorMapper visitorMapper;
+//    LeagueMapper leagueMapper;
+
     private PasswordEncoder encoder;
 
-    public VisitorService(PasswordEncoder passwordEncoder) {
+
+    public VisitorAndLeaguesService(PasswordEncoder passwordEncoder) {
         this.encoder = passwordEncoder;
     }
 
     // counts
-    Long countByAlias(VisitorDTO visitorDTO) {
-        return visitorRepository.countByAlias(visitorDTO.getAlias());
+    Long countByAlias(VisitorDto visitorDto) {
+        return visitorRepository.countByAlias(visitorDto.getAlias());
     };
 
     // find one
-    VisitorDTO findByUsername(VisitorDTO visitorDTO){
-        Visitor retrievedVisitor = visitorRepository.findByUsername(visitorDTO.getUsername());
-        return visitorMapper.visitorToVisitorDTO(retrievedVisitor);
+    VisitorDto findByUsername(VisitorDto visitorDto){
+        Visitor retrievedVisitor = visitorRepository.findByUsername(visitorDto.getUsername());
+        return visitorMapper.visitorToVisitorDto(retrievedVisitor);
     };
-    VisitorDTO findOneByVisitorId(VisitorDTO visitorDTO) {
-        Visitor retrievedVisitor = visitorRepository.findOneByVisitorId(visitorDTO.getVisitorId());
-        return visitorMapper.visitorToVisitorDTO(retrievedVisitor);
+    VisitorDto findOneByVisitorId(VisitorDto visitorDto) {
+        Visitor retrievedVisitor = visitorRepository.findOneByVisitorId(visitorDto.getVisitorId());
+        return visitorMapper.visitorToVisitorDto(retrievedVisitor);
     };
-    VisitorDTO findOneByEmail(VisitorDTO visitorDTO) {
-        Visitor retrievedVisitor = visitorRepository.findOneByEmail(visitorDTO.getEmail());
-        return visitorMapper.visitorToVisitorDTO(retrievedVisitor);
+    VisitorDto findOneByEmail(VisitorDto visitorDto) {
+        Visitor retrievedVisitor = visitorRepository.findOneByEmail(visitorDto.getEmail());
+        return visitorMapper.visitorToVisitorDto(retrievedVisitor);
     }
-    Optional<VisitorDTO> findVisitorByAliasAndAliasSequence(VisitorDTO visitorDTO){
-        Optional<Visitor> retrievedVisitor = visitorRepository.findVisitorByAliasAndAliasSequence(visitorDTO.getAlias(),visitorDTO.getAliasSequence());
+    Optional<VisitorDto> findVisitorByAliasAndAliasSequence(VisitorDto visitorDto){
+        Optional<Visitor> retrievedVisitor = visitorRepository.findVisitorByAliasAndAliasSequence(visitorDto.getAlias(),visitorDto.getAliasSequence());
         return Optional.ofNullable(retrievedVisitor)
                 .filter(Optional::isPresent) // lambda is => visitor -> visitor.isPresent()
-                .map(visitor -> visitorMapper.visitorToVisitorDTO(visitor.get()));
+                .map(visitor -> visitorMapper.visitorToVisitorDto(visitor.get()));
     };
 
     // find many
-    Page<VisitorDTO> findAllVisitorsWithPage(Pageable pageable){
+    Page<VisitorDto> findAllVisitorsWithPage(Pageable pageable){
         Page<Visitor> visitorPage = visitorRepository.findAllVisitorsWithPage(pageable);
-        return visitorPage.map(visitor -> visitorMapper.visitorToVisitorDTO(visitor));
+        return visitorPage.map(visitor -> visitorMapper.visitorToVisitorDto(visitor));
     };
 
     // delete
-    void removeUserByUsername(VisitorDTO visitorDTO) {
-        visitorRepository.removeUserByUsername(visitorDTO.getUsername());
+    void removeUserByUsername(VisitorDto visitorDto) {
+        visitorRepository.removeUserByUsername(visitorDto.getUsername());
     };
 
     // special
@@ -86,24 +88,24 @@ public class VisitorService {
     }
 
     @Transactional
-    public VisitorDTO saveNewUser(VisitorDTO userDTO) {
+    public VisitorDto saveNewUser(VisitorDto userDto) {
         final Role basicRole = roleRepository.findByName("ROLE_USER");
-        userDTO.setRoles(Collections.singleton(basicRole));
-        userDTO.setPassword(encoder.encode(userDTO.getPassword()));
-        Visitor visitor = visitorMapper.visitorDTOToVisitor(userDTO);
+        userDto.setRoles(Collections.singleton(basicRole));
+        userDto.setPassword(encoder.encode(userDto.getPassword()));
+        Visitor visitor = visitorMapper.visitorDtoToVisitor(userDto);
         Visitor savedVisitor = visitorRepository.save(visitor);
         Visitor retrievedVisitor = visitorRepository.getReferenceById(savedVisitor.getVisitorId());
-        return visitorMapper.visitorToVisitorDTO(retrievedVisitor);
+        return visitorMapper.visitorToVisitorDto(retrievedVisitor);
     }
     @Transactional
-    public VisitorDTO saveNewAdmin(VisitorDTO adminDTO) {
+    public VisitorDto saveNewAdmin(VisitorDto adminDto) {
         final Role adminRole = roleRepository.findByName("ROLE_ADMIN");
-        adminDTO.setRoles(Collections.singleton(adminRole));
-        adminDTO.setPassword(encoder.encode(adminDTO.getPassword()));
-        Visitor visitor = visitorMapper.visitorDTOToVisitor(adminDTO);
+        adminDto.setRoles(Collections.singleton(adminRole));
+        adminDto.setPassword(encoder.encode(adminDto.getPassword()));
+        Visitor visitor = visitorMapper.visitorDtoToVisitor(adminDto);
         Visitor savedVisitor = visitorRepository.save(visitor);
         Visitor retrievedVisitor = visitorRepository.getReferenceById(savedVisitor.getVisitorId());
-        return visitorMapper.visitorToVisitorDTO(retrievedVisitor);
+        return visitorMapper.visitorToVisitorDto(retrievedVisitor);
     }
 
     @PostConstruct
@@ -161,8 +163,8 @@ public class VisitorService {
     public void createUserIfNotFound(Visitor search) {
         Visitor user = visitorRepository.findByUsername(search.getUsername());
         if (user == null) {
-            VisitorDTO visitorDTO = visitorMapper.visitorToVisitorDTO(user);
-            saveNewUser(visitorDTO);
+            VisitorDto visitorDto = visitorMapper.visitorToVisitorDto(user);
+            saveNewUser(visitorDto);
         }
         log.warn("createUserIfNotFound: {}",user);
     }
@@ -170,8 +172,8 @@ public class VisitorService {
     public void createAdminIfNotFound(Visitor search) {
         Visitor admin = visitorRepository.findByUsername(search.getUsername());
         if (admin == null) {
-            VisitorDTO visitorDTO = visitorMapper.visitorToVisitorDTO(admin);
-            saveNewAdmin(visitorDTO);
+            VisitorDto visitorDto = visitorMapper.visitorToVisitorDto(admin);
+            saveNewAdmin(visitorDto);
         }
         log.warn("createAdminIfNotFound: {}",admin);
     }

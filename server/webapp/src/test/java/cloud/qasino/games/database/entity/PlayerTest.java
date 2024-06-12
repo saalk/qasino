@@ -1,7 +1,5 @@
 package cloud.qasino.games.database.entity;
 
-import cloud.qasino.games.database.entity.enums.player.AiLevel;
-import cloud.qasino.games.database.entity.enums.player.Role;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;

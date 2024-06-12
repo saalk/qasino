@@ -2,9 +2,9 @@ package cloud.qasino.games.orchestration.interfaces;
 
 import cloud.qasino.games.pattern.statemachine.event.EventOutput;
 import cloud.qasino.games.pattern.statemachine.event.interfaces.AbstractEvent;
-import cloud.qasino.games.pattern.statemachine.event.interfaces.AbstractFlowDTO;
+import cloud.qasino.games.pattern.statemachine.event.interfaces.AbstractFlowDto;
 
-public abstract class StatelessCheck<T extends AbstractFlowDTO> extends AbstractEvent {
+public abstract class StatelessCheck<T extends AbstractFlowDto> extends AbstractEvent {
     @SuppressWarnings("unchecked")
     @Override
     protected EventOutput execution(final Object... eventOutput) {

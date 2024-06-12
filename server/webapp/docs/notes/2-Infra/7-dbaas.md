@@ -29,8 +29,8 @@ Production exercise disaster recovery = PEDR
   when your database belongs to a ring number it will be automatically patched initiated by the provider DBaaS.
 
 ## PDBADMIN
-NPA administrator role for DBaaS is managed by Tech PL Privilege Management Squad. 
-For that role a new assignment group was created in SNOW: Tech/Infra/ITSecurity/IAM/DBaaS_PWV.
+NPA administrator playerState for DBaaS is managed by Tech PL Privilege Management Squad. 
+For that playerState a new assignment group was created in SNOW: Tech/Infra/ITSecurity/IAM/DBaaS_PWV.
 
 
 

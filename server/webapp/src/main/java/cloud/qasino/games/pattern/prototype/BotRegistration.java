@@ -1,11 +1,6 @@
 package cloud.qasino.games.pattern.prototype;
 
-import cloud.qasino.games.database.entity.Game;
-import cloud.qasino.games.database.entity.Player;
 import cloud.qasino.games.database.entity.enums.player.AiLevel;
-import cloud.qasino.games.database.entity.enums.player.Avatar;
-import cloud.qasino.games.database.entity.enums.player.Role;
-import cloud.qasino.games.database.security.Visitor;
 
 import java.util.Hashtable;
 

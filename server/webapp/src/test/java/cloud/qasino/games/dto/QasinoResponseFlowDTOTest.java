@@ -13,13 +13,13 @@ import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-class QasinoResponseFlowDTOTest {
+class QasinoResponseFlowDtoTest {
 
     @Mock
     ServletUriComponentsBuilder servletUriComponentsBuilder;
 
     @Mock
-    QasinoFlowDTO flow;
+    QasinoFlowDto flow;
 
     @Test
     void callProcessPathDataOK() {
@@ -34,7 +34,7 @@ class QasinoResponseFlowDTOTest {
         Map<String, String> tester = new HashMap<>();
         tester.put("repayloan", "true");
 
-        QasinoFlowDTO flow = new QasinoFlowDTO();
+        QasinoFlowDto flow = new QasinoFlowDto();
         flow.setRequestParams(tester);
         boolean result = flow.isInputValid();
 

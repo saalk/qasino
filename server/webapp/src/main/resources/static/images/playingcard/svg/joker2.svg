@@ -135,7 +135,7 @@
            y="10.096503"
            x="-871.20233"
            id="tspan4369"
-           sodipodi:role="line">Joker</tspan></text>
+           sodipodi:playerState="line">Joker</tspan></text>
       <text
          sodipodi:linespacing="125%"
          id="text6386"
@@ -147,20 +147,20 @@
            y="229.9072"
            x="-837.50726"
            id="tspan6388"
-           sodipodi:role="line">Vectorized Playing Cards 2.0</tspan><tspan
+           sodipodi:playerState="line">Vectorized Playing Cards 2.0</tspan><tspan
            style="font-size:6.25px;fill:#0000ff;fill-opacity:1"
            id="tspan6394"
            y="237.7197"
            x="-837.50726"
-           sodipodi:role="line">http://sourceforge.net/projects/vector-playingCards</tspan><tspan
+           sodipodi:playerState="line">http://sourceforge.net/projects/vector-playingCards</tspan><tspan
            id="tspan6390"
            y="245.5322"
            x="-837.50726"
-           sodipodi:role="line"> Copyright 2015 - Chris Aguilar - conjurenation@gmail.com</tspan><tspan
+           sodipodi:playerState="line"> Copyright 2015 - Chris Aguilar - conjurenation@gmail.com</tspan><tspan
            id="tspan6392"
            y="253.3447"
            x="-837.50726"
-           sodipodi:role="line"> Licensed under LGPL 3 - www.gnu.org/copyleft/lesser.html</tspan></text>
+           sodipodi:playerState="line"> Licensed under LGPL 3 - www.gnu.org/copyleft/lesser.html</tspan></text>
     </g>
   </g>
 </svg>

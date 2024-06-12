@@ -11,7 +11,7 @@ import cloud.qasino.games.pattern.statemachine.event.EventOutput;
  * @param <OUTPUT>
  */
 @Deprecated
-public abstract class AbstractEvent<INPUT extends AbstractFlowDTO, OUTPUT> implements Action<INPUT, ActionOutput<OUTPUT>> {
+public abstract class AbstractEvent<INPUT extends AbstractFlowDto, OUTPUT> implements Action<INPUT, ActionOutput<OUTPUT>> {
 
     protected abstract EventOutput execution(Object... eventOutput);
 

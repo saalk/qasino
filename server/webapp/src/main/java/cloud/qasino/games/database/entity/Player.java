@@ -2,12 +2,11 @@ package cloud.qasino.games.database.entity;
 
 import cloud.qasino.games.database.entity.enums.player.AiLevel;
 import cloud.qasino.games.database.entity.enums.player.Avatar;
-import cloud.qasino.games.database.entity.enums.player.Role;
+import cloud.qasino.games.database.entity.enums.player.PlayerState;
 import cloud.qasino.games.database.security.Visitor;
 import com.fasterxml.jackson.annotation.*;
 import com.voodoodyne.jackson.jsog.JSOGGenerator;
 import lombok.AccessLevel;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.DynamicUpdate;
@@ -66,7 +65,7 @@ public class Player {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "role", nullable = false, length = 20)
-    private Role role;
+    private PlayerState playerState;
 
     @Column(name = "fiches")
     private int fiches;
@@ -113,11 +112,11 @@ public class Player {
         this.seat = 1;
     }
 
-    public Player(Visitor visitor, Game game, Role role, int fiches, int seat, Avatar avatar, String avatarName, AiLevel aiLevel) {
+    public Player(Visitor visitor, Game game, PlayerState playerState, int fiches, int seat, Avatar avatar, String avatarName, AiLevel aiLevel) {
         this();
         this.visitor = visitor;
         this.game = game;
-        this.role = role;
+        this.playerState = playerState;
 
         this.fiches = fiches;
         this.seat = seat;
@@ -136,15 +135,15 @@ public class Player {
     public static Player buildDummyBot(Game game, Avatar avatar, AiLevel aiLevel) {
         if (avatar == null) avatar = Avatar.GOBLIN;
         if (aiLevel == null) aiLevel = AiLevel.AVERAGE;
-        return new Player(null, game, Role.BOT, 99, 99, avatar, "avatarName", aiLevel);
+        return new Player(null, game, PlayerState.BOT, 99, 99, avatar, "avatarName", aiLevel);
     }
     public static Player buildDummyHuman(Visitor visitor, Game game, Avatar avatar) {
         if (avatar == null) avatar = Avatar.GOBLIN;
-        return new Player(visitor, game, Role.INITIATOR,99, 99, avatar, "avatarName", AiLevel.HUMAN);
+        return new Player(visitor, game, PlayerState.INITIATOR,99, 99, avatar, "avatarName", AiLevel.HUMAN);
     }
     public static Player buildDummyInvitee(Visitor visitor, Game game, Avatar avatar) {
         if (avatar == null) avatar = Avatar.GOBLIN;
-        return new Player(visitor, game, Role.INVITED,99, 99, avatar, "avatarName", AiLevel.HUMAN);
+        return new Player(visitor, game, PlayerState.INVITED,99, 99, avatar, "avatarName", AiLevel.HUMAN);
     }
 
     public void setAiLevel(AiLevel aiLevel) {
@@ -176,7 +175,7 @@ public class Player {
                 ", visitorId=" + (this.visitor == null? "": this.visitor.getVisitorId()) +
                 ", gameId=" + (this.game == null? "": this.game.getGameId()) +
                 ", human=" + this.human +
-                ", role=" + (this.role == null ? "": this.role.getLabel()) +
+                ", role=" + (this.playerState == null ? "": this.playerState.getLabel()) +
                 ", fiches=" + this.fiches +
                 ", seat=" + this.seat +
                 ", avatar=" + this.avatar +

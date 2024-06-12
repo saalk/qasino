@@ -5,7 +5,7 @@ import cloud.qasino.games.database.entity.Card;
 import cloud.qasino.games.database.entity.Game;
 import cloud.qasino.games.database.entity.Player;
 import cloud.qasino.games.database.entity.Turn;
-import cloud.qasino.games.database.entity.enums.player.Role;
+import cloud.qasino.games.database.entity.enums.player.PlayerState;
 import cloud.qasino.games.database.security.Visitor;
 import cloud.qasino.games.response.view.SectionSeat;
 import cloud.qasino.games.response.view.SectionTable;
@@ -79,7 +79,7 @@ public class MapQasinoGameTableFromDtoAction implements Action<MapQasinoGameTabl
             // todo which one to choose
 //            seat.setSeatPlayerTheInitiator(player.getPlayerId() ==
 //                    actionDto.getQasinoGame().getInitiator());
-            seat.setSeatPlayerTheInitiator(player.getRole() == Role.INITIATOR);
+            seat.setSeatPlayerTheInitiator(player.getPlayerState() == PlayerState.INITIATOR);
             // player stats
             seat.setSeatPlayerId(player.getPlayerId());
             seat.setSeatPlayer(player);

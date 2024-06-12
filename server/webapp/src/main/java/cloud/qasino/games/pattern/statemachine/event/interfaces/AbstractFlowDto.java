@@ -7,7 +7,7 @@ import lombok.Setter;
 
 @Setter
 @Getter
-public abstract class AbstractFlowDTO { //implements FlowEventCallback {
+public abstract class AbstractFlowDto { //implements FlowEventCallback {
 
     private String gameId;
     private String visitorId;
@@ -16,7 +16,7 @@ public abstract class AbstractFlowDTO { //implements FlowEventCallback {
     private Event currentTurnEvent;
     private EventHandlingResponse eventHandlingResponse;
 
-    public AbstractFlowDTO() {
+    public AbstractFlowDto() {
     }
     public void updateState(final GameState newState) {
         throw new IllegalStateException("Unable to update state");
