@@ -55,7 +55,8 @@ public class PlayNextHumanTurnAction implements Action<PlayNextHumanTurnAction.D
             case HIGHER -> {
                 activeMove = Move.HIGHER;
                 // update round +1 start with turn 0
-                activeTurn.setCurrentTurnNumber(activeTurn.getCurrentTurnNumber() + 1);
+                activeTurn.setCurrentMoveNumber(activeTurn.getCurrentMoveNumber() + 1);
+                activeTurn.setCurrentSeatNumber(activePlayer.getSeat());
                 activeTurn = turnAndCardMoveService.dealCardToPlayer(
                         actionDto.getQasinoGame(),
                         activeTurn,
@@ -67,7 +68,8 @@ public class PlayNextHumanTurnAction implements Action<PlayNextHumanTurnAction.D
             }
             case LOWER -> {
                 activeMove = Move.LOWER;
-                activeTurn.setCurrentTurnNumber(activeTurn.getCurrentTurnNumber() + 1);
+                activeTurn.setCurrentMoveNumber(activeTurn.getCurrentMoveNumber() + 1);
+                activeTurn.setCurrentSeatNumber(activePlayer.getSeat());
                 activeTurn = turnAndCardMoveService.dealCardToPlayer(
                         actionDto.getQasinoGame(),
                         activeTurn,
@@ -89,7 +91,8 @@ public class PlayNextHumanTurnAction implements Action<PlayNextHumanTurnAction.D
                 // update round +1 start with turn 1 and move to next player
                 activeMove = Move.DEAL;
                 activeTurn.setCurrentRoundNumber(activeTurn.getCurrentRoundNumber() + 1);
-                activeTurn.setCurrentTurnNumber(1);
+                activeTurn.setCurrentSeatNumber(activePlayer.getSeat());
+                activeTurn.setCurrentMoveNumber(1);
                 activeTurn = turnAndCardMoveService.dealCardToPlayer(
                         actionDto.getQasinoGame(),
                         activeTurn,
@@ -122,17 +125,17 @@ public class PlayNextHumanTurnAction implements Action<PlayNextHumanTurnAction.D
     private static void isRoundEqualToRoundsToWin(Dto actionDto, Game activeGame, Turn activeTurn) {
         switch (Style.fromLabelWithDefault(activeGame.getStyle()).getRoundsToWin()){
             case ONE_ROUND -> {
-                if (activeTurn.getCurrentRoundNumber() == 1) {
-                    actionDto.setSuppliedTurnEvent(TurnEvent.END_GAME);
-                }
-            }
-            case TWO_ROUNDS -> {
                 if (activeTurn.getCurrentRoundNumber() == 2) {
                     actionDto.setSuppliedTurnEvent(TurnEvent.END_GAME);
                 }
             }
-            case THREE_ROUNDS -> {
+            case TWO_ROUNDS -> {
                 if (activeTurn.getCurrentRoundNumber() == 3) {
+                    actionDto.setSuppliedTurnEvent(TurnEvent.END_GAME);
+                }
+            }
+            case THREE_ROUNDS -> {
+                if (activeTurn.getCurrentRoundNumber() == 4) {
                     actionDto.setSuppliedTurnEvent(TurnEvent.END_GAME);
                 }
             }
@@ -141,17 +144,17 @@ public class PlayNextHumanTurnAction implements Action<PlayNextHumanTurnAction.D
     private static void isTurnEqualToTurnsToWin(Dto actionDto, Game activeGame, Turn activeTurn) {
         switch (Style.fromLabelWithDefault(activeGame.getStyle()).getTurnsToWin()){
             case ONE_WINS -> {
-                if (activeTurn.getCurrentTurnNumber() == 1) {
+                if (activeTurn.getCurrentMoveNumber() == 2) {
                     actionDto.setSuppliedTurnEvent(TurnEvent.END_GAME);
                 }
             }
             case TWO_IN_A_ROW_WINS -> {
-                if (activeTurn.getCurrentTurnNumber() == 2) {
+                if (activeTurn.getCurrentMoveNumber() == 3) {
                     actionDto.setSuppliedTurnEvent(TurnEvent.END_GAME);
                 }
             }
             case THREE_IN_A_ROW_WINS -> {
-                if (activeTurn.getCurrentTurnNumber() == 3) {
+                if (activeTurn.getCurrentMoveNumber() == 4) {
                     actionDto.setSuppliedTurnEvent(TurnEvent.END_GAME);
                 }
             }

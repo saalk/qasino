@@ -60,7 +60,7 @@ public class PlayNextBotTurnAction implements Action<PlayNextBotTurnAction.Dto, 
         // - SMART = two smart moves than pass
         // - AVERAGE = one smart and one guess move than pass
 
-        int turn = activeTurn.getCurrentTurnNumber();
+        int turn = activeTurn.getCurrentMoveNumber();
         switch (actionDto.getTurnPlayer().getAiLevel()) {
             case DUMB -> {
                 if (turn >= 3) {
@@ -113,7 +113,8 @@ public class PlayNextBotTurnAction implements Action<PlayNextBotTurnAction.Dto, 
         switch (activeMove) {
             case HIGHER -> {
                 // update round +1 start with turn 0
-                activeTurn.setCurrentTurnNumber(activeTurn.getCurrentTurnNumber() + 1);
+                activeTurn.setCurrentMoveNumber(activeTurn.getCurrentMoveNumber() + 1);
+                activeTurn.setCurrentSeatNumber(activePlayer.getSeat());
                 activeTurn = turnAndCardMoveService.dealCardToPlayer(
                         actionDto.getQasinoGame(),
                         activeTurn,
@@ -124,7 +125,8 @@ public class PlayNextBotTurnAction implements Action<PlayNextBotTurnAction.Dto, 
                         1);
             }
             case LOWER -> {
-                activeTurn.setCurrentTurnNumber(activeTurn.getCurrentTurnNumber() + 1);
+                activeTurn.setCurrentMoveNumber(activeTurn.getCurrentMoveNumber() + 1);
+                activeTurn.setCurrentSeatNumber(activePlayer.getSeat());
                 activeTurn = turnAndCardMoveService.dealCardToPlayer(
                         actionDto.getQasinoGame(),
                         activeTurn,
@@ -147,7 +149,8 @@ public class PlayNextBotTurnAction implements Action<PlayNextBotTurnAction.Dto, 
                 }
                 // update round +1 start with turn 0
                 activeTurn.setCurrentRoundNumber(activeTurn.getCurrentRoundNumber() + 1);
-                activeTurn.setCurrentTurnNumber(1);
+                activeTurn.setCurrentSeatNumber(activePlayer.getSeat());
+                activeTurn.setCurrentMoveNumber(1);
                 activeTurn = turnAndCardMoveService.dealCardToPlayer(
                         actionDto.getQasinoGame(),
                         activeTurn,
@@ -199,17 +202,17 @@ public class PlayNextBotTurnAction implements Action<PlayNextBotTurnAction.Dto, 
     private static void isTurnEqualToTurnsToWin(PlayNextBotTurnAction.Dto actionDto, Game activeGame, Turn activeTurn) {
         switch (Style.fromLabelWithDefault(activeGame.getStyle()).getTurnsToWin()){
             case ONE_WINS -> {
-                if (activeTurn.getCurrentTurnNumber() == 1) {
+                if (activeTurn.getCurrentMoveNumber() == 1) {
                     actionDto.setSuppliedTurnEvent(TurnEvent.END_GAME);
                 }
             }
             case TWO_IN_A_ROW_WINS -> {
-                if (activeTurn.getCurrentTurnNumber() == 2) {
+                if (activeTurn.getCurrentMoveNumber() == 2) {
                     actionDto.setSuppliedTurnEvent(TurnEvent.END_GAME);
                 }
             }
             case THREE_IN_A_ROW_WINS -> {
-                if (activeTurn.getCurrentTurnNumber() == 3) {
+                if (activeTurn.getCurrentMoveNumber() == 3) {
                     actionDto.setSuppliedTurnEvent(TurnEvent.END_GAME);
                 }
             }

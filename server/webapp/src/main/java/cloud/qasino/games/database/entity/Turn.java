@@ -5,7 +5,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.voodoodyne.jackson.jsog.JSOGGenerator;
 import lombok.AccessLevel;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.DynamicUpdate;
@@ -60,12 +59,15 @@ public class Turn {
     @Column(name = "current_round_number", nullable = true)
     private int currentRoundNumber;
 
-    @Column(name = "current_turn_number", nullable = true)
-    @Setter(AccessLevel.NONE)
-    private int currentTurnNumber;
+    @Column(name = "current_seat_number", nullable = true)
+    private int currentSeatNumber;
 
-    public void setCurrentTurnNumber(int currentTurnNumber) {
-        this.currentTurnNumber = currentTurnNumber;
+    @Column(name = "current_move_number", nullable = true)
+    @Setter(AccessLevel.NONE)
+    private int currentMoveNumber;
+
+    public void setCurrentMoveNumber(int currentMoveNumber) {
+        this.currentMoveNumber = currentMoveNumber;
         setUpdated();
     }
 
@@ -106,7 +108,8 @@ public class Turn {
         this.activePlayerId = playerId;
 
         this.currentRoundNumber = 1;
-        this.currentTurnNumber = 1;
+        this.currentSeatNumber = 1;
+        this.currentMoveNumber = 1;
 
     }
 
@@ -142,7 +145,8 @@ public class Turn {
                 "turnId=" + this.turnId +
                 ", activePlayerId=" + (this.activePlayerId) +
                 ", currentRoundNumber=" + this.currentRoundNumber +
-                ", currentTurnNumber=" + this.currentTurnNumber +
+                ", currentSeatNumber=" + this.currentSeatNumber +
+                ", currentTurnNumber=" + this.currentMoveNumber +
                 ", gameId=" + (this.game == null? "": this.game.getGameId()) +
                 ", weekday=" + this.weekday +
                 ")";

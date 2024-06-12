@@ -40,7 +40,7 @@ public class TurnAndCardMoveService {
         }
         // 2: create a CardMove
         int roundNo = activeTurn.getCurrentRoundNumber();
-        int turnNo = activeTurn.getCurrentTurnNumber();
+        int turnNo = activeTurn.getCurrentMoveNumber();
         int seatNo = humanOrBot.getSeat();
         String details = topCardInStock.getRankSuit();
         CardMove newMove = new CardMove(

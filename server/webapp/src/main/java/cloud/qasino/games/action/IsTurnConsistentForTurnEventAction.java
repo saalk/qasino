@@ -55,10 +55,10 @@ public class IsTurnConsistentForTurnEventAction implements Action<IsTurnConsiste
     }
 
     private boolean turnShouldHaveCurrentMoveNumberNotZero(Dto actionDto) {
-        if (actionDto.getActiveTurn().getCurrentTurnNumber() <= 0) {
+        if (actionDto.getActiveTurn().getCurrentMoveNumber() <= 0) {
             log.warn("!moveNumber");
             setUnprocessableErrorMessage(actionDto, "Action [" + actionDto.getSuppliedTurnEvent() +
-                    "] invalid - turn has incorrect number of " + actionDto.getActiveTurn().getCurrentTurnNumber()
+                    "] invalid - turn has incorrect number of " + actionDto.getActiveTurn().getCurrentMoveNumber()
             );
             return false;
         }
