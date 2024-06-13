@@ -9,11 +9,13 @@ import cloud.qasino.games.database.entity.enums.card.Face;
 import cloud.qasino.games.database.entity.enums.card.Location;
 import cloud.qasino.games.database.entity.enums.game.Type;
 import cloud.qasino.games.database.entity.enums.move.Move;
+import cloud.qasino.games.database.repository.GameRepository;
+import cloud.qasino.games.database.repository.TurnRepository;
 import cloud.qasino.games.database.service.TurnAndCardMoveService;
-import cloud.qasino.games.response.view.SectionTable;
 import cloud.qasino.games.pattern.statemachine.event.EventOutput;
 import cloud.qasino.games.pattern.statemachine.event.GameEvent;
 import cloud.qasino.games.pattern.statemachine.event.TurnEvent;
+import cloud.qasino.games.response.view.SectionTable;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -26,6 +28,10 @@ public class PlayFirstTurnAction implements Action<PlayFirstTurnAction.Dto, Even
 
     @Autowired
     TurnAndCardMoveService turnAndCardMoveService;
+    @Autowired
+    private TurnRepository turnRepository;
+    @Autowired
+    private GameRepository gameRepository;
 
     @Override
     public EventOutput.Result perform(Dto actionDto) {
@@ -35,6 +41,7 @@ public class PlayFirstTurnAction implements Action<PlayFirstTurnAction.Dto, Even
             return EventOutput.Result.FAILURE;
         }
 
+        // 1. make a turn, find the first player
         if (actionDto.getSuppliedTurnPlayerId() == 0) {
             actionDto.setSuppliedTurnPlayerId(
                     actionDto.getQasinoGamePlayers()
@@ -47,19 +54,20 @@ public class PlayFirstTurnAction implements Action<PlayFirstTurnAction.Dto, Even
                             .filter(p -> p.getSeat() == 1)
                             .findFirst().get());
         }
-        Turn activeTurn = turnAndCardMoveService.dealCardToPlayer(
+        Turn firstTurn = new Turn(actionDto.getQasinoGame(), actionDto.getTurnPlayer().getPlayerId());
+        turnRepository.save(firstTurn);
+        actionDto.setQasinoGame(gameRepository.getReferenceById(actionDto.getQasinoGame().getGameId()));
+
+        boolean cardDealt = turnAndCardMoveService.dealCardToPlayer(
                 actionDto.getQasinoGame(),
-                null,
-                actionDto.getTurnPlayer(),
                 Move.DEAL,
                 Face.UP,
                 Location.HAND,
                 1);
-        actionDto.setActiveTurn(activeTurn); // can be null
-        actionDto.setSuppliedTurnPlayerId(activeTurn.getActivePlayerId()); // can be null
+        actionDto.setActiveTurn(firstTurn); // can be null
         actionDto.setAllCardMovesForTheGame(turnAndCardMoveService.getCardMovesForGame(actionDto.getQasinoGame())); // can be null
 
-        return EventOutput.Result.SUCCESS;
+        return cardDealt ? EventOutput.Result.SUCCESS : EventOutput.Result.FAILURE;
     }
 
     private void setBadRequestErrorMessage(Dto actionDto, String id, String value) {

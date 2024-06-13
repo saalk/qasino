@@ -127,7 +127,7 @@ public class PlayerService {
     public PlayerDto addBotPlayerToAGame(GameDto gameDto, Avatar avatar, AiLevel aiLevel) {
         Game game = gameMapper.gameDtoToGame(gameDto);
 
-        if (aiLevel != null && aiLevel == AiLevel.HUMAN) {
+        if (aiLevel == AiLevel.HUMAN) {
             throw new MyBusinessException("addBotPlayerToAGame", "this aiLevel cannot become a bot player [" + aiLevel + "]");
         }
         List<Player> allPlayersForTheGame = playerRepository.findByGame(game);

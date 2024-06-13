@@ -10,6 +10,7 @@ import cloud.qasino.games.database.entity.enums.card.Location;
 import cloud.qasino.games.database.entity.enums.game.Style;
 import cloud.qasino.games.database.entity.enums.game.Type;
 import cloud.qasino.games.database.entity.enums.move.Move;
+import cloud.qasino.games.database.repository.TurnRepository;
 import cloud.qasino.games.database.service.TurnAndCardMoveService;
 import cloud.qasino.games.response.view.SectionTable;
 import cloud.qasino.games.pattern.statemachine.event.EventOutput;
@@ -27,6 +28,8 @@ public class PlayNextHumanTurnAction implements Action<PlayNextHumanTurnAction.D
 
     @Autowired
     TurnAndCardMoveService turnAndCardMoveService;
+    @Autowired
+    private TurnRepository turnRepository;
 
     @Override
     public EventOutput.Result perform(Dto actionDto) {
@@ -45,10 +48,12 @@ public class PlayNextHumanTurnAction implements Action<PlayNextHumanTurnAction.D
         Player activePlayer = actionDto.getTurnPlayer();
         Move activeMove = null;
 
-        isTurnEqualToTurnsToWin(actionDto, activeGame, activeTurn);
-        if (actionDto.getSuppliedTurnEvent() == TurnEvent.END_GAME) {
-            return EventOutput.Result.SUCCESS;
-        }
+        boolean cardDealt;
+
+//        isTurnEqualToTurnsToWin(actionDto, activeGame, activeTurn);
+//        if (actionDto.getSuppliedTurnEvent() == TurnEvent.END_GAME) {
+//            return EventOutput.Result.SUCCESS;
+//        }
 
         // Update Turn + cardMoves can be DEAL, HIGHER, LOWER, PASS, STOP for Human
         switch (actionDto.getSuppliedTurnEvent()) {
@@ -57,10 +62,10 @@ public class PlayNextHumanTurnAction implements Action<PlayNextHumanTurnAction.D
                 // update round +1 start with turn 0
                 activeTurn.setCurrentMoveNumber(activeTurn.getCurrentMoveNumber() + 1);
                 activeTurn.setCurrentSeatNumber(activePlayer.getSeat());
-                activeTurn = turnAndCardMoveService.dealCardToPlayer(
+                turnRepository.save(activeTurn);
+
+                cardDealt = turnAndCardMoveService.dealCardToPlayer(
                         actionDto.getQasinoGame(),
-                        activeTurn,
-                        activePlayer,
                         activeMove,
                         Face.UP,
                         Location.HAND,
@@ -70,10 +75,10 @@ public class PlayNextHumanTurnAction implements Action<PlayNextHumanTurnAction.D
                 activeMove = Move.LOWER;
                 activeTurn.setCurrentMoveNumber(activeTurn.getCurrentMoveNumber() + 1);
                 activeTurn.setCurrentSeatNumber(activePlayer.getSeat());
-                activeTurn = turnAndCardMoveService.dealCardToPlayer(
+                turnRepository.save(activeTurn);
+
+                cardDealt = turnAndCardMoveService.dealCardToPlayer(
                         actionDto.getQasinoGame(),
-                        activeTurn,
-                        activePlayer,
                         activeMove,
                         Face.UP,
                         Location.HAND,
@@ -93,10 +98,11 @@ public class PlayNextHumanTurnAction implements Action<PlayNextHumanTurnAction.D
                 activeTurn.setCurrentRoundNumber(activeTurn.getCurrentRoundNumber() + 1);
                 activeTurn.setCurrentSeatNumber(activePlayer.getSeat());
                 activeTurn.setCurrentMoveNumber(1);
-                activeTurn = turnAndCardMoveService.dealCardToPlayer(
+                activeTurn.setActivePlayerId(actionDto.getNextPlayer().getPlayerId());
+                turnRepository.save(activeTurn);
+
+                cardDealt = turnAndCardMoveService.dealCardToPlayer(
                         actionDto.getQasinoGame(),
-                        activeTurn,
-                        actionDto.getNextPlayer(),
                         activeMove,
                         Face.UP,
                         Location.HAND,

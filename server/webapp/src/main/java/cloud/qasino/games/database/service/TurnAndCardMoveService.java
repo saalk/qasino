@@ -11,7 +11,12 @@ import cloud.qasino.games.database.entity.enums.card.PlayingCard;
 import cloud.qasino.games.database.entity.enums.move.Move;
 import cloud.qasino.games.database.repository.CardMoveRepository;
 import cloud.qasino.games.database.repository.CardRepository;
+import cloud.qasino.games.database.repository.PlayerRepository;
 import cloud.qasino.games.database.repository.TurnRepository;
+import cloud.qasino.games.dto.mapper.GameMapper;
+import cloud.qasino.games.dto.mapper.PlayerMapper;
+import cloud.qasino.games.dto.mapper.VisitorMapper;
+import cloud.qasino.games.exception.MyNPException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -25,19 +30,24 @@ public class TurnAndCardMoveService {
     @Autowired private TurnRepository turnRepository;
     @Autowired private CardMoveRepository cardMoveRepository;
     @Autowired private CardRepository cardRepository;
+    @Autowired private PlayerRepository playerRepository;
+    PlayerMapper playerMapper;
+    GameMapper gameMapper;
     // @formatter:on
 
-    public Turn dealCardToPlayer(Game activeGame, Turn activeTurn, Player humanOrBot, Move move, Face face, Location location, int howMany) {
-
+    public boolean dealCardToPlayer(Game activeGame, Move move, Face face, Location location, int howMany) {
+        Turn activeTurn = activeGame.getTurn();
+        Player humanOrBot = playerRepository.findById(activeTurn.getActivePlayerId())
+                .orElseThrow(() -> new MyNPException("TurnAndCardMoveService","active turn has no active player"));
         Card topCardInStock = getTopCardInStock(activeGame, howMany);
-        if (topCardInStock == null) return null; // no cards left -> end the game
+        if (topCardInStock == null) return false; // no cards left -> end the game
 
         // 1: create or update Turn
-        if (activeTurn == null) {
-            // round and move is 1 by default with new
-            activeTurn = new Turn(activeGame, humanOrBot.getPlayerId());
-            turnRepository.save(activeTurn);
-        }
+//        if (activeTurn == null) {
+//            // round and move is 1 by default with new
+//            activeTurn = new Turn(activeGame, humanOrBot.getPlayerId());
+//            turnRepository.save(activeTurn);
+//        }
         // 2: create a CardMove
         int roundNo = activeTurn.getCurrentRoundNumber();
         int turnNo = activeTurn.getCurrentMoveNumber();
@@ -61,8 +71,8 @@ public class TurnAndCardMoveService {
         cardDealt.setFace(face);
         cardDealt.setHand(humanOrBot);
         cardRepository.save(cardDealt);
+        return true;
 
-        return turnRepository.getReferenceById(activeTurn.getTurnId());
     }
 
     public List<CardMove> getCardMovesForGame(Game activeGame) {

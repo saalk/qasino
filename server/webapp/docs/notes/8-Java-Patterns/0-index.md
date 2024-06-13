@@ -1,12 +1,12 @@
 Back to [README](../../../../README.md)
 Index of JAVA
 
-- [Overview](1-Overview.md)
-- [Creational](2-Creational.md)
-- [Structural](3-Structural.md)
-- [Behavioural](4-Behavioural.md)
-- [Others](5-Others.md)
-- [Enterprise](6-Enterprise.md)
+- [Patterns](2-Patterns)
+- [Creational](3-Creational)
+- [Structural](4-Structural)
+- [Behavioural](5-Behavioural)
+- [Others](6-Others)
+- [Enterprise](7-Enterprise)
 
  
 

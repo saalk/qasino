@@ -1,6 +1,6 @@
 package cloud.qasino.games.handler;
 
-import cloud.qasino.games.request.QasinoRequest;
+import cloud.qasino.games.database.security.Visitor;
 import cloud.qasino.games.response.QasinoResponse;
 import cloud.qasino.games.response.QasinoResponseMapper;
 import cloud.qasino.games.pattern.statemachine.QasinoStateMachine;
@@ -24,7 +24,7 @@ public class GameHandler {
         log.warn("########## Start of initialize: " + LocalTime.now());
         log.warn("########## Start of initialize: " + LocalTime.now());
 
-        QasinoRequest request = new QasinoRequest(); // pathvariables
+        Visitor request = new Visitor(); // pathvariables
         // validate and give 400 if needed
         QasinoFlowDto flowDto = new QasinoFlowDto();
         flowDto.setSuppliedVisitorId(visitorId);

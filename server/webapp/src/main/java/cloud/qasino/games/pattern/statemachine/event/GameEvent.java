@@ -17,14 +17,14 @@ public enum GameEvent implements Event {
 
     //@formatter:off
     // CRUD - initiated by user
-    SIGN_ON("sigoon Visitor"),
-    GET_VISITOR("retrieve Visitor"),
-    POST_VISITOR("create or update Visitor"),
-    GET_GAME("retrieve Game"),
-    GET_LEAGUE("retrieve League"),
-    POST_LEAGUE("create or update League"),
-    GET_PLAYER("retrieve Player"),
-    POST_PLAYER("create or update Player"),
+//    SIGN_ON("sigoon Visitor"),
+//    GET_VISITOR("retrieve Visitor"),
+//    POST_VISITOR("create or update Visitor"),
+//    GET_GAME("retrieve Game"),
+//    GET_LEAGUE("retrieve League"),
+//    POST_LEAGUE("create or update League"),
+//    GET_PLAYER("retrieve Player"),
+//    POST_PLAYER("create or update Player"),
 
     // NEW & SETUP - initiated by user
     START("start a Game"),        // may not have initial bets

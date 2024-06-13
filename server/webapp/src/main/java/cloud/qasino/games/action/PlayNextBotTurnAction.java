@@ -11,11 +11,12 @@ import cloud.qasino.games.database.entity.enums.game.Style;
 import cloud.qasino.games.database.entity.enums.game.Type;
 import cloud.qasino.games.database.entity.enums.move.Move;
 import cloud.qasino.games.database.repository.CardMoveRepository;
+import cloud.qasino.games.database.repository.TurnRepository;
 import cloud.qasino.games.database.service.TurnAndCardMoveService;
-import cloud.qasino.games.response.view.SectionTable;
 import cloud.qasino.games.pattern.statemachine.event.EventOutput;
 import cloud.qasino.games.pattern.statemachine.event.GameEvent;
 import cloud.qasino.games.pattern.statemachine.event.TurnEvent;
+import cloud.qasino.games.response.view.SectionTable;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -30,6 +31,8 @@ public class PlayNextBotTurnAction implements Action<PlayNextBotTurnAction.Dto, 
     TurnAndCardMoveService turnAndCardMoveService;
     @Autowired
     CardMoveRepository cardMoveRepository;
+    @Autowired
+    TurnRepository turnRepository;
 
 
     @Override
@@ -46,10 +49,13 @@ public class PlayNextBotTurnAction implements Action<PlayNextBotTurnAction.Dto, 
         Player activePlayer = actionDto.getTurnPlayer();
         Move activeMove = Move.PASS;
 
-        isTurnEqualToTurnsToWin(actionDto, activeGame, activeTurn);
-        if (actionDto.getSuppliedTurnEvent() == TurnEvent.END_GAME) {
-            return EventOutput.Result.SUCCESS;
-        }
+        boolean cardDealt;
+
+
+//        isTurnEqualToTurnsToWin(actionDto, activeGame, activeTurn);
+//        if (actionDto.getSuppliedTurnEvent() == TurnEvent.END_GAME) {
+//            return EventOutput.Result.SUCCESS;
+//        }
 
         List<CardMove> cardMoves = cardMoveRepository.findByplayerIdOrderBySequenceAsc(activePlayer.getPlayerId());
         // TODO calculate moves since DEAL
@@ -66,8 +72,7 @@ public class PlayNextBotTurnAction implements Action<PlayNextBotTurnAction.Dto, 
                 if (turn >= 3) {
                     activeMove = Move.PASS;
                 } else {
-                    boolean lower = Math.random() < 0.5;
-                    if (lower) {
+                    if (turnAndCardMoveService.getValueLastCardMove(cardMoves) < 6) {
                         activeMove = Move.LOWER;
                     } else {
                         activeMove = Move.HIGHER;
@@ -77,7 +82,7 @@ public class PlayNextBotTurnAction implements Action<PlayNextBotTurnAction.Dto, 
             case AVERAGE -> {
                 if (turn >= 3) {
                     activeMove = Move.PASS;
-                } else if(turn == 2) {
+                } else if (turn == 2) {
                     boolean lower = Math.random() < 0.5;
                     if (lower) {
                         activeMove = Move.LOWER;
@@ -89,7 +94,7 @@ public class PlayNextBotTurnAction implements Action<PlayNextBotTurnAction.Dto, 
                     if (turnAndCardMoveService.getValueLastCardMove(cardMoves) < 6) {
                         activeMove = Move.HIGHER;
                     } else {
-                        activeMove = Move.HIGHER;
+                        activeMove = Move.LOWER;
                     }
                 }
             }
@@ -101,7 +106,7 @@ public class PlayNextBotTurnAction implements Action<PlayNextBotTurnAction.Dto, 
                     if (turnAndCardMoveService.getValueLastCardMove(cardMoves) < 6) {
                         activeMove = Move.HIGHER;
                     } else {
-                        activeMove = Move.HIGHER;
+                        activeMove = Move.LOWER;
                     }
                 }
             }
@@ -115,10 +120,16 @@ public class PlayNextBotTurnAction implements Action<PlayNextBotTurnAction.Dto, 
                 // update round +1 start with turn 0
                 activeTurn.setCurrentMoveNumber(activeTurn.getCurrentMoveNumber() + 1);
                 activeTurn.setCurrentSeatNumber(activePlayer.getSeat());
-                activeTurn = turnAndCardMoveService.dealCardToPlayer(
+                turnRepository.save(activeTurn);
+
+                if (turnAndCardMoveService.getValueLastCardMove(cardMoves) < 6) {
+                    activeMove = Move.HIGHER;
+                } else {
+                    activeMove = Move.HIGHER;
+                }
+
+                cardDealt = turnAndCardMoveService.dealCardToPlayer(
                         actionDto.getQasinoGame(),
-                        activeTurn,
-                        activePlayer,
                         activeMove,
                         Face.UP,
                         Location.HAND,
@@ -127,10 +138,10 @@ public class PlayNextBotTurnAction implements Action<PlayNextBotTurnAction.Dto, 
             case LOWER -> {
                 activeTurn.setCurrentMoveNumber(activeTurn.getCurrentMoveNumber() + 1);
                 activeTurn.setCurrentSeatNumber(activePlayer.getSeat());
-                activeTurn = turnAndCardMoveService.dealCardToPlayer(
+                turnRepository.save(activeTurn);
+
+                cardDealt = turnAndCardMoveService.dealCardToPlayer(
                         actionDto.getQasinoGame(),
-                        activeTurn,
-                        activePlayer,
                         activeMove,
                         Face.UP,
                         Location.HAND,
@@ -151,10 +162,10 @@ public class PlayNextBotTurnAction implements Action<PlayNextBotTurnAction.Dto, 
                 activeTurn.setCurrentRoundNumber(activeTurn.getCurrentRoundNumber() + 1);
                 activeTurn.setCurrentSeatNumber(activePlayer.getSeat());
                 activeTurn.setCurrentMoveNumber(1);
-                activeTurn = turnAndCardMoveService.dealCardToPlayer(
+                turnRepository.save(activeTurn);
+
+                cardDealt = turnAndCardMoveService.dealCardToPlayer(
                         actionDto.getQasinoGame(),
-                        activeTurn,
-                        actionDto.getNextPlayer(),
                         activeMove,
                         Face.UP,
                         Location.HAND,
@@ -177,11 +188,11 @@ public class PlayNextBotTurnAction implements Action<PlayNextBotTurnAction.Dto, 
         actionDto.setActiveTurn(activeTurn); // can be null
         actionDto.setAllCardMovesForTheGame(turnAndCardMoveService.getCardMovesForGame(actionDto.getQasinoGame())); // can be null
 
-        return EventOutput.Result.SUCCESS;
+        return cardDealt ? EventOutput.Result.SUCCESS : EventOutput.Result.FAILURE;
     }
 
     private static void isRoundEqualToRoundsToWin(PlayNextBotTurnAction.Dto actionDto, Game activeGame, Turn activeTurn) {
-        switch (Style.fromLabelWithDefault(activeGame.getStyle()).getRoundsToWin()){
+        switch (Style.fromLabelWithDefault(activeGame.getStyle()).getRoundsToWin()) {
             case ONE_ROUND -> {
                 if (activeTurn.getCurrentRoundNumber() == 1) {
                     actionDto.setSuppliedTurnEvent(TurnEvent.END_GAME);
@@ -199,8 +210,9 @@ public class PlayNextBotTurnAction implements Action<PlayNextBotTurnAction.Dto, 
             }
         }
     }
+
     private static void isTurnEqualToTurnsToWin(PlayNextBotTurnAction.Dto actionDto, Game activeGame, Turn activeTurn) {
-        switch (Style.fromLabelWithDefault(activeGame.getStyle()).getTurnsToWin()){
+        switch (Style.fromLabelWithDefault(activeGame.getStyle()).getTurnsToWin()) {
             case ONE_WINS -> {
                 if (activeTurn.getCurrentMoveNumber() == 1) {
                     actionDto.setSuppliedTurnEvent(TurnEvent.END_GAME);
