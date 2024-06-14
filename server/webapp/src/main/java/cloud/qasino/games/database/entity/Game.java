@@ -1,7 +1,5 @@
 package cloud.qasino.games.database.entity;
 
-import cloud.qasino.games.database.entity.enums.card.Location;
-import cloud.qasino.games.database.entity.enums.card.PlayingCard;
 import cloud.qasino.games.database.entity.enums.game.GameState;
 import cloud.qasino.games.database.entity.enums.game.Style;
 import cloud.qasino.games.database.entity.enums.game.Type;
@@ -18,6 +16,7 @@ import jakarta.persistence.ForeignKey;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.Index;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
@@ -31,114 +30,92 @@ import org.hibernate.annotations.DynamicUpdate;
 import java.time.LocalDateTime;
 import java.time.Month;
 import java.time.format.DateTimeFormatter;
-import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
+// @Data for JPA entities is an antipattern
 @Entity
 @DynamicUpdate
-@Data
+@Data // but we override equals, hash and toString and have noargs constructor
 @JsonIdentityInfo(generator = JSOGGenerator.class)
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 @Table(name = "game", indexes = {
+//        { @Index(name = "games_initiator_index", columnList = "visitor_id", unique = false ),
         // not needed : @Index(name = "games_index", columnList = "game_id", unique = true)
 })
 public class Game {
 
+    // @formatter:off
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "game_id", nullable = false)
     private long gameId;
-
     @JsonIgnore
     @Column(name = "updated", length = 25, nullable = false)
     private String updated;
 
-
     // Foreign keys
-
-    // TODO why json ignore??
     @JsonIgnore
-    // PlGa: many Games can be part of the same League
+    // many [Game] can be part of one [League]
     @ManyToOne(cascade = CascadeType.DETACH)
     @JoinColumn(name = "league_id", referencedColumnName = "league_id", foreignKey = @ForeignKey
             (name = "fk_league_id"), nullable = true)
     private League league;
-
+    // one [Game] can be part of one [Visitor]
     @Column(name = "initiator")
     private long initiator; // visitorId
 
-
     // Normal fields
-
     @Enumerated(EnumType.STRING)
     @Column(name = "state", length = 50, nullable = false)
     @Setter(AccessLevel.NONE)
     private GameState state;
-
     public void setState(GameState state) {
         this.previousState = this.state;
         this.state = state;
         setUpdated();
     }
-
     @Enumerated(EnumType.STRING)
     @Column(name = "previous_state", length = 50, nullable = true)
     private GameState previousState;
-
     @Enumerated(EnumType.STRING)
     @Column(name = "type", length = 50, nullable = false)
     private Type type;
-
     @Column(name = "style", length = 10, nullable = true)
     private String style;
-
-    // A mandatory stake made before the "game" begins
     @Column(name = "ante")
     private int ante;
 
     // Derived fields
-
     @Setter(AccessLevel.NONE)
     @Column(name = "year", length = 4)
     private int year;
-
     @Setter(AccessLevel.NONE)
     @Column(name = "month", length = 20)
     private Month month;
-
     @Setter(AccessLevel.NONE)
     @Column(name = "week", length = 3)
     private String week;
-
     @Setter(AccessLevel.NONE)
     @Column(name = "weekday", length = 2)
     private int weekday;
 
-    // References
-
+    // References - the actual FK are in other tables
     @JsonIgnore
-    // SF: a shuffled Card is added to a GameSubTotals at the start
+    // one [Game] can have many [Card]s
     @OneToMany(mappedBy = "game", cascade = CascadeType.DETACH)
     private List<Card> cards;
-
-    // PlGa: many Players can play the same GameSubTotals
+    // one [Game] can have many [Player]s
     @OneToMany(mappedBy = "game", cascade = CascadeType.DETACH)
     private List<Player> players;
-
     @JsonIgnore
-    // AcTu: a Turn is kept do indicate the active player's move only
+    // one [Game] can have one [Turn], holding the current player, round, seat and move
     @OneToOne(mappedBy = "game", cascade = CascadeType.DETACH)
-    private Turn turn; // = new Turn();
-
-    // todo delete
-//    @OneToMany(mappedBy = "game", cascade = CascadeType.DETACH)
-//    // just a reference, the actual fk column is in league not here!
-//    private List<League> leagues;
-
-    // just a reference, the actual fk column is in result not here!
+    private Turn turn;
+    // TODO is this needed as its related to a player that is related to a game
+    // one [Game] can have many [Result]s, one per player
     @OneToMany(mappedBy = "game", cascade = CascadeType.DETACH)
-    private List<Result> results; // = new Result();
+    private List<Result> results;
 
     public Game() {
         setUpdated();
@@ -233,17 +210,6 @@ public class Game {
         this.weekday = localDateAndTime.getDayOfMonth();
     }
 
-//    public void shuffleGame(int jokers) {
-//
-//        List<PlayingCard> playingCards = PlayingCard.createDeckWithXJokers(jokers);
-//        Collections.shuffle(playingCards);
-//        int i = 1;
-//        for (PlayingCard playingCard : playingCards) {
-//            Card card = new Card(playingCard.getRankAndSuit(), this, null, i++, Location.STOCK);
-//            this.cards.add(card);
-//        }
-//    }
-
     // TODO LOW make this work with up / down and playerId
     // TODO error, a bot is no player !!!
     public boolean switchPlayers(int sequence, int direction) {
@@ -307,9 +273,7 @@ public class Game {
     }
 
     @Override
-    public int hashCode() {
-        return Objects.hash(gameId);
-    }
+    public int hashCode() { return Objects.hash(gameId); }
 
     @Override
     public String toString() {

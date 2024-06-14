@@ -1,6 +1,6 @@
 Back to [Index](0-index.md)
 # Optional
-Java 8 - Optional
+## Java 8 - Optional
 Optional is a concept indicating that a certain entity or object may or may not have a value. Optional should not be used in the hope of getting rid of errors like NPE.
 But in case of Optional, when they are calling Optional.get(), you know what they're doing.
 

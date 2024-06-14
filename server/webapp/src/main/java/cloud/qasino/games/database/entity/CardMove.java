@@ -7,6 +7,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.voodoodyne.jackson.jsog.JSOGGenerator;
 import lombok.AccessLevel;
+import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.DynamicUpdate;
@@ -28,10 +29,10 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Objects;
 
+// @Data for JPA entities is an antipattern
 @Entity
 @DynamicUpdate
-@Getter
-@Setter
+@Data // but we override equals, hash and toString and have noargs constructor
 @JsonIdentityInfo(generator = JSOGGenerator.class)
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 @Table(name = "cardmove", indexes =
@@ -41,50 +42,42 @@ import java.util.Objects;
 )
 public class CardMove {
 
+    // @formatter:off
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "cardmove_id")
+    @Column(name = "cardmove_id", nullable = false)
     private long cardMoveId;
-
     @JsonIgnore
     @Column(name = "created", length = 25)
     private String created;
 
-
     // Foreign keys
-
     @JsonIgnore
-    // many cardmoves can be part of a turn
+    // many [CardMove] are part of one [Turn]
     @ManyToOne(cascade = CascadeType.DETACH)
     @JoinColumn(name = "turn_id", referencedColumnName = "turn_id", foreignKey = @ForeignKey
-            (name = "fk_turn_id"), nullable = true)
+            (name = "fk_turn_id"), nullable = false)
     private Turn turn;
-
+    // one [CardMove] can be part of one [Player]
     @Column(name = "player_id")
     private long playerId;
-
+    // TODO move cards can be in one move in future
+    // one [CardMove] can be part of one [Card]
     @Column(name = "card_id", nullable = true)
     private long cardId;
 
-    // cardMove basics, what move does the player make
+    // Normal fields
     @Enumerated(EnumType.STRING)
     @Column(name = "move", nullable = false)
     private Move move;
-
-
-    // json
     @Column(name = "cardMove_details", nullable = true)
     private String cardMoveDetails;
-
-    // json fields, filled in by engine
     @Setter(AccessLevel.NONE)
     @Column(name = "sequence")
     private String sequence;
-
     @Enumerated(EnumType.STRING)
     @Column(name = "location", nullable = true)
     private Location location;
-
     @Column(name = "bet", nullable = true)
     private int bet;
     @Column(name = "start_fiches", nullable = true)
@@ -92,7 +85,8 @@ public class CardMove {
     @Column(name = "end_fiches", nullable = true)
     private int endFiches;
 
-    // References
+    // References - the actual FK are in other tables
+    // none
 
     public CardMove() {
         setCreated();
@@ -167,6 +161,4 @@ public class CardMove {
                 ", endFiches=" + this.endFiches +
                 ")";
     }
-
-
 }

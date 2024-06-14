@@ -2,7 +2,7 @@ package cloud.qasino.games.handler;
 
 import cloud.qasino.games.database.security.Visitor;
 import cloud.qasino.games.response.QasinoResponse;
-import cloud.qasino.games.response.QasinoResponseMapper;
+import cloud.qasino.games.response.QasinoResponseMapperOld;
 import cloud.qasino.games.pattern.statemachine.QasinoStateMachine;
 import cloud.qasino.games.dto.QasinoFlowDto;
 import lombok.extern.slf4j.Slf4j;
@@ -33,7 +33,7 @@ public class GameHandler {
         qasinoStateMachine.handleEvent(START, flowDto);
         log.warn("########## Start of initialize: " + LocalTime.now());
 
-        return new QasinoResponseMapper().map(flowDto);
+        return new QasinoResponseMapperOld().map(flowDto);
     }
 
 }

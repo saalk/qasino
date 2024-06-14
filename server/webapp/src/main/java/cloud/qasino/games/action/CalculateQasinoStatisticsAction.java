@@ -45,6 +45,14 @@ public class CalculateQasinoStatisticsAction implements Action<CalculateQasinoSt
         // @formatter:off
         List<Statistic> statistics = new ArrayList<>();
         long initiator = actionDto.getSuppliedVisitorId();
+        statistics.add(new Statistic("Visitors","All",
+                (int) visitorRepository.count(),
+                1
+        ));
+        statistics.add(new Statistic("Leagues","All",
+                (int) leagueRepository.count(),
+                leagueRepository.countLeaguesForInitiator(String.valueOf(initiator))
+        ));
         statistics.add(new Statistic("Games","State:SETUP",
                 gameRepository.countByStates(GameStateGroup.listGameStatesStringsForGameStateGroup(GameStateGroup.SETUP)),
                 gameRepository.countByStatesForInitiator(GameStateGroup.listGameStatesStringsForGameStateGroup(GameStateGroup.SETUP),initiator)
@@ -61,12 +69,7 @@ public class CalculateQasinoStatisticsAction implements Action<CalculateQasinoSt
                 gameRepository.countByStates(GameStateGroup.listGameStatesStringsForGameStateGroup(GameStateGroup.FINISHED)),
                 gameRepository.countByStatesForInitiator(GameStateGroup.listGameStatesStringsForGameStateGroup(GameStateGroup.FINISHED),initiator)
                 ));
-
 //      statistics.add(new Statistic("total","Games","All",(int) gameRepository.count()));
-        statistics.add(new Statistic("Visitors","All",
-                (int) visitorRepository.count(),
-                1
-                ));
         statistics.add(new Statistic("Players","AiLevel:HUMAN",
                 playerRepository.countByAiLevel("true","HUMAN"),
                 playerRepository.countByAiLevelForInitiator("true","HUMAN",String.valueOf(initiator))
@@ -87,13 +90,8 @@ public class CalculateQasinoStatisticsAction implements Action<CalculateQasinoSt
                 (int) cardRepository.count(),
                 cardRepository.countCardsForInitiator(String.valueOf(initiator))
                 ));
-        statistics.add(new Statistic("Leagues","All",
-                (int) leagueRepository.count(),
-                leagueRepository.countLeaguesForInitiator(String.valueOf(initiator))
-                ));
 
         actionDto.setStatistics(statistics);
-
         return EventOutput.Result.SUCCESS;
     }
 

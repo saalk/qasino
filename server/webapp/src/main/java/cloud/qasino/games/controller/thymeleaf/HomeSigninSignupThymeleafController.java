@@ -98,11 +98,11 @@ public class HomeSigninSignupThymeleafController extends AbstractThymeleafContro
         // 1 - map input
         QasinoFlowDto flowDto = new QasinoFlowDto();
         flowDto.setPathVariables(
-                "gameEvent", "sign_on"
+                "qasinoEvent", "logon"
         );
         // 2 - validate input
         if (!flowDto.isInputValid() || error != null) {
-            throw new MyNPException("103 gameEvent", "sign_on [" + flowDto.getSuppliedUsername() + "]");
+            throw new MyNPException("HomeSigninSignupThymeleafController", "game event logon [" + flowDto.getSuppliedGameEvent() + "]");
 //            prepareQasinoResponse(response, flowDto);
 //            model.addAttribute(flowDto.getQasinoResponse());
 //            return "redirect:/";
@@ -126,7 +126,6 @@ public class HomeSigninSignupThymeleafController extends AbstractThymeleafContro
             HttpServletResponse response
     ) {
         log.warn("PostMapping: /perform_signin");
-
 
         Authentication authenticationRequest =
                 UsernamePasswordAuthenticationToken.unauthenticated(loginRequest.username(), loginRequest.password());

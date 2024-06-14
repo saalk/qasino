@@ -1,17 +1,14 @@
 package cloud.qasino.games.pattern.statemachine.event;
 
 import cloud.qasino.games.pattern.statemachine.event.interfaces.Event;
-import lombok.Getter;
-
 import jakarta.persistence.Transient;
+import lombok.Getter;
 
 import java.util.Arrays;
 import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import static java.util.EnumSet.of;
 
 @Getter
 public enum TurnEvent implements Event {
@@ -33,7 +30,8 @@ public enum TurnEvent implements Event {
     // technical internal events
     ERROR("error"),
     DETERMINE_WINNER("determine_winner"),
-    END_GAME("end_game"),; // system events
+    END_GAME("end_game"),
+    ; // system events
 
     public static final List<TurnEvent> blackJackPossibleHumanTurn = Arrays.asList(DEAL, SPLIT);
     public static final List<TurnEvent> blackJackPossibleBotTurn = List.of(BOT);
@@ -64,6 +62,7 @@ public enum TurnEvent implements Event {
         this();
         this.label = label;
     }
+
     public static TurnEvent fromLabel(char character) {
         return fromLabel(Character.toString(character));
     }

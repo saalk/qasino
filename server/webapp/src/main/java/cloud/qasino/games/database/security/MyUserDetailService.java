@@ -35,9 +35,10 @@ public class MyUserDetailService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         final Visitor visitor = visitorRepository.findByUsername(username);
-        log.warn("visitor found: {}",visitor.toString());
         if (visitor == null) {
             throw new UsernameNotFoundException("Visitor [" + username + "] not found");
+        } else {
+            log.warn("visitor found: {}", visitor);
         }
         MyUserPrincipal principal = new MyUserPrincipal(visitor);
         log.warn("Principal found: {}", principal.toString());

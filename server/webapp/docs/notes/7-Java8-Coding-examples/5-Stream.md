@@ -1,7 +1,29 @@
 Back to [Index](0-index.md)
 # Stream
-Java 8 - Stream
+## Java 8 - Stream
 We can use Java Stream API to implement internal iteration, that is better because java framework is in control of the iteration.
+In essence streams are 
+- wrappers around a data source, 
+- allowing us to operate with that source, 
+- -it does NOT store the data and 
+- it NEVER modifies the data.
+- 
+Streams operate on Collections (List<Integer>) and Arrays (int[])
+
+```java
+List<String> cars = new ArrayList<String>();
+cars.add("Volvo"); cars.add("Audi"); cars.set(0, "BMW"); // directly prints [BMW, Audi]
+
+// Streams
+ArrayList<String> carArray = cars.stream().collect(Collectors.toCollection(ArrayList::new));
+carArray.add("Ford");
+
+List<String> carList = cars.stream().collect(Collectors.toList()); // provides ArrayList for List
+carList.add("Ford");
+
+List<String> carListImmutable = cars.stream().toList(); // provides List
+//carListImmutable.add("Ford"); // gives Exception java.lang.UnsupportedOperationException
+```
 
 Prior to Java 8, the approach to do it would be:
 ```java
@@ -14,7 +36,7 @@ private static int sumIterator(List<Integer> list) {
             sum += num;
         }
     }
-return sum;
+    return sum;
 }
 ```
 There are three major problems with the above approach:
@@ -127,13 +149,14 @@ public List<String> getCityNames(List<Company> companyList){
             .toList();
 }
 ```
+
 ## Stream concepts
 # Method Chaining
 With streams, you can put many operations together in a chain.
 ```java
 List<String> words = Arrays.asList("apple", "banana", "cat", "dog");
 
-long count = words.stream()          // Make a stream
+long count = words.stream()         // Make a stream
 .filter(word -> word.length() > 3)  // Filter out short words
 .map(String::toUpperCase)           // Convert remaining words to uppercase
 .count();                           // Count how many words are left
@@ -158,8 +181,8 @@ Streams can automatically use multiple threads to do work faster.
 List<Integer> numbers = Arrays.asList(1, 2, 3, 4, 5, 6, 7, 8, 9, 10);
 
 int sum = numbers.parallelStream() // Process in parallel
-.mapToInt(n -> n)              // Convert to IntStream
-.sum();                        // Add up all the numbers
+.mapToInt(n -> n)                  // Convert to IntStream
+.sum();                            // Add up all the numbers
 ```
 This can significantly improve performance for operations that can be parallelized, such as mapping, filtering, and reducing (but be careful about which operations you decide to parallelize not to corrupt the results).
 
@@ -169,8 +192,8 @@ Once you make a stream, you can’t change it.
 List<String> names = Arrays.asList("Alice", "Bob", "Charlie");
 
 List<String> upperCaseNames = names.stream() // Make a stream
-.map(String::toUpperCase)               // Make all names uppercase
-.collect(Collectors.toList());         // Collect into a new list
+.map(String::toUpperCase)                    // Make all names uppercase
+.collect(Collectors.toList());               // Collect into a new list
 ```
 Each operation on the stream makes a new stream. This helps to keep your data safe and makes it easier to understand your code.
 
@@ -178,7 +201,7 @@ Each operation on the stream makes a new stream. This helps to keep your data sa
 Streams often work hand-in-hand with Optional to handle potentially absent values.
 ```java
 Optional<String> firstFruit = fruits.stream() // Make a stream
-.findFirst();                             // Find the first fruit
+.findFirst();                                 // Find the first fruit
 ```
 findFirst operation returns an Optional containing the first element of the stream, or an empty Optional if the stream is empty. This helps us gracefully handle the null values.
 

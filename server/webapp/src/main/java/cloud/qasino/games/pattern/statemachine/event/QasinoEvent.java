@@ -4,16 +4,15 @@ import cloud.qasino.games.pattern.statemachine.event.interfaces.Event;
 import jakarta.persistence.Transient;
 import lombok.Getter;
 
-import java.util.Arrays;
 import java.util.EnumSet;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 @Getter
 public enum QasinoEvent implements Event {
 
-    // vistor
+    // vistor events
+    LOGON("logon"),
     REPAY("repay"),
     PAWN("pawn"),
 

@@ -7,15 +7,15 @@ public class MyNPException
 
         extends RuntimeException {
     public MyNPException(String method, String errorMessage, Throwable err) {
-        super("MyNPException in method [" + method + "] :: " + errorMessage, err);
+        super("NPE in method [" + method + "] :: " + errorMessage + ", contact the site owner", err);
     }
 
     public MyNPException(String method, String errorMessage, String s) {
-        super("MyNPException in method [" + method + "] :: " + errorMessage, new NullPointerException("NPE"));
+        super("NPE in method [" + method + "] :: " + errorMessage + ", contact the site owner", new NullPointerException("NPE"));
     }
 
     public MyNPException(String method, String errorMessage) {
-        super("MyNPException in method [" + method + "] :: " + errorMessage, new NullPointerException("NPE"));
+        super("NPE in method [" + method + "] :: " + errorMessage + ", contact the site owner", new NullPointerException("NPE"));
     }
 }
 

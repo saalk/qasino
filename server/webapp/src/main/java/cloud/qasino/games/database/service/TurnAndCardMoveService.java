@@ -38,7 +38,10 @@ public class TurnAndCardMoveService {
     public boolean dealCardToPlayer(Game activeGame, Move move, Face face, Location location, int howMany) {
         Turn activeTurn = activeGame.getTurn();
         Player humanOrBot = playerRepository.findById(activeTurn.getActivePlayerId())
-                .orElseThrow(() -> new MyNPException("TurnAndCardMoveService","active turn has no active player"));
+                .orElseThrow(() -> new MyNPException("TurnAndCardMoveService","turn ["+ activeTurn.getTurnId() +"] has no active player"));
+        if (humanOrBot == null) {
+            throw new MyNPException("TurnAndCardMoveService","turn ["+ activeTurn.getTurnId() +"] active player [" + activeTurn.getActivePlayerId() +"] not found");
+        }
         Card topCardInStock = getTopCardInStock(activeGame, howMany);
         if (topCardInStock == null) return false; // no cards left -> end the game
 

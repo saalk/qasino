@@ -295,8 +295,9 @@ public class MapQasinoResponseFromDtoAction implements Action<MapQasinoResponseF
         if (actionDto.getActiveTurn() != null) { // games is still being validated
             navigationBarItem.setStat(
                     "[" + actionDto.getActiveTurn().getCurrentRoundNumber() +
+                            "/" + actionDto.getActiveTurn().getCurrentSeatNumber() +
                             "/" + actionDto.getActiveTurn().getCurrentMoveNumber() +
-                            "] round/turn");
+                            "] round/seat/move");
         }
         // set the content
         pageGamePlay.setSelectedGame(actionDto.getQasinoGame());

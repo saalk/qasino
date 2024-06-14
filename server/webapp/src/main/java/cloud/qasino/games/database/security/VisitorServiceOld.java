@@ -62,7 +62,7 @@ public class VisitorServiceOld {
 
         // create initial roles
         createRoleIfNotFound("ROLE_ADMIN", Arrays.asList(readPrivilege, writePrivilege));
-        createRoleIfNotFound("ROLE_USER", new ArrayList<>());
+        createRoleIfNotFound("ROLE_USER", Arrays.asList(readPrivilege));
 
         // create initial users and admins
         List<Visitor> users = new ArrayList<>();

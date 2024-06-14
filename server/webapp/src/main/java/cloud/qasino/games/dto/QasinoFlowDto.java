@@ -51,6 +51,7 @@ import cloud.qasino.games.database.entity.enums.player.AiLevel;
 import cloud.qasino.games.database.entity.enums.player.Avatar;
 import cloud.qasino.games.database.entity.enums.player.PlayerState;
 import cloud.qasino.games.database.security.Visitor;
+import cloud.qasino.games.pattern.statemachine.event.QasinoEvent;
 import cloud.qasino.games.response.view.SectionTable;
 import cloud.qasino.games.response.view.statistics.Statistic;
 import cloud.qasino.games.exception.MyBusinessException;
@@ -127,6 +128,7 @@ public class QasinoFlowDto extends AbstractFlowDto
 
     private long suppliedTurnPlayerId;
     // triggers for the Game
+    private QasinoEvent suppliedQasinoEvent;
     private GameEvent suppliedGameEvent;
     private TurnEvent suppliedTurnEvent;
     private GameStateGroup suppliedGameStateGroup;
@@ -489,6 +491,17 @@ public class QasinoFlowDto extends AbstractFlowDto
             }
         }
         // game
+        key = "qasinoEvent";
+        if (requestParam.containsKey(key)) {
+            if (isValueForEnumKeyValid(key, requestParam.get(
+                            key), dataName,
+                    paramDataString)) {
+                this.suppliedQasinoEvent = QasinoEvent.fromLabel(requestParam.get(key));
+            } else {
+                return false;
+            }
+        }
+        // game
         key = "gameEvent";
         if (requestParam.containsKey(key)) {
             if (isValueForEnumKeyValid(key, requestParam.get(
@@ -704,6 +717,11 @@ public class QasinoFlowDto extends AbstractFlowDto
                 break;
             case "aiLevel":
                 if (!(AiLevel.fromLabelWithDefault(value) == AiLevel.ERROR)) {
+                    return true;
+                }
+                break;
+            case "qasinoEvent":
+                if (!(QasinoEvent.fromLabelWithDefault(value) == QasinoEvent.ERROR)) {
                     return true;
                 }
                 break;

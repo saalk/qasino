@@ -21,7 +21,7 @@ import java.util.Map;
 
 @Slf4j
 @Component
-public class QasinoResponseMapper {
+public class QasinoResponseMapperOld {
 
     public QasinoResponse map(QasinoFlowDto actionDto) {
 

@@ -93,7 +93,7 @@ public class LoadEntitiesToDtoAction implements Action<LoadEntitiesToDtoAction.D
                 findGameByVisitorSupplied(actionDto, visitorId);
             }
         } else { // BR1
-//            if (!(actionDto.getSuppliedGameEvent() == GameEvent.SIGN_ON)) {
+//            if (!(actionDto.getSuppliedGameEvent() == GameEvent.LOGON)) {
 //                throw new MyNPException("101 getVisitorSupplied","visitorId [" + visitorId + "]");
 //            setNotFoundErrorMessage(actionDto, "visitorId", String.valueOf(visitorId), "Visitor");
 //            return EventOutput.Result.FAILURE;

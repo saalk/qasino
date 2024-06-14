@@ -55,9 +55,8 @@ public class PlayFirstTurnAction implements Action<PlayFirstTurnAction.Dto, Even
                             .findFirst().get());
         }
         Turn firstTurn = new Turn(actionDto.getQasinoGame(), actionDto.getTurnPlayer().getPlayerId());
-        turnRepository.save(firstTurn);
-        actionDto.setQasinoGame(gameRepository.getReferenceById(actionDto.getQasinoGame().getGameId()));
-
+        Turn updatedTurn = turnRepository.save(firstTurn);
+        actionDto.getQasinoGame().setTurn(updatedTurn);
         boolean cardDealt = turnAndCardMoveService.dealCardToPlayer(
                 actionDto.getQasinoGame(),
                 Move.DEAL,

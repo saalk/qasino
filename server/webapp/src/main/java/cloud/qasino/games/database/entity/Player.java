@@ -7,6 +7,7 @@ import cloud.qasino.games.database.security.Visitor;
 import com.fasterxml.jackson.annotation.*;
 import com.voodoodyne.jackson.jsog.JSOGGenerator;
 import lombok.AccessLevel;
+import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.DynamicUpdate;
@@ -18,10 +19,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+// @Data for JPA entities is an antipattern
 @Entity
 @DynamicUpdate
-@Getter
-@Setter
+@Data // but we override equals, hash and toString and have noargs constructor
 @JsonIdentityInfo(generator= JSOGGenerator.class)
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 @Table(name = "player", indexes = {
