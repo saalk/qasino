@@ -1,5 +1,8 @@
 package cloud.qasino.games.pattern.strategy;
 
+import cloud.qasino.games.pattern.strategy.algorithm.LuxuryDrive;
+import cloud.qasino.games.pattern.strategy.algorithm.NormalDrive;
+
 public class MainFlow {
     public void trigger(String[] args) {
         Vehicle mersedes = new LuxuryVehile(new LuxuryDrive());

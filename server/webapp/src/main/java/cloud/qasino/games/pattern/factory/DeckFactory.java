@@ -4,6 +4,8 @@ import cloud.qasino.games.database.entity.Game;
 import cloud.qasino.games.database.entity.enums.game.Style;
 import cloud.qasino.games.database.entity.enums.game.style.DeckConfiguration;
 import cloud.qasino.games.exception.MyNPException;
+import cloud.qasino.games.pattern.factory.creational.RandomSuitOnlyDeck;
+import cloud.qasino.games.pattern.factory.creational.RegularDeck;
 
 public class DeckFactory {
 

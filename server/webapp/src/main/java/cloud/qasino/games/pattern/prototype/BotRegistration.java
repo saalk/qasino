@@ -1,6 +1,8 @@
 package cloud.qasino.games.pattern.prototype;
 
 import cloud.qasino.games.database.entity.enums.player.AiLevel;
+import cloud.qasino.games.pattern.prototype.creational.AverageBot;
+import cloud.qasino.games.pattern.prototype.creational.DumbBot;
 
 import java.util.Hashtable;
 

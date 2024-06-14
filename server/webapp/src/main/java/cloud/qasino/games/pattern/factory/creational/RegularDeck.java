@@ -1,10 +1,8 @@
-package cloud.qasino.games.pattern.factory;
+package cloud.qasino.games.pattern.factory.creational;
 
-import cloud.qasino.games.database.entity.enums.card.PlayingCard;
-import lombok.Data;
+import cloud.qasino.games.pattern.factory.Deck;
 
 import java.util.Collections;
-import java.util.List;
 
 import static cloud.qasino.games.database.entity.enums.card.PlayingCard.createDeckWithXJokers;
 

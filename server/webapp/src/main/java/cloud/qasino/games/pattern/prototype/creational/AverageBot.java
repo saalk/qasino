@@ -1,10 +1,11 @@
-package cloud.qasino.games.pattern.prototype;
+package cloud.qasino.games.pattern.prototype.creational;
 
 import cloud.qasino.games.database.entity.Game;
 import cloud.qasino.games.database.entity.enums.player.AiLevel;
 import cloud.qasino.games.database.entity.enums.player.Avatar;
 import cloud.qasino.games.database.entity.enums.player.PlayerState;
 import cloud.qasino.games.database.security.Visitor;
+import cloud.qasino.games.pattern.prototype.Bot;
 
 // DumbBot extends Bot<DumbBot>, so its clone method will return a DumbBot instance
 public class AverageBot extends Bot<AverageBot> {

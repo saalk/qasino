@@ -1,4 +1,6 @@
-package cloud.qasino.games.pattern.strategy;
+package cloud.qasino.games.pattern.strategy.algorithm;
+
+import cloud.qasino.games.pattern.strategy.Drive;
 
 public class LuxuryDrive implements Drive
 {

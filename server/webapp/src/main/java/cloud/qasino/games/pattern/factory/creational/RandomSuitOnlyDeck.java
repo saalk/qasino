@@ -1,6 +1,6 @@
-package cloud.qasino.games.pattern.factory;
+package cloud.qasino.games.pattern.factory.creational;
 
-import lombok.Data;
+import cloud.qasino.games.pattern.factory.Deck;
 
 import java.util.Collections;
 
