@@ -1,4 +1,4 @@
-package cloud.qasino.games.request;
+package cloud.qasino.games.dto.request;
 
 import cloud.qasino.games.database.entity.enums.card.Location;
 import cloud.qasino.games.pattern.statemachine.event.GameEvent;
