@@ -20,6 +20,10 @@ Memento | The memento design pattern is used when we want to save the state of a
 
 Strategy pattern is also known as Policy Pattern. We define multiple algorithms and let client application pass the algorithm to be used as a parameter. One of the best example of strategy pattern is Collections.sort() method that takes Comparator parameter. Based on the different implementations of Comparator interfaces, the Objects are getting sorted in different ways.
 
+**Used when**
+
+When you have multiple algorithms that can be used interchangeably based on different contexts, such as sorting algorithms (bubble sort, merge sort, quick sort), searching algorithms, compression algorithms, etc.
+
 ![img_2.png](img_2.png)
 
 ```java
@@ -54,6 +58,9 @@ cart.pay(new PaypalStrategy("myemail@example.com", "mypwd"));
 // pay by credit card
 cart.pay(new CreditCardStrategy("Pankaj Kumar", "1234567890123456", "786", "12/15"));
 ```
+REAL LIFE EXAMPLE
+
+Payment Processing: In a payment processing system, different payment methods like credit cards, PayPal, or mobile wallets can be handled using the Strategy pattern. Each payment method can be represented by a separate strategy class, allowing users to select their preferred payment method at runtime. The payment context class can invoke the appropriate strategy to process the payment.
 
 Strategy pattern is useful when we have multiple algorithms for specific task and we want our application to be flexible to chose any of the algorithm at runtime for specific task.
 
@@ -75,3 +82,69 @@ BigDecimal applyDiscount(BigDecimal amount);
     }
 }
 ```
+
+Another example
+
+Characteristics of the Strategy Design Pattern?
+The Strategy Design Pattern exhibits several key characteristics that make it distinctive and effective for managing algorithm variations in software systems:
+
+* It defines a family of algorithms: The pattern allows you to encapsulate multiple algorithms or behaviors into separate classes, known as strategies.
+* It encapsulates behaviors: Each strategy encapsulates a specific behavior or algorithm, providing a clean and modular way to manage different variations or implementations.
+* It enables dynamic behavior switching: The pattern enables clients to switch between different strategies at runtime, allowing for flexible and dynamic behavior changes.
+* It promotes object collaboration: The pattern encourages collaboration between a context object and strategy objects, where the context delegates the execution of a behavior to a strategy object.
+
+```java
+public interface Strategy {
+    public int doOperation(int num1, int num2);
+}
+
+public class OperationMultiply implements Strategy{
+    @Override
+    public int doOperation(int num1, int num2) {
+        return num1 * num2;
+    }
+}
+
+public class Context {
+    private Strategy strategy;
+
+    public Context(Strategy strategy){
+        this.strategy = strategy;
+    }
+
+    public int executeStrategy(int num1, int num2){
+        return strategy.doOperation(num1, num2);
+    }
+}
+
+public class StrategyPatternDemo {
+    public static void main(String[] args) {
+        Context context = new Context(new OperationAdd());
+        System.out.println("10 + 5 = " + context.executeStrategy(10, 5));
+
+        context = new Context(new OperationSubstract());
+        System.out.println("10 - 5 = " + context.executeStrategy(10, 5));
+
+        context = new Context(new OperationMultiply());
+        System.out.println("10 * 5 = " + context.executeStrategy(10, 5));
+    }
+}
+```
+![img_3.png](img_3.png)
+
+1. Context
+The Context is a class or object that holds a reference to a strategy object and delegates the task to it.
+It acts as the interface between the client and the strategy, providing a unified way to execute the task without knowing the details of how it’s done.
+The Context maintains a reference to a strategy object and calls its methods to perform the task, allowing for interchangeable strategies to be used.
+2. Strategy Interface
+The Strategy Interface is an interface or abstract class that defines a set of methods that all concrete strategies must implement.
+It serves as a contract, ensuring that all strategies adhere to the same set of rules and can be used interchangeably by the Context.
+By defining a common interface, the Strategy Interface allows for decoupling between the Context and the concrete strategies, promoting flexibility and modularity in the design.
+3. Concrete Strategies
+Concrete Strategies are the various implementations of the Strategy Interface. Each concrete strategy provides a specific algorithm or behavior for performing the task defined by the Strategy Interface.
+Concrete strategies encapsulate the details of their respective algorithms and provide a method for executing the task.
+They are interchangeable and can be selected and configured by the client based on the requirements of the task.
+4. Client
+The Client is responsible for selecting and configuring the appropriate strategy and providing it to the Context.
+It knows the requirements of the task and decides which strategy to use based on those requirements.
+The client creates an instance of the desired concrete strategy and passes it to the Context, enabling the Context to use the selected strategy to perform the task.
