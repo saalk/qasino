@@ -2,21 +2,25 @@ package cloud.qasino.games.action;
 
 import cloud.qasino.games.action.interfaces.Action;
 import cloud.qasino.games.database.entity.Card;
+import cloud.qasino.games.database.entity.CardMove;
 import cloud.qasino.games.database.entity.Game;
 import cloud.qasino.games.database.entity.Player;
 import cloud.qasino.games.database.entity.Turn;
 import cloud.qasino.games.database.entity.enums.player.PlayerState;
 import cloud.qasino.games.database.security.Visitor;
-import cloud.qasino.games.response.view.SectionSeat;
-import cloud.qasino.games.response.view.SectionTable;
 import cloud.qasino.games.pattern.statemachine.event.EventOutput;
 import cloud.qasino.games.pattern.statemachine.event.GameEvent;
 import cloud.qasino.games.pattern.statemachine.event.TurnEvent;
+import cloud.qasino.games.response.view.SectionHand;
+import cloud.qasino.games.response.view.SectionSeat;
+import cloud.qasino.games.response.view.SectionTable;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -54,13 +58,13 @@ public class MapQasinoGameTableFromDtoAction implements Action<MapQasinoGameTabl
                 actionDto.getCardsInTheGameSorted()
                         .stream()
                         .filter(c -> c.getHand() == null)
-                        .collect(Collectors.toList());
+                        .toList();
 //        table.setCardsInStockNotInHand(stockNotInHand);
         table.setStringCardsInStockNotInHand(String.valueOf(stockNotInHand));
         table.setCountStockAndTotal(
                 "[" + stockNotInHand.size() +
-                "/" + actionDto.getCardsInTheGameSorted().size() +
-                "] stock/total");
+                        "/" + actionDto.getCardsInTheGameSorted().size() +
+                        "] stock/total");
         table.setSeats(null);
         table.setSeats(mapSeats(actionDto));
         actionDto.setTable(table);
@@ -94,10 +98,44 @@ public class MapQasinoGameTableFromDtoAction implements Action<MapQasinoGameTabl
             List<String> handStrings =
                     hand.stream().map(Card::getRankSuit).collect(Collectors.toList());
             seat.setStringCardsInHand("[" + String.join("],[", handStrings) + "]");
-            seat.setPreviousCardMoves(actionDto.getActiveTurn().getCardMoves().stream()
-                    .filter(p -> p.getPlayerId() == player.getPlayerId())
-                    .toList());
 
+            List<CardMove> cardMoves = actionDto.getActiveTurn().getCardMoves().stream()
+                    .filter(p -> p.getPlayerId() == player.getPlayerId())
+                    .toList();
+
+            int round = 0;
+            List <SectionHand> handInRounds = new ArrayList<>();
+            SectionHand handInRound = new SectionHand();
+            List<String> cards = new ArrayList<>();
+            // card Moves should be ordered
+            for (CardMove move : cardMoves) {
+                round = move.getRoundFromSequence();
+                if (round == move.getRoundFromSequence()) {
+                    handInRound.setRoundNumber(move.getRoundFromSequence());
+                    cards.add(move.getCardMoveDetails());
+                } else {
+                    // first or new round
+                    if (round != 0) {
+                        // first
+                        handInRound.setRoundNumber(move.getRoundFromSequence());
+                        cards.add(move.getCardMoveDetails());
+                    } else {
+                        // new round - first update and save last
+                        handInRound.setCardsInRound(String.valueOf(cards));
+                        handInRounds.add(handInRound);
+                        //
+                        handInRound = new SectionHand();
+                        round = move.getRoundFromSequence();
+
+                        handInRound.setRoundNumber(move.getRoundFromSequence());
+                        cards.clear();
+                        cards.add(move.getCardMoveDetails());
+                    }
+                }
+            }
+            seat.setCardsInHandPerTurn(handInRounds);
+
+//          private Map<String, String> handInRound;
             // when player is human
             seat.setHuman(player.isHuman());
             if (player.isHuman()) {

@@ -12,6 +12,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.List;
+import java.util.Map;
 
 @Data
 @Builder
@@ -52,8 +53,8 @@ public class SectionSeat {
 //    private List<Card> cardsInHand = new ArrayList<>();
     @JsonProperty("Hand")
     private String stringCardsInHand;
-    @JsonProperty("PreviousCardMoves")
-    private List<CardMove> previousCardMoves;
+    @JsonProperty("HandPerTurn")
+    private List<SectionHand> cardsInHandPerTurn;
 
     // when player is human
     @JsonProperty("IsHumanPlayer")
