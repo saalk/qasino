@@ -4,10 +4,10 @@ import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
-class TurnTest extends QasinoSimulator {
+class NextMoveCalculatorTest extends QasinoSimulator {
 
     @Test
-    public void givenQasinoTurn_whenCreated_thenReturnValidObjectValues() {
+    public void givenQasinoCalculateNextMove_whenCreated_thenReturnValidObjectValues() {
 
         assertThat(turn.getActivePlayerId()).isEqualTo(player.getPlayerId());
         assertThat(turn.getCurrentMoveNumber()).isEqualTo(1);

@@ -16,6 +16,7 @@ import cloud.qasino.games.database.service.TurnAndCardMoveService;
 import cloud.qasino.games.pattern.statemachine.event.EventOutput;
 import cloud.qasino.games.pattern.statemachine.event.GameEvent;
 import cloud.qasino.games.pattern.statemachine.event.TurnEvent;
+import cloud.qasino.games.pattern.strategy.NextMoveCalculator;
 import cloud.qasino.games.response.view.SectionTable;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,6 +49,9 @@ public class PlayNextBotTurnAction implements Action<PlayNextBotTurnAction.Dto, 
         Turn activeTurn = actionDto.getActiveTurn();
         Player activePlayer = actionDto.getTurnPlayer();
         Move activeMove = Move.PASS;
+
+        Move strategyMove = NextMoveCalculator.next(activeGame, activePlayer, activeTurn);
+        log.info("PlayNextBotTurnAction StrategyMove {}", strategyMove.getLabel());
 
         boolean cardDealt;
 
@@ -187,6 +191,8 @@ public class PlayNextBotTurnAction implements Action<PlayNextBotTurnAction.Dto, 
         }
         actionDto.setActiveTurn(activeTurn); // can be null
         actionDto.setAllCardMovesForTheGame(turnAndCardMoveService.getCardMovesForGame(actionDto.getQasinoGame())); // can be null
+
+        log.info("PlayNextBotTurnAction activeMove {}", activeMove.getLabel());
 
         return cardDealt ? EventOutput.Result.SUCCESS : EventOutput.Result.FAILURE;
     }

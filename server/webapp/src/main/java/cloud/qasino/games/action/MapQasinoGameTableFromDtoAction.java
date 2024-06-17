@@ -103,6 +103,7 @@ public class MapQasinoGameTableFromDtoAction implements Action<MapQasinoGameTabl
                     .filter(p -> p.getPlayerId() == player.getPlayerId())
                     .toList();
 
+            boolean first = true;
             int round = 0;
             List <SectionHand> handInRounds = new ArrayList<>();
             SectionHand handInRound = new SectionHand();
@@ -115,10 +116,11 @@ public class MapQasinoGameTableFromDtoAction implements Action<MapQasinoGameTabl
                     cards.add(move.getCardMoveDetails());
                 } else {
                     // first or new round
-                    if (round != 0) {
+                    if (first) {
                         // first
                         handInRound.setRoundNumber(move.getRoundFromSequence());
                         cards.add(move.getCardMoveDetails());
+                        first = false;
                     } else {
                         // new round - first update and save last
                         handInRound.setCardsInRound(String.valueOf(cards));
