@@ -2,13 +2,12 @@ package cloud.qasino.games.database.entity;
 
 import cloud.qasino.games.database.entity.enums.player.AiLevel;
 import cloud.qasino.games.database.entity.enums.player.Avatar;
-import cloud.qasino.games.database.entity.enums.player.PlayerState;
+import cloud.qasino.games.database.entity.enums.player.PlayerType;
 import cloud.qasino.games.database.security.Visitor;
 import com.fasterxml.jackson.annotation.*;
 import com.voodoodyne.jackson.jsog.JSOGGenerator;
 import lombok.AccessLevel;
 import lombok.Data;
-import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.DynamicUpdate;
 
@@ -19,11 +18,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-// @Data for JPA entities is an antipattern
+// @Entity creates a direct link between class object(s) and table row(s)
 @Entity
+// @DynamicUpdate includes only columns which are actually being updated - not the cached insert
 @DynamicUpdate
-@Data // but we override equals, hash and toString and have noargs constructor
-@JsonIdentityInfo(generator= JSOGGenerator.class)
+// @Data for JPA entities is an antipattern
+// But we override equals, hash and toString and have noargs constructor.
+@Data
+@JsonIdentityInfo(generator = JSOGGenerator.class, property = "playerId")
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 @Table(name = "player", indexes = {
         // not needed : @Index(name = "players_index", columnList = "player_id", unique = true)
@@ -51,7 +53,7 @@ public class Player {
     private Visitor visitor;
 
     @JsonIgnore
-    // PlGa: many Players can play the same GameSubTotals
+    // PlGa: many Players can play the same Game
     @ManyToOne(cascade = CascadeType.DETACH)
     @JoinColumn(name = "game_id", referencedColumnName = "game_id", foreignKey = @ForeignKey
             (name = "fk_game_id"), nullable = true)
@@ -66,7 +68,7 @@ public class Player {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "role", nullable = false, length = 20)
-    private PlayerState playerState;
+    private PlayerType playerType;
 
     @Column(name = "fiches")
     private int fiches;
@@ -113,11 +115,11 @@ public class Player {
         this.seat = 1;
     }
 
-    public Player(Visitor visitor, Game game, PlayerState playerState, int fiches, int seat, Avatar avatar, String avatarName, AiLevel aiLevel) {
+    public Player(Visitor visitor, Game game, PlayerType playerType, int fiches, int seat, Avatar avatar, String avatarName, AiLevel aiLevel) {
         this();
         this.visitor = visitor;
         this.game = game;
-        this.playerState = playerState;
+        this.playerType = playerType;
 
         this.fiches = fiches;
         this.seat = seat;
@@ -136,15 +138,15 @@ public class Player {
     public static Player buildDummyBot(Game game, Avatar avatar, AiLevel aiLevel) {
         if (avatar == null) avatar = Avatar.GOBLIN;
         if (aiLevel == null) aiLevel = AiLevel.AVERAGE;
-        return new Player(null, game, PlayerState.BOT, 99, 99, avatar, "avatarName", aiLevel);
+        return new Player(null, game, PlayerType.BOT, 99, 99, avatar, "avatarName", aiLevel);
     }
     public static Player buildDummyHuman(Visitor visitor, Game game, Avatar avatar) {
         if (avatar == null) avatar = Avatar.GOBLIN;
-        return new Player(visitor, game, PlayerState.INITIATOR,99, 99, avatar, "avatarName", AiLevel.HUMAN);
+        return new Player(visitor, game, PlayerType.INITIATOR,99, 99, avatar, "avatarName", AiLevel.HUMAN);
     }
     public static Player buildDummyInvitee(Visitor visitor, Game game, Avatar avatar) {
         if (avatar == null) avatar = Avatar.GOBLIN;
-        return new Player(visitor, game, PlayerState.INVITED,99, 99, avatar, "avatarName", AiLevel.HUMAN);
+        return new Player(visitor, game, PlayerType.INVITED,99, 99, avatar, "avatarName", AiLevel.HUMAN);
     }
 
     public void setAiLevel(AiLevel aiLevel) {
@@ -176,7 +178,7 @@ public class Player {
                 ", visitorId=" + (this.visitor == null? "": this.visitor.getVisitorId()) +
                 ", gameId=" + (this.game == null? "": this.game.getGameId()) +
                 ", human=" + this.human +
-                ", role=" + (this.playerState == null ? "": this.playerState.getLabel()) +
+                ", role=" + (this.playerType == null ? "": this.playerType.getLabel()) +
                 ", fiches=" + this.fiches +
                 ", seat=" + this.seat +
                 ", avatar=" + this.avatar +

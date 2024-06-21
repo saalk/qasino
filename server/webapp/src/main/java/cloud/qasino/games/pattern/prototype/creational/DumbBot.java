@@ -3,7 +3,7 @@ package cloud.qasino.games.pattern.prototype.creational;
 import cloud.qasino.games.database.entity.Game;
 import cloud.qasino.games.database.entity.enums.player.AiLevel;
 import cloud.qasino.games.database.entity.enums.player.Avatar;
-import cloud.qasino.games.database.entity.enums.player.PlayerState;
+import cloud.qasino.games.database.entity.enums.player.PlayerType;
 import cloud.qasino.games.database.security.Visitor;
 import cloud.qasino.games.pattern.prototype.Bot;
 
@@ -13,8 +13,8 @@ public class DumbBot extends Bot<DumbBot> {
     int seat;
     private AiLevel aiLevel;
 
-    public DumbBot(Visitor visitor, Game game, PlayerState playerState, int fiches, int seat, Avatar avatar, String avatarName, AiLevel aiLevel) {
-        super(visitor, game, playerState, fiches, seat, avatar, avatarName, aiLevel);
+    public DumbBot(Visitor visitor, Game game, PlayerType playerType, int fiches, int seat, Avatar avatar, String avatarName, AiLevel aiLevel) {
+        super(visitor, game, playerType, fiches, seat, avatar, avatarName, aiLevel);
     }
 
 

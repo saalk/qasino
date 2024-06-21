@@ -1,11 +1,10 @@
 package cloud.qasino.games.dto;
 
-import cloud.qasino.games.database.entity.Game;
+import cloud.qasino.games.database.entity.enums.game.GameState;
+import cloud.qasino.games.database.entity.enums.game.Type;
 import cloud.qasino.games.database.entity.enums.player.AiLevel;
 import cloud.qasino.games.database.entity.enums.player.Avatar;
 import lombok.Data;
-
-import java.util.List;
 
 @Data
 /**
@@ -13,12 +12,11 @@ import java.util.List;
  * (e.g., in the database or business logic) from the data exposed to
  * external clients or systems.
  * */
-public class ResultsDto {
+public class ResultDto {
 
     private static final String NOT_BLANK_MESSAGE = "{notBlank.message}";
     private static final String EMAIL_MESSAGE = "{email.message}";
 
-    // for create and update
     long resultId;
     String name;
 
@@ -26,6 +24,17 @@ public class ResultsDto {
     Avatar playerAvatar;
     String playerAvatarName;
     AiLevel playerAiLevel;
+
+    long visitorId;
+    String username;
+    String alias;
+    String aliasSequence;
+    int balance;
+
+    long gameId;
+    GameState state;
+    Type type;
+    int ante;
 
     // derived
     boolean playerWinner;

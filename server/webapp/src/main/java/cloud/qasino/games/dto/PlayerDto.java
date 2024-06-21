@@ -4,7 +4,7 @@ import cloud.qasino.games.database.entity.Game;
 import cloud.qasino.games.database.entity.Result;
 import cloud.qasino.games.database.entity.enums.player.AiLevel;
 import cloud.qasino.games.database.entity.enums.player.Avatar;
-import cloud.qasino.games.database.entity.enums.player.PlayerState;
+import cloud.qasino.games.database.entity.enums.player.PlayerType;
 import lombok.Data;
 
 @Data
@@ -22,7 +22,7 @@ public class PlayerDto {
     private long playerId;
     private long visitorId;
     private Game game;
-    private PlayerState playerState;
+    private PlayerType playerType;
     private int fiches;
     private Avatar avatar;
     private String avatarName;

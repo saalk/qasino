@@ -1,70 +1,64 @@
 package cloud.qasino.games.pattern.strategy;
 
-import cloud.qasino.games.database.entity.Card;
 import cloud.qasino.games.database.entity.Game;
 import cloud.qasino.games.database.entity.Player;
 import cloud.qasino.games.database.entity.Turn;
-import cloud.qasino.games.database.entity.enums.card.Location;
 import cloud.qasino.games.database.entity.enums.move.Move;
-import cloud.qasino.games.pattern.math.MathUtil;
-import cloud.qasino.games.pattern.strategy.algorithm.AverageMove;
-import cloud.qasino.games.pattern.strategy.algorithm.DumbMove;
+import cloud.qasino.games.pattern.strategy.algorithm.NormalMove;
+import cloud.qasino.games.pattern.strategy.algorithm.RandomMove;
 import cloud.qasino.games.pattern.strategy.algorithm.SmartMove;
-import cloud.qasino.games.pattern.stream.StreamUtil;
-
-import java.util.List;
-import java.util.Optional;
+import cloud.qasino.games.pattern.strategy.algorithm.StupidMove;
 
 
 public class NextMoveCalculator {
 
+    enum NextMove {StupidMove, RandomMove, NormalMove, SmartMove, PassMove}
+
     public static Move next(Game game, Player player, Turn turn) {
+        // @formatter:off
 
-        List<Card> sortedCardsInStock = StreamUtil.sortCardsOnSequenceWithStream(game.getCards(), Location.STOCK);
-        Optional<Card> lastCardPlayed = StreamUtil.findFirstCardInSortedListForLocation(sortedCardsInStock, Location.STOCK);
+        NextMove next = predict(game, player, turn);
+        switch (next) {
+            case StupidMove -> { return new StupidMove().predictMove(game);}
+            case RandomMove -> { return new RandomMove().predictMove(game);}
+            case NormalMove -> { return new NormalMove().predictMove(game);}
+            case SmartMove  -> { return new SmartMove().predictMove(game);}
+            default ->         { return Move.PASS;}
+        }
+        // @formatter:on
+    }
 
-        int totalValueCardsInStock = StreamUtil.countCardValuesOnRankAndSuit(sortedCardsInStock);
-        int totalValueDeck = StreamUtil.countCardValuesOnRankAndSuit(game.getCards());
-        double averageCardsLeftInStockValue = MathUtil.roundToNDigits(totalValueCardsInStock / (double) sortedCardsInStock.size(), 1);
-        double averageValueDeck = MathUtil.roundToNDigits(totalValueDeck / (double) game.getCards().size(), 1);
-
-        enum NextMove {DumbMove, AverageMove, SmartMove}
-        NextMove next = NextMove.AverageMove;
-        ;
+    private static NextMove predict(Game game, Player player, Turn turn) {
+        NextMove next = NextMove.RandomMove;
         switch (player.getAiLevel()) {
             case DUMB -> {
-                if (turn.getCurrentMoveNumber() < 2) {
-                    next = NextMove.DumbMove;
+                if (turn.getCurrentMoveNumber() == 1) {
+                    next = NextMove.StupidMove;
+                } else if (turn.getCurrentMoveNumber() == 2) {
+                    next = NextMove.RandomMove;
                 } else {
-                    next = NextMove.AverageMove;
+                    next = NextMove.PassMove;
                 }
             }
             case AVERAGE -> {
-                if (turn.getCurrentMoveNumber() < 2) {
-                    next = NextMove.AverageMove;
+                if (turn.getCurrentMoveNumber() == 1) {
+                    next = NextMove.RandomMove;
+                } else if (turn.getCurrentMoveNumber() == 2) {
+                    next = NextMove.NormalMove;
                 } else {
-                    next = NextMove.SmartMove;
+                    next = NextMove.PassMove;
                 }
             }
             case SMART -> {
-                next = NextMove.SmartMove;
+                if (turn.getCurrentMoveNumber() == 1) {
+                    next = NextMove.NormalMove;
+                } else if (turn.getCurrentMoveNumber() == 2) {
+                    next = NextMove.SmartMove;
+                } else {
+                    next = NextMove.PassMove;
+                }
             }
         }
-
-        switch (next) {
-            case DumbMove -> {
-                return new AverageMove().calculate(game);
-            }
-            case AverageMove -> {
-                return new AverageMove().calculate(game);
-            }
-            case SmartMove -> {
-                return new AverageMove().calculate(game);
-            }
-        }
-        return null;
-
+        return next;
     }
-
-    ;
 }

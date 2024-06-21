@@ -26,11 +26,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-// @Data for JPA entities is an antipattern
+// @Entity creates a direct link between class object(s) and table row(s)
 @Entity
+// @DynamicUpdate includes only columns which are actually being updated - not the cached insert
 @DynamicUpdate
-@Data // but we override equals, hash and toString and have noargs constructor
-@JsonIdentityInfo(generator = JSOGGenerator.class)
+// @Data for JPA entities is an antipattern
+// But we override equals, hash and toString and have noargs constructor.
+@Data
+@JsonIdentityInfo(generator = JSOGGenerator.class, property = "leagueId")
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 @Table(name = "league", indexes = {
         // not needed : @Index(name = "leagues_index", columnList = "league_id", unique = true)

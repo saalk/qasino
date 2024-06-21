@@ -4,6 +4,7 @@ import cloud.qasino.games.database.entity.enums.card.Face;
 import cloud.qasino.games.database.entity.enums.card.Location;
 import cloud.qasino.games.database.entity.enums.card.Position;
 import com.fasterxml.jackson.annotation.*;
+import com.voodoodyne.jackson.jsog.JSOGGenerator;
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
@@ -14,13 +15,14 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Objects;
 
-// @Data for JPA entities is an antipattern
+// @Entity creates a direct link between class object(s) and table row(s)
 @Entity
+// @DynamicUpdate includes only columns which are actually being updated - not the cached insert
 @DynamicUpdate
-@Data // but we override equals, hash and toString and have noargs constructor
-@JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class,
-        property = "cardId")
-//@JsonIdentityInfo(generator=JSOGGenerator.class)
+// @Data for JPA entities is an antipattern
+// But we override equals, hash and toString and have noargs constructor.
+@Data
+@JsonIdentityInfo(generator = JSOGGenerator.class, property = "cardId")
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 @Table(name = "card", indexes =
         { @Index(name = "cards_game_index", columnList = "game_id", unique = false ),

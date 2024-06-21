@@ -21,7 +21,7 @@ import cloud.qasino.games.database.entity.enums.player.AiLevel;
 import cloud.qasino.games.database.entity.enums.player.Avatar;
 import cloud.qasino.games.database.security.Visitor;
 import cloud.qasino.games.response.view.NavigationBarItem;
-import cloud.qasino.games.response.view.PageGameInvitations;
+import cloud.qasino.games.dto.InvitationsDTO;
 import cloud.qasino.games.response.view.PageGamePlay;
 import cloud.qasino.games.response.view.PageGameSetup;
 import cloud.qasino.games.response.view.PageLeague;
@@ -54,7 +54,7 @@ public class MapQasinoResponseFromDtoAction implements Action<MapQasinoResponseF
         PageVisitor pageVisitor = new PageVisitor();
         PageGameSetup pageGameSetup = new PageGameSetup();
         PageGamePlay pageGamePlay = new PageGamePlay();
-        PageGameInvitations pageGamesOverview = new PageGameInvitations();
+        InvitationsDTO pageGamesOverview = new InvitationsDTO();
         PageLeague pageLeague = new PageLeague();
 
         // special for gameplay
@@ -168,7 +168,7 @@ public class MapQasinoResponseFromDtoAction implements Action<MapQasinoResponseF
         }
         navigationBarItem.setVisible(actionDto.isShowGameInvitationsPage());
         navigationBarItems.add(navigationBarItem);
-        qasinoResponse.setPageGameInvitations(pageGamesOverview);
+        qasinoResponse.setInvitationsDTO(pageGamesOverview);
 
         // 5: Leagues
         navigationBarItem = new NavigationBarItem();
@@ -311,7 +311,7 @@ public class MapQasinoResponseFromDtoAction implements Action<MapQasinoResponseF
         // TODO results dont show!!
         pageGamePlay.setGameResults(actionDto.getGameResults());
     }
-    private void mapGameInvitationsPage(Dto actionDto, NavigationBarItem navigationBarItem, PageGameInvitations pageGamesOverview) {
+    private void mapGameInvitationsPage(Dto actionDto, NavigationBarItem navigationBarItem, InvitationsDTO pageGamesOverview) {
         // set the nav bar
         navigationBarItem.setTitle("Invites[]");
         navigationBarItem.setStat("calculating..");

@@ -11,7 +11,7 @@ import java.util.Optional;
 
 public class StreamUtil {
 
-    // filter() and sorted() - filter then sort a list
+    // filter() and sorted() - filter then sort a list asc
     // https://docs.oracle.com/javase%2F8%2Fdocs%2Fapi%2F%2F/java/util/stream/Stream.html#sorted--
     public static List<Card> sortCardsOnSequenceWithStream(List<Card> unsortedCardList, Location location) {
         if (location != null) {
@@ -38,10 +38,10 @@ public class StreamUtil {
 
     // filter() then findFirst() - find the first after filtering
     // https://docs.oracle.com/javase%2F8%2Fdocs%2Fapi%2F%2F/java/util/stream/Stream.html#sorted--
-    public static Optional<Card> findFirstCardInSortedListForLocation(List<Card> sortedCardList, Location location) {
+    public static Optional<Card> findLastCardInSortedList(List<Card> sortedCardList) {
         return sortedCardList.
                 stream().
-                filter(stock -> stock.getLocation() == location).
-                findFirst();
+                sorted(ComparatorUtil.cardSequenceComparator().reversed()).
+                findFirst(); // can be replaced with max() ?????
     }
 }

@@ -1,4 +1,4 @@
-package cloud.qasino.games.action;
+package cloud.qasino.games.cardengine.action;
 
 import cloud.qasino.games.action.interfaces.Action;
 import cloud.qasino.games.database.entity.CardMove;
@@ -26,7 +26,7 @@ import java.util.List;
 
 @Slf4j
 @Component
-public class PlayNextBotTurnAction implements Action<PlayNextBotTurnAction.Dto, EventOutput.Result> {
+public class PlayNextBotTurnActionBetter implements Action<PlayNextBotTurnActionBetter.Dto, EventOutput.Result> {
 
     @Autowired
     TurnAndCardMoveService turnAndCardMoveService;
@@ -198,7 +198,7 @@ public class PlayNextBotTurnAction implements Action<PlayNextBotTurnAction.Dto, 
         return cardDealt ? EventOutput.Result.SUCCESS : EventOutput.Result.FAILURE;
     }
 
-    private static void isRoundEqualToRoundsToWin(PlayNextBotTurnAction.Dto actionDto, Game activeGame, Turn activeTurn) {
+    private static void isRoundEqualToRoundsToWin(Dto actionDto, Game activeGame, Turn activeTurn) {
         switch (Style.fromLabelWithDefault(activeGame.getStyle()).getRoundsToWin()) {
             case ONE_ROUND -> {
                 if (activeTurn.getCurrentRoundNumber() == 1) {
@@ -218,7 +218,7 @@ public class PlayNextBotTurnAction implements Action<PlayNextBotTurnAction.Dto, 
         }
     }
 
-    private static void isTurnEqualToTurnsToWin(PlayNextBotTurnAction.Dto actionDto, Game activeGame, Turn activeTurn) {
+    private static void isTurnEqualToTurnsToWin(Dto actionDto, Game activeGame, Turn activeTurn) {
         switch (Style.fromLabelWithDefault(activeGame.getStyle()).getTurnsToWin()) {
             case ONE_WINS -> {
                 if (activeTurn.getCurrentMoveNumber() == 1) {

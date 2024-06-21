@@ -4,7 +4,7 @@ import cloud.qasino.games.database.entity.Game;
 import cloud.qasino.games.database.entity.Player;
 import cloud.qasino.games.database.entity.enums.player.AiLevel;
 import cloud.qasino.games.database.entity.enums.player.Avatar;
-import cloud.qasino.games.database.entity.enums.player.PlayerState;
+import cloud.qasino.games.database.entity.enums.player.PlayerType;
 import cloud.qasino.games.database.repository.PlayerRepository;
 import cloud.qasino.games.database.security.Visitor;
 import cloud.qasino.games.exception.MyBusinessException;
@@ -33,11 +33,11 @@ public class PlayerServiceOld {
     }
 
     public Player acceptInvitationForAGame(Player invitee) {
-        invitee.setPlayerState(PlayerState.ACCEPTED);
+        invitee.setPlayerType(PlayerType.INVITEE);
         return repository.save(invitee);
     }
     public Player rejectInvitationForAGame(Player invitee) {
-        invitee.setPlayerState(PlayerState.REJECTED);
+        invitee.setPlayerType(PlayerType.REJECTED);
         return repository.save(invitee);
     }
     public List<Player> seatOneUpForPlayer(Player seatUp) {
@@ -73,7 +73,7 @@ public class PlayerServiceOld {
         Player visitor = new Player(
                 initiator,
                 game,
-                PlayerState.INITIATOR,
+                PlayerType.INITIATOR,
                 initiator.getBalance(),
                 allPlayersForTheGame.size()+1,
                 avatar,
@@ -87,7 +87,7 @@ public class PlayerServiceOld {
         Player player = new Player(
             null,
             game,
-            PlayerState.INVITED,
+            PlayerType.INVITED,
             invitee.getBalance(),
             allPlayersForTheGame.size()+1,
             avatar,
@@ -105,7 +105,7 @@ public class PlayerServiceOld {
         Player bot = new Player(
                 null,
                 game,
-                PlayerState.BOT,
+                PlayerType.BOT,
                 fiches,
                 allPlayersForTheGame.size()+1,
                 avatar,

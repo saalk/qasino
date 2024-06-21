@@ -2,7 +2,7 @@ package cloud.qasino.games.config;
 
 import cloud.qasino.games.database.entity.enums.game.style.*;
 import cloud.qasino.games.database.entity.enums.game.GameState;
-import cloud.qasino.games.database.entity.enums.player.PlayerState;
+import cloud.qasino.games.database.entity.enums.player.PlayerType;
 import cloud.qasino.games.pattern.statemachine.event.GameEvent;
 import cloud.qasino.games.database.entity.enums.move.Move;
 import cloud.qasino.games.database.entity.enums.game.Type;
@@ -106,8 +106,8 @@ public interface Constants {
                         AiLevel.fromLabelWithDefault(e) != AiLevel.ERROR ||
                         EnumUtils.isValidEnum(Avatar.class, e) ||
                         Avatar.fromLabelWithDefault(e) != Avatar.ERROR ||
-                        EnumUtils.isValidEnum(PlayerState.class, e) ||
-                        PlayerState.fromLabelWithDefault(e) != PlayerState.ERROR ||
+                        EnumUtils.isValidEnum(PlayerType.class, e) ||
+                        PlayerType.fromLabelWithDefault(e) != PlayerType.ERROR ||
                         EnumUtils.isValidEnum(Face.class, e) ||
                         Face.fromLabelWithDefault(e) != Face.ERROR ||
                         EnumUtils.isValidEnum(Location.class, e) ||

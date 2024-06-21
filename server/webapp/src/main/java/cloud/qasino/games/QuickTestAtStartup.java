@@ -12,7 +12,7 @@ import cloud.qasino.games.database.entity.enums.game.GameState;
 import cloud.qasino.games.database.entity.enums.move.Move;
 import cloud.qasino.games.database.entity.enums.player.AiLevel;
 import cloud.qasino.games.database.entity.enums.player.Avatar;
-import cloud.qasino.games.database.entity.enums.player.PlayerState;
+import cloud.qasino.games.database.entity.enums.player.PlayerType;
 import cloud.qasino.games.database.repository.CardMoveRepository;
 import cloud.qasino.games.database.repository.CardRepository;
 import cloud.qasino.games.database.repository.GameRepository;
@@ -138,8 +138,8 @@ public class QuickTestAtStartup implements ApplicationRunner {
         );
         invites = playerRepository.findAllPlayersInvitedForAGame(game.getGameId(), pageable);
         for (Player invite : invites) {
-            if (invite.getPlayerState().equals(PlayerState.INVITED)) {
-                invite.setPlayerState(PlayerState.ACCEPTED);
+            if (invite.getPlayerType().equals(PlayerType.INVITED)) {
+                invite.setPlayerType(PlayerType.INVITEE);
                 playerRepository.save(invite);
             }
         }

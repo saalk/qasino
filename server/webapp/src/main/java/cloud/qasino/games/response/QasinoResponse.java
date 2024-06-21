@@ -1,7 +1,7 @@
 package cloud.qasino.games.response;
 
 import cloud.qasino.games.response.view.NavigationBarItem;
-import cloud.qasino.games.response.view.PageGameInvitations;
+import cloud.qasino.games.dto.InvitationsDTO;
 import cloud.qasino.games.response.view.PageGamePlay;
 import cloud.qasino.games.response.view.PageGameSetup;
 import cloud.qasino.games.response.view.PageLeague;
@@ -43,7 +43,7 @@ public class QasinoResponse {
     @JsonProperty("PageGamePlay")
     private PageGamePlay pageGamePlay;
     @JsonProperty("PageGameInvitations")
-    private PageGameInvitations pageGameInvitations;
+    private InvitationsDTO invitationsDTO;
     @JsonProperty("PageLeague")
     private PageLeague pageLeague;
 

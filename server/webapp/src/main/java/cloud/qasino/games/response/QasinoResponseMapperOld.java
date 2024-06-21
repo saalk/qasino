@@ -5,7 +5,7 @@ import cloud.qasino.games.database.entity.enums.game.GameState;
 import cloud.qasino.games.database.entity.enums.game.Style;
 import cloud.qasino.games.dto.QasinoFlowDto;
 import cloud.qasino.games.response.view.NavigationBarItem;
-import cloud.qasino.games.response.view.PageGameInvitations;
+import cloud.qasino.games.dto.InvitationsDTO;
 import cloud.qasino.games.response.view.PageGamePlay;
 import cloud.qasino.games.response.view.PageGameSetup;
 import cloud.qasino.games.response.view.PageLeague;
@@ -31,7 +31,7 @@ public class QasinoResponseMapperOld {
         PageVisitor pageVisitor = new PageVisitor();
         PageGameSetup pageGameSetup = new PageGameSetup();
         PageGamePlay pageGamePlay = new PageGamePlay();
-        PageGameInvitations pageGamesOverview = new PageGameInvitations();
+        InvitationsDTO pageGamesOverview = new InvitationsDTO();
         PageLeague pageLeague = new PageLeague();
 
         // special for gameplay
@@ -140,7 +140,7 @@ public class QasinoResponseMapperOld {
         }
         navigationBarItem.setVisible(actionDto.isShowGameInvitationsPage());
         navigationBarItems.add(navigationBarItem);
-        qasinoResponse.setPageGameInvitations(pageGamesOverview);
+        qasinoResponse.setInvitationsDTO(pageGamesOverview);
 
         // 5: Leagues
         navigationBarItem = new NavigationBarItem();
@@ -235,7 +235,7 @@ public class QasinoResponseMapperOld {
         }
         pageGamePlay.setGameResults(actionDto.getGameResults());
     }
-    private void mapGameInvitationsPage(QasinoFlowDto actionDto, NavigationBarItem navigationBarItem, PageGameInvitations pageGamesOverview) {
+    private void mapGameInvitationsPage(QasinoFlowDto actionDto, NavigationBarItem navigationBarItem, InvitationsDTO pageGamesOverview) {
         // set the nav bar
         navigationBarItem.setTitle("Invite[]");
         navigationBarItem.setStat("calculating...");

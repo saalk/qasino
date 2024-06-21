@@ -1,4 +1,4 @@
-package cloud.qasino.games.action;
+package cloud.qasino.games.cardengine.action;
 
 import cloud.qasino.games.action.interfaces.Action;
 import cloud.qasino.games.database.entity.Card;
@@ -23,7 +23,7 @@ import java.util.stream.Collectors;
 
 @Slf4j
 @Component
-public class MapQasinoGameTableFromDtoAction implements Action<MapQasinoGameTableFromDtoAction.Dto, EventOutput.Result> {
+public class MapQasinoGameTableFromDtoActionBetter implements Action<MapQasinoGameTableFromDtoActionBetter.Dto, EventOutput.Result> {
 
     @Override
     public EventOutput.Result perform(Dto actionDto) {

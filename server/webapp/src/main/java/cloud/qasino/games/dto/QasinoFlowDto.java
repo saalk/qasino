@@ -49,7 +49,7 @@ import cloud.qasino.games.database.entity.enums.game.style.TurnsToWin;
 import cloud.qasino.games.database.entity.enums.move.Move;
 import cloud.qasino.games.database.entity.enums.player.AiLevel;
 import cloud.qasino.games.database.entity.enums.player.Avatar;
-import cloud.qasino.games.database.entity.enums.player.PlayerState;
+import cloud.qasino.games.database.entity.enums.player.PlayerType;
 import cloud.qasino.games.database.security.Visitor;
 import cloud.qasino.games.pattern.statemachine.event.QasinoEvent;
 import cloud.qasino.games.response.view.SectionTable;
@@ -152,7 +152,7 @@ public class QasinoFlowDto extends AbstractFlowDto
     private String suppliedLeagueEnd;    // todo monthsEnd, thisMonday, x days.
     private Boolean suppliedLeagueClose; // todo null, or true/false
     // player
-    private PlayerState suppliedPlayerState; // bot, initiator or guest
+    private PlayerType suppliedPlayerType; // bot, initiator or guest
     private int suppliedFiches;
     private Avatar suppliedAvatar;
     private AiLevel suppliedAiLevel; // human or ai
@@ -457,7 +457,7 @@ public class QasinoFlowDto extends AbstractFlowDto
             if (isValueForEnumKeyValid(key, requestParam.get(
                             key), dataName,
                     paramDataString)) {
-                this.suppliedPlayerState = PlayerState.fromLabel(requestParam.get(key));
+                this.suppliedPlayerType = PlayerType.fromLabel(requestParam.get(key));
             } else {
                 return false;
             }
@@ -706,7 +706,7 @@ public class QasinoFlowDto extends AbstractFlowDto
         switch (key) {
 
             case "role":
-                if (!(PlayerState.fromLabelWithDefault(value) == PlayerState.ERROR)) {
+                if (!(PlayerType.fromLabelWithDefault(value) == PlayerType.ERROR)) {
                     return true;
                 }
                 break;

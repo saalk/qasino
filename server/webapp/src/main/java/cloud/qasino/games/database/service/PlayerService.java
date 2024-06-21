@@ -4,7 +4,7 @@ import cloud.qasino.games.database.entity.Game;
 import cloud.qasino.games.database.entity.Player;
 import cloud.qasino.games.database.entity.enums.player.AiLevel;
 import cloud.qasino.games.database.entity.enums.player.Avatar;
-import cloud.qasino.games.database.entity.enums.player.PlayerState;
+import cloud.qasino.games.database.entity.enums.player.PlayerType;
 import cloud.qasino.games.database.repository.CardRepository;
 import cloud.qasino.games.database.repository.GameRepository;
 import cloud.qasino.games.database.repository.PlayerRepository;
@@ -47,13 +47,13 @@ public class PlayerService {
 
     public PlayerDto acceptInvitationForAGame(PlayerDto playerDto) {
         Player invitee = playerMapper.fromDto(playerDto);
-        invitee.setPlayerState(PlayerState.ACCEPTED);
+        invitee.setPlayerType(PlayerType.INVITEE);
         Player accepted =  playerRepository.save(invitee);
         return playerMapper.toDto(accepted);
     }
     public PlayerDto rejectInvitationForAGame(PlayerDto playerDto) {
         Player invitee = playerMapper.fromDto(playerDto);
-        invitee.setPlayerState(PlayerState.REJECTED);
+        invitee.setPlayerType(PlayerType.REJECTED);
         Player rejected =  playerRepository.save(invitee);
         return playerMapper.toDto(rejected);
     }
@@ -97,7 +97,7 @@ public class PlayerService {
         Player visitor = new Player(
                 initiator,
                 game,
-                PlayerState.INITIATOR,
+                PlayerType.INITIATOR,
                 initiator.getBalance(),
                 allPlayersForTheGame.size()+1,
                 avatar,
@@ -115,7 +115,7 @@ public class PlayerService {
         Player player = new Player(
             null,
             game,
-            PlayerState.INVITED,
+            PlayerType.INVITED,
             invitee.getBalance(),
             allPlayersForTheGame.size()+1,
             avatar,
@@ -136,7 +136,7 @@ public class PlayerService {
         Player bot = new Player(
                 null,
                 game,
-                PlayerState.BOT,
+                PlayerType.BOT,
                 fiches,
                 allPlayersForTheGame.size()+1,
                 avatar,

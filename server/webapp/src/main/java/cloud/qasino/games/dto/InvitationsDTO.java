@@ -1,6 +1,5 @@
-package cloud.qasino.games.response.view;
+package cloud.qasino.games.dto;
 
-import cloud.qasino.games.database.entity.Game;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -13,7 +12,7 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class PageGameInvitations {
+public class InvitationsDTO {
 
     // buttons
     // 1 accept or decline invitation for a game
@@ -21,7 +20,7 @@ public class PageGameInvitations {
 
     // Main - 1, 2
     @JsonProperty("GameInvitations")
-    private List<Game> gameInvitations;
+    private List<GameDto> gameInvitations;
 
 }
 
