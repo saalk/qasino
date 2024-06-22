@@ -12,29 +12,19 @@ import cloud.qasino.games.response.view.statistics.Statistic;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.util.List;
 
-@Data
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
+@Getter
+@Setter
 public class Qasino {
-
     private MessageDto message;
-    private List<NavigationBarItem> navBarItems;
-
-    // IdsDto
     private IdsDto ids = new IdsDto();
-
-    // Forms
     private VisitorDto visitor;
     private GameDto game;
     private InvitationsDTO invitations;
     private LeagueDto league;
-
-    // extra
-    EnumOverview enumOverview = new EnumOverview();
-    List<Statistic> statistics;
 }

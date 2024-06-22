@@ -8,6 +8,8 @@ import cloud.qasino.games.database.entity.Player;
 import cloud.qasino.games.database.entity.Turn;
 import cloud.qasino.games.database.entity.enums.player.PlayerType;
 import cloud.qasino.games.database.security.Visitor;
+import cloud.qasino.games.dto.QasinoFlowDto;
+import cloud.qasino.games.dto.QasinoFlowDtoBetter;
 import cloud.qasino.games.pattern.statemachine.event.EventOutput;
 import cloud.qasino.games.pattern.statemachine.event.GameEvent;
 import cloud.qasino.games.pattern.statemachine.event.TurnEvent;
@@ -25,8 +27,10 @@ import java.util.stream.Collectors;
 @Component
 public class MapQasinoGameTableFromDtoActionBetter implements Action<MapQasinoGameTableFromDtoActionBetter.Dto, EventOutput.Result> {
 
+    static QasinoFlowDtoBetter dto;
     @Override
     public EventOutput.Result perform(Dto actionDto) {
+
 
         SectionTable table = new SectionTable();
 
@@ -156,6 +160,7 @@ public class MapQasinoGameTableFromDtoActionBetter implements Action<MapQasinoGa
     }
 
     public interface Dto {
+
 
         // @formatter:off
         String getErrorMessage();

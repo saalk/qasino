@@ -1,5 +1,6 @@
 package cloud.qasino.games.response;
 
+import cloud.qasino.games.pattern.singleton.OnlineVisitorsPerDay;
 import cloud.qasino.games.response.view.NavigationBarItem;
 import cloud.qasino.games.dto.InvitationsDTO;
 import cloud.qasino.games.response.view.PageGamePlay;
@@ -25,6 +26,9 @@ public class QasinoResponse {
 
     @JsonProperty("Message")
     private String action;
+    public void setAction(String action) {
+        this.action = "[logons=" + OnlineVisitorsPerDay.getInstance().getOnlineVisitors() + "] " + action;
+    }
     @JsonProperty("ShowMessage")
     private boolean actionNeeded;
 

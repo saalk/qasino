@@ -6,8 +6,9 @@ import cloud.qasino.games.database.security.MyUserDetailService;
 import cloud.qasino.games.database.security.MyUserPrincipal;
 import cloud.qasino.games.dto.QasinoFlowDto;
 import cloud.qasino.games.exception.MyNPException;
-import cloud.qasino.games.response.QasinoResponse;
+import cloud.qasino.games.pattern.singleton.OnlineVisitorsPerDay;
 import cloud.qasino.games.pattern.statemachine.event.EventOutput;
+import cloud.qasino.games.response.QasinoResponse;
 import cloud.qasino.games.web.AjaxUtils;
 import cloud.qasino.games.web.MessageHelper;
 import com.google.common.base.Throwables;
@@ -125,6 +126,7 @@ public class HomeSigninSignupThymeleafController extends AbstractThymeleafContro
             @RequestBody LoginRequest loginRequest,
             HttpServletResponse response
     ) {
+        // TODO Seems this method is not called???
         log.warn("PostMapping: /perform_signin");
 
         Authentication authenticationRequest =
@@ -133,6 +135,9 @@ public class HomeSigninSignupThymeleafController extends AbstractThymeleafContro
                 this.authenticationManager.authenticate(authenticationRequest);
         log.warn("PostMapping: perform_signin");
         log.warn("LoginRequest: {}", loginRequest);
+        if (authenticationResponse.isAuthenticated()) {
+            OnlineVisitorsPerDay.getInstance().newLogon();
+        }
         return null;
     }
 
