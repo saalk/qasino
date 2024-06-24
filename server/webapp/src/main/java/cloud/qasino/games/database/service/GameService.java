@@ -10,19 +10,27 @@ import cloud.qasino.games.database.entity.enums.player.Avatar;
 import cloud.qasino.games.database.repository.CardRepository;
 import cloud.qasino.games.database.repository.GameRepository;
 import cloud.qasino.games.database.repository.PlayerRepository;
+import cloud.qasino.games.database.security.Visitor;
 import cloud.qasino.games.dto.GameDto;
 import cloud.qasino.games.dto.VisitorDto;
 import cloud.qasino.games.dto.mapper.GameMapper;
+import cloud.qasino.games.dto.request.IdsDto;
 import cloud.qasino.games.exception.MyBusinessException;
 import cloud.qasino.games.pattern.factory.Deck;
 import cloud.qasino.games.pattern.factory.DeckFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.thymeleaf.expression.Ids;
 
 import java.util.ArrayList;
 import java.util.List;
 
+
 @Service
+@Lazy
 public class GameService {
 
     // @formatter:off
@@ -32,6 +40,29 @@ public class GameService {
     @Autowired private PlayerServiceOld playerServiceOld;
     GameMapper gameMapper;
 
+    // counts
+
+    // find one
+    public GameDto findOneByGameId(IdsDto idsDto) {
+        Game retrievedGame = gameRepository.findOneByGameId(idsDto.getSuppliedVisitorId());
+        return gameMapper.gameToGameDto(retrievedGame);
+    };
+
+    public GameDto findLatestGameForVisitorId(IdsDto idsDto){
+        Pageable pageable = PageRequest.of(0, 4);
+        List<Game> foundGame = gameRepository.findAllNewGamesForVisitorWithPage(idsDto.getSuppliedVisitorId(), pageable);
+        if (foundGame.isEmpty()) {
+            foundGame = gameRepository.findAllStartedGamesForVisitorWithPage(idsDto.getSuppliedVisitorId(), pageable);
+        }
+        if (foundGame.isEmpty()) {
+            foundGame = gameRepository.findAllFinishedGamesForVisitorWithPage(idsDto.getSuppliedVisitorId(), pageable);
+            // no games are present for the visitor
+            if (foundGame.isEmpty()) return null;
+        }
+        // BR 2
+        return gameMapper.gameToGameDto(foundGame.get(0));
+
+    }
     public GameDto setupNewGameWithPlayerInitiator(GameDto gameDto, VisitorDto visitorDto) {
         Game game = gameMapper.gameDtoToGame(gameDto);
         game.setInitiator(visitorDto.getVisitorId());

@@ -29,9 +29,9 @@ public class MessageDto {
 
     // FUNCTIONAL
     @JsonProperty("Message")
-    private String action;
+    private String action = "Empty";
     @JsonProperty("ShowMessage")
-    private boolean actionNeeded;
+    private boolean actionNeeded = false;
 
 
     // EXCEPTION - - TODO move out of DTO

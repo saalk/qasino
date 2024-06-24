@@ -1,5 +1,6 @@
 package cloud.qasino.games.database.service;
 
+import cloud.qasino.games.database.entity.League;
 import cloud.qasino.games.database.repository.LeagueRepository;
 import cloud.qasino.games.database.security.Privilege;
 import cloud.qasino.games.database.security.PrivilegeRepository;
@@ -7,11 +8,15 @@ import cloud.qasino.games.database.security.Role;
 import cloud.qasino.games.database.security.RoleRepository;
 import cloud.qasino.games.database.security.Visitor;
 import cloud.qasino.games.database.security.VisitorRepository;
+import cloud.qasino.games.dto.LeagueDto;
 import cloud.qasino.games.dto.VisitorDto;
+import cloud.qasino.games.dto.mapper.LeagueMapper;
 import cloud.qasino.games.dto.mapper.VisitorMapper;
+import cloud.qasino.games.dto.request.IdsDto;
 import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -26,6 +31,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
+@Lazy
 @Slf4j
 public class VisitorAndLeaguesService {
 
@@ -35,6 +41,7 @@ public class VisitorAndLeaguesService {
     @Autowired private PrivilegeRepository privilegeRepository;
     @Autowired private LeagueRepository leagueRepository;
     VisitorMapper visitorMapper;
+    LeagueMapper leagueMapper;
 //    LeagueMapper leagueMapper;
 
     private PasswordEncoder encoder;
@@ -50,18 +57,18 @@ public class VisitorAndLeaguesService {
     };
 
     // find one
-    VisitorDto findByUsername(VisitorDto visitorDto){
-        Visitor retrievedVisitor = visitorRepository.findByUsername(visitorDto.getUsername());
+    public VisitorDto findByUsername(IdsDto idsDto){
+        Visitor retrievedVisitor = visitorRepository.findByUsername(idsDto.getSuppliedVisitorUsername());
         return visitorMapper.visitorToVisitorDto(retrievedVisitor);
     };
-    VisitorDto findOneByVisitorId(VisitorDto visitorDto) {
-        Visitor retrievedVisitor = visitorRepository.findOneByVisitorId(visitorDto.getVisitorId());
+    public VisitorDto findOneByVisitorId(IdsDto idsDto) {
+        Visitor retrievedVisitor = visitorRepository.findOneByVisitorId(idsDto.getSuppliedVisitorId());
         return visitorMapper.visitorToVisitorDto(retrievedVisitor);
     };
-    VisitorDto findOneByEmail(VisitorDto visitorDto) {
-        Visitor retrievedVisitor = visitorRepository.findOneByEmail(visitorDto.getEmail());
-        return visitorMapper.visitorToVisitorDto(retrievedVisitor);
-    }
+    public LeagueDto findOneByLeagueId(IdsDto idsDto) {
+        League retrievedLeague = leagueRepository.findOneByLeagueId(idsDto.getSuppliedLeagueId());
+        return leagueMapper.leagueToLeagueDto(retrievedLeague);
+    };
     Optional<VisitorDto> findVisitorByAliasAndAliasSequence(VisitorDto visitorDto){
         Optional<Visitor> retrievedVisitor = visitorRepository.findVisitorByAliasAndAliasSequence(visitorDto.getAlias(),visitorDto.getAliasSequence());
         return Optional.ofNullable(retrievedVisitor)

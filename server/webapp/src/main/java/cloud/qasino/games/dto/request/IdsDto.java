@@ -15,22 +15,28 @@ import java.util.List;
 @Setter
 public class IdsDto {
 
-    // Path ids
-    private long suppliedVisitorId;
-    private long suppliedGameId;
-    private long suppliedLeagueId;
+    // Path ids - use refresh methods on abstract class
+    private long suppliedVisitorId = 0;
+    private String suppliedVisitorUsername = "";
+    private long suppliedGameId = 0;
+    private long suppliedLeagueId = 0;
 
-    private long suppliedInvitedVisitorId;
-    private long suppliedAcceptedPlayerId;
-    private long suppliedDeclinedPlayerId;
+    // TODO all logic for this ids
+    private long suppliedInvitedVisitorId = 0;
+    private long suppliedAcceptedPlayerId = 0;
+    private long suppliedDeclinedPlayerId = 0;
 
     // Events
+    // TODO dont belong here
     private QasinoEvent suppliedQasinoEvent = QasinoEvent.ERROR;
     private GameEvent suppliedGameEvent = GameEvent.ERROR;
     private TurnEvent suppliedTurnEvent = TurnEvent.ERROR;
 
     // Triggers for playing a Game
+    // TODO dont belong here
     public List<PlayingCard> suppliedPlayingCards = Collections.singletonList(PlayingCard.getPlayingCardFromCardId("JR"));   // todo
+
+    // TODO dont belong here
     List<GameEvent> possibleGameEvents = new ArrayList<>();
     List<TurnEvent> possibleTurnEvents = new ArrayList<>();
 

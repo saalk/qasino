@@ -3,6 +3,7 @@ package cloud.qasino.games.database.repository;
 import cloud.qasino.games.database.entity.enums.game.GameState;
 import cloud.qasino.games.database.entity.Game;
 import cloud.qasino.games.database.entity.League;
+import cloud.qasino.games.database.security.Visitor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -15,6 +16,9 @@ import java.util.List;
 
 @Repository
 public interface GameRepository extends JpaRepository<Game, Long> {
+
+    // findOne
+    Game findOneByGameId(Long gameId);
 
     // prepared queries
     public final static String FIND_ALL = "SELECT * FROM \"game\" ORDER BY \"updated\" DESC";

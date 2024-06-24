@@ -35,6 +35,8 @@ public class GameDto {
     Type type;
     private String style;
     private int ante;
+
+    private long leagueId;
     long leagueInitiatorId;
     String leagueName;
     List<PlayerDto> playerDtos;

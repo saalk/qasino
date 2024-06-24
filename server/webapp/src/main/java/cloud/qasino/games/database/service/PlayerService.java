@@ -17,6 +17,7 @@ import cloud.qasino.games.dto.mapper.PlayerMapper;
 import cloud.qasino.games.dto.mapper.VisitorMapper;
 import cloud.qasino.games.exception.MyBusinessException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 import java.util.Comparator;
@@ -26,6 +27,7 @@ import java.util.stream.Collectors;
 import static cloud.qasino.games.config.Constants.DEFAULT_PAWN_SHIP_BOT;
 
 @Service
+@Lazy
 public class PlayerService {
 
     // @formatter:off

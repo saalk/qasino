@@ -27,7 +27,7 @@ public class QasinoResponse {
     @JsonProperty("Message")
     private String action;
     public void setAction(String action) {
-        this.action = "[logons=" + OnlineVisitorsPerDay.getInstance().getOnlineVisitors() + "] " + action;
+        this.action = "today's visitor count = " + OnlineVisitorsPerDay.getInstance().getOnlineVisitors() + " | " + action;
     }
     @JsonProperty("ShowMessage")
     private boolean actionNeeded;

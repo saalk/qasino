@@ -1,5 +1,6 @@
 package cloud.qasino.games.database.repository;
 
+import cloud.qasino.games.database.entity.Game;
 import cloud.qasino.games.database.entity.League;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -13,6 +14,7 @@ import java.util.Optional;
 @Repository
 public interface LeagueRepository extends JpaRepository<League, Long> {
 
+    // counts
     //@Query("SELECT count(u) FROM League u where u.LeagueName = ?1")
     Long countByName(String leagueName);
 
@@ -20,7 +22,8 @@ public interface LeagueRepository extends JpaRepository<League, Long> {
     @Query(value = COUNT_LEAGUES_FOR_INITIATOR, nativeQuery = true)
     Integer countLeaguesForInitiator(@Param(value = "initiator") String initiator);
 
-
+    // find one
+    League findOneByLeagueId(Long leagueId);
     Optional<League> findLeagueByLeagueId(Long leagueId);
     Optional<League> findLeagueByNameAndNameSequence(String leagueName, int leagueNameSequence);
 

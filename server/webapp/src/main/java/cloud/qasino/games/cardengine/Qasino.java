@@ -20,9 +20,10 @@ import java.util.List;
 
 @Getter
 @Setter
-public class Qasino {
+public class Qasino
+{
     private MessageDto message;
-    private IdsDto ids = new IdsDto();
+    private IdsDto ids;
     private VisitorDto visitor;
     private GameDto game;
     private InvitationsDTO invitations;

@@ -1,4 +1,4 @@
-package cloud.qasino.games.action;
+package cloud.qasino.games.cardengine.action;
 
 import cloud.qasino.games.action.interfaces.Action;
 import cloud.qasino.games.database.repository.CardRepository;
@@ -8,15 +8,8 @@ import cloud.qasino.games.database.repository.PlayerRepository;
 import cloud.qasino.games.database.repository.ResultsRepository;
 import cloud.qasino.games.database.repository.TurnRepository;
 import cloud.qasino.games.database.security.VisitorRepository;
-import cloud.qasino.games.dto.GameDto;
-import cloud.qasino.games.dto.InvitationsDTO;
-import cloud.qasino.games.dto.LeagueDto;
 import cloud.qasino.games.dto.QasinoFlowDtoBetter;
-import cloud.qasino.games.dto.VisitorDto;
-import cloud.qasino.games.dto.request.IdsDto;
 import cloud.qasino.games.pattern.statemachine.event.EventOutput;
-import cloud.qasino.games.pattern.statemachine.event.GameEvent;
-import cloud.qasino.games.pattern.statemachine.event.TurnEvent;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
