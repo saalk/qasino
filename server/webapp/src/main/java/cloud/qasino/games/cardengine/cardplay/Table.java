@@ -11,29 +11,31 @@ import cloud.qasino.games.database.entity.enums.game.gamestate.GameStateGroup;
 import cloud.qasino.games.database.entity.enums.player.AiLevel;
 import cloud.qasino.games.database.entity.enums.player.Avatar;
 import cloud.qasino.games.database.entity.enums.player.PlayerType;
+import cloud.qasino.games.dto.GameDto;
+import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.List;
 
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 public class Table {
 
-    // ACTIVE GAME
-    private Game activeGame;
+    // SET TABLE
     Type type;
     private int ante;
     GameState gameState;
     GameStateGroup gameStateGroup;
     List<Card> cardsInStockNotInHand;
     private String stringCardsInStockNotInHand;
-    public void setActiveGame(Game game) {
+    public void setTable(GameDto game) {
         if (game == null) {
-            this.activeGame = null;
             return;
         }
         this.type = game.getType();

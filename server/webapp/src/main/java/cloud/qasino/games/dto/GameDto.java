@@ -36,11 +36,15 @@ public class GameDto {
     private String style;
     private int ante;
 
+    // related league
     private long leagueId;
     long leagueInitiatorId;
     String leagueName;
+
+    // related players
     List<PlayerDto> playerDtos;
     boolean isActivatePlayerInitiator;
+
 //    List<Result> results;
 
     // derived

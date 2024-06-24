@@ -65,15 +65,15 @@ public class VisitorAndLeaguesService {
         Visitor retrievedVisitor = visitorRepository.findOneByVisitorId(idsDto.getSuppliedVisitorId());
         return visitorMapper.visitorToVisitorDto(retrievedVisitor);
     };
-    public LeagueDto findOneByLeagueId(IdsDto idsDto) {
-        League retrievedLeague = leagueRepository.findOneByLeagueId(idsDto.getSuppliedLeagueId());
-        return leagueMapper.leagueToLeagueDto(retrievedLeague);
-    };
     Optional<VisitorDto> findVisitorByAliasAndAliasSequence(VisitorDto visitorDto){
         Optional<Visitor> retrievedVisitor = visitorRepository.findVisitorByAliasAndAliasSequence(visitorDto.getAlias(),visitorDto.getAliasSequence());
         return Optional.ofNullable(retrievedVisitor)
                 .filter(Optional::isPresent) // lambda is => visitor -> visitor.isPresent()
                 .map(visitor -> visitorMapper.visitorToVisitorDto(visitor.get()));
+    };
+    public LeagueDto findOneByLeagueId(IdsDto idsDto) {
+        League retrievedLeague = leagueRepository.findOneByLeagueId(idsDto.getSuppliedLeagueId());
+        return leagueMapper.leagueToLeagueDto(retrievedLeague);
     };
 
     // find many

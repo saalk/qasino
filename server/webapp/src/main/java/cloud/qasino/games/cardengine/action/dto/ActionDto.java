@@ -1,8 +1,6 @@
 package cloud.qasino.games.cardengine.action.dto;
 
-import cloud.qasino.games.cardengine.Qasino;
 import cloud.qasino.games.cardengine.cardplay.Table;
-import cloud.qasino.games.database.entity.Game;
 import cloud.qasino.games.database.service.GameService;
 import cloud.qasino.games.database.service.PlayerService;
 import cloud.qasino.games.database.service.TurnAndCardMoveService;
@@ -14,20 +12,16 @@ import cloud.qasino.games.dto.VisitorDto;
 import cloud.qasino.games.dto.request.CreationDto;
 import cloud.qasino.games.dto.request.IdsDto;
 import cloud.qasino.games.dto.request.MessageDto;
-import lombok.AccessLevel;
+import cloud.qasino.games.pattern.statemachine.event.EventOutput;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.validator.internal.util.stereotypes.Lazy;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.thymeleaf.expression.Ids;
-
-import java.util.List;
 
 @Setter
 @Getter
-public abstract class ActionDto {
+// Implement OUTPUT with EventOutput.Result or boolean TRUE/FALSE
+public abstract class ActionDto<OUTPUT> {
 
     // @formatter:off
     // we do not always need every services so its lazy loading here and at the service
@@ -42,39 +36,54 @@ public abstract class ActionDto {
 
     private VisitorDto visitor = null;
     private GameDto game = null;
-    private InvitationsDTO invitations = null;
     private LeagueDto league = null;
+
+    private InvitationsDTO invitations = null;
     private Table table = null;
+    // @formatter:on
 
-    // every child of action must "perform" an action
-    abstract void perform();
+    public abstract EventOutput.Result perform();
 
-    // every child can always call find visitor or refresh for any ids
-    boolean findVisitorByUserName() {
+    protected boolean findVisitorByUserName() {
         visitor = visitorAndLeaguesService.findByUsername(this.ids);
-        if (visitor==null) return false;
+        if (visitor == null) return false; // 404 not found
         this.ids.setSuppliedVisitorId(visitor.getVisitorId());
-        // find latest game if any
-        game = gameService.findLatestGameForVisitorId(this.ids);
-        if (game==null) return true;
-        // latest game found
-        this.ids.setSuppliedGameId(game.getGameId());
-        this.ids.setSuppliedLeagueId(game.getLeagueId());
-        // find league for game if any
-        if (this.ids.getSuppliedLeagueId() > 0 ) refreshLeague();
+        refreshOrFindLatestGame();
+        refreshOrFindLeagueForLatestGame();
         return true;
     }
-    void refreshVisitor() {
+
+    protected boolean refreshVisitor() {
         visitor = visitorAndLeaguesService.findOneByVisitorId(this.ids);
-        // refresh game, league and table as they might have visitors refs
-        if (this.ids.getSuppliedGameId() > 0 ) refreshGame();
-        if (this.ids.getSuppliedLeagueId() > 0 ) refreshLeague();
+        if (visitor == null) return false; // 404 not found
+        refreshOrFindLatestGame();
+        refreshOrFindLeagueForLatestGame();
+        return true;
     }
-    void refreshGame() {
-        game = gameService.findOneByGameId(this.ids);
-        // refresh table as they might have game and visitor refs
+
+    protected boolean refreshOrFindLatestGame() {
+        if (this.ids.getSuppliedGameId() > 0) {
+            game = gameService.findOneByGameId(this.ids);
+            if (game == null) return false; // 404 not found
+        } else {
+            game = gameService.findLatestGameForVisitorId(this.ids);
+            if (game == null) return true; // 200 no game yet
+        }
+        // 200 game found
+        this.ids.setSuppliedGameId(game.getGameId());
+        return true;
     }
-    void refreshLeague() {
-        league = visitorAndLeaguesService.findOneByLeagueId(this.ids);
+
+    protected boolean refreshOrFindLeagueForLatestGame() {
+        if (this.ids.getSuppliedLeagueId() > 0) {
+            league = visitorAndLeaguesService.findOneByLeagueId(this.ids);
+            return league != null; // 200 or 404 not found
+        }
+        if (this.ids.getSuppliedGameId() > 0 && game.getLeagueId() > 0) {
+            this.ids.setSuppliedLeagueId(game.getLeagueId());
+            league = visitorAndLeaguesService.findOneByLeagueId(this.ids);
+            return league != null; // 200 or 404 not found
+        }
+        return true; // 200 -> no game yet or latest game has no league
     }
 }

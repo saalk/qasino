@@ -1,22 +1,20 @@
 package cloud.qasino.games.cardengine.action;
 
-import cloud.qasino.games.action.interfaces.Action;
+import cloud.qasino.games.cardengine.action.dto.ActionDto;
 import cloud.qasino.games.database.entity.Card;
 import cloud.qasino.games.database.entity.CardMove;
-import cloud.qasino.games.database.entity.Game;
 import cloud.qasino.games.database.entity.Player;
-import cloud.qasino.games.database.entity.Turn;
+import cloud.qasino.games.database.entity.enums.game.gamestate.GameStateGroup;
 import cloud.qasino.games.database.entity.enums.player.PlayerType;
-import cloud.qasino.games.database.security.Visitor;
-import cloud.qasino.games.dto.QasinoFlowDto;
-import cloud.qasino.games.dto.QasinoFlowDtoBetter;
+import cloud.qasino.games.database.service.PlayerService;
+import cloud.qasino.games.database.service.TurnAndCardMoveService;
+import cloud.qasino.games.exception.MyNPException;
 import cloud.qasino.games.pattern.statemachine.event.EventOutput;
-import cloud.qasino.games.pattern.statemachine.event.GameEvent;
-import cloud.qasino.games.pattern.statemachine.event.TurnEvent;
 import cloud.qasino.games.response.view.SectionHand;
 import cloud.qasino.games.response.view.SectionSeat;
-import cloud.qasino.games.response.view.SectionTable;
 import lombok.extern.slf4j.Slf4j;
+import org.hibernate.validator.internal.util.stereotypes.Lazy;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -25,25 +23,41 @@ import java.util.stream.Collectors;
 
 @Slf4j
 @Component
-public class MapQasinoGameTableFromDtoActionBetter implements Action<MapQasinoGameTableFromDtoActionBetter.Dto, EventOutput.Result> {
+public class LoadTableFromDtoAction extends ActionDto<EventOutput.Result> {
 
-    static QasinoFlowDtoBetter dto;
+    // @formatter:off
+    @Autowired @Lazy PlayerService playerService;
+    @Autowired @Lazy TurnAndCardMoveService turnAndCardMoveService;
+    // @formatter:on
+
     @Override
-    public EventOutput.Result perform(Dto actionDto) {
+    public EventOutput.Result perform() {
 
+        if (getIds().getSuppliedGameId() == 0
+                && getGame() == null
+                && (getGame().getGameStateGroup() == GameStateGroup.SETUP ||
+                getGame().getGameStateGroup() == GameStateGroup.PREPARED)
+        ) {
+            // TODO make 404
+//          return new EventOutput(EventOutput.Result.FAILURE, actionDto.getIds().getSuppliedGameEvent(), actionDto.getIds().getSuppliedTurnEvent());
+            throw new MyNPException("69 getVisitorSupplied", "visitorId [" + super.getIds().getSuppliedVisitorId() + "]");
+        }
 
-        SectionTable table = new SectionTable();
-
+        Turn turn = turnAndCardMoveService.
         if ((actionDto.getActiveTurn() == null)) {
             if ((actionDto.getQasinoGame() != null)) {
                 actionDto.setActiveTurn(actionDto.getQasinoGame().getTurn());
                 if ((actionDto.getActiveTurn() == null)) {
+
+                }
+                if (getGame().get)
                     // when game is quit before started
                     table.setCountStockAndTotal(
                             "[-/-] stock/total");
                     table.setCurrentTurn(null);
                     table.setSeats(null);
                     return EventOutput.Result.SUCCESS;
+
                 }
             } else {
                 // when game is quit before started
@@ -65,10 +79,14 @@ public class MapQasinoGameTableFromDtoActionBetter implements Action<MapQasinoGa
         table.setStringCardsInStockNotInHand(String.valueOf(stockNotInHand));
         table.setCountStockAndTotal(
                 "[" + stockNotInHand.size() +
-                        "/" + actionDto.getCardsInTheGameSorted().size() +
+                        "/" + actionDto.getCardsInTheGameSorted().
+
+                        size() +
                         "] stock/total");
         table.setSeats(null);
-        table.setSeats(mapSeats(actionDto));
+        table.setSeats(
+
+                mapSeats(actionDto));
         actionDto.setTable(table);
 //        log.warn("table set");
         return EventOutput.Result.SUCCESS;
@@ -107,7 +125,7 @@ public class MapQasinoGameTableFromDtoActionBetter implements Action<MapQasinoGa
 
             boolean first = true;
             int round = 0;
-            List <SectionHand> handInRounds = new ArrayList<>();
+            List<SectionHand> handInRounds = new ArrayList<>();
             SectionHand handInRound = new SectionHand();
             List<String> cards = new ArrayList<>();
             // card Moves should be ordered
@@ -156,40 +174,9 @@ public class MapQasinoGameTableFromDtoActionBetter implements Action<MapQasinoGa
             // is player the winner
 
         }
-        return seats;
+//    return seats;
+        return EventOutput.Result.SUCCESS;
+
     }
-
-    public interface Dto {
-
-
-        // @formatter:off
-        String getErrorMessage();
-        GameEvent getSuppliedGameEvent();
-        TurnEvent getSuppliedTurnEvent();
-
-        // Getters
-        Game getQasinoGame();
-        Visitor getQasinoVisitor();
-        List<Player> getQasinoGamePlayers();
-        Player getTurnPlayer();
-        Turn getActiveTurn();
-        List<Card> getCardsInTheGameSorted();
-
-        // Setters
-        void setActiveTurn(Turn turn);
-        void setTurnPlayer(Player turnPlayer);
-        void setTable(SectionTable table);
-
-        // error setters
-        // @formatter:off
-        void setBadRequestErrorMessage(String problem);
-        void setNotFoundErrorMessage(String problem);
-        void setConflictErrorMessage(String reason);
-        void setUnprocessableErrorMessage(String reason);
-        void setErrorKey(String errorKey);
-        void setErrorValue(String errorValue);
-        // @formatter:on
-    }
-}
 
 
