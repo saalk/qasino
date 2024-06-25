@@ -1,6 +1,7 @@
 package cloud.qasino.games.cardengine.action.dto;
 
 import cloud.qasino.games.cardengine.cardplay.Table;
+import cloud.qasino.games.database.entity.Turn;
 import cloud.qasino.games.database.service.GameService;
 import cloud.qasino.games.database.service.PlayerService;
 import cloud.qasino.games.database.service.TurnAndCardMoveService;
@@ -72,6 +73,13 @@ public abstract class ActionDto<OUTPUT> {
         // 200 game found
         this.ids.setSuppliedGameId(game.getGameId());
         return true;
+    }
+
+    protected Turn refreshOrFindTurnForGame() {
+        if (this.ids.getSuppliedGameId() > 0) {
+            return turnAndCardMoveService.findByGameId(this.ids);
+        }
+        return null;
     }
 
     protected boolean refreshOrFindLeagueForLatestGame() {

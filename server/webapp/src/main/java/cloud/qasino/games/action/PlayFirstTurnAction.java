@@ -12,6 +12,7 @@ import cloud.qasino.games.database.entity.enums.move.Move;
 import cloud.qasino.games.database.repository.GameRepository;
 import cloud.qasino.games.database.repository.TurnRepository;
 import cloud.qasino.games.database.service.TurnAndCardMoveService;
+import cloud.qasino.games.exception.MyNPException;
 import cloud.qasino.games.pattern.statemachine.event.EventOutput;
 import cloud.qasino.games.pattern.statemachine.event.GameEvent;
 import cloud.qasino.games.pattern.statemachine.event.TurnEvent;
@@ -55,8 +56,14 @@ public class PlayFirstTurnAction implements Action<PlayFirstTurnAction.Dto, Even
                             .findFirst().get());
         }
         Turn firstTurn = new Turn(actionDto.getQasinoGame(), actionDto.getTurnPlayer().getPlayerId());
-        Turn updatedTurn = turnRepository.save(firstTurn);
-        actionDto.getQasinoGame().setTurn(updatedTurn);
+        Turn savedTurn = turnRepository.saveAndFlush(firstTurn);
+        actionDto.setQasinoGame(gameRepository.getReferenceById(actionDto.getQasinoGame().getGameId()));
+        actionDto.getQasinoGame().setTurn(savedTurn);
+        if (actionDto.getQasinoGame().getTurn() == null) {
+            throw new MyNPException("62 PlayFirstTurnAction", "gameId [" + actionDto.getQasinoGame().getGameId() + "]");
+
+        };
+
         boolean cardDealt = turnAndCardMoveService.dealCardToPlayer(
                 actionDto.getQasinoGame(),
                 Move.DEAL,

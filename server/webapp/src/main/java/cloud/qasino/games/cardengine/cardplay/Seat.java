@@ -17,6 +17,10 @@ import java.util.List;
 @AllArgsConstructor
 public class Seat {
 
+    private List<Hand> hand;
+
+    // FROM GAME - PLAYERS ordered by seat
+
     // seat stats
     private int seatId;
     private boolean isSeatPlaying;
@@ -25,7 +29,7 @@ public class Seat {
     private int seatFiches;
     private int seatCurrentBet;
 
-    // player stats
+    // player stats for the seat
     private long seatPlayerId;
     private PlayerType playerType;
     private Avatar avatar;
@@ -33,13 +37,13 @@ public class Seat {
     private AiLevel aiLevel;
     private boolean human;
 
-    // when player is human
+    // when player for the seat is human
     private long visitorId;
     private String username;
 
+    // cards in the hand of player for the seat
     private String allCardsInHand;
     private Card lastCardInHand;
-    private List<Hand> hand;
 
 }
 

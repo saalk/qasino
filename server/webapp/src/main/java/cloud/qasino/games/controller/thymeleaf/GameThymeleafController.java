@@ -209,7 +209,8 @@ public class GameThymeleafController extends AbstractThymeleafController {
         model.addAttribute(flowDto.getQasinoResponse());
 //        log.warn("QasinoResponse !! {}", prettyPrintJson(flowDto.getQasinoResponse()));
 //        log.warn("model !! {}", model);
-        return "redirect:/visitor";
+        return "redirect:/setup/" + flowDto.getQasinoGame().getGameId();
+//        return "redirect:/visitor";
     }
 
     @PostMapping("validate/{gameId}")

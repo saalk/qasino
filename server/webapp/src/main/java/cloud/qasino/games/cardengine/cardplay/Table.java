@@ -27,61 +27,36 @@ import java.util.List;
 @NoArgsConstructor
 public class Table {
 
-    // SET TABLE
+    private List<Seat> seats;
+
+    // FROM GAME - LEAGUE
+    String leagueName;
+    boolean active;
+
+    // FROM GAME
     Type type;
     private int ante;
     GameState gameState;
     GameStateGroup gameStateGroup;
-    List<Card> cardsInStockNotInHand;
+    List<Card> cardsInTheGameSorted;
+    List<Card> cardsInStockNotInHandSorted;
     private String stringCardsInStockNotInHand;
-    public void setTable(GameDto game) {
-        if (game == null) {
-            return;
-        }
-        this.type = game.getType();
-        this.ante = game.getAnte();
-        this.gameState = game.getState();
-        this.gameStateGroup = game.getState().getGroup();
-        this.cardsInStockNotInHand = null;
+    private String countStockAndTotal;
 
-        if (game.getTurn() == null) {
-            this.activeTurn = null;
-            return;
-        }
-        setActiveTurn(game.getTurn());
-    }
-
-    // ACTIVE TURN
-    private Turn activeTurn;
-    private void setActiveTurn(Turn turn){
-        this.activeTurn = turn;
-//        this.activePlayer = turn.getActivePlayerId()
-    }
+    // FROM TURN
     private List<CardMove> allCardMovesForTheGame;
+    private int currentRoundNumber;
+    private int currentSeatNumber;
+    private int currentMoveNumber;
 
-    // ACTIVE PLAYER
+    // FROM TURN - ACTIVE AND NEXT PLAYER
     private Player activePlayer;
     private Player nextPlayer;
-
-    // LEAGUE
-    String leagueName;
-    boolean active;
-
-    // Turn active player
     private PlayerType playerType;
     private int fiches;
     private Avatar avatar;
     private String avatarName;
     private AiLevel aiLevel;
     private boolean human;
-
-    // Turn
-    private int currentRoundNumber;
-    private int currentSeatNumber;
-    private int currentMoveNumber;
-    
-    private List<Seat> seats;
-
-
 
 }

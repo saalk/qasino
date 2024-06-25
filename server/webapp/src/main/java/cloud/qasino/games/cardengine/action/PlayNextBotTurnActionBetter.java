@@ -61,7 +61,7 @@ public class PlayNextBotTurnActionBetter implements Action<PlayNextBotTurnAction
 //            return EventOutput.Result.SUCCESS;
 //        }
 
-        List<CardMove> cardMoves = cardMoveRepository.findByplayerIdOrderBySequenceAsc(activePlayer.getPlayerId());
+        List<CardMove> cardMoves = cardMoveRepository.findByPlayerIdOrderBySequenceAsc(activePlayer.getPlayerId());
         // TODO calculate moves since DEAL
         // TODO get the last card value
 

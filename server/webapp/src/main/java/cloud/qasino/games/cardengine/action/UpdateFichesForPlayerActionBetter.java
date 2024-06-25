@@ -41,7 +41,7 @@ public class UpdateFichesForPlayerActionBetter implements Action<UpdateFichesFor
 
         Optional<Card> previousCardMoveCard = Optional.of(new Card());
         CardMove previousCardMove;
-        List<CardMove> cardMoves = cardMoveRepository.findByplayerIdOrderBySequenceAsc(actionDto.getTurnPlayer().getPlayerId());
+        List<CardMove> cardMoves = cardMoveRepository.findByPlayerIdOrderBySequenceAsc(actionDto.getTurnPlayer().getPlayerId());
         for (CardMove cardMove : cardMoves) {
             switch (cardMove.getMove()) {
                 case HIGHER, LOWER -> {

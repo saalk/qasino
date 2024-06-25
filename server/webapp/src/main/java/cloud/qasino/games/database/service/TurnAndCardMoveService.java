@@ -13,10 +13,12 @@ import cloud.qasino.games.database.repository.CardMoveRepository;
 import cloud.qasino.games.database.repository.CardRepository;
 import cloud.qasino.games.database.repository.PlayerRepository;
 import cloud.qasino.games.database.repository.TurnRepository;
+import cloud.qasino.games.dto.GameDto;
 import cloud.qasino.games.dto.mapper.GameMapper;
 import cloud.qasino.games.dto.mapper.PlayerMapper;
-import cloud.qasino.games.dto.mapper.VisitorMapper;
+import cloud.qasino.games.dto.request.IdsDto;
 import cloud.qasino.games.exception.MyNPException;
+import cloud.qasino.games.pattern.statemachine.event.EventOutput;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
@@ -37,6 +39,18 @@ public class TurnAndCardMoveService {
     GameMapper gameMapper;
     // @formatter:on
 
+    // find
+    public Turn findByGameId(IdsDto idsDto) {
+        List<Turn> turns = turnRepository.findByGameId(idsDto.getSuppliedGameId());
+        if (turns.isEmpty()) {
+            // when game is quit before started
+            return null;
+        }
+        // FROM TURN
+        return turns.get(0);
+    };
+
+    // special methods on turn, cardmove and card here
     public boolean dealCardToPlayer(Game activeGame, Move move, Face face, Location location, int howMany) {
         Turn activeTurn = activeGame.getTurn();
         Player humanOrBot = playerRepository.findById(activeTurn.getActivePlayerId())
@@ -44,7 +58,7 @@ public class TurnAndCardMoveService {
         if (humanOrBot == null) {
             throw new MyNPException("TurnAndCardMoveService","turn ["+ activeTurn.getTurnId() +"] active player [" + activeTurn.getActivePlayerId() +"] not found");
         }
-        Card topCardInStock = getTopCardInStock(activeGame, howMany);
+        Card topCardInStock = getTopCardInStockNotInHand(activeGame, howMany);
         if (topCardInStock == null) return false; // no cards left -> end the game
 
         // 1: create or update Turn
@@ -77,9 +91,7 @@ public class TurnAndCardMoveService {
         cardDealt.setHand(humanOrBot);
         cardRepository.save(cardDealt);
         return true;
-
     }
-
     public List<CardMove> getCardMovesForGame(Game activeGame) {
         Turn activeTurn = activeGame.getTurn();
         return cardMoveRepository.findByTurnOrderBySequenceAsc(activeTurn);
@@ -88,10 +100,10 @@ public class TurnAndCardMoveService {
         long previousCardId = cardMoves.get(cardMoves.size() - 1).getCardMoveId();
         Optional<Card> previousCard = cardRepository.findById(previousCardId);
         return previousCard.map(card -> PlayingCard.calculateValueWithDefaultHighlow(card.getRankSuit(), card.getGame().getType())).orElse(0);
-
     }
     // @formatter:off
-    private static Card getTopCardInStock(Game activeGame, int howMany) {
+
+    private static Card getTopCardInStockNotInHand(Game activeGame, int howMany) {
         // determine card to deal
         // todo ignore howMany for now
         Card topCardInStock = null;

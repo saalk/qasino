@@ -1,6 +1,8 @@
 package cloud.qasino.games.pattern.stream;
 
 import cloud.qasino.games.database.entity.Card;
+import cloud.qasino.games.database.entity.CardMove;
+import cloud.qasino.games.database.entity.Player;
 import cloud.qasino.games.database.entity.enums.card.Location;
 import cloud.qasino.games.database.entity.enums.card.PlayingCard;
 import cloud.qasino.games.database.entity.enums.game.Type;
@@ -26,6 +28,26 @@ public class StreamUtil {
                     sorted(ComparatorUtil.cardSequenceComparator()).
                     toList();
         }
+    }
+    public static List<CardMove> sortCardMovesOnSequenceWithStream(List<CardMove> unsortedCardMoveList, long player) {
+        if (player > 0) {
+            return unsortedCardMoveList.
+                    stream().
+                    filter(cardMove -> cardMove.getPlayerId() == player).
+                    sorted(ComparatorUtil.cardMoveSequenceComparator()).
+                    toList();
+        } else {
+            return unsortedCardMoveList.
+                    stream().
+                    sorted(ComparatorUtil.cardMoveSequenceComparator()).
+                    toList();
+        }
+    }
+    public static List<Player> sortPlayersOnSeatWithStream(List<Player> unsortedPlayerList) {
+            return unsortedPlayerList.
+                    stream().
+                    sorted(ComparatorUtil.playerSeatComparator()).
+                    toList();
     }
 
     // mapToInt() then sum() on a value - count an element in a list

@@ -3,6 +3,7 @@ package cloud.qasino.games.database.repository;
 import cloud.qasino.games.database.entity.Game;
 import cloud.qasino.games.database.entity.Player;
 import cloud.qasino.games.database.entity.Result;
+import cloud.qasino.games.database.entity.Turn;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -20,8 +21,9 @@ public interface ResultsRepository extends JpaRepository<Result, Long> {
     // BASIC FINDS
     @Query(value = "SELECT * FROM \"result\" ORDER BY \"result_id\"", countQuery = "SELECT count(*) FROM \"result\"", nativeQuery = true)
     Page<Result> findAllResultsWithPage(Pageable pageable);
-
     List<Result> findByGame(Game game);
+    @Query(value = "SELECT * FROM \"result\" where \"game_id\" = :gameId ", nativeQuery = true)
+    List<Result> findByGameId(Long gameId);
 
     // SPECIAL FINDS
     public final static String FIND_ACTIVE_RESULT_BY_LEAGUE_ID  =        "SELECT * FROM \"result\" a JOIN \"league\" b JOIN \"game\" c WHERE a.\"game_id\" = c.\"game_id\" AND b.\"league_id\" = c.\"league_id\" AND b.\"league_id\" = :leagueId ";

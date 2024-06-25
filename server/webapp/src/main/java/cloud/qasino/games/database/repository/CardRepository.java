@@ -32,12 +32,14 @@ public interface CardRepository extends JpaRepository<Card, Long> {
     // lists
     List<Card> findByGame(Game game);
     List<Card> findByRankSuit(String rankSuit);
-
     @Query( value = FIND_CARDS_BY_GAME_ID,
             countQuery = COUNT_CARDS_BY_GAME_ID,
             nativeQuery = true)
     List<Card> findAllCardsByGameWithPage(@Param("gameId") long gameId, Pageable pageable);
 
     List<Card> findByGameOrderByLocationAscSequenceAsc(Game game);
+
     List<Card> findByGameOrderBySequenceAsc(Game game);
+    @Query(value = "SELECT * FROM \"card\" where \"game_id\" = :gameId ORDER BY \"sequence\" ASC ", nativeQuery = true)
+    List<Card> findByGameIdOrderBySequenceAsc(long gameId);
 }

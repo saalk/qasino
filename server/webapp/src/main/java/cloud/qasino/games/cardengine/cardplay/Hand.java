@@ -9,7 +9,9 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class Hand {
 
+    // FROM GAME and specific PLAYER
     private int roundAndSeatNumber;
     private String cardsInRoundAndSeat;
+    private String cardsDeltaInRoundAndSeat;
 }
 
