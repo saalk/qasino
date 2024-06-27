@@ -4,14 +4,12 @@ import cloud.qasino.games.cardengine.action.dto.ActionDto;
 import cloud.qasino.games.cardengine.cardplay.Seat;
 import cloud.qasino.games.cardengine.cardplay.Table;
 import cloud.qasino.games.database.entity.Turn;
-import cloud.qasino.games.database.entity.enums.game.gamestate.GameStateGroup;
 import cloud.qasino.games.database.repository.CardMoveRepository;
 import cloud.qasino.games.database.repository.CardRepository;
 import cloud.qasino.games.database.repository.PlayerRepository;
 import cloud.qasino.games.database.repository.TurnRepository;
 import cloud.qasino.games.database.service.PlayerService;
 import cloud.qasino.games.database.service.TurnAndCardMoveService;
-import cloud.qasino.games.exception.MyNPException;
 import cloud.qasino.games.pattern.statemachine.event.EventOutput;
 import cloud.qasino.games.pattern.stream.StreamUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -23,7 +21,7 @@ import java.util.List;
 
 @Slf4j
 @Component
-public class LoadTableFromDtoAction extends ActionDto<EventOutput.Result> {
+public class LoadTableFromAllOtherDtosAction extends ActionDto<EventOutput.Result> {
 
     // @formatter:off
     @Autowired @Lazy private PlayerService playerService;
@@ -54,8 +52,6 @@ public class LoadTableFromDtoAction extends ActionDto<EventOutput.Result> {
                         .filter(c -> c.getHand() == null)
                         .toList());
         table.setStringCardsInStockNotInHand(String.valueOf(table.getCardsInStockNotInHandSorted()));
-
-        // FROM TURN
         Turn turn = refreshOrFindTurnForGame();
         if (turn == null) {
             // when game is quit before started
@@ -65,6 +61,8 @@ public class LoadTableFromDtoAction extends ActionDto<EventOutput.Result> {
             table.setCountStockAndTotal("[" + table.getCardsInStockNotInHandSorted().size() + "/" +
                     table.getCardsInTheGameSorted().size() + "] stock/total");
         }
+
+        // FROM TURN
         table.setAllCardMovesForTheGame(StreamUtil.sortCardMovesOnSequenceWithStream(turn.getCardMoves(), 0));
         table.setCurrentRoundNumber(turn.getCurrentRoundNumber());
         table.setCurrentSeatNumber(turn.getCurrentSeatNumber());

@@ -56,11 +56,11 @@
                            th:text="${qasinoResponse.navBarItems.^[sequence==1].title}">Visitor</a>
                     </li>
 
-                    <li class="nav-item" th:if="${qasinoResponse.params.gid != null && qasinoResponse.params.gid > 0}">
+                    <li class="nav-item" th:if="${qasinoResponse.params.gid != null && qasinoResponse.params.gid >= 0}">
                         <a class="nav-link active" th:href="@{/setup/{path}(path=${qasinoResponse.params.gid})}"
                            th:text="${qasinoResponse.navBarItems.^[sequence==2].title}">Setup[]</a>
                     </li>
-                    <li class="nav-item" th:if="${qasinoResponse.params.gid == null || qasinoResponse.params.gid < 1}">
+                    <li class="nav-item" th:if="${qasinoResponse.params.gid == null || qasinoResponse.params.gid < 0}">
                         <a class="nav-link disable"
                            th:text="${qasinoResponse.navBarItems.^[sequence==2].title}">Setup</a>
                     </li>

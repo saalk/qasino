@@ -30,6 +30,8 @@ public class LeagueDto {
 
     // for view
     List<Game> games;
+    String created;
+    String ended;
 
 }
 

@@ -113,7 +113,7 @@ public class MapQasinoResponseFromDtoAction implements Action<MapQasinoResponseF
                 }
             }
         } else {
-            actionDto.setShowGameSetupPage(false);
+            actionDto.setShowGameSetupPage(true);
             if (!actionDto.isActionNeeded()) {
                 actionDto.setActionNeeded(true);
                 actionDto.setAction("Start a new game");
@@ -223,7 +223,7 @@ public class MapQasinoResponseFromDtoAction implements Action<MapQasinoResponseF
     private static Params setParams(Dto actionDto) {
         Params params = new Params();
         params.setVid(setId(actionDto.getSuppliedVisitorId()));
-        params.setGid(setId(actionDto.getSuppliedGameId()));
+        params.setGid((actionDto.getSuppliedGameId()));
         if (params.gid > 0) {
             params.setGsg(String.valueOf(actionDto.getQasinoGame().getState().getGroup()));
         } else {

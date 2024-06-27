@@ -74,7 +74,7 @@ public class IsTurnConsistentForTurnEventAction implements Action<IsTurnConsiste
         return true;
     }
     private boolean turnShouldHaveActivePlayer(Dto actionDto) {
-        if (actionDto.getActiveTurn().getActivePlayerId() == 0) {
+        if (actionDto.getActiveTurn().getActivePlayer() == null) {
             log.warn("!initiator");
             setUnprocessableErrorMessage(actionDto, "Action [" + actionDto.getSuppliedTurnEvent() +
                     "] invalid - turn has no active player ");

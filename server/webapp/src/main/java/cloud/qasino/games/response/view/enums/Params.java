@@ -21,7 +21,7 @@ public class Params {
 
     // path params
     public long vid = -1;
-    public long gid = -1;
+    public long gid = 0;
     public String gsg = "";
     public long lid = -1;
     public long ipid = -1;

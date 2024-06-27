@@ -55,7 +55,7 @@ public class PlayFirstTurnAction implements Action<PlayFirstTurnAction.Dto, Even
                             .filter(p -> p.getSeat() == 1)
                             .findFirst().get());
         }
-        Turn firstTurn = new Turn(actionDto.getQasinoGame(), actionDto.getTurnPlayer().getPlayerId());
+        Turn firstTurn = new Turn(actionDto.getQasinoGame(), actionDto.getTurnPlayer());
         Turn savedTurn = turnRepository.saveAndFlush(firstTurn);
         actionDto.setQasinoGame(gameRepository.getReferenceById(actionDto.getQasinoGame().getGameId()));
         actionDto.getQasinoGame().setTurn(savedTurn);

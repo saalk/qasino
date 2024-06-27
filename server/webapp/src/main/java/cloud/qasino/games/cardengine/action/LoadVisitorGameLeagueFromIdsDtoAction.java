@@ -1,7 +1,6 @@
 package cloud.qasino.games.cardengine.action;
 
 import cloud.qasino.games.cardengine.action.dto.ActionDto;
-import cloud.qasino.games.dto.QasinoFlowDtoBetter;
 import cloud.qasino.games.exception.MyNPException;
 import cloud.qasino.games.pattern.statemachine.event.EventOutput;
 import lombok.extern.slf4j.Slf4j;
@@ -28,7 +27,7 @@ import org.springframework.stereotype.Component;
  *
  * @return Result.SUCCESS or FAILURE (404) when not found
  */
-public class LoadVisitorFromIdsDtoAction extends ActionDto<EventOutput.Result> {
+public class LoadVisitorGameLeagueFromIdsDtoAction extends ActionDto<EventOutput.Result> {
 
     @Override
     public EventOutput.Result perform() {

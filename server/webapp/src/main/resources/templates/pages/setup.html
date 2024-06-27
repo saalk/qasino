@@ -11,13 +11,10 @@
 <div class="container">
     <div class="text-center">
         <h1 th:text="${'Setup - '+qasinoResponse.navBarItems.^[sequence==2].stat}">Setup</h1>
-        <div th:if="${qasinoResponse.params.gid == -1}">
-            Setup a new game
-        </div>
         <div th:if="${qasinoResponse.params.gid} > 0 and ${qasinoResponse.params.gsg} == 'PLAYING'">
             Continue with playing the current game
         </div>
-        <div th:if="${qasinoResponse.params.gsg} == 'FINISHED' or ${qasinoResponse.params.gid <1}">
+        <div th:if="${qasinoResponse.params.gsg} == 'FINISHED' or ${qasinoResponse.params.gid < 1}">
             <div th:replace="~{forms/start :: start}"></div>
         </div>
         <div th:if="${qasinoResponse.params.gid} > 0 and ${qasinoResponse.params.gsg} != 'FINISHED' and ${qasinoResponse.params.gsg} != 'PLAYING'">

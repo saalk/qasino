@@ -9,7 +9,7 @@ class NextMoveCalculatorTest extends QasinoSimulator {
     @Test
     public void givenQasinoCalculateNextMove_whenCreated_thenReturnValidObjectValues() {
 
-        assertThat(turn.getActivePlayerId()).isEqualTo(player.getPlayerId());
+        assertThat(turn.getActivePlayer().getPlayerId()).isEqualTo(player.getPlayerId());
         assertThat(turn.getCurrentMoveNumber()).isEqualTo(1);
         assertThat(turn.getCurrentRoundNumber()).isEqualTo(1);
 

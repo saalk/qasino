@@ -50,9 +50,13 @@ public class Turn {
 			"fk_game_id"), nullable=false)
 	private Game game;
 
-    // Derived functional fields
-    @Column(name = "activePlayer_id", nullable = true)
-    private long activePlayerId;
+    // one [Player] can be part of one [Turn]
+    @OneToOne (cascade = CascadeType.DETACH)
+    @JoinColumn(name = "player_id", referencedColumnName = "player_id",foreignKey = @ForeignKey(name =
+            "fk_player_id"), nullable=false)
+    private Player activePlayer;
+
+    // Functional fields
     @Column(name = "current_round_number", nullable = true)
     private int currentRoundNumber;
     @Column(name = "current_seat_number", nullable = true)
@@ -88,10 +92,10 @@ public class Turn {
         setUpdated();
     }
 
-    public Turn(Game game, long playerId) {
+    public Turn(Game game, Player player) {
         this();
         this.game = game;
-        this.activePlayerId = playerId;
+        this.activePlayer = player;
 
         this.currentRoundNumber = 1;
         this.currentSeatNumber = 1;
@@ -129,7 +133,7 @@ public class Turn {
     public String toString() {
         return "(" +
                 "turnId=" + this.turnId +
-                ", activePlayerId=" + (this.activePlayerId) +
+                ", activePlayer=" + (this.activePlayer.getPlayerId()) +
                 ", currentRoundNumber=" + this.currentRoundNumber +
                 ", currentSeatNumber=" + this.currentSeatNumber +
                 ", currentTurnNumber=" + this.currentMoveNumber +

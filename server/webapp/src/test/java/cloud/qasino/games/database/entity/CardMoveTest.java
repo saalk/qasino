@@ -32,7 +32,7 @@ class CardMoveTest extends QasinoSimulator {
         */
 
         // 1. get current player in the turn - assume player for now
-        long currentPlayer = turn.getActivePlayerId();
+        long currentPlayer = turn.getActivePlayer().getPlayerId();
         assertThat(currentPlayer).isEqualTo(player.getPlayerId());
 
 //        // 2a. deal (the top) card for the game face up

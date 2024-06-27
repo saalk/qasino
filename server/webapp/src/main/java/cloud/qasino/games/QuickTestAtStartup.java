@@ -147,7 +147,7 @@ public class QuickTestAtStartup implements ApplicationRunner {
         gameRepository.save(game);
 
         // The main player initiates a turn with round 1 player 1 and gets a card
-        Turn turn = new Turn(game, visitorAndBot.get(0).getPlayerId());
+        Turn turn = new Turn(game, visitorAndBot.get(0));
         turnRepository.save(turn);
         CardMove cardMove = new CardMove(turn, visitorAndBot.get(0), 0, Move.DEAL,
                 Location.HAND, "details");

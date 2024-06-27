@@ -77,7 +77,7 @@ public class MapQasinoGameTableFromDtoAction implements Action<MapQasinoGameTabl
             SectionSeat seat = new SectionSeat();
             // seat stats
             seat.setSeatId(player.getSeat());
-            seat.setPlaying(player.getPlayerId() == actionDto.getActiveTurn().getActivePlayerId());
+            seat.setPlaying(player.getPlayerId() == actionDto.getActiveTurn().getActivePlayer().getPlayerId());
             // todo which one to choose
 //            seat.setSeatPlayerTheInitiator(player.getPlayerId() ==
 //                    actionDto.getQasinoGame().getInitiator());

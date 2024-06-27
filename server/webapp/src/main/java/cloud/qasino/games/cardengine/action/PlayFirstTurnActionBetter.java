@@ -54,7 +54,7 @@ public class PlayFirstTurnActionBetter implements Action<PlayFirstTurnActionBett
                             .filter(p -> p.getSeat() == 1)
                             .findFirst().get());
         }
-        Turn firstTurn = new Turn(actionDto.getQasinoGame(), actionDto.getTurnPlayer().getPlayerId());
+        Turn firstTurn = new Turn(actionDto.getQasinoGame(), actionDto.getTurnPlayer());
         Turn updatedTurn = turnRepository.save(firstTurn);
         actionDto.getQasinoGame().setTurn(updatedTurn);
         boolean cardDealt = turnAndCardMoveService.dealCardToPlayer(

@@ -98,7 +98,7 @@ public class PlayNextHumanTurnActionBetter implements Action<PlayNextHumanTurnAc
                 activeTurn.setCurrentRoundNumber(activeTurn.getCurrentRoundNumber() + 1);
                 activeTurn.setCurrentSeatNumber(activePlayer.getSeat());
                 activeTurn.setCurrentMoveNumber(1);
-                activeTurn.setActivePlayerId(actionDto.getNextPlayer().getPlayerId());
+                activeTurn.setActivePlayer(actionDto.getNextPlayer());
                 turnRepository.save(activeTurn);
 
                 cardDealt = turnAndCardMoveService.dealCardToPlayer(
