@@ -10,11 +10,10 @@ import cloud.qasino.games.database.entity.enums.player.Avatar;
 import cloud.qasino.games.database.repository.CardRepository;
 import cloud.qasino.games.database.repository.GameRepository;
 import cloud.qasino.games.database.repository.PlayerRepository;
-import cloud.qasino.games.database.security.Visitor;
 import cloud.qasino.games.dto.GameDto;
 import cloud.qasino.games.dto.VisitorDto;
 import cloud.qasino.games.dto.mapper.GameMapper;
-import cloud.qasino.games.dto.request.IdsDto;
+import cloud.qasino.games.dto.request.ParamsDto;
 import cloud.qasino.games.exception.MyBusinessException;
 import cloud.qasino.games.pattern.factory.Deck;
 import cloud.qasino.games.pattern.factory.DeckFactory;
@@ -23,7 +22,6 @@ import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import org.thymeleaf.expression.Ids;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -43,19 +41,19 @@ public class GameService {
     // counts
 
     // find one
-    public GameDto findOneByGameId(IdsDto idsDto) {
-        Game retrievedGame = gameRepository.findOneByGameId(idsDto.getSuppliedVisitorId());
+    public GameDto findOneByGameId(ParamsDto paramsDto) {
+        Game retrievedGame = gameRepository.findOneByGameId(paramsDto.getSuppliedVisitorId());
         return gameMapper.gameToGameDto(retrievedGame);
     };
 
-    public GameDto findLatestGameForVisitorId(IdsDto idsDto){
+    public GameDto findLatestGameForVisitorId(ParamsDto paramsDto){
         Pageable pageable = PageRequest.of(0, 4);
-        List<Game> foundGame = gameRepository.findAllNewGamesForVisitorWithPage(idsDto.getSuppliedVisitorId(), pageable);
+        List<Game> foundGame = gameRepository.findAllNewGamesForVisitorWithPage(paramsDto.getSuppliedVisitorId(), pageable);
         if (foundGame.isEmpty()) {
-            foundGame = gameRepository.findAllStartedGamesForVisitorWithPage(idsDto.getSuppliedVisitorId(), pageable);
+            foundGame = gameRepository.findAllStartedGamesForVisitorWithPage(paramsDto.getSuppliedVisitorId(), pageable);
         }
         if (foundGame.isEmpty()) {
-            foundGame = gameRepository.findAllFinishedGamesForVisitorWithPage(idsDto.getSuppliedVisitorId(), pageable);
+            foundGame = gameRepository.findAllFinishedGamesForVisitorWithPage(paramsDto.getSuppliedVisitorId(), pageable);
             // no games are present for the visitor
             if (foundGame.isEmpty()) return null;
         }

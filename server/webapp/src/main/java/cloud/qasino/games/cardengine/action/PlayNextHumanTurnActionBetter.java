@@ -1,6 +1,8 @@
 package cloud.qasino.games.cardengine.action;
 
+import cloud.qasino.games.action.PlayNextHumanTurnAction;
 import cloud.qasino.games.action.interfaces.Action;
+import cloud.qasino.games.database.entity.Card;
 import cloud.qasino.games.database.entity.CardMove;
 import cloud.qasino.games.database.entity.Game;
 import cloud.qasino.games.database.entity.Player;
@@ -20,6 +22,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
@@ -34,12 +37,19 @@ public class PlayNextHumanTurnActionBetter implements Action<PlayNextHumanTurnAc
     @Override
     public EventOutput.Result perform(Dto actionDto) {
 
+        // Consecutive move in HIGHLOW is a given move from location STOCK to location HAND with face UP
+        Location fromLocation = Location.STOCK;
+        Location toLocation = Location.HAND;
+        Face face = Face.UP;
+        int howMany = 1;
+
+
         actionDto.setErrorKey("TurnEvent");
         actionDto.setErrorValue(actionDto.getSuppliedTurnEvent().getLabel());
 
         // POST - turnEvent HIGER|LOWER|PASS for player in highlow game
         if (!actionDto.getQasinoGame().getType().equals(Type.HIGHLOW)) {
-            setBadRequestErrorMessage(actionDto, "Game type", String.valueOf(actionDto.getQasinoGame().getType()));
+//            setBadRequestErrorMessage(actionDto, "Game type", String.valueOf(actionDto.getQasinoGame().getType()));
             return EventOutput.Result.FAILURE;
         }
         // prepare local data
@@ -48,7 +58,9 @@ public class PlayNextHumanTurnActionBetter implements Action<PlayNextHumanTurnAc
         Player activePlayer = actionDto.getTurnPlayer();
         Move activeMove = null;
 
-        boolean cardDealt;
+        List<Card> cardsDealt = new ArrayList<>();
+        List<CardMove> cardsMoved = new ArrayList<>();
+
 
 //        isTurnEqualToTurnsToWin(actionDto, activeGame, activeTurn);
 //        if (actionDto.getSuppliedTurnEvent() == TurnEvent.END_GAME) {
@@ -64,12 +76,17 @@ public class PlayNextHumanTurnActionBetter implements Action<PlayNextHumanTurnAc
                 activeTurn.setCurrentSeatNumber(activePlayer.getSeat());
                 turnRepository.save(activeTurn);
 
-                cardDealt = turnAndCardMoveService.dealCardToPlayer(
+                cardsDealt = turnAndCardMoveService.dealNCardsFromStockToActivePlayerForGame(
                         actionDto.getQasinoGame(),
+                        face,
+                        fromLocation,
+                        toLocation,
+                        howMany);
+                cardsMoved = turnAndCardMoveService.storeCardMovesForTurn(
+                        activeTurn,
+                        cardsDealt,
                         activeMove,
-                        Face.UP,
-                        Location.HAND,
-                        1);
+                        toLocation);
             }
             case LOWER -> {
                 activeMove = Move.LOWER;
@@ -77,16 +94,22 @@ public class PlayNextHumanTurnActionBetter implements Action<PlayNextHumanTurnAc
                 activeTurn.setCurrentSeatNumber(activePlayer.getSeat());
                 turnRepository.save(activeTurn);
 
-                cardDealt = turnAndCardMoveService.dealCardToPlayer(
+                cardsDealt = turnAndCardMoveService.dealNCardsFromStockToActivePlayerForGame(
                         actionDto.getQasinoGame(),
+                        face,
+                        fromLocation,
+                        toLocation,
+                        howMany);
+                cardsMoved = turnAndCardMoveService.storeCardMovesForTurn(
+                        activeTurn,
+                        cardsDealt,
                         activeMove,
-                        Face.UP,
-                        Location.HAND,
-                        1);
+                        toLocation);
+
             }
             case PASS -> {
                 // evaluate rounds to win - usually 1
-                isRoundEqualToRoundsToWin(actionDto, activeGame, activeTurn);
+                isRoundEqualToRoundsToWin((PlayNextHumanTurnAction.Dto) actionDto, activeGame, activeTurn);
                 if (actionDto.getNextPlayer() == null) {
                     actionDto.setSuppliedTurnEvent(TurnEvent.END_GAME);
                 }
@@ -101,19 +124,25 @@ public class PlayNextHumanTurnActionBetter implements Action<PlayNextHumanTurnAc
                 activeTurn.setActivePlayer(actionDto.getNextPlayer());
                 turnRepository.save(activeTurn);
 
-                cardDealt = turnAndCardMoveService.dealCardToPlayer(
+                cardsDealt = turnAndCardMoveService.dealNCardsFromStockToActivePlayerForGame(
                         actionDto.getQasinoGame(),
+                        face,
+                        fromLocation,
+                        toLocation,
+                        howMany);
+                cardsMoved = turnAndCardMoveService.storeCardMovesForTurn(
+                        activeTurn,
+                        cardsDealt,
                         activeMove,
-                        Face.UP,
-                        Location.HAND,
-                        1);
+                        toLocation);
+
                 actionDto.setTurnPlayer(actionDto.getNextPlayer());
                 actionDto.setActiveTurn(activeTurn);
                 actionDto.setSuppliedTurnPlayerId(actionDto.getTurnPlayer().getPlayerId());
             }
             default -> {
                 // ony STOP left TODO implement some logic here
-                setConflictErrorMessage(actionDto);
+                setConflictErrorMessage((PlayNextHumanTurnAction.Dto) actionDto);
 //                actionDto.setSuppliedTurnEvent(TurnEvent.END_GAME);
                 return EventOutput.Result.FAILURE;
             }
@@ -128,7 +157,7 @@ public class PlayNextHumanTurnActionBetter implements Action<PlayNextHumanTurnAc
         return EventOutput.Result.SUCCESS;
     }
 
-    private static void isRoundEqualToRoundsToWin(Dto actionDto, Game activeGame, Turn activeTurn) {
+    private static void isRoundEqualToRoundsToWin(PlayNextHumanTurnAction.Dto actionDto, Game activeGame, Turn activeTurn) {
         switch (Style.fromLabelWithDefault(activeGame.getStyle()).getRoundsToWin()){
             case ONE_ROUND -> {
                 if (activeTurn.getCurrentRoundNumber() == 2) {
@@ -147,7 +176,7 @@ public class PlayNextHumanTurnActionBetter implements Action<PlayNextHumanTurnAc
             }
         }
     }
-    private static void isTurnEqualToTurnsToWin(Dto actionDto, Game activeGame, Turn activeTurn) {
+    private static void isTurnEqualToTurnsToWin(PlayNextHumanTurnAction.Dto actionDto, Game activeGame, Turn activeTurn) {
         switch (Style.fromLabelWithDefault(activeGame.getStyle()).getTurnsToWin()){
             case ONE_WINS -> {
                 if (activeTurn.getCurrentMoveNumber() == 2) {
@@ -167,13 +196,13 @@ public class PlayNextHumanTurnActionBetter implements Action<PlayNextHumanTurnAc
         }
     }
 
-    private void setConflictErrorMessage(Dto actionDto) {
+    private void setConflictErrorMessage(PlayNextHumanTurnAction.Dto actionDto) {
 //        actionDto.setErrorKey(id);
 //        actionDto.setErrorValue(value);
         actionDto.setConflictErrorMessage("Trigger [" + actionDto.getSuppliedTurnEvent() + "] invalid for gameState");
     }
 
-    private void setBadRequestErrorMessage(Dto actionDto, String id, String value) {
+    private void setBadRequestErrorMessage(PlayNextHumanTurnAction.Dto actionDto, String id, String value) {
         actionDto.setErrorKey(id);
         actionDto.setErrorValue(value);
         actionDto.setBadRequestErrorMessage("Action [" + id + "] invalid - only highlow implemented");

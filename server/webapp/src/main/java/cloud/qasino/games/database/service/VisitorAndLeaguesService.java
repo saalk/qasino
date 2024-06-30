@@ -12,7 +12,7 @@ import cloud.qasino.games.dto.LeagueDto;
 import cloud.qasino.games.dto.VisitorDto;
 import cloud.qasino.games.dto.mapper.LeagueMapper;
 import cloud.qasino.games.dto.mapper.VisitorMapper;
-import cloud.qasino.games.dto.request.IdsDto;
+import cloud.qasino.games.dto.request.ParamsDto;
 import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -57,12 +57,12 @@ public class VisitorAndLeaguesService {
     };
 
     // find one
-    public VisitorDto findByUsername(IdsDto idsDto){
-        Visitor retrievedVisitor = visitorRepository.findByUsername(idsDto.getSuppliedVisitorUsername());
+    public VisitorDto findByUsername(ParamsDto paramsDto){
+        Visitor retrievedVisitor = visitorRepository.findByUsername(paramsDto.getSuppliedVisitorUsername());
         return visitorMapper.visitorToVisitorDto(retrievedVisitor);
     };
-    public VisitorDto findOneByVisitorId(IdsDto idsDto) {
-        Visitor retrievedVisitor = visitorRepository.findOneByVisitorId(idsDto.getSuppliedVisitorId());
+    public VisitorDto findOneByVisitorId(ParamsDto paramsDto) {
+        Visitor retrievedVisitor = visitorRepository.findOneByVisitorId(paramsDto.getSuppliedVisitorId());
         return visitorMapper.visitorToVisitorDto(retrievedVisitor);
     };
     Optional<VisitorDto> findVisitorByAliasAndAliasSequence(VisitorDto visitorDto){
@@ -71,8 +71,8 @@ public class VisitorAndLeaguesService {
                 .filter(Optional::isPresent) // lambda is => visitor -> visitor.isPresent()
                 .map(visitor -> visitorMapper.visitorToVisitorDto(visitor.get()));
     };
-    public LeagueDto findOneByLeagueId(IdsDto idsDto) {
-        League retrievedLeague = leagueRepository.findOneByLeagueId(idsDto.getSuppliedLeagueId());
+    public LeagueDto findOneByLeagueId(ParamsDto paramsDto) {
+        League retrievedLeague = leagueRepository.findOneByLeagueId(paramsDto.getSuppliedLeagueId());
         return leagueMapper.leagueToLeagueDto(retrievedLeague);
     };
 

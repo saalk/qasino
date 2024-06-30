@@ -10,11 +10,17 @@ import cloud.qasino.games.pattern.comparator.ComparatorUtil;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 public class StreamUtil {
 
-    // filter() and sorted() - filter then sort a list asc
+    // for sorted() use COMPARATOR UTIL
     // https://docs.oracle.com/javase%2F8%2Fdocs%2Fapi%2F%2F/java/util/stream/Stream.html#sorted--
+    // mapToInt() then sum() on a value
+    // https://docs.oracle.com/javase%2F8%2Fdocs%2Fapi%2F%2F/java/util/stream/Stream.html#mapToInt-java.util.function.ToIntFunction-
+    // filter() then limit() - find the first X then collect() as limit returns another stream
+
+    // sort
     public static List<Card> sortCardsOnSequenceWithStream(List<Card> unsortedCardList, Location location) {
         if (location != null) {
             return unsortedCardList.
@@ -50,20 +56,27 @@ public class StreamUtil {
                     toList();
     }
 
-    // mapToInt() then sum() on a value - count an element in a list
-    // https://docs.oracle.com/javase%2F8%2Fdocs%2Fapi%2F%2F/java/util/stream/Stream.html#mapToInt-java.util.function.ToIntFunction-
+    // map and sum
     public static int countCardValuesOnRankAndSuit(List<Card> unsortedCardList) {
         return unsortedCardList.stream()
                 .mapToInt(value -> PlayingCard.calculateValueWithDefaultHighlow(value.getRankSuit(), Type.HIGHLOW))
                 .sum();
     }
 
-    // filter() then findFirst() - find the first after filtering
-    // https://docs.oracle.com/javase%2F8%2Fdocs%2Fapi%2F%2F/java/util/stream/Stream.html#sorted--
+    // find first or limit and collect
+    public static Optional<Player> findFirstPlayerBySeat(List<Player> players) {
+        return players
+                .stream()
+                .filter(p -> p.getSeat() == 1)
+                .findFirst();
+    }
     public static Optional<Card> findLastCardInSortedList(List<Card> sortedCardList) {
         return sortedCardList.
                 stream().
                 sorted(ComparatorUtil.cardSequenceComparator().reversed()).
                 findFirst(); // can be replaced with max() ?????
+    }
+    public static List<Card> findFirstNCards(List<Card> sortedCardList, int howMany) {
+        return sortedCardList.stream().limit(howMany).collect(Collectors.toList());
     }
 }

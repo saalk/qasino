@@ -41,34 +41,36 @@ public class CreationDto {
     private int suppliedMaxPerPage = 4;
 
     // visitor
-    @NotEmpty(message = "Username is empty")
+    @NotEmpty(message = "Username cannot be empty")
     private String suppliedUsername;
     @Email(message = "Invalid is email")
     private String suppliedEmail;
-    @NotEmpty(message = "Password is empty")
+    @NotEmpty(message = "Password cannot empty")
     private String suppliedPassword;
-    @NotEmpty(message = "Alias is empty")
+    @NotEmpty(message = "Alias cannot empty")
     private String suppliedAlias ;
 
     // league
-    @NotEmpty(message = "Name for League is empty")
+    @NotEmpty(message = "Name for League cannot be empty")
     private String suppliedLeagueName;
 
     // player
-    @NotEmpty(message = "Player type eg Bot, Invitee is empty")
+    @NotEmpty(message = "Player type [eg Bot, Invitee] cannot be empty")
     private PlayerType suppliedPlayerType; // bot, initiator or guest
-    @NotNull(message = "Player avatar eg Elf, Goblin is empty")
+    @NotNull(message = "Player avatar [eg Elf, Goblin] cannot be empty")
     private Avatar suppliedAvatar;
-    @NotNull(message = "Player ai level eg Smart, Human is empty")
+    @NotNull(message = "Player AiLevel [eg Smart, Human] cannot be empty")
     private AiLevel suppliedAiLevel;
 
     // game
+    @NotNull(message = "Game style [eg MaxRounds, AnteToWin] cannot be empty")
     private String suppliedStyle;
+    @NotNull(message = "No Game type choses [eg Highlow, Blackjack]")
     private Type suppliedType;
     @Min(value = 5, message = "min 5 ante")
-    private int suppliedAnte;
+    private int suppliedAnte = 20;
     @Max(value = 3, message = "max 3 jokers")
-    private int suppliedJokers;
+    private int suppliedJokers = 3;
 
     // cardMove
     private List<Card> suppliedCards;

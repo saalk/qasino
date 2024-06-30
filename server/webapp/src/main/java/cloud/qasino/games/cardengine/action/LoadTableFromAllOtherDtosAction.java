@@ -69,7 +69,7 @@ public class LoadTableFromAllOtherDtosAction extends ActionDto<EventOutput.Resul
         table.setCurrentMoveNumber(turn.getCurrentMoveNumber());
 
         // FROM TURN - ACTIVE AND NEXT PLAYER
-//         table.setActivePlayer(turn.getActivePlayerId());
+         table.setActivePlayer(turn.getActivePlayer());
 
         table.setSeats(mapSeats());
         return EventOutput.Result.SUCCESS;

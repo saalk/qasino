@@ -11,7 +11,7 @@ import cloud.qasino.games.dto.InvitationsDTO;
 import cloud.qasino.games.dto.LeagueDto;
 import cloud.qasino.games.dto.VisitorDto;
 import cloud.qasino.games.dto.request.CreationDto;
-import cloud.qasino.games.dto.request.IdsDto;
+import cloud.qasino.games.dto.request.ParamsDto;
 import cloud.qasino.games.dto.request.MessageDto;
 import cloud.qasino.games.pattern.statemachine.event.EventOutput;
 import lombok.Getter;
@@ -32,7 +32,7 @@ public abstract class ActionDto<OUTPUT> {
     @Autowired @Lazy TurnAndCardMoveService turnAndCardMoveService;
 
     private MessageDto message = new MessageDto();
-    private IdsDto ids = new IdsDto();
+    private ParamsDto ids = new ParamsDto();
     private CreationDto creation = new CreationDto();
 
     private VisitorDto visitor = null;

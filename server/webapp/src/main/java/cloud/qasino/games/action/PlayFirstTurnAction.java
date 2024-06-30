@@ -1,6 +1,7 @@
 package cloud.qasino.games.action;
 
 import cloud.qasino.games.action.interfaces.Action;
+import cloud.qasino.games.database.entity.Card;
 import cloud.qasino.games.database.entity.CardMove;
 import cloud.qasino.games.database.entity.Game;
 import cloud.qasino.games.database.entity.Player;
@@ -16,12 +17,14 @@ import cloud.qasino.games.exception.MyNPException;
 import cloud.qasino.games.pattern.statemachine.event.EventOutput;
 import cloud.qasino.games.pattern.statemachine.event.GameEvent;
 import cloud.qasino.games.pattern.statemachine.event.TurnEvent;
+import cloud.qasino.games.pattern.stream.StreamUtil;
 import cloud.qasino.games.response.view.SectionTable;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.Optional;
 
 @Slf4j
 @Component
@@ -37,43 +40,47 @@ public class PlayFirstTurnAction implements Action<PlayFirstTurnAction.Dto, Even
     @Override
     public EventOutput.Result perform(Dto actionDto) {
 
+        // First 1 move in HIGHLOW is move DEAL from location STOCK to location HAND with face UP
+        Move firstDeal = Move.DEAL;
+        Location fromLocation = Location.STOCK;
+        Location toLocation = Location.HAND;
+        Face face = Face.UP;
+        int howMany = 1;
+
         if (!actionDto.getQasinoGame().getType().equals(Type.HIGHLOW)) {
             setBadRequestErrorMessage(actionDto, "Game Type", String.valueOf(actionDto.getQasinoGame().getType()));
             return EventOutput.Result.FAILURE;
         }
 
-        // 1. make a turn, find the first player
-        if (actionDto.getSuppliedTurnPlayerId() == 0) {
-            actionDto.setSuppliedTurnPlayerId(
-                    actionDto.getQasinoGamePlayers()
-                            .stream()
-                            .filter(p -> p.getSeat() == 1)
-                            .findFirst().get().getPlayerId());
-            actionDto.setTurnPlayer(
-                    actionDto.getQasinoGamePlayers()
-                            .stream()
-                            .filter(p -> p.getSeat() == 1)
-                            .findFirst().get());
-        }
+        Optional<Player> firstPlayer = StreamUtil.findFirstPlayerBySeat(actionDto.getQasinoGame().getPlayers());
+        actionDto.setSuppliedTurnPlayerId(firstPlayer.get().getPlayerId());
+        actionDto.setTurnPlayer(firstPlayer.get());
+
         Turn firstTurn = new Turn(actionDto.getQasinoGame(), actionDto.getTurnPlayer());
         Turn savedTurn = turnRepository.saveAndFlush(firstTurn);
+
         actionDto.setQasinoGame(gameRepository.getReferenceById(actionDto.getQasinoGame().getGameId()));
         actionDto.getQasinoGame().setTurn(savedTurn);
         if (actionDto.getQasinoGame().getTurn() == null) {
             throw new MyNPException("62 PlayFirstTurnAction", "gameId [" + actionDto.getQasinoGame().getGameId() + "]");
+        }
 
-        };
-
-        boolean cardDealt = turnAndCardMoveService.dealCardToPlayer(
+        List<Card> cardsDealt = turnAndCardMoveService.dealNCardsFromStockToActivePlayerForGame(
                 actionDto.getQasinoGame(),
-                Move.DEAL,
-                Face.UP,
-                Location.HAND,
-                1);
+                face,
+                fromLocation,
+                toLocation,
+                howMany);
+        List<CardMove> cardsMoved = turnAndCardMoveService.storeCardMovesForTurn(
+                savedTurn,
+                cardsDealt,
+                firstDeal,
+                toLocation);
+
         actionDto.setActiveTurn(firstTurn); // can be null
         actionDto.setAllCardMovesForTheGame(turnAndCardMoveService.getCardMovesForGame(actionDto.getQasinoGame())); // can be null
 
-        return cardDealt ? EventOutput.Result.SUCCESS : EventOutput.Result.FAILURE;
+        return cardsDealt.isEmpty() ? EventOutput.Result.FAILURE : EventOutput.Result.SUCCESS;
     }
 
     private void setBadRequestErrorMessage(Dto actionDto, String id, String value) {

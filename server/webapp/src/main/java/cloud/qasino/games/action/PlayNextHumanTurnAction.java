@@ -1,6 +1,7 @@
 package cloud.qasino.games.action;
 
 import cloud.qasino.games.action.interfaces.Action;
+import cloud.qasino.games.database.entity.Card;
 import cloud.qasino.games.database.entity.CardMove;
 import cloud.qasino.games.database.entity.Game;
 import cloud.qasino.games.database.entity.Player;
@@ -20,6 +21,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
@@ -33,6 +35,13 @@ public class PlayNextHumanTurnAction implements Action<PlayNextHumanTurnAction.D
 
     @Override
     public EventOutput.Result perform(Dto actionDto) {
+
+        // Consecutive move in HIGHLOW is a given move from location STOCK to location HAND with face UP
+        Location fromLocation = Location.STOCK;
+        Location toLocation = Location.HAND;
+        Face face = Face.UP;
+        int howMany = 1;
+
 
         actionDto.setErrorKey("TurnEvent");
         actionDto.setErrorValue(actionDto.getSuppliedTurnEvent().getLabel());
@@ -48,7 +57,9 @@ public class PlayNextHumanTurnAction implements Action<PlayNextHumanTurnAction.D
         Player activePlayer = actionDto.getTurnPlayer();
         Move activeMove = null;
 
-        boolean cardDealt;
+        List<Card> cardsDealt = new ArrayList<>();
+        List<CardMove> cardsMoved = new ArrayList<>();
+
 
 //        isTurnEqualToTurnsToWin(actionDto, activeGame, activeTurn);
 //        if (actionDto.getSuppliedTurnEvent() == TurnEvent.END_GAME) {
@@ -64,12 +75,17 @@ public class PlayNextHumanTurnAction implements Action<PlayNextHumanTurnAction.D
                 activeTurn.setCurrentSeatNumber(activePlayer.getSeat());
                 turnRepository.save(activeTurn);
 
-                cardDealt = turnAndCardMoveService.dealCardToPlayer(
+                cardsDealt = turnAndCardMoveService.dealNCardsFromStockToActivePlayerForGame(
                         actionDto.getQasinoGame(),
+                        face,
+                        fromLocation,
+                        toLocation,
+                        howMany);
+                cardsMoved = turnAndCardMoveService.storeCardMovesForTurn(
+                        activeTurn,
+                        cardsDealt,
                         activeMove,
-                        Face.UP,
-                        Location.HAND,
-                        1);
+                        toLocation);
             }
             case LOWER -> {
                 activeMove = Move.LOWER;
@@ -77,12 +93,18 @@ public class PlayNextHumanTurnAction implements Action<PlayNextHumanTurnAction.D
                 activeTurn.setCurrentSeatNumber(activePlayer.getSeat());
                 turnRepository.save(activeTurn);
 
-                cardDealt = turnAndCardMoveService.dealCardToPlayer(
+                cardsDealt = turnAndCardMoveService.dealNCardsFromStockToActivePlayerForGame(
                         actionDto.getQasinoGame(),
+                        face,
+                        fromLocation,
+                        toLocation,
+                        howMany);
+                cardsMoved = turnAndCardMoveService.storeCardMovesForTurn(
+                        activeTurn,
+                        cardsDealt,
                         activeMove,
-                        Face.UP,
-                        Location.HAND,
-                        1);
+                        toLocation);
+
             }
             case PASS -> {
                 // evaluate rounds to win - usually 1
@@ -101,12 +123,18 @@ public class PlayNextHumanTurnAction implements Action<PlayNextHumanTurnAction.D
                 activeTurn.setActivePlayer(actionDto.getNextPlayer());
                 turnRepository.save(activeTurn);
 
-                cardDealt = turnAndCardMoveService.dealCardToPlayer(
+                cardsDealt = turnAndCardMoveService.dealNCardsFromStockToActivePlayerForGame(
                         actionDto.getQasinoGame(),
+                        face,
+                        fromLocation,
+                        toLocation,
+                        howMany);
+                cardsMoved = turnAndCardMoveService.storeCardMovesForTurn(
+                        activeTurn,
+                        cardsDealt,
                         activeMove,
-                        Face.UP,
-                        Location.HAND,
-                        1);
+                        toLocation);
+
                 actionDto.setTurnPlayer(actionDto.getNextPlayer());
                 actionDto.setActiveTurn(activeTurn);
                 actionDto.setSuppliedTurnPlayerId(actionDto.getTurnPlayer().getPlayerId());

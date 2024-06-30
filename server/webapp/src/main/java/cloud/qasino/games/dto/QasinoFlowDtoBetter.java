@@ -4,7 +4,7 @@ import cloud.qasino.games.database.entity.Card;
 import cloud.qasino.games.database.entity.CardMove;
 import cloud.qasino.games.database.entity.Player;
 import cloud.qasino.games.database.entity.Turn;
-import cloud.qasino.games.dto.request.IdsDto;
+import cloud.qasino.games.dto.request.ParamsDto;
 import cloud.qasino.games.dto.request.MessageDto;
 import lombok.Getter;
 import lombok.Setter;
@@ -19,7 +19,7 @@ import java.util.List;
 public class QasinoFlowDtoBetter {
 
     // @formatter:off
-    private IdsDto ids = new IdsDto();
+    private ParamsDto ids = new ParamsDto();
     private MessageDto message;
     private VisitorDto visitor;
     private GameDto game;
