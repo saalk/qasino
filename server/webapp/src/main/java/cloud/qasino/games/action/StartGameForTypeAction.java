@@ -24,7 +24,7 @@ public class StartGameForTypeAction implements Action<StartGameForTypeAction.Dto
     public EventOutput.Result perform(Dto actionDto) {
 
         // update a Game : create Cards for game according to the style and shuffle them
-        actionDto.setQasinoGame(gameServiceOld.addAndShuffleCardsForAGame(actionDto.getQasinoGame()));
+        actionDto.setQasinoGame(gameServiceOld.addAndShuffleCardsForGame(actionDto.getQasinoGame()));
         return EventOutput.Result.SUCCESS;
     }
 

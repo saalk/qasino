@@ -3,6 +3,7 @@ package cloud.qasino.games.database.service;
 import cloud.qasino.games.database.entity.Card;
 import cloud.qasino.games.database.entity.Game;
 import cloud.qasino.games.database.entity.League;
+import cloud.qasino.games.database.entity.Player;
 import cloud.qasino.games.database.entity.enums.card.Location;
 import cloud.qasino.games.database.entity.enums.card.PlayingCard;
 import cloud.qasino.games.database.entity.enums.game.GameState;
@@ -14,6 +15,7 @@ import cloud.qasino.games.database.security.Visitor;
 import cloud.qasino.games.exception.MyBusinessException;
 import cloud.qasino.games.pattern.factory.Deck;
 import cloud.qasino.games.pattern.factory.DeckFactory;
+import cloud.qasino.games.pattern.stream.StreamUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -63,7 +65,7 @@ public class GameServiceOld {
         game.setState(GameState.PREPARED);
         return gameRepository.save(game);
     }
-    public Game addAndShuffleCardsForAGame(Game activeGame) {
+    public Game addAndShuffleCardsForGame(Game activeGame) {
         if (!activeGame.getCards().isEmpty())
             throw new MyBusinessException("addAndShuffleCardsForAGame", "this game already has cards [" + activeGame.getGameId() + "]");
 
@@ -93,6 +95,15 @@ public class GameServiceOld {
         activeGame.setCards(cards);
         activeGame = gameRepository.save(activeGame);
         return activeGame;
+    }
+    public Player findNextPlayerForGame(Game activeGame) {
+        int totalSeats = activeGame.getPlayers().size();
+        int currentSeat = activeGame.getTurn().getCurrentSeatNumber();
+        if (totalSeats == 1 || currentSeat == totalSeats) {
+            return activeGame.getPlayers().get(0);
+        }
+        List<Player> sortedPlayers = StreamUtil.sortPlayersOnSeatWithStream(activeGame.getPlayers());
+        return sortedPlayers.get(currentSeat + 1);
     }
 
 }

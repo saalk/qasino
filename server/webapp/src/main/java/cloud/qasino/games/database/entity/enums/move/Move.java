@@ -49,7 +49,7 @@ public enum Move implements LabeledEnum {
      * factory methods for creating an instance like creating groups from enums.
      * Here it is used to group all enums.
      */
-    public static Set<Move> highlowMoves = EnumSet.of(DEAL, PASS, HIGHER, LOWER, STOP);
+    public static Set<Move> highlowMoves = EnumSet.of(DEAL, HIGHER, LOWER, STOP);
     public static Set<Move> blackjackMoves = EnumSet.of(DEAL, STAND, DOUBLE, STOP);
 
     static {

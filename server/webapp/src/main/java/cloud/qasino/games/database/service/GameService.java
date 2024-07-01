@@ -45,7 +45,6 @@ public class GameService {
         Game retrievedGame = gameRepository.findOneByGameId(paramsDto.getSuppliedVisitorId());
         return gameMapper.gameToGameDto(retrievedGame);
     };
-
     public GameDto findLatestGameForVisitorId(ParamsDto paramsDto){
         Pageable pageable = PageRequest.of(0, 4);
         List<Game> foundGame = gameRepository.findAllNewGamesForVisitorWithPage(paramsDto.getSuppliedVisitorId(), pageable);
@@ -69,7 +68,6 @@ public class GameService {
         playerServiceOld.addHumanVisitorPlayerToAGame(null, newGame, Avatar.ELF);
         return gameMapper.gameToGameDto(newGame);
     }
-
     public GameDto prepareExistingGame(GameDto gameDto, League league, String style, int ante) {
         Game game = gameMapper.gameDtoToGame(gameDto);
         // You cannot change the initiator or the type
@@ -86,7 +84,6 @@ public class GameService {
         Game newGame = gameRepository.save(game);
         return  gameMapper.gameToGameDto(newGame);
     }
-
     public GameDto addAndShuffleCardsForAGame(GameDto gameDto) {
         Game game = gameMapper.gameDtoToGame(gameDto);
         if (!game.getCards().isEmpty())

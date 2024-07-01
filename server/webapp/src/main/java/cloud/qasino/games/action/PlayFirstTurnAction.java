@@ -40,6 +40,10 @@ public class PlayFirstTurnAction implements Action<PlayFirstTurnAction.Dto, Even
     @Override
     public EventOutput.Result perform(Dto actionDto) {
 
+        if (!actionDto.getQasinoGame().getType().equals(Type.HIGHLOW)) {
+            throw new MyNPException("PlayNext", "error [" + actionDto.getQasinoGame().getType() + "]");
+        }
+
         // First 1 move in HIGHLOW is move DEAL from location STOCK to location HAND with face UP
         Move firstDeal = Move.DEAL;
         Location fromLocation = Location.STOCK;
@@ -47,77 +51,28 @@ public class PlayFirstTurnAction implements Action<PlayFirstTurnAction.Dto, Even
         Face face = Face.UP;
         int howMany = 1;
 
-        if (!actionDto.getQasinoGame().getType().equals(Type.HIGHLOW)) {
-            setBadRequestErrorMessage(actionDto, "Game Type", String.valueOf(actionDto.getQasinoGame().getType()));
-            return EventOutput.Result.FAILURE;
-        }
+        // Local fields
+        Game game = actionDto.getQasinoGame();
+        Player firstPlayer = StreamUtil.findFirstPlayerBySeat(game.getPlayers());
 
-        Optional<Player> firstPlayer = StreamUtil.findFirstPlayerBySeat(actionDto.getQasinoGame().getPlayers());
-        actionDto.setSuppliedTurnPlayerId(firstPlayer.get().getPlayerId());
-        actionDto.setTurnPlayer(firstPlayer.get());
-
-        Turn firstTurn = new Turn(actionDto.getQasinoGame(), actionDto.getTurnPlayer());
+        // new TURN
+        Turn firstTurn = new Turn(game, firstPlayer);
         Turn savedTurn = turnRepository.saveAndFlush(firstTurn);
+        game.setTurn(savedTurn);
 
-        actionDto.setQasinoGame(gameRepository.getReferenceById(actionDto.getQasinoGame().getGameId()));
-        actionDto.getQasinoGame().setTurn(savedTurn);
-        if (actionDto.getQasinoGame().getTurn() == null) {
-            throw new MyNPException("62 PlayFirstTurnAction", "gameId [" + actionDto.getQasinoGame().getGameId() + "]");
-        }
-
-        List<Card> cardsDealt = turnAndCardMoveService.dealNCardsFromStockToActivePlayerForGame(
-                actionDto.getQasinoGame(),
-                face,
+        // Deal CARDs (and update CARDMOVE)
+        turnAndCardMoveService.dealNCardsFromStockToActivePlayerForGame(
+                game,
+                firstDeal,
                 fromLocation,
                 toLocation,
+                face,
                 howMany);
-        List<CardMove> cardsMoved = turnAndCardMoveService.storeCardMovesForTurn(
-                savedTurn,
-                cardsDealt,
-                firstDeal,
-                toLocation);
-
-        actionDto.setActiveTurn(firstTurn); // can be null
-        actionDto.setAllCardMovesForTheGame(turnAndCardMoveService.getCardMovesForGame(actionDto.getQasinoGame())); // can be null
-
-        return cardsDealt.isEmpty() ? EventOutput.Result.FAILURE : EventOutput.Result.SUCCESS;
-    }
-
-    private void setBadRequestErrorMessage(Dto actionDto, String id, String value) {
-        actionDto.setErrorKey(id);
-        actionDto.setErrorValue(value);
-        actionDto.setBadRequestErrorMessage("Action [" + id + "] invalid - only highlow implemented");
+        return EventOutput.Result.SUCCESS;
     }
 
     public interface Dto {
 
-        // @formatter:off
-        String getErrorMessage();
-        GameEvent getSuppliedGameEvent();
-        TurnEvent getSuppliedTurnEvent();
-
-        // Getters
-        List<Player> getQasinoGamePlayers();
         Game getQasinoGame();
-        SectionTable getTable();
-
-        void setQasinoGame(Game game);
-        void setActiveTurn(Turn turn);
-        Turn getActiveTurn();
-        Player getTurnPlayer();
-        void setTurnPlayer(Player turnPlayer);
-        long getSuppliedTurnPlayerId();
-        void setSuppliedTurnPlayerId(long turnPlayerId);
-        void setAllCardMovesForTheGame(List<CardMove> cardMoves);
-
-        // error setters
-        // @formatter:off
-        void setBadRequestErrorMessage(String problem);
-        void setNotFoundErrorMessage(String problem);
-        void setConflictErrorMessage(String reason);
-        void setUnprocessableErrorMessage(String reason);
-        void setErrorKey(String errorKey);
-        void setErrorValue(String errorValue);
-        // @formatter:on
     }
 }

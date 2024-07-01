@@ -63,7 +63,7 @@ public class CalculateAndFinishGameAction implements Action<CalculateAndFinishGa
         }
 
         // get all the card moves sorted
-        actionDto.setAllCardMovesForTheGame(turnAndCardMoveService.getCardMovesForGame(actionDto.getQasinoGame()));
+        actionDto.setAllCardMovesForTheGame(turnAndCardMoveService.findCardMovesForGame(actionDto.getQasinoGame()));
         if (actionDto.getAllCardMovesForTheGame() == null || players.isEmpty()) {
             // some error happened - just stop calculating
             return EventOutput.Result.SUCCESS;

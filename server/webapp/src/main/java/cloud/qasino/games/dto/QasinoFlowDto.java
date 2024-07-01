@@ -26,9 +26,6 @@ import cloud.qasino.games.action.UpdateFichesForPlayerAction;
 import cloud.qasino.games.action.UpdatePlayingStateForGame;
 import cloud.qasino.games.action.UpdateStyleForGame;
 import cloud.qasino.games.action.UpdateVisitorAction;
-import cloud.qasino.games.cardengine.action.PlayFirstTurnActionBetter;
-import cloud.qasino.games.cardengine.action.PlayNextBotTurnActionBetter;
-import cloud.qasino.games.cardengine.action.PlayNextHumanTurnActionBetter;
 import cloud.qasino.games.database.entity.Card;
 import cloud.qasino.games.database.entity.CardMove;
 import cloud.qasino.games.database.entity.Game;
@@ -99,9 +96,6 @@ public class QasinoFlowDto extends AbstractFlowDto
         PlayNextHumanTurnAction.Dto,
         PlayNextBotTurnAction.Dto,
         PlayFirstTurnAction.Dto,
-        PlayNextHumanTurnActionBetter.Dto,
-        PlayNextBotTurnActionBetter.Dto,
-        PlayFirstTurnActionBetter.Dto,
         PrepareGameAction.Dto,
         SetStatusIndicatorsBaseOnRetrievedDataAction.Dto,
         SignUpNewVisitorAction.Dto,

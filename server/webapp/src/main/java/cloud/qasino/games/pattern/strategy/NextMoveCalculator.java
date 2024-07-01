@@ -4,6 +4,7 @@ import cloud.qasino.games.database.entity.Game;
 import cloud.qasino.games.database.entity.Player;
 import cloud.qasino.games.database.entity.Turn;
 import cloud.qasino.games.database.entity.enums.move.Move;
+import cloud.qasino.games.exception.MyNPException;
 import cloud.qasino.games.pattern.strategy.algorithm.NormalMove;
 import cloud.qasino.games.pattern.strategy.algorithm.RandomMove;
 import cloud.qasino.games.pattern.strategy.algorithm.SmartMove;
@@ -15,15 +16,16 @@ public class NextMoveCalculator {
     enum NextMove {StupidMove, RandomMove, NormalMove, SmartMove, PassMove}
 
     public static Move next(Game game, Player player, Turn turn) {
-        // @formatter:off
 
+        // @formatter:off
         NextMove next = predict(game, player, turn);
         switch (next) {
             case StupidMove -> { return new StupidMove().predictMove(game);}
             case RandomMove -> { return new RandomMove().predictMove(game);}
             case NormalMove -> { return new NormalMove().predictMove(game);}
             case SmartMove  -> { return new SmartMove().predictMove(game);}
-            default ->         { return Move.PASS;}
+            case PassMove  -> { return Move.PASS;}
+            default -> throw new MyNPException("NextMoveCalculator", "next [" + next + "]");
         }
         // @formatter:on
     }

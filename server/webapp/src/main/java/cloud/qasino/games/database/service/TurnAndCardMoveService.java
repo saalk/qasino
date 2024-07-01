@@ -48,7 +48,7 @@ public class TurnAndCardMoveService {
     }
 
     // card(s) related functions
-    public List<Card> dealNCardsFromStockToActivePlayerForGame(Game activeGame, Face face, Location oldLocation, Location newLocation, int howMany) {
+    public List<Card> dealNCardsFromStockToActivePlayerForGame(Game activeGame, Move move, Location oldLocation, Location newLocation, Face face, int howMany) {
         Turn activeTurn = activeGame.getTurn();
         List<Card> topCardsInStock = getTopNCardsByLocationForGame(activeGame, oldLocation, howMany);
         List<Card> cardsDealt = new ArrayList<>();
@@ -58,6 +58,7 @@ public class TurnAndCardMoveService {
             cardDealt.setFace(face);
             cardDealt.setHand(activeTurn.getActivePlayer());
             cardsDealt.add(cardRepository.save(cardDealt));
+            storeCardMoveForTurn(activeTurn,cardDealt,move,newLocation);
         }
         return cardsDealt;
     }
@@ -66,10 +67,7 @@ public class TurnAndCardMoveService {
         return StreamUtil.findFirstNCards(orderedCards, howMany);
     }
 
-    // cardMove(s) related functions
-    public List<CardMove> storeCardMovesForTurn(Turn activeTurn, List<Card> cardsMoved, Move move, Location location) {
-        List<CardMove> cardMoves = new ArrayList<>();
-        for (Card cardMoved : cardsMoved) {
+    public void storeCardMoveForTurn(Turn activeTurn, Card cardMoved, Move move, Location location) {
             CardMove newMove = new CardMove(
                     activeTurn,
                     activeTurn.getActivePlayer(),
@@ -81,11 +79,9 @@ public class TurnAndCardMoveService {
                     activeTurn.getCurrentRoundNumber(),
                     activeTurn.getActivePlayer().getSeat(),
                     activeTurn.getCurrentMoveNumber());
-            cardMoves.add(cardMoveRepository.save(newMove));
-        }
-        return cardMoves;
+            cardMoveRepository.save(newMove);
     }
-    public List<CardMove> getCardMovesForGame(Game activeGame) {
+    public List<CardMove> findCardMovesForGame(Game activeGame) {
         Turn activeTurn = activeGame.getTurn();
         return cardMoveRepository.findByTurnOrderBySequenceAsc(activeTurn);
     }

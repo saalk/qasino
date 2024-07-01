@@ -72,7 +72,7 @@ public class UpdateFichesForPlayerActionBetter implements Action<UpdateFichesFor
         cardMoveRepository.save(cardMove);
         actionDto.getTurnPlayer().setFiches(cardMove.getEndFiches());
         playerRepository.save(actionDto.getTurnPlayer());
-        actionDto.setAllCardMovesForTheGame(turnAndCardMoveService.getCardMovesForGame(actionDto.getQasinoGame())); // can be null
+        actionDto.setAllCardMovesForTheGame(turnAndCardMoveService.findCardMovesForGame(actionDto.getQasinoGame())); // can be null
     }
     private int calculateWinOrLoss(Dto actionDto, Move move, Card previous, Card current) {
         int previousValue = PlayingCard.calculateValueWithDefaultHighlow(previous.getRankSuit(), actionDto.getQasinoGame().getType());
@@ -95,12 +95,6 @@ public class UpdateFichesForPlayerActionBetter implements Action<UpdateFichesFor
             return -actionDto.getQasinoGame().getAnte();
         }
         return actionDto.getQasinoGame().getAnte();
-    }
-
-    void setErrorMessageConflictWithDeal(Dto actionDto, String id, String value) {
-        actionDto.setErrorKey(id);
-        actionDto.setErrorValue(value);
-        actionDto.setConflictErrorMessage("Action [" + id + "] invalid, dealt card has a bet");
     }
 
     void setConflictErrorMessage(Dto actionDto, String id, String value) {

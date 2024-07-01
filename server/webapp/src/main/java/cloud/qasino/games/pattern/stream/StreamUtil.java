@@ -6,8 +6,10 @@ import cloud.qasino.games.database.entity.Player;
 import cloud.qasino.games.database.entity.enums.card.Location;
 import cloud.qasino.games.database.entity.enums.card.PlayingCard;
 import cloud.qasino.games.database.entity.enums.game.Type;
+import cloud.qasino.games.exception.MyNPException;
 import cloud.qasino.games.pattern.comparator.ComparatorUtil;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -64,11 +66,16 @@ public class StreamUtil {
     }
 
     // find first or limit and collect
-    public static Optional<Player> findFirstPlayerBySeat(List<Player> players) {
-        return players
+    public static Player findFirstPlayerBySeat(List<Player> players) {
+        Optional<Player> player = players
                 .stream()
                 .filter(p -> p.getSeat() == 1)
                 .findFirst();
+        if (player.isEmpty()) {
+            throw new MyNPException("findFirstPlayerBySeat", "players [" + Arrays.toString(players.toArray()) + "]");
+        } else {
+            return player.get();
+        }
     }
     public static Optional<Card> findLastCardInSortedList(List<Card> sortedCardList) {
         return sortedCardList.

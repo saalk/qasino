@@ -72,7 +72,7 @@ public class UpdateFichesForPlayerAction implements Action<UpdateFichesForPlayer
         cardMoveRepository.save(cardMove);
         actionDto.getTurnPlayer().setFiches(cardMove.getEndFiches());
         playerRepository.save(actionDto.getTurnPlayer());
-        actionDto.setAllCardMovesForTheGame(turnAndCardMoveService.getCardMovesForGame(actionDto.getQasinoGame())); // can be null
+        actionDto.setAllCardMovesForTheGame(turnAndCardMoveService.findCardMovesForGame(actionDto.getQasinoGame())); // can be null
     }
     private int calculateWinOrLoss(Dto actionDto, Move move, Card previous, Card current) {
         int previousValue = PlayingCard.calculateValueWithDefaultHighlow(previous.getRankSuit(), actionDto.getQasinoGame().getType());

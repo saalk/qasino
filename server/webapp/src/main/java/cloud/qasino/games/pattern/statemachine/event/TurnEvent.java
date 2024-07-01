@@ -16,6 +16,8 @@ public enum TurnEvent implements Event {
     // highlow
     HIGHER("higher"),
     LOWER("lower"),
+    PASS("pass"), // give round to next player
+    BOT("next"), // only for bot player
 
     // blackjack,
     DEAL("deal"),
@@ -23,8 +25,6 @@ public enum TurnEvent implements Event {
     STAND("stand"),
 
     // generic,
-    BOT("next"), // only for bot player
-    PASS("pass"), // give round to next player
     LEAVE("leave"), // leave as a invited player - rest can continue
 
     // technical internal events
