@@ -3,6 +3,7 @@ package cloud.qasino.games.pattern.comparator;
 import cloud.qasino.games.database.entity.Card;
 import cloud.qasino.games.database.entity.CardMove;
 import cloud.qasino.games.database.entity.Player;
+import cloud.qasino.games.dto.PlayerDto;
 
 import java.util.Comparator;
 
@@ -39,6 +40,9 @@ public class ComparatorUtil {
     }
     public static Comparator<Player> playerSeatComparator() {
         return Comparator.comparing(Player::getSeat);
+    }
+    public static Comparator<PlayerDto> playerDtoSeatComparator() {
+        return Comparator.comparing(PlayerDto::getSeat);
     }
 
 }

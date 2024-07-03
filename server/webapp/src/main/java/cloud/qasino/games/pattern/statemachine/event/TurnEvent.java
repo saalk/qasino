@@ -17,7 +17,7 @@ public enum TurnEvent implements Event {
     HIGHER("higher"),
     LOWER("lower"),
     PASS("pass"), // give round to next player
-    BOT("next"), // only for bot player
+    BOT("bot"), // only for bot player
 
     // blackjack,
     DEAL("deal"),

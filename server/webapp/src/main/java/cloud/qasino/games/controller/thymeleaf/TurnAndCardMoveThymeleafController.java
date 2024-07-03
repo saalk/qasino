@@ -162,7 +162,8 @@ public class TurnAndCardMoveThymeleafController extends AbstractThymeleafControl
         );
         // 2 - validate input
         if (!flowDto.isInputValid()) {
-            log.warn("Errors validateInput!!: {}", errors);
+            log.warn("Errors validateInput!!: {}",
+                    flowDto.getPathVariables().toString());
             prepareQasinoResponse(response, flowDto);
             model.addAttribute(flowDto.getQasinoResponse());
             return "redirect:/play/" + id;
@@ -191,8 +192,10 @@ public class TurnAndCardMoveThymeleafController extends AbstractThymeleafControl
         result = isPlayerHumanAction.perform(flowDto);
         updatePlayingStateForGame.perform(flowDto);
         if (SUCCESS.equals(result)) {
+            log.warn("playNextHumanTurnAction {}", flowDto.getSuppliedGameEvent());
             playNextHumanTurnAction.perform(flowDto);
         } else {
+            log.warn("playNextBotTurnAction {}", flowDto.getSuppliedGameEvent());
             playNextBotTurnAction.perform(flowDto);
         }
         updateFichesForPlayerAction.perform(flowDto);
@@ -207,6 +210,7 @@ public class TurnAndCardMoveThymeleafController extends AbstractThymeleafControl
 //        log.warn("Model: {}", model);
 //        log.warn("Errors: {}", errors);
 //        log.warn("qasinoResponse: {}", flowDto.getQasinoResponse());
+        log.warn("model !! {}", model);
         return "redirect:/play/" + flowDto.getSuppliedGameId();
     }
 

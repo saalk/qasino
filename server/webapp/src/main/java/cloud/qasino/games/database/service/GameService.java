@@ -3,6 +3,7 @@ package cloud.qasino.games.database.service;
 import cloud.qasino.games.database.entity.Card;
 import cloud.qasino.games.database.entity.Game;
 import cloud.qasino.games.database.entity.League;
+import cloud.qasino.games.database.entity.Player;
 import cloud.qasino.games.database.entity.enums.card.Location;
 import cloud.qasino.games.database.entity.enums.card.PlayingCard;
 import cloud.qasino.games.database.entity.enums.game.GameState;
@@ -11,12 +12,15 @@ import cloud.qasino.games.database.repository.CardRepository;
 import cloud.qasino.games.database.repository.GameRepository;
 import cloud.qasino.games.database.repository.PlayerRepository;
 import cloud.qasino.games.dto.GameDto;
+import cloud.qasino.games.dto.PlayerDto;
 import cloud.qasino.games.dto.VisitorDto;
 import cloud.qasino.games.dto.mapper.GameMapper;
+import cloud.qasino.games.dto.mapper.PlayerMapper;
 import cloud.qasino.games.dto.request.ParamsDto;
 import cloud.qasino.games.exception.MyBusinessException;
 import cloud.qasino.games.pattern.factory.Deck;
 import cloud.qasino.games.pattern.factory.DeckFactory;
+import cloud.qasino.games.pattern.stream.StreamUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.PageRequest;
@@ -37,13 +41,14 @@ public class GameService {
     @Autowired private PlayerRepository playerRepository;
     @Autowired private PlayerServiceOld playerServiceOld;
     GameMapper gameMapper;
+    PlayerMapper playerMapper;
 
     // counts
 
     // find one
     public GameDto findOneByGameId(ParamsDto paramsDto) {
         Game retrievedGame = gameRepository.findOneByGameId(paramsDto.getSuppliedVisitorId());
-        return gameMapper.gameToGameDto(retrievedGame);
+        return gameMapper.toDto(retrievedGame);
     };
     public GameDto findLatestGameForVisitorId(ParamsDto paramsDto){
         Pageable pageable = PageRequest.of(0, 4);
@@ -57,19 +62,19 @@ public class GameService {
             if (foundGame.isEmpty()) return null;
         }
         // BR 2
-        return gameMapper.gameToGameDto(foundGame.get(0));
+        return gameMapper.toDto(foundGame.get(0));
 
     }
     public GameDto setupNewGameWithPlayerInitiator(GameDto gameDto, VisitorDto visitorDto) {
-        Game game = gameMapper.gameDtoToGame(gameDto);
+        Game game = gameMapper.fromDto(gameDto);
         game.setInitiator(visitorDto.getVisitorId());
         Game newGame = gameRepository.save(game);
         // TODO
         playerServiceOld.addHumanVisitorPlayerToAGame(null, newGame, Avatar.ELF);
-        return gameMapper.gameToGameDto(newGame);
+        return gameMapper.toDto(newGame);
     }
     public GameDto prepareExistingGame(GameDto gameDto, League league, String style, int ante) {
-        Game game = gameMapper.gameDtoToGame(gameDto);
+        Game game = gameMapper.fromDto(gameDto);
         // You cannot change the initiator or the type
         if (!(league == null)) {
             game.setLeague(league);
@@ -82,10 +87,10 @@ public class GameService {
         }
         game.setState(GameState.PREPARED);
         Game newGame = gameRepository.save(game);
-        return  gameMapper.gameToGameDto(newGame);
+        return  gameMapper.toDto(newGame);
     }
     public GameDto addAndShuffleCardsForAGame(GameDto gameDto) {
-        Game game = gameMapper.gameDtoToGame(gameDto);
+        Game game = gameMapper.fromDto(gameDto);
         if (!game.getCards().isEmpty())
             throw new MyBusinessException("addAndShuffleCardsForAGame", "this game already has cards [" + game.getGameId() + "]");
         Deck deck = DeckFactory.createShuffledDeck(game, 0);
@@ -100,6 +105,16 @@ public class GameService {
         game.setState(GameState.STARTED);
         game.setCards(cards);
         game = gameRepository.save(game);
-        return gameMapper.gameToGameDto(game);
+        return gameMapper.toDto(game);
     }
+    public PlayerDto findNextPlayerForGame(GameDto activeGame) {
+        int totalSeats = activeGame.getPlayerDtos().size();
+        int currentSeat = activeGame.getActiveTurn().getCurrentSeatNumber();
+        if (totalSeats == 1 || currentSeat == totalSeats) {
+            return activeGame.getPlayerDtos().get(0);
+        }
+        List<PlayerDto> sortedPlayers = StreamUtil.sortPlayerDtosOnSeatWithStream(activeGame.getPlayerDtos());
+        return sortedPlayers.get((currentSeat - 1) + 1);
+    }
+
 }

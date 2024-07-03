@@ -48,7 +48,6 @@ public class CalculateAndFinishGameAction implements Action<CalculateAndFinishGa
             return EventOutput.Result.SUCCESS;
         } else if (actionDto.getQasinoGame() == null) {
             actionDto.setGameResults(null);
-
             return EventOutput.Result.SUCCESS;
         } else if (actionDto.getQasinoGame().getState().getGroup() != GameStateGroup.FINISHED) {
             actionDto.setGameResults(null);
@@ -112,12 +111,6 @@ public class CalculateAndFinishGameAction implements Action<CalculateAndFinishGa
         return EventOutput.Result.SUCCESS;
     }
 
-    void setUnprocessableErrorMessage(Dto actionDto, String id, String value) {
-        actionDto.setErrorKey(id);
-        actionDto.setErrorValue(value);
-        actionDto.setUnprocessableErrorMessage("Action [" + id + "] invalid, no previous card to compare");
-    }
-
     public interface Dto {
 
         // @formatter:off
@@ -137,12 +130,12 @@ public class CalculateAndFinishGameAction implements Action<CalculateAndFinishGa
 
         // error setters
         // @formatter:off
-        void setBadRequestErrorMessage(String problem);
-        void setNotFoundErrorMessage(String problem);
-        void setConflictErrorMessage(String reason);
-        void setUnprocessableErrorMessage(String reason);
-        void setErrorKey(String errorKey);
-        void setErrorValue(String errorValue);
+//        void setBadRequestErrorMessage(String problem);
+//        void setNotFoundErrorMessage(String problem);
+//        void setConflictErrorMessage(String reason);
+//        void setUnprocessableErrorMessage(String reason);
+//        void setErrorKey(String errorKey);
+//        void setErrorValue(String errorValue);
         // @formatter:on
     }
 }

@@ -1,11 +1,14 @@
 package cloud.qasino.games.dto;
 
+import cloud.qasino.games.database.entity.Card;
 import cloud.qasino.games.database.entity.Game;
 import cloud.qasino.games.database.entity.Result;
 import cloud.qasino.games.database.entity.enums.player.AiLevel;
 import cloud.qasino.games.database.entity.enums.player.Avatar;
 import cloud.qasino.games.database.entity.enums.player.PlayerType;
 import lombok.Data;
+
+import java.util.List;
 
 @Data
 /**
@@ -29,12 +32,14 @@ public class PlayerDto {
     private AiLevel aiLevel;
 
     // derived
+    private VisitorDto visitor;
     private boolean human;
     private boolean winner;
 
     // for view
     private int seat;
     private String stringCardsInHand;
+    private List<Card> cards;
     Result result;
 
 }

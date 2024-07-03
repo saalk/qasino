@@ -6,6 +6,7 @@ import cloud.qasino.games.database.entity.Player;
 import cloud.qasino.games.database.entity.enums.card.Location;
 import cloud.qasino.games.database.entity.enums.card.PlayingCard;
 import cloud.qasino.games.database.entity.enums.game.Type;
+import cloud.qasino.games.dto.PlayerDto;
 import cloud.qasino.games.exception.MyNPException;
 import cloud.qasino.games.pattern.comparator.ComparatorUtil;
 
@@ -56,6 +57,12 @@ public class StreamUtil {
                     stream().
                     sorted(ComparatorUtil.playerSeatComparator()).
                     toList();
+    }
+    public static List<PlayerDto> sortPlayerDtosOnSeatWithStream(List<PlayerDto> unsortedPlayerList) {
+        return unsortedPlayerList.
+                stream().
+                sorted(ComparatorUtil.playerDtoSeatComparator()).
+                toList();
     }
 
     // map and sum

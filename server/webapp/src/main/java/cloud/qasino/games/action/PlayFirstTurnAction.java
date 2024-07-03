@@ -1,8 +1,6 @@
 package cloud.qasino.games.action;
 
 import cloud.qasino.games.action.interfaces.Action;
-import cloud.qasino.games.database.entity.Card;
-import cloud.qasino.games.database.entity.CardMove;
 import cloud.qasino.games.database.entity.Game;
 import cloud.qasino.games.database.entity.Player;
 import cloud.qasino.games.database.entity.Turn;
@@ -15,16 +13,10 @@ import cloud.qasino.games.database.repository.TurnRepository;
 import cloud.qasino.games.database.service.TurnAndCardMoveService;
 import cloud.qasino.games.exception.MyNPException;
 import cloud.qasino.games.pattern.statemachine.event.EventOutput;
-import cloud.qasino.games.pattern.statemachine.event.GameEvent;
-import cloud.qasino.games.pattern.statemachine.event.TurnEvent;
 import cloud.qasino.games.pattern.stream.StreamUtil;
-import cloud.qasino.games.response.view.SectionTable;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
-import java.util.List;
-import java.util.Optional;
 
 @Slf4j
 @Component
@@ -34,8 +26,6 @@ public class PlayFirstTurnAction implements Action<PlayFirstTurnAction.Dto, Even
     TurnAndCardMoveService turnAndCardMoveService;
     @Autowired
     private TurnRepository turnRepository;
-    @Autowired
-    private GameRepository gameRepository;
 
     @Override
     public EventOutput.Result perform(Dto actionDto) {
@@ -61,7 +51,7 @@ public class PlayFirstTurnAction implements Action<PlayFirstTurnAction.Dto, Even
         game.setTurn(savedTurn);
 
         // Deal CARDs (and update CARDMOVE)
-        turnAndCardMoveService.dealNCardsFromStockToActivePlayerForGame(
+        turnAndCardMoveService.dealCardsToActivePlayer(
                 game,
                 firstDeal,
                 fromLocation,

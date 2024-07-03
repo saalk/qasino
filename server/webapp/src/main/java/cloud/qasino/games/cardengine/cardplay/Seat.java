@@ -4,6 +4,7 @@ import cloud.qasino.games.database.entity.Card;
 import cloud.qasino.games.database.entity.enums.player.AiLevel;
 import cloud.qasino.games.database.entity.enums.player.Avatar;
 import cloud.qasino.games.database.entity.enums.player.PlayerType;
+import cloud.qasino.games.dto.PlayerDto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -25,11 +26,11 @@ public class Seat {
     private int seatId;
     private boolean isSeatPlaying;
     private boolean isSeatPlayerTheInitiator;
-    private int seatStartBalance;
     private int seatFiches;
     private int seatCurrentBet;
 
     // player stats for the seat
+    private PlayerDto player;
     private long seatPlayerId;
     private PlayerType playerType;
     private Avatar avatar;
@@ -40,6 +41,7 @@ public class Seat {
     // when player for the seat is human
     private long visitorId;
     private String username;
+    private int seatStartBalance;
 
     // cards in the hand of player for the seat
     private String allCardsInHand;

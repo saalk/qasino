@@ -91,7 +91,7 @@ public class PlayerService {
         return playerDtos;
     }
     public PlayerDto addHumanVisitorPlayerToAGame(VisitorDto visitorDto, GameDto gameDto, Avatar avatar) {
-        Game game = gameMapper.gameDtoToGame(gameDto);
+        Game game = gameMapper.fromDto(gameDto);
         Visitor initiator = visitorMapper.visitorDtoToVisitor(visitorDto);
 
         List<Player> allPlayersForTheGame = playerRepository.findByGame(game);
@@ -109,7 +109,7 @@ public class PlayerService {
         return playerMapper.toDto(newPlayer);
     }
     public PlayerDto addInvitedHumanPlayerToAGame(VisitorDto visitorDto, GameDto gameDto, Avatar avatar) {
-        Game game = gameMapper.gameDtoToGame(gameDto);
+        Game game = gameMapper.fromDto(gameDto);
         Visitor invitee = visitorMapper.visitorDtoToVisitor(visitorDto);
 
         List<Player> allPlayersForTheGame = playerRepository.findByGame(game);
@@ -127,7 +127,7 @@ public class PlayerService {
         return playerMapper.toDto(newPlayer);
     }
     public PlayerDto addBotPlayerToAGame(GameDto gameDto, Avatar avatar, AiLevel aiLevel) {
-        Game game = gameMapper.gameDtoToGame(gameDto);
+        Game game = gameMapper.fromDto(gameDto);
 
         if (aiLevel == AiLevel.HUMAN) {
             throw new MyBusinessException("addBotPlayerToAGame", "this aiLevel cannot become a bot player [" + aiLevel + "]");

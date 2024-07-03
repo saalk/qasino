@@ -139,7 +139,7 @@ public class GameThymeleafController extends AbstractThymeleafController {
         prepareQasinoResponse(response, flowDto);
         model.addAttribute(flowDto.getQasinoResponse());
 //        log.warn("QasinoResponse !! {}", prettyPrintJson(flowDto.getQasinoResponse()));
-        log.warn("model !! {}", model);
+//        log.warn("model !! {}", model);
         return PLAY_VIEW_LOCATION;
     }
 

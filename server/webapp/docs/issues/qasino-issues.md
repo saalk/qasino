@@ -8,18 +8,19 @@ count all/you/active
 
 ## handy sql
 ```sql
+
 -- GAME
 SELECT 
 g."type", g."updated", g."state", g."ante", g."initiator",
 t."turn_id", t."created",
-c."sequence",c."cardmove_id",c."created",c."card_move_details",c."card_id",c."bet",c."start_fiches",c."end_fiches",
+c."sequence",c."cardmove_id", c."move", c."created",c."card_move_details",c."card_id",c."bet",c."start_fiches",c."end_fiches",
 p."player_id",p."role",p."seat",p."fiches",p."ai_level"
 FROM 
 "game" AS g
 left JOIN "turn" AS t ON t."game_id" = g."game_id" 
 left JOIN "cardmove" AS c ON t."turn_id" = c."turn_id" 
 left JOIN "player" AS p ON c."player_id" = p."player_id"
-WHERE g."game_id" = 1
+WHERE g."game_id" = 4
 ORDER BY c."sequence";
 
 -- ROLES

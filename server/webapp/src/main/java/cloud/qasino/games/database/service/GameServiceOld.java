@@ -16,6 +16,8 @@ import cloud.qasino.games.exception.MyBusinessException;
 import cloud.qasino.games.pattern.factory.Deck;
 import cloud.qasino.games.pattern.factory.DeckFactory;
 import cloud.qasino.games.pattern.stream.StreamUtil;
+import lombok.extern.log4j.Log4j;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -24,6 +26,7 @@ import java.util.Comparator;
 import java.util.List;
 
 @Service
+@Slf4j
 public class GameServiceOld {
 
     // @formatter:off
@@ -100,10 +103,12 @@ public class GameServiceOld {
         int totalSeats = activeGame.getPlayers().size();
         int currentSeat = activeGame.getTurn().getCurrentSeatNumber();
         if (totalSeats == 1 || currentSeat == totalSeats) {
+            log.debug("findNextPlayerForGame 1/last seat totalSeats {}", totalSeats);
             return activeGame.getPlayers().get(0);
         }
         List<Player> sortedPlayers = StreamUtil.sortPlayersOnSeatWithStream(activeGame.getPlayers());
-        return sortedPlayers.get(currentSeat + 1);
+        log.debug("findNextPlayerForGame more seats exist currentSeat {}", currentSeat);
+        return sortedPlayers.get((currentSeat - 1) + 1);
     }
 
 }

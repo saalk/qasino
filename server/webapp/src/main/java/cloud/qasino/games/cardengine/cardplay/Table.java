@@ -12,6 +12,7 @@ import cloud.qasino.games.database.entity.enums.player.AiLevel;
 import cloud.qasino.games.database.entity.enums.player.Avatar;
 import cloud.qasino.games.database.entity.enums.player.PlayerType;
 import cloud.qasino.games.dto.GameDto;
+import cloud.qasino.games.dto.PlayerDto;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -50,8 +51,8 @@ public class Table {
     private int currentMoveNumber;
 
     // FROM TURN - ACTIVE AND NEXT PLAYER
-    private Player activePlayer;
-    private Player nextPlayer;
+    private PlayerDto activePlayer;
+    private PlayerDto nextPlayer;
     private PlayerType playerType;
     private int fiches;
     private Avatar avatar;
