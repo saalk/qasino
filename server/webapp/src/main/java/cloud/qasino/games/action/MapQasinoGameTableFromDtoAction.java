@@ -90,6 +90,7 @@ public class MapQasinoGameTableFromDtoAction implements Action<MapQasinoGameTabl
             // TODO make double or nothing work
             seat.setSeatCurrentBet(actionDto.getQasinoGame().getAnte());
             seat.setSeatPlayerAvatar(player.getAvatar());
+            seat.setSeatPlayerAvatarName(player.getAvatarName());
             seat.setSeatPlayerAiLevel(player.getAiLevel());
             // player cards and moves
             List<Card> hand = player.getCards();

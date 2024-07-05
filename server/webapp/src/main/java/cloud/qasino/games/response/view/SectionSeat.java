@@ -44,6 +44,7 @@ public class SectionSeat {
 
     @JsonProperty("Avatar")
     private Avatar seatPlayerAvatar;
+    private String seatPlayerAvatarName;
     @JsonProperty("AiLevel")
     private AiLevel seatPlayerAiLevel;
 

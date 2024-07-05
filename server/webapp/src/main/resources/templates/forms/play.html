@@ -82,11 +82,11 @@
         <thead>
         <tr>
             <th>Seat</th>
-            <th>Turn</th>
+            <th>Playing?</th>
+            <th>Avatar name</th>
             <th>AiLevel</th>
-            <th>Start</th>
+            <th>Start balance</th>
             <th>Fiches</th>
-            <th>Bet</th>
             <th>Hand</th>
         </tr>
         </thead>
@@ -98,11 +98,11 @@
         <tr th:unless="${#lists.isEmpty(qasinoResponse.pageGamePlay.table.seats)}"
             th:each="seat : ${qasinoResponse.pageGamePlay.table.seats}">
             <td><span th:text="${seat.seatId}">Seat</span></td>
-            <td><span th:text="${seat.isPlaying}">Turn</span></td>
+            <td><span th:text="${seat.isPlaying}">Playing?</span></td>
+            <td><span th:text="${seat.seatPlayerAvatarName}">Avatar name</span></td>
             <td><span th:text="${seat.seatPlayerAiLevel}">AiLevel</span></td>
             <td><span th:text="${seat.seatStartBalance}">Start</span></td>
             <td><span th:text="${seat.seatFiches}">Fiches</span></td>
-            <td><span th:text="${seat.seatCurrentBet}">Bet</span></td>
             <td><span th:text="${seat.stringCardsInHand}">Hand</span></td>
         </tr>
         </tbody>
@@ -119,11 +119,10 @@
             <thead>
             <tr>
                 <th>Seat</th>
+                <th>Winner?</th>
                 <th>Avatar</th>
                 <th>AiLevel</th>
-                <th>Endday</th>
                 <th>Fiches Won</th>
-                <th>Winner?</th>
             </tr>
             </thead>
             <tbody>
@@ -134,11 +133,10 @@
             <tr th:unless="${#lists.isEmpty(qasinoResponse.pageGamePlay.gameResults)}"
                 th:each="result : ${qasinoResponse.pageGamePlay.gameResults}">
                 <td><span th:text="${result.player.seat}">Seat</span></td>
+                <td><span th:text="${result.winner}">Winner?</span></td>
                 <td><span th:text="${result.player.avatarName}">Avatar</span></td>
                 <td><span th:text="${result.player.aiLevel}">AiLevel</span></td>
-                <td><span th:text="${result.weekday}">Endday</span></td>
                 <td><span th:text="${result.fichesWon}">Fiches Won</span></td>
-                <td><span th:text="${result.winner}">Winner?</span></td>
             </tr>
             </tbody>
         </table>
