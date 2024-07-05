@@ -3,47 +3,45 @@ package cloud.qasino.games.action;
 import cloud.qasino.games.action.interfaces.Action;
 import cloud.qasino.games.database.entity.Game;
 import cloud.qasino.games.database.entity.Player;
-import cloud.qasino.games.database.entity.Turn;
+import cloud.qasino.games.database.entity.GamingTable;
 import cloud.qasino.games.database.entity.enums.card.Face;
 import cloud.qasino.games.database.entity.enums.card.Location;
 import cloud.qasino.games.database.entity.enums.game.Style;
 import cloud.qasino.games.database.entity.enums.game.Type;
 import cloud.qasino.games.database.entity.enums.move.Move;
-import cloud.qasino.games.database.repository.CardMoveRepository;
-import cloud.qasino.games.database.repository.TurnRepository;
+import cloud.qasino.games.database.repository.PlayingRepository;
 import cloud.qasino.games.database.service.GameServiceOld;
-import cloud.qasino.games.database.service.TurnAndCardMoveService;
+import cloud.qasino.games.database.service.PlayingService;
 import cloud.qasino.games.exception.MyNPException;
 import cloud.qasino.games.pattern.statemachine.event.EventOutput;
-import cloud.qasino.games.pattern.statemachine.event.TurnEvent;
-import cloud.qasino.games.pattern.strategy.NextMoveCalculator;
+import cloud.qasino.games.pattern.statemachine.event.PlayEvent;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import static cloud.qasino.games.database.service.TurnAndCardMoveService.isRoundEqualToRoundsToWin;
+import static cloud.qasino.games.database.service.PlayingService.isRoundEqualToRoundsToWin;
+import static cloud.qasino.games.database.service.PlayingService.mapPlayEventToMove;
 
 @Slf4j
 @Component
-public class PlayNextBotTurnAction implements Action<PlayNextBotTurnAction.Dto, EventOutput.Result> {
+public class PlayNextHumanGamingTableAction implements Action<PlayNextHumanGamingTableAction.Dto, EventOutput.Result> {
 
     @Autowired
-    TurnAndCardMoveService turnAndCardMoveService;
+    PlayingService playingService;
     @Autowired
-    TurnRepository turnRepository;
+    PlayingRepository playingRepository;
     @Autowired
     private GameServiceOld gameServiceOld;
-
 
     @Override
     public EventOutput.Result perform(Dto actionDto) {
 
         if (!actionDto.getQasinoGame().getType().equals(Type.HIGHLOW)) {
-            throw new MyNPException("PlayNextBotTurnAction", "error [" + actionDto.getQasinoGame().getType() + "]");
+            throw new MyNPException("PlayNextHumanGamingTableAction", "error [" + actionDto.getQasinoGame().getType() + "]");
         }
 
         // Next move in HIGHLOW = a given move from location STOCK to location HAND with face UP
-        Move nextMove = null;
+        Move nextMove = mapPlayEventToMove(actionDto.getSuppliedPlayEvent());
         Location fromLocation = Location.STOCK;
         Location toLocation = Location.HAND;
         Face face = Face.UP;
@@ -53,32 +51,28 @@ public class PlayNextBotTurnAction implements Action<PlayNextBotTurnAction.Dto, 
         Game game = actionDto.getQasinoGame();
         Player nextPlayer = gameServiceOld.findNextPlayerForGame(game);
         int totalSeats = game.getPlayers().size();
-        Turn currentTurn = game.getTurn();
-        int currentSeat = currentTurn.getCurrentSeatNumber();
-        int currentRound = currentTurn.getCurrentRoundNumber();
-        Player activePlayer = currentTurn.getActivePlayer();
+        GamingTable currentGamingTable = game.getGamingTable();
+        int currentSeat = currentGamingTable.getCurrentSeatNumber();
+        int currentRound = currentGamingTable.getCurrentRoundNumber();
 
-        nextMove = NextMoveCalculator.next(game, activePlayer, currentTurn);
-        log.info("PlayNextBotTurnAction StrategyMove {}", nextMove);
         // TODO DetermineNextRoundOrEndGame -> move to separate action
-
-        if (nextMove == Move.PASS) {
+        if (actionDto.getSuppliedPlayEvent() == PlayEvent.PASS) {
             if (totalSeats == currentSeat) {
                 if (isRoundEqualToRoundsToWin(Style.fromLabelWithDefault(game.getStyle()), currentRound)) {
-                    actionDto.setSuppliedTurnEvent(TurnEvent.END_GAME);
+                    actionDto.setSuppliedPlayEvent(PlayEvent.END_GAME);
                     return EventOutput.Result.SUCCESS;
                 }
-                currentTurn.setCurrentRoundNumber(currentRound + 1);
+                currentGamingTable.setCurrentRoundNumber(currentRound + 1);
             }
         }
 
-        // Update TURN - could be new to new Player
-        turnAndCardMoveService.updateCurrentTurn(nextMove, currentTurn, nextPlayer);
-        Turn newTurn = turnRepository.save(currentTurn);
-        game.setTurn(newTurn);
+        // Update GAMINGTABLE - could be new to new Player
+        playingService.updateCurrentGamingTable(nextMove, currentGamingTable, nextPlayer);
+        GamingTable newGamingTable = playingRepository.save(currentGamingTable);
+        game.setGamingTable(newGamingTable);
 
         // Deal CARDs (and update CARDMOVE)
-        turnAndCardMoveService.dealCardsToActivePlayer(
+        playingService.dealCardsToActivePlayer(
                 game,
                 nextMove,
                 fromLocation,
@@ -90,6 +84,7 @@ public class PlayNextBotTurnAction implements Action<PlayNextBotTurnAction.Dto, 
     // @formatter:off
     public interface Dto {
         Game getQasinoGame();
-        void setSuppliedTurnEvent(TurnEvent turnEvent);
+        PlayEvent getSuppliedPlayEvent();
+        void setSuppliedPlayEvent(PlayEvent playEvent);
     }
 }

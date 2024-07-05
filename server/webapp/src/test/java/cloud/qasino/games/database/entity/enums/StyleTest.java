@@ -12,7 +12,7 @@ class StyleTest {
     public void callFromLabelShouldBecomeDefault() {
 
         // assert statements
-        assertEquals("nr3tnn", Style.fromLabelWithDefault("").getLabel());
+        assertEquals("nrrn22", Style.fromLabelWithDefault("").getLabel());
         //      assertEquals("hraqn3", tester.fromLabel("h").getLabel());
  /*     assertEquals("hraqn3", tester.fromLabel("hr").getLabel());
         assertEquals("hraqn3", tester.fromLabel("hra").getLabel());

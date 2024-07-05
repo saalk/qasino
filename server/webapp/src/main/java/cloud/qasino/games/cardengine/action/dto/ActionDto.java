@@ -1,10 +1,10 @@
 package cloud.qasino.games.cardengine.action.dto;
 
 import cloud.qasino.games.cardengine.cardplay.Table;
-import cloud.qasino.games.database.entity.Turn;
+import cloud.qasino.games.database.entity.GamingTable;
 import cloud.qasino.games.database.service.GameService;
 import cloud.qasino.games.database.service.PlayerService;
-import cloud.qasino.games.database.service.TurnAndCardMoveService;
+import cloud.qasino.games.database.service.PlayingService;
 import cloud.qasino.games.database.service.VisitorAndLeaguesService;
 import cloud.qasino.games.dto.GameDto;
 import cloud.qasino.games.dto.InvitationsDTO;
@@ -29,7 +29,7 @@ public abstract class ActionDto<OUTPUT> {
     @Autowired @Lazy VisitorAndLeaguesService visitorAndLeaguesService;
     @Autowired @Lazy GameService gameService;
     @Autowired @Lazy PlayerService playerService;
-    @Autowired @Lazy TurnAndCardMoveService turnAndCardMoveService;
+    @Autowired @Lazy PlayingService playingService;
 
     private MessageDto message = new MessageDto();
     private ParamsDto ids = new ParamsDto();
@@ -75,9 +75,9 @@ public abstract class ActionDto<OUTPUT> {
         return true;
     }
 
-    protected Turn refreshOrFindTurnForGame() {
+    protected GamingTable refreshOrFindGamingTableForGame() {
         if (this.ids.getSuppliedGameId() > 0) {
-            return turnAndCardMoveService.findByGameId(this.ids);
+            return playingService.findByGameId(this.ids);
         }
         return null;
     }

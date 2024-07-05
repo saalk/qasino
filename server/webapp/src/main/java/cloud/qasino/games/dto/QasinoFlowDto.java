@@ -10,14 +10,14 @@ import cloud.qasino.games.action.HandleSecuredLoanAction;
 import cloud.qasino.games.action.IsGameConsistentForGameEventAction;
 import cloud.qasino.games.action.IsGameFinishedAction;
 import cloud.qasino.games.action.IsPlayerHumanAction;
-import cloud.qasino.games.action.IsTurnConsistentForTurnEventAction;
+import cloud.qasino.games.action.IsGamingTableConsistentForPlayEventAction;
 import cloud.qasino.games.action.LoadEntitiesToDtoAction;
 import cloud.qasino.games.action.MapQasinoGameTableFromDtoAction;
 import cloud.qasino.games.action.MapQasinoResponseFromDtoAction;
-import cloud.qasino.games.action.PlayFirstTurnAction;
+import cloud.qasino.games.action.PlayFirstGamingTableAction;
 import cloud.qasino.games.action.StartGameForTypeAction;
-import cloud.qasino.games.action.PlayNextBotTurnAction;
-import cloud.qasino.games.action.PlayNextHumanTurnAction;
+import cloud.qasino.games.action.PlayNextBotGamingTableAction;
+import cloud.qasino.games.action.PlayNextHumanGamingTableAction;
 import cloud.qasino.games.action.PrepareGameAction;
 import cloud.qasino.games.action.SetStatusIndicatorsBaseOnRetrievedDataAction;
 import cloud.qasino.games.action.SignUpNewVisitorAction;
@@ -32,7 +32,7 @@ import cloud.qasino.games.database.entity.Game;
 import cloud.qasino.games.database.entity.League;
 import cloud.qasino.games.database.entity.Player;
 import cloud.qasino.games.database.entity.Result;
-import cloud.qasino.games.database.entity.Turn;
+import cloud.qasino.games.database.entity.GamingTable;
 import cloud.qasino.games.database.entity.enums.card.Face;
 import cloud.qasino.games.database.entity.enums.card.Location;
 import cloud.qasino.games.database.entity.enums.card.PlayingCard;
@@ -57,7 +57,7 @@ import cloud.qasino.games.response.view.statistics.Statistic;
 import cloud.qasino.games.exception.MyBusinessException;
 import cloud.qasino.games.response.QasinoResponse;
 import cloud.qasino.games.pattern.statemachine.event.GameEvent;
-import cloud.qasino.games.pattern.statemachine.event.TurnEvent;
+import cloud.qasino.games.pattern.statemachine.event.PlayEvent;
 import cloud.qasino.games.pattern.statemachine.event.interfaces.AbstractFlowDto;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -87,15 +87,15 @@ public class QasinoFlowDto extends AbstractFlowDto
         FindVisitorIdByAliasOrUsernameAction.Dto,
         HandleSecuredLoanAction.Dto,
         IsGameConsistentForGameEventAction.Dto,
-        IsTurnConsistentForTurnEventAction.Dto,
+        IsGamingTableConsistentForPlayEventAction.Dto,
         IsGameFinishedAction.Dto,
         IsPlayerHumanAction.Dto,
         LoadEntitiesToDtoAction.Dto,
         MapQasinoResponseFromDtoAction.Dto,
         MapQasinoGameTableFromDtoAction.Dto,
-        PlayNextHumanTurnAction.Dto,
-        PlayNextBotTurnAction.Dto,
-        PlayFirstTurnAction.Dto,
+        PlayNextHumanGamingTableAction.Dto,
+        PlayNextBotGamingTableAction.Dto,
+        PlayFirstGamingTableAction.Dto,
         PrepareGameAction.Dto,
         SetStatusIndicatorsBaseOnRetrievedDataAction.Dto,
         SignUpNewVisitorAction.Dto,
@@ -126,11 +126,11 @@ public class QasinoFlowDto extends AbstractFlowDto
     private long acceptedPlayerId;
     private long declinedPlayerId;
 
-    private long suppliedTurnPlayerId;
+    private long suppliedGamingTablePlayerId;
     // triggers for the Game
     private QasinoEvent suppliedQasinoEvent;
     private GameEvent suppliedGameEvent;
-    private TurnEvent suppliedTurnEvent;
+    private PlayEvent suppliedPlayEvent;
     private GameStateGroup suppliedGameStateGroup;
     // Triggers for playing a Game
     private Move suppliedMove;
@@ -193,12 +193,12 @@ public class QasinoFlowDto extends AbstractFlowDto
 
     // FOR THE GAME BEING PLAYED
     private SectionTable table;
-    private Player turnPlayer;
+    private Player gamingTablePlayer;
     private Player nextPlayer;
-    private Turn activeTurn;
+    private GamingTable activeGamingTable;
     private List<Card> cardsInTheGameSorted;
     private List<CardMove> allCardMovesForTheGame;
-    private List<TurnEvent> possibleTurnEvents;
+    private List<PlayEvent> possiblePlayEvents;
     private List<GameEvent> possibleGameEvents;
 
     // NAVIGATION based on RETRIEVED DATA
@@ -272,11 +272,11 @@ public class QasinoFlowDto extends AbstractFlowDto
         if (qasinoGameLeague != null) {
             this.headers.add("leagueId", String.valueOf(qasinoGameLeague.getLeagueId()));
         }
-        if (turnPlayer != null) {
-            this.headers.add("turnPlayerId", String.valueOf(turnPlayer.getPlayerId()));
+        if (gamingTablePlayer != null) {
+            this.headers.add("turnPlayerId", String.valueOf(gamingTablePlayer.getPlayerId()));
         }
-        if (activeTurn != null) {
-            this.headers.add("turnId", String.valueOf(activeTurn.getTurnId()));
+        if (activeGamingTable != null) {
+            this.headers.add("turnId", String.valueOf(activeGamingTable.getGamingTableId()));
         }
         if (this.httpStatus > 299) {
             // also add error to header
@@ -382,10 +382,10 @@ public class QasinoFlowDto extends AbstractFlowDto
                 return false;
             }
         }
-        key = "turnPlayerId";
+        key = "gamingTablePlayerId";
         if (pathVariables.containsKey(key)) {
             if (isValueForPrimaryKeyValid(key, pathVariables.get(key), dataName, pathDataString)) {
-                this.suppliedTurnPlayerId = Long.parseLong(pathVariables.get(key));
+                this.suppliedGamingTablePlayerId = Long.parseLong(pathVariables.get(key));
             } else {
                 return false;
             }
@@ -512,13 +512,13 @@ public class QasinoFlowDto extends AbstractFlowDto
                 return false;
             }
         }
-        // turn
-        key = "turnEvent";
+        // gamingTable
+        key = "playEvent";
         if (requestParam.containsKey(key)) {
             if (isValueForEnumKeyValid(key, requestParam.get(
                             key), dataName,
                     paramDataString)) {
-                this.suppliedTurnEvent = TurnEvent.fromLabel(requestParam.get(key));
+                this.suppliedPlayEvent = PlayEvent.fromLabel(requestParam.get(key));
             } else {
                 return false;
             }
@@ -730,8 +730,8 @@ public class QasinoFlowDto extends AbstractFlowDto
                     return true;
                 }
                 break;
-            case "turnEvent":
-                if (!(TurnEvent.fromLabelWithDefault(value) == TurnEvent.ERROR)) {
+            case "playEvent":
+                if (!(PlayEvent.fromLabelWithDefault(value) == PlayEvent.ERROR)) {
                     return true;
                 }
                 break;

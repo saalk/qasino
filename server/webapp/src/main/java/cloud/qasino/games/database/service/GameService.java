@@ -109,7 +109,7 @@ public class GameService {
     }
     public PlayerDto findNextPlayerForGame(GameDto activeGame) {
         int totalSeats = activeGame.getPlayerDtos().size();
-        int currentSeat = activeGame.getActiveTurn().getCurrentSeatNumber();
+        int currentSeat = activeGame.getActiveGamingTable().getCurrentSeatNumber();
         if (totalSeats == 1 || currentSeat == totalSeats) {
             return activeGame.getPlayerDtos().get(0);
         }

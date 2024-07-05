@@ -2,7 +2,7 @@ package cloud.qasino.games.dto.request;
 
 import cloud.qasino.games.pattern.statemachine.event.GameEvent;
 import cloud.qasino.games.pattern.statemachine.event.QasinoEvent;
-import cloud.qasino.games.pattern.statemachine.event.TurnEvent;
+import cloud.qasino.games.pattern.statemachine.event.PlayEvent;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -27,9 +27,9 @@ public class ParamsDto {
     // Events
     private QasinoEvent suppliedQasinoEvent = QasinoEvent.ERROR;
     private GameEvent suppliedGameEvent = GameEvent.ERROR;
-    private TurnEvent suppliedTurnEvent = TurnEvent.ERROR;
+    private PlayEvent suppliedPlayEvent = PlayEvent.ERROR;
 
-    List<TurnEvent> possibleNextTurnEvents = new ArrayList<>();
+    List<PlayEvent> possibleNextPlayEvents = new ArrayList<>();
     List<GameEvent> possibleNextGameEvents = new ArrayList<>();
 
     // Triggers for playing a Game

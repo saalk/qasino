@@ -2,15 +2,14 @@ package cloud.qasino.games.action;
 
 import cloud.qasino.games.action.interfaces.Action;
 import cloud.qasino.games.database.entity.Game;
+import cloud.qasino.games.database.entity.GamingTable;
 import cloud.qasino.games.database.entity.Player;
-import cloud.qasino.games.database.entity.Turn;
 import cloud.qasino.games.database.entity.enums.card.Face;
 import cloud.qasino.games.database.entity.enums.card.Location;
 import cloud.qasino.games.database.entity.enums.game.Type;
 import cloud.qasino.games.database.entity.enums.move.Move;
-import cloud.qasino.games.database.repository.GameRepository;
-import cloud.qasino.games.database.repository.TurnRepository;
-import cloud.qasino.games.database.service.TurnAndCardMoveService;
+import cloud.qasino.games.database.repository.PlayingRepository;
+import cloud.qasino.games.database.service.PlayingService;
 import cloud.qasino.games.exception.MyNPException;
 import cloud.qasino.games.pattern.statemachine.event.EventOutput;
 import cloud.qasino.games.pattern.stream.StreamUtil;
@@ -20,12 +19,12 @@ import org.springframework.stereotype.Component;
 
 @Slf4j
 @Component
-public class PlayFirstTurnAction implements Action<PlayFirstTurnAction.Dto, EventOutput.Result> {
+public class PlayFirstGamingTableAction implements Action<PlayFirstGamingTableAction.Dto, EventOutput.Result> {
 
     @Autowired
-    TurnAndCardMoveService turnAndCardMoveService;
+    PlayingService playingService;
     @Autowired
-    private TurnRepository turnRepository;
+    private PlayingRepository playingRepository;
 
     @Override
     public EventOutput.Result perform(Dto actionDto) {
@@ -45,13 +44,13 @@ public class PlayFirstTurnAction implements Action<PlayFirstTurnAction.Dto, Even
         Game game = actionDto.getQasinoGame();
         Player firstPlayer = StreamUtil.findFirstPlayerBySeat(game.getPlayers());
 
-        // new TURN
-        Turn firstTurn = new Turn(game, firstPlayer);
-        Turn savedTurn = turnRepository.saveAndFlush(firstTurn);
-        game.setTurn(savedTurn);
+        // new GAMINGTABLE
+        GamingTable firstGamingTable = new GamingTable(game, firstPlayer);
+        GamingTable savedGamingTable = playingRepository.saveAndFlush(firstGamingTable);
+        game.setGamingTable(savedGamingTable);
 
         // Deal CARDs (and update CARDMOVE)
-        turnAndCardMoveService.dealCardsToActivePlayer(
+        playingService.dealCardsToActivePlayer(
                 game,
                 firstDeal,
                 fromLocation,

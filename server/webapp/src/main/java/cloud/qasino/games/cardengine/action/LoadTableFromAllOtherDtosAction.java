@@ -6,22 +6,20 @@ import cloud.qasino.games.cardengine.cardplay.Seat;
 import cloud.qasino.games.cardengine.cardplay.Table;
 import cloud.qasino.games.database.entity.Card;
 import cloud.qasino.games.database.entity.CardMove;
-import cloud.qasino.games.database.entity.Turn;
+import cloud.qasino.games.database.entity.GamingTable;
 import cloud.qasino.games.database.entity.enums.player.PlayerType;
 import cloud.qasino.games.database.repository.CardMoveRepository;
 import cloud.qasino.games.database.repository.CardRepository;
 import cloud.qasino.games.database.repository.PlayerRepository;
-import cloud.qasino.games.database.repository.TurnRepository;
+import cloud.qasino.games.database.repository.PlayingRepository;
 import cloud.qasino.games.database.service.GameService;
 import cloud.qasino.games.database.service.PlayerService;
-import cloud.qasino.games.database.service.TurnAndCardMoveService;
+import cloud.qasino.games.database.service.PlayingService;
 import cloud.qasino.games.dto.PlayerDto;
 import cloud.qasino.games.dto.mapper.PlayerMapper;
-import cloud.qasino.games.dto.mapper.PlayerMapperImpl;
 import cloud.qasino.games.pattern.statemachine.event.EventOutput;
 import cloud.qasino.games.pattern.stream.StreamUtil;
 import lombok.extern.slf4j.Slf4j;
-import org.hibernate.validator.internal.util.stereotypes.Lazy;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -34,10 +32,10 @@ import java.util.stream.Collectors;
 public class LoadTableFromAllOtherDtosAction extends ActionDto<EventOutput.Result> {
 
     // @formatter:off
-    @Autowired @Lazy private PlayerService playerService;
-    @Autowired @Lazy private GameService gameService;
-    @Autowired @Lazy private TurnAndCardMoveService turnAndCardMoveService;
-    @Autowired private TurnRepository turnRepository;
+    @Autowired private PlayerService playerService;
+    @Autowired private GameService gameService;
+    @Autowired private PlayingService playingService;
+    @Autowired private PlayingRepository playingRepository;
     @Autowired private CardMoveRepository cardMoveRepository;
     @Autowired private CardRepository cardRepository;
     @Autowired private PlayerRepository playerRepository;
@@ -65,8 +63,8 @@ public class LoadTableFromAllOtherDtosAction extends ActionDto<EventOutput.Resul
                         .filter(c -> c.getHand() == null)
                         .toList());
         table.setStringCardsInStockNotInHand(String.valueOf(table.getCardsInStockNotInHandSorted()));
-        Turn turn = refreshOrFindTurnForGame();
-        if (turn == null) {
+        GamingTable gamingTable = refreshOrFindGamingTableForGame();
+        if (gamingTable == null) {
             // when game is quit before started
             table.setCountStockAndTotal("[-/-] stock/total");
             return EventOutput.Result.SUCCESS;
@@ -75,14 +73,14 @@ public class LoadTableFromAllOtherDtosAction extends ActionDto<EventOutput.Resul
                     table.getCardsInTheGameSorted().size() + "] stock/total");
         }
 
-        // FROM TURN
-        table.setAllCardMovesForTheGame(StreamUtil.sortCardMovesOnSequenceWithStream(turn.getCardMoves(), 0));
-        table.setCurrentRoundNumber(turn.getCurrentRoundNumber());
-        table.setCurrentSeatNumber(turn.getCurrentSeatNumber());
-        table.setCurrentMoveNumber(turn.getCurrentMoveNumber());
+        // FROM GAMINGTABLE
+        table.setAllCardMovesForTheGame(StreamUtil.sortCardMovesOnSequenceWithStream(gamingTable.getCardMoves(), 0));
+        table.setCurrentRoundNumber(gamingTable.getCurrentRoundNumber());
+        table.setCurrentSeatNumber(gamingTable.getCurrentSeatNumber());
+        table.setCurrentMoveNumber(gamingTable.getCurrentMoveNumber());
 
-        // FROM TURN - ACTIVE AND NEXT PLAYER
-        table.setActivePlayer(playerMapper.toDto(turn.getActivePlayer()));
+        // FROM GAMINGTABLE - ACTIVE AND NEXT PLAYER
+        table.setActivePlayer(playerMapper.toDto(gamingTable.getActivePlayer()));
         table.setNextPlayer(gameService.findNextPlayerForGame(getGame()));
         table.setPlayerType(table.getActivePlayer().getPlayerType());
         table.setFiches(table.getActivePlayer().getFiches());
@@ -91,11 +89,11 @@ public class LoadTableFromAllOtherDtosAction extends ActionDto<EventOutput.Resul
         table.setAiLevel(table.getActivePlayer().getAiLevel());
         table.setHuman(table.getActivePlayer().isHuman());
 
-        table.setSeats(mapSeats(turn));
+        table.setSeats(mapSeats(gamingTable));
         return EventOutput.Result.SUCCESS;
     }
 
-    private List<Seat> mapSeats(Turn turn) {
+    private List<Seat> mapSeats(GamingTable gamingTable) {
 //
         List<Seat> seats = new ArrayList<>();
 
@@ -104,7 +102,7 @@ public class LoadTableFromAllOtherDtosAction extends ActionDto<EventOutput.Resul
 
             // seat stats
             seat.setSeatId(player.getSeat());
-            seat.setSeatPlaying(player.getPlayerId() == turn.getActivePlayer().getPlayerId());
+            seat.setSeatPlaying(player.getPlayerId() == gamingTable.getActivePlayer().getPlayerId());
             // todo which one to choose
 //            seat.setSeatPlayerTheInitiator(player.getPlayerId() ==
 //                    actionDto.getQasinoGame().getInitiator());
@@ -139,7 +137,7 @@ public class LoadTableFromAllOtherDtosAction extends ActionDto<EventOutput.Resul
             seat.setAllCardsInHand("[" + String.join("],[", handStrings) + "]");
 
             Hand handInRound = new Hand();
-            List<CardMove> cardMoves = turn.getCardMoves().stream()
+            List<CardMove> cardMoves = gamingTable.getCardMoves().stream()
                     .filter(p -> p.getPlayerId() == player.getPlayerId())
                     .toList();
 
@@ -175,7 +173,7 @@ public class LoadTableFromAllOtherDtosAction extends ActionDto<EventOutput.Resul
                     }
                 }
             }
-//          seat.setCardsInHandPerTurn(handInRounds);
+//          seat.setCardsInHandPerGamingTable(handInRounds);
             seats.add(seat);
         }
         return seats;

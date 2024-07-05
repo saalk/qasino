@@ -13,7 +13,7 @@ import cloud.qasino.games.database.entity.enums.player.Avatar;
 import cloud.qasino.games.database.entity.enums.player.PlayerType;
 import cloud.qasino.games.pattern.statemachine.event.GameEvent;
 import cloud.qasino.games.pattern.statemachine.event.QasinoEvent;
-import cloud.qasino.games.pattern.statemachine.event.TurnEvent;
+import cloud.qasino.games.pattern.statemachine.event.PlayEvent;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -96,8 +96,8 @@ public class MessageDto {
                     return true;
                 }
                 break;
-            case "turnEvent":
-                if (!(TurnEvent.fromLabelWithDefault(value) == TurnEvent.ERROR)) {
+            case "playEvent":
+                if (!(PlayEvent.fromLabelWithDefault(value) == PlayEvent.ERROR)) {
                     return true;
                 }
                 break;

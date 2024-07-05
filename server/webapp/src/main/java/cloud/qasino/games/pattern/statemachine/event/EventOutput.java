@@ -11,13 +11,13 @@ public class EventOutput {
 
     protected Result result;
     protected GameEvent gameEvent;
-    protected TurnEvent turnEvent;
+    protected PlayEvent playEvent;
 
-    public static EventOutput success(GameEvent gameEvent,TurnEvent turnEvent) {
-        return new EventOutput(Result.SUCCESS, gameEvent,turnEvent);
+    public static EventOutput success(GameEvent gameEvent,PlayEvent playEvent) {
+        return new EventOutput(Result.SUCCESS, gameEvent,playEvent);
     }
-    public static EventOutput failure(GameEvent gameEvent,TurnEvent turnEvent) {
-        return new EventOutput(Result.FAILURE, gameEvent,turnEvent);
+    public static EventOutput failure(GameEvent gameEvent,PlayEvent playEvent) {
+        return new EventOutput(Result.FAILURE, gameEvent,playEvent);
     }
     public boolean isFailure() {
         return result == Result.FAILURE;

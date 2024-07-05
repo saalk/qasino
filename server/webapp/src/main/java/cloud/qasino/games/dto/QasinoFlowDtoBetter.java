@@ -3,7 +3,7 @@ package cloud.qasino.games.dto;
 import cloud.qasino.games.database.entity.Card;
 import cloud.qasino.games.database.entity.CardMove;
 import cloud.qasino.games.database.entity.Player;
-import cloud.qasino.games.database.entity.Turn;
+import cloud.qasino.games.database.entity.GamingTable;
 import cloud.qasino.games.dto.request.ParamsDto;
 import cloud.qasino.games.dto.request.MessageDto;
 import lombok.Getter;
@@ -27,7 +27,7 @@ public class QasinoFlowDtoBetter {
     private LeagueDto league;
 
     // FOR THE GAME BEING PLAYED
-    private Turn activeTurn;
+    private GamingTable activeGamingTable;
     private Player activePlayer;
     private Player nextPlayer;
     private List<Card> cardsInTheGameSorted;

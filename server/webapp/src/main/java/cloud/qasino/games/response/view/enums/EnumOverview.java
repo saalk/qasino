@@ -18,8 +18,8 @@ public class EnumOverview {
     private PlayerEnums player = new PlayerEnums();
     @JsonProperty("CardEnums")
     private CardEnums card = new CardEnums();
-    @JsonProperty("TurnEnums")
-    private TurnEnums turn = new TurnEnums();
+    @JsonProperty("GamingTableEnums")
+    private GamingTableEnums gamingTable = new GamingTableEnums();
 
     public EnumOverview() {
 

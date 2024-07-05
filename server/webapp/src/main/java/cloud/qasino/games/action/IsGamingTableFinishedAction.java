@@ -6,7 +6,7 @@ import cloud.qasino.games.database.entity.enums.game.GameState;
 import cloud.qasino.games.database.repository.GameRepository;
 import cloud.qasino.games.pattern.statemachine.event.EventOutput;
 import cloud.qasino.games.pattern.statemachine.event.GameEvent;
-import cloud.qasino.games.pattern.statemachine.event.TurnEvent;
+import cloud.qasino.games.pattern.statemachine.event.PlayEvent;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
@@ -14,7 +14,7 @@ import jakarta.annotation.Resource;
 
 @Slf4j
 @Component
-public class IsTurnFinishedAction implements Action<IsTurnFinishedAction.Dto, EventOutput.Result> {
+public class IsGamingTableFinishedAction implements Action<IsGamingTableFinishedAction.Dto, EventOutput.Result> {
 
     @Resource
     GameRepository gameRepository;
@@ -22,7 +22,7 @@ public class IsTurnFinishedAction implements Action<IsTurnFinishedAction.Dto, Ev
     @Override
     public EventOutput.Result perform(Dto actionDto) {
 
-        if (actionDto.getSuppliedTurnEvent().equals(TurnEvent.PASS)) {
+        if (actionDto.getSuppliedPlayEvent().equals(PlayEvent.PASS)) {
             actionDto.getQasinoGame().setState(GameState.INITIATOR_MOVE);
             gameRepository.save(actionDto.getQasinoGame());
             return EventOutput.Result.SUCCESS;
@@ -41,7 +41,7 @@ public class IsTurnFinishedAction implements Action<IsTurnFinishedAction.Dto, Ev
         // @formatter:off
         String getErrorMessage();
         GameEvent getSuppliedGameEvent();
-        TurnEvent getSuppliedTurnEvent();
+        PlayEvent getSuppliedPlayEvent();
 
         // Getters
         Game getQasinoGame();

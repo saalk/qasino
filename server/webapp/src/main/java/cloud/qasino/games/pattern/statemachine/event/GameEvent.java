@@ -17,18 +17,18 @@ public enum GameEvent implements Event {
 
     //@formatter:off
 
-    // NEW & SETUP - initiated by user
+    // NEW & SETUP - initiated by visitor
     START("start a Game"),        // may not have initial bets
     PENDING_INVITES("pending invite for other Visitor(s)"),
 
-    // PREPARED - validation by user
+    // PREPARED - validation by visitor
     VALIDATE("validate Game for playing"),  // no pending invitations
     SHUFFLE("shuffle and deal first Card"), // add cards to the game
 
-    // PLAYING initiated by user
-    TURN("play Card(s)"),       // move some cards
+    // PLAYING play event by player
+    PLAY("play Card(s)"),       // move some cards
 
-    // STOP initiated by user
+    // STOP game stopped by player
     STOP("stop the Game, no winner"),      // stop the game, no winner or results
 
     // specific triggers initiated by system
@@ -46,11 +46,11 @@ public enum GameEvent implements Event {
     public static final List<GameEvent> START_GAME_EVENTS = Arrays.asList(START);
     public static final List<GameEvent> SETUP_GAME_EVENTS = Arrays.asList(PENDING_INVITES, VALIDATE);
     public static final List<GameEvent> PREPARED_GAME_EVENTS = List.of(SHUFFLE);
-    public static final List<GameEvent> PLAYING_GAME_EVENTS = List.of(TURN);
+    public static final List<GameEvent> PLAYING_GAME_EVENTS = List.of(PLAY);
     public static final List<GameEvent> STOP_GAMES_EVENTS = Arrays.asList(STOP);
     public static final List<GameEvent> ERROR_GAME_EVENTS = Arrays.asList(WINNER, ABANDON, ERROR);
     public static final List<GameEvent> ALL_GAME_EVENTS =
-            Arrays.asList(START, PENDING_INVITES, VALIDATE, SHUFFLE, TURN, STOP, WINNER, ABANDON, ERROR);
+            Arrays.asList(START, PENDING_INVITES, VALIDATE, SHUFFLE, PLAY, STOP, WINNER, ABANDON, ERROR);
 
     @Transient
     private String label;

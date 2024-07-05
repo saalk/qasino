@@ -94,9 +94,9 @@ public class Player {
 
     // References
     @JsonIgnore
-    // one [Player] can have one [Turn], holding the current player, round, seat and move
+    // one [Player] can have one [GamingTable], holding the current player, round, seat and move
     @OneToOne(mappedBy = "activePlayer", cascade = CascadeType.DETACH)
-    private Turn turn;
+    private GamingTable gamingTable;
 
     @JsonIgnore
     // GaWi: one Player is the Winner of the GameSubTotals in the end

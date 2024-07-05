@@ -3,8 +3,8 @@ package cloud.qasino.games.database.service;
 import cloud.qasino.games.database.entity.Card;
 import cloud.qasino.games.database.entity.CardMove;
 import cloud.qasino.games.database.entity.Game;
+import cloud.qasino.games.database.entity.GamingTable;
 import cloud.qasino.games.database.entity.Player;
-import cloud.qasino.games.database.entity.Turn;
 import cloud.qasino.games.database.entity.enums.card.Face;
 import cloud.qasino.games.database.entity.enums.card.Location;
 import cloud.qasino.games.database.entity.enums.card.PlayingCard;
@@ -12,76 +12,73 @@ import cloud.qasino.games.database.entity.enums.game.Style;
 import cloud.qasino.games.database.entity.enums.move.Move;
 import cloud.qasino.games.database.repository.CardMoveRepository;
 import cloud.qasino.games.database.repository.CardRepository;
-import cloud.qasino.games.database.repository.PlayerRepository;
-import cloud.qasino.games.database.repository.TurnRepository;
-import cloud.qasino.games.dto.mapper.GameMapper;
-import cloud.qasino.games.dto.mapper.PlayerMapper;
+import cloud.qasino.games.database.repository.PlayingRepository;
 import cloud.qasino.games.dto.request.ParamsDto;
 import cloud.qasino.games.exception.MyNPException;
-import cloud.qasino.games.pattern.statemachine.event.TurnEvent;
+import cloud.qasino.games.pattern.statemachine.event.PlayEvent;
 import cloud.qasino.games.pattern.stream.StreamUtil;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 @Service
-@Lazy
-public class TurnAndCardMoveService {
+public class PlayingService {
 
     // @formatter:off
-    @Autowired private TurnRepository turnRepository;
+    @Autowired private PlayingRepository playingRepository;
     @Autowired private CardMoveRepository cardMoveRepository;
     @Autowired private CardRepository cardRepository;
 
     // finds
-    public Turn findByGameId(ParamsDto paramsDto) {
-        List<Turn> turns = turnRepository.findByGameId(paramsDto.getSuppliedGameId());
-        if (turns.isEmpty()) {
+    public GamingTable findByGameId(ParamsDto paramsDto) {
+        List<GamingTable> gamingTables = playingRepository.findByGameId(paramsDto.getSuppliedGameId());
+        if (gamingTables.isEmpty()) {
             // when game is quit before started
             return null;
         }
-        // FROM TURN
-        return turns.get(0);
+        // FROM GAMINGTABLE
+        return gamingTables.get(0);
     }
     public List<CardMove> findCardMovesForGame(Game activeGame) {
-        Turn activeTurn = activeGame.getTurn();
-        return cardMoveRepository.findByTurnOrderBySequenceAsc(activeTurn);
+        GamingTable activeGamingTable = activeGame.getGamingTable();
+        return playingRepository.findByGamingTableOrderBySequenceAsc(activeGamingTable);
     }
 
     // save CARD & CARDMOVE
+    @Transactional
     public void dealCardsToActivePlayer(Game activeGame, Move move, Location oldLocation, Location newLocation, Face face, int howMany) {
-        Turn activeTurn = activeGame.getTurn();
+        GamingTable activeGamingTable = activeGame.getGamingTable();
         List<Card> topCardsInStock = getTopNCardsByLocationForGame(activeGame, oldLocation, howMany);
         List<Card> cardsDealt = new ArrayList<>();
         for (Card card : topCardsInStock) {
             Card cardDealt = card;
             cardDealt.setLocation(newLocation);
             cardDealt.setFace(face);
-            cardDealt.setHand(activeTurn.getActivePlayer());
+            cardDealt.setHand(activeGamingTable.getActivePlayer());
             cardsDealt.add(cardRepository.save(cardDealt));
-            storeCardMoveForTurn(activeTurn,cardDealt,move,newLocation);
+            storeCardMoveForGamingTable(activeGamingTable,cardDealt,move,newLocation);
         }
         }
     private static List<Card> getTopNCardsByLocationForGame(Game activeGame, Location location, int howMany) {
         List<Card> orderedCards = StreamUtil.sortCardsOnSequenceWithStream(activeGame.getCards(),location);
         return StreamUtil.findFirstNCards(orderedCards, howMany);
     }
-    private void storeCardMoveForTurn(Turn activeTurn, Card cardMoved, Move move, Location location) {
+    private void storeCardMoveForGamingTable(GamingTable activeGamingTable, Card cardMoved, Move move, Location location) {
         CardMove newMove = new CardMove(
-                activeTurn,
-                activeTurn.getActivePlayer(),
+                activeGamingTable,
+                activeGamingTable.getActivePlayer(),
                 cardMoved.getCardId(),
                 move,
                 location,
                 cardMoved.getRankSuit());
         newMove.setSequence(
-                activeTurn.getCurrentRoundNumber(),
-                activeTurn.getActivePlayer().getSeat(),
-                activeTurn.getCurrentMoveNumber());
+                activeGamingTable.getCurrentRoundNumber(),
+                activeGamingTable.getActivePlayer().getSeat(),
+                activeGamingTable.getCurrentMoveNumber());
         cardMoveRepository.save(newMove);
     }
 
@@ -92,19 +89,19 @@ public class TurnAndCardMoveService {
         return previousCard.map(card -> PlayingCard.calculateValueWithDefaultHighlow(card.getRankSuit(), card.getGame().getType())).orElse(0);
     }
 
-    // TURN
-    public void updateCurrentTurn(Move move, Turn activeTurn, Player nextPlayer) {
+    // GAMINGTABLE
+    public void updateCurrentGamingTable(Move move, GamingTable activeGamingTable, Player nextPlayer) {
         switch (move) {
             case HIGHER, LOWER -> {
-                activeTurn.setCurrentSeatNumber(activeTurn.getActivePlayer().getSeat());
-                activeTurn.setCurrentMoveNumber(activeTurn.getCurrentMoveNumber() + 1);
+                activeGamingTable.setCurrentSeatNumber(activeGamingTable.getActivePlayer().getSeat());
+                activeGamingTable.setCurrentMoveNumber(activeGamingTable.getCurrentMoveNumber() + 1);
             }
             case DEAL -> {
-                activeTurn.setCurrentSeatNumber(nextPlayer.getSeat());
-                activeTurn.setCurrentMoveNumber(1);
-                activeTurn.setActivePlayer(nextPlayer);
+                activeGamingTable.setCurrentSeatNumber(nextPlayer.getSeat());
+                activeGamingTable.setCurrentMoveNumber(1);
+                activeGamingTable.setActivePlayer(nextPlayer);
             }
-            default -> throw new MyNPException("PlayNext", "updateActiveTurn [" + move + "]");
+            default -> throw new MyNPException("PlayNext", "updateActiveGamingTable [" + move + "]");
         }
     }
 
@@ -151,8 +148,8 @@ public class TurnAndCardMoveService {
         }
         return false;
     }
-    public static Move mapTurnEventToMove(TurnEvent turnEvent) {
-        switch (turnEvent) {
+    public static Move mapPlayEventToMove(PlayEvent playEvent) {
+        switch (playEvent) {
             case HIGHER -> {
                 return Move.HIGHER;
             }
@@ -162,7 +159,7 @@ public class TurnAndCardMoveService {
             case PASS -> {
                 return Move.DEAL;
             }
-            default -> throw new MyNPException("PlayNext", "turnEvent [" + turnEvent + "]");
+            default -> throw new MyNPException("PlayNext", "playEvent [" + playEvent + "]");
         }
     }
 

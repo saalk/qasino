@@ -1,6 +1,6 @@
 package cloud.qasino.games.response.view;
 
-import cloud.qasino.games.database.entity.Turn;
+import cloud.qasino.games.database.entity.GamingTable;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -15,8 +15,8 @@ import java.util.List;
 @AllArgsConstructor
 public class SectionTable {
 
-    @JsonProperty("CurrentTurn")
-    private Turn currentTurn;
+    @JsonProperty("CurrentGamingTable")
+    private GamingTable currentGamingTable;
 //    @JsonIgnore
 //    @JsonProperty("CardsInStock")
 //    private List<Card> cardsInStockNotInHand;

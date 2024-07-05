@@ -14,7 +14,7 @@ import cloud.qasino.games.database.repository.GameRepository;
 import cloud.qasino.games.database.security.Visitor;
 import cloud.qasino.games.pattern.statemachine.event.EventOutput;
 import cloud.qasino.games.pattern.statemachine.event.GameEvent;
-import cloud.qasino.games.pattern.statemachine.event.TurnEvent;
+import cloud.qasino.games.pattern.statemachine.event.PlayEvent;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -76,7 +76,7 @@ public class UpdateStyleForGame implements Action<UpdateStyleForGame.Dto, EventO
         // @formatter:off
         String getErrorMessage();
         GameEvent getSuppliedGameEvent();
-        TurnEvent getSuppliedTurnEvent();
+        PlayEvent getSuppliedPlayEvent();
 
         // Getters
         AnteToWin getSuppliedAnteToWin();

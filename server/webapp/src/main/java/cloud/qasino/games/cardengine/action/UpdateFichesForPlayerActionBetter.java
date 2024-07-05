@@ -10,10 +10,10 @@ import cloud.qasino.games.database.entity.enums.move.Move;
 import cloud.qasino.games.database.repository.CardMoveRepository;
 import cloud.qasino.games.database.repository.CardRepository;
 import cloud.qasino.games.database.repository.PlayerRepository;
-import cloud.qasino.games.database.service.TurnAndCardMoveService;
+import cloud.qasino.games.database.service.PlayingService;
 import cloud.qasino.games.pattern.statemachine.event.EventOutput;
 import cloud.qasino.games.pattern.statemachine.event.GameEvent;
-import cloud.qasino.games.pattern.statemachine.event.TurnEvent;
+import cloud.qasino.games.pattern.statemachine.event.PlayEvent;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,14 +34,14 @@ public class UpdateFichesForPlayerActionBetter implements Action<UpdateFichesFor
     PlayerRepository playerRepository;
 
     @Autowired
-    TurnAndCardMoveService turnAndCardMoveService;
+    PlayingService playingService;
 
     @Override
     public EventOutput.Result perform(Dto actionDto) {
 
         Optional<Card> previousCardMoveCard = Optional.of(new Card());
         CardMove previousCardMove;
-        List<CardMove> cardMoves = cardMoveRepository.findByPlayerIdOrderBySequenceAsc(actionDto.getTurnPlayer().getPlayerId());
+        List<CardMove> cardMoves = cardMoveRepository.findByPlayerIdOrderBySequenceAsc(actionDto.getGamingTablePlayer().getPlayerId());
         for (CardMove cardMove : cardMoves) {
             switch (cardMove.getMove()) {
                 case HIGHER, LOWER -> {
@@ -63,16 +63,16 @@ public class UpdateFichesForPlayerActionBetter implements Action<UpdateFichesFor
 
     private void updateWinOfLoss(Dto actionDto, CardMove cardMove, Card previousCardMoveCard) {
         cardMove.setBet(actionDto.getQasinoGame().getAnte());
-        cardMove.setStartFiches(actionDto.getTurnPlayer().getFiches());
+        cardMove.setStartFiches(actionDto.getGamingTablePlayer().getFiches());
         Optional<Card> previousCard = cardRepository.findById(previousCardMoveCard.getCardId());
         Optional<Card> currentCard = cardRepository.findById(cardMove.getCardId());
         cardMove.setEndFiches(
                 cardMove.getStartFiches() +
                         calculateWinOrLoss(actionDto, cardMove.getMove(), previousCard.get(), currentCard.get()));
         cardMoveRepository.save(cardMove);
-        actionDto.getTurnPlayer().setFiches(cardMove.getEndFiches());
-        playerRepository.save(actionDto.getTurnPlayer());
-        actionDto.setAllCardMovesForTheGame(turnAndCardMoveService.findCardMovesForGame(actionDto.getQasinoGame())); // can be null
+        actionDto.getGamingTablePlayer().setFiches(cardMove.getEndFiches());
+        playerRepository.save(actionDto.getGamingTablePlayer());
+        actionDto.setAllCardMovesForTheGame(playingService.findCardMovesForGame(actionDto.getQasinoGame())); // can be null
     }
     private int calculateWinOrLoss(Dto actionDto, Move move, Card previous, Card current) {
         int previousValue = PlayingCard.calculateValueWithDefaultHighlow(previous.getRankSuit(), actionDto.getQasinoGame().getType());
@@ -108,15 +108,15 @@ public class UpdateFichesForPlayerActionBetter implements Action<UpdateFichesFor
         // @formatter:off
         String getErrorMessage();
         GameEvent getSuppliedGameEvent();
-        TurnEvent getSuppliedTurnEvent();
+        PlayEvent getSuppliedPlayEvent();
 
         // Getters
         List<CardMove> getAllCardMovesForTheGame();
         Game getQasinoGame();
-        Player getTurnPlayer();
+        Player getGamingTablePlayer();
 
         // Setters
-        void setTurnPlayer(Player player);
+        void setGamingTablePlayer(Player player);
         void setAllCardMovesForTheGame(List<CardMove> cardMoves);
 
         // error setters

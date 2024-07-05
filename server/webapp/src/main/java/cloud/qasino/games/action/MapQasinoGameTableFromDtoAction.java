@@ -5,12 +5,12 @@ import cloud.qasino.games.database.entity.Card;
 import cloud.qasino.games.database.entity.CardMove;
 import cloud.qasino.games.database.entity.Game;
 import cloud.qasino.games.database.entity.Player;
-import cloud.qasino.games.database.entity.Turn;
+import cloud.qasino.games.database.entity.GamingTable;
 import cloud.qasino.games.database.entity.enums.player.PlayerType;
 import cloud.qasino.games.database.security.Visitor;
 import cloud.qasino.games.pattern.statemachine.event.EventOutput;
 import cloud.qasino.games.pattern.statemachine.event.GameEvent;
-import cloud.qasino.games.pattern.statemachine.event.TurnEvent;
+import cloud.qasino.games.pattern.statemachine.event.PlayEvent;
 import cloud.qasino.games.response.view.SectionHand;
 import cloud.qasino.games.response.view.SectionSeat;
 import cloud.qasino.games.response.view.SectionTable;
@@ -30,14 +30,14 @@ public class MapQasinoGameTableFromDtoAction implements Action<MapQasinoGameTabl
 
         SectionTable table = new SectionTable();
 
-        if ((actionDto.getActiveTurn() == null)) {
+        if ((actionDto.getActiveGamingTable() == null)) {
             if ((actionDto.getQasinoGame() != null)) {
-                actionDto.setActiveTurn(actionDto.getQasinoGame().getTurn());
-                if ((actionDto.getActiveTurn() == null)) {
+                actionDto.setActiveGamingTable(actionDto.getQasinoGame().getGamingTable());
+                if ((actionDto.getActiveGamingTable() == null)) {
                     // when game is quit before started
                     table.setCountStockAndTotal(
                             "[-/-] stock/total");
-                    table.setCurrentTurn(null);
+                    table.setCurrentGamingTable(null);
                     table.setSeats(null);
                     return EventOutput.Result.SUCCESS;
                 }
@@ -45,13 +45,13 @@ public class MapQasinoGameTableFromDtoAction implements Action<MapQasinoGameTabl
                 // when game is quit before started
                 table.setCountStockAndTotal(
                         "[-/-] stock/total");
-                table.setCurrentTurn(null);
+                table.setCurrentGamingTable(null);
                 table.setSeats(null);
                 return EventOutput.Result.SUCCESS;
             }
         }
 
-        table.setCurrentTurn(actionDto.getActiveTurn());
+        table.setCurrentGamingTable(actionDto.getActiveGamingTable());
         List<Card> stockNotInHand =
                 actionDto.getCardsInTheGameSorted()
                         .stream()
@@ -77,7 +77,7 @@ public class MapQasinoGameTableFromDtoAction implements Action<MapQasinoGameTabl
             SectionSeat seat = new SectionSeat();
             // seat stats
             seat.setSeatId(player.getSeat());
-            seat.setPlaying(player.getPlayerId() == actionDto.getActiveTurn().getActivePlayer().getPlayerId());
+            seat.setPlaying(player.getPlayerId() == actionDto.getActiveGamingTable().getActivePlayer().getPlayerId());
             // todo which one to choose
 //            seat.setSeatPlayerTheInitiator(player.getPlayerId() ==
 //                    actionDto.getQasinoGame().getInitiator());
@@ -98,7 +98,7 @@ public class MapQasinoGameTableFromDtoAction implements Action<MapQasinoGameTabl
                     hand.stream().map(Card::getRankSuit).collect(Collectors.toList());
             seat.setStringCardsInHand("[" + String.join("],[", handStrings) + "]");
 
-            List<CardMove> cardMoves = actionDto.getActiveTurn().getCardMoves().stream()
+            List<CardMove> cardMoves = actionDto.getActiveGamingTable().getCardMoves().stream()
                     .filter(p -> p.getPlayerId() == player.getPlayerId())
                     .toList();
 
@@ -134,7 +134,7 @@ public class MapQasinoGameTableFromDtoAction implements Action<MapQasinoGameTabl
                     }
                 }
             }
-            seat.setCardsInHandPerTurn(handInRounds);
+            seat.setCardsInHandPerGamingTable(handInRounds);
 
 //          private Map<String, String> handInRound;
             // when player is human
@@ -161,19 +161,19 @@ public class MapQasinoGameTableFromDtoAction implements Action<MapQasinoGameTabl
         // @formatter:off
         String getErrorMessage();
         GameEvent getSuppliedGameEvent();
-        TurnEvent getSuppliedTurnEvent();
+        PlayEvent getSuppliedPlayEvent();
 
         // Getters
         Game getQasinoGame();
         Visitor getQasinoVisitor();
         List<Player> getQasinoGamePlayers();
-        Player getTurnPlayer();
-        Turn getActiveTurn();
+        Player getGamingTablePlayer();
+        GamingTable getActiveGamingTable();
         List<Card> getCardsInTheGameSorted();
 
         // Setters
-        void setActiveTurn(Turn turn);
-        void setTurnPlayer(Player turnPlayer);
+        void setActiveGamingTable(GamingTable gamingTable);
+        void setGamingTablePlayer(Player gamingTablePlayer);
         void setTable(SectionTable table);
 
         // error setters

@@ -5,7 +5,7 @@ import cloud.qasino.games.database.entity.CardMove;
 import cloud.qasino.games.database.entity.Game;
 import cloud.qasino.games.database.entity.League;
 import cloud.qasino.games.database.entity.Player;
-import cloud.qasino.games.database.entity.Turn;
+import cloud.qasino.games.database.entity.GamingTable;
 import cloud.qasino.games.database.entity.enums.card.Location;
 import cloud.qasino.games.database.entity.enums.card.PlayingCard;
 import cloud.qasino.games.database.entity.enums.game.GameState;
@@ -18,7 +18,7 @@ import cloud.qasino.games.database.repository.CardRepository;
 import cloud.qasino.games.database.repository.GameRepository;
 import cloud.qasino.games.database.repository.LeagueRepository;
 import cloud.qasino.games.database.repository.PlayerRepository;
-import cloud.qasino.games.database.repository.TurnRepository;
+import cloud.qasino.games.database.repository.PlayingRepository;
 import cloud.qasino.games.database.security.Visitor;
 import cloud.qasino.games.database.security.VisitorRepository;
 import cloud.qasino.games.database.security.VisitorServiceOld;
@@ -57,7 +57,7 @@ public class QuickTestAtStartup implements ApplicationRunner {
     @Autowired
     CardRepository cardRepository;
     @Autowired
-    TurnRepository turnRepository;
+    PlayingRepository playingRepository;
     @Autowired
     CardMoveRepository cardMoveRepository;
 
@@ -146,10 +146,10 @@ public class QuickTestAtStartup implements ApplicationRunner {
         game.setState(GameState.PREPARED);
         gameRepository.save(game);
 
-        // The main player initiates a turn with round 1 player 1 and gets a card
-        Turn turn = new Turn(game, visitorAndBot.get(0));
-        turnRepository.save(turn);
-        CardMove cardMove = new CardMove(turn, visitorAndBot.get(0), 0, Move.DEAL,
+        // The main player initiates a gamingTable with round 1 player 1 and gets a card
+        GamingTable gamingTable = new GamingTable(game, visitorAndBot.get(0));
+        playingRepository.save(gamingTable);
+        CardMove cardMove = new CardMove(gamingTable, visitorAndBot.get(0), 0, Move.DEAL,
                 Location.HAND, "details");
         cardMoveRepository.save(cardMove);
     }

@@ -83,13 +83,13 @@ public interface GameRepository extends JpaRepository<Game, Long> {
             "SELECT a.* FROM \"game\" as a JOIN \"player\" as b " +
                     "WHERE a.\"game_id\" = b.\"game_id\" " +
                     "AND b.\"visitor_id\" = :visitorId " +
-                    "AND a.\"state\" IN ('STARTED','NEXT_MOVE','NEXT_TURN') " +
+                    "AND a.\"state\" IN ('STARTED','INITIATOR_MOVE','INVITEE_MOVE','BOT_MOVE') " +
                     "ORDER BY a.\"updated\" DESC ";
     public final static String COUNT_STARTEDGAMES_BY_VISITOR_ID =
             "SELECT count(a.*) FROM \"game\" as a JOIN \"player\" as b " +
                     "WHERE a.\"game_id\" = b.\"game_id\" " +
                     "AND b.\"visitor_id\" = :visitorId " +
-                    "AND a.\"state\" IN ('STARTED','NEXT_MOVE','NEXT_TURN') ";
+                    "AND a.\"state\" IN ('STARTED','INITIATOR_MOVE','INVITEE_MOVE','BOT_MOVE') ";
 
     public final static String FIND_FINISHEDGAMES_BY_VISITOR_ID =
             "SELECT a.* FROM \"game\" as a JOIN \"player\" as b " +

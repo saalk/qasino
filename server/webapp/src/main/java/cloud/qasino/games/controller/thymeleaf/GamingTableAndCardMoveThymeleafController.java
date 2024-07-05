@@ -4,12 +4,12 @@ import cloud.qasino.games.action.CalculateAndFinishGameAction;
 import cloud.qasino.games.action.IsGameConsistentForGameEventAction;
 import cloud.qasino.games.action.IsGameFinishedAction;
 import cloud.qasino.games.action.IsPlayerHumanAction;
-import cloud.qasino.games.action.IsTurnConsistentForTurnEventAction;
+import cloud.qasino.games.action.IsGamingTableConsistentForPlayEventAction;
 import cloud.qasino.games.action.LoadEntitiesToDtoAction;
 import cloud.qasino.games.action.MapQasinoGameTableFromDtoAction;
-import cloud.qasino.games.action.PlayFirstTurnAction;
-import cloud.qasino.games.action.PlayNextBotTurnAction;
-import cloud.qasino.games.action.PlayNextHumanTurnAction;
+import cloud.qasino.games.action.PlayFirstGamingTableAction;
+import cloud.qasino.games.action.PlayNextBotGamingTableAction;
+import cloud.qasino.games.action.PlayNextHumanGamingTableAction;
 import cloud.qasino.games.action.StartGameForTypeAction;
 import cloud.qasino.games.action.StopGameAction;
 import cloud.qasino.games.action.UpdateFichesForPlayerAction;
@@ -19,7 +19,7 @@ import cloud.qasino.games.database.repository.CardMoveRepository;
 import cloud.qasino.games.database.repository.CardRepository;
 import cloud.qasino.games.database.repository.GameRepository;
 import cloud.qasino.games.database.repository.PlayerRepository;
-import cloud.qasino.games.database.repository.TurnRepository;
+import cloud.qasino.games.database.repository.PlayingRepository;
 import cloud.qasino.games.dto.QasinoFlowDto;
 import cloud.qasino.games.response.QasinoResponse;
 import cloud.qasino.games.pattern.statemachine.event.EventOutput;
@@ -45,14 +45,14 @@ import static cloud.qasino.games.pattern.statemachine.event.EventOutput.Result.S
 @ControllerAdvice
 //@Api(tags = {WebConfiguration.QASINO_TAG})
 @Slf4j
-public class TurnAndCardMoveThymeleafController extends AbstractThymeleafController {
+public class GamingTableAndCardMoveThymeleafController extends AbstractThymeleafController {
 
     EventOutput.Result result;
 
     @Autowired
     IsGameConsistentForGameEventAction isGameConsistentForGameEventAction;
     @Autowired
-    IsTurnConsistentForTurnEventAction isTurnConsistentForTurnEventAction;
+    IsGamingTableConsistentForPlayEventAction isGamingTableConsistentForPlayEventAction;
     @Autowired
     IsGameFinishedAction isGameFinishedAction;
     @Autowired
@@ -62,7 +62,7 @@ public class TurnAndCardMoveThymeleafController extends AbstractThymeleafControl
     @Autowired
     StartGameForTypeAction startGameForTypeAction;
     @Autowired
-    PlayFirstTurnAction playFirstTurnAction;
+    PlayFirstGamingTableAction playFirstGamingTableAction;
     @Autowired
     StopGameAction stopGameAction;
     @Autowired
@@ -70,21 +70,21 @@ public class TurnAndCardMoveThymeleafController extends AbstractThymeleafControl
     @Autowired
     MapQasinoGameTableFromDtoAction mapQasinoGameTableFromDtoAction;
     @Autowired
-    PlayNextHumanTurnAction playNextHumanTurnAction;
+    PlayNextHumanGamingTableAction playNextHumanGamingTableAction;
     @Autowired
     IsPlayerHumanAction isPlayerHumanAction;
     @Autowired
-    PlayNextBotTurnAction playNextBotTurnAction;
+    PlayNextBotGamingTableAction playNextBotGamingTableAction;
     @Autowired
     UpdatePlayingStateForGame updatePlayingStateForGame;
 
 
     @Autowired
-    public TurnAndCardMoveThymeleafController(
+    public GamingTableAndCardMoveThymeleafController(
             GameRepository gameRepository,
             PlayerRepository playerRepository,
             CardRepository cardRepository,
-            TurnRepository turnRepository,
+            PlayingRepository playingRepository,
             CardMoveRepository cardMoveRepository
     ) {
     }
@@ -126,7 +126,7 @@ public class TurnAndCardMoveThymeleafController extends AbstractThymeleafControl
         }
         startGameForTypeAction.perform(flowDto);
         mapQasinoGameTableFromDtoAction.perform(flowDto);
-        playFirstTurnAction.perform(flowDto);
+        playFirstGamingTableAction.perform(flowDto);
         // get all entities and build reponse
         loadEntitiesToDtoAction.perform(flowDto);
         // 4 - return response
@@ -138,7 +138,7 @@ public class TurnAndCardMoveThymeleafController extends AbstractThymeleafControl
         return "redirect:/setup/" + flowDto.getSuppliedGameId();
     }
 
-    @PostMapping(value = "turn/{turnEvent}/{gameId}")
+    @PostMapping(value = "play/{playEvent}/{gameId}")
     public String playerMakesAMoveForAGame(
             Model model,
             Principal principal,
@@ -147,18 +147,18 @@ public class TurnAndCardMoveThymeleafController extends AbstractThymeleafControl
             BindingResult bindingResult,
             Errors errors, RedirectAttributes ra,
             HttpServletResponse response,
-            @PathVariable("turnEvent") String trigger) {
+            @PathVariable("playEvent") String trigger) {
 
-        log.warn("PostMapping: turn/{turnEvent}/{gameId}");
+        log.warn("PostMapping: play/{playEvent}/{gameId}");
 
         // 1 - map input
         QasinoFlowDto flowDto = new QasinoFlowDto();
         flowDto.setPathVariables(
                 "visitorId", getPricipalVisitorId(principal),
                 "gameId", id,
-//                "turnPlayerId", String.valueOf(qasinoResponse.getPageGamePlay().getTable().getCurrentTurn().getActivePlayerId()),
-                "gameEvent", "turn",
-                "turnEvent", trigger.toLowerCase()
+//                "turnPlayerId", String.valueOf(qasinoResponse.getPageGamePlay().getTable().getCurrentGamingTable().getActivePlayerId()),
+                "gameEvent", "play",
+                "playEvent", trigger.toLowerCase()
         );
         // 2 - validate input
         if (!flowDto.isInputValid()) {
@@ -180,9 +180,9 @@ public class TurnAndCardMoveThymeleafController extends AbstractThymeleafControl
             model.addAttribute(flowDto.getQasinoResponse());
             return "redirect:/play/" + qasinoResponse.getPageGamePlay().getSelectedGame().getGameId();
         }
-        result = isTurnConsistentForTurnEventAction.perform(flowDto);
+        result = isGamingTableConsistentForPlayEventAction.perform(flowDto);
         if (EventOutput.Result.FAILURE.equals(result)) {
-            log.warn("Errors isTurnConsistentForTurnEvent!!: {}", errors);
+            log.warn("Errors isGamingTableConsistentForPlayEvent!!: {}", errors);
             prepareQasinoResponse(response, flowDto);
             model.addAttribute(flowDto.getQasinoResponse());
             return "redirect:/play/" + flowDto.getSuppliedGameId();
@@ -192,11 +192,11 @@ public class TurnAndCardMoveThymeleafController extends AbstractThymeleafControl
         result = isPlayerHumanAction.perform(flowDto);
         updatePlayingStateForGame.perform(flowDto);
         if (SUCCESS.equals(result)) {
-            log.warn("playNextHumanTurnAction {}", flowDto.getSuppliedGameEvent());
-            playNextHumanTurnAction.perform(flowDto);
+            log.warn("playNextHumanGamingTableAction {}", flowDto.getSuppliedGameEvent());
+            playNextHumanGamingTableAction.perform(flowDto);
         } else {
-            log.warn("playNextBotTurnAction {}", flowDto.getSuppliedGameEvent());
-            playNextBotTurnAction.perform(flowDto);
+            log.warn("playNextBotGamingTableAction {}", flowDto.getSuppliedGameEvent());
+            playNextBotGamingTableAction.perform(flowDto);
         }
         updateFichesForPlayerAction.perform(flowDto);
         result = isGameFinishedAction.perform(flowDto);

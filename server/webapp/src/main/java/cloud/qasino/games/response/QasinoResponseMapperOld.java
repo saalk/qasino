@@ -219,11 +219,11 @@ public class QasinoResponseMapperOld {
         // set the nav bar
         navigationBarItem.setTitle("Play[" +
                 Integer.toHexString((int) actionDto.getQasinoGame().getGameId())+"]");
-        // TODO FIXXXX .NullPointerException: Cannot invoke "cloud.qasino.games.database.entity.Turn.getCurrentRoundNumber()" because the return value of "cloud.qasino.games.action.MapQasinoResponseFromDto$Dto.getActiveTurn()" is null
-        if (actionDto.getActiveTurn() != null) { // games is still being validated
+        // TODO FIXXXX .NullPointerException: Cannot invoke "cloud.qasino.games.database.entity.GamingTable.getCurrentRoundNumber()" because the return value of "cloud.qasino.games.action.MapQasinoResponseFromDto$Dto.getActiveGamingTable()" is null
+        if (actionDto.getActiveGamingTable() != null) { // games is still being validated
             navigationBarItem.setStat(
-                    "[" + actionDto.getActiveTurn().getCurrentRoundNumber() +
-                            "/" + actionDto.getActiveTurn().getCurrentMoveNumber() +
+                    "[" + actionDto.getActiveGamingTable().getCurrentRoundNumber() +
+                            "/" + actionDto.getActiveGamingTable().getCurrentMoveNumber() +
                             "] round/turn");
         }
         // set the content

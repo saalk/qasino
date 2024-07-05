@@ -5,7 +5,7 @@ import cloud.qasino.games.database.entity.Game;
 import cloud.qasino.games.database.entity.League;
 import cloud.qasino.games.database.entity.Player;
 import cloud.qasino.games.database.entity.Result;
-import cloud.qasino.games.database.entity.Turn;
+import cloud.qasino.games.database.entity.GamingTable;
 import cloud.qasino.games.database.entity.enums.card.PlayingCard;
 import cloud.qasino.games.database.entity.enums.game.GameState;
 import cloud.qasino.games.database.entity.enums.game.Style;
@@ -32,7 +32,7 @@ import cloud.qasino.games.response.view.statistics.Statistic;
 import cloud.qasino.games.response.QasinoResponse;
 import cloud.qasino.games.pattern.statemachine.event.EventOutput;
 import cloud.qasino.games.pattern.statemachine.event.GameEvent;
-import cloud.qasino.games.pattern.statemachine.event.TurnEvent;
+import cloud.qasino.games.pattern.statemachine.event.PlayEvent;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
@@ -231,11 +231,11 @@ public class MapQasinoResponseFromDtoAction implements Action<MapQasinoResponseF
         }
         params.setLid(setId(actionDto.getSuppliedLeagueId()));
         params.setSuppliedGameEvent(actionDto.getSuppliedGameEvent());
-        params.setSuppliedTurnEvent(actionDto.getSuppliedTurnEvent());
-        params.setTpid(setId(actionDto.getSuppliedTurnPlayerId()));
+        params.setSuppliedPlayEvent(actionDto.getSuppliedPlayEvent());
+        params.setTpid(setId(actionDto.getSuppliedGamingTablePlayerId()));
         params.setSuppliedPlayingCards(actionDto.getSuppliedCards());
         params.setPossibleGameEvents(actionDto.getPossibleGameEvents());
-        params.setPossibleTurnEvents(actionDto.getPossibleTurnEvents());
+        params.setPossiblePlayEvents(actionDto.getPossiblePlayEvents());
         return params;
     }
     private static Long setId(long id) {
@@ -291,12 +291,12 @@ public class MapQasinoResponseFromDtoAction implements Action<MapQasinoResponseF
         // set the nav bar
         navigationBarItem.setTitle("Play[" +
                 Integer.toHexString((int) actionDto.getQasinoGame().getGameId())+"]");
-        // TODO FIXXXX .NullPointerException: Cannot invoke "cloud.qasino.games.database.entity.Turn.getCurrentRoundNumber()" because the return value of "cloud.qasino.games.action.MapQasinoResponseFromDto$Dto.getActiveTurn()" is null
-        if (actionDto.getActiveTurn() != null) { // games is still being validated
+        // TODO FIXXXX .NullPointerException: Cannot invoke "cloud.qasino.games.database.entity.GamingTable.getCurrentRoundNumber()" because the return value of "cloud.qasino.games.action.MapQasinoResponseFromDto$Dto.getActiveGamingTable()" is null
+        if (actionDto.getActiveGamingTable() != null) { // games is still being validated
             navigationBarItem.setStat(
-                    "[" + actionDto.getActiveTurn().getCurrentRoundNumber() +
-                            "/" + actionDto.getActiveTurn().getCurrentSeatNumber() +
-                            "/" + actionDto.getActiveTurn().getCurrentMoveNumber() +
+                    "[" + actionDto.getActiveGamingTable().getCurrentRoundNumber() +
+                            "/" + actionDto.getActiveGamingTable().getCurrentSeatNumber() +
+                            "/" + actionDto.getActiveGamingTable().getCurrentMoveNumber() +
                             "] round/seat/move");
         }
         // set the content
@@ -335,7 +335,7 @@ public class MapQasinoResponseFromDtoAction implements Action<MapQasinoResponseF
         // @formatter:off
         String getErrorMessage();
         GameEvent getSuppliedGameEvent();
-        TurnEvent getSuppliedTurnEvent();
+        PlayEvent getSuppliedPlayEvent();
 
         // Getters
         String getErrorReason();
@@ -354,7 +354,7 @@ public class MapQasinoResponseFromDtoAction implements Action<MapQasinoResponseF
 
         // events
         List<GameEvent> getPossibleGameEvents();
-        List<TurnEvent> getPossibleTurnEvents();
+        List<PlayEvent> getPossiblePlayEvents();
 
 
         // visitor
@@ -370,12 +370,12 @@ public class MapQasinoResponseFromDtoAction implements Action<MapQasinoResponseF
         List<Game> getInvitedGamesForVisitor();
 
         // game setup and play
-        long getSuppliedTurnPlayerId();
+        long getSuppliedGamingTablePlayerId();
         List<PlayingCard> getSuppliedCards();
         Move getSuppliedMove();
         long getSuppliedGameId();
         Game getQasinoGame();
-        Turn getActiveTurn();
+        GamingTable getActiveGamingTable();
         SectionTable getTable();
         List<Player> getQasinoGamePlayers();
         List<Result> getGameResults();

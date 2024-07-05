@@ -20,7 +20,7 @@ public abstract class StatelessCheck<T extends AbstractFlowDto> extends Abstract
     protected String getGameEvent(final T flowDto) {
         return flowDto.getCurrentGameEvent().toString();
     };
-    protected String getTurnEvent(final T flowDto) {
+    protected String getPlayEvent(final T flowDto) {
         return flowDto.getCurrentGameEvent().toString();
     };
 }

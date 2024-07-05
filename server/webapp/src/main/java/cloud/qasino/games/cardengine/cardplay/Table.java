@@ -4,7 +4,7 @@ import cloud.qasino.games.database.entity.Card;
 import cloud.qasino.games.database.entity.CardMove;
 import cloud.qasino.games.database.entity.Game;
 import cloud.qasino.games.database.entity.Player;
-import cloud.qasino.games.database.entity.Turn;
+import cloud.qasino.games.database.entity.GamingTable;
 import cloud.qasino.games.database.entity.enums.game.GameState;
 import cloud.qasino.games.database.entity.enums.game.Type;
 import cloud.qasino.games.database.entity.enums.game.gamestate.GameStateGroup;
@@ -44,13 +44,13 @@ public class Table {
     private String stringCardsInStockNotInHand;
     private String countStockAndTotal;
 
-    // FROM TURN
+    // FROM GAMINGTABLE
     private List<CardMove> allCardMovesForTheGame;
     private int currentRoundNumber;
     private int currentSeatNumber;
     private int currentMoveNumber;
 
-    // FROM TURN - ACTIVE AND NEXT PLAYER
+    // FROM GAMINGTABLE - ACTIVE AND NEXT PLAYER
     private PlayerDto activePlayer;
     private PlayerDto nextPlayer;
     private PlayerType playerType;

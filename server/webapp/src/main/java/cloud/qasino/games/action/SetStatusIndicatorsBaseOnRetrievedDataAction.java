@@ -5,7 +5,7 @@ import cloud.qasino.games.database.entity.*;
 import cloud.qasino.games.database.security.Visitor;
 import cloud.qasino.games.pattern.statemachine.event.EventOutput;
 import cloud.qasino.games.pattern.statemachine.event.GameEvent;
-import cloud.qasino.games.pattern.statemachine.event.TurnEvent;
+import cloud.qasino.games.pattern.statemachine.event.PlayEvent;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
@@ -51,18 +51,18 @@ public class SetStatusIndicatorsBaseOnRetrievedDataAction implements Action<SetS
         // @formatter:off
         String getErrorMessage();
         GameEvent getSuppliedGameEvent();
-        TurnEvent getSuppliedTurnEvent();
+        PlayEvent getSuppliedPlayEvent();
 
         // Getters
         Visitor getQasinoVisitor();
         Player getInvitedPlayer();
         Player getAcceptedPlayer();
-        Player getTurnPlayer();
+        Player getGamingTablePlayer();
 
         Game getQasinoGame();
         League getQasinoGameLeague();
         List<Player> getQasinoGamePlayers();
-        Turn getActiveTurn();
+        GamingTable getActiveGamingTable();
         List<Card> getCardsInTheGameSorted();
         List<CardMove> getAllCardMovesForTheGame();
 

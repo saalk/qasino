@@ -1,6 +1,6 @@
 package cloud.qasino.games.dto;
 
-import cloud.qasino.games.database.entity.Turn;
+import cloud.qasino.games.database.entity.GamingTable;
 import cloud.qasino.games.database.entity.enums.game.GameState;
 import cloud.qasino.games.database.entity.enums.game.Type;
 import cloud.qasino.games.database.entity.enums.game.gamestate.GameStateGroup;
@@ -37,8 +37,8 @@ public class GameDto {
     private String style;
     private int ante;
 
-    // related turn
-    Turn activeTurn;
+    // related gamingTable
+    GamingTable activeGamingTable;
 
     // related league
     private long leagueId;

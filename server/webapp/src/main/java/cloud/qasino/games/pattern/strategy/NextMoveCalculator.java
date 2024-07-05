@@ -2,7 +2,7 @@ package cloud.qasino.games.pattern.strategy;
 
 import cloud.qasino.games.database.entity.Game;
 import cloud.qasino.games.database.entity.Player;
-import cloud.qasino.games.database.entity.Turn;
+import cloud.qasino.games.database.entity.GamingTable;
 import cloud.qasino.games.database.entity.enums.move.Move;
 import cloud.qasino.games.exception.MyNPException;
 import cloud.qasino.games.pattern.strategy.algorithm.NormalMove;
@@ -15,10 +15,10 @@ public class NextMoveCalculator {
 
     enum NextMove {StupidMove, RandomMove, NormalMove, SmartMove, PassMove}
 
-    public static Move next(Game game, Player player, Turn turn) {
+    public static Move next(Game game, Player player, GamingTable gamingTable) {
 
         // @formatter:off
-        NextMove next = predict(game, player, turn);
+        NextMove next = predict(game, player, gamingTable);
         switch (next) {
             case StupidMove -> { return new StupidMove().predictMove(game);}
             case RandomMove -> { return new RandomMove().predictMove(game);}
@@ -30,31 +30,31 @@ public class NextMoveCalculator {
         // @formatter:on
     }
 
-    private static NextMove predict(Game game, Player player, Turn turn) {
+    private static NextMove predict(Game game, Player player, GamingTable gamingTable) {
         NextMove next = NextMove.RandomMove;
         switch (player.getAiLevel()) {
             case DUMB -> {
-                if (turn.getCurrentMoveNumber() == 1) {
+                if (gamingTable.getCurrentMoveNumber() == 1) {
                     next = NextMove.StupidMove;
-                } else if (turn.getCurrentMoveNumber() == 2) {
+                } else if (gamingTable.getCurrentMoveNumber() == 2) {
                     next = NextMove.RandomMove;
                 } else {
                     next = NextMove.PassMove;
                 }
             }
             case AVERAGE -> {
-                if (turn.getCurrentMoveNumber() == 1) {
+                if (gamingTable.getCurrentMoveNumber() == 1) {
                     next = NextMove.RandomMove;
-                } else if (turn.getCurrentMoveNumber() == 2) {
+                } else if (gamingTable.getCurrentMoveNumber() == 2) {
                     next = NextMove.NormalMove;
                 } else {
                     next = NextMove.PassMove;
                 }
             }
             case SMART -> {
-                if (turn.getCurrentMoveNumber() == 1) {
+                if (gamingTable.getCurrentMoveNumber() == 1) {
                     next = NextMove.NormalMove;
-                } else if (turn.getCurrentMoveNumber() == 2) {
+                } else if (gamingTable.getCurrentMoveNumber() == 2) {
                     next = NextMove.SmartMove;
                 } else {
                     next = NextMove.PassMove;

@@ -54,8 +54,8 @@ public class SectionSeat {
 //    private List<Card> cardsInHand = new ArrayList<>();
     @JsonProperty("Hand")
     private String stringCardsInHand;
-    @JsonProperty("HandPerTurn")
-    private List<SectionHand> cardsInHandPerTurn;
+    @JsonProperty("HandPerGamingTable")
+    private List<SectionHand> cardsInHandPerGamingTable;
 
     // when player is human
     @JsonProperty("IsHumanPlayer")

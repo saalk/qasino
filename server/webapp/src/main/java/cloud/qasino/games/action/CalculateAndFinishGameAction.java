@@ -11,10 +11,10 @@ import cloud.qasino.games.database.repository.CardRepository;
 import cloud.qasino.games.database.repository.ResultsRepository;
 import cloud.qasino.games.database.security.Visitor;
 import cloud.qasino.games.database.security.VisitorRepository;
-import cloud.qasino.games.database.service.TurnAndCardMoveService;
+import cloud.qasino.games.database.service.PlayingService;
 import cloud.qasino.games.pattern.statemachine.event.EventOutput;
 import cloud.qasino.games.pattern.statemachine.event.GameEvent;
-import cloud.qasino.games.pattern.statemachine.event.TurnEvent;
+import cloud.qasino.games.pattern.statemachine.event.PlayEvent;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -30,7 +30,7 @@ import java.util.Optional;
 public class CalculateAndFinishGameAction implements Action<CalculateAndFinishGameAction.Dto, EventOutput.Result> {
 
     @Resource
-    TurnAndCardMoveService turnAndCardMoveService;
+    PlayingService playingService;
     @Resource
     CardRepository cardRepository;
     @Resource
@@ -62,7 +62,7 @@ public class CalculateAndFinishGameAction implements Action<CalculateAndFinishGa
         }
 
         // get all the card moves sorted
-        actionDto.setAllCardMovesForTheGame(turnAndCardMoveService.findCardMovesForGame(actionDto.getQasinoGame()));
+        actionDto.setAllCardMovesForTheGame(playingService.findCardMovesForGame(actionDto.getQasinoGame()));
         if (actionDto.getAllCardMovesForTheGame() == null || players.isEmpty()) {
             // some error happened - just stop calculating
             return EventOutput.Result.SUCCESS;
@@ -117,7 +117,7 @@ public class CalculateAndFinishGameAction implements Action<CalculateAndFinishGa
         // Getters
         String getErrorMessage();
         GameEvent getSuppliedGameEvent();
-        TurnEvent getSuppliedTurnEvent();
+        PlayEvent getSuppliedPlayEvent();
 
         Game getQasinoGame();
         Visitor getQasinoVisitor();

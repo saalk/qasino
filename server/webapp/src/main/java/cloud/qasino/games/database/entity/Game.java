@@ -158,9 +158,9 @@ public class Game {
     @OneToMany(mappedBy = "game", cascade = CascadeType.DETACH)
     private List<Player> players;
     @JsonIgnore
-    // one [Game] can have one [Turn], holding the current player, round, seat and move
+    // one [Game] can have one [GamingTable], holding the current player, round, seat and move
     @OneToOne(mappedBy = "game", cascade = CascadeType.DETACH)
-    private Turn turn;
+    private GamingTable gamingTable;
     // TODO is this needed as its related to a player that is related to a game
     // one [Game] can have many [Result]s, one per player
     @OneToMany(mappedBy = "game", cascade = CascadeType.DETACH)
@@ -201,7 +201,7 @@ public class Game {
         return new Game.Builder()
                 .withType(Type.HIGHLOW.getLabel())
                 .withStyle("nrrn22")
-                // ante, bet, deck, ins, rounds, turn
+                // ante, bet, deck, ins, rounds, gamingTable
                 .withAnte(20)
                 .withInitiator(initiator)
                 .withLeague(league)
@@ -335,7 +335,7 @@ public class Game {
                 ", type=" + this.type +
                 ", style=" + this.style +
                 ", ante=" + this.ante +
-                ", turnId=" + (this.turn == null? "": this.turn.getTurnId()) +
+                ", gamingTableId=" + (this.gamingTable == null? "": this.gamingTable.getGamingTableId()) +
                 ")";
     }
 }

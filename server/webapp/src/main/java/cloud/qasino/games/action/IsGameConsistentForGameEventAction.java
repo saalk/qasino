@@ -5,12 +5,12 @@ import cloud.qasino.games.database.entity.Card;
 import cloud.qasino.games.database.entity.Game;
 import cloud.qasino.games.database.entity.Player;
 import cloud.qasino.games.database.entity.Result;
-import cloud.qasino.games.database.entity.Turn;
+import cloud.qasino.games.database.entity.GamingTable;
 import cloud.qasino.games.database.security.Visitor;
 import cloud.qasino.games.database.entity.enums.game.gamestate.GameStateGroup;
 import cloud.qasino.games.pattern.statemachine.event.EventOutput;
 import cloud.qasino.games.pattern.statemachine.event.GameEvent;
-import cloud.qasino.games.pattern.statemachine.event.TurnEvent;
+import cloud.qasino.games.pattern.statemachine.event.PlayEvent;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
@@ -43,6 +43,8 @@ public class IsGameConsistentForGameEventAction implements Action<IsGameConsiste
 
             case START -> {
                 noError = noGameInSetupOrPlayingShouldAlreadyExist(actionDto);
+                if (noError) noError = gameShouldHaveVisitorWithBalance(actionDto);
+
             }
             case VALIDATE -> {
                 noError = gameShouldHaveStateInCorrectGameStateGroup(actionDto,
@@ -55,9 +57,9 @@ public class IsGameConsistentForGameEventAction implements Action<IsGameConsiste
             case SHUFFLE -> {
                 noError = gameShouldHaveStateInCorrectGameStateGroup(actionDto, Collections.singletonList(GameStateGroup.PREPARED));
             }
-            case TURN -> {
+            case PLAY -> {
                 noError = gameShouldHaveStateInCorrectGameStateGroup(actionDto, Collections.singletonList(GameStateGroup.PLAYING));
-                if (noError) noError = gameShouldHaveCardsAndTurn(actionDto);
+                if (noError) noError = gameShouldHaveCardsAndGamingTable(actionDto);
             }
             case STOP -> {
 //                noError = !gameShouldHaveStateInCorrectGameStateGroup(actionDto, Collections.singletonList(GameStateGroup.FINISHED));
@@ -65,7 +67,7 @@ public class IsGameConsistentForGameEventAction implements Action<IsGameConsiste
             case WINNER -> {
                 noError = gameShouldHaveAResult(actionDto);
                 if (noError) noError = gameShouldHaveStateInCorrectGameStateGroup(actionDto, Collections.singletonList(GameStateGroup.PLAYING));
-                if (noError) noError = gameShouldHaveCardsAndTurn(actionDto);
+                if (noError) noError = gameShouldHaveCardsAndGamingTable(actionDto);
             }
         }
 //        log.warn("isGameConsistentForGameEvent noerror {}", noError);
@@ -139,6 +141,27 @@ public class IsGameConsistentForGameEventAction implements Action<IsGameConsiste
         }
         return true;
     }
+    private boolean gameShouldHaveVisitorWithBalance(Dto actionDto) {
+        if (actionDto.getQasinoGame().getInitiator() == 0) {
+            log.warn("!initiator");
+            setUnprocessableErrorMessage(actionDto,
+                    "Action [" +
+                            actionDto.getSuppliedGameEvent() +
+                            "] invalid - game has no initiator "
+            );
+            return false;
+        }
+        if (actionDto.getQasinoVisitor().getBalance() == 0) {
+            log.warn("!balance");
+            setUnprocessableErrorMessage(actionDto,
+                    "Action [" +
+                            actionDto.getSuppliedGameEvent() +
+                            "] invalid - initiator has no balance "
+            );
+            return false;
+        }
+        return true;
+    }
     private boolean gameShouldHaveInitiator(Dto actionDto) {
         if (actionDto.getQasinoGame().getInitiator() == 0) {
             log.warn("!initiator");
@@ -167,14 +190,14 @@ public class IsGameConsistentForGameEventAction implements Action<IsGameConsiste
         }
         return true;
     }
-    private boolean gameShouldHaveCardsAndTurn(Dto actionDto) {
-        if (actionDto.getActiveTurn() == null ||
+    private boolean gameShouldHaveCardsAndGamingTable(Dto actionDto) {
+        if (actionDto.getActiveGamingTable() == null ||
                 actionDto.getCardsInTheGameSorted() == null) {
             log.warn("!turn and/or cards");
             setUnprocessableErrorMessage(actionDto,
                     "Action [" +
                             actionDto.getSuppliedGameEvent() +
-                            "] invalid - game has no cards and or a turn"
+                            "] invalid - game has no cards and or a gamingTable"
 
             );
             return false;
@@ -196,10 +219,10 @@ public class IsGameConsistentForGameEventAction implements Action<IsGameConsiste
     }
 
     public EventOutput failure(Dto actionDto) {
-        return new EventOutput(EventOutput.Result.FAILURE, actionDto.getSuppliedGameEvent(), actionDto.getSuppliedTurnEvent());
+        return new EventOutput(EventOutput.Result.FAILURE, actionDto.getSuppliedGameEvent(), actionDto.getSuppliedPlayEvent());
     }
     public EventOutput success(Dto actionDto) {
-        return new EventOutput(EventOutput.Result.FAILURE, actionDto.getSuppliedGameEvent(), actionDto.getSuppliedTurnEvent());
+        return new EventOutput(EventOutput.Result.FAILURE, actionDto.getSuppliedGameEvent(), actionDto.getSuppliedPlayEvent());
     }
 
     // @formatter:on
@@ -215,14 +238,14 @@ public class IsGameConsistentForGameEventAction implements Action<IsGameConsiste
         // @formatter:off
         String getErrorMessage();
         GameEvent getSuppliedGameEvent();
-        TurnEvent getSuppliedTurnEvent();
+        PlayEvent getSuppliedPlayEvent();
 
         // Getters
         List<Player> getQasinoGamePlayers();
         Visitor getQasinoVisitor();
         List<Game> getInitiatedGamesForVisitor();
         Game getQasinoGame();
-        Turn getActiveTurn();
+        GamingTable getActiveGamingTable();
         List<Card> getCardsInTheGameSorted();
         List<Result> getGameResults();
 

@@ -3,7 +3,7 @@ package cloud.qasino.games.response.view.enums;
 import cloud.qasino.games.database.entity.enums.card.PlayingCard;
 import cloud.qasino.games.database.entity.enums.game.gamestate.GameStateGroup;
 import cloud.qasino.games.pattern.statemachine.event.GameEvent;
-import cloud.qasino.games.pattern.statemachine.event.TurnEvent;
+import cloud.qasino.games.pattern.statemachine.event.PlayEvent;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -31,13 +31,13 @@ public class Params {
 
     // triggers for the Game
     public GameEvent suppliedGameEvent = GameEvent.ERROR;
-    public TurnEvent suppliedTurnEvent = TurnEvent.ERROR;
+    public PlayEvent suppliedPlayEvent = PlayEvent.ERROR;
     public GameStateGroup suppliedGameStateGroup = GameStateGroup.ERROR;
 
     // Triggers for playing a Game
     public List<PlayingCard> suppliedPlayingCards = Collections.singletonList(PlayingCard.getPlayingCardFromCardId("JR"));   // todo
 
     List<GameEvent> possibleGameEvents = new ArrayList<>();
-    List<TurnEvent> possibleTurnEvents = new ArrayList<>();
+    List<PlayEvent> possiblePlayEvents = new ArrayList<>();
 
 }

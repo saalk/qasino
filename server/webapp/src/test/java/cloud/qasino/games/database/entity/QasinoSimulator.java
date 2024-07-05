@@ -18,7 +18,7 @@ public abstract class QasinoSimulator {
     Game game;
     Player player;
     Player bot;
-    Turn turn;
+    GamingTable gamingTable;
     Result result;
 
     QasinoSimulator() {
@@ -42,7 +42,7 @@ public abstract class QasinoSimulator {
         bot = Player.buildDummyBot(game, Avatar.GOBLIN, AiLevel.AVERAGE);
 
         // first turn
-        turn = new Turn(game, player);
+        gamingTable = new GamingTable(game, player);
 
         // assume visitor wins 50
         result = new Result(player,visitor, game,game.getType(), 50,true);

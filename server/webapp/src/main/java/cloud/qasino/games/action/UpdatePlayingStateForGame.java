@@ -8,7 +8,7 @@ import cloud.qasino.games.database.repository.GameRepository;
 import cloud.qasino.games.database.security.Visitor;
 import cloud.qasino.games.pattern.statemachine.event.EventOutput;
 import cloud.qasino.games.pattern.statemachine.event.GameEvent;
-import cloud.qasino.games.pattern.statemachine.event.TurnEvent;
+import cloud.qasino.games.pattern.statemachine.event.PlayEvent;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -25,14 +25,14 @@ public class UpdatePlayingStateForGame implements Action<UpdatePlayingStateForGa
     @Override
     public EventOutput.Result perform(Dto actionDto) {
 
-        if (!(actionDto.getTurnPlayer().isHuman())) {
+        if (!(actionDto.getGamingTablePlayer().isHuman())) {
             if (actionDto.getQasinoGame().getState() != GameState.BOT_MOVE) {
                 actionDto.getQasinoGame().setState(GameState.BOT_MOVE);
                 actionDto.setQasinoGame(gameRepository.save(actionDto.getQasinoGame()));
             }
         }
-        if ((actionDto.getTurnPlayer().isHuman())) {
-            if (actionDto.getQasinoGame().getInitiator() == actionDto.getTurnPlayer().getPlayerId()) {
+        if ((actionDto.getGamingTablePlayer().isHuman())) {
+            if (actionDto.getQasinoGame().getInitiator() == actionDto.getGamingTablePlayer().getPlayerId()) {
                 if (actionDto.getQasinoGame().getState() != GameState.INITIATOR_MOVE) {
                     actionDto.getQasinoGame().setState(GameState.INITIATOR_MOVE);
                     actionDto.setQasinoGame(gameRepository.save(actionDto.getQasinoGame()));
@@ -66,13 +66,13 @@ public class UpdatePlayingStateForGame implements Action<UpdatePlayingStateForGa
         // @formatter:off
         String getErrorMessage();
         GameEvent getSuppliedGameEvent();
-        TurnEvent getSuppliedTurnEvent();
+        PlayEvent getSuppliedPlayEvent();
 
         // Getters
         Visitor getQasinoVisitor();
         Game getQasinoGame();
         List<Player> getQasinoGamePlayers();
-        Player getTurnPlayer();
+        Player getGamingTablePlayer();
 
         // Setter
         void setQasinoGame(Game game);

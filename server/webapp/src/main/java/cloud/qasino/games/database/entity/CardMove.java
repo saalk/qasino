@@ -38,8 +38,8 @@ import java.util.Objects;
 @Data
 @JsonIdentityInfo(generator = JSOGGenerator.class, property = "cardMoveId")
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
-@Table(name = "cardmove", indexes =
-        {@Index(name = "cardmove_turn_index", columnList = "turn_id", unique = false),
+@Table(name = "cardmove", indexes = {
+//        @Index(name = "cardmove_gamingtable_index", columnList = "gamingtable_id", unique = false),
                 // not needed : @Index(name = "cardmove_index", columnList = "cardmove_id", unique = true)
         }
 )
@@ -56,11 +56,11 @@ public class CardMove {
 
     // Foreign keys
     @JsonIgnore
-    // many [CardMove] are part of one [Turn]
+    // many [CardMove] are part of one [GamingTable]
     @ManyToOne(cascade = CascadeType.DETACH)
-    @JoinColumn(name = "turn_id", referencedColumnName = "turn_id", foreignKey = @ForeignKey
-            (name = "fk_turn_id"), nullable = false)
-    private Turn turn;
+    @JoinColumn(name = "gamingtable_id", referencedColumnName = "gamingtable_id", foreignKey = @ForeignKey
+            (name = "fk_gamingtable_id"), nullable = false)
+    private GamingTable gamingTable;
     // one [CardMove] can be part of one [Player]
     @Column(name = "player_id")
     private long playerId;
@@ -98,9 +98,9 @@ public class CardMove {
         setEndFiches(0);
     }
 
-    public CardMove(Turn turn, Player player, long cardId, Move move, Location location, String details) {
+    public CardMove(GamingTable gamingTable, Player player, long cardId, Move move, Location location, String details) {
         this();
-        this.turn = turn;
+        this.gamingTable = gamingTable;
         this.playerId = player.getPlayerId();
         this.cardId = cardId;
 
@@ -118,12 +118,12 @@ public class CardMove {
         this.created = result.substring(0, 20);
     }
 
-    public void setSequence(int round, int seat, int turn) {
+    public void setSequence(int round, int seat, int gamingTable) {
         // xxyyzz format
         this.sequence =
             String.format("%02d", round) +
             String.format("%02d", seat) +
-            String.format("%02d", turn);
+            String.format("%02d", gamingTable);
     }
     public int getRoundFromSequence() {
         return Integer.parseInt(this.sequence.substring(0,2));
@@ -152,7 +152,7 @@ public class CardMove {
     public String toString() {
         return "(" +
                 "cardMoveId=" + this.cardMoveId +
-                ", turnId=" + this.turn.getTurnId() +
+                ", gamingTableId=" + this.gamingTable.getGamingTableId() +
                 ", playerId=" + this.playerId +
                 ", cardId=" + this.cardId +
                 ", move=" + this.move.getLabel() +

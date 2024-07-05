@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.Map;
 
 @Getter
-public enum TurnEvent implements Event {
+public enum PlayEvent implements Event {
 
     // highlow
     HIGHER("higher"),
@@ -33,47 +33,47 @@ public enum TurnEvent implements Event {
     END_GAME("end_game"),
     ; // system events
 
-    public static final List<TurnEvent> blackJackPossibleHumanTurn = Arrays.asList(DEAL, SPLIT);
-    public static final List<TurnEvent> blackJackPossibleBotTurn = List.of(BOT);
-    public static final List<TurnEvent> highLowPossibleHumanTurns = Arrays.asList(HIGHER, LOWER, PASS);
-    public static final List<TurnEvent> highLowPossibleBotTurns = List.of(BOT);
-    public static final List<TurnEvent> systemTurn = Arrays.asList(DETERMINE_WINNER, END_GAME);
+    public static final List<PlayEvent> blackJackPossibleHumanGamingTable = Arrays.asList(DEAL, SPLIT);
+    public static final List<PlayEvent> blackJackPossibleBotGamingTable = List.of(BOT);
+    public static final List<PlayEvent> highLowPossibleHumanGamingTables = Arrays.asList(HIGHER, LOWER, PASS);
+    public static final List<PlayEvent> highLowPossibleBotGamingTables = List.of(BOT);
+    public static final List<PlayEvent> systemGamingTable = Arrays.asList(DETERMINE_WINNER, END_GAME);
 
-    public static final Map<String, TurnEvent> lookup
+    public static final Map<String, PlayEvent> lookup
             = new HashMap<>();
 
     static {
-        for (TurnEvent turnEvent : EnumSet.allOf(TurnEvent.class))
-            lookup.put(turnEvent.getLabel(), turnEvent);
+        for (PlayEvent playEvent : EnumSet.allOf(PlayEvent.class))
+            lookup.put(playEvent.getLabel(), playEvent);
     }
 
-    public static TurnEvent fromLabel(String inputLabel) {
+    public static PlayEvent fromLabel(String inputLabel) {
         return lookup.get(inputLabel.toLowerCase());
     }
 
     @Transient
     private String label;
 
-    TurnEvent() {
+    PlayEvent() {
         this.label = "error";
     }
 
-    TurnEvent(String label) {
+    PlayEvent(String label) {
         this();
         this.label = label;
     }
 
-    public static TurnEvent fromLabel(char character) {
+    public static PlayEvent fromLabel(char character) {
         return fromLabel(Character.toString(character));
     }
 
-    public static TurnEvent fromLabelWithDefault(String label) {
-        TurnEvent turnEvent = fromLabel(label);
-        if (turnEvent == null) return TurnEvent.ERROR;
-        return turnEvent;
+    public static PlayEvent fromLabelWithDefault(String label) {
+        PlayEvent playEvent = fromLabel(label);
+        if (playEvent == null) return PlayEvent.ERROR;
+        return playEvent;
     }
 
-    public static TurnEvent fromLabelWithDefault(char character) {
+    public static PlayEvent fromLabelWithDefault(char character) {
         return fromLabelWithDefault(Character.toString(character));
     }
 }

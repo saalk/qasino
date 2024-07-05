@@ -46,7 +46,7 @@ public interface GameMapper {
 
     @Named("isActivatePlayerInitiator")
     default boolean activatePlayerInitiator(Game game) {
-        return game.getInitiator() == game.getTurn().getActivePlayer().getPlayerId();
+        return game.getInitiator() == game.getGamingTable().getActivePlayer().getPlayerId();
     }
 
     @Named("anteToWin")

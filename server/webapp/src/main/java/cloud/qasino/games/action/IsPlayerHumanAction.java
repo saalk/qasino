@@ -6,7 +6,7 @@ import cloud.qasino.games.database.entity.Player;
 import cloud.qasino.games.database.repository.GameRepository;
 import cloud.qasino.games.pattern.statemachine.event.EventOutput;
 import cloud.qasino.games.pattern.statemachine.event.GameEvent;
-import cloud.qasino.games.pattern.statemachine.event.TurnEvent;
+import cloud.qasino.games.pattern.statemachine.event.PlayEvent;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
@@ -22,7 +22,7 @@ public class IsPlayerHumanAction implements Action<IsPlayerHumanAction.Dto, Even
     @Override
     public EventOutput.Result perform(Dto actionDto) {
 
-        if (actionDto.getTurnPlayer().isHuman()) {
+        if (actionDto.getGamingTablePlayer().isHuman()) {
             return EventOutput.Result.SUCCESS;
         }
         return EventOutput.Result.FAILURE;
@@ -39,10 +39,10 @@ public class IsPlayerHumanAction implements Action<IsPlayerHumanAction.Dto, Even
         // @formatter:off
         String getErrorMessage();
         GameEvent getSuppliedGameEvent();
-        TurnEvent getSuppliedTurnEvent();
+        PlayEvent getSuppliedPlayEvent();
 
         // Getters
-        Player getTurnPlayer();
+        Player getGamingTablePlayer();
         Game getQasinoGame();
         // Setters
         void setQasinoGame(Game game);

@@ -22,8 +22,8 @@ public enum QasinoEvent implements Event {
             = new HashMap<>();
 
     static {
-        for (QasinoEvent turnEvent : EnumSet.allOf(QasinoEvent.class))
-            lookup.put(turnEvent.getLabel(), turnEvent);
+        for (QasinoEvent playEvent : EnumSet.allOf(QasinoEvent.class))
+            lookup.put(playEvent.getLabel(), playEvent);
     }
 
     public static QasinoEvent fromLabel(String inputLabel) {

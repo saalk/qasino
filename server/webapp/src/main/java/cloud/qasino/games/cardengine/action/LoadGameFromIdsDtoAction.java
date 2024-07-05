@@ -16,7 +16,7 @@ public class LoadGameFromIdsDtoAction extends ActionDto<EventOutput.Result> {
         boolean isGameFound = refreshOrFindLatestGame();
         if (!isGameFound) {
             // TODO make 404
-//          return new EventOutput(EventOutput.Result.FAILURE, actionDto.getIds().getSuppliedGameEvent(), actionDto.getIds().getSuppliedTurnEvent());
+//          return new EventOutput(EventOutput.Result.FAILURE, actionDto.getIds().getSuppliedGameEvent(), actionDto.getIds().getSuppliedPlayEvent());
             throw new MyNPException("69 getVisitorSupplied", "visitorId [" + super.getIds().getSuppliedVisitorId() + "]");
         }
         return EventOutput.Result.SUCCESS;

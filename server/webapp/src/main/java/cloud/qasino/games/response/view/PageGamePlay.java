@@ -18,7 +18,7 @@ import java.util.List;
 public class PageGamePlay {
 
     // buttons
-    // 1 new Turn
+    // 1 new GamingTable
     // - input is
     //      higher/lower/pass for human
     //      next for bot

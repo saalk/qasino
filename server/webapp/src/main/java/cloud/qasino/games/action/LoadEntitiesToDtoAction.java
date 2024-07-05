@@ -7,19 +7,19 @@ import cloud.qasino.games.database.entity.Game;
 import cloud.qasino.games.database.entity.League;
 import cloud.qasino.games.database.entity.Player;
 import cloud.qasino.games.database.entity.Result;
-import cloud.qasino.games.database.entity.Turn;
+import cloud.qasino.games.database.entity.GamingTable;
 import cloud.qasino.games.database.security.Visitor;
 import cloud.qasino.games.database.repository.CardRepository;
 import cloud.qasino.games.database.repository.GameRepository;
 import cloud.qasino.games.database.repository.LeagueRepository;
 import cloud.qasino.games.database.repository.PlayerRepository;
 import cloud.qasino.games.database.repository.ResultsRepository;
-import cloud.qasino.games.database.repository.TurnRepository;
+import cloud.qasino.games.database.repository.PlayingRepository;
 import cloud.qasino.games.database.security.VisitorRepository;
 import cloud.qasino.games.exception.MyNPException;
 import cloud.qasino.games.pattern.statemachine.event.EventOutput;
 import cloud.qasino.games.pattern.statemachine.event.GameEvent;
-import cloud.qasino.games.pattern.statemachine.event.TurnEvent;
+import cloud.qasino.games.pattern.statemachine.event.PlayEvent;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -34,17 +34,17 @@ import java.util.Optional;
 /**
  * @param actionDto Validate supplied ids and store objects in Dto for
  * 1) getSuppliedVisitor: Visitor
- * 2) getSuppliedGame: QasinoGame, TurnPlayer, NextTurnPlayer, QasinoGamePlayers, CardsInTheGameSorted
- * 3) getSuppliedTurnPlayer: TurnPlayer (you might be invited to a Game)
+ * 2) getSuppliedGame: QasinoGame, GamingTablePlayer, NextGamingTablePlayer, QasinoGamePlayers, CardsInTheGameSorted
+ * 3) getSuppliedGamingTablePlayer: GamingTablePlayer (you might be invited to a Game)
  * 4) getSuppliedLeague: League
  *
  * Business rules:
  * BR1) Visitor: there should always be a valid Visitor supplied - except during signon !!
  * BR2) Game: if there is no Game supplied automatically find the last Game the Visitor initiated, if any
- * if there is a Game (with or without ActiveTurn) always try to find the:
- * BR3) - ActiveTurn + TurnPlayer: if there is none supplied use Player with seat 1
+ * if there is a Game (with or without ActiveGamingTable) always try to find the:
+ * BR3) - ActiveGamingTable + GamingTablePlayer: if there is none supplied use Player with seat 1
  * BR4) - list of QasinoGamePlayers and list of CardsInTheGameSorted
- * BR5) - NextTurnPlayer: find Player with seat after TurnPlayer - can be same as TurnPlayer
+ * BR5) - NextGamingTablePlayer: find Player with seat after GamingTablePlayer - can be same as GamingTablePlayer
  * BR6) - League for the Game
  * BR7) todo GameInvitations pending, playing, finished
  *
@@ -61,7 +61,7 @@ public class LoadEntitiesToDtoAction implements Action<LoadEntitiesToDtoAction.D
     @Resource
     CardRepository cardRepository;
     @Resource
-    TurnRepository turnRepository;
+    PlayingRepository playingRepository;
     @Resource
     LeagueRepository leagueRepository;
     @Resource
@@ -69,7 +69,7 @@ public class LoadEntitiesToDtoAction implements Action<LoadEntitiesToDtoAction.D
 
     long visitorId;
     long gameId;
-    long turnPlayerId;
+    long gamingTablePlayerId;
     long invitedVisitorId;
     long invitedPlayerId;
     long acceptedPlayerId;
@@ -110,19 +110,19 @@ public class LoadEntitiesToDtoAction implements Action<LoadEntitiesToDtoAction.D
 //                setNotFoundErrorMessage(actionDto, "gameId", String.valueOf(gameId), "Game");
 //                return EventOutput.Result.FAILURE;
             }
-//            actionDto.setSuppliedTurnPlayerId(-1);
+//            actionDto.setSuppliedGamingTablePlayerId(-1);
         }
 
-        turnPlayerId = actionDto.getSuppliedTurnPlayerId();
-//        log.warn("Errors turnPlayerId!!: {}", actionDto.getSuppliedTurnPlayerId());
+        gamingTablePlayerId = actionDto.getSuppliedGamingTablePlayerId();
+//        log.warn("Errors gamingTablePlayerId!!: {}", actionDto.getSuppliedGamingTablePlayerId());
 
-        if (turnPlayerId > 0) { // BR5
-            getTurnPlayerSupplied(actionDto, turnPlayerId);
-            if (actionDto.getTurnPlayer() == null) {
+        if (gamingTablePlayerId > 0) { // BR5
+            getGamingTablePlayerSupplied(actionDto, gamingTablePlayerId);
+            if (actionDto.getGamingTablePlayer() == null) {
 
-                throw new MyNPException("127 getTurnPlayerSupplied","turnPlayerId [" + turnPlayerId + "]");
+                throw new MyNPException("127 getGamingTablePlayerSupplied","turnPlayerId [" + gamingTablePlayerId + "]");
 
-//                setNotFoundErrorMessage(actionDto, "turnPlayerId", String.valueOf(turnPlayerId), "Turn");
+//                setNotFoundErrorMessage(actionDto, "turnPlayerId", String.valueOf(gamingTablePlayerId), "GamingTable");
 //                return EventOutput.Result.FAILURE;
             }
         }
@@ -232,14 +232,14 @@ public class LoadEntitiesToDtoAction implements Action<LoadEntitiesToDtoAction.D
             actionDto.getQasinoGame().setPlayers(actionDto.getQasinoGamePlayers());
             // when in validate there are no cards yet so this results in null
             actionDto.setCardsInTheGameSorted(cardRepository.findByGameOrderBySequenceAsc(actionDto.getQasinoGame()));
-            actionDto.setActiveTurn(foundGame.get().getTurn());
-            if (actionDto.getActiveTurn() != null) {
-                actionDto.setSuppliedTurnPlayerId(actionDto.getActiveTurn().getActivePlayer().getPlayerId());
+            actionDto.setActiveGamingTable(foundGame.get().getGamingTable());
+            if (actionDto.getActiveGamingTable() != null) {
+                actionDto.setSuppliedGamingTablePlayerId(actionDto.getActiveGamingTable().getActivePlayer().getPlayerId());
 
-                actionDto.setAllCardMovesForTheGame(foundGame.get().getTurn().getCardMoves());
+                actionDto.setAllCardMovesForTheGame(foundGame.get().getGamingTable().getCardMoves());
             } else {
                 // TODO check if this is needed
-//                actionDto.setSuppliedTurnPlayerId(
+//                actionDto.setSuppliedGamingTablePlayerId(
 //                        actionDto.getQasinoGamePlayers()
 //                                .stream()
 //                                .filter(p -> p.getSeat() == 1)
@@ -253,12 +253,12 @@ public class LoadEntitiesToDtoAction implements Action<LoadEntitiesToDtoAction.D
 //            return EventOutput.Result.FAILURE;
         }
     }
-    private void getTurnPlayerSupplied(Dto actionDto, long id) {
+    private void getGamingTablePlayerSupplied(Dto actionDto, long id) {
         Optional<Player> foundPlayer = playerRepository.findById(id);
 
         if (!foundPlayer.isEmpty()) {
 //            gameId = (foundPlayer.get().getGame().getGameId());
-            actionDto.setTurnPlayer(foundPlayer.get());
+            actionDto.setGamingTablePlayer(foundPlayer.get());
             // find next player
             int nextSeat = foundPlayer.get().getSeat() + 1;
             if (nextSeat > actionDto.getQasinoGamePlayers().size()) nextSeat = 1;
@@ -276,12 +276,12 @@ public class LoadEntitiesToDtoAction implements Action<LoadEntitiesToDtoAction.D
                 }
             } else {
                 // this player is also next player
-                actionDto.setNextPlayer(actionDto.getTurnPlayer());
+                actionDto.setNextPlayer(actionDto.getGamingTablePlayer());
             }
 
         } else {
-            throw new MyNPException("289 getTurnPlayerSupplied","id [" + id + "]");
-//            setNotFoundErrorMessage(actionDto, "turnPlayerId", String.valueOf(id), "TurnPlayer");
+            throw new MyNPException("289 getGamingTablePlayerSupplied","id [" + id + "]");
+//            setNotFoundErrorMessage(actionDto, "turnPlayerId", String.valueOf(id), "GamingTablePlayer");
 //            return EventOutput.Result.FAILURE;
         }
     }
@@ -305,10 +305,10 @@ public class LoadEntitiesToDtoAction implements Action<LoadEntitiesToDtoAction.D
     }
 
     public EventOutput failure(Dto actionDto) {
-        return new EventOutput(EventOutput.Result.FAILURE, actionDto.getSuppliedGameEvent(), actionDto.getSuppliedTurnEvent());
+        return new EventOutput(EventOutput.Result.FAILURE, actionDto.getSuppliedGameEvent(), actionDto.getSuppliedPlayEvent());
     }
     public EventOutput success(Dto actionDto) {
-        return new EventOutput(EventOutput.Result.FAILURE, actionDto.getSuppliedGameEvent(), actionDto.getSuppliedTurnEvent());
+        return new EventOutput(EventOutput.Result.FAILURE, actionDto.getSuppliedGameEvent(), actionDto.getSuppliedPlayEvent());
     }
 
     private void setNotFoundErrorMessage(Dto actionDto, String id, String value, String entity) {
@@ -324,7 +324,7 @@ public class LoadEntitiesToDtoAction implements Action<LoadEntitiesToDtoAction.D
         // @formatter:off
         String getErrorMessage();
         GameEvent getSuppliedGameEvent();
-        TurnEvent getSuppliedTurnEvent();
+        PlayEvent getSuppliedPlayEvent();
 
         // Getters
         int getSuppliedPage();
@@ -337,8 +337,8 @@ public class LoadEntitiesToDtoAction implements Action<LoadEntitiesToDtoAction.D
         void setSuppliedLeagueId(long leagueId);
         long getInvitedPlayerId();
         long getAcceptedPlayerId();
-        long getSuppliedTurnPlayerId();
-        void setSuppliedTurnPlayerId(long turnPlayerId);
+        long getSuppliedGamingTablePlayerId();
+        void setSuppliedGamingTablePlayerId(long gamingTablePlayerId);
 
         List<League> getLeaguesForVisitor();
         List<Player> getQasinoGamePlayers();
@@ -346,8 +346,8 @@ public class LoadEntitiesToDtoAction implements Action<LoadEntitiesToDtoAction.D
         Visitor getQasinoVisitor();
         Game getQasinoGame();
         League getQasinoGameLeague();
-        Turn getActiveTurn();
-        Player getTurnPlayer();
+        GamingTable getActiveGamingTable();
+        Player getGamingTablePlayer();
 
         // Setters
         void setQasinoVisitor(Visitor visitor);
@@ -356,7 +356,7 @@ public class LoadEntitiesToDtoAction implements Action<LoadEntitiesToDtoAction.D
         void setInvitedPlayer(Player player);
         void setAcceptedPlayer(Player player);
 
-        void setTurnPlayer(Player player);
+        void setGamingTablePlayer(Player player);
         void setNextPlayer(Player player);
 
         void setInitiatedGamesForVisitor(List<Game> games);
@@ -366,7 +366,7 @@ public class LoadEntitiesToDtoAction implements Action<LoadEntitiesToDtoAction.D
 
         void setQasinoGame(Game game);
         void setQasinoGamePlayers(List<Player> players);
-        void setActiveTurn(Turn turn);
+        void setActiveGamingTable(GamingTable gamingTable);
         void setGameResults(List<Result> results);
 
         void setCardsInTheGameSorted(List<Card> cards);
