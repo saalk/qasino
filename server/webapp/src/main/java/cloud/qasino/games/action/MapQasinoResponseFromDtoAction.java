@@ -5,7 +5,7 @@ import cloud.qasino.games.database.entity.Game;
 import cloud.qasino.games.database.entity.League;
 import cloud.qasino.games.database.entity.Player;
 import cloud.qasino.games.database.entity.Result;
-import cloud.qasino.games.database.entity.GamingTable;
+import cloud.qasino.games.database.entity.Playing;
 import cloud.qasino.games.database.entity.enums.card.PlayingCard;
 import cloud.qasino.games.database.entity.enums.game.GameState;
 import cloud.qasino.games.database.entity.enums.game.Style;
@@ -21,7 +21,7 @@ import cloud.qasino.games.database.entity.enums.player.AiLevel;
 import cloud.qasino.games.database.entity.enums.player.Avatar;
 import cloud.qasino.games.database.security.Visitor;
 import cloud.qasino.games.response.view.NavigationBarItem;
-import cloud.qasino.games.dto.InvitationsDTO;
+import cloud.qasino.games.dto.InvitationsDto;
 import cloud.qasino.games.response.view.PageGamePlay;
 import cloud.qasino.games.response.view.PageGameSetup;
 import cloud.qasino.games.response.view.PageLeague;
@@ -54,7 +54,7 @@ public class MapQasinoResponseFromDtoAction implements Action<MapQasinoResponseF
         PageVisitor pageVisitor = new PageVisitor();
         PageGameSetup pageGameSetup = new PageGameSetup();
         PageGamePlay pageGamePlay = new PageGamePlay();
-        InvitationsDTO pageGamesOverview = new InvitationsDTO();
+        InvitationsDto pageGamesOverview = new InvitationsDto();
         PageLeague pageLeague = new PageLeague();
 
         // special for gameplay
@@ -232,7 +232,7 @@ public class MapQasinoResponseFromDtoAction implements Action<MapQasinoResponseF
         params.setLid(setId(actionDto.getSuppliedLeagueId()));
         params.setSuppliedGameEvent(actionDto.getSuppliedGameEvent());
         params.setSuppliedPlayEvent(actionDto.getSuppliedPlayEvent());
-        params.setTpid(setId(actionDto.getSuppliedGamingTablePlayerId()));
+        params.setTpid(setId(actionDto.getSuppliedPlayingPlayerId()));
         params.setSuppliedPlayingCards(actionDto.getSuppliedCards());
         params.setPossibleGameEvents(actionDto.getPossibleGameEvents());
         params.setPossiblePlayEvents(actionDto.getPossiblePlayEvents());
@@ -291,12 +291,12 @@ public class MapQasinoResponseFromDtoAction implements Action<MapQasinoResponseF
         // set the nav bar
         navigationBarItem.setTitle("Play[" +
                 Integer.toHexString((int) actionDto.getQasinoGame().getGameId())+"]");
-        // TODO FIXXXX .NullPointerException: Cannot invoke "cloud.qasino.games.database.entity.GamingTable.getCurrentRoundNumber()" because the return value of "cloud.qasino.games.action.MapQasinoResponseFromDto$Dto.getActiveGamingTable()" is null
-        if (actionDto.getActiveGamingTable() != null) { // games is still being validated
+        // TODO FIXXXX .NullPointerException: Cannot invoke "cloud.qasino.games.database.entity.Playing.getCurrentRoundNumber()" because the return value of "cloud.qasino.games.action.MapQasinoResponseFromDto$Dto.getActivePlaying()" is null
+        if (actionDto.getActivePlaying() != null) { // games is still being validated
             navigationBarItem.setStat(
-                    "[" + actionDto.getActiveGamingTable().getCurrentRoundNumber() +
-                            "/" + actionDto.getActiveGamingTable().getCurrentSeatNumber() +
-                            "/" + actionDto.getActiveGamingTable().getCurrentMoveNumber() +
+                    "[" + actionDto.getActivePlaying().getCurrentRoundNumber() +
+                            "/" + actionDto.getActivePlaying().getCurrentSeatNumber() +
+                            "/" + actionDto.getActivePlaying().getCurrentMoveNumber() +
                             "] round/seat/move");
         }
         // set the content
@@ -311,7 +311,7 @@ public class MapQasinoResponseFromDtoAction implements Action<MapQasinoResponseF
         // TODO results dont show!!
         pageGamePlay.setGameResults(actionDto.getGameResults());
     }
-    private void mapGameInvitationsPage(Dto actionDto, NavigationBarItem navigationBarItem, InvitationsDTO pageGamesOverview) {
+    private void mapGameInvitationsPage(Dto actionDto, NavigationBarItem navigationBarItem, InvitationsDto pageGamesOverview) {
         // set the nav bar
         navigationBarItem.setTitle("Invites[]");
         navigationBarItem.setStat("calculating..");
@@ -370,12 +370,12 @@ public class MapQasinoResponseFromDtoAction implements Action<MapQasinoResponseF
         List<Game> getInvitedGamesForVisitor();
 
         // game setup and play
-        long getSuppliedGamingTablePlayerId();
+        long getSuppliedPlayingPlayerId();
         List<PlayingCard> getSuppliedCards();
         Move getSuppliedMove();
         long getSuppliedGameId();
         Game getQasinoGame();
-        GamingTable getActiveGamingTable();
+        Playing getActivePlaying();
         SectionTable getTable();
         List<Player> getQasinoGamePlayers();
         List<Result> getGameResults();

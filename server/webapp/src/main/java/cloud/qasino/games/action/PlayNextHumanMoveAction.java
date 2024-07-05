@@ -3,7 +3,7 @@ package cloud.qasino.games.action;
 import cloud.qasino.games.action.interfaces.Action;
 import cloud.qasino.games.database.entity.Game;
 import cloud.qasino.games.database.entity.Player;
-import cloud.qasino.games.database.entity.GamingTable;
+import cloud.qasino.games.database.entity.Playing;
 import cloud.qasino.games.database.entity.enums.card.Face;
 import cloud.qasino.games.database.entity.enums.card.Location;
 import cloud.qasino.games.database.entity.enums.game.Style;
@@ -24,7 +24,7 @@ import static cloud.qasino.games.database.service.PlayingService.mapPlayEventToM
 
 @Slf4j
 @Component
-public class PlayNextHumanGamingTableAction implements Action<PlayNextHumanGamingTableAction.Dto, EventOutput.Result> {
+public class PlayNextHumanMoveAction implements Action<PlayNextHumanMoveAction.Dto, EventOutput.Result> {
 
     @Autowired
     PlayingService playingService;
@@ -37,7 +37,7 @@ public class PlayNextHumanGamingTableAction implements Action<PlayNextHumanGamin
     public EventOutput.Result perform(Dto actionDto) {
 
         if (!actionDto.getQasinoGame().getType().equals(Type.HIGHLOW)) {
-            throw new MyNPException("PlayNextHumanGamingTableAction", "error [" + actionDto.getQasinoGame().getType() + "]");
+            throw new MyNPException("PlayNextHumanMoveAction", "error [" + actionDto.getQasinoGame().getType() + "]");
         }
 
         // Next move in HIGHLOW = a given move from location STOCK to location HAND with face UP
@@ -51,9 +51,9 @@ public class PlayNextHumanGamingTableAction implements Action<PlayNextHumanGamin
         Game game = actionDto.getQasinoGame();
         Player nextPlayer = gameServiceOld.findNextPlayerForGame(game);
         int totalSeats = game.getPlayers().size();
-        GamingTable currentGamingTable = game.getGamingTable();
-        int currentSeat = currentGamingTable.getCurrentSeatNumber();
-        int currentRound = currentGamingTable.getCurrentRoundNumber();
+        Playing playing = game.getPlaying();
+        int currentSeat = playing.getCurrentSeatNumber();
+        int currentRound = playing.getCurrentRoundNumber();
 
         // TODO DetermineNextRoundOrEndGame -> move to separate action
         if (actionDto.getSuppliedPlayEvent() == PlayEvent.PASS) {
@@ -62,17 +62,17 @@ public class PlayNextHumanGamingTableAction implements Action<PlayNextHumanGamin
                     actionDto.setSuppliedPlayEvent(PlayEvent.END_GAME);
                     return EventOutput.Result.SUCCESS;
                 }
-                currentGamingTable.setCurrentRoundNumber(currentRound + 1);
+                playing.setCurrentRoundNumber(currentRound + 1);
             }
         }
 
-        // Update GAMINGTABLE - could be new to new Player
-        playingService.updateCurrentGamingTable(nextMove, currentGamingTable, nextPlayer);
-        GamingTable newGamingTable = playingRepository.save(currentGamingTable);
-        game.setGamingTable(newGamingTable);
+        // Update PLAYING - could be new to new Player
+        playingService.updatePlaying(nextMove, playing, nextPlayer);
+        Playing newPlaying = playingRepository.save(playing);
+        game.setPlaying(newPlaying);
 
         // Deal CARDs (and update CARDMOVE)
-        playingService.dealCardsToActivePlayer(
+        playingService.dealCardsToPlayer(
                 game,
                 nextMove,
                 fromLocation,

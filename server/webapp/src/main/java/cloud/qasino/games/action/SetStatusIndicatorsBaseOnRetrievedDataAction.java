@@ -57,12 +57,12 @@ public class SetStatusIndicatorsBaseOnRetrievedDataAction implements Action<SetS
         Visitor getQasinoVisitor();
         Player getInvitedPlayer();
         Player getAcceptedPlayer();
-        Player getGamingTablePlayer();
+        Player getPlayingPlayer();
 
         Game getQasinoGame();
         League getQasinoGameLeague();
         List<Player> getQasinoGamePlayers();
-        GamingTable getActiveGamingTable();
+        Playing getActivePlaying();
         List<Card> getCardsInTheGameSorted();
         List<CardMove> getAllCardMovesForTheGame();
 

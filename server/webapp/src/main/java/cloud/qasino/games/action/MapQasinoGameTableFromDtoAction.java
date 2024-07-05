@@ -5,7 +5,7 @@ import cloud.qasino.games.database.entity.Card;
 import cloud.qasino.games.database.entity.CardMove;
 import cloud.qasino.games.database.entity.Game;
 import cloud.qasino.games.database.entity.Player;
-import cloud.qasino.games.database.entity.GamingTable;
+import cloud.qasino.games.database.entity.Playing;
 import cloud.qasino.games.database.entity.enums.player.PlayerType;
 import cloud.qasino.games.database.security.Visitor;
 import cloud.qasino.games.pattern.statemachine.event.EventOutput;
@@ -30,14 +30,14 @@ public class MapQasinoGameTableFromDtoAction implements Action<MapQasinoGameTabl
 
         SectionTable table = new SectionTable();
 
-        if ((actionDto.getActiveGamingTable() == null)) {
+        if ((actionDto.getActivePlaying() == null)) {
             if ((actionDto.getQasinoGame() != null)) {
-                actionDto.setActiveGamingTable(actionDto.getQasinoGame().getGamingTable());
-                if ((actionDto.getActiveGamingTable() == null)) {
+                actionDto.setActivePlaying(actionDto.getQasinoGame().getPlaying());
+                if ((actionDto.getActivePlaying() == null)) {
                     // when game is quit before started
                     table.setCountStockAndTotal(
                             "[-/-] stock/total");
-                    table.setCurrentGamingTable(null);
+                    table.setPlaying(null);
                     table.setSeats(null);
                     return EventOutput.Result.SUCCESS;
                 }
@@ -45,13 +45,13 @@ public class MapQasinoGameTableFromDtoAction implements Action<MapQasinoGameTabl
                 // when game is quit before started
                 table.setCountStockAndTotal(
                         "[-/-] stock/total");
-                table.setCurrentGamingTable(null);
+                table.setPlaying(null);
                 table.setSeats(null);
                 return EventOutput.Result.SUCCESS;
             }
         }
 
-        table.setCurrentGamingTable(actionDto.getActiveGamingTable());
+        table.setPlaying(actionDto.getActivePlaying());
         List<Card> stockNotInHand =
                 actionDto.getCardsInTheGameSorted()
                         .stream()
@@ -77,7 +77,7 @@ public class MapQasinoGameTableFromDtoAction implements Action<MapQasinoGameTabl
             SectionSeat seat = new SectionSeat();
             // seat stats
             seat.setSeatId(player.getSeat());
-            seat.setPlaying(player.getPlayerId() == actionDto.getActiveGamingTable().getActivePlayer().getPlayerId());
+            seat.setPlaying(player.getPlayerId() == actionDto.getActivePlaying().getPlayer().getPlayerId());
             // todo which one to choose
 //            seat.setSeatPlayerTheInitiator(player.getPlayerId() ==
 //                    actionDto.getQasinoGame().getInitiator());
@@ -96,9 +96,9 @@ public class MapQasinoGameTableFromDtoAction implements Action<MapQasinoGameTabl
             List<Card> hand = player.getCards();
             List<String> handStrings =
                     hand.stream().map(Card::getRankSuit).collect(Collectors.toList());
-            seat.setStringCardsInHand("[" + String.join("],[", handStrings) + "]");
+            seat.setCardsInHand("[" + String.join("],[", handStrings) + "]");
 
-            List<CardMove> cardMoves = actionDto.getActiveGamingTable().getCardMoves().stream()
+            List<CardMove> cardMoves = actionDto.getActivePlaying().getCardMoves().stream()
                     .filter(p -> p.getPlayerId() == player.getPlayerId())
                     .toList();
 
@@ -134,7 +134,7 @@ public class MapQasinoGameTableFromDtoAction implements Action<MapQasinoGameTabl
                     }
                 }
             }
-            seat.setCardsInHandPerGamingTable(handInRounds);
+            seat.setCardsInHandPerPlaying(handInRounds);
 
 //          private Map<String, String> handInRound;
             // when player is human
@@ -167,13 +167,13 @@ public class MapQasinoGameTableFromDtoAction implements Action<MapQasinoGameTabl
         Game getQasinoGame();
         Visitor getQasinoVisitor();
         List<Player> getQasinoGamePlayers();
-        Player getGamingTablePlayer();
-        GamingTable getActiveGamingTable();
+        Player getPlayingPlayer();
+        Playing getActivePlaying();
         List<Card> getCardsInTheGameSorted();
 
         // Setters
-        void setActiveGamingTable(GamingTable gamingTable);
-        void setGamingTablePlayer(Player gamingTablePlayer);
+        void setActivePlaying(Playing playing);
+        void setPlayingPlayer(Player playingPlayer);
         void setTable(SectionTable table);
 
         // error setters

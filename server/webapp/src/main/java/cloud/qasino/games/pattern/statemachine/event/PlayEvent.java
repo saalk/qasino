@@ -33,11 +33,11 @@ public enum PlayEvent implements Event {
     END_GAME("end_game"),
     ; // system events
 
-    public static final List<PlayEvent> blackJackPossibleHumanGamingTable = Arrays.asList(DEAL, SPLIT);
-    public static final List<PlayEvent> blackJackPossibleBotGamingTable = List.of(BOT);
-    public static final List<PlayEvent> highLowPossibleHumanGamingTables = Arrays.asList(HIGHER, LOWER, PASS);
-    public static final List<PlayEvent> highLowPossibleBotGamingTables = List.of(BOT);
-    public static final List<PlayEvent> systemGamingTable = Arrays.asList(DETERMINE_WINNER, END_GAME);
+    public static final List<PlayEvent> blackJackPossibleHumanPlaying = Arrays.asList(DEAL, SPLIT);
+    public static final List<PlayEvent> blackJackPossibleBotPlaying = List.of(BOT);
+    public static final List<PlayEvent> highLowPossibleHumanPlayings = Arrays.asList(HIGHER, LOWER, PASS);
+    public static final List<PlayEvent> highLowPossibleBotPlayings = List.of(BOT);
+    public static final List<PlayEvent> systemPlaying = Arrays.asList(DETERMINE_WINNER, END_GAME);
 
     public static final Map<String, PlayEvent> lookup
             = new HashMap<>();

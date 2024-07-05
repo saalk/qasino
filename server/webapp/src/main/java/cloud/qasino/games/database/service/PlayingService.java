@@ -3,8 +3,8 @@ package cloud.qasino.games.database.service;
 import cloud.qasino.games.database.entity.Card;
 import cloud.qasino.games.database.entity.CardMove;
 import cloud.qasino.games.database.entity.Game;
-import cloud.qasino.games.database.entity.GamingTable;
 import cloud.qasino.games.database.entity.Player;
+import cloud.qasino.games.database.entity.Playing;
 import cloud.qasino.games.database.entity.enums.card.Face;
 import cloud.qasino.games.database.entity.enums.card.Location;
 import cloud.qasino.games.database.entity.enums.card.PlayingCard;
@@ -34,51 +34,51 @@ public class PlayingService {
     @Autowired private CardRepository cardRepository;
 
     // finds
-    public GamingTable findByGameId(ParamsDto paramsDto) {
-        List<GamingTable> gamingTables = playingRepository.findByGameId(paramsDto.getSuppliedGameId());
-        if (gamingTables.isEmpty()) {
+    public Playing findByGameId(ParamsDto paramsDto) {
+        List<Playing> playings = playingRepository.findByGameId(paramsDto.getSuppliedGameId());
+        if (playings.isEmpty()) {
             // when game is quit before started
             return null;
         }
-        // FROM GAMINGTABLE
-        return gamingTables.get(0);
+        // FROM PLAYING
+        return playings.get(0);
     }
-    public List<CardMove> findCardMovesForGame(Game activeGame) {
-        GamingTable activeGamingTable = activeGame.getGamingTable();
-        return playingRepository.findByGamingTableOrderBySequenceAsc(activeGamingTable);
+    public List<CardMove> findCardMovesForGame(Game game) {
+        Playing playing = game.getPlaying();
+        return cardMoveRepository.findByPlayingOrderBySequenceAsc(playing);
     }
 
     // save CARD & CARDMOVE
     @Transactional
-    public void dealCardsToActivePlayer(Game activeGame, Move move, Location oldLocation, Location newLocation, Face face, int howMany) {
-        GamingTable activeGamingTable = activeGame.getGamingTable();
-        List<Card> topCardsInStock = getTopNCardsByLocationForGame(activeGame, oldLocation, howMany);
+    public void dealCardsToPlayer(Game game, Move move, Location oldLocation, Location newLocation, Face face, int howMany) {
+        Playing activePlaying = game.getPlaying();
+        List<Card> topCardsInStock = getTopNCardsByLocationForGame(game, oldLocation, howMany);
         List<Card> cardsDealt = new ArrayList<>();
         for (Card card : topCardsInStock) {
             Card cardDealt = card;
             cardDealt.setLocation(newLocation);
             cardDealt.setFace(face);
-            cardDealt.setHand(activeGamingTable.getActivePlayer());
+            cardDealt.setHand(activePlaying.getPlayer());
             cardsDealt.add(cardRepository.save(cardDealt));
-            storeCardMoveForGamingTable(activeGamingTable,cardDealt,move,newLocation);
+            storeCardMoveForPlaying(activePlaying,cardDealt,move,newLocation);
         }
-        }
-    private static List<Card> getTopNCardsByLocationForGame(Game activeGame, Location location, int howMany) {
-        List<Card> orderedCards = StreamUtil.sortCardsOnSequenceWithStream(activeGame.getCards(),location);
+    }
+    private static List<Card> getTopNCardsByLocationForGame(Game game, Location location, int howMany) {
+        List<Card> orderedCards = StreamUtil.sortCardsOnSequenceWithStream(game.getCards(),location);
         return StreamUtil.findFirstNCards(orderedCards, howMany);
     }
-    private void storeCardMoveForGamingTable(GamingTable activeGamingTable, Card cardMoved, Move move, Location location) {
+    private void storeCardMoveForPlaying(Playing activePlaying, Card cardMoved, Move move, Location location) {
         CardMove newMove = new CardMove(
-                activeGamingTable,
-                activeGamingTable.getActivePlayer(),
+                activePlaying,
+                activePlaying.getPlayer(),
                 cardMoved.getCardId(),
                 move,
                 location,
                 cardMoved.getRankSuit());
         newMove.setSequence(
-                activeGamingTable.getCurrentRoundNumber(),
-                activeGamingTable.getActivePlayer().getSeat(),
-                activeGamingTable.getCurrentMoveNumber());
+                activePlaying.getCurrentRoundNumber(),
+                activePlaying.getPlayer().getSeat(),
+                activePlaying.getCurrentMoveNumber());
         cardMoveRepository.save(newMove);
     }
 
@@ -89,19 +89,19 @@ public class PlayingService {
         return previousCard.map(card -> PlayingCard.calculateValueWithDefaultHighlow(card.getRankSuit(), card.getGame().getType())).orElse(0);
     }
 
-    // GAMINGTABLE
-    public void updateCurrentGamingTable(Move move, GamingTable activeGamingTable, Player nextPlayer) {
+    // PLAYING
+    public void updatePlaying(Move move, Playing activePlaying, Player nextPlayer) {
         switch (move) {
             case HIGHER, LOWER -> {
-                activeGamingTable.setCurrentSeatNumber(activeGamingTable.getActivePlayer().getSeat());
-                activeGamingTable.setCurrentMoveNumber(activeGamingTable.getCurrentMoveNumber() + 1);
+                activePlaying.setCurrentSeatNumber(activePlaying.getPlayer().getSeat());
+                activePlaying.setCurrentMoveNumber(activePlaying.getCurrentMoveNumber() + 1);
             }
             case DEAL -> {
-                activeGamingTable.setCurrentSeatNumber(nextPlayer.getSeat());
-                activeGamingTable.setCurrentMoveNumber(1);
-                activeGamingTable.setActivePlayer(nextPlayer);
+                activePlaying.setCurrentSeatNumber(nextPlayer.getSeat());
+                activePlaying.setCurrentMoveNumber(1);
+                activePlaying.setPlayer(nextPlayer);
             }
-            default -> throw new MyNPException("PlayNext", "updateActiveGamingTable [" + move + "]");
+            default -> throw new MyNPException("PlayNext", "updateActivePlaying [" + move + "]");
         }
     }
 

@@ -77,7 +77,7 @@
         </fieldset>
     </form>
 </div>
-<div th:fragment="seats-table">
+<div th:fragment="seatDtos-table">
     <table class="u-full-width">
         <thead>
         <tr>
@@ -91,19 +91,19 @@
         </tr>
         </thead>
         <tbody>
-        <!--    <tr th:if="${qasinoResponse.pageGamePlay.table.seats.empty}">-->
+        <!--    <tr th:if="${qasinoResponse.pageGamePlay.table.seatDtos.empty}">-->
         <!--        <td colspan="2"> No Seats Available</td>-->
         <!--    </tr>-->
         <!-- #lists is SPEL -->
-        <tr th:unless="${#lists.isEmpty(qasinoResponse.pageGamePlay.table.seats)}"
-            th:each="seat : ${qasinoResponse.pageGamePlay.table.seats}">
-            <td><span th:text="${seat.seatId}">Seat</span></td>
-            <td><span th:text="${seat.isPlaying}">Playing?</span></td>
-            <td><span th:text="${seat.seatPlayerAvatarName}">Avatar name</span></td>
-            <td><span th:text="${seat.seatPlayerAiLevel}">AiLevel</span></td>
-            <td><span th:text="${seat.seatStartBalance}">Start</span></td>
-            <td><span th:text="${seat.seatFiches}">Fiches</span></td>
-            <td><span th:text="${seat.stringCardsInHand}">Hand</span></td>
+        <tr th:unless="${#lists.isEmpty(qasinoResponse.pageGamePlay.table.seatDtos)}"
+            th:each="seatDto : ${qasinoResponse.pageGamePlay.table.seatDtos}">
+            <td><span th:text="${seatDto.seatId}">Seat</span></td>
+            <td><span th:text="${seatDto.isPlaying}">Playing?</span></td>
+            <td><span th:text="${seatDto.seatPlayerAvatarName}">Avatar name</span></td>
+            <td><span th:text="${seatDto.seatPlayerAiLevel}">AiLevel</span></td>
+            <td><span th:text="${seatDto.seatStartBalance}">Start</span></td>
+            <td><span th:text="${seatDto.seatFiches}">Fiches</span></td>
+            <td><span th:text="${seatDto.stringCardsInHand}">Hand</span></td>
         </tr>
         </tbody>
     </table>
@@ -126,13 +126,13 @@
             </tr>
             </thead>
             <tbody>
-            <!--    <tr th:if="${qasinoResponse.pageGamePlay.table.seats.empty}">-->
+            <!--    <tr th:if="${qasinoResponse.pageGamePlay.table.seatDtos.empty}">-->
             <!--        <td colspan="2"> No Seats Available</td>-->
             <!--    </tr>-->
             <!-- #lists is SPEL -->
             <tr th:unless="${#lists.isEmpty(qasinoResponse.pageGamePlay.gameResults)}"
                 th:each="result : ${qasinoResponse.pageGamePlay.gameResults}">
-                <td><span th:text="${result.player.seat}">Seat</span></td>
+                <td><span th:text="${result.player.seatDto}">Seat</span></td>
                 <td><span th:text="${result.winner}">Winner?</span></td>
                 <td><span th:text="${result.player.avatarName}">Avatar</span></td>
                 <td><span th:text="${result.player.aiLevel}">AiLevel</span></td>
@@ -169,7 +169,7 @@
         </tbody>
     </table>
 </div>
-<div th:fragment="seats-form">
+<div th:fragment="seatDtos-form">
     <form class="form-narrow form-horizontal" method="post"
           th:object="${qasinoResponse}"
           th:fragment="QasinoResponse"
@@ -192,7 +192,7 @@
                           th:if="${#fields.hasErrors('${qasinoResponse.pageGamePlay.table.stringCardsInStockNotInHand}')}"
                           th:errors="${qasinoResponse.pageGamePlay.table.stringCardsInStockNotInHand}">Incorrect deck</span>
                 </div>
-                <div th:replace="~{forms/play :: seats-table}"></div>
+                <div th:replace="~{forms/play :: seatDtos-table}"></div>
                 <!--                <input type="hidden" id="gameid2"-->
                 <!--                       th:field="${qasinoResponse.params.gid}"/>-->
                 <div class="form-group"

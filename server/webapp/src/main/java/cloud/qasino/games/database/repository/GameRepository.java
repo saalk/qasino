@@ -137,7 +137,7 @@ public interface GameRepository extends JpaRepository<Game, Long> {
     List<Game> findAllGamesWithPage(Pageable pageable);
 
     @Query(value = FIND_STATES, countQuery = COUNT_STATES,nativeQuery = true)
-    List<Game> findActiveGameNodeStates(
+    List<Game> findGameNodeStates(
             @Param(value = "states") List<GameState> states,
             Pageable pageable);
 

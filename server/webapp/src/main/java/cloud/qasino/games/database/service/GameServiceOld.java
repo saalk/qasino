@@ -16,7 +16,6 @@ import cloud.qasino.games.exception.MyBusinessException;
 import cloud.qasino.games.pattern.factory.Deck;
 import cloud.qasino.games.pattern.factory.DeckFactory;
 import cloud.qasino.games.pattern.stream.StreamUtil;
-import lombok.extern.log4j.Log4j;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -68,14 +67,14 @@ public class GameServiceOld {
         game.setState(GameState.PREPARED);
         return gameRepository.save(game);
     }
-    public Game addAndShuffleCardsForGame(Game activeGame) {
-        if (!activeGame.getCards().isEmpty())
-            throw new MyBusinessException("addAndShuffleCardsForAGame", "this game already has cards [" + activeGame.getGameId() + "]");
+    public Game addAndShuffleCardsForGame(Game game) {
+        if (!game.getCards().isEmpty())
+            throw new MyBusinessException("addAndShuffleCardsForAGame", "this game already has cards [" + game.getGameId() + "]");
 
-        Deck deck = DeckFactory.createShuffledDeck(activeGame, 0);
+        Deck deck = DeckFactory.createShuffledDeck(game, 0);
         List<PlayingCard> playingCards = deck.getPlayingCards();
 
-//        switch (Style.fromLabelWithDefault(activeGame.getStyle()).getDeckConfiguration()) {
+//        switch (Style.fromLabelWithDefault(game.getStyle()).getDeckConfiguration()) {
 //            case ALL_THREE_JOKERS -> playingCards = createDeckWithXJokers(3);
 //            case ALL_TWO_JOKERS -> playingCards = createDeckWithXJokers(2);
 //            case ALL_ONE_JOKER -> playingCards = createDeckWithXJokers(1);
@@ -90,23 +89,23 @@ public class GameServiceOld {
         List<Card> cards = new ArrayList<>();
         int i = 1;
         for (PlayingCard playingCard : playingCards) {
-            Card card = new Card(playingCard.getRankAndSuit(), activeGame, null, i++, Location.STOCK);
+            Card card = new Card(playingCard.getRankAndSuit(), game, null, i++, Location.STOCK);
             cards.add(card);
             cardRepository.save(card);
         }
-        activeGame.setState(GameState.STARTED);
-        activeGame.setCards(cards);
-        activeGame = gameRepository.save(activeGame);
-        return activeGame;
+        game.setState(GameState.STARTED);
+        game.setCards(cards);
+        game = gameRepository.save(game);
+        return game;
     }
-    public Player findNextPlayerForGame(Game activeGame) {
-        int totalSeats = activeGame.getPlayers().size();
-        int currentSeat = activeGame.getGamingTable().getCurrentSeatNumber();
+    public Player findNextPlayerForGame(Game game) {
+        int totalSeats = game.getPlayers().size();
+        int currentSeat = game.getPlaying().getCurrentSeatNumber();
         if (totalSeats == 1 || currentSeat == totalSeats) {
             log.debug("findNextPlayerForGame 1/last seat totalSeats {}", totalSeats);
-            return activeGame.getPlayers().get(0);
+            return game.getPlayers().get(0);
         }
-        List<Player> sortedPlayers = StreamUtil.sortPlayersOnSeatWithStream(activeGame.getPlayers());
+        List<Player> sortedPlayers = StreamUtil.sortPlayersOnSeatWithStream(game.getPlayers());
         log.debug("findNextPlayerForGame more seats exist currentSeat {}", currentSeat);
         return sortedPlayers.get((currentSeat - 1) + 1);
     }

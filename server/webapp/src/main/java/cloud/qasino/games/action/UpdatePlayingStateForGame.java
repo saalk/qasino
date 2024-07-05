@@ -25,14 +25,14 @@ public class UpdatePlayingStateForGame implements Action<UpdatePlayingStateForGa
     @Override
     public EventOutput.Result perform(Dto actionDto) {
 
-        if (!(actionDto.getGamingTablePlayer().isHuman())) {
+        if (!(actionDto.getPlayingPlayer().isHuman())) {
             if (actionDto.getQasinoGame().getState() != GameState.BOT_MOVE) {
                 actionDto.getQasinoGame().setState(GameState.BOT_MOVE);
                 actionDto.setQasinoGame(gameRepository.save(actionDto.getQasinoGame()));
             }
         }
-        if ((actionDto.getGamingTablePlayer().isHuman())) {
-            if (actionDto.getQasinoGame().getInitiator() == actionDto.getGamingTablePlayer().getPlayerId()) {
+        if ((actionDto.getPlayingPlayer().isHuman())) {
+            if (actionDto.getQasinoGame().getInitiator() == actionDto.getPlayingPlayer().getPlayerId()) {
                 if (actionDto.getQasinoGame().getState() != GameState.INITIATOR_MOVE) {
                     actionDto.getQasinoGame().setState(GameState.INITIATOR_MOVE);
                     actionDto.setQasinoGame(gameRepository.save(actionDto.getQasinoGame()));
@@ -72,7 +72,7 @@ public class UpdatePlayingStateForGame implements Action<UpdatePlayingStateForGa
         Visitor getQasinoVisitor();
         Game getQasinoGame();
         List<Player> getQasinoGamePlayers();
-        Player getGamingTablePlayer();
+        Player getPlayingPlayer();
 
         // Setter
         void setQasinoGame(Game game);

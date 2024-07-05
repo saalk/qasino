@@ -2,7 +2,7 @@ package cloud.qasino.games.action;
 
 import cloud.qasino.games.action.interfaces.Action;
 import cloud.qasino.games.database.entity.Game;
-import cloud.qasino.games.database.entity.GamingTable;
+import cloud.qasino.games.database.entity.Playing;
 import cloud.qasino.games.database.entity.Player;
 import cloud.qasino.games.database.entity.enums.card.Face;
 import cloud.qasino.games.database.entity.enums.card.Location;
@@ -19,7 +19,7 @@ import org.springframework.stereotype.Component;
 
 @Slf4j
 @Component
-public class PlayFirstGamingTableAction implements Action<PlayFirstGamingTableAction.Dto, EventOutput.Result> {
+public class PlayFirstMoveAction implements Action<PlayFirstMoveAction.Dto, EventOutput.Result> {
 
     @Autowired
     PlayingService playingService;
@@ -44,13 +44,13 @@ public class PlayFirstGamingTableAction implements Action<PlayFirstGamingTableAc
         Game game = actionDto.getQasinoGame();
         Player firstPlayer = StreamUtil.findFirstPlayerBySeat(game.getPlayers());
 
-        // new GAMINGTABLE
-        GamingTable firstGamingTable = new GamingTable(game, firstPlayer);
-        GamingTable savedGamingTable = playingRepository.saveAndFlush(firstGamingTable);
-        game.setGamingTable(savedGamingTable);
+        // new PLAYING
+        Playing firstPlaying = new Playing(game, firstPlayer);
+        Playing savedPlaying = playingRepository.saveAndFlush(firstPlaying);
+        game.setPlaying(savedPlaying);
 
         // Deal CARDs (and update CARDMOVE)
-        playingService.dealCardsToActivePlayer(
+        playingService.dealCardsToPlayer(
                 game,
                 firstDeal,
                 fromLocation,

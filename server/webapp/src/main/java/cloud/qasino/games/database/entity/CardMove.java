@@ -8,7 +8,6 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.voodoodyne.jackson.jsog.JSOGGenerator;
 import lombok.AccessLevel;
 import lombok.Data;
-import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.DynamicUpdate;
 
@@ -21,7 +20,6 @@ import jakarta.persistence.ForeignKey;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.Index;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
@@ -39,7 +37,7 @@ import java.util.Objects;
 @JsonIdentityInfo(generator = JSOGGenerator.class, property = "cardMoveId")
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 @Table(name = "cardmove", indexes = {
-//        @Index(name = "cardmove_gamingtable_index", columnList = "gamingtable_id", unique = false),
+//        @Index(name = "cardmove_playing_index", columnList = "playing_id", unique = false),
                 // not needed : @Index(name = "cardmove_index", columnList = "cardmove_id", unique = true)
         }
 )
@@ -56,11 +54,11 @@ public class CardMove {
 
     // Foreign keys
     @JsonIgnore
-    // many [CardMove] are part of one [GamingTable]
+    // many [CardMove] are part of one [Playing]
     @ManyToOne(cascade = CascadeType.DETACH)
-    @JoinColumn(name = "gamingtable_id", referencedColumnName = "gamingtable_id", foreignKey = @ForeignKey
-            (name = "fk_gamingtable_id"), nullable = false)
-    private GamingTable gamingTable;
+    @JoinColumn(name = "playing_id", referencedColumnName = "playing_id", foreignKey = @ForeignKey
+            (name = "fk_playing_id"), nullable = false)
+    private Playing playing;
     // one [CardMove] can be part of one [Player]
     @Column(name = "player_id")
     private long playerId;
@@ -98,9 +96,9 @@ public class CardMove {
         setEndFiches(0);
     }
 
-    public CardMove(GamingTable gamingTable, Player player, long cardId, Move move, Location location, String details) {
+    public CardMove(Playing playing, Player player, long cardId, Move move, Location location, String details) {
         this();
-        this.gamingTable = gamingTable;
+        this.playing = playing;
         this.playerId = player.getPlayerId();
         this.cardId = cardId;
 
@@ -118,12 +116,12 @@ public class CardMove {
         this.created = result.substring(0, 20);
     }
 
-    public void setSequence(int round, int seat, int gamingTable) {
+    public void setSequence(int round, int seat, int playing) {
         // xxyyzz format
         this.sequence =
             String.format("%02d", round) +
             String.format("%02d", seat) +
-            String.format("%02d", gamingTable);
+            String.format("%02d", playing);
     }
     public int getRoundFromSequence() {
         return Integer.parseInt(this.sequence.substring(0,2));
@@ -152,7 +150,7 @@ public class CardMove {
     public String toString() {
         return "(" +
                 "cardMoveId=" + this.cardMoveId +
-                ", gamingTableId=" + this.gamingTable.getGamingTableId() +
+                ", playingId=" + this.playing.getPlayingId() +
                 ", playerId=" + this.playerId +
                 ", cardId=" + this.cardId +
                 ", move=" + this.move.getLabel() +

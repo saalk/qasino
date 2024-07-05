@@ -56,7 +56,7 @@ import java.util.Set;
 @ControllerAdvice
 //@Api(tags = {WebConfiguration.QASINO_TAG})
 @Slf4j
-public class HomeSigninSignupThymeleafController extends AbstractThymeleafController {
+public class HomeThymeleafController extends AbstractThymeleafController {
 
     //    private static final String IMAGES_FAVICON_LOCATION = "static/images/favicon.ico";
     private static final String HOME_SIGNUP_VIEW_LOCATION = "home/register";
@@ -74,7 +74,7 @@ public class HomeSigninSignupThymeleafController extends AbstractThymeleafContro
     private final AuthenticationManager authenticationManager;
 
     @Autowired
-    public HomeSigninSignupThymeleafController(
+    public HomeThymeleafController(
             AuthenticationManager authenticationManager,
             SignUpNewVisitorAction signUpNewVisitorAction
     ) {
@@ -103,7 +103,7 @@ public class HomeSigninSignupThymeleafController extends AbstractThymeleafContro
         );
         // 2 - validate input
         if (!flowDto.isInputValid() || error != null) {
-            throw new MyNPException("HomeSigninSignupThymeleafController", "game event logon [" + flowDto.getSuppliedGameEvent() + "]");
+            throw new MyNPException("HomeThymeleafController", "game event logon [" + flowDto.getSuppliedGameEvent() + "]");
 //            prepareQasinoResponse(response, flowDto);
 //            model.addAttribute(flowDto.getQasinoResponse());
 //            return "redirect:/";

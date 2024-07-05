@@ -1,8 +1,5 @@
 package cloud.qasino.games.database.entity;
 
-import cloud.qasino.games.database.entity.enums.card.Face;
-import cloud.qasino.games.database.entity.enums.card.Location;
-import cloud.qasino.games.database.entity.enums.move.Move;
 import org.junit.jupiter.api.Test;
 
 import static java.util.EnumSet.of;
@@ -32,7 +29,7 @@ class CardMoveTest extends QasinoSimulator {
         */
 
         // 1. get current player in the turn - assume player for now
-        long currentPlayer = gamingTable.getActivePlayer().getPlayerId();
+        long currentPlayer = playing.getPlayer().getPlayerId();
         assertThat(currentPlayer).isEqualTo(player.getPlayerId());
 
 //        // 2a. deal (the top) card for the game face up
@@ -45,8 +42,8 @@ class CardMoveTest extends QasinoSimulator {
 //
 //        // 2b. move the first card to the hand of the current player
 //        CardMove cardMove = new CardMove(turn, player, firstCardDealt.getCardId(), Move.DEAL, Location.HAND);
-//        cardMove.setRoundNumber(gamingTable.getCurrentRoundNumber());
-//        cardMove.setMoveNumber(gamingTable.getCurrentMoveNumber());
+//        cardMove.setRoundNumber(playing.getCurrentRoundNumber());
+//        cardMove.setMoveNumber(playing.getCurrentMoveNumber());
 //
 //        assertThat(cardMove.getMove()).isEqualTo(Move.DEAL);
 //        assertThat(cardMove.getRoundNumber()).isEqualTo(1);
@@ -60,7 +57,7 @@ class CardMoveTest extends QasinoSimulator {
 //        // 4a. deal the second card face up
 //        Card secondCardDealt = game.dealCard(player, Face.UP);
 //        // TODO make this a method
-//        gamingTable.setCurrentMoveNumber(gamingTable.getCurrentMoveNumber()+1);
+//        playing.setCurrentMoveNumber(playing.getCurrentMoveNumber()+1);
 //
 //        assertThat(secondCardDealt.getCardId()).isEqualTo(game.getCards().get(1).getCardId());
 //        assertThat(secondCardDealt.getFace()).isEqualTo(Face.UP);
@@ -69,8 +66,8 @@ class CardMoveTest extends QasinoSimulator {
 //
 //        // 4b. move the second card to the hand of the current player
 //        cardMove = new CardMove(turn, player, secondCardDealt.getCardId(), expectation, Location.HAND);
-//        cardMove.setRoundNumber(gamingTable.getCurrentRoundNumber());
-//        cardMove.setMoveNumber(gamingTable.getCurrentMoveNumber());
+//        cardMove.setRoundNumber(playing.getCurrentRoundNumber());
+//        cardMove.setMoveNumber(playing.getCurrentMoveNumber());
 //
 //        assertThat(cardMove.getMove()).isEqualTo(Move.HIGHER);
 //        assertThat(cardMove.getRoundNumber()).isEqualTo(1);

@@ -3,7 +3,7 @@ package cloud.qasino.games.action;
 import cloud.qasino.games.action.interfaces.Action;
 import cloud.qasino.games.database.entity.Game;
 import cloud.qasino.games.database.entity.Player;
-import cloud.qasino.games.database.entity.GamingTable;
+import cloud.qasino.games.database.entity.Playing;
 import cloud.qasino.games.database.repository.CardRepository;
 import cloud.qasino.games.database.repository.GameRepository;
 import cloud.qasino.games.database.repository.LeagueRepository;
@@ -25,10 +25,10 @@ import static cloud.qasino.games.pattern.statemachine.event.GameEvent.PLAYING_GA
 import static cloud.qasino.games.pattern.statemachine.event.GameEvent.PREPARED_GAME_EVENTS;
 import static cloud.qasino.games.pattern.statemachine.event.GameEvent.SETUP_GAME_EVENTS;
 import static cloud.qasino.games.pattern.statemachine.event.GameEvent.START_GAME_EVENTS;
-import static cloud.qasino.games.pattern.statemachine.event.PlayEvent.blackJackPossibleBotGamingTable;
-import static cloud.qasino.games.pattern.statemachine.event.PlayEvent.blackJackPossibleHumanGamingTable;
-import static cloud.qasino.games.pattern.statemachine.event.PlayEvent.highLowPossibleBotGamingTables;
-import static cloud.qasino.games.pattern.statemachine.event.PlayEvent.highLowPossibleHumanGamingTables;
+import static cloud.qasino.games.pattern.statemachine.event.PlayEvent.blackJackPossibleBotPlaying;
+import static cloud.qasino.games.pattern.statemachine.event.PlayEvent.blackJackPossibleHumanPlaying;
+import static cloud.qasino.games.pattern.statemachine.event.PlayEvent.highLowPossibleBotPlayings;
+import static cloud.qasino.games.pattern.statemachine.event.PlayEvent.highLowPossibleHumanPlayings;
 
 
 @Slf4j
@@ -61,17 +61,17 @@ public class DeterminePossibleEventsAction implements Action<DeterminePossibleEv
                 case PLAYING -> {
                     switch (actionDto.getQasinoGame().getType()) {
                         case HIGHLOW -> {
-                            if (actionDto.getGamingTablePlayer().isHuman()) {
-                                playEvents = highLowPossibleHumanGamingTables;
+                            if (actionDto.getPlayingPlayer().isHuman()) {
+                                playEvents = highLowPossibleHumanPlayings;
                             } else {
-                                playEvents = highLowPossibleBotGamingTables;
+                                playEvents = highLowPossibleBotPlayings;
                             }
                         }
                         case BLACKJACK -> {
-                            if (actionDto.getGamingTablePlayer().isHuman()) {
-                                playEvents = blackJackPossibleHumanGamingTable;
+                            if (actionDto.getPlayingPlayer().isHuman()) {
+                                playEvents = blackJackPossibleHumanPlaying;
                             } else {
-                                playEvents = blackJackPossibleBotGamingTable;
+                                playEvents = blackJackPossibleBotPlaying;
                             }
                         }
                         default -> playEvents = null;
@@ -116,8 +116,8 @@ public class DeterminePossibleEventsAction implements Action<DeterminePossibleEv
 
         // Getters
         Game getQasinoGame();
-        GamingTable getActiveGamingTable();
-        Player getGamingTablePlayer();
+        Playing getActivePlaying();
+        Player getPlayingPlayer();
 
         // Setters
         void setPossiblePlayEvents(List<PlayEvent> playEvents);

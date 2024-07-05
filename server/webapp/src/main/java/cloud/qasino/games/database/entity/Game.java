@@ -16,7 +16,6 @@ import jakarta.persistence.ForeignKey;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.Index;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
@@ -146,10 +145,7 @@ public class Game {
     ...
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
     private Set<OrderDetail> orderDetail = new HashSet();
-
     */
-
-
     @JsonIgnore
     // one [Game] can have many [Card]s
     @OneToMany(mappedBy = "game", cascade = CascadeType.DETACH)
@@ -158,9 +154,9 @@ public class Game {
     @OneToMany(mappedBy = "game", cascade = CascadeType.DETACH)
     private List<Player> players;
     @JsonIgnore
-    // one [Game] can have one [GamingTable], holding the current player, round, seat and move
+    // one [Game] can have one [Playing], holding the current player, round, seat and move
     @OneToOne(mappedBy = "game", cascade = CascadeType.DETACH)
-    private GamingTable gamingTable;
+    private Playing playing;
     // TODO is this needed as its related to a player that is related to a game
     // one [Game] can have many [Result]s, one per player
     @OneToMany(mappedBy = "game", cascade = CascadeType.DETACH)
@@ -201,7 +197,7 @@ public class Game {
         return new Game.Builder()
                 .withType(Type.HIGHLOW.getLabel())
                 .withStyle("nrrn22")
-                // ante, bet, deck, ins, rounds, gamingTable
+                // ante, bet, deck, ins, rounds, playing
                 .withAnte(20)
                 .withInitiator(initiator)
                 .withLeague(league)
@@ -335,7 +331,7 @@ public class Game {
                 ", type=" + this.type +
                 ", style=" + this.style +
                 ", ante=" + this.ante +
-                ", gamingTableId=" + (this.gamingTable == null? "": this.gamingTable.getGamingTableId()) +
+                ", playingId=" + (this.playing == null? "": this.playing.getPlayingId()) +
                 ")";
     }
 }

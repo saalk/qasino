@@ -1,30 +1,37 @@
 package cloud.qasino.games.database.entity;
 
-import cloud.qasino.games.database.entity.enums.player.AiLevel;
 import cloud.qasino.games.database.security.Visitor;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.voodoodyne.jackson.jsog.JSOGGenerator;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.ForeignKey;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.Getter;
-import lombok.Setter;
 import org.hibernate.annotations.DynamicUpdate;
 
-import jakarta.persistence.*;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.Period;
-
-import static java.time.temporal.TemporalAdjusters.*;
-
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeFormatterBuilder;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+
+import static java.time.temporal.TemporalAdjusters.lastDayOfMonth;
+import static java.time.temporal.TemporalAdjusters.next;
 
 // @Entity creates a direct link between class object(s) and table row(s)
 @Entity
@@ -64,7 +71,6 @@ public class League {
     @Getter(AccessLevel.NONE)
     @Column(name = "is_active")
     private boolean active;
-    @JsonIgnore
     @Column(name = "ended", length = 25)
     private String ended;
 

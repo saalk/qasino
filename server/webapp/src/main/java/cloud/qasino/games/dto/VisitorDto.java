@@ -13,7 +13,7 @@ import java.util.List;
 
 @Data
 /**
- * The purpose of using this Dto is to separate the internal representation of user data
+ * The purpose of using this Dto is to separate the internal representation of visitor data
  * (e.g., in the database or business logic) from the data exposed to
  * external clients or systems.
  * */

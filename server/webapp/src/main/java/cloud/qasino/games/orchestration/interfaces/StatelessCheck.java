@@ -18,9 +18,9 @@ public abstract class StatelessCheck<T extends AbstractFlowDto> extends Abstract
 
     protected abstract boolean check(final T flowDto);
     protected String getGameEvent(final T flowDto) {
-        return flowDto.getCurrentGameEvent().toString();
+        return flowDto.getGameEvent().toString();
     };
     protected String getPlayEvent(final T flowDto) {
-        return flowDto.getCurrentGameEvent().toString();
+        return flowDto.getGameEvent().toString();
     };
 }

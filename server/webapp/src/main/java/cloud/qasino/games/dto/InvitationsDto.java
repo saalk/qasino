@@ -9,10 +9,12 @@ import lombok.NoArgsConstructor;
 import java.util.List;
 
 @Data
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
-public class InvitationsDTO {
+/*
+  The purpose of using this Dto is to separate the internal representation of invitations data
+  (e.g., in the database or business logic) from the data exposed to
+  external clients or systems.
+  */
+public class InvitationsDto {
 
     // buttons
     // 1 accept or decline invitation for a game

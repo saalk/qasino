@@ -10,14 +10,14 @@ import cloud.qasino.games.action.HandleSecuredLoanAction;
 import cloud.qasino.games.action.IsGameConsistentForGameEventAction;
 import cloud.qasino.games.action.IsGameFinishedAction;
 import cloud.qasino.games.action.IsPlayerHumanAction;
-import cloud.qasino.games.action.IsGamingTableConsistentForPlayEventAction;
+import cloud.qasino.games.action.IsPlayingConsistentForPlayEventAction;
 import cloud.qasino.games.action.LoadEntitiesToDtoAction;
 import cloud.qasino.games.action.MapQasinoGameTableFromDtoAction;
 import cloud.qasino.games.action.MapQasinoResponseFromDtoAction;
-import cloud.qasino.games.action.PlayFirstGamingTableAction;
+import cloud.qasino.games.action.PlayFirstMoveAction;
+import cloud.qasino.games.action.PlayNextHumanMoveAction;
 import cloud.qasino.games.action.StartGameForTypeAction;
-import cloud.qasino.games.action.PlayNextBotGamingTableAction;
-import cloud.qasino.games.action.PlayNextHumanGamingTableAction;
+import cloud.qasino.games.action.PlayNextBotMoveAction;
 import cloud.qasino.games.action.PrepareGameAction;
 import cloud.qasino.games.action.SetStatusIndicatorsBaseOnRetrievedDataAction;
 import cloud.qasino.games.action.SignUpNewVisitorAction;
@@ -32,7 +32,7 @@ import cloud.qasino.games.database.entity.Game;
 import cloud.qasino.games.database.entity.League;
 import cloud.qasino.games.database.entity.Player;
 import cloud.qasino.games.database.entity.Result;
-import cloud.qasino.games.database.entity.GamingTable;
+import cloud.qasino.games.database.entity.Playing;
 import cloud.qasino.games.database.entity.enums.card.Face;
 import cloud.qasino.games.database.entity.enums.card.Location;
 import cloud.qasino.games.database.entity.enums.card.PlayingCard;
@@ -87,15 +87,15 @@ public class QasinoFlowDto extends AbstractFlowDto
         FindVisitorIdByAliasOrUsernameAction.Dto,
         HandleSecuredLoanAction.Dto,
         IsGameConsistentForGameEventAction.Dto,
-        IsGamingTableConsistentForPlayEventAction.Dto,
+        IsPlayingConsistentForPlayEventAction.Dto,
         IsGameFinishedAction.Dto,
         IsPlayerHumanAction.Dto,
         LoadEntitiesToDtoAction.Dto,
         MapQasinoResponseFromDtoAction.Dto,
         MapQasinoGameTableFromDtoAction.Dto,
-        PlayNextHumanGamingTableAction.Dto,
-        PlayNextBotGamingTableAction.Dto,
-        PlayFirstGamingTableAction.Dto,
+        PlayNextHumanMoveAction.Dto,
+        PlayNextBotMoveAction.Dto,
+        PlayFirstMoveAction.Dto,
         PrepareGameAction.Dto,
         SetStatusIndicatorsBaseOnRetrievedDataAction.Dto,
         SignUpNewVisitorAction.Dto,
@@ -126,7 +126,7 @@ public class QasinoFlowDto extends AbstractFlowDto
     private long acceptedPlayerId;
     private long declinedPlayerId;
 
-    private long suppliedGamingTablePlayerId;
+    private long suppliedPlayingPlayerId;
     // triggers for the Game
     private QasinoEvent suppliedQasinoEvent;
     private GameEvent suppliedGameEvent;
@@ -193,9 +193,9 @@ public class QasinoFlowDto extends AbstractFlowDto
 
     // FOR THE GAME BEING PLAYED
     private SectionTable table;
-    private Player gamingTablePlayer;
+    private Player playingPlayer;
     private Player nextPlayer;
-    private GamingTable activeGamingTable;
+    private Playing activePlaying;
     private List<Card> cardsInTheGameSorted;
     private List<CardMove> allCardMovesForTheGame;
     private List<PlayEvent> possiblePlayEvents;
@@ -272,11 +272,11 @@ public class QasinoFlowDto extends AbstractFlowDto
         if (qasinoGameLeague != null) {
             this.headers.add("leagueId", String.valueOf(qasinoGameLeague.getLeagueId()));
         }
-        if (gamingTablePlayer != null) {
-            this.headers.add("turnPlayerId", String.valueOf(gamingTablePlayer.getPlayerId()));
+        if (playingPlayer != null) {
+            this.headers.add("turnPlayerId", String.valueOf(playingPlayer.getPlayerId()));
         }
-        if (activeGamingTable != null) {
-            this.headers.add("turnId", String.valueOf(activeGamingTable.getGamingTableId()));
+        if (activePlaying != null) {
+            this.headers.add("turnId", String.valueOf(activePlaying.getPlayingId()));
         }
         if (this.httpStatus > 299) {
             // also add error to header
@@ -382,10 +382,10 @@ public class QasinoFlowDto extends AbstractFlowDto
                 return false;
             }
         }
-        key = "gamingTablePlayerId";
+        key = "playingPlayerId";
         if (pathVariables.containsKey(key)) {
             if (isValueForPrimaryKeyValid(key, pathVariables.get(key), dataName, pathDataString)) {
-                this.suppliedGamingTablePlayerId = Long.parseLong(pathVariables.get(key));
+                this.suppliedPlayingPlayerId = Long.parseLong(pathVariables.get(key));
             } else {
                 return false;
             }
@@ -512,7 +512,7 @@ public class QasinoFlowDto extends AbstractFlowDto
                 return false;
             }
         }
-        // gamingTable
+        // playing
         key = "playEvent";
         if (requestParam.containsKey(key)) {
             if (isValueForEnumKeyValid(key, requestParam.get(

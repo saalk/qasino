@@ -18,29 +18,31 @@ import java.util.List;
  * */
 public class PlayerDto {
 
-    private static final String NOT_BLANK_MESSAGE = "{notBlank.message}";
-    private static final String EMAIL_MESSAGE = "{email.message}";
-
-    // for create and update
+    // core
     private long playerId;
-    private long visitorId;
-    private Game game;
+//    private String created; // ignore
+
+    // ref
+    private VisitorDto visitor;
+    private GameDto game;
+
+    // Normal fields
+    private int seat;
+    private boolean human;
     private PlayerType playerType;
     private int fiches;
     private Avatar avatar;
     private String avatarName;
     private AiLevel aiLevel;
 
-    // derived
-    private VisitorDto visitor;
-    private boolean human;
     private boolean winner;
 
-    // for view
-    private int seat;
-    private String stringCardsInHand;
-    private List<Card> cards;
-    Result result;
+//    private Playing playing; // ignore
+//    private Result result; // ignore
+//    private List<Card> cards; // ignore
+
+    // derived
+    private String cardsInHand;
 
 }
 

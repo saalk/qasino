@@ -4,8 +4,8 @@ import cloud.qasino.games.action.interfaces.Action;
 import cloud.qasino.games.database.entity.Card;
 import cloud.qasino.games.database.entity.Game;
 import cloud.qasino.games.database.entity.Player;
+import cloud.qasino.games.database.entity.Playing;
 import cloud.qasino.games.database.entity.Result;
-import cloud.qasino.games.database.entity.GamingTable;
 import cloud.qasino.games.database.security.Visitor;
 import cloud.qasino.games.database.entity.enums.game.gamestate.GameStateGroup;
 import cloud.qasino.games.pattern.statemachine.event.EventOutput;
@@ -59,7 +59,7 @@ public class IsGameConsistentForGameEventAction implements Action<IsGameConsiste
             }
             case PLAY -> {
                 noError = gameShouldHaveStateInCorrectGameStateGroup(actionDto, Collections.singletonList(GameStateGroup.PLAYING));
-                if (noError) noError = gameShouldHaveCardsAndGamingTable(actionDto);
+                if (noError) noError = gameShouldHaveCardsAndPlaying(actionDto);
             }
             case STOP -> {
 //                noError = !gameShouldHaveStateInCorrectGameStateGroup(actionDto, Collections.singletonList(GameStateGroup.FINISHED));
@@ -67,7 +67,7 @@ public class IsGameConsistentForGameEventAction implements Action<IsGameConsiste
             case WINNER -> {
                 noError = gameShouldHaveAResult(actionDto);
                 if (noError) noError = gameShouldHaveStateInCorrectGameStateGroup(actionDto, Collections.singletonList(GameStateGroup.PLAYING));
-                if (noError) noError = gameShouldHaveCardsAndGamingTable(actionDto);
+                if (noError) noError = gameShouldHaveCardsAndPlaying(actionDto);
             }
         }
 //        log.warn("isGameConsistentForGameEvent noerror {}", noError);
@@ -190,14 +190,14 @@ public class IsGameConsistentForGameEventAction implements Action<IsGameConsiste
         }
         return true;
     }
-    private boolean gameShouldHaveCardsAndGamingTable(Dto actionDto) {
-        if (actionDto.getActiveGamingTable() == null ||
+    private boolean gameShouldHaveCardsAndPlaying(Dto actionDto) {
+        if (actionDto.getActivePlaying() == null ||
                 actionDto.getCardsInTheGameSorted() == null) {
             log.warn("!turn and/or cards");
             setUnprocessableErrorMessage(actionDto,
                     "Action [" +
                             actionDto.getSuppliedGameEvent() +
-                            "] invalid - game has no cards and or a gamingTable"
+                            "] invalid - game has no cards and or a playing"
 
             );
             return false;
@@ -245,7 +245,7 @@ public class IsGameConsistentForGameEventAction implements Action<IsGameConsiste
         Visitor getQasinoVisitor();
         List<Game> getInitiatedGamesForVisitor();
         Game getQasinoGame();
-        GamingTable getActiveGamingTable();
+        Playing getActivePlaying();
         List<Card> getCardsInTheGameSorted();
         List<Result> getGameResults();
 

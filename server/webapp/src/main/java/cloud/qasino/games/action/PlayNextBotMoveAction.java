@@ -2,7 +2,7 @@ package cloud.qasino.games.action;
 
 import cloud.qasino.games.action.interfaces.Action;
 import cloud.qasino.games.database.entity.Game;
-import cloud.qasino.games.database.entity.GamingTable;
+import cloud.qasino.games.database.entity.Playing;
 import cloud.qasino.games.database.entity.Player;
 import cloud.qasino.games.database.entity.enums.card.Face;
 import cloud.qasino.games.database.entity.enums.card.Location;
@@ -24,7 +24,7 @@ import static cloud.qasino.games.database.service.PlayingService.isRoundEqualToR
 
 @Slf4j
 @Component
-public class PlayNextBotGamingTableAction implements Action<PlayNextBotGamingTableAction.Dto, EventOutput.Result> {
+public class PlayNextBotMoveAction implements Action<PlayNextBotMoveAction.Dto, EventOutput.Result> {
 
     @Autowired
     PlayingService playingService;
@@ -38,7 +38,7 @@ public class PlayNextBotGamingTableAction implements Action<PlayNextBotGamingTab
     public EventOutput.Result perform(Dto actionDto) {
 
         if (!actionDto.getQasinoGame().getType().equals(Type.HIGHLOW)) {
-            throw new MyNPException("PlayNextBotGamingTableAction", "error [" + actionDto.getQasinoGame().getType() + "]");
+            throw new MyNPException("PlayNextBotMoveAction", "error [" + actionDto.getQasinoGame().getType() + "]");
         }
 
         // Next move in HIGHLOW = a given move from location STOCK to location HAND with face UP
@@ -52,13 +52,13 @@ public class PlayNextBotGamingTableAction implements Action<PlayNextBotGamingTab
         Game game = actionDto.getQasinoGame();
         Player nextPlayer = gameServiceOld.findNextPlayerForGame(game);
         int totalSeats = game.getPlayers().size();
-        GamingTable currentGamingTable = game.getGamingTable();
-        int currentSeat = currentGamingTable.getCurrentSeatNumber();
-        int currentRound = currentGamingTable.getCurrentRoundNumber();
-        Player activePlayer = currentGamingTable.getActivePlayer();
+        Playing playing = game.getPlaying();
+        int currentSeat = playing.getCurrentSeatNumber();
+        int currentRound = playing.getCurrentRoundNumber();
+        Player player = playing.getPlayer();
 
-        nextMove = NextMoveCalculator.next(game, activePlayer, currentGamingTable);
-        log.info("PlayNextBotGamingTableAction StrategyMove {}", nextMove);
+        nextMove = NextMoveCalculator.next(game, player, playing);
+        log.info("PlayNextBotMoveAction StrategyMove {}", nextMove);
         // TODO DetermineNextRoundOrEndGame -> move to separate action
 
         if (nextMove == Move.PASS) {
@@ -67,17 +67,17 @@ public class PlayNextBotGamingTableAction implements Action<PlayNextBotGamingTab
                     actionDto.setSuppliedPlayEvent(PlayEvent.END_GAME);
                     return EventOutput.Result.SUCCESS;
                 }
-                currentGamingTable.setCurrentRoundNumber(currentRound + 1);
+                playing.setCurrentRoundNumber(currentRound + 1);
             }
         }
 
-        // Update GAMINGTABLE - could be new to new Player
-        playingService.updateCurrentGamingTable(nextMove, currentGamingTable, nextPlayer);
-        GamingTable newGamingTable = playingRepository.save(currentGamingTable);
-        game.setGamingTable(newGamingTable);
+        // Update PLAYING - could be new to new Player
+        playingService.updatePlaying(nextMove, playing, nextPlayer);
+        Playing newPlaying = playingRepository.save(playing);
+        game.setPlaying(newPlaying);
 
         // Deal CARDs (and update CARDMOVE)
-        playingService.dealCardsToActivePlayer(
+        playingService.dealCardsToPlayer(
                 game,
                 nextMove,
                 fromLocation,

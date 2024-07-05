@@ -2,7 +2,7 @@ package cloud.qasino.games.action;
 
 import cloud.qasino.games.action.interfaces.Action;
 import cloud.qasino.games.database.entity.Player;
-import cloud.qasino.games.database.entity.GamingTable;
+import cloud.qasino.games.database.entity.Playing;
 import cloud.qasino.games.database.security.VisitorRepository;
 import cloud.qasino.games.pattern.statemachine.event.EventOutput;
 import cloud.qasino.games.pattern.statemachine.event.GameEvent;
@@ -14,7 +14,7 @@ import jakarta.annotation.Resource;
 
 @Slf4j
 @Component
-public class IsGamingTableConsistentForPlayEventAction implements Action<IsGamingTableConsistentForPlayEventAction.Dto, EventOutput.Result> {
+public class IsPlayingConsistentForPlayEventAction implements Action<IsPlayingConsistentForPlayEventAction.Dto, EventOutput.Result> {
 
     @Resource
     VisitorRepository visitorRepository;
@@ -28,24 +28,24 @@ public class IsGamingTableConsistentForPlayEventAction implements Action<IsGamin
         boolean noError = true;
         switch (actionDto.getSuppliedPlayEvent()) {
             case LOWER -> {
-                noError = gamingTableShouldHaveActiveHumanPlayer(actionDto);
-                if (noError) noError = gamingTableShouldHaveNextPlayer(actionDto);
+                noError = playingShouldHaveActiveHumanPlayer(actionDto);
+                if (noError) noError = playingShouldHaveNextPlayer(actionDto);
             }
             case HIGHER -> {
-                noError = gamingTableShouldHaveActiveHumanPlayer(actionDto);
-                if (noError) noError = gamingTableShouldHaveNextPlayer(actionDto);
+                noError = playingShouldHaveActiveHumanPlayer(actionDto);
+                if (noError) noError = playingShouldHaveNextPlayer(actionDto);
             }
             case PASS -> {
-                noError = gamingTableShouldHaveActiveHumanPlayer(actionDto);
-                if (noError) noError = gamingTableShouldHaveNextPlayer(actionDto);
+                noError = playingShouldHaveActiveHumanPlayer(actionDto);
+                if (noError) noError = playingShouldHaveNextPlayer(actionDto);
             }
             case BOT -> {
-                noError = gamingTableShouldHaveActiveBotPlayer(actionDto);
-                if (noError) noError = gamingTableShouldHaveNextPlayer(actionDto);
+                noError = playingShouldHaveActiveBotPlayer(actionDto);
+                if (noError) noError = playingShouldHaveNextPlayer(actionDto);
             }
             case DEAL -> {
-                noError = gamingTableShouldHaveCurrentMoveNumberNotZero(actionDto);
-                if (noError) noError = gamingTableShouldHaveActivePlayer(actionDto);
+                noError = playingShouldHaveCurrentMoveNumberNotZero(actionDto);
+                if (noError) noError = playingShouldHavePlayer(actionDto);
             }
             case SPLIT -> {
             }
@@ -54,48 +54,48 @@ public class IsGamingTableConsistentForPlayEventAction implements Action<IsGamin
 
     }
 
-    private boolean gamingTableShouldHaveCurrentMoveNumberNotZero(Dto actionDto) {
-        if (actionDto.getActiveGamingTable().getCurrentMoveNumber() <= 0) {
+    private boolean playingShouldHaveCurrentMoveNumberNotZero(Dto actionDto) {
+        if (actionDto.getActivePlaying().getCurrentMoveNumber() <= 0) {
             log.warn("!moveNumber");
             setUnprocessableErrorMessage(actionDto, "Action [" + actionDto.getSuppliedPlayEvent() +
-                    "] invalid - gamingTable has incorrect number of " + actionDto.getActiveGamingTable().getCurrentMoveNumber()
+                    "] invalid - playing has incorrect number of " + actionDto.getActivePlaying().getCurrentMoveNumber()
             );
             return false;
         }
         return true;
     }
-    private boolean gamingTableShouldHaveNextPlayer(Dto actionDto) {
+    private boolean playingShouldHaveNextPlayer(Dto actionDto) {
         if (actionDto.getNextPlayer() == null) {
             log.warn("!nextplayer");
             setUnprocessableErrorMessage(actionDto, "Action [" + actionDto.getSuppliedPlayEvent() +
-                    "] invalid - gamingTable has no next player ");
+                    "] invalid - playing has no next player ");
             return false;
         }
         return true;
     }
-    private boolean gamingTableShouldHaveActivePlayer(Dto actionDto) {
-        if (actionDto.getActiveGamingTable().getActivePlayer() == null) {
+    private boolean playingShouldHavePlayer(Dto actionDto) {
+        if (actionDto.getActivePlaying().getPlayer() == null) {
             log.warn("!initiator");
             setUnprocessableErrorMessage(actionDto, "Action [" + actionDto.getSuppliedPlayEvent() +
-                    "] invalid - gamingTable has no active player ");
+                    "] invalid - playing has no active player ");
             return false;
         }
         return true;
     }
-    private boolean gamingTableShouldHaveActiveHumanPlayer(Dto actionDto) {
-        if (!actionDto.getGamingTablePlayer().isHuman()) {
+    private boolean playingShouldHaveActiveHumanPlayer(Dto actionDto) {
+        if (!actionDto.getPlayingPlayer().isHuman()) {
             log.warn("!human");
             setUnprocessableErrorMessage(actionDto, "Action [" + actionDto.getSuppliedPlayEvent() +
-                    "] inconsistent - this gamingTable event is not for human player ");
+                    "] inconsistent - this playing event is not for human player ");
             return false;
         }
         return true;
     }
-    private boolean gamingTableShouldHaveActiveBotPlayer(Dto actionDto) {
-        if (actionDto.getGamingTablePlayer().isHuman()) {
+    private boolean playingShouldHaveActiveBotPlayer(Dto actionDto) {
+        if (actionDto.getPlayingPlayer().isHuman()) {
             log.warn("!human");
             setUnprocessableErrorMessage(actionDto, "Action [" + actionDto.getSuppliedPlayEvent() +
-                    "] inconsistent - this gamingTable event is not for bot player ");
+                    "] inconsistent - this playing event is not for bot player ");
             return false;
         }
         return true;
@@ -115,8 +115,8 @@ public class IsGamingTableConsistentForPlayEventAction implements Action<IsGamin
         PlayEvent getSuppliedPlayEvent();
 
         // Getters
-        GamingTable getActiveGamingTable();
-        Player getGamingTablePlayer();
+        Playing getActivePlaying();
+        Player getPlayingPlayer();
         Player getNextPlayer();
 
         // error setters

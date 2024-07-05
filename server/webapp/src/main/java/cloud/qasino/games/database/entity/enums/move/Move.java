@@ -15,7 +15,7 @@ public enum Move implements LabeledEnum {
 
     @Column(name = "cardMove", length = 25, nullable = false)
 
-    // generic cardmoves in a gamingTable
+    // generic cardmoves in a playing
     DEAL("deal"),
     PASS("pass"),
     NEXT("next"),

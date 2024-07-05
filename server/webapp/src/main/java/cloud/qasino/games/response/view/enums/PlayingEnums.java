@@ -8,7 +8,7 @@ import java.util.Map;
 
 @Getter
 @ToString
-public class GamingTableEnums {
+public class PlayingEnums {
 
     Map<String, Move> move = Move.moveMapNoError;
 

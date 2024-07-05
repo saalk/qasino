@@ -3,7 +3,6 @@ package cloud.qasino.games.database.service;
 import cloud.qasino.games.database.entity.Card;
 import cloud.qasino.games.database.entity.Game;
 import cloud.qasino.games.database.entity.League;
-import cloud.qasino.games.database.entity.Player;
 import cloud.qasino.games.database.entity.enums.card.Location;
 import cloud.qasino.games.database.entity.enums.card.PlayingCard;
 import cloud.qasino.games.database.entity.enums.game.GameState;
@@ -107,13 +106,14 @@ public class GameService {
         game = gameRepository.save(game);
         return gameMapper.toDto(game);
     }
-    public PlayerDto findNextPlayerForGame(GameDto activeGame) {
-        int totalSeats = activeGame.getPlayerDtos().size();
-        int currentSeat = activeGame.getActiveGamingTable().getCurrentSeatNumber();
+    public PlayerDto findNextPlayerForGame(GameDto game) {
+        int totalSeats = game.getPlayerDtos().size();
+//        TODO int currentSeat = game.getPlaying().getCurrentSeatNumber();
+        int currentSeat = 1;
         if (totalSeats == 1 || currentSeat == totalSeats) {
-            return activeGame.getPlayerDtos().get(0);
+            return game.getPlayerDtos().get(0);
         }
-        List<PlayerDto> sortedPlayers = StreamUtil.sortPlayerDtosOnSeatWithStream(activeGame.getPlayerDtos());
+        List<PlayerDto> sortedPlayers = StreamUtil.sortPlayerDtosOnSeatWithStream(game.getPlayerDtos());
         return sortedPlayers.get((currentSeat - 1) + 1);
     }
 

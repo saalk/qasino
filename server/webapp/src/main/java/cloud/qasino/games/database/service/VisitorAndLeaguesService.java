@@ -59,27 +59,27 @@ public class VisitorAndLeaguesService {
     // find one
     public VisitorDto findByUsername(ParamsDto paramsDto){
         Visitor retrievedVisitor = visitorRepository.findByUsername(paramsDto.getSuppliedVisitorUsername());
-        return visitorMapper.visitorToVisitorDto(retrievedVisitor);
+        return visitorMapper.toDto(retrievedVisitor);
     };
     public VisitorDto findOneByVisitorId(ParamsDto paramsDto) {
         Visitor retrievedVisitor = visitorRepository.findOneByVisitorId(paramsDto.getSuppliedVisitorId());
-        return visitorMapper.visitorToVisitorDto(retrievedVisitor);
+        return visitorMapper.toDto(retrievedVisitor);
     };
     Optional<VisitorDto> findVisitorByAliasAndAliasSequence(VisitorDto visitorDto){
         Optional<Visitor> retrievedVisitor = visitorRepository.findVisitorByAliasAndAliasSequence(visitorDto.getAlias(),visitorDto.getAliasSequence());
         return Optional.ofNullable(retrievedVisitor)
                 .filter(Optional::isPresent) // lambda is => visitor -> visitor.isPresent()
-                .map(visitor -> visitorMapper.visitorToVisitorDto(visitor.get()));
+                .map(visitor -> visitorMapper.toDto(visitor.get()));
     };
     public LeagueDto findOneByLeagueId(ParamsDto paramsDto) {
         League retrievedLeague = leagueRepository.findOneByLeagueId(paramsDto.getSuppliedLeagueId());
-        return leagueMapper.leagueToLeagueDto(retrievedLeague);
+        return leagueMapper.toDto(retrievedLeague);
     };
 
     // find many
     Page<VisitorDto> findAllVisitorsWithPage(Pageable pageable){
         Page<Visitor> visitorPage = visitorRepository.findAllVisitorsWithPage(pageable);
-        return visitorPage.map(visitor -> visitorMapper.visitorToVisitorDto(visitor));
+        return visitorPage.map(visitor -> visitorMapper.toDto(visitor));
     };
 
     // delete
@@ -99,20 +99,20 @@ public class VisitorAndLeaguesService {
         final Role basicRole = roleRepository.findByName("ROLE_USER");
         userDto.setRoles(Collections.singleton(basicRole));
         userDto.setPassword(encoder.encode(userDto.getPassword()));
-        Visitor visitor = visitorMapper.visitorDtoToVisitor(userDto);
+        Visitor visitor = visitorMapper.fromDto(userDto);
         Visitor savedVisitor = visitorRepository.save(visitor);
         Visitor retrievedVisitor = visitorRepository.getReferenceById(savedVisitor.getVisitorId());
-        return visitorMapper.visitorToVisitorDto(retrievedVisitor);
+        return visitorMapper.toDto(retrievedVisitor);
     }
     @Transactional
     public VisitorDto saveNewAdmin(VisitorDto adminDto) {
         final Role adminRole = roleRepository.findByName("ROLE_ADMIN");
         adminDto.setRoles(Collections.singleton(adminRole));
         adminDto.setPassword(encoder.encode(adminDto.getPassword()));
-        Visitor visitor = visitorMapper.visitorDtoToVisitor(adminDto);
+        Visitor visitor = visitorMapper.fromDto(adminDto);
         Visitor savedVisitor = visitorRepository.save(visitor);
         Visitor retrievedVisitor = visitorRepository.getReferenceById(savedVisitor.getVisitorId());
-        return visitorMapper.visitorToVisitorDto(retrievedVisitor);
+        return visitorMapper.toDto(retrievedVisitor);
     }
 
     @PostConstruct
@@ -170,7 +170,7 @@ public class VisitorAndLeaguesService {
     public void createUserIfNotFound(Visitor search) {
         Visitor user = visitorRepository.findByUsername(search.getUsername());
         if (user == null) {
-            VisitorDto visitorDto = visitorMapper.visitorToVisitorDto(user);
+            VisitorDto visitorDto = visitorMapper.toDto(user);
             saveNewUser(visitorDto);
         }
         log.warn("createUserIfNotFound: {}",user);
@@ -179,7 +179,7 @@ public class VisitorAndLeaguesService {
     public void createAdminIfNotFound(Visitor search) {
         Visitor admin = visitorRepository.findByUsername(search.getUsername());
         if (admin == null) {
-            VisitorDto visitorDto = visitorMapper.visitorToVisitorDto(admin);
+            VisitorDto visitorDto = visitorMapper.toDto(admin);
             saveNewAdmin(visitorDto);
         }
         log.warn("createAdminIfNotFound: {}",admin);

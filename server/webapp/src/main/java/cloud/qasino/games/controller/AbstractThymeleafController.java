@@ -86,8 +86,8 @@ public class AbstractThymeleafController {
         response.setHeader("Q-Visitor-Id", "-1");
         response.setHeader("Q-Game-Id", "-1");
         response.setHeader("Q-League-Id", "-1");
-        response.setHeader("Q-GamingTable-Player-Id", "-1");
-        response.setHeader("Q-GamingTable-Id", "-1");
+        response.setHeader("Q-Playing-Player-Id", "-1");
+        response.setHeader("Q-Playing-Id", "-1");
 
         response.setHeader("Q-Error-Key", "");
         response.setHeader("Q-Error-Value", "");
@@ -103,11 +103,11 @@ public class AbstractThymeleafController {
         if (flowDto.getQasinoGameLeague() != null) {
             response.setHeader("Q-League-Id", String.valueOf(flowDto.getQasinoGameLeague().getLeagueId()));
         }
-        if (flowDto.getGamingTablePlayer() != null) {
-            response.setHeader("Q-GamingTable-Player-Id", String.valueOf(flowDto.getGamingTablePlayer().getPlayerId()));
+        if (flowDto.getPlayingPlayer() != null) {
+            response.setHeader("Q-Playing-Player-Id", String.valueOf(flowDto.getPlayingPlayer().getPlayerId()));
         }
-        if (flowDto.getActiveGamingTable() != null) {
-            response.setHeader("Q-GamingTable-Id", String.valueOf(flowDto.getActiveGamingTable().getGamingTableId()));
+        if (flowDto.getActivePlaying() != null) {
+            response.setHeader("Q-Playing-Id", String.valueOf(flowDto.getActivePlaying().getPlayingId()));
         }
 //        if (flowDto.getHttpStatus() > 299) {
 

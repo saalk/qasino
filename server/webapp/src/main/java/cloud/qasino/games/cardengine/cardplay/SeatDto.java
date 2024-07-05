@@ -16,14 +16,14 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class Seat {
+public class SeatDto {
 
     private List<Hand> hand;
 
     // FROM GAME - PLAYERS ordered by seat
 
     // seat stats
-    private int seatId;
+    private int seat;
     private boolean isSeatPlaying;
     private boolean isSeatPlayerTheInitiator;
     private int seatFiches;
@@ -44,7 +44,7 @@ public class Seat {
     private int seatStartBalance;
 
     // cards in the hand of player for the seat
-    private String allCardsInHand;
+    private String cardsInHand;
     private Card lastCardInHand;
 
 }

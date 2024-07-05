@@ -5,7 +5,7 @@ import cloud.qasino.games.database.entity.enums.game.GameState;
 import cloud.qasino.games.database.entity.enums.game.Style;
 import cloud.qasino.games.dto.QasinoFlowDto;
 import cloud.qasino.games.response.view.NavigationBarItem;
-import cloud.qasino.games.dto.InvitationsDTO;
+import cloud.qasino.games.dto.InvitationsDto;
 import cloud.qasino.games.response.view.PageGamePlay;
 import cloud.qasino.games.response.view.PageGameSetup;
 import cloud.qasino.games.response.view.PageLeague;
@@ -31,7 +31,7 @@ public class QasinoResponseMapperOld {
         PageVisitor pageVisitor = new PageVisitor();
         PageGameSetup pageGameSetup = new PageGameSetup();
         PageGamePlay pageGamePlay = new PageGamePlay();
-        InvitationsDTO pageGamesOverview = new InvitationsDTO();
+        InvitationsDto pageGamesOverview = new InvitationsDto();
         PageLeague pageLeague = new PageLeague();
 
         // special for gameplay
@@ -219,11 +219,11 @@ public class QasinoResponseMapperOld {
         // set the nav bar
         navigationBarItem.setTitle("Play[" +
                 Integer.toHexString((int) actionDto.getQasinoGame().getGameId())+"]");
-        // TODO FIXXXX .NullPointerException: Cannot invoke "cloud.qasino.games.database.entity.GamingTable.getCurrentRoundNumber()" because the return value of "cloud.qasino.games.action.MapQasinoResponseFromDto$Dto.getActiveGamingTable()" is null
-        if (actionDto.getActiveGamingTable() != null) { // games is still being validated
+        // TODO FIXXXX .NullPointerException: Cannot invoke "cloud.qasino.games.database.entity.Playing.getCurrentRoundNumber()" because the return value of "cloud.qasino.games.action.MapQasinoResponseFromDto$Dto.getActivePlaying()" is null
+        if (actionDto.getActivePlaying() != null) { // games is still being validated
             navigationBarItem.setStat(
-                    "[" + actionDto.getActiveGamingTable().getCurrentRoundNumber() +
-                            "/" + actionDto.getActiveGamingTable().getCurrentMoveNumber() +
+                    "[" + actionDto.getActivePlaying().getCurrentRoundNumber() +
+                            "/" + actionDto.getActivePlaying().getCurrentMoveNumber() +
                             "] round/turn");
         }
         // set the content
@@ -235,7 +235,7 @@ public class QasinoResponseMapperOld {
         }
         pageGamePlay.setGameResults(actionDto.getGameResults());
     }
-    private void mapGameInvitationsPage(QasinoFlowDto actionDto, NavigationBarItem navigationBarItem, InvitationsDTO pageGamesOverview) {
+    private void mapGameInvitationsPage(QasinoFlowDto actionDto, NavigationBarItem navigationBarItem, InvitationsDto pageGamesOverview) {
         // set the nav bar
         navigationBarItem.setTitle("Invite[]");
         navigationBarItem.setStat("calculating...");

@@ -4,12 +4,12 @@ import cloud.qasino.games.action.CalculateAndFinishGameAction;
 import cloud.qasino.games.action.IsGameConsistentForGameEventAction;
 import cloud.qasino.games.action.IsGameFinishedAction;
 import cloud.qasino.games.action.IsPlayerHumanAction;
-import cloud.qasino.games.action.IsGamingTableConsistentForPlayEventAction;
+import cloud.qasino.games.action.IsPlayingConsistentForPlayEventAction;
 import cloud.qasino.games.action.LoadEntitiesToDtoAction;
 import cloud.qasino.games.action.MapQasinoGameTableFromDtoAction;
-import cloud.qasino.games.action.PlayFirstGamingTableAction;
-import cloud.qasino.games.action.PlayNextBotGamingTableAction;
-import cloud.qasino.games.action.PlayNextHumanGamingTableAction;
+import cloud.qasino.games.action.PlayFirstMoveAction;
+import cloud.qasino.games.action.PlayNextBotMoveAction;
+import cloud.qasino.games.action.PlayNextHumanMoveAction;
 import cloud.qasino.games.action.StartGameForTypeAction;
 import cloud.qasino.games.action.StopGameAction;
 import cloud.qasino.games.action.UpdateFichesForPlayerAction;
@@ -45,14 +45,14 @@ import static cloud.qasino.games.pattern.statemachine.event.EventOutput.Result.S
 @ControllerAdvice
 //@Api(tags = {WebConfiguration.QASINO_TAG})
 @Slf4j
-public class GamingTableAndCardMoveThymeleafController extends AbstractThymeleafController {
+public class PlayingThymeleafController extends AbstractThymeleafController {
 
     EventOutput.Result result;
 
     @Autowired
     IsGameConsistentForGameEventAction isGameConsistentForGameEventAction;
     @Autowired
-    IsGamingTableConsistentForPlayEventAction isGamingTableConsistentForPlayEventAction;
+    IsPlayingConsistentForPlayEventAction isPlayingConsistentForPlayEventAction;
     @Autowired
     IsGameFinishedAction isGameFinishedAction;
     @Autowired
@@ -62,7 +62,7 @@ public class GamingTableAndCardMoveThymeleafController extends AbstractThymeleaf
     @Autowired
     StartGameForTypeAction startGameForTypeAction;
     @Autowired
-    PlayFirstGamingTableAction playFirstGamingTableAction;
+    PlayFirstMoveAction playFirstMoveAction;
     @Autowired
     StopGameAction stopGameAction;
     @Autowired
@@ -70,17 +70,17 @@ public class GamingTableAndCardMoveThymeleafController extends AbstractThymeleaf
     @Autowired
     MapQasinoGameTableFromDtoAction mapQasinoGameTableFromDtoAction;
     @Autowired
-    PlayNextHumanGamingTableAction playNextHumanGamingTableAction;
+    PlayNextHumanMoveAction playNextHumanMoveAction;
     @Autowired
     IsPlayerHumanAction isPlayerHumanAction;
     @Autowired
-    PlayNextBotGamingTableAction playNextBotGamingTableAction;
+    PlayNextBotMoveAction playNextBotMoveAction;
     @Autowired
     UpdatePlayingStateForGame updatePlayingStateForGame;
 
 
     @Autowired
-    public GamingTableAndCardMoveThymeleafController(
+    public PlayingThymeleafController(
             GameRepository gameRepository,
             PlayerRepository playerRepository,
             CardRepository cardRepository,
@@ -126,7 +126,7 @@ public class GamingTableAndCardMoveThymeleafController extends AbstractThymeleaf
         }
         startGameForTypeAction.perform(flowDto);
         mapQasinoGameTableFromDtoAction.perform(flowDto);
-        playFirstGamingTableAction.perform(flowDto);
+        playFirstMoveAction.perform(flowDto);
         // get all entities and build reponse
         loadEntitiesToDtoAction.perform(flowDto);
         // 4 - return response
@@ -156,7 +156,7 @@ public class GamingTableAndCardMoveThymeleafController extends AbstractThymeleaf
         flowDto.setPathVariables(
                 "visitorId", getPricipalVisitorId(principal),
                 "gameId", id,
-//                "turnPlayerId", String.valueOf(qasinoResponse.getPageGamePlay().getTable().getCurrentGamingTable().getActivePlayerId()),
+//                "turnPlayerId", String.valueOf(qasinoResponse.getPageGamePlay().getTable().getPlaying().getPlayerId()),
                 "gameEvent", "play",
                 "playEvent", trigger.toLowerCase()
         );
@@ -180,9 +180,9 @@ public class GamingTableAndCardMoveThymeleafController extends AbstractThymeleaf
             model.addAttribute(flowDto.getQasinoResponse());
             return "redirect:/play/" + qasinoResponse.getPageGamePlay().getSelectedGame().getGameId();
         }
-        result = isGamingTableConsistentForPlayEventAction.perform(flowDto);
+        result = isPlayingConsistentForPlayEventAction.perform(flowDto);
         if (EventOutput.Result.FAILURE.equals(result)) {
-            log.warn("Errors isGamingTableConsistentForPlayEvent!!: {}", errors);
+            log.warn("Errors isPlayingConsistentForPlayEvent!!: {}", errors);
             prepareQasinoResponse(response, flowDto);
             model.addAttribute(flowDto.getQasinoResponse());
             return "redirect:/play/" + flowDto.getSuppliedGameId();
@@ -192,11 +192,11 @@ public class GamingTableAndCardMoveThymeleafController extends AbstractThymeleaf
         result = isPlayerHumanAction.perform(flowDto);
         updatePlayingStateForGame.perform(flowDto);
         if (SUCCESS.equals(result)) {
-            log.warn("playNextHumanGamingTableAction {}", flowDto.getSuppliedGameEvent());
-            playNextHumanGamingTableAction.perform(flowDto);
+            log.warn("playNextHumanMoveAction {}", flowDto.getSuppliedGameEvent());
+            playNextHumanMoveAction.perform(flowDto);
         } else {
-            log.warn("playNextBotGamingTableAction {}", flowDto.getSuppliedGameEvent());
-            playNextBotGamingTableAction.perform(flowDto);
+            log.warn("playNextBotMoveAction {}", flowDto.getSuppliedGameEvent());
+            playNextBotMoveAction.perform(flowDto);
         }
         updateFichesForPlayerAction.perform(flowDto);
         result = isGameFinishedAction.perform(flowDto);

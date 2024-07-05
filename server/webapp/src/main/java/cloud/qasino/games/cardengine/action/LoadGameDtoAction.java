@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 
 @Slf4j
 @Component
-public class LoadGameFromIdsDtoAction extends ActionDto<EventOutput.Result> {
+public class LoadGameDtoAction extends ActionDto<EventOutput.Result> {
 
     @Override
     public EventOutput.Result perform() {
@@ -17,7 +17,7 @@ public class LoadGameFromIdsDtoAction extends ActionDto<EventOutput.Result> {
         if (!isGameFound) {
             // TODO make 404
 //          return new EventOutput(EventOutput.Result.FAILURE, actionDto.getIds().getSuppliedGameEvent(), actionDto.getIds().getSuppliedPlayEvent());
-            throw new MyNPException("69 getVisitorSupplied", "visitorId [" + super.getIds().getSuppliedVisitorId() + "]");
+            throw new MyNPException("69 getVisitorSupplied", "visitorId [" + super.getParams().getSuppliedVisitorId() + "]");
         }
         return EventOutput.Result.SUCCESS;
     }

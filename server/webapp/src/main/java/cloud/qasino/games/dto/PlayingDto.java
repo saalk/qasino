@@ -1,5 +1,6 @@
-package cloud.qasino.games.cardengine.cardplay;
+package cloud.qasino.games.dto;
 
+import cloud.qasino.games.cardengine.cardplay.SeatDto;
 import cloud.qasino.games.database.entity.Card;
 import cloud.qasino.games.database.entity.CardMove;
 import cloud.qasino.games.database.entity.enums.game.GameState;
@@ -8,33 +9,24 @@ import cloud.qasino.games.database.entity.enums.game.gamestate.GameStateGroup;
 import cloud.qasino.games.database.entity.enums.player.AiLevel;
 import cloud.qasino.games.database.entity.enums.player.Avatar;
 import cloud.qasino.games.database.entity.enums.player.PlayerType;
-import cloud.qasino.games.dto.PlayerDto;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.Data;
 
 import java.util.List;
 
-@Getter
-@Setter
-@NoArgsConstructor
-public class Table {
+@Data
+/*
+  The purpose of using this Dto is to separate the internal representation of playing data
+  (e.g., in the database or business logic) from the data exposed to
+  external clients or systems.
+  */
+public class PlayingDto {
 
-    private List<SeatDto> seatDtos;
 
-    // FROM GAME - LEAGUE
-    String leagueName;
-    boolean active;
+    private List<SeatDto> seats;
 
-    // FROM GAME
-    Type type;
-    private int ante;
-    GameState gameState;
-    GameStateGroup gameStateGroup;
-    List<Card> cardsInTheGameSorted;
-    List<Card> cardsInStockNotInHandSorted;
-    private String stringCardsInStockNotInHand;
-    private String countStockAndTotal;
+    private LeagueDto league = null;
+    private GameDto game = null;
+
 
     // FROM PLAYING
     private List<CardMove> allCardMovesForTheGame;
@@ -53,3 +45,5 @@ public class Table {
     private boolean human;
 
 }
+
+

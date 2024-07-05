@@ -14,7 +14,7 @@ SELECT
 g."type", g."updated", g."state", g."ante", g."initiator",
 t."gamingtable_id", t."created",
 c."sequence",c."cardmove_id", c."move", c."created",c."card_move_details",c."card_id",c."bet",c."start_fiches",c."end_fiches",
-p."player_id",p."role",p."seat",p."fiches",p."ai_level"
+p."player_id",p."role",p."seatDto",p."fiches",p."ai_level"
 FROM 
 "game" AS g
 left JOIN "gamingtable" AS t ON t."game_id" = g."game_id" 

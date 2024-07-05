@@ -37,18 +37,15 @@ public class Result {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "result_id")
     private long resultId;
-    @JsonIgnore
     @Column(name = "created", length = 25)
     private String created;
 
     // Foreign keys
-    @JsonIgnore
     // one [Result] always belongs to one [Player]
     @OneToOne(cascade = CascadeType.DETACH)
     @JoinColumn(name = "player_id", referencedColumnName = "player_id", foreignKey = @ForeignKey
             (name = "fk_player_id"), nullable = false)
     private Player player;
-    @JsonIgnore
     // many [Result] can belong to one [Visitor]
     // TODO the Initiator can win the Games as a Player - not sure if we want this relation
     @ManyToOne(cascade = CascadeType.DETACH)

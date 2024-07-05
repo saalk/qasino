@@ -37,14 +37,10 @@ public class Player {
     @Column(name = "player_id", nullable = false)
     private long playerId;
 
-    @JsonIgnore
     @Column(name = "created", length = 25)
     private String created;
 
-
     // Foreign keys
-
-    @JsonIgnore
     // UsPl: a Visitor can play many Games as a Player
     // However ai players are no visitors!
     @ManyToOne(cascade = CascadeType.DETACH)
@@ -52,15 +48,17 @@ public class Player {
             (name = "fk_visitor_id"), nullable = true)
     private Visitor visitor;
 
-    @JsonIgnore
     // PlGa: many Players can play the same Game
     @ManyToOne(cascade = CascadeType.DETACH)
     @JoinColumn(name = "game_id", referencedColumnName = "game_id", foreignKey = @ForeignKey
             (name = "fk_game_id"), nullable = true)
     private Game game;
 
-
     // Normal fields
+
+    // current sequence of the player in the game, zero is a DECLINED VISITOR
+    @Column(name = "seat")
+    private int seat;
 
     @Setter(AccessLevel.NONE)
     @Column(name = "is_human")
@@ -72,10 +70,6 @@ public class Player {
 
     @Column(name = "fiches")
     private int fiches;
-
-    // current sequence of the player in the game, zero is a DECLINED VISITOR
-    @Column(name = "seat")
-    private int seat;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "avatar", nullable = true, length = 50)
@@ -92,20 +86,18 @@ public class Player {
     @Column(name = "is_winner")
     private boolean winner;
 
-    // References
-    @JsonIgnore
-    // one [Player] can have one [GamingTable], holding the current player, round, seat and move
-    @OneToOne(mappedBy = "activePlayer", cascade = CascadeType.DETACH)
-    private GamingTable gamingTable;
+    // REFERENCES
 
-    @JsonIgnore
-    // GaWi: one Player is the Winner of the GameSubTotals in the end
+    // one [Player] can have one [Playing], holding the current player, round, seat and move
+    @OneToOne(mappedBy = "player", cascade = CascadeType.DETACH)
+    private Playing playing;
+
+    // GaWi: one [Player] is the Winner of the GameSubTotals in the end
     @OneToOne(mappedBy = "player", cascade = CascadeType.DETACH)
     // just a reference the fk column is in "game" not here!
     private Result result;// = new Result();
 
-    @JsonIgnore
-    // HO: A Player holds one or more Card after dealing
+    // HO: A [Player] holds one or more [Card]s after playing
     @OneToMany(mappedBy = "hand", cascade = CascadeType.DETACH)
     // just a reference, the actual fk column is in "game" not here !
     final private List<Card> cards = new ArrayList<>();
@@ -192,6 +184,5 @@ public class Player {
                 ", resultId=" + (this.result == null? "": this.result.getResultId()) +
                 ")";
     }
-
 }
 

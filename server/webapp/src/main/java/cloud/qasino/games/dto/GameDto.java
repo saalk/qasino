@@ -1,6 +1,8 @@
 package cloud.qasino.games.dto;
 
-import cloud.qasino.games.database.entity.GamingTable;
+import cloud.qasino.games.database.entity.Card;
+import cloud.qasino.games.database.entity.League;
+import cloud.qasino.games.database.entity.Playing;
 import cloud.qasino.games.database.entity.enums.game.GameState;
 import cloud.qasino.games.database.entity.enums.game.Type;
 import cloud.qasino.games.database.entity.enums.game.gamestate.GameStateGroup;
@@ -11,61 +13,55 @@ import cloud.qasino.games.database.entity.enums.game.style.OneTimeInsurance;
 import cloud.qasino.games.database.entity.enums.game.style.RoundsToWin;
 import cloud.qasino.games.database.entity.enums.game.style.TurnsToWin;
 import lombok.Data;
-import org.hibernate.validator.constraints.NotBlank;
 
 import java.time.Month;
 import java.util.List;
 
 @Data
-/**
- * The purpose of using this Dto is to separate the internal representation of user data
- * (e.g., in the database or business logic) from the data exposed to
- * external clients or systems.
- * */
+/*
+  The purpose of using this Dto is to separate the internal representation of game data
+  (e.g., in the database or business logic) from the data exposed to
+  external clients or systems.
+  */
 public class GameDto {
 
-    private static final String NOT_BLANK_MESSAGE = "{notBlank.message}";
-    private static final String EMAIL_MESSAGE = "{email.message}";
-
-    // for create and update
+    // core
     private long gameId;
-    @NotBlank(message = GameDto.NOT_BLANK_MESSAGE)
+//    private String updated; // ignore
+
+    // ref
+    private League league;
     private long initiator;
-    GameState state;
-    GameStateGroup gameStateGroup;
-    Type type;
+
+    // Normal fields
+    private GameState state;
+    private GameState previousState;
+    private Type type;
     private String style;
     private int ante;
 
-    // related gamingTable
-    GamingTable activeGamingTable;
+    private int year;
+    private Month month;
+    private String week;
+    private int weekday;
 
-    // related league
-    private long leagueId;
-    long leagueInitiatorId;
-    String leagueName;
-
-    // related players
+    // ref
+    private List<Card> cards;
     List<PlayerDto> playerDtos;
-    boolean isActivatePlayerInitiator;
-
-//    List<Result> results;
+//   private Playing playing; // ignore
+//   private List<Result> results; // ignore
 
     // derived
+    private String cardsInStock;
+    private GameStateGroup gameStateGroup;
+    boolean isActivatePlayerInitiator;
+
     private AnteToWin anteToWin;
     private BettingStrategy bettingStrategy;
     private DeckConfiguration deckConfiguration;
     private OneTimeInsurance oneTimeInsurance;
     private RoundsToWin roundsToWin;
     private TurnsToWin turnsToWin;
-
-    // for view
-    private String cardsInStock;
-    private int year;
-    private Month month;
-    private String week;
-    private int weekday;
-
 }
 
 

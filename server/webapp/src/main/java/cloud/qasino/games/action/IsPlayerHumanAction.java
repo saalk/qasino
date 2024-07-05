@@ -22,7 +22,7 @@ public class IsPlayerHumanAction implements Action<IsPlayerHumanAction.Dto, Even
     @Override
     public EventOutput.Result perform(Dto actionDto) {
 
-        if (actionDto.getGamingTablePlayer().isHuman()) {
+        if (actionDto.getPlayingPlayer().isHuman()) {
             return EventOutput.Result.SUCCESS;
         }
         return EventOutput.Result.FAILURE;
@@ -42,7 +42,7 @@ public class IsPlayerHumanAction implements Action<IsPlayerHumanAction.Dto, Even
         PlayEvent getSuppliedPlayEvent();
 
         // Getters
-        Player getGamingTablePlayer();
+        Player getPlayingPlayer();
         Game getQasinoGame();
         // Setters
         void setQasinoGame(Game game);

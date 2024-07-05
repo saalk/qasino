@@ -1,9 +1,7 @@
 package cloud.qasino.games.database.repository;
 
 import cloud.qasino.games.database.entity.Game;
-import cloud.qasino.games.database.entity.Player;
 import cloud.qasino.games.database.entity.Result;
-import cloud.qasino.games.database.entity.GamingTable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;

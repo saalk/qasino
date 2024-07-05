@@ -2,11 +2,10 @@ package cloud.qasino.games.cardengine.action;
 
 import cloud.qasino.games.cardengine.action.dto.ActionDto;
 import cloud.qasino.games.cardengine.cardplay.Hand;
-import cloud.qasino.games.cardengine.cardplay.Seat;
+import cloud.qasino.games.cardengine.cardplay.SeatDto;
 import cloud.qasino.games.cardengine.cardplay.Table;
-import cloud.qasino.games.database.entity.Card;
 import cloud.qasino.games.database.entity.CardMove;
-import cloud.qasino.games.database.entity.GamingTable;
+import cloud.qasino.games.database.entity.Playing;
 import cloud.qasino.games.database.entity.enums.player.PlayerType;
 import cloud.qasino.games.database.repository.CardMoveRepository;
 import cloud.qasino.games.database.repository.CardRepository;
@@ -25,11 +24,10 @@ import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Slf4j
 @Component
-public class LoadTableFromAllOtherDtosAction extends ActionDto<EventOutput.Result> {
+public class LoadPlayingDtoAction extends ActionDto<EventOutput.Result> {
 
     // @formatter:off
     @Autowired private PlayerService playerService;
@@ -49,7 +47,7 @@ public class LoadTableFromAllOtherDtosAction extends ActionDto<EventOutput.Resul
         Table table = new Table();
 
         // FROM GAME - LEAGUE
-        table.setLeagueName(getGame().getLeagueName());
+        table.setLeagueName(getGame().getLeague().getName());
         table.setActive(getLeague().isActive());
 
         // FROM GAME
@@ -57,14 +55,14 @@ public class LoadTableFromAllOtherDtosAction extends ActionDto<EventOutput.Resul
         table.setAnte(getGame().getAnte());
         table.setGameState(getGame().getState());
         table.setGameStateGroup(getGame().getGameStateGroup());
-        table.setCardsInTheGameSorted(cardRepository.findByGameIdOrderBySequenceAsc(getIds().getSuppliedGameId()));
+        table.setCardsInTheGameSorted(cardRepository.findByGameIdOrderBySequenceAsc(getParams().getSuppliedGameId()));
         table.setCardsInStockNotInHandSorted(
                 table.getCardsInTheGameSorted().stream()
                         .filter(c -> c.getHand() == null)
                         .toList());
         table.setStringCardsInStockNotInHand(String.valueOf(table.getCardsInStockNotInHandSorted()));
-        GamingTable gamingTable = refreshOrFindGamingTableForGame();
-        if (gamingTable == null) {
+        Playing playing = refreshOrFindPlayingForGame();
+        if (playing == null) {
             // when game is quit before started
             table.setCountStockAndTotal("[-/-] stock/total");
             return EventOutput.Result.SUCCESS;
@@ -73,71 +71,67 @@ public class LoadTableFromAllOtherDtosAction extends ActionDto<EventOutput.Resul
                     table.getCardsInTheGameSorted().size() + "] stock/total");
         }
 
-        // FROM GAMINGTABLE
-        table.setAllCardMovesForTheGame(StreamUtil.sortCardMovesOnSequenceWithStream(gamingTable.getCardMoves(), 0));
-        table.setCurrentRoundNumber(gamingTable.getCurrentRoundNumber());
-        table.setCurrentSeatNumber(gamingTable.getCurrentSeatNumber());
-        table.setCurrentMoveNumber(gamingTable.getCurrentMoveNumber());
+        // FROM PLAYING
+        table.setAllCardMovesForTheGame(StreamUtil.sortCardMovesOnSequenceWithStream(playing.getCardMoves(), 0));
+        table.setCurrentRoundNumber(playing.getCurrentRoundNumber());
+        table.setCurrentSeatNumber(playing.getCurrentSeatNumber());
+        table.setCurrentMoveNumber(playing.getCurrentMoveNumber());
 
-        // FROM GAMINGTABLE - ACTIVE AND NEXT PLAYER
-        table.setActivePlayer(playerMapper.toDto(gamingTable.getActivePlayer()));
+        // FROM PLAYING - ACTIVE AND NEXT PLAYER
+        table.setPlayer(playerMapper.toDto(playing.getPlayer()));
         table.setNextPlayer(gameService.findNextPlayerForGame(getGame()));
-        table.setPlayerType(table.getActivePlayer().getPlayerType());
-        table.setFiches(table.getActivePlayer().getFiches());
-        table.setAvatar(table.getActivePlayer().getAvatar());
-        table.setAvatarName(table.getActivePlayer().getAvatarName());
-        table.setAiLevel(table.getActivePlayer().getAiLevel());
-        table.setHuman(table.getActivePlayer().isHuman());
+        table.setPlayerType(table.getPlayer().getPlayerType());
+        table.setFiches(table.getPlayer().getFiches());
+        table.setAvatar(table.getPlayer().getAvatar());
+        table.setAvatarName(table.getPlayer().getAvatarName());
+        table.setAiLevel(table.getPlayer().getAiLevel());
+        table.setHuman(table.getPlayer().isHuman());
 
-        table.setSeats(mapSeats(gamingTable));
+        table.setSeatDtos(mapSeats(playing));
         return EventOutput.Result.SUCCESS;
     }
 
-    private List<Seat> mapSeats(GamingTable gamingTable) {
+    private List<SeatDto> mapSeats(Playing playing) {
 //
-        List<Seat> seats = new ArrayList<>();
+        List<SeatDto> seatDtos = new ArrayList<>();
 
         for (PlayerDto player : getGame().getPlayerDtos()) {
-            Seat seat = new Seat();
+            SeatDto seatDto = new SeatDto();
 
-            // seat stats
-            seat.setSeatId(player.getSeat());
-            seat.setSeatPlaying(player.getPlayerId() == gamingTable.getActivePlayer().getPlayerId());
+            // seatDto stats
+            seatDto.setSeat(player.getSeat());
+            seatDto.setSeatPlaying(player.getPlayerId() == playing.getPlayer().getPlayerId());
             // todo which one to choose
-//            seat.setSeatPlayerTheInitiator(player.getPlayerId() ==
+//            seatDto.setSeatPlayerTheInitiator(player.getPlayerId() ==
 //                    actionDto.getQasinoGame().getInitiator());
-            seat.setSeatPlayerTheInitiator(player.getPlayerType() == PlayerType.INITIATOR);
-            seat.setSeatFiches(player.getFiches());
-            seat.setSeatCurrentBet(getGame().getAnte());
+            seatDto.setSeatPlayerTheInitiator(player.getPlayerType() == PlayerType.INITIATOR);
+            seatDto.setSeatFiches(player.getFiches());
+            seatDto.setSeatCurrentBet(getGame().getAnte());
 
             // player stats
-            seat.setPlayer(player);
-            seat.setSeatPlayerId(player.getPlayerId());
-            seat.setPlayerType(player.getPlayerType());
-            seat.setAvatar(seat.getPlayer().getAvatar());
-            seat.setAvatarName(seat.getPlayer().getAvatarName());
-            seat.setAiLevel(seat.getPlayer().getAiLevel());
-            seat.setHuman(seat.getPlayer().isHuman());
+            seatDto.setPlayer(player);
+            seatDto.setSeatPlayerId(player.getPlayerId());
+            seatDto.setPlayerType(player.getPlayerType());
+            seatDto.setAvatar(seatDto.getPlayer().getAvatar());
+            seatDto.setAvatarName(seatDto.getPlayer().getAvatarName());
+            seatDto.setAiLevel(seatDto.getPlayer().getAiLevel());
+            seatDto.setHuman(seatDto.getPlayer().isHuman());
 
-            // when player for the seat is human
+            // when player for the seatDto is human
             if (player.isHuman()) {
-                seat.setVisitorId(player.getVisitorId());
-                seat.setUsername(player.getVisitor().getUsername());
-                seat.setSeatStartBalance(player.getVisitor().getBalance());
+                seatDto.setVisitorId(player.getVisitor().getVisitorId());
+                seatDto.setUsername(player.getVisitor().getUsername());
+                seatDto.setSeatStartBalance(player.getVisitor().getBalance());
             } else {
-                seat.setVisitorId(0);
-                seat.setUsername(player.getAiLevel().getLabel() + " " + player.getAvatar().getLabel());
-                seat.setSeatStartBalance(0);
+                seatDto.setVisitorId(0);
+                seatDto.setUsername(player.getAiLevel().getLabel() + " " + player.getAvatar().getLabel());
+                seatDto.setSeatStartBalance(0);
             }
 
-            // player cards and moves
-            List<Card> hand = player.getCards();
-            List<String> handStrings =
-                    hand.stream().map(Card::getRankSuit).collect(Collectors.toList());
-            seat.setAllCardsInHand("[" + String.join("],[", handStrings) + "]");
+            seatDto.setCardsInHand(player.getCardsInHand());
 
             Hand handInRound = new Hand();
-            List<CardMove> cardMoves = gamingTable.getCardMoves().stream()
+            List<CardMove> cardMoves = playing.getCardMoves().stream()
                     .filter(p -> p.getPlayerId() == player.getPlayerId())
                     .toList();
 
@@ -173,10 +167,10 @@ public class LoadTableFromAllOtherDtosAction extends ActionDto<EventOutput.Resul
                     }
                 }
             }
-//          seat.setCardsInHandPerGamingTable(handInRounds);
-            seats.add(seat);
+//          seatDto.setCardsInHandPerPlaying(handInRounds);
+            seatDtos.add(seatDto);
         }
-        return seats;
+        return seatDtos;
 
     }
 }

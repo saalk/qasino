@@ -67,6 +67,6 @@ public enum PlayerType implements LabeledEnum {
         return fromLabelWithDefault(Character.toString(character));
     }
 
-    public static Set<PlayerType> playerStateListActivePlayer = EnumSet.of(INITIATOR, BOT, INVITEE);
+    public static Set<PlayerType> playerStateListPlayer = EnumSet.of(INITIATOR, BOT, INVITEE);
 
 }

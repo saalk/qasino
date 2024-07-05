@@ -1,43 +1,37 @@
 package cloud.qasino.games.dto;
 
-import cloud.qasino.games.database.entity.enums.game.GameState;
 import cloud.qasino.games.database.entity.enums.game.Type;
-import cloud.qasino.games.database.entity.enums.player.AiLevel;
-import cloud.qasino.games.database.entity.enums.player.Avatar;
 import lombok.Data;
 
+import java.time.Month;
+
 @Data
-/**
- * The purpose of using this Dto is to separate the internal representation of user data
- * (e.g., in the database or business logic) from the data exposed to
- * external clients or systems.
- * */
+/*
+  The purpose of using this Dto is to separate the internal representation of result data
+  (e.g., in the database or business logic) from the data exposed to
+  external clients or systems.
+  */
 public class ResultDto {
 
-    private static final String NOT_BLANK_MESSAGE = "{notBlank.message}";
-    private static final String EMAIL_MESSAGE = "{email.message}";
+    // core
+    private long resultId;
+//    private String created; // ignore
 
-    long resultId;
-    String name;
+    // ref
+    private PlayerDto playerDto;
+    private VisitorDto visitorDto;
+    private GameDto gameDto;
 
-    long playerId;
-    Avatar playerAvatar;
-    String playerAvatarName;
-    AiLevel playerAiLevel;
-
-    long visitorId;
-    String username;
-    String alias;
-    String aliasSequence;
-    int balance;
-
-    long gameId;
-    GameState state;
-    Type type;
-    int ante;
+    // Normal fields
+    private Type type;
+    private int year;
+    private Month month;
+    private String week;
+    private int weekday;
+    private int fichesWon;
 
     // derived
-    boolean playerWinner;
+    boolean winner;
 
 }
 

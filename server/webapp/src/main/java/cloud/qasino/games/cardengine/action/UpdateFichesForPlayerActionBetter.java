@@ -41,7 +41,7 @@ public class UpdateFichesForPlayerActionBetter implements Action<UpdateFichesFor
 
         Optional<Card> previousCardMoveCard = Optional.of(new Card());
         CardMove previousCardMove;
-        List<CardMove> cardMoves = cardMoveRepository.findByPlayerIdOrderBySequenceAsc(actionDto.getGamingTablePlayer().getPlayerId());
+        List<CardMove> cardMoves = cardMoveRepository.findByPlayerIdOrderBySequenceAsc(actionDto.getPlayingPlayer().getPlayerId());
         for (CardMove cardMove : cardMoves) {
             switch (cardMove.getMove()) {
                 case HIGHER, LOWER -> {
@@ -63,15 +63,15 @@ public class UpdateFichesForPlayerActionBetter implements Action<UpdateFichesFor
 
     private void updateWinOfLoss(Dto actionDto, CardMove cardMove, Card previousCardMoveCard) {
         cardMove.setBet(actionDto.getQasinoGame().getAnte());
-        cardMove.setStartFiches(actionDto.getGamingTablePlayer().getFiches());
+        cardMove.setStartFiches(actionDto.getPlayingPlayer().getFiches());
         Optional<Card> previousCard = cardRepository.findById(previousCardMoveCard.getCardId());
         Optional<Card> currentCard = cardRepository.findById(cardMove.getCardId());
         cardMove.setEndFiches(
                 cardMove.getStartFiches() +
                         calculateWinOrLoss(actionDto, cardMove.getMove(), previousCard.get(), currentCard.get()));
         cardMoveRepository.save(cardMove);
-        actionDto.getGamingTablePlayer().setFiches(cardMove.getEndFiches());
-        playerRepository.save(actionDto.getGamingTablePlayer());
+        actionDto.getPlayingPlayer().setFiches(cardMove.getEndFiches());
+        playerRepository.save(actionDto.getPlayingPlayer());
         actionDto.setAllCardMovesForTheGame(playingService.findCardMovesForGame(actionDto.getQasinoGame())); // can be null
     }
     private int calculateWinOrLoss(Dto actionDto, Move move, Card previous, Card current) {
@@ -113,10 +113,10 @@ public class UpdateFichesForPlayerActionBetter implements Action<UpdateFichesFor
         // Getters
         List<CardMove> getAllCardMovesForTheGame();
         Game getQasinoGame();
-        Player getGamingTablePlayer();
+        Player getPlayingPlayer();
 
         // Setters
-        void setGamingTablePlayer(Player player);
+        void setPlayingPlayer(Player player);
         void setAllCardMovesForTheGame(List<CardMove> cardMoves);
 
         // error setters

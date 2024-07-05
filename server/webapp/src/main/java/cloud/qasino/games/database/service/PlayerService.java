@@ -92,7 +92,7 @@ public class PlayerService {
     }
     public PlayerDto addHumanVisitorPlayerToAGame(VisitorDto visitorDto, GameDto gameDto, Avatar avatar) {
         Game game = gameMapper.fromDto(gameDto);
-        Visitor initiator = visitorMapper.visitorDtoToVisitor(visitorDto);
+        Visitor initiator = visitorMapper.fromDto(visitorDto);
 
         List<Player> allPlayersForTheGame = playerRepository.findByGame(game);
         String avatarName = "avatarName";
@@ -110,7 +110,7 @@ public class PlayerService {
     }
     public PlayerDto addInvitedHumanPlayerToAGame(VisitorDto visitorDto, GameDto gameDto, Avatar avatar) {
         Game game = gameMapper.fromDto(gameDto);
-        Visitor invitee = visitorMapper.visitorDtoToVisitor(visitorDto);
+        Visitor invitee = visitorMapper.fromDto(visitorDto);
 
         List<Player> allPlayersForTheGame = playerRepository.findByGame(game);
         String avatarName = "avatarName";

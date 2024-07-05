@@ -5,7 +5,6 @@ import cloud.qasino.games.dto.VisitorDto;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Named;
-import org.mapstruct.factory.Mappers;
 
 @Mapper
 public interface VisitorMapper {
@@ -17,7 +16,7 @@ public interface VisitorMapper {
     @Mapping(target = "admin", source = "visitor", qualifiedByName = "isTheAdmin")
     @Mapping(target = "user", source = "visitor", qualifiedByName = "isTheUser")
     @Mapping(target = "repayPossible", source = "visitor", qualifiedByName = "canRepay")
-    VisitorDto visitorToVisitorDto(Visitor visitor);
+    VisitorDto toDto(Visitor visitor);
 
     @Mapping(target = "created", ignore = true)
     @Mapping(target = "enabled", ignore = true)
@@ -32,7 +31,7 @@ public interface VisitorMapper {
     @Mapping(target = "players", ignore = true)
     @Mapping(target = "leagues", ignore = true)
     @Mapping(target = "roles", ignore = true)
-    Visitor visitorDtoToVisitor(VisitorDto visitor);
+    Visitor fromDto(VisitorDto visitor);
 
     @Named("canRepay")
     default boolean canRepay(Visitor visitor){

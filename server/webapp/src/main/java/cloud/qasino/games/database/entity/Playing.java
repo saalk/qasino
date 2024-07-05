@@ -26,34 +26,34 @@ import java.util.Objects;
 @Data
 @JsonIdentityInfo(generator = JSOGGenerator.class, property = "turnId")
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
-@Table(name = "gamingtable", indexes =
-        {@Index(name = "gamingtable_game_index", columnList = "game_id", unique = false)
-         // not needed : @Index(name = "turns_index", columnList = "gamingtable_id", unique = true)
+@Table(name = "playing", indexes =
+        {@Index(name = "playing_game_index", columnList = "game_id", unique = false)
+         // not needed : @Index(name = "turns_index", columnList = "playing_id", unique = true)
         }
 )
-public class GamingTable {
+public class Playing {
 
     // @formatter:off
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "gamingtable_id")
-    private long gamingTableId;
+    @Column(name = "playing_id")
+    private long playingId;
     @JsonIgnore
     @Column(name = "created", length = 25)
     private String updated;
 
     // Foreign keys
-    // one [GamingTable] can be part of one [Game]
+    // one [Playing] can be part of one [Game]
     @OneToOne (cascade = CascadeType.DETACH)
 	@JoinColumn(name = "game_id", referencedColumnName = "game_id",foreignKey = @ForeignKey(name =
 			"fk_game_id"), nullable=false)
 	private Game game;
 
-    // one [Player] can be part of one [GamingTable]
+    // one [Player] can be part of one [Playing]
     @OneToOne (cascade = CascadeType.DETACH)
     @JoinColumn(name = "player_id", referencedColumnName = "player_id",foreignKey = @ForeignKey(name =
             "fk_player_id"), nullable=false)
-    private Player activePlayer;
+    private Player player;
 
     // Functional fields
     @Column(name = "current_round_number", nullable = true)
@@ -83,18 +83,18 @@ public class GamingTable {
     private int weekday;
 
     // References - the actual FK are in other tables
-    // one [GamingTable] is parent for many [CardMoves]
-    @OneToMany(mappedBy = "gamingTable", cascade = CascadeType.DETACH)
+    // one [Playing] is parent for many [CardMoves]
+    @OneToMany(mappedBy = "playing", cascade = CascadeType.DETACH)
     private List<CardMove> cardMoves = new ArrayList<>();
 
-    public GamingTable() {
+    public Playing() {
         setUpdated();
     }
 
-    public GamingTable(Game game, Player player) {
+    public Playing(Game game, Player player) {
         this();
         this.game = game;
-        this.activePlayer = player;
+        this.player = player;
 
         this.currentRoundNumber = 1;
         this.currentSeatNumber = 1;
@@ -119,23 +119,23 @@ public class GamingTable {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        GamingTable gamingTable = (GamingTable) o;
-        return gamingTableId == gamingTable.gamingTableId;
+        Playing playing = (Playing) o;
+        return playingId == playing.playingId;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(gamingTableId);
+        return Objects.hash(playingId);
     }
 
     @Override
     public String toString() {
         return "(" +
-                "gamingTableId=" + this.gamingTableId +
-                ", activePlayer=" + (this.activePlayer.getPlayerId()) +
+                "playingId=" + this.playingId +
+                ", player=" + (this.player.getPlayerId()) +
                 ", currentRoundNumber=" + this.currentRoundNumber +
                 ", currentSeatNumber=" + this.currentSeatNumber +
-                ", currentGamingTableNumber=" + this.currentMoveNumber +
+                ", playingNumber=" + this.currentMoveNumber +
                 ", gameId=" + (this.game == null? "": this.game.getGameId()) +
                 ", weekday=" + this.weekday +
                 ")";

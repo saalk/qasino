@@ -1,6 +1,9 @@
 package cloud.qasino.games.dto.mapper;
 
+import cloud.qasino.games.database.entity.Card;
 import cloud.qasino.games.database.entity.Game;
+import cloud.qasino.games.database.entity.Player;
+import cloud.qasino.games.database.entity.enums.card.Location;
 import cloud.qasino.games.database.entity.enums.game.Style;
 import cloud.qasino.games.database.entity.enums.game.gamestate.GameStateGroup;
 import cloud.qasino.games.database.entity.enums.game.style.AnteToWin;
@@ -16,6 +19,7 @@ import org.mapstruct.Mapping;
 import org.mapstruct.Named;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Mapper
 public interface GameMapper {
@@ -33,20 +37,46 @@ public interface GameMapper {
     @Mapping(target = "playerDtos", source = "game", qualifiedByName = "playerDtos")
     GameDto toDto(Game game);
 
-    @Mapping(target = "state", ignore = true)
-    @Mapping(target = "style", ignore = true)
-    @Mapping(target = "players", ignore = true)
-    @Mapping(target = "results", ignore = true)
+    List<GameDto> toDtoList(List<Game> games);
+
     @Mapping(target = "updated", ignore = true)
+    @Mapping(target = "league", ignore = true)
+    @Mapping(target = "initiator", ignore = true)
+    @Mapping(target = "state", ignore = true)
+    @Mapping(target = "previousState", ignore = true)
     @Mapping(target = "year", ignore = true)
     @Mapping(target = "month", ignore = true)
     @Mapping(target = "week", ignore = true)
     @Mapping(target = "weekday", ignore = true)
+    @Mapping(target = "cards", ignore = true)
+    @Mapping(target = "players", ignore = true)
+    @Mapping(target = "results", ignore = true)
     Game fromDto(GameDto game);
+
+    @Named("playerDtos")
+    default List<PlayerDto> playerDtos(Game game) {
+        return playerMapper.toDtoList(game.getPlayers());
+    }
+
+    @Named("cardsInStock")
+    default String cardsInHand(Player player) {
+        List<Card> hand = player.getCards();
+        List<String> handStrings =
+                hand.stream()
+                        .filter(location -> location.getLocation().equals(Location.STOCK))
+                        .map(Card::getRankSuit)
+                        .collect(Collectors.toList());
+        return "[" + String.join("],[", handStrings) + "]";
+    }
+
+    @Named("gameStateGroup")
+    default GameStateGroup gameStateGroup(Game game) {
+        return game.getState().getGroup();
+    }
 
     @Named("isActivatePlayerInitiator")
     default boolean activatePlayerInitiator(Game game) {
-        return game.getInitiator() == game.getGamingTable().getActivePlayer().getPlayerId();
+        return game.getInitiator() == game.getPlaying().getPlayer().getPlayerId();
     }
 
     @Named("anteToWin")
@@ -83,15 +113,5 @@ public interface GameMapper {
     default TurnsToWin turnsToWin(Game game) {
         Style style = Style.fromLabelWithDefault(game.getStyle());
         return style.getTurnsToWin();
-    }
-
-    @Named("gameStateGroup")
-    default GameStateGroup gameStateGroup(Game game) {
-        return game.getState().getGroup();
-    }
-
-    @Named("playerDtos")
-    default List<PlayerDto> playerDtos(Game game) {
-        return playerMapper.toDtoList(game.getPlayers());
     }
 }

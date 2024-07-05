@@ -14,7 +14,7 @@ import jakarta.annotation.Resource;
 
 @Slf4j
 @Component
-public class IsGamingTableFinishedAction implements Action<IsGamingTableFinishedAction.Dto, EventOutput.Result> {
+public class IsPlayingFinishedAction implements Action<IsPlayingFinishedAction.Dto, EventOutput.Result> {
 
     @Resource
     GameRepository gameRepository;

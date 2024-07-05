@@ -12,7 +12,7 @@ public abstract class AbstractFlowDto { //implements FlowEventCallback {
     private String gameId;
     private String visitorId;
     private GameState startState;
-    private Event currentGameEvent;
+    private Event gameEvent;
     private Event currentPlayEvent;
     private EventHandlingResponse eventHandlingResponse;
 

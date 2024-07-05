@@ -5,7 +5,7 @@ import cloud.qasino.games.database.entity.CardMove;
 import cloud.qasino.games.database.entity.Game;
 import cloud.qasino.games.database.entity.League;
 import cloud.qasino.games.database.entity.Player;
-import cloud.qasino.games.database.entity.GamingTable;
+import cloud.qasino.games.database.entity.Playing;
 import cloud.qasino.games.database.entity.enums.card.Location;
 import cloud.qasino.games.database.entity.enums.card.PlayingCard;
 import cloud.qasino.games.database.entity.enums.game.GameState;
@@ -146,10 +146,10 @@ public class QuickTestAtStartup implements ApplicationRunner {
         game.setState(GameState.PREPARED);
         gameRepository.save(game);
 
-        // The main player initiates a gamingTable with round 1 player 1 and gets a card
-        GamingTable gamingTable = new GamingTable(game, visitorAndBot.get(0));
-        playingRepository.save(gamingTable);
-        CardMove cardMove = new CardMove(gamingTable, visitorAndBot.get(0), 0, Move.DEAL,
+        // The main player initiates a playing with round 1 player 1 and gets a card
+        Playing playing = new Playing(game, visitorAndBot.get(0));
+        playingRepository.save(playing);
+        CardMove cardMove = new CardMove(playing, visitorAndBot.get(0), 0, Move.DEAL,
                 Location.HAND, "details");
         cardMoveRepository.save(cardMove);
     }
