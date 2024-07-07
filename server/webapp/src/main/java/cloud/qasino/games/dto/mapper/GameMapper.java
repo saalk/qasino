@@ -27,7 +27,7 @@ public interface GameMapper {
     PlayerMapper playerMapper = new PlayerMapperImpl();
 
     @Mapping(target = "gameStateGroup", source = "game", qualifiedByName = "gameStateGroup")
-    @Mapping(target = "activatePlayerInitiator", source = "game", qualifiedByName = "isActivatePlayerInitiator")
+    @Mapping(target = "activePlayerInitiator", source = "game", qualifiedByName = "isActivePlayerInitiator")
     @Mapping(target = "anteToWin", source = "game", qualifiedByName = "anteToWin")
     @Mapping(target = "bettingStrategy", source = "game", qualifiedByName = "bettingStrategy")
     @Mapping(target = "deckConfiguration", source = "game", qualifiedByName = "deckConfiguration")
@@ -74,8 +74,8 @@ public interface GameMapper {
         return game.getState().getGroup();
     }
 
-    @Named("isActivatePlayerInitiator")
-    default boolean activatePlayerInitiator(Game game) {
+    @Named("isActivePlayerInitiator")
+    default boolean activePlayerInitiator(Game game) {
         return game.getInitiator() == game.getPlaying().getPlayer().getPlayerId();
     }
 

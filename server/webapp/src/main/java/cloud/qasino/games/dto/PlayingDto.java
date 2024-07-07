@@ -1,11 +1,7 @@
 package cloud.qasino.games.dto;
 
 import cloud.qasino.games.cardengine.cardplay.SeatDto;
-import cloud.qasino.games.database.entity.Card;
 import cloud.qasino.games.database.entity.CardMove;
-import cloud.qasino.games.database.entity.enums.game.GameState;
-import cloud.qasino.games.database.entity.enums.game.Type;
-import cloud.qasino.games.database.entity.enums.game.gamestate.GameStateGroup;
 import cloud.qasino.games.database.entity.enums.player.AiLevel;
 import cloud.qasino.games.database.entity.enums.player.Avatar;
 import cloud.qasino.games.database.entity.enums.player.PlayerType;
@@ -21,28 +17,24 @@ import java.util.List;
   */
 public class PlayingDto {
 
+    // core
+    private long playingId;
+//    private String updated; // ignore
 
+    // ref
+    private GameDto game;
+    private PlayerDto player;
+    private List<CardMove> cardMoves;
+
+    // derived
+    private LeagueDto league;
+    private PlayerDto nextPlayer;
     private List<SeatDto> seats;
 
-    private LeagueDto league = null;
-    private GameDto game = null;
-
-
-    // FROM PLAYING
-    private List<CardMove> allCardMovesForTheGame;
+    // Normal fields
     private int currentRoundNumber;
     private int currentSeatNumber;
     private int currentMoveNumber;
-
-    // FROM PLAYING - ACTIVE AND NEXT PLAYER
-    private PlayerDto player;
-    private PlayerDto nextPlayer;
-    private PlayerType playerType;
-    private int fiches;
-    private Avatar avatar;
-    private String avatarName;
-    private AiLevel aiLevel;
-    private boolean human;
 
 }
 

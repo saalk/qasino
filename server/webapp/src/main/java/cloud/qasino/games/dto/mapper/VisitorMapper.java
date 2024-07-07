@@ -1,21 +1,27 @@
 package cloud.qasino.games.dto.mapper;
 
+import cloud.qasino.games.database.security.Role;
 import cloud.qasino.games.database.security.Visitor;
 import cloud.qasino.games.dto.VisitorDto;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Named;
+import org.mapstruct.factory.Mappers;
+
+import java.util.List;
 
 @Mapper
 public interface VisitorMapper {
 
-//    VisitorMapper INSTANCE = Mappers.getMapper(VisitorMapper.class);
+    VisitorMapper INSTANCE = Mappers.getMapper(VisitorMapper.class);
 
     @Mapping(target = "password", ignore = true)
-    @Mapping(target = "roles", ignore = true)
+    @Mapping(target = "initiatedGamesForVisitor", ignore = true)
+    @Mapping(target = "invitedGamesForVisitor", ignore = true)
     @Mapping(target = "admin", source = "visitor", qualifiedByName = "isTheAdmin")
     @Mapping(target = "user", source = "visitor", qualifiedByName = "isTheUser")
     @Mapping(target = "repayPossible", source = "visitor", qualifiedByName = "canRepay")
+    @Mapping(target = "rolesList", source = "visitor", qualifiedByName = "rolesList")
     VisitorDto toDto(Visitor visitor);
 
     @Mapping(target = "created", ignore = true)
@@ -44,5 +50,9 @@ public interface VisitorMapper {
     @Named("isTheUser")
     default boolean isTheUser(Visitor visitor){
         return true;
+    }
+    @Named("rolesList")
+    default List<Role> roles(Visitor visitor){
+        return visitor.getRoles().stream().toList();
     }
 }

@@ -97,7 +97,9 @@ public class VisitorAndLeaguesService {
     @Transactional
     public VisitorDto saveNewUser(VisitorDto userDto) {
         final Role basicRole = roleRepository.findByName("ROLE_USER");
-        userDto.setRoles(Collections.singleton(basicRole));
+        List<Role> roles = new ArrayList<>();
+        roles.add(basicRole);
+        userDto.setRolesList(roles);
         userDto.setPassword(encoder.encode(userDto.getPassword()));
         Visitor visitor = visitorMapper.fromDto(userDto);
         Visitor savedVisitor = visitorRepository.save(visitor);
@@ -107,7 +109,9 @@ public class VisitorAndLeaguesService {
     @Transactional
     public VisitorDto saveNewAdmin(VisitorDto adminDto) {
         final Role adminRole = roleRepository.findByName("ROLE_ADMIN");
-        adminDto.setRoles(Collections.singleton(adminRole));
+        List<Role> roles = new ArrayList<>();
+        roles.add(adminRole);
+        adminDto.setRolesList(roles);
         adminDto.setPassword(encoder.encode(adminDto.getPassword()));
         Visitor visitor = visitorMapper.fromDto(adminDto);
         Visitor savedVisitor = visitorRepository.save(visitor);
