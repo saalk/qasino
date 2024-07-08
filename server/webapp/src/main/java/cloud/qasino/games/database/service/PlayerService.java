@@ -51,20 +51,20 @@ public class PlayerService {
         Player invitee = playerMapper.fromDto(playerDto);
         invitee.setPlayerType(PlayerType.INVITEE);
         Player accepted =  playerRepository.save(invitee);
-        return playerMapper.toDto(accepted);
+        return playerMapper.toDto(accepted, null);
     }
     public PlayerDto rejectInvitationForAGame(PlayerDto playerDto) {
         Player invitee = playerMapper.fromDto(playerDto);
         invitee.setPlayerType(PlayerType.REJECTED);
         Player rejected =  playerRepository.save(invitee);
-        return playerMapper.toDto(rejected);
+        return playerMapper.toDto(rejected, null);
     }
     public List<PlayerDto> seatOneUpForPlayer(PlayerDto playerDto) {
         Player seatUp = playerMapper.fromDto(playerDto);
         List<Player> allPlayersForTheGame = playerRepository.findByGame(seatUp.getGame());
 
         List<PlayerDto> playerDtos = allPlayersForTheGame.stream()
-                .map(player -> playerMapper.toDto(player))
+                .map(player -> playerMapper.toDto(player, null))
                 .toList();
 
         if (allPlayersForTheGame.size() == 1) return playerDtos;
@@ -106,7 +106,7 @@ public class PlayerService {
                 avatarName,
                 AiLevel.HUMAN);
         Player newPlayer =  playerRepository.save(visitor);
-        return playerMapper.toDto(newPlayer);
+        return playerMapper.toDto(newPlayer, null);
     }
     public PlayerDto addInvitedHumanPlayerToAGame(VisitorDto visitorDto, GameDto gameDto, Avatar avatar) {
         Game game = gameMapper.fromDto(gameDto);
@@ -124,7 +124,7 @@ public class PlayerService {
             avatarName,
             AiLevel.HUMAN);
         Player newPlayer =  playerRepository.save(player);
-        return playerMapper.toDto(newPlayer);
+        return playerMapper.toDto(newPlayer, null);
     }
     public PlayerDto addBotPlayerToAGame(GameDto gameDto, Avatar avatar, AiLevel aiLevel) {
         Game game = gameMapper.fromDto(gameDto);
@@ -145,6 +145,6 @@ public class PlayerService {
                 avatarName,
                 aiLevel);
         Player newBot =  playerRepository.save(bot);
-        return playerMapper.toDto(newBot);
+        return playerMapper.toDto(newBot, null);
     }
 }

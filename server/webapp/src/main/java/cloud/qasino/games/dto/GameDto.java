@@ -30,6 +30,10 @@ public class GameDto {
     // ref
     private LeagueDto league;
     private long initiator;
+    private List<Card> cards;
+    private List<PlayerDto> players;
+    //   private Playing playing; // ignore
+//   private List<Result> results; // ignore
 
     // Normal fields
     private GameState state;
@@ -42,12 +46,6 @@ public class GameDto {
     private Month month;
     private String week;
     private int weekday;
-
-    // ref
-    private List<Card> cards;
-    private List<PlayerDto> playerDtos;
-//   private Playing playing; // ignore
-//   private List<Result> results; // ignore
 
     // derived
     private String cardsInStock;

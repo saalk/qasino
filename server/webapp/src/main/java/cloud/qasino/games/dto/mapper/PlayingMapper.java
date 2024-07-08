@@ -7,6 +7,7 @@ import cloud.qasino.games.dto.PlayingDto;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Named;
+import org.mapstruct.factory.Mappers;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,6 +15,10 @@ import java.util.stream.Collectors;
 
 @Mapper
 public interface PlayingMapper {
+
+    // for testing and use in other mappers
+    PlayingMapper INSTANCE = Mappers.getMapper(PlayingMapper.class);
+
 
     PlayingDto toDto(Playing playing);
 

@@ -13,6 +13,7 @@ import java.util.List;
 @Mapper
 public interface VisitorMapper {
 
+    // for testing and use in other mappers
     VisitorMapper INSTANCE = Mappers.getMapper(VisitorMapper.class);
 
     @Mapping(target = "password", ignore = true)

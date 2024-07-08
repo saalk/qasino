@@ -107,13 +107,13 @@ public class GameService {
         return gameMapper.toDto(game);
     }
     public PlayerDto findNextPlayerForGame(GameDto game) {
-        int totalSeats = game.getPlayerDtos().size();
+        int totalSeats = game.getPlayers().size();
 //        TODO int currentSeat = game.getPlaying().getCurrentSeatNumber();
         int currentSeat = 1;
         if (totalSeats == 1 || currentSeat == totalSeats) {
-            return game.getPlayerDtos().get(0);
+            return game.getPlayers().get(0);
         }
-        List<PlayerDto> sortedPlayers = StreamUtil.sortPlayerDtosOnSeatWithStream(game.getPlayerDtos());
+        List<PlayerDto> sortedPlayers = StreamUtil.sortPlayerDtosOnSeatWithStream(game.getPlayers());
         return sortedPlayers.get((currentSeat - 1) + 1);
     }
 

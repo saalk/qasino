@@ -7,6 +7,7 @@ import cloud.qasino.games.database.security.Role;
 import lombok.Data;
 
 import java.time.Month;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -26,7 +27,7 @@ public class VisitorDto {
 //    private String created; // ignore
 
     // ref
-    private List<Role> rolesList;
+    private List<Role> rolesList = new ArrayList<>();
 
     // derived
     private List<Game> initiatedGamesForVisitor;

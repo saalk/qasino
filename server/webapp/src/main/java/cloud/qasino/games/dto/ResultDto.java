@@ -18,9 +18,9 @@ public class ResultDto {
 //    private String created; // ignore
 
     // ref
-    private PlayerDto playerDto;
-    private VisitorDto visitorDto;
-    private GameDto gameDto;
+    private PlayerDto players;
+    private VisitorDto visitor;
+    private GameDto game;
 
     // Normal fields
     private Type type;

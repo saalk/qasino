@@ -9,18 +9,17 @@ import cloud.qasino.games.dto.VisitorDto;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Named;
+import org.mapstruct.factory.Mappers;
 
 @Mapper
 public interface ResultMapper {
 
-    PlayerMapper playerMapper = new PlayerMapperImpl();
-    GameMapper gameMapper = new GameMapperImpl();
-    VisitorMapper visitorMapper = new VisitorMapperImpl();
+    // for testing and use in other mappers
+    ResultMapper INSTANCE = Mappers.getMapper(ResultMapper.class);
 
-
-    @Mapping(target = "playerDto", source = "result", qualifiedByName = "playerDto")
-    @Mapping(target = "visitorDto", source = "result", qualifiedByName = "visitorDto")
-    @Mapping(target = "gameDto", source = "result", qualifiedByName = "gameDto")
+    @Mapping(target = "players", source = "result", qualifiedByName = "players")
+    @Mapping(target = "visitor", source = "result", qualifiedByName = "visitor")
+    @Mapping(target = "game", source = "result", qualifiedByName = "game")
     ResultDto toDto(Result result);
 
     @Mapping(target = "visitor", ignore = true)
@@ -34,16 +33,16 @@ public interface ResultMapper {
     @Mapping(target = "weekday", ignore = true)
     Result fromDto(ResultDto result);
 
-    @Named("playerDto")
-    default PlayerDto playerDto(Result result) {
-        return playerMapper.toDto(result.getPlayer());
+    @Named("players")
+    default PlayerDto players(Result result) {
+        return PlayerMapper.INSTANCE.toDto(result.getPlayer(), result.getGame().getCards());
     }
-    @Named("visitorDto")
-    default VisitorDto visitorDto(Result result) {
-        return visitorMapper.toDto(result.getVisitor());
+    @Named("visitor")
+    default VisitorDto visitor(Result result) {
+        return VisitorMapper.INSTANCE.toDto(result.getVisitor());
     }
-    @Named("gameDto")
-    default GameDto gameDto(Result result) {
-        return gameMapper.toDto(result.getGame());
+    @Named("game")
+    default GameDto game(Result result) {
+        return GameMapper.INSTANCE.toDto(result.getGame());
     }
 }

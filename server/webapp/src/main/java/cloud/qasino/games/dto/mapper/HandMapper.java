@@ -9,12 +9,16 @@ import cloud.qasino.games.dto.PlayerDto;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Named;
+import org.mapstruct.factory.Mappers;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Mapper
 public interface HandMapper {
+
+    // for testing and use in other mappers
+    HandMapper INSTANCE = Mappers.getMapper(HandMapper.class);
 
     @Mapping(target = "cards", source = "cardMoves", qualifiedByName = "cards")
     @Mapping(target = "rankSuits", source = "cardMoves", qualifiedByName = "rankSuits")

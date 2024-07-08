@@ -11,6 +11,7 @@ import org.mapstruct.Context;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Named;
+import org.mapstruct.factory.Mappers;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,6 +19,10 @@ import java.util.stream.Collectors;
 
 @Mapper(uses = {HandMapper.class})
 public interface SeatMapper {
+
+    // for testing and use in other mappers
+    SeatMapper INSTANCE = Mappers.getMapper(SeatMapper.class);
+
 
     @Mapping(target = "playerId", source = "player.playerId")
     @Mapping(target = "cardsInHand", source = "player", qualifiedByName = "cardsInHand")

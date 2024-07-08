@@ -78,7 +78,7 @@ public class LoadPlayingDtoAction extends ActionDto<EventOutput.Result> {
         table.setCurrentMoveNumber(playing.getCurrentMoveNumber());
 
         // FROM PLAYING - ACTIVE AND NEXT PLAYER
-        table.setPlayer(playerMapper.toDto(playing.getPlayer()));
+        table.setPlayer(playerMapper.toDto(playing.getPlayer(), playing.getGame().getCards()));
         table.setNextPlayer(gameService.findNextPlayerForGame(getGame()));
         table.setPlayerType(table.getPlayer().getPlayerType());
         table.setFiches(table.getPlayer().getFiches());
@@ -95,7 +95,7 @@ public class LoadPlayingDtoAction extends ActionDto<EventOutput.Result> {
 //
         List<SeatDto> seatDtos = new ArrayList<>();
 
-        for (PlayerDto player : getGame().getPlayerDtos()) {
+        for (PlayerDto player : getGame().getPlayers()) {
             SeatDto seatDto = new SeatDto();
 
             // seatDto stats

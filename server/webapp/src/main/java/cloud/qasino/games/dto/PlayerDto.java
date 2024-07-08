@@ -24,7 +24,7 @@ public class PlayerDto {
 
     // ref
     private VisitorDto visitor;
-    private GameDto game;
+//    private GameDto game; // ignore as it will loop
 
     // Normal fields
     private int seat;

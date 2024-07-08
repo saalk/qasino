@@ -89,7 +89,7 @@ public class PlayingCard {
     }
     public static List<PlayingCard> createDeckForRandomSuitWithXJokers(int addJokers) {
         Suit randomSuit = Suit.randomSuit();
-        log.warn("randomSuit{} ",randomSuit);
+        log.info("randomSuit is {} ", randomSuit);
 
         return createDeckForSuitWithXJokers(randomSuit, addJokers);
     }
