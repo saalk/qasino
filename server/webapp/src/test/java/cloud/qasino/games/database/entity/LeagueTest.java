@@ -1,5 +1,6 @@
 package cloud.qasino.games.database.entity;
 
+import cloud.qasino.games.simulator.QasinoSimulator;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDateTime;
@@ -8,12 +9,12 @@ import java.time.format.DateTimeFormatter;
 import static java.time.temporal.TemporalAdjusters.lastDayOfMonth;
 import static org.assertj.core.api.Assertions.assertThat;
 
-class LeagueTest extends QasinoSimulator{
+class LeagueTest extends QasinoSimulator {
 
     @Test
     public void givenQasinoLeague_whenCreated_thenReturnValidObjectValues() {
 
-        assertThat(league.getName()).isEqualTo("leagueName");
+        assertThat(league.getName()).isEqualTo("topLeague");
         assertThat(league.getNameSequence()).isEqualTo(1);
         assertThat(league.isActive()).isEqualTo(true);
         // leagues end by default at the end of the month

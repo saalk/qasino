@@ -47,7 +47,7 @@ public class GameService {
     // find one
     public GameDto findOneByGameId(ParamsDto paramsDto) {
         Game retrievedGame = gameRepository.findOneByGameId(paramsDto.getSuppliedVisitorId());
-        return gameMapper.toDto(retrievedGame);
+        return gameMapper.toDto(retrievedGame, retrievedGame.getCards());
     };
     public GameDto findLatestGameForVisitorId(ParamsDto paramsDto){
         Pageable pageable = PageRequest.of(0, 4);
@@ -61,7 +61,7 @@ public class GameService {
             if (foundGame.isEmpty()) return null;
         }
         // BR 2
-        return gameMapper.toDto(foundGame.get(0));
+        return gameMapper.toDto(foundGame.get(0),foundGame.get(0).getCards());
 
     }
     public GameDto setupNewGameWithPlayerInitiator(GameDto gameDto, VisitorDto visitorDto) {
@@ -70,7 +70,7 @@ public class GameService {
         Game newGame = gameRepository.save(game);
         // TODO
         playerServiceOld.addHumanVisitorPlayerToAGame(null, newGame, Avatar.ELF);
-        return gameMapper.toDto(newGame);
+        return gameMapper.toDto(newGame, newGame.getCards());
     }
     public GameDto prepareExistingGame(GameDto gameDto, League league, String style, int ante) {
         Game game = gameMapper.fromDto(gameDto);
@@ -86,7 +86,7 @@ public class GameService {
         }
         game.setState(GameState.PREPARED);
         Game newGame = gameRepository.save(game);
-        return  gameMapper.toDto(newGame);
+        return  gameMapper.toDto(newGame,newGame.getCards());
     }
     public GameDto addAndShuffleCardsForAGame(GameDto gameDto) {
         Game game = gameMapper.fromDto(gameDto);
@@ -104,7 +104,7 @@ public class GameService {
         game.setState(GameState.STARTED);
         game.setCards(cards);
         game = gameRepository.save(game);
-        return gameMapper.toDto(game);
+        return gameMapper.toDto(game,game.getCards());
     }
     public PlayerDto findNextPlayerForGame(GameDto game) {
         int totalSeats = game.getPlayers().size();

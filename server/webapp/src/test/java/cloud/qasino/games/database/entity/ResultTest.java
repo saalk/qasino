@@ -1,9 +1,9 @@
 package cloud.qasino.games.database.entity;
 
+import cloud.qasino.games.simulator.QasinoSimulator;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 
 class ResultTest extends QasinoSimulator {
 
@@ -12,7 +12,7 @@ class ResultTest extends QasinoSimulator {
 
         assertThat(result.getFichesWon()).isEqualTo(50);
         assertThat(result.getGame()).isEqualTo(game);
-        assertThat(result.getPlayer()).isEqualTo(player);
+        assertThat(result.getPlayer()).isEqualTo(playerVisitor);
         assertThat(result.getVisitor()).isEqualTo(visitor);
 
     }

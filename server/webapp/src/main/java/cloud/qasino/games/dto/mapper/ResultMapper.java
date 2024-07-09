@@ -43,6 +43,6 @@ public interface ResultMapper {
     }
     @Named("game")
     default GameDto game(Result result) {
-        return GameMapper.INSTANCE.toDto(result.getGame());
+        return GameMapper.INSTANCE.toDto(result.getGame(), result.getGame().getCards());
     }
 }

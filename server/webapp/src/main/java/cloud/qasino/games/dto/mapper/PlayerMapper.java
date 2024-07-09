@@ -40,6 +40,8 @@ public interface PlayerMapper {
     default String cardsInHand(Player player, @Context List<Card> cards) {
         // player.getCards does not work!!
         // player.getGame().getCards() does not work!!
+        if (cards == null ) return  "[null]";
+        if (cards.isEmpty() ) return  "[empty]";
         List<String> handStrings =
                 cards.stream()
                         .filter(location -> location.getLocation().equals(Location.HAND))

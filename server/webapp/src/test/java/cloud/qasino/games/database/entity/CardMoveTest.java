@@ -1,5 +1,6 @@
 package cloud.qasino.games.database.entity;
 
+import cloud.qasino.games.simulator.QasinoSimulator;
 import org.junit.jupiter.api.Test;
 
 import static java.util.EnumSet.of;
@@ -30,7 +31,7 @@ class CardMoveTest extends QasinoSimulator {
 
         // 1. get current player in the turn - assume player for now
         long currentPlayer = playing.getPlayer().getPlayerId();
-        assertThat(currentPlayer).isEqualTo(player.getPlayerId());
+        assertThat(currentPlayer).isEqualTo(playerVisitor.getPlayerId());
 
 //        // 2a. deal (the top) card for the game face up
 //        Card firstCardDealt = game.dealCardToPlayer(player, Face.UP);
