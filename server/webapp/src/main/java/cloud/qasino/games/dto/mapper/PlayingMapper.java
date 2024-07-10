@@ -11,6 +11,7 @@ import cloud.qasino.games.dto.GameDto;
 import cloud.qasino.games.dto.LeagueDto;
 import cloud.qasino.games.dto.PlayerDto;
 import cloud.qasino.games.dto.PlayingDto;
+import cloud.qasino.games.dto.SeatDto;
 import org.mapstruct.Context;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -32,7 +33,6 @@ public interface PlayingMapper {
     @Mapping(target = "cardMoves", source = "playing", qualifiedByName = "cardMoves")
     PlayingDto toDto(Playing playing);
 
-
     @Mapping(target = "cardMoves", ignore = true)
     Playing fromDto(PlayingDto playing);
 
@@ -48,7 +48,8 @@ public interface PlayingMapper {
 
     @Named("cardMoves")
     default List<CardMove> cardMoves(Playing playing) {
-        return new ArrayList<>();
+        return playing.getCardMoves();
     }
+
 
 }

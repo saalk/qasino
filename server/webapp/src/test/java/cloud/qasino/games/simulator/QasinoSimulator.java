@@ -71,14 +71,11 @@ public abstract class QasinoSimulator {
     public SeatDto botSeatDto;
     public List<SeatDto> seatDtos = new ArrayList<>();
 
-    public HandDto playerVisitorHandDto;
-    public HandDto botHandDto;
-    public List<HandDto> handDtos = new ArrayList<>();
-
-
     public Result result;
     public ResultDto playerVisitorResultDto;
     public ResultDto botResultDto;
+    public List<ResultDto> resultDtos;
+
 
     public QasinoSimulator() {
 
@@ -136,18 +133,10 @@ public abstract class QasinoSimulator {
         // game
         gameDto = GameMapper.INSTANCE.toDto(game, game.getCards());
 
-
         playing = new Playing(game, playerVisitor);
 //        log.warn("playing data <{}>", playing);
-        // playing and seats
-        playingDto = PlayingMapper.INSTANCE.toDto(playing);
-        playerVisitorSeatDto = SeatMapper.INSTANCE.toDto(playerVisitor, playing);
-        botSeatDto = SeatMapper.INSTANCE.toDto(bot, playing);
-        seatDtos.add(playerVisitorSeatDto);
-        seatDtos.add(botSeatDto);
 
-        List<CardMove> cardMovesPlayerVisitor = new ArrayList<>();
-        List<CardMove> cardMovesBot = new ArrayList<>();
+        List<CardMove> cardMoves = new ArrayList<>();
         for (Card card : cards) {
             if (card.getHand() == null) break;
             Move move = Move.ERROR;
@@ -193,25 +182,29 @@ public abstract class QasinoSimulator {
                     turn = 2;
                 }
             }
+            CardMove cardMove;
             if (card.getHand().getPlayerId() == playerVisitor.getPlayerId()) {
-                CardMove cardMove = new CardMove(playing, playerVisitor, card.getCardId(), move, card.getLocation(), card.getRankSuit());
-                cardMovesPlayerVisitor.add(cardMove);
+                cardMove = new CardMove(playing, playerVisitor, card.getCardId(), move, card.getLocation(), card.getRankSuit());
             } else {
-                CardMove cardMove = new CardMove(playing, bot, card.getCardId(), move, card.getLocation(), card.getRankSuit());
-                cardMovesBot.add(cardMove);
+                cardMove = new CardMove(playing, bot, card.getCardId(), move, card.getLocation(), card.getRankSuit());
             }
-        }
-        // hands
-        playerVisitorHandDto = HandMapper.INSTANCE.toDto(cardMovesPlayerVisitor, 1, 1);
-        handDtos.add(playerVisitorHandDto);
-        playerVisitorHandDto = HandMapper.INSTANCE.toDto(cardMovesPlayerVisitor, 2, 1);
-        handDtos.add(playerVisitorHandDto);
+            cardMoves.add(cardMove);
 
-        botHandDto = HandMapper.INSTANCE.toDto(cardMovesBot, 1, 2);
-        handDtos.add(botHandDto);
+        }
+
+        playing.setCardMoves(cardMoves);
+        // playing
+        playingDto = PlayingMapper.INSTANCE.toDto(playing);
+
+        // seats
+        playerVisitorSeatDto = SeatMapper.INSTANCE.toDto(playerVisitor, playing);
+        seatDtos.add(playerVisitorSeatDto);
+        botSeatDto = SeatMapper.INSTANCE.toDto(bot, playing);
+        seatDtos.add(botSeatDto);
 
         // results
         result = new Result(playerVisitor, visitor, game, game.getType(), 50, true);
+//        resultDtos.add
         result = new Result(bot, null, game, game.getType(), 40, false);
 
     }

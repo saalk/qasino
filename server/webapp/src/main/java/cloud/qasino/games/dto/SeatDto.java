@@ -4,10 +4,7 @@ import cloud.qasino.games.database.entity.Card;
 import cloud.qasino.games.database.entity.enums.player.AiLevel;
 import cloud.qasino.games.database.entity.enums.player.Avatar;
 import cloud.qasino.games.database.entity.enums.player.PlayerType;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 import java.util.List;
 
@@ -32,7 +29,7 @@ public class SeatDto {
     private boolean winner;
 
     // ref
-    private List<HandDto> hand;
+    private List<HandDto> hands;
 
     // derived
     private boolean isSeatPlaying;

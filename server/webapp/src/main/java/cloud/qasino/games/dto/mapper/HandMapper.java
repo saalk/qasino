@@ -28,9 +28,6 @@ public interface HandMapper {
     @Mapping(target = "cardsDeltaInRoundAndSeat", source = "cardMoves", qualifiedByName = "cardsDeltaInRoundAndSeat")
     HandDto toDto(List<CardMove> cardMoves, int round, int seat);
 
-//    List<HandDto> toDtoList(List<CardMove> cardMoves, int round, int seat);
-
-
     @Named("cards")
     default List<Card> cards(List<CardMove> cardMoves) {
         return null;
