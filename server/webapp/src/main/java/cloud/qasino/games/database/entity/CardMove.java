@@ -116,12 +116,12 @@ public class CardMove {
         this.created = result.substring(0, 20);
     }
 
-    public void setSequence(int round, int seat, int playing) {
+    public void setSequence(int round, int seat, int move) {
         // xxyyzz format
         this.sequence =
             String.format("%02d", round) +
             String.format("%02d", seat) +
-            String.format("%02d", playing);
+            String.format("%02d", move);
     }
     public int getRoundFromSequence() {
         return Integer.parseInt(this.sequence.substring(0,2));

@@ -132,11 +132,14 @@ public class Playing {
     public String toString() {
         return "(" +
                 "playingId=" + this.playingId +
-                ", player=" + (this.player.getPlayerId()) +
+                ", playerId=" + (this.player.getPlayerId()) +
+                ", player avatarName=" + (this.player.getAvatarName()) +
                 ", currentRoundNumber=" + this.currentRoundNumber +
                 ", currentSeatNumber=" + this.currentSeatNumber +
-                ", playingNumber=" + this.currentMoveNumber +
+                ", currentMoveNumber=" + this.currentMoveNumber +
+                ", cardMoves count=" + this.cardMoves.size() +
                 ", gameId=" + (this.game == null? "": this.game.getGameId()) +
+                ", game state=" + (this.game == null? "": this.game.getState()) +
                 ", weekday=" + this.weekday +
                 ")";
     }

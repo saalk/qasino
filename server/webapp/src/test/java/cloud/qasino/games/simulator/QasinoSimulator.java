@@ -1,6 +1,7 @@
 package cloud.qasino.games.simulator;
 
 import cloud.qasino.games.database.entity.Card;
+import cloud.qasino.games.database.entity.CardMove;
 import cloud.qasino.games.database.entity.Game;
 import cloud.qasino.games.database.entity.League;
 import cloud.qasino.games.database.entity.Player;
@@ -8,28 +9,35 @@ import cloud.qasino.games.database.entity.Playing;
 import cloud.qasino.games.database.entity.Result;
 import cloud.qasino.games.database.entity.enums.card.Location;
 import cloud.qasino.games.database.entity.enums.card.PlayingCard;
+import cloud.qasino.games.database.entity.enums.move.Move;
 import cloud.qasino.games.database.entity.enums.player.AiLevel;
 import cloud.qasino.games.database.entity.enums.player.Avatar;
 import cloud.qasino.games.database.security.MyUserPrincipal;
 import cloud.qasino.games.database.security.Role;
 import cloud.qasino.games.database.security.Visitor;
 import cloud.qasino.games.dto.GameDto;
+import cloud.qasino.games.dto.HandDto;
 import cloud.qasino.games.dto.LeagueDto;
 import cloud.qasino.games.dto.PlayerDto;
 import cloud.qasino.games.dto.PlayingDto;
 import cloud.qasino.games.dto.ResultDto;
+import cloud.qasino.games.dto.SeatDto;
 import cloud.qasino.games.dto.VisitorDto;
 import cloud.qasino.games.dto.mapper.GameMapper;
+import cloud.qasino.games.dto.mapper.HandMapper;
 import cloud.qasino.games.dto.mapper.LeagueMapper;
 import cloud.qasino.games.dto.mapper.PlayerMapper;
 import cloud.qasino.games.dto.mapper.PlayingMapper;
+import cloud.qasino.games.dto.mapper.SeatMapper;
 import cloud.qasino.games.dto.mapper.VisitorMapper;
 import cloud.qasino.games.pattern.factory.Deck;
 import cloud.qasino.games.pattern.factory.DeckFactory;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.ArrayList;
 import java.util.List;
 
+@Slf4j
 public abstract class QasinoSimulator {
 
     // formatter:off
@@ -48,8 +56,8 @@ public abstract class QasinoSimulator {
     public LeagueDto leagueDto;
 
     public Game game;
-    public GameDto gameDto;
     public Game extraGame = Game.buildDummy(null, 1);
+    public GameDto gameDto;
     public GameDto extraGameDto;
     public List<Game> games = new ArrayList<>();
 
@@ -59,13 +67,22 @@ public abstract class QasinoSimulator {
 
     public Playing playing;
     public PlayingDto playingDto;
+    public SeatDto playerVisitorSeatDto;
+    public SeatDto botSeatDto;
+    public List<SeatDto> seatDtos = new ArrayList<>();
+
+    public HandDto playerVisitorHandDto;
+    public HandDto botHandDto;
+    public List<HandDto> handDtos = new ArrayList<>();
+
 
     public Result result;
-    public ResultDto resultDto;
+    public ResultDto playerVisitorResultDto;
+    public ResultDto botResultDto;
 
     public QasinoSimulator() {
 
-        visitor = Visitor.buildDummy("username","alias");
+        visitor = Visitor.buildDummy("username", "alias");
         visitor.setVisitorId(INITIATOR_5);
         visitor.pawnShip(Visitor.pawnShipValue(0));
         principal = new MyUserPrincipal(visitor);
@@ -74,7 +91,7 @@ public abstract class QasinoSimulator {
         // visitor
         visitorDto = VisitorMapper.INSTANCE.toDto(visitor);
 
-        league = League.buildDummy(visitor,"topLeague");
+        league = League.buildDummy(visitor, "topLeague");
         game = Game.buildDummy(league, INITIATOR_5);
         Deck deck = DeckFactory.createShuffledDeck(game, 2);
         List<PlayingCard> playingCards = deck.getPlayingCards();
@@ -99,8 +116,18 @@ public abstract class QasinoSimulator {
         players.add(bot);
         cards.get(0).setHand(playerVisitor);
         cards.get(0).setLocation(Location.HAND);
-        cards.get(1).setHand(bot);
+        cards.get(1).setHand(playerVisitor);
         cards.get(1).setLocation(Location.HAND);
+
+        cards.get(2).setHand(bot);
+        cards.get(2).setLocation(Location.HAND);
+        cards.get(3).setHand(bot);
+        cards.get(3).setLocation(Location.HAND);
+
+        cards.get(4).setHand(playerVisitor);
+        cards.get(4).setLocation(Location.HAND);
+        cards.get(5).setHand(playerVisitor);
+        cards.get(5).setLocation(Location.HAND);
         // player
         playerVisitorDto = PlayerMapper.INSTANCE.toDto(playerVisitor, cards);
 
@@ -109,13 +136,83 @@ public abstract class QasinoSimulator {
         // game
         gameDto = GameMapper.INSTANCE.toDto(game, game.getCards());
 
-        // TODO cardMoves
 
         playing = new Playing(game, playerVisitor);
-        // playing
+//        log.warn("playing data <{}>", playing);
+        // playing and seats
         playingDto = PlayingMapper.INSTANCE.toDto(playing);
+        playerVisitorSeatDto = SeatMapper.INSTANCE.toDto(playerVisitor, playing);
+        botSeatDto = SeatMapper.INSTANCE.toDto(bot, playing);
+        seatDtos.add(playerVisitorSeatDto);
+        seatDtos.add(botSeatDto);
 
-        result = new Result(playerVisitor,visitor, game, game.getType(), 50,true);
+        List<CardMove> cardMovesPlayerVisitor = new ArrayList<>();
+        List<CardMove> cardMovesBot = new ArrayList<>();
+        for (Card card : cards) {
+            if (card.getHand() == null) break;
+            Move move = Move.ERROR;
+            int round = 0;
+            int seat = 0;
+            int turn = 0;
+            switch (card.getSequence()) {
+                case 1: {
+                    move = Move.DEAL;
+                    round = 1;
+                    seat = 1;
+                    turn = 1;
+
+                }
+                case 2: {
+                    move = Move.HIGHER;
+                    round = 1;
+                    seat = 1;
+                    turn = 2;
+                }
+                case 3: {
+                    move = Move.DEAL;
+                    round = 1;
+                    seat = 2;
+                    turn = 1;
+                }
+                case 4: {
+                    move = Move.HIGHER;
+                    round = 1;
+                    seat = 2;
+                    turn = 2;
+                }
+                case 5: {
+                    move = Move.DEAL;
+                    round = 2;
+                    seat = 1;
+                    turn = 1;
+                }
+                case 6: {
+                    move = Move.LOWER;
+                    round = 2;
+                    seat = 1;
+                    turn = 2;
+                }
+            }
+            if (card.getHand().getPlayerId() == playerVisitor.getPlayerId()) {
+                CardMove cardMove = new CardMove(playing, playerVisitor, card.getCardId(), move, card.getLocation(), card.getRankSuit());
+                cardMovesPlayerVisitor.add(cardMove);
+            } else {
+                CardMove cardMove = new CardMove(playing, bot, card.getCardId(), move, card.getLocation(), card.getRankSuit());
+                cardMovesBot.add(cardMove);
+            }
+        }
+        // hands
+        playerVisitorHandDto = HandMapper.INSTANCE.toDto(cardMovesPlayerVisitor, 1, 1);
+        handDtos.add(playerVisitorHandDto);
+        playerVisitorHandDto = HandMapper.INSTANCE.toDto(cardMovesPlayerVisitor, 2, 1);
+        handDtos.add(playerVisitorHandDto);
+
+        botHandDto = HandMapper.INSTANCE.toDto(cardMovesBot, 1, 2);
+        handDtos.add(botHandDto);
+
+        // results
+        result = new Result(playerVisitor, visitor, game, game.getType(), 50, true);
+        result = new Result(bot, null, game, game.getType(), 40, false);
 
     }
 }
