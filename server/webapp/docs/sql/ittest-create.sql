@@ -110,7 +110,7 @@ create table if not exists "cardmove" (
 "created" varchar(25),
 "card_move_details" varchar(255),
 "player_id" bigint,
-"gamingtable_id" bigint,
+"playing_id" bigint,
 "card_id" bigint,
 "bet" integer,
 "end_fiches" integer,
@@ -136,7 +136,7 @@ primary key ("result_id")
 );
 
 create index if not exists "cards_game_index" on "card" ("game_id");
-create index if not exists "playing_game_index" on "playing" ("game_id");
+--create index if not exists "playing_game_index" on "playing" ("game_id");
 create index if not exists "alias_index" on "visitor" ("alias");
 
 alter table if exists "card" add constraint if not exists fk_game_id foreign key ("game_id") references "game";

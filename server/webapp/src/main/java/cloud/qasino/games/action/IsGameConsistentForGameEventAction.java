@@ -43,12 +43,12 @@ public class IsGameConsistentForGameEventAction implements Action<IsGameConsiste
 
             case START -> {
                 noError = noGameInSetupOrPlayingShouldAlreadyExist(actionDto);
-                if (noError) noError = gameShouldHaveVisitorWithBalance(actionDto);
-
             }
             case VALIDATE -> {
                 noError = gameShouldHaveStateInCorrectGameStateGroup(actionDto,
                         List.of(GameStateGroup.SETUP, GameStateGroup.PREPARED));
+                if (noError) noError = gameShouldHaveVisitorWithBalance(actionDto);
+
                 if (noError) noError = gameShouldHaveAnte(actionDto);
                 if (noError) noError = gameShouldHaveInitiator(actionDto);
                 if (noError) noError = gameShouldHavePlayersWithFiches(actionDto);

@@ -19,7 +19,7 @@
         </div>
         <div th:if="${qasinoResponse.params.gid > 0 && qasinoResponse.pageGamePlay.selectedGame != null}">
             <div th:replace="~{forms/play :: selected-game}"></div>
-            <div th:replace="~{forms/play :: seatDtos-form}"></div>
+            <div th:replace="~{forms/play :: seats-form}"></div>
         </div>
         <div th:if="${qasinoResponse.params.gid > 0 && qasinoResponse.pageGamePlay.selectedGame != null}">
             <div th:replace="~{forms/play :: results-table}"></div>
