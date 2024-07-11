@@ -1,7 +1,7 @@
 package cloud.qasino.games.cardengine.action.dto;
 
-import cloud.qasino.games.cardengine.cardplay.Table;
-import cloud.qasino.games.database.entity.Playing;
+import cloud.qasino.games.database.entity.Result;
+import cloud.qasino.games.database.entity.enums.game.gamestate.GameStateGroup;
 import cloud.qasino.games.database.service.GameService;
 import cloud.qasino.games.database.service.PlayerService;
 import cloud.qasino.games.database.service.PlayingService;
@@ -9,6 +9,9 @@ import cloud.qasino.games.database.service.VisitorAndLeaguesService;
 import cloud.qasino.games.dto.GameDto;
 import cloud.qasino.games.dto.InvitationsDto;
 import cloud.qasino.games.dto.LeagueDto;
+import cloud.qasino.games.dto.PlayingDto;
+import cloud.qasino.games.dto.ResultDto;
+import cloud.qasino.games.dto.SeatDto;
 import cloud.qasino.games.dto.VisitorDto;
 import cloud.qasino.games.dto.request.CreationDto;
 import cloud.qasino.games.dto.request.MessageDto;
@@ -18,6 +21,8 @@ import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.validator.internal.util.stereotypes.Lazy;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.List;
 
 @Setter
 @Getter
@@ -38,9 +43,12 @@ public abstract class ActionDto<OUTPUT> {
     private VisitorDto visitor = null;
     private LeagueDto league = null;
     private GameDto game = null;
+    private PlayingDto playing = null;
+    private List<SeatDto> seats = null;
+    private List<ResultDto> results = null;
     private InvitationsDto invitations = null;
 
-    private Table table = null;
+//    private Table table = null;
     // @formatter:on
 
     public abstract EventOutput.Result perform();
@@ -72,14 +80,39 @@ public abstract class ActionDto<OUTPUT> {
         }
         // 200 game found
         this.params.setSuppliedGameId(game.getGameId());
+        if (game.getGameStateGroup().equals(GameStateGroup.PLAYING)) {
+            refreshOrFindPlayingForGame();
+        } else if (game.getGameStateGroup().equals(GameStateGroup.FINISHED)) {
+            refreshOrFindPlayingForGame();
+            refreshOrFindResultsForGame();
+        }
         return true;
     }
 
-    protected Playing refreshOrFindPlayingForGame() {
+    protected boolean refreshOrFindPlayingForGame() {
         if (this.params.getSuppliedGameId() > 0) {
-            return playingService.findByGameId(this.params);
+            playing = playingService.findByGameId(this.params);
+            if (playing == null) return false; // 200 no playing yet
+            this.params.setSuppliedPlayingId(playing.getPlayingId());
+            refreshOrFindSeatsForPlaying();
         }
-        return null;
+        return true;
+    }
+
+    protected boolean refreshOrFindSeatsForPlaying() {
+        seats = playingService.findByPlayingOrGameId(this.params);
+        if (seats.isEmpty()) {
+            return false;
+        }
+        return true;
+    }
+
+    protected boolean refreshOrFindResultsForGame() {
+        if (this.params.getSuppliedGameId() > 0) {
+            results = playingService.findResultsByGameId(this.params);
+            return true;
+        }
+        return false;
     }
 
     protected boolean refreshOrFindLeagueForLatestGame() {

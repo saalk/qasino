@@ -17,6 +17,7 @@ public class ParamsDto {
     private long suppliedVisitorId = 0;
     private String suppliedVisitorUsername = "";
     private long suppliedGameId = 0;
+    private long suppliedPlayingId = 0;
     private long suppliedLeagueId = 0;
 
     // TODO all logic for this ids

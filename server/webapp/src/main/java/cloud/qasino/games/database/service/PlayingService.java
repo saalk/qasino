@@ -5,6 +5,7 @@ import cloud.qasino.games.database.entity.CardMove;
 import cloud.qasino.games.database.entity.Game;
 import cloud.qasino.games.database.entity.Player;
 import cloud.qasino.games.database.entity.Playing;
+import cloud.qasino.games.database.entity.Result;
 import cloud.qasino.games.database.entity.enums.card.Face;
 import cloud.qasino.games.database.entity.enums.card.Location;
 import cloud.qasino.games.database.entity.enums.card.PlayingCard;
@@ -12,7 +13,17 @@ import cloud.qasino.games.database.entity.enums.game.Style;
 import cloud.qasino.games.database.entity.enums.move.Move;
 import cloud.qasino.games.database.repository.CardMoveRepository;
 import cloud.qasino.games.database.repository.CardRepository;
+import cloud.qasino.games.database.repository.GameRepository;
 import cloud.qasino.games.database.repository.PlayingRepository;
+import cloud.qasino.games.database.repository.ResultsRepository;
+import cloud.qasino.games.dto.PlayerDto;
+import cloud.qasino.games.dto.PlayingDto;
+import cloud.qasino.games.dto.ResultDto;
+import cloud.qasino.games.dto.SeatDto;
+import cloud.qasino.games.dto.mapper.GameMapper;
+import cloud.qasino.games.dto.mapper.PlayingMapper;
+import cloud.qasino.games.dto.mapper.ResultMapper;
+import cloud.qasino.games.dto.mapper.SeatMapper;
 import cloud.qasino.games.dto.request.ParamsDto;
 import cloud.qasino.games.exception.MyNPException;
 import cloud.qasino.games.pattern.statemachine.event.PlayEvent;
@@ -30,21 +41,56 @@ public class PlayingService {
 
     // @formatter:off
     @Autowired private PlayingRepository playingRepository;
+    @Autowired private ResultsRepository resultsRepository;
     @Autowired private CardMoveRepository cardMoveRepository;
     @Autowired private CardRepository cardRepository;
+    @Autowired private GameRepository gameRepository;
+
+    PlayingMapper playingMapper;
+    SeatMapper seatMapper;
+    ResultMapper resultMapper;
 
     // finds
-    public Playing findByGameId(ParamsDto paramsDto) {
+    public PlayingDto findByGameId(ParamsDto paramsDto) {
         List<Playing> playings = playingRepository.findByGameId(paramsDto.getSuppliedGameId());
         if (playings.isEmpty()) {
             // when game is quit before started
             return null;
         }
         // FROM PLAYING
-        return playings.get(0);
+        return playingMapper.toDto(playings.get(0));
     }
+    public List<ResultDto> findResultsByGameId(ParamsDto paramsDto) {
+        List<Result> results = resultsRepository.findByGameId(paramsDto.getSuppliedGameId());
+        return resultMapper.toDtoList(results);
+    }
+
+    public List<SeatDto> findByPlayingOrGameId(ParamsDto paramsDto) {
+        List<Playing> playings = playingRepository.findByGameId(paramsDto.getSuppliedGameId());
+        Playing playing;
+        Game game;
+        if (playings.isEmpty()) {
+            game = gameRepository.getReferenceById(paramsDto.getSuppliedGameId());
+            playing = game.getPlaying();
+
+        } else {
+            playing = playings.get(0);
+            game = playing.getGame();
+        }
+        List<SeatDto> seats = new ArrayList<>();
+
+        for (Player player : game.getPlayers()) {
+            seats.add(SeatMapper.INSTANCE.toDto(player, playing));
+        }
+        return seats;
+    }
+
     public List<CardMove> findCardMovesForGame(Game game) {
         Playing playing = game.getPlaying();
+        if (playing == null) {
+            // when game is quit before started
+            return null;
+        }
         return cardMoveRepository.findByPlayingOrderBySequenceAsc(playing);
     }
 

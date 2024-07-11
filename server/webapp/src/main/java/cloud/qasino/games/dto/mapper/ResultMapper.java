@@ -11,6 +11,8 @@ import org.mapstruct.Mapping;
 import org.mapstruct.Named;
 import org.mapstruct.factory.Mappers;
 
+import java.util.List;
+
 @Mapper
 public interface ResultMapper {
 
@@ -21,6 +23,7 @@ public interface ResultMapper {
     @Mapping(target = "visitor", source = "result", qualifiedByName = "visitor")
     @Mapping(target = "game", source = "result", qualifiedByName = "game")
     ResultDto toDto(Result result);
+    List<ResultDto> toDtoList(List<Result> results);
 
     @Mapping(target = "visitor", ignore = true)
     @Mapping(target = "player", ignore = true)
