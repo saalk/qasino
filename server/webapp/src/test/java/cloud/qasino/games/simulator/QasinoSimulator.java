@@ -16,7 +16,6 @@ import cloud.qasino.games.database.security.MyUserPrincipal;
 import cloud.qasino.games.database.security.Role;
 import cloud.qasino.games.database.security.Visitor;
 import cloud.qasino.games.dto.GameDto;
-import cloud.qasino.games.dto.HandDto;
 import cloud.qasino.games.dto.LeagueDto;
 import cloud.qasino.games.dto.PlayerDto;
 import cloud.qasino.games.dto.PlayingDto;
@@ -24,10 +23,10 @@ import cloud.qasino.games.dto.ResultDto;
 import cloud.qasino.games.dto.SeatDto;
 import cloud.qasino.games.dto.VisitorDto;
 import cloud.qasino.games.dto.mapper.GameMapper;
-import cloud.qasino.games.dto.mapper.HandMapper;
 import cloud.qasino.games.dto.mapper.LeagueMapper;
 import cloud.qasino.games.dto.mapper.PlayerMapper;
 import cloud.qasino.games.dto.mapper.PlayingMapper;
+import cloud.qasino.games.dto.mapper.ResultMapper;
 import cloud.qasino.games.dto.mapper.SeatMapper;
 import cloud.qasino.games.dto.mapper.VisitorMapper;
 import cloud.qasino.games.pattern.factory.Deck;
@@ -71,10 +70,11 @@ public abstract class QasinoSimulator {
     public SeatDto botSeatDto;
     public List<SeatDto> seatDtos = new ArrayList<>();
 
-    public Result result;
+    public Result playerVisitorResult;
+    public Result botResult;
     public ResultDto playerVisitorResultDto;
     public ResultDto botResultDto;
-    public List<ResultDto> resultDtos;
+    public List<ResultDto> resultDtos = new ArrayList<>();
 
 
     public QasinoSimulator() {
@@ -203,9 +203,14 @@ public abstract class QasinoSimulator {
         seatDtos.add(botSeatDto);
 
         // results
-        result = new Result(playerVisitor, visitor, game, game.getType(), 50, true);
-//        resultDtos.add
-        result = new Result(bot, null, game, game.getType(), 40, false);
+        playerVisitorResult = new Result(playerVisitor, visitor, game, game.getType(), 50, true);
+        playerVisitorResultDto = ResultMapper.INSTANCE.toDto(playerVisitorResult);
+        botResult = new Result(bot, null, game, game.getType(), 40, false);
+        botResultDto = ResultMapper.INSTANCE.toDto(botResult);
+        resultDtos.add(playerVisitorResultDto);
+
+        resultDtos.add(botResultDto);
+
 
     }
 }

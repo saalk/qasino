@@ -10,10 +10,10 @@ class ResultTest extends QasinoSimulator {
     @Test
     public void givenQasinoResult_whenCreated_thenReturnValidObjectValues() {
 
-        assertThat(result.getFichesWon()).isEqualTo(40);
-        assertThat(result.getGame()).isEqualTo(game);
-        assertThat(result.getPlayer()).isEqualTo(playerVisitor);
-        assertThat(result.getVisitor()).isEqualTo(null);
+        assertThat(playerVisitorResult.getFichesWon()).isEqualTo(50);
+        assertThat(playerVisitorResult.getGame()).isEqualTo(game);
+        assertThat(playerVisitorResult.getPlayer()).isEqualTo(playerVisitor);
+        assertThat(playerVisitorResult.getVisitor()).isEqualTo(visitor);
 
     }
 }
