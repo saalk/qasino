@@ -57,8 +57,4 @@ class SeatMapperTest extends QasinoSimulator {
         return "[" + String.join("],[", handStrings) + "]";
     }
 
-    @Test
-    void toDtoList() {
-    }
-
 }

@@ -1,10 +1,6 @@
 package cloud.qasino.games.dto;
 
-import cloud.qasino.games.cardengine.cardplay.SeatDto;
 import cloud.qasino.games.database.entity.CardMove;
-import cloud.qasino.games.database.entity.enums.player.AiLevel;
-import cloud.qasino.games.database.entity.enums.player.Avatar;
-import cloud.qasino.games.database.entity.enums.player.PlayerType;
 import lombok.Data;
 
 import java.util.List;

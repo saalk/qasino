@@ -9,6 +9,7 @@ import cloud.qasino.games.database.entity.enums.player.AiLevel;
 import cloud.qasino.games.database.entity.enums.player.Avatar;
 import cloud.qasino.games.database.entity.enums.player.PlayerType;
 import cloud.qasino.games.dto.PlayerDto;
+import cloud.qasino.games.dto.SeatDto;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;

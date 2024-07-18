@@ -17,7 +17,7 @@ public class LoadGameDtoAction extends ActionDto<EventOutput.Result> {
         if (!isGameFound) {
             // TODO make 404
 //          return new EventOutput(EventOutput.Result.FAILURE, actionDto.getIds().getSuppliedGameEvent(), actionDto.getIds().getSuppliedPlayEvent());
-            throw new MyNPException("69 getVisitorSupplied", "visitorId [" + super.getParams().getSuppliedVisitorId() + "]");
+            throw new MyNPException("20 getVisitorSupplied", "visitorId [" + super.getParams().getSuppliedVisitorId() + "]");
         }
         return EventOutput.Result.SUCCESS;
     }

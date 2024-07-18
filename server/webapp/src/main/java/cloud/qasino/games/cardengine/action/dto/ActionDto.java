@@ -104,6 +104,7 @@ public abstract class ActionDto<OUTPUT> {
         if (seats.isEmpty()) {
             return false;
         }
+        playing.setSeats(seats);
         return true;
     }
 

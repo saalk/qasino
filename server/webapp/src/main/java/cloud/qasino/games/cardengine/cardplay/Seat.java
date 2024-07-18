@@ -16,7 +16,7 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class SeatDto {
+public class Seat {
 
     private List<Hand> hand;
 
