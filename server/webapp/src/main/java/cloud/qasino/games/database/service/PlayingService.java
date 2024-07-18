@@ -28,6 +28,7 @@ import cloud.qasino.games.dto.request.ParamsDto;
 import cloud.qasino.games.exception.MyNPException;
 import cloud.qasino.games.pattern.statemachine.event.PlayEvent;
 import cloud.qasino.games.pattern.stream.StreamUtil;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -37,6 +38,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
+@Slf4j
 public class PlayingService {
 
     // @formatter:off
@@ -95,16 +97,24 @@ public class PlayingService {
     }
 
     // save CARD & CARDMOVE
-    @Transactional
+//    @Transactional
     public void dealCardsToPlayer(Game game, Move move, Location oldLocation, Location newLocation, Face face, int howMany) {
         Playing activePlaying = game.getPlaying();
+        log.warn("activePlaying <{}", activePlaying);
+        Player player = activePlaying.getPlayer();
+        log.warn("player <{}", player);
         List<Card> topCardsInStock = getTopNCardsByLocationForGame(game, oldLocation, howMany);
+        log.warn("topCardsInStock <{}>", topCardsInStock);
         List<Card> cardsDealt = new ArrayList<>();
+
         for (Card card : topCardsInStock) {
             Card cardDealt = card;
+            log.warn("card <{}>", card);
+
             cardDealt.setLocation(newLocation);
             cardDealt.setFace(face);
-            cardDealt.setHand(activePlaying.getPlayer());
+            cardDealt.setHand(player);
+            log.warn("cardDealt <{}>", cardDealt);
             cardsDealt.add(cardRepository.save(cardDealt));
             storeCardMoveForPlaying(activePlaying,cardDealt,move,newLocation);
         }
@@ -125,6 +135,7 @@ public class PlayingService {
                 activePlaying.getCurrentRoundNumber(),
                 activePlaying.getPlayer().getSeat(),
                 activePlaying.getCurrentMoveNumber());
+        log.warn("newMove <{}>", newMove);
         cardMoveRepository.save(newMove);
     }
 

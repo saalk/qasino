@@ -12,15 +12,15 @@ count all/you/active
 -- GAME
 SELECT 
 g."type", g."updated", g."state", g."ante", g."initiator",
-t."gamingtable_id", t."created",
+t."playing_id", t."created",
 c."sequence",c."cardmove_id", c."move", c."created",c."card_move_details",c."card_id",c."bet",c."start_fiches",c."end_fiches",
-p."player_id",p."role",p."seatDto",p."fiches",p."ai_level"
+p."player_id",p."role",p."seat",p."fiches",p."ai_level"
 FROM 
 "game" AS g
-left JOIN "gamingtable" AS t ON t."game_id" = g."game_id" 
-left JOIN "cardmove" AS c ON t."gamingtable_id" = c."gamingtable_id" 
+left JOIN "playing" AS t ON t."game_id" = g."game_id" 
+left JOIN "cardmove" AS c ON t."playing_id" = c."playing_id" 
 left JOIN "player" AS p ON c."player_id" = p."player_id"
-WHERE g."game_id" = 4
+WHERE g."game_id" = 1
 ORDER BY c."sequence";
 
 -- ROLES
@@ -35,15 +35,15 @@ left JOIN "roles_privileges" AS rp ON rp."role_id" = r."role_id"
 left JOIN "privilege" AS p ON p."privilege_id" = rp."privilege_id"
 ORDER BY v."visitor_id";
 
--- GAMINGTABLE
+-- playing
 SELECT 
 v."visitor_id", v."username",
 g."game_id", g."state",
-t."gamingtable_id", t."current_round_number",  t."current_seat_number",  t."current_move_number", 
+t."playing_id", t."current_round_number",  t."current_seat_number",  t."current_move_number", 
 p."player_id", p."ai_level", p."fiches"
 FROM "visitor" AS v 
 left JOIN "game" AS g ON v."visitor_id" = g."initiator" 
-left JOIN "gamingtable" AS t ON t."game_id" = g."game_id"
+left JOIN "playing" AS t ON t."game_id" = g."game_id"
 left JOIN "player" AS p ON p."player_id" = t."player_id"
 ORDER BY v."visitor_id";
 

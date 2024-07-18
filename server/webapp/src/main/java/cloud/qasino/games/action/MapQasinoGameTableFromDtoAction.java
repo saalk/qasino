@@ -57,8 +57,8 @@ public class MapQasinoGameTableFromDtoAction implements Action<MapQasinoGameTabl
                         .stream()
                         .filter(c -> c.getHand() == null)
                         .toList();
-//        table.setCardsInStockNotInHand(stockNotInHand);
-        table.setStringCardsInStockNotInHand(String.valueOf(stockNotInHand));
+        table.setStringCardsInStockNotInHand(stockNotInHand.stream().map(Card::getRankSuit).toList().toString());
+//        table.setStringCardsInStockNotInHand(String.valueOf(stockNotInHand));
         table.setCountStockAndTotal(
                 "[" + stockNotInHand.size() +
                         "/" + actionDto.getCardsInTheGameSorted().size() +

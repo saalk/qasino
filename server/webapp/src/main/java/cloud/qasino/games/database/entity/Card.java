@@ -6,8 +6,6 @@ import cloud.qasino.games.database.entity.enums.card.Position;
 import com.fasterxml.jackson.annotation.*;
 import com.voodoodyne.jackson.jsog.JSOGGenerator;
 import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
 import org.hibernate.annotations.DynamicUpdate;
 
 import jakarta.persistence.*;
@@ -106,7 +104,7 @@ public class Card {
 
     @Override
     public String toString () {
-        return this.rankSuit;
+        return String.valueOf(this.cardId);
     }
 
 }

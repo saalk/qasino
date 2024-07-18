@@ -83,7 +83,7 @@ create table if not exists "card" (
 "rank_suit" varchar(3) not null,
 "sequence" integer,
 "game_id" bigint not null,
-"player_id" bigint unique,
+"player_id" bigint,
 "created" varchar(25),
 "face" varchar(255) not null check ("face" in ('UP','DOWN','ERROR')),
 "location" varchar(255) not null check ("location" in ('PACK','STOCK','STACK','HAND','PILE_1','PILE_2','TABLEAU_1','WASTEPILE','ERROR')),
@@ -136,11 +136,9 @@ primary key ("result_id")
 );
 
 create index if not exists "cards_game_index" on "card" ("game_id");
---create index if not exists "playing_game_index" on "playing" ("game_id");
 create index if not exists "alias_index" on "visitor" ("alias");
 
 alter table if exists "card" add constraint if not exists fk_game_id foreign key ("game_id") references "game";
-alter table if exists "card" add constraint if not exists fk_player_id foreign key ("player_id") references "player";
 
 alter table if exists "cardmove" add constraint if not exists fk_playing_id foreign key ("playing_id") references "playing";
 alter table if exists "game" add constraint if not exists fk_league_id foreign key ("league_id") references "league";
