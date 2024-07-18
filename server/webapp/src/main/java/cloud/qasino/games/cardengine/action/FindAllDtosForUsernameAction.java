@@ -36,7 +36,7 @@ public class FindAllDtosForUsernameAction extends ActionDto<EventOutput.Result> 
         if (!isVisitorFound) {
             // TODO make 404
 //          return new EventOutput(EventOutput.Result.FAILURE, actionDto.getIds().getSuppliedGameEvent(), actionDto.getIds().getSuppliedPlayEvent());
-            throw new MyNPException("69 getVisitorSupplied", "visitorId [" + super.getParams().getSuppliedVisitorId() + "]");
+            throw new MyNPException("39 getVisitorSupplied", "visitorId [" + super.getParams().getSuppliedVisitorId() + "]");
         }
         return EventOutput.Result.SUCCESS;
     }

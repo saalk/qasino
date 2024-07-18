@@ -59,15 +59,16 @@ public abstract class ActionDto<OUTPUT> {
         this.params.setSuppliedVisitorId(visitor.getVisitorId());
         refreshOrFindLatestGame();
         refreshOrFindLeagueForLatestGame();
-        return true;
+        return true; // visitor found and id set
     }
 
     protected boolean refreshVisitor() {
         visitor = visitorAndLeaguesService.findOneByVisitorId(this.params);
         if (visitor == null) return false; // 404 not found
+        this.params.setSuppliedVisitorId(visitor.getVisitorId());
         refreshOrFindLatestGame();
         refreshOrFindLeagueForLatestGame();
-        return true;
+        return true; // 200 visitor found and id set
     }
 
     protected boolean refreshOrFindLatestGame() {
@@ -77,16 +78,13 @@ public abstract class ActionDto<OUTPUT> {
         } else {
             game = gameService.findLatestGameForVisitorId(this.params);
             if (game == null) return true; // 200 no game yet
+            this.params.setSuppliedGameId(game.getGameId());
         }
-        // 200 game found
-        this.params.setSuppliedGameId(game.getGameId());
-        if (game.getGameStateGroup().equals(GameStateGroup.PLAYING)) {
-            refreshOrFindPlayingForGame();
-        } else if (game.getGameStateGroup().equals(GameStateGroup.FINISHED)) {
-            refreshOrFindPlayingForGame();
+        refreshOrFindPlayingForGame();
+        if (game.getGameStateGroup().equals(GameStateGroup.FINISHED)) {
             refreshOrFindResultsForGame();
         }
-        return true;
+        return true; // 200 game found and id set
     }
 
     protected boolean refreshOrFindPlayingForGame() {
@@ -95,8 +93,9 @@ public abstract class ActionDto<OUTPUT> {
             if (playing == null) return false; // 200 no playing yet
             this.params.setSuppliedPlayingId(playing.getPlayingId());
             refreshOrFindSeatsForPlaying();
+            return false;
         }
-        return true;
+        return true; // 200 playing found and id set
     }
 
     protected boolean refreshOrFindSeatsForPlaying() {
@@ -105,13 +104,13 @@ public abstract class ActionDto<OUTPUT> {
             return false;
         }
         playing.setSeats(seats);
-        return true;
+        return true; // 200 seat for playing found
     }
 
     protected boolean refreshOrFindResultsForGame() {
         if (this.params.getSuppliedGameId() > 0) {
             results = playingService.findResultsByGameId(this.params);
-            return true;
+            return true; // 200 results for playing found and id set
         }
         return false;
     }
@@ -119,13 +118,13 @@ public abstract class ActionDto<OUTPUT> {
     protected boolean refreshOrFindLeagueForLatestGame() {
         if (this.params.getSuppliedLeagueId() > 0) {
             league = visitorAndLeaguesService.findOneByLeagueId(this.params);
-            return league != null; // 200 or 404 not found
+            return league != null; // 404 not found
         }
         if (this.params.getSuppliedGameId() > 0 && game.getLeague() != null) {
             this.params.setSuppliedLeagueId(game.getLeague().getLeagueId());
             league = visitorAndLeaguesService.findOneByLeagueId(this.params);
             return league != null; // 200 or 404 not found
         }
-        return true; // 200 -> no game yet or latest game has no league
+        return false; // 404 -> no game yet or latest game has no league
     }
 }
