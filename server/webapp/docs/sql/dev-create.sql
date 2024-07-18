@@ -15,7 +15,7 @@ create table "visitor" ("alias_seq" integer, "balance" integer, "enabled" boolea
 create index "cards_game_index" on "card" ("game_id");
 create index "alias_index" on "visitor" ("alias");
 alter table if exists "card" add constraint fk_game_id foreign key ("game_id") references "game";
-alter table if exists "card" delete constraint fk_player_id foreign key ("player_id") references "player";
+alter table if exists "card" add constraint fk_player_id foreign key ("player_id") references "player";
 alter table if exists "cardmove" add constraint fk_playing_id foreign key ("playing_id") references "playing";
 alter table if exists "game" add constraint fk_league_id foreign key ("league_id") references "league";
 alter table if exists "league" add constraint fk_visitor_id foreign key ("visitor_id") references "visitor";
