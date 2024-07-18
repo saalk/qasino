@@ -1,6 +1,5 @@
-package cloud.qasino.games.cardengine.action;
+package cloud.qasino.games.action.dto;
 
-import cloud.qasino.games.cardengine.action.dto.ActionDto;
 import cloud.qasino.games.exception.MyNPException;
 import cloud.qasino.games.pattern.statemachine.event.EventOutput;
 import lombok.extern.slf4j.Slf4j;
@@ -27,16 +26,16 @@ import org.springframework.stereotype.Component;
  *
  * @return Result.SUCCESS or FAILURE (404) when not found
  */
-public class LoadVisitorDtoAction extends ActionDto<EventOutput.Result> {
+public class LoadResultDtoAction extends ActionDto<EventOutput.Result> {
 
     @Override
-    public EventOutput.Result perform() {
+    public EventOutput.Result perform(Qasino qasino) {
 
-        boolean isVisitorFound = refreshVisitor();
-        if (!isVisitorFound) {
+        boolean isResultFound = refreshOrFindResultsForGame(qasino);
+        if (!isResultFound) {
             // TODO make 404
 //          return new EventOutput(EventOutput.Result.FAILURE, actionDto.getIds().getSuppliedGameEvent(), actionDto.getIds().getSuppliedPlayEvent());
-            throw new MyNPException("39 getVisitorSupplied", "visitorId [" + super.getParams().getSuppliedVisitorId() + "]");
+            throw new MyNPException("39 getResultSupplied", "resultId [" + super.getParams().getSuppliedGameId() + "]");
         }
         return EventOutput.Result.SUCCESS;
     }

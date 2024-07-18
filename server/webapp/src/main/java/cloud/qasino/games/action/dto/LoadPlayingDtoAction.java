@@ -1,6 +1,5 @@
-package cloud.qasino.games.cardengine.action;
+package cloud.qasino.games.action.dto;
 
-import cloud.qasino.games.cardengine.action.dto.ActionDto;
 import cloud.qasino.games.exception.MyNPException;
 import cloud.qasino.games.pattern.statemachine.event.EventOutput;
 import lombok.extern.slf4j.Slf4j;
@@ -11,9 +10,9 @@ import org.springframework.stereotype.Component;
 public class LoadPlayingDtoAction extends ActionDto<EventOutput.Result> {
 
     @Override
-    public EventOutput.Result perform() {
+    public EventOutput.Result perform(Qasino qasino) {
 
-        boolean isPlayingFound = refreshOrFindPlayingForGame();
+        boolean isPlayingFound = refreshOrFindPlayingForGame(qasino);
         if (!isPlayingFound) {
             // TODO make 404
 //          return new EventOutput(EventOutput.Result.FAILURE, actionDto.getIds().getSuppliedGameEvent(), actionDto.getIds().getSuppliedPlayEvent());

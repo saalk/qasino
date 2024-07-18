@@ -26,6 +26,7 @@ public class PlayingDto {
     private LeagueDto league;
     private PlayerDto nextPlayer;
     private List<SeatDto> seats;
+    private List<ResultDto> results;
 
     // Normal fields
     private int currentRoundNumber;

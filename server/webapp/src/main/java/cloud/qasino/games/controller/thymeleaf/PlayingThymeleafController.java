@@ -14,6 +14,9 @@ import cloud.qasino.games.action.StartGameForTypeAction;
 import cloud.qasino.games.action.StopGameAction;
 import cloud.qasino.games.action.UpdateFichesForPlayerAction;
 import cloud.qasino.games.action.UpdatePlayingStateForGame;
+import cloud.qasino.games.action.dto.FindAllDtosForUsernameAction;
+import cloud.qasino.games.action.dto.MapQasinoFromDtosAction;
+import cloud.qasino.games.action.dto.Qasino;
 import cloud.qasino.games.controller.AbstractThymeleafController;
 import cloud.qasino.games.database.repository.CardMoveRepository;
 import cloud.qasino.games.database.repository.CardRepository;
@@ -78,6 +81,10 @@ public class PlayingThymeleafController extends AbstractThymeleafController {
     @Autowired
     UpdatePlayingStateForGame updatePlayingStateForGame;
 
+    @Autowired
+    FindAllDtosForUsernameAction findDtos;
+    @Autowired
+    MapQasinoFromDtosAction mapQasino;
 
     @Autowired
     public PlayingThymeleafController(
@@ -129,6 +136,11 @@ public class PlayingThymeleafController extends AbstractThymeleafController {
         playFirstMoveAction.perform(flowDto);
         // get all entities and build reponse
         loadEntitiesToDtoAction.perform(flowDto);
+        // 4 - return new response
+        Qasino qasino = new Qasino();
+        findDtos.perform(qasino);
+        mapQasino.perform(qasino);
+        model.addAttribute(qasino);
         // 4 - return response
         prepareQasinoResponse(response, flowDto);
         model.addAttribute(flowDto.getQasinoResponse());

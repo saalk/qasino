@@ -1,6 +1,5 @@
-package cloud.qasino.games.cardengine.action.dto;
+package cloud.qasino.games.action.dto;
 
-import cloud.qasino.games.database.entity.Result;
 import cloud.qasino.games.database.entity.enums.game.gamestate.GameStateGroup;
 import cloud.qasino.games.database.service.GameService;
 import cloud.qasino.games.database.service.PlayerService;
@@ -51,27 +50,27 @@ public abstract class ActionDto<OUTPUT> {
 //    private Table table = null;
     // @formatter:on
 
-    public abstract EventOutput.Result perform();
+    public abstract EventOutput.Result perform(Qasino qasino);
 
-    protected boolean findVisitorByUsername() {
+    protected boolean findVisitorByUsername(Qasino qasino) {
         visitor = visitorAndLeaguesService.findByUsername(this.params);
         if (visitor == null) return false; // 404 not found
         this.params.setSuppliedVisitorId(visitor.getVisitorId());
-        refreshOrFindLatestGame();
-        refreshOrFindLeagueForLatestGame();
+        refreshOrFindLatestGame(qasino);
+        refreshOrFindLeagueForLatestGame(qasino);
         return true; // visitor found and id set
     }
 
-    protected boolean refreshVisitor() {
+    protected boolean refreshVisitor(Qasino qasino) {
         visitor = visitorAndLeaguesService.findOneByVisitorId(this.params);
         if (visitor == null) return false; // 404 not found
         this.params.setSuppliedVisitorId(visitor.getVisitorId());
-        refreshOrFindLatestGame();
-        refreshOrFindLeagueForLatestGame();
+        refreshOrFindLatestGame(qasino);
+        refreshOrFindLeagueForLatestGame(qasino);
         return true; // 200 visitor found and id set
     }
 
-    protected boolean refreshOrFindLatestGame() {
+    protected boolean refreshOrFindLatestGame(Qasino qasino) {
         if (this.params.getSuppliedGameId() > 0) {
             game = gameService.findOneByGameId(this.params);
             if (game == null) return false; // 404 not found
@@ -80,25 +79,25 @@ public abstract class ActionDto<OUTPUT> {
             if (game == null) return true; // 200 no game yet
             this.params.setSuppliedGameId(game.getGameId());
         }
-        refreshOrFindPlayingForGame();
+        refreshOrFindPlayingForGame(qasino);
         if (game.getGameStateGroup().equals(GameStateGroup.FINISHED)) {
-            refreshOrFindResultsForGame();
+            refreshOrFindResultsForGame(qasino);
         }
         return true; // 200 game found and id set
     }
 
-    protected boolean refreshOrFindPlayingForGame() {
+    protected boolean refreshOrFindPlayingForGame(Qasino qasino) {
         if (this.params.getSuppliedGameId() > 0) {
             playing = playingService.findByGameId(this.params);
             if (playing == null) return false; // 200 no playing yet
             this.params.setSuppliedPlayingId(playing.getPlayingId());
-            refreshOrFindSeatsForPlaying();
+            refreshOrFindSeatsForPlaying(qasino);
             return false;
         }
         return true; // 200 playing found and id set
     }
 
-    protected boolean refreshOrFindSeatsForPlaying() {
+    protected boolean refreshOrFindSeatsForPlaying(Qasino qasino) {
         seats = playingService.findByPlayingOrGameId(this.params);
         if (seats.isEmpty()) {
             return false;
@@ -107,7 +106,7 @@ public abstract class ActionDto<OUTPUT> {
         return true; // 200 seat for playing found
     }
 
-    protected boolean refreshOrFindResultsForGame() {
+    protected boolean refreshOrFindResultsForGame(Qasino qasino) {
         if (this.params.getSuppliedGameId() > 0) {
             results = playingService.findResultsByGameId(this.params);
             return true; // 200 results for playing found and id set
@@ -115,7 +114,7 @@ public abstract class ActionDto<OUTPUT> {
         return false;
     }
 
-    protected boolean refreshOrFindLeagueForLatestGame() {
+    protected boolean refreshOrFindLeagueForLatestGame(Qasino qasino) {
         if (this.params.getSuppliedLeagueId() > 0) {
             league = visitorAndLeaguesService.findOneByLeagueId(this.params);
             return league != null; // 404 not found
