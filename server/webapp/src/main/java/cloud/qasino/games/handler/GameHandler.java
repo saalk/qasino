@@ -1,14 +1,13 @@
 package cloud.qasino.games.handler;
 
 import cloud.qasino.games.database.security.Visitor;
-import cloud.qasino.games.response.QasinoResponse;
-import cloud.qasino.games.response.QasinoResponseMapperOld;
-import cloud.qasino.games.pattern.statemachine.QasinoStateMachine;
 import cloud.qasino.games.dto.QasinoFlowDto;
+import cloud.qasino.games.pattern.statemachine.QasinoStateMachine;
+import cloud.qasino.games.response.QasinoResponse;
+import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
-import jakarta.annotation.Resource;
 import java.time.LocalTime;
 
 import static cloud.qasino.games.pattern.statemachine.event.GameEvent.START;
@@ -33,7 +32,8 @@ public class GameHandler {
         qasinoStateMachine.handleEvent(START, flowDto);
         log.warn("########## Start of initialize: " + LocalTime.now());
 
-        return new QasinoResponseMapperOld().map(flowDto);
+//        return new QasinoResponseMapper().map(flowDto);
+        return null;
     }
 
 }
