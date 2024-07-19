@@ -54,12 +54,6 @@ public class MapQasinoFromDtosAction extends ActionDto<EventOutput.Result> {
         qasino.setActionNeeded(false);
         qasino.setAction("No suggestions");
 
-        qasino.setVisitor(getVisitor());
-        qasino.setLeague(getLeague());
-        qasino.setGame(getGame());
-        qasino.setPlaying(getPlaying());
-        qasino.setInvitations(getInvitations());
-        
         List<NavigationBarItem> navigationBarItems = new ArrayList<>();
 
         // 1: Nav bar visitor
@@ -185,7 +179,6 @@ public class MapQasinoFromDtosAction extends ActionDto<EventOutput.Result> {
 
         qasino.setNavBarItems(navigationBarItems);
         qasino.setStatistics(qasino.getStatistics());
-
 
         return EventOutput.Result.SUCCESS;
     }

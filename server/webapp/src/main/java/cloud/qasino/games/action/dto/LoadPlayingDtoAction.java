@@ -16,7 +16,7 @@ public class LoadPlayingDtoAction extends ActionDto<EventOutput.Result> {
         if (!isPlayingFound) {
             // TODO make 404
 //          return new EventOutput(EventOutput.Result.FAILURE, actionDto.getIds().getSuppliedGameEvent(), actionDto.getIds().getSuppliedPlayEvent());
-            throw new MyNPException("40 isPlayingFound", "isPlayingFound [" + super.getParams().getSuppliedGameId() + "]");
+            throw new MyNPException("40 isPlayingFound", "isPlayingFound [" + qasino.getParams().getSuppliedGameId() + "]");
         }
         return EventOutput.Result.SUCCESS;
     }

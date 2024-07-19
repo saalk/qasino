@@ -35,7 +35,7 @@ public class LoadResultDtoAction extends ActionDto<EventOutput.Result> {
         if (!isResultFound) {
             // TODO make 404
 //          return new EventOutput(EventOutput.Result.FAILURE, actionDto.getIds().getSuppliedGameEvent(), actionDto.getIds().getSuppliedPlayEvent());
-            throw new MyNPException("39 getResultSupplied", "resultId [" + super.getParams().getSuppliedGameId() + "]");
+            throw new MyNPException("39 getResultSupplied", "resultId [" + qasino.getParams().getSuppliedGameId() + "]");
         }
         return EventOutput.Result.SUCCESS;
     }
