@@ -138,6 +138,7 @@ public class PlayingThymeleafController extends AbstractThymeleafController {
         loadEntitiesToDtoAction.perform(flowDto);
         // 4 - return new response
         Qasino qasino = new Qasino();
+        qasino.getParams().setSuppliedVisitorId(Long.parseLong(getPricipalVisitorId(principal)));
         findDtos.perform(qasino);
         mapQasino.perform(qasino);
         model.addAttribute(qasino);
