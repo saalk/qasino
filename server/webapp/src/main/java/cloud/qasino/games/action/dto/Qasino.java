@@ -13,13 +13,13 @@ import cloud.qasino.games.response.view.NavigationBarItem;
 import cloud.qasino.games.response.view.enums.EnumOverview;
 import cloud.qasino.games.response.view.statistics.Statistic;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.util.List;
 
-@Getter
-@Setter
+@Data
 public class Qasino
 {
     private String action;

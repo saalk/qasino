@@ -40,8 +40,6 @@ public class VisitorAndLeaguesService {
     @Autowired private RoleRepository roleRepository;
     @Autowired private PrivilegeRepository privilegeRepository;
     @Autowired private LeagueRepository leagueRepository;
-    VisitorMapper visitorMapper;
-    LeagueMapper leagueMapper;
 //    LeagueMapper leagueMapper;
 
     private PasswordEncoder encoder;
@@ -59,27 +57,27 @@ public class VisitorAndLeaguesService {
     // find one
     public VisitorDto findByUsername(ParamsDto paramsDto){
         Visitor retrievedVisitor = visitorRepository.findByUsername(paramsDto.getSuppliedVisitorUsername());
-        return visitorMapper.toDto(retrievedVisitor);
+        return VisitorMapper.INSTANCE.toDto(retrievedVisitor);
     };
     public VisitorDto findOneByVisitorId(ParamsDto paramsDto) {
         Visitor retrievedVisitor = visitorRepository.findOneByVisitorId(paramsDto.getSuppliedVisitorId());
-        return visitorMapper.toDto(retrievedVisitor);
+        return VisitorMapper.INSTANCE.toDto(retrievedVisitor);
     };
     Optional<VisitorDto> findVisitorByAliasAndAliasSequence(VisitorDto visitorDto){
         Optional<Visitor> retrievedVisitor = visitorRepository.findVisitorByAliasAndAliasSequence(visitorDto.getAlias(),visitorDto.getAliasSequence());
         return Optional.ofNullable(retrievedVisitor)
                 .filter(Optional::isPresent) // lambda is => visitor -> visitor.isPresent()
-                .map(visitor -> visitorMapper.toDto(visitor.get()));
+                .map(visitor -> VisitorMapper.INSTANCE.toDto(visitor.get()));
     };
     public LeagueDto findOneByLeagueId(ParamsDto paramsDto) {
         League retrievedLeague = leagueRepository.findOneByLeagueId(paramsDto.getSuppliedLeagueId());
-        return leagueMapper.toDto(retrievedLeague);
+        return LeagueMapper.INSTANCE.toDto(retrievedLeague);
     };
 
     // find many
     Page<VisitorDto> findAllVisitorsWithPage(Pageable pageable){
         Page<Visitor> visitorPage = visitorRepository.findAllVisitorsWithPage(pageable);
-        return visitorPage.map(visitor -> visitorMapper.toDto(visitor));
+        return visitorPage.map(visitor -> VisitorMapper.INSTANCE.toDto(visitor));
     };
 
     // delete
@@ -101,10 +99,10 @@ public class VisitorAndLeaguesService {
         roles.add(basicRole);
         userDto.setRolesList(roles);
         userDto.setPassword(encoder.encode(userDto.getPassword()));
-        Visitor visitor = visitorMapper.fromDto(userDto);
+        Visitor visitor = VisitorMapper.INSTANCE.fromDto(userDto);
         Visitor savedVisitor = visitorRepository.save(visitor);
         Visitor retrievedVisitor = visitorRepository.getReferenceById(savedVisitor.getVisitorId());
-        return visitorMapper.toDto(retrievedVisitor);
+        return VisitorMapper.INSTANCE.toDto(retrievedVisitor);
     }
     @Transactional
     public VisitorDto saveNewAdmin(VisitorDto adminDto) {
@@ -113,10 +111,10 @@ public class VisitorAndLeaguesService {
         roles.add(adminRole);
         adminDto.setRolesList(roles);
         adminDto.setPassword(encoder.encode(adminDto.getPassword()));
-        Visitor visitor = visitorMapper.fromDto(adminDto);
+        Visitor visitor = VisitorMapper.INSTANCE.fromDto(adminDto);
         Visitor savedVisitor = visitorRepository.save(visitor);
         Visitor retrievedVisitor = visitorRepository.getReferenceById(savedVisitor.getVisitorId());
-        return visitorMapper.toDto(retrievedVisitor);
+        return VisitorMapper.INSTANCE.toDto(retrievedVisitor);
     }
 
     @PostConstruct
@@ -174,7 +172,7 @@ public class VisitorAndLeaguesService {
     public void createUserIfNotFound(Visitor search) {
         Visitor user = visitorRepository.findByUsername(search.getUsername());
         if (user == null) {
-            VisitorDto visitorDto = visitorMapper.toDto(user);
+            VisitorDto visitorDto = VisitorMapper.INSTANCE.toDto(user);
             saveNewUser(visitorDto);
         }
         log.warn("createUserIfNotFound: {}",user);
@@ -183,7 +181,7 @@ public class VisitorAndLeaguesService {
     public void createAdminIfNotFound(Visitor search) {
         Visitor admin = visitorRepository.findByUsername(search.getUsername());
         if (admin == null) {
-            VisitorDto visitorDto = visitorMapper.toDto(admin);
+            VisitorDto visitorDto = VisitorMapper.INSTANCE.toDto(admin);
             saveNewAdmin(visitorDto);
         }
         log.warn("createAdminIfNotFound: {}",admin);

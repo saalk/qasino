@@ -3,14 +3,14 @@ package cloud.qasino.games.dto.request;
 import cloud.qasino.games.pattern.statemachine.event.GameEvent;
 import cloud.qasino.games.pattern.statemachine.event.QasinoEvent;
 import cloud.qasino.games.pattern.statemachine.event.PlayEvent;
+import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.util.ArrayList;
 import java.util.List;
 
-@Getter
-@Setter
+@Data
 public class ParamsDto {
 
     // Path ids - use refresh methods on abstract class

@@ -31,6 +31,7 @@ public interface LeagueMapper {
     @Named("gamesForLeague")
     default List<GameDto> gamesForLeague(League league) {
         List<GameDto> games = new ArrayList<>();
+        if (league.getGames() == null) return games;
         for (Game game : league.getGames()) {
             games.add(GameMapper.INSTANCE.toDto(game, null));
         }

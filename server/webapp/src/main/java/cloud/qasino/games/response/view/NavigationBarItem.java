@@ -1,10 +1,10 @@
 package cloud.qasino.games.response.view;
 
+import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
-@Getter
-@Setter
+@Data
 //@JsonIdentityInfo(generator = JSOGGenerator.class)
 //@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class NavigationBarItem {

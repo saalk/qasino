@@ -24,8 +24,9 @@ import cloud.qasino.games.database.repository.GameRepository;
 import cloud.qasino.games.database.repository.PlayerRepository;
 import cloud.qasino.games.database.repository.PlayingRepository;
 import cloud.qasino.games.dto.QasinoFlowDto;
-import cloud.qasino.games.response.QasinoResponse;
 import cloud.qasino.games.pattern.statemachine.event.EventOutput;
+import cloud.qasino.games.response.QasinoResponse;
+import com.google.gson.Gson;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -138,15 +139,16 @@ public class PlayingThymeleafController extends AbstractThymeleafController {
         loadEntitiesToDtoAction.perform(flowDto);
         // 4 - return new response
         Qasino qasino = new Qasino();
-        qasino.getParams().setSuppliedVisitorId(Long.parseLong(getPricipalVisitorId(principal)));
+        qasino.getParams().setSuppliedVisitorUsername(principal.getName());
         findDtos.perform(qasino);
         mapQasino.perform(qasino);
-        model.addAttribute(qasino);
+        var gson = new Gson();
+        log.warn("Qasino = {} ", gson.toJson(qasino));
         // 4 - return response
         prepareQasinoResponse(response, flowDto);
         model.addAttribute(flowDto.getQasinoResponse());
 //        log.warn("HttpServletResponse: {}", response.getHeaderNames());
-//        log.warn("Model: {}", model);
+        log.warn("Model new gasinoResponse and qasino: {}", model);
 //        log.warn("Errors: {}", errors);
         return "redirect:/setup/" + flowDto.getSuppliedGameId();
     }
@@ -216,6 +218,13 @@ public class PlayingThymeleafController extends AbstractThymeleafController {
         if (SUCCESS.equals(result)) {
             result = calculateAndFinishGameAction.perform(flowDto);
         }
+        // 4 - return new response
+        Qasino qasino = new Qasino();
+        qasino.getParams().setSuppliedVisitorUsername(principal.getName());
+        findDtos.perform(qasino);
+        mapQasino.perform(qasino);
+        var gson = new Gson();
+        log.warn("Qasino = {} ", gson.toJson(qasino));
         // 4 - return response
         prepareQasinoResponse(response, flowDto);
         model.addAttribute(flowDto.getQasinoResponse());
@@ -223,7 +232,7 @@ public class PlayingThymeleafController extends AbstractThymeleafController {
 //        log.warn("Model: {}", model);
 //        log.warn("Errors: {}", errors);
 //        log.warn("qasinoResponse: {}", flowDto.getQasinoResponse());
-        log.warn("model !! {}", model);
+        log.warn("QasinoResponse = {} ", gson.toJson(flowDto.getQasinoResponse()));
         return "redirect:/play/" + flowDto.getSuppliedGameId();
     }
 

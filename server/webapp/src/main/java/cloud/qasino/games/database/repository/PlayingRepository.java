@@ -12,7 +12,7 @@ import java.util.List;
 public interface PlayingRepository extends JpaRepository<Playing, Long> {
 
     // finds
-    @Query(value = "SELECT * FROM \"turn\" where \"game_id\" = :gameId ", nativeQuery = true)
+    @Query(value = "SELECT * FROM \"playing\" where \"game_id\" = :gameId ", nativeQuery = true)
     List<Playing> findByGameId(Long gameId);
 
 }

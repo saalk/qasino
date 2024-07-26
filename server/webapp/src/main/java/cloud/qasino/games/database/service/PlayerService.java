@@ -34,9 +34,6 @@ public class PlayerService {
     @Autowired private GameRepository gameRepository;
     @Autowired private CardRepository cardRepository;
     @Autowired private PlayerRepository playerRepository;
-    PlayerMapper playerMapper;
-    VisitorMapper visitorMapper;
-    GameMapper gameMapper;
 
     // Since Java 8, there are several static methods added to the Comparator interface
     // that can take lambda expressions to create a Comparator object.
@@ -48,23 +45,23 @@ public class PlayerService {
     }
 
     public PlayerDto acceptInvitationForAGame(PlayerDto playerDto) {
-        Player invitee = playerMapper.fromDto(playerDto);
+        Player invitee = PlayerMapper.INSTANCE.fromDto(playerDto);
         invitee.setPlayerType(PlayerType.INVITEE);
         Player accepted =  playerRepository.save(invitee);
-        return playerMapper.toDto(accepted, null);
+        return PlayerMapper.INSTANCE.toDto(accepted, null);
     }
     public PlayerDto rejectInvitationForAGame(PlayerDto playerDto) {
-        Player invitee = playerMapper.fromDto(playerDto);
+        Player invitee = PlayerMapper.INSTANCE.fromDto(playerDto);
         invitee.setPlayerType(PlayerType.REJECTED);
         Player rejected =  playerRepository.save(invitee);
-        return playerMapper.toDto(rejected, null);
+        return PlayerMapper.INSTANCE.toDto(rejected, null);
     }
     public List<PlayerDto> seatOneUpForPlayer(PlayerDto playerDto) {
-        Player seatUp = playerMapper.fromDto(playerDto);
+        Player seatUp = PlayerMapper.INSTANCE.fromDto(playerDto);
         List<Player> allPlayersForTheGame = playerRepository.findByGame(seatUp.getGame());
 
         List<PlayerDto> playerDtos = allPlayersForTheGame.stream()
-                .map(player -> playerMapper.toDto(player, null))
+                .map(player -> PlayerMapper.INSTANCE.toDto(player, null))
                 .toList();
 
         if (allPlayersForTheGame.size() == 1) return playerDtos;
@@ -91,8 +88,8 @@ public class PlayerService {
         return playerDtos;
     }
     public PlayerDto addHumanVisitorPlayerToAGame(VisitorDto visitorDto, GameDto gameDto, Avatar avatar) {
-        Game game = gameMapper.fromDto(gameDto);
-        Visitor initiator = visitorMapper.fromDto(visitorDto);
+        Game game = GameMapper.INSTANCE.fromDto(gameDto);
+        Visitor initiator = VisitorMapper.INSTANCE.fromDto(visitorDto);
 
         List<Player> allPlayersForTheGame = playerRepository.findByGame(game);
         String avatarName = "avatarName";
@@ -106,11 +103,11 @@ public class PlayerService {
                 avatarName,
                 AiLevel.HUMAN);
         Player newPlayer =  playerRepository.save(visitor);
-        return playerMapper.toDto(newPlayer, null);
+        return PlayerMapper.INSTANCE.toDto(newPlayer, null);
     }
     public PlayerDto addInvitedHumanPlayerToAGame(VisitorDto visitorDto, GameDto gameDto, Avatar avatar) {
-        Game game = gameMapper.fromDto(gameDto);
-        Visitor invitee = visitorMapper.fromDto(visitorDto);
+        Game game = GameMapper.INSTANCE.fromDto(gameDto);
+        Visitor invitee = VisitorMapper.INSTANCE.fromDto(visitorDto);
 
         List<Player> allPlayersForTheGame = playerRepository.findByGame(game);
         String avatarName = "avatarName";
@@ -124,10 +121,10 @@ public class PlayerService {
             avatarName,
             AiLevel.HUMAN);
         Player newPlayer =  playerRepository.save(player);
-        return playerMapper.toDto(newPlayer, null);
+        return PlayerMapper.INSTANCE.toDto(newPlayer, null);
     }
     public PlayerDto addBotPlayerToAGame(GameDto gameDto, Avatar avatar, AiLevel aiLevel) {
-        Game game = gameMapper.fromDto(gameDto);
+        Game game = GameMapper.INSTANCE.fromDto(gameDto);
 
         if (aiLevel == AiLevel.HUMAN) {
             throw new MyBusinessException("addBotPlayerToAGame", "this aiLevel cannot become a bot player [" + aiLevel + "]");
@@ -145,6 +142,6 @@ public class PlayerService {
                 avatarName,
                 aiLevel);
         Player newBot =  playerRepository.save(bot);
-        return playerMapper.toDto(newBot, null);
+        return PlayerMapper.INSTANCE.toDto(newBot, null);
     }
 }

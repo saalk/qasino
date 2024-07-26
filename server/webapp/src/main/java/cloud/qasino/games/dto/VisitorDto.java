@@ -30,8 +30,8 @@ public class VisitorDto {
     private List<Role> rolesList = new ArrayList<>();
 
     // derived
-    private List<Game> initiatedGamesForVisitor;
-    private List<Game> invitedGamesForVisitor;
+//    private List<Game> initiatedGamesForVisitor;
+//    private List<Game> invitedGamesForVisitor;
     boolean isAdmin;
     boolean isUser;
     private boolean isRepayPossible;

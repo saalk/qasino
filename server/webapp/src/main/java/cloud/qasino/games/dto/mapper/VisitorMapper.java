@@ -17,8 +17,8 @@ public interface VisitorMapper {
     VisitorMapper INSTANCE = Mappers.getMapper(VisitorMapper.class);
 
     @Mapping(target = "password", ignore = true)
-    @Mapping(target = "initiatedGamesForVisitor", ignore = true)
-    @Mapping(target = "invitedGamesForVisitor", ignore = true)
+//    @Mapping(target = "initiatedGamesForVisitor", ignore = true)
+//    @Mapping(target = "invitedGamesForVisitor", ignore = true)
     @Mapping(target = "admin", source = "visitor", qualifiedByName = "isTheAdmin")
     @Mapping(target = "user", source = "visitor", qualifiedByName = "isTheUser")
     @Mapping(target = "repayPossible", source = "visitor", qualifiedByName = "canRepay")

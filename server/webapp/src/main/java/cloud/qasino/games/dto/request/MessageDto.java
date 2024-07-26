@@ -16,6 +16,7 @@ import cloud.qasino.games.pattern.statemachine.event.QasinoEvent;
 import cloud.qasino.games.pattern.statemachine.event.PlayEvent;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AccessLevel;
+import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -23,8 +24,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-@Getter
-@Setter
+@Data
 public class MessageDto {
 
     // FUNCTIONAL

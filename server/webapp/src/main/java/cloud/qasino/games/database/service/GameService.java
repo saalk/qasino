@@ -39,15 +39,13 @@ public class GameService {
     @Autowired private CardRepository cardRepository;
     @Autowired private PlayerRepository playerRepository;
     @Autowired private PlayerServiceOld playerServiceOld;
-    GameMapper gameMapper;
-    PlayerMapper playerMapper;
 
     // counts
 
     // find one
     public GameDto findOneByGameId(ParamsDto paramsDto) {
         Game retrievedGame = gameRepository.findOneByGameId(paramsDto.getSuppliedVisitorId());
-        return gameMapper.toDto(retrievedGame, retrievedGame.getCards());
+        return GameMapper.INSTANCE.toDto(retrievedGame, retrievedGame.getCards());
     };
     public GameDto findLatestGameForVisitorId(ParamsDto paramsDto){
         Pageable pageable = PageRequest.of(0, 4);
@@ -61,19 +59,19 @@ public class GameService {
             if (foundGame.isEmpty()) return null;
         }
         // BR 2
-        return gameMapper.toDto(foundGame.get(0),foundGame.get(0).getCards());
+        return GameMapper.INSTANCE.toDto(foundGame.get(0),foundGame.get(0).getCards());
 
     }
     public GameDto setupNewGameWithPlayerInitiator(GameDto gameDto, VisitorDto visitorDto) {
-        Game game = gameMapper.fromDto(gameDto);
+        Game game = GameMapper.INSTANCE.fromDto(gameDto);
         game.setInitiator(visitorDto.getVisitorId());
         Game newGame = gameRepository.save(game);
         // TODO
         playerServiceOld.addHumanVisitorPlayerToAGame(null, newGame, Avatar.ELF);
-        return gameMapper.toDto(newGame, newGame.getCards());
+        return GameMapper.INSTANCE.toDto(newGame, newGame.getCards());
     }
     public GameDto prepareExistingGame(GameDto gameDto, League league, String style, int ante) {
-        Game game = gameMapper.fromDto(gameDto);
+        Game game = GameMapper.INSTANCE.fromDto(gameDto);
         // You cannot change the initiator or the type
         if (!(league == null)) {
             game.setLeague(league);
@@ -86,10 +84,10 @@ public class GameService {
         }
         game.setState(GameState.PREPARED);
         Game newGame = gameRepository.save(game);
-        return  gameMapper.toDto(newGame,newGame.getCards());
+        return  GameMapper.INSTANCE.toDto(newGame,newGame.getCards());
     }
     public GameDto addAndShuffleCardsForAGame(GameDto gameDto) {
-        Game game = gameMapper.fromDto(gameDto);
+        Game game = GameMapper.INSTANCE.fromDto(gameDto);
         if (!game.getCards().isEmpty())
             throw new MyBusinessException("addAndShuffleCardsForAGame", "this game already has cards [" + game.getGameId() + "]");
         Deck deck = DeckFactory.createShuffledDeck(game, 0);
@@ -104,7 +102,7 @@ public class GameService {
         game.setState(GameState.STARTED);
         game.setCards(cards);
         game = gameRepository.save(game);
-        return gameMapper.toDto(game,game.getCards());
+        return GameMapper.INSTANCE.toDto(game,game.getCards());
     }
     public PlayerDto findNextPlayerForGame(GameDto game) {
         int totalSeats = game.getPlayers().size();

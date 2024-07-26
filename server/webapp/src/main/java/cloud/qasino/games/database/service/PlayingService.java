@@ -45,10 +45,6 @@ public class PlayingService {
     @Autowired private CardRepository cardRepository;
     @Autowired private GameRepository gameRepository;
 
-    PlayingMapper playingMapper;
-    SeatMapper seatMapper;
-    ResultMapper resultMapper;
-
     // finds
     public PlayingDto findByGameId(ParamsDto paramsDto) {
         List<Playing> playings = playingRepository.findByGameId(paramsDto.getSuppliedGameId());
@@ -57,11 +53,11 @@ public class PlayingService {
             return null;
         }
         // FROM PLAYING
-        return playingMapper.toDto(playings.get(0));
+        return PlayingMapper.INSTANCE.toDto(playings.get(0));
     }
     public List<ResultDto> findResultsByGameId(ParamsDto paramsDto) {
         List<Result> results = resultsRepository.findByGameId(paramsDto.getSuppliedGameId());
-        return resultMapper.toDtoList(results);
+        return ResultMapper.INSTANCE.toDtoList(results);
     }
 
     public List<SeatDto> findByPlayingOrGameId(ParamsDto paramsDto) {
