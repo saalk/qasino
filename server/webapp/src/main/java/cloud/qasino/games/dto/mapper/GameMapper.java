@@ -30,7 +30,7 @@ public interface GameMapper {
     // for testing and use in other mappers
     GameMapper INSTANCE = Mappers.getMapper(GameMapper.class);
 
-    @Mapping(target = "players", source = "game", qualifiedByName = "players")
+//    @Mapping(target = "players", source = "game", qualifiedByName = "players")
     @Mapping(target = "cardsInStock", source = "cards", qualifiedByName = "cardsInStock")
     @Mapping(target = "gameStateGroup", source = "game", qualifiedByName = "gameStateGroup")
     @Mapping(target = "activePlayerInitiator", source = "game", qualifiedByName = "isActivePlayerInitiator")

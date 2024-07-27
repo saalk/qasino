@@ -34,35 +34,35 @@ public abstract class ActionDto<OUTPUT> {
         qasino.setVisitor(visitorAndLeaguesService.findByUsername(qasino.getParams()));
         if (qasino.getVisitor() == null) return false; // 404 not found
         qasino.getParams().setSuppliedVisitorId(qasino.getVisitor().getVisitorId());
-//        refreshOrFindLatestGame(qasino);
+        refreshOrFindLatestGame(qasino);
 //        refreshOrFindLeagueForLatestGame(qasino);
         return true; // visitor found and id set
     }
 
-//    protected boolean refreshVisitor(Qasino qasino) {
-//        qasino.setVisitor(visitorAndLeaguesService.findOneByVisitorId(qasino.getParams()));
-//        if (qasino.getVisitor() == null) return false; // 404 not found
-//        qasino.getParams().setSuppliedVisitorId(qasino.getVisitor().getVisitorId());
+    protected boolean refreshVisitor(Qasino qasino) {
+        qasino.setVisitor(visitorAndLeaguesService.findOneByVisitorId(qasino.getParams()));
+        if (qasino.getVisitor() == null) return false; // 404 not found
+        qasino.getParams().setSuppliedVisitorId(qasino.getVisitor().getVisitorId());
 //        refreshOrFindLatestGame(qasino);
 //        refreshOrFindLeagueForLatestGame(qasino);
-//        return true; // 200 visitor found and id set
-//    }
+        return true; // 200 visitor found and id set
+    }
 
-//    protected boolean refreshOrFindLatestGame(Qasino qasino) {
-//        if (qasino.getParams().getSuppliedGameId() > 0) {
-//            qasino.setGame(gameService.findOneByGameId(qasino.getParams()));
-//            if (qasino.getGame() == null) return false; // 404 not found
-//        } else {
-//            qasino.setGame(gameService.findLatestGameForVisitorId(qasino.getParams()));
-//            if (qasino.getGame() == null) return true; // 200 no game yet
-//            qasino.getParams().setSuppliedGameId(qasino.getGame().getGameId());
-//        }
+    protected boolean refreshOrFindLatestGame(Qasino qasino) {
+        if (qasino.getParams().getSuppliedGameId() > 0) {
+            qasino.setGame(gameService.findOneByGameId(qasino.getParams()));
+            if (qasino.getGame() == null) return false; // 404 not found
+        } else {
+            qasino.setGame(gameService.findLatestGameForVisitorId(qasino.getParams()));
+            if (qasino.getGame() == null) return true; // 200 no game yet
+            qasino.getParams().setSuppliedGameId(qasino.getGame().getGameId());
+        }
 //        refreshOrFindPlayingForGame(qasino);
-//        if (qasino.getGame().getGameStateGroup().equals(GameStateGroup.FINISHED)) {
+        if (qasino.getGame().getGameStateGroup().equals(GameStateGroup.FINISHED)) {
 //            refreshOrFindResultsForGame(qasino);
-//        }
-//        return true; // 200 game found and id set
-//    }
+        }
+        return true; // 200 game found and id set
+    }
 
 //    protected boolean refreshOrFindPlayingForGame(Qasino qasino) {
 //        if (qasino.getParams().getSuppliedGameId() > 0) {

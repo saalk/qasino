@@ -28,10 +28,10 @@ public class GameDto {
 //    private String updated; // ignore
 
     // ref
-    private LeagueDto league;
+//    private LeagueDto league;
     private long initiator;
-    private List<Card> cards;
-    private List<PlayerDto> players;
+//    private List<Card> cards;
+//    private List<PlayerDto> players;
     //   private Playing playing; // ignore
 //   private List<Result> results; // ignore
 
