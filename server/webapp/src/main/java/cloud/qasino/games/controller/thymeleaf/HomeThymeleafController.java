@@ -1,6 +1,9 @@
 package cloud.qasino.games.controller.thymeleaf;
 
 import cloud.qasino.games.action.SignUpNewVisitorAction;
+import cloud.qasino.games.action.dto.FindAllDtosForUsernameAction;
+import cloud.qasino.games.action.dto.MapQasinoFromDtosAction;
+import cloud.qasino.games.action.dto.Qasino;
 import cloud.qasino.games.controller.AbstractThymeleafController;
 import cloud.qasino.games.database.security.MyUserDetailService;
 import cloud.qasino.games.database.security.MyUserPrincipal;
@@ -12,6 +15,7 @@ import cloud.qasino.games.response.QasinoResponse;
 import cloud.qasino.games.web.AjaxUtils;
 import cloud.qasino.games.web.MessageHelper;
 import com.google.common.base.Throwables;
+import com.google.gson.Gson;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
@@ -72,6 +76,12 @@ public class HomeThymeleafController extends AbstractThymeleafController {
     @Autowired
     private MyUserDetailService userDetailService;
     private final AuthenticationManager authenticationManager;
+
+
+    @Autowired
+    FindAllDtosForUsernameAction findDtos;
+    @Autowired
+    MapQasinoFromDtosAction mapQasino;
 
     @Autowired
     public HomeThymeleafController(
@@ -242,14 +252,16 @@ public class HomeThymeleafController extends AbstractThymeleafController {
             return principal != null ? HOME_SIGNED_IN_LOCATION : HOME_NOT_SIGNED_IN_LOCATION;
         }
         // 3 - process
+        // 4 - return new response
+        Qasino qasino = new Qasino();
+        qasino.getParams().setSuppliedVisitorUsername(principal == null ? "":principal.getName());
+        prepareQasino(response, qasino);
+        var gson = new Gson();
+        log.warn("Qasino gson = {} ", gson.toJson(qasino));
         // 4 - return response
         prepareQasinoResponse(response, flowDto);
         model.addAttribute(flowDto.getQasinoResponse());
-
-//        log.warn("Principal: {}", principal);
-//        log.warn("HttpServletResponse: {}", response.getHeaderNames());
-//        log.warn("Model: {}", model);
-//        log.warn("qasinoResponse: {}", flowDto.getQasinoResponse());
+//        log.warn("QasinoResponse gson = {} ", gson.toJson(flowDto.getQasinoResponse()));
 
         return principal != null ? HOME_SIGNED_IN_LOCATION : HOME_NOT_SIGNED_IN_LOCATION;
     }

@@ -140,16 +140,14 @@ public class PlayingThymeleafController extends AbstractThymeleafController {
         // 4 - return new response
         Qasino qasino = new Qasino();
         qasino.getParams().setSuppliedVisitorUsername(principal.getName());
-        findDtos.perform(qasino);
-        mapQasino.perform(qasino);
+        prepareQasino(response, qasino);
         var gson = new Gson();
-        log.warn("Qasino = {} ", gson.toJson(qasino));
+        log.warn("Qasino gson = {} ", gson.toJson(qasino));
         // 4 - return response
         prepareQasinoResponse(response, flowDto);
         model.addAttribute(flowDto.getQasinoResponse());
-//        log.warn("HttpServletResponse: {}", response.getHeaderNames());
-        log.warn("Model new gasinoResponse and qasino: {}", model);
-//        log.warn("Errors: {}", errors);
+//        log.warn("QasinoResponse gson = {} ", gson.toJson(flowDto.getQasinoResponse()));
+
         return "redirect:/setup/" + flowDto.getSuppliedGameId();
     }
 
@@ -221,18 +219,14 @@ public class PlayingThymeleafController extends AbstractThymeleafController {
         // 4 - return new response
         Qasino qasino = new Qasino();
         qasino.getParams().setSuppliedVisitorUsername(principal.getName());
-        findDtos.perform(qasino);
-        mapQasino.perform(qasino);
+        prepareQasino(response, qasino);
         var gson = new Gson();
-        log.warn("Qasino = {} ", gson.toJson(qasino));
+        log.warn("Qasino gson = {} ", gson.toJson(qasino));
         // 4 - return response
         prepareQasinoResponse(response, flowDto);
         model.addAttribute(flowDto.getQasinoResponse());
-//        log.warn("HttpServletResponse: {}", response.getHeaderNames());
-//        log.warn("Model: {}", model);
-//        log.warn("Errors: {}", errors);
-//        log.warn("qasinoResponse: {}", flowDto.getQasinoResponse());
-        log.warn("QasinoResponse = {} ", gson.toJson(flowDto.getQasinoResponse()));
+//        log.warn("QasinoResponse = {} ", gson.toJson(flowDto.getQasinoResponse()));
+
         return "redirect:/play/" + flowDto.getSuppliedGameId();
     }
 

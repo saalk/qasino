@@ -20,7 +20,7 @@ public interface LeagueMapper {
     LeagueMapper INSTANCE = Mappers.getMapper(LeagueMapper.class);
 
     @Mapping(target = "gamesForLeague", source = "league", qualifiedByName = "gamesForLeague")
-    @Mapping(target = "visitor", source = "league", qualifiedByName = "visitor")
+//    @Mapping(target = "visitor", source = "league", qualifiedByName = "visitor")
     LeagueDto toDto(League league);
 
     @Mapping(target = "created", ignore = true)

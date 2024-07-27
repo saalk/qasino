@@ -32,16 +32,16 @@ public class Qasino
 
     private MessageDto message = new MessageDto();
     private ParamsDto params = new ParamsDto();
-    private CreationDto creation = new CreationDto();
+//    private CreationDto creation = new CreationDto(); // TODO just uncomment
 
     private VisitorDto visitor;
-    private LeagueDto league;
+//    private LeagueDto league;
     private GameDto game;
-    private PlayingDto playing;
-    private InvitationsDto invitations;
+//    private PlayingDto playing;
+//    private InvitationsDto invitations;
 
     // extra
-    EnumOverview enumOverview = new EnumOverview();
-    List<Statistic> statistics;
+//    EnumOverview enumOverview = new EnumOverview(); // TODO just uncomment
+//    List<Statistic> statistics; // TODO just uncomment
 
 }

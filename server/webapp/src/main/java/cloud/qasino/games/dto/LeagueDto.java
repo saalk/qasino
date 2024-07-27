@@ -17,7 +17,7 @@ public class LeagueDto {
 //    String created; // ignore
 
     // ref
-    private VisitorDto visitor;
+//    private VisitorDto visitor;
     private List<GameDto> gamesForLeague;
 
     // Normal fields

@@ -63,11 +63,11 @@ public class MapQasinoFromDtosAction extends ActionDto<EventOutput.Result> {
         navigationBarItem.setStat("balance []");
 
         if (qasino.getVisitor() != null) {
+            navigationBarItem.setTitle("Visitor[" + qasino.getVisitor().getVisitorId()+ "]");
+            navigationBarItem.setStat("balance [" + qasino.getVisitor().getBalance() + "]");
             if (qasino.getVisitor().getBalance() == 0) {
                 qasino.setActionNeeded(true);
                 qasino.setAction("Pawn your ship for fiches");
-                navigationBarItem.setTitle("Visitor[" + qasino.getVisitor().getVisitorId()+ "]");
-                navigationBarItem.setStat("balance [" + qasino.getVisitor().getBalance() + "]");
             }
         } else {
             qasino.setActionNeeded(true);
@@ -81,37 +81,37 @@ public class MapQasinoFromDtosAction extends ActionDto<EventOutput.Result> {
         navigationBarItem.setTitle("Setup");
         navigationBarItem.setStat("[0/0] bots/humans");
 
-        if (qasino.getGame() != null) {
-            switch (qasino.getGame().getState().getGroup()) {
-                case SETUP, PREPARED -> {
-                    qasino.setActionNeeded(true);
-                    qasino.setAction(qasino.getGame().getState().getNextAction());
-                    navigationBarItem.setTitle("Setup[" +
-                            Integer.toHexString((int) qasino.getGame().getGameId())+"]");
-                    long bots = 0;
-                    long humans = 0;
-                    if (qasino.getGame().getPlayers() != null) {
-                        bots = qasino.getGame().getPlayers().stream().filter(c -> !c.isHuman()).count();
-                        humans = qasino.getGame().getPlayers().size() - bots;
-                    }
-                    navigationBarItem.setStat("[" + bots + "/" + humans + "] bots/humans");
-                }
-                case PLAYING -> {
-                    qasino.setActionNeeded(false);
-                }
-                case FINISHED, ERROR -> {
-                    qasino.setActionNeeded(false);
-                    // dummy game
-                    qasino.setGame(GameMapper.INSTANCE.toDto(Game.buildDummy(null, -1),null));
-                }
-            }
-        } else {
-            if (!qasino.isActionNeeded()) {
-                qasino.setActionNeeded(true);
-                qasino.setAction("Start a new game");
-            }
-        }
-        navigationBarItems.add(navigationBarItem);
+//        if (qasino.getGame() != null) {
+//            switch (qasino.getGame().getState().getGroup()) {
+//                case SETUP, PREPARED -> {
+//                    qasino.setActionNeeded(true);
+//                    qasino.setAction(qasino.getGame().getState().getNextAction());
+//                    navigationBarItem.setTitle("Setup[" +
+//                            Integer.toHexString((int) qasino.getGame().getGameId())+"]");
+//                    long bots = 0;
+//                    long humans = 0;
+//                    if (qasino.getGame().getPlayers() != null) {
+//                        bots = qasino.getGame().getPlayers().stream().filter(c -> !c.isHuman()).count();
+//                        humans = qasino.getGame().getPlayers().size() - bots;
+//                    }
+//                    navigationBarItem.setStat("[" + bots + "/" + humans + "] bots/humans");
+//                }
+//                case PLAYING -> {
+//                    qasino.setActionNeeded(false);
+//                }
+//                case FINISHED, ERROR -> {
+//                    qasino.setActionNeeded(false);
+//                    // dummy game
+//                    qasino.setGame(GameMapper.INSTANCE.toDto(Game.buildDummy(null, -1),null));
+//                }
+//            }
+//        } else {
+//            if (!qasino.isActionNeeded()) {
+//                qasino.setActionNeeded(true);
+//                qasino.setAction("Start a new game");
+//            }
+//        }
+//        navigationBarItems.add(navigationBarItem);
 
         // 3: Nav bar game play
         navigationBarItem = new NavigationBarItem();
@@ -119,44 +119,44 @@ public class MapQasinoFromDtosAction extends ActionDto<EventOutput.Result> {
         navigationBarItem.setTitle("Play");
         navigationBarItem.setStat("[0/0/0] round/seat/move");
 
-        if (qasino.getGame() != null) {
-            switch (qasino.getGame().getState().getGroup()) {
-                case PLAYING, FINISHED -> {
-                    qasino.setActionNeeded(true);
-                    qasino.setAction(qasino.getGame().getState().getNextAction());
-                    navigationBarItem.setTitle("Play[" +
-                            Integer.toHexString((int) qasino.getGame().getGameId())+"]");
-                    // TODO FIXXXX .NullPointerException: Cannot invoke "cloud.qasi
-                    //  no.games.database.entity.Playing.getCurrentRoundNumber()" because the return value of "cloud.qasino.games.action.MapQasinoFromDto$Dto.getActivePlaying()" is null
-                    if (qasino.getPlaying() != null) { // games is still being validated
-                        navigationBarItem.setStat(
-                                "[" + qasino.getPlaying().getCurrentRoundNumber() +
-                                        "/" + qasino.getPlaying().getCurrentSeatNumber() +
-                                        "/" + qasino.getPlaying().getCurrentMoveNumber() +
-                                        "] round/seat/move");
-                    }
-                }
-            }
-        } else {
-            if (!qasino.isActionNeeded()) {
-                qasino.setActionNeeded(true);
-                qasino.setAction("Play a game");
-            }
-        }
-        navigationBarItems.add(navigationBarItem);
+//        if (qasino.getGame() != null) {
+//            switch (qasino.getGame().getState().getGroup()) {
+//                case PLAYING, FINISHED -> {
+//                    qasino.setActionNeeded(true);
+//                    qasino.setAction(qasino.getGame().getState().getNextAction());
+//                    navigationBarItem.setTitle("Play[" +
+//                            Integer.toHexString((int) qasino.getGame().getGameId())+"]");
+//                    // TODO FIXXXX .NullPointerException: Cannot invoke "cloud.qasi
+//                    //  no.games.database.entity.Playing.getCurrentRoundNumber()" because the return value of "cloud.qasino.games.action.MapQasinoFromDto$Dto.getActivePlaying()" is null
+//                    if (qasino.getPlaying() != null) { // games is still being validated
+//                        navigationBarItem.setStat(
+//                                "[" + qasino.getPlaying().getCurrentRoundNumber() +
+//                                        "/" + qasino.getPlaying().getCurrentSeatNumber() +
+//                                        "/" + qasino.getPlaying().getCurrentMoveNumber() +
+//                                        "] round/seat/move");
+//                    }
+//                }
+//            }
+//        } else {
+//            if (!qasino.isActionNeeded()) {
+//                qasino.setActionNeeded(true);
+//                qasino.setAction("Play a game");
+//            }
+//        }
+//        navigationBarItems.add(navigationBarItem);
 
         // 4: Nav bar invitations
         navigationBarItem = new NavigationBarItem();
         navigationBarItem.setSequence(4);
         navigationBarItem.setTitle("Invite");
         navigationBarItem.setStat("[0/0] setup/playing");
-        if (qasino.getGame() != null && qasino.getGame().getState().equals(GameState.PENDING_INVITATIONS)) {
-            qasino.setActionNeeded(true);
-            qasino.setAction(qasino.getGame().getState().getNextAction());
-            navigationBarItem.setTitle("Invites[]");
-            navigationBarItem.setStat("calculating..");
-        }
-        navigationBarItems.add(navigationBarItem);
+//        if (qasino.getGame() != null && qasino.getGame().getState().equals(GameState.PENDING_INVITATIONS)) {
+//            qasino.setActionNeeded(true);
+//            qasino.setAction(qasino.getGame().getState().getNextAction());
+//            navigationBarItem.setTitle("Invites[]");
+//            navigationBarItem.setStat("calculating..");
+//        }
+//        navigationBarItems.add(navigationBarItem);
 
         // 5: Nav bar leagues
         navigationBarItem = new NavigationBarItem();
@@ -164,21 +164,20 @@ public class MapQasinoFromDtosAction extends ActionDto<EventOutput.Result> {
         navigationBarItem.setTitle("League");
         navigationBarItem.setStat("[0] active");
         navigationBarItem.setVisible(false);
-        if (qasino.getLeague() != null) {
-            if (!qasino.isActionNeeded()) {
-                qasino.setActionNeeded(true);
-                qasino.setAction("Manage your leagues");
-            }
-            navigationBarItem.setTitle("League[" + Integer.toHexString((int) qasino.getLeague().getLeagueId())+"]");
-            navigationBarItem.setStat("[0] active");
-        } else {
-            // set up dummy league
-            qasino.setLeague(LeagueMapper.INSTANCE.toDto(League.buildDummy(null,"leagueName")));
-        }
+//        if (qasino.getLeague() != null) {
+//            if (!qasino.isActionNeeded()) {
+//                qasino.setActionNeeded(true);
+//                qasino.setAction("Manage your leagues");
+//            }
+//            navigationBarItem.setTitle("League[" + Integer.toHexString((int) qasino.getLeague().getLeagueId())+"]");
+//            navigationBarItem.setStat("[0] active");
+//        } else {
+//            // set up dummy league
+//            qasino.setLeague(LeagueMapper.INSTANCE.toDto(League.buildDummy(null,"leagueName")));
+//        }
         navigationBarItems.add(navigationBarItem);
 
         qasino.setNavBarItems(navigationBarItems);
-        qasino.setStatistics(qasino.getStatistics());
 
         return EventOutput.Result.SUCCESS;
     }

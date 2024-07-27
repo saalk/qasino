@@ -7,6 +7,10 @@ import cloud.qasino.games.action.LoadEntitiesToDtoAction;
 import cloud.qasino.games.action.MapQasinoGameTableFromDtoAction;
 import cloud.qasino.games.action.MapQasinoResponseFromDtoAction;
 import cloud.qasino.games.action.SetStatusIndicatorsBaseOnRetrievedDataAction;
+import cloud.qasino.games.action.dto.FindAllDtosForUsernameAction;
+import cloud.qasino.games.action.dto.CalculateStatisticsAction;
+import cloud.qasino.games.action.dto.MapQasinoFromDtosAction;
+import cloud.qasino.games.action.dto.Qasino;
 import cloud.qasino.games.database.security.Visitor;
 import cloud.qasino.games.database.security.VisitorRepository;
 import cloud.qasino.games.dto.QasinoFlowDto;
@@ -41,6 +45,13 @@ public class AbstractThymeleafController {
     @Autowired
     DeterminePossibleEventsAction determinePossibleEvents;
 
+    @Autowired
+    FindAllDtosForUsernameAction findDtos;
+    @Autowired
+    MapQasinoFromDtosAction mapQasino;
+    @Autowired
+    CalculateStatisticsAction calculateStatistics;
+
     public String prettyPrintJson(QasinoResponse qasinoResponse) {
         ObjectMapper objectMapper = new ObjectMapper();
         try {
@@ -65,6 +76,16 @@ public class AbstractThymeleafController {
         calculateQasinoStatisticsAction.perform(flowDto);
         mapQasinoResponseFromDtoAction.perform(flowDto);
         setHttpResponseHeader(response, flowDto);
+
+    }
+
+    public void prepareQasino(HttpServletResponse response, Qasino qasino) {
+
+        findDtos.perform(qasino);
+        calculateStatistics.perform(qasino);
+        mapQasino.perform(qasino);
+
+//        determinePossibleEvents.perform(flowDto);
 
     }
 

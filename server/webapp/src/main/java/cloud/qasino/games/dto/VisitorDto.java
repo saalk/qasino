@@ -4,14 +4,19 @@ import cloud.qasino.games.database.entity.Game;
 import cloud.qasino.games.database.entity.League;
 import cloud.qasino.games.database.entity.Player;
 import cloud.qasino.games.database.security.Role;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.time.Month;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-@Data
+@Getter
+@Setter
 /**
  * The purpose of using this Dto is to separate the internal representation of visitor data
  * (e.g., in the database or business logic) from the data exposed to
@@ -27,7 +32,7 @@ public class VisitorDto {
 //    private String created; // ignore
 
     // ref
-    private List<Role> rolesList = new ArrayList<>();
+    private String rolesList;
 
     // derived
 //    private List<Game> initiatedGamesForVisitor;

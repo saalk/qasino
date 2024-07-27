@@ -6,6 +6,9 @@ import cloud.qasino.games.action.IsGameConsistentForGameEventAction;
 import cloud.qasino.games.action.LoadEntitiesToDtoAction;
 import cloud.qasino.games.action.PrepareGameAction;
 import cloud.qasino.games.action.UpdateStyleForGame;
+import cloud.qasino.games.action.dto.FindAllDtosForUsernameAction;
+import cloud.qasino.games.action.dto.MapQasinoFromDtosAction;
+import cloud.qasino.games.action.dto.Qasino;
 import cloud.qasino.games.controller.AbstractThymeleafController;
 import cloud.qasino.games.database.entity.Player;
 import cloud.qasino.games.database.repository.GameRepository;
@@ -15,6 +18,7 @@ import cloud.qasino.games.dto.QasinoFlowDto;
 import cloud.qasino.games.exception.MyBusinessException;
 import cloud.qasino.games.pattern.statemachine.event.EventOutput;
 import cloud.qasino.games.response.QasinoResponse;
+import com.google.gson.Gson;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
@@ -66,6 +70,10 @@ public class GameThymeleafController extends AbstractThymeleafController {
     @Autowired
     UpdateStyleForGame updateStyleForGame;
 
+    @Autowired
+    FindAllDtosForUsernameAction findDtos;
+    @Autowired
+    MapQasinoFromDtosAction mapQasino;
 
     @Autowired
     public GameThymeleafController(
@@ -106,7 +114,7 @@ public class GameThymeleafController extends AbstractThymeleafController {
         prepareQasinoResponse(response, flowDto);
         model.addAttribute(flowDto.getQasinoResponse());
 //        log.warn("QasinoResponse !! {}", prettyPrintJson(flowDto.getQasinoResponse()));
-        log.warn("model !! {}", model);
+//        log.warn("model !! {}", model);
         return SETUP_VIEW_LOCATION;
     }
 
@@ -135,11 +143,17 @@ public class GameThymeleafController extends AbstractThymeleafController {
             return PLAY_VIEW_LOCATION;
         }
         // 3 - process
+        // 4 - return new response
+        Qasino qasino = new Qasino();
+        qasino.getParams().setSuppliedVisitorUsername(principal.getName());
+        prepareQasino(response, qasino);
+        var gson = new Gson();
+        log.warn("Qasino gson = {} ", gson.toJson(qasino));
         // 4 - return response
         prepareQasinoResponse(response, flowDto);
         model.addAttribute(flowDto.getQasinoResponse());
-//        log.warn("QasinoResponse !! {}", prettyPrintJson(flowDto.getQasinoResponse()));
-//        log.warn("model !! {}", model);
+//        log.warn("QasinoResponse = {} ", gson.toJson(flowDto.getQasinoResponse()));
+
         return PLAY_VIEW_LOCATION;
     }
 

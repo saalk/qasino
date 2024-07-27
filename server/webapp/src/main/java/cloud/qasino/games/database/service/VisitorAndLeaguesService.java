@@ -97,7 +97,7 @@ public class VisitorAndLeaguesService {
         final Role basicRole = roleRepository.findByName("ROLE_USER");
         List<Role> roles = new ArrayList<>();
         roles.add(basicRole);
-        userDto.setRolesList(roles);
+//        userDto.setRolesList(roles);
         userDto.setPassword(encoder.encode(userDto.getPassword()));
         Visitor visitor = VisitorMapper.INSTANCE.fromDto(userDto);
         Visitor savedVisitor = visitorRepository.save(visitor);
@@ -109,7 +109,7 @@ public class VisitorAndLeaguesService {
         final Role adminRole = roleRepository.findByName("ROLE_ADMIN");
         List<Role> roles = new ArrayList<>();
         roles.add(adminRole);
-        adminDto.setRolesList(roles);
+//        adminDto.setRolesList(roles);
         adminDto.setPassword(encoder.encode(adminDto.getPassword()));
         Visitor visitor = VisitorMapper.INSTANCE.fromDto(adminDto);
         Visitor savedVisitor = visitorRepository.save(visitor);

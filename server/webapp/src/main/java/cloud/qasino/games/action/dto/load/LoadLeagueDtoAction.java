@@ -1,5 +1,7 @@
-package cloud.qasino.games.action.dto;
+package cloud.qasino.games.action.dto.load;
 
+import cloud.qasino.games.action.dto.ActionDto;
+import cloud.qasino.games.action.dto.Qasino;
 import cloud.qasino.games.exception.MyNPException;
 import cloud.qasino.games.pattern.statemachine.event.EventOutput;
 import lombok.extern.slf4j.Slf4j;
@@ -26,17 +28,17 @@ import org.springframework.stereotype.Component;
  *
  * @return Result.SUCCESS or FAILURE (404) when not found
  */
-public class LoadResultDtoAction extends ActionDto<EventOutput.Result> {
+public class LoadLeagueDtoAction extends ActionDto<EventOutput.Result> {
 
     @Override
     public EventOutput.Result perform(Qasino qasino) {
 
-        boolean isResultFound = refreshOrFindResultsForGame(qasino);
-        if (!isResultFound) {
-            // TODO make 404
-//          return new EventOutput(EventOutput.Result.FAILURE, actionDto.getIds().getSuppliedGameEvent(), actionDto.getIds().getSuppliedPlayEvent());
-            throw new MyNPException("39 getResultSupplied", "resultId [" + qasino.getParams().getSuppliedGameId() + "]");
-        }
+//        boolean isLeagueFound = refreshOrFindLeagueForLatestGame(qasino);
+//        if (!isLeagueFound) {
+//            // TODO make 404
+////          return new EventOutput(EventOutput.Result.FAILURE, actionDto.getIds().getSuppliedGameEvent(), actionDto.getIds().getSuppliedPlayEvent());
+//            throw new MyNPException("69 getVisitorSupplied", "visitorId [" + qasino.getParams().getSuppliedVisitorId() + "]");
+//        }
         return EventOutput.Result.SUCCESS;
     }
 }

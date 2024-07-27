@@ -17,7 +17,7 @@ class LeagueMapperTest extends QasinoSimulator {
         assertEquals(leagueDto.getLeagueId(), league.getLeagueId());
 
         // ref
-        assertEquals(leagueDto.getVisitor().getAlias(), league.getVisitor().getAlias());
+//        assertEquals(leagueDto.getVisitor().getAlias(), league.getVisitor().getAlias());
         assertEquals(leagueDto.getGamesForLeague().get(0).getCards(), games.get(0).getCards());
 
         // normal fields
