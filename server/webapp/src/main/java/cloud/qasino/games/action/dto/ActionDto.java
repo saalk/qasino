@@ -43,7 +43,7 @@ public abstract class ActionDto<OUTPUT> {
         qasino.setVisitor(visitorAndLeaguesService.findOneByVisitorId(qasino.getParams()));
         if (qasino.getVisitor() == null) return false; // 404 not found
         qasino.getParams().setSuppliedVisitorId(qasino.getVisitor().getVisitorId());
-//        refreshOrFindLatestGame(qasino);
+        refreshOrFindLatestGame(qasino);
 //        refreshOrFindLeagueForLatestGame(qasino);
         return true; // 200 visitor found and id set
     }
@@ -57,23 +57,23 @@ public abstract class ActionDto<OUTPUT> {
             if (qasino.getGame() == null) return true; // 200 no game yet
             qasino.getParams().setSuppliedGameId(qasino.getGame().getGameId());
         }
-//        refreshOrFindPlayingForGame(qasino);
+        refreshOrFindPlayingForGame(qasino);
         if (qasino.getGame().getGameStateGroup().equals(GameStateGroup.FINISHED)) {
 //            refreshOrFindResultsForGame(qasino);
         }
         return true; // 200 game found and id set
     }
 
-//    protected boolean refreshOrFindPlayingForGame(Qasino qasino) {
-//        if (qasino.getParams().getSuppliedGameId() > 0) {
+    protected boolean refreshOrFindPlayingForGame(Qasino qasino) {
+        if (qasino.getParams().getSuppliedGameId() > 0) {
 //            qasino.setPlaying(playingService.findByGameId(qasino.getParams()));
 //            if (qasino.getPlaying() == null) return false; // 200 no playing yet
 //            qasino.getParams().setSuppliedPlayingId(qasino.getPlaying().getPlayingId());
 //            refreshOrFindSeatsForPlaying(qasino);
-//            return false;
-//        }
-//        return true; // 200 playing found and id set
-//    }
+            return false;
+        }
+        return true; // 200 playing found and id set
+    }
 
 //    protected boolean refreshOrFindSeatsForPlaying(Qasino qasino) {
 //        List<SeatDto> seats = playingService.findByPlayingOrGameId(qasino.getParams());

@@ -28,9 +28,9 @@ public interface PlayingMapper {
     // for testing and use in other mappers
     PlayingMapper INSTANCE = Mappers.getMapper(PlayingMapper.class);
 
-    @Mapping(target = "game", source = "playing", qualifiedByName = "game")
-    @Mapping(target = "player", source = "playing", qualifiedByName = "player")
-    @Mapping(target = "cardMoves", source = "playing", qualifiedByName = "cardMoves")
+//    @Mapping(target = "game", source = "playing", qualifiedByName = "game")
+//    @Mapping(target = "player", source = "playing", qualifiedByName = "player")
+//    @Mapping(target = "cardMoves", source = "playing", qualifiedByName = "cardMoves")
     PlayingDto toDto(Playing playing);
 
     @Mapping(target = "cardMoves", ignore = true)

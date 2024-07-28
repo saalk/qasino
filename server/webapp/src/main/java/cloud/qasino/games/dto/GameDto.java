@@ -1,6 +1,8 @@
 package cloud.qasino.games.dto;
 
 import cloud.qasino.games.database.entity.Card;
+import cloud.qasino.games.database.entity.Playing;
+import cloud.qasino.games.database.entity.Result;
 import cloud.qasino.games.database.entity.enums.game.GameState;
 import cloud.qasino.games.database.entity.enums.game.Type;
 import cloud.qasino.games.database.entity.enums.game.gamestate.GameStateGroup;
@@ -28,12 +30,12 @@ public class GameDto {
 //    private String updated; // ignore
 
     // ref
-//    private LeagueDto league;
+    private LeagueDto league;
     private long initiator;
 //    private List<Card> cards;
 //    private List<PlayerDto> players;
-    //   private Playing playing; // ignore
-//   private List<Result> results; // ignore
+//    private Playing playing; // ignore
+//    private List<Result> results; // ignore
 
     // Normal fields
     private GameState state;

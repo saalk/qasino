@@ -43,8 +43,8 @@ public class VisitorDto {
 
     // Normal fields
     private String username;
-    private String password;
-    //    private boolean enabled; // ignore
+//    private String password; //ignore
+//    private boolean enabled; // ignore
 //    private boolean isUsing2FA; // ignore
     private String alias;
     private int aliasSequence;

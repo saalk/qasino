@@ -16,7 +16,7 @@ public interface VisitorMapper {
     // for testing and use in other mappers
     VisitorMapper INSTANCE = Mappers.getMapper(VisitorMapper.class);
 
-    @Mapping(target = "password", ignore = true)
+//    @Mapping(target = "password", ignore = true)
 //    @Mapping(target = "initiatedGamesForVisitor", ignore = true)
 //    @Mapping(target = "invitedGamesForVisitor", ignore = true)
     @Mapping(target = "admin", source = "visitor", qualifiedByName = "isTheAdmin")

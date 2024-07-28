@@ -81,37 +81,37 @@ public class MapQasinoFromDtosAction extends ActionDto<EventOutput.Result> {
         navigationBarItem.setTitle("Setup");
         navigationBarItem.setStat("[0/0] bots/humans");
 
-//        if (qasino.getGame() != null) {
-//            switch (qasino.getGame().getState().getGroup()) {
-//                case SETUP, PREPARED -> {
-//                    qasino.setActionNeeded(true);
-//                    qasino.setAction(qasino.getGame().getState().getNextAction());
-//                    navigationBarItem.setTitle("Setup[" +
-//                            Integer.toHexString((int) qasino.getGame().getGameId())+"]");
-//                    long bots = 0;
-//                    long humans = 0;
+        if (qasino.getGame() != null) {
+            switch (qasino.getGame().getState().getGroup()) {
+                case SETUP, PREPARED -> {
+                    qasino.setActionNeeded(true);
+                    qasino.setAction(qasino.getGame().getState().getNextAction());
+                    navigationBarItem.setTitle("Setup[" +
+                            Integer.toHexString((int) qasino.getGame().getGameId())+"]");
+                    long bots = 0;
+                    long humans = 0;
 //                    if (qasino.getGame().getPlayers() != null) {
 //                        bots = qasino.getGame().getPlayers().stream().filter(c -> !c.isHuman()).count();
 //                        humans = qasino.getGame().getPlayers().size() - bots;
 //                    }
 //                    navigationBarItem.setStat("[" + bots + "/" + humans + "] bots/humans");
-//                }
-//                case PLAYING -> {
-//                    qasino.setActionNeeded(false);
-//                }
-//                case FINISHED, ERROR -> {
-//                    qasino.setActionNeeded(false);
-//                    // dummy game
-//                    qasino.setGame(GameMapper.INSTANCE.toDto(Game.buildDummy(null, -1),null));
-//                }
-//            }
-//        } else {
-//            if (!qasino.isActionNeeded()) {
-//                qasino.setActionNeeded(true);
-//                qasino.setAction("Start a new game");
-//            }
-//        }
-//        navigationBarItems.add(navigationBarItem);
+                }
+                case PLAYING -> {
+                    qasino.setActionNeeded(false);
+                }
+                case FINISHED, ERROR -> {
+                    qasino.setActionNeeded(false);
+                    // dummy game
+                    qasino.setGame(GameMapper.INSTANCE.toDto(Game.buildDummy(null, -1),null));
+                }
+            }
+        } else {
+            if (!qasino.isActionNeeded()) {
+                qasino.setActionNeeded(true);
+                qasino.setAction("Start a new game");
+            }
+        }
+        navigationBarItems.add(navigationBarItem);
 
         // 3: Nav bar game play
         navigationBarItem = new NavigationBarItem();

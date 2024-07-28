@@ -18,15 +18,15 @@ public class PlayingDto {
 //    private String updated; // ignore
 
     // ref
-    private GameDto game;
-    private PlayerDto player;
-    private List<CardMove> cardMoves;
+//    private GameDto game;
+//    private PlayerDto player;
+//    private List<CardMove> cardMoves;
 
     // derived
-    private LeagueDto league;
-    private PlayerDto nextPlayer;
-    private List<SeatDto> seats;
-    private List<ResultDto> results;
+//    private LeagueDto league;
+//    private PlayerDto nextPlayer;
+//    private List<SeatDto> seats;
+//    private List<ResultDto> results;
 
     // Normal fields
     private int currentRoundNumber;

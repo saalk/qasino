@@ -98,7 +98,7 @@ public class VisitorAndLeaguesService {
         List<Role> roles = new ArrayList<>();
         roles.add(basicRole);
 //        userDto.setRolesList(roles);
-        userDto.setPassword(encoder.encode(userDto.getPassword()));
+//        userDto.setPassword(encoder.encode(userDto.getPassword())); // ignore
         Visitor visitor = VisitorMapper.INSTANCE.fromDto(userDto);
         Visitor savedVisitor = visitorRepository.save(visitor);
         Visitor retrievedVisitor = visitorRepository.getReferenceById(savedVisitor.getVisitorId());
@@ -110,7 +110,7 @@ public class VisitorAndLeaguesService {
         List<Role> roles = new ArrayList<>();
         roles.add(adminRole);
 //        adminDto.setRolesList(roles);
-        adminDto.setPassword(encoder.encode(adminDto.getPassword()));
+//        adminDto.setPassword(encoder.encode(adminDto.getPassword())); // ignore
         Visitor visitor = VisitorMapper.INSTANCE.fromDto(adminDto);
         Visitor savedVisitor = visitorRepository.save(visitor);
         Visitor retrievedVisitor = visitorRepository.getReferenceById(savedVisitor.getVisitorId());

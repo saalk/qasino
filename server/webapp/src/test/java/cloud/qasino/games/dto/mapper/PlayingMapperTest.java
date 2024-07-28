@@ -35,11 +35,11 @@ class PlayingMapperTest extends QasinoSimulator {
         // core
         assertEquals(playingDto.getPlayingId(), playing.getPlayingId());
         // ref
-        assertEquals(playingDto.getGame().getType(), playing.getGame().getType());
-        assertEquals(playingDto.getGame().getAnte(), playing.getGame().getAnte());
-        assertEquals(playingDto.getPlayer().getVisitor().getVisitorId(), playing.getPlayer().getVisitor().getVisitorId());
-        assertEquals(playingDto.getPlayer().getSeat(), playing.getPlayer().getSeat());
-        assertEquals(playingDto.getCardMoves(), playing.getCardMoves());
+//        assertEquals(playingDto.getGame().getType(), playing.getGame().getType());
+//        assertEquals(playingDto.getGame().getAnte(), playing.getGame().getAnte());
+//        assertEquals(playingDto.getPlayer().getVisitor().getVisitorId(), playing.getPlayer().getVisitor().getVisitorId());
+//        assertEquals(playingDto.getPlayer().getSeat(), playing.getPlayer().getSeat());
+//        assertEquals(playingDto.getCardMoves(), playing.getCardMoves());
         // Normal fields
         assertEquals(playingDto.getCurrentRoundNumber(), playing.getCurrentRoundNumber());
         assertEquals(playingDto.getCurrentSeatNumber(), playing.getCurrentSeatNumber());
