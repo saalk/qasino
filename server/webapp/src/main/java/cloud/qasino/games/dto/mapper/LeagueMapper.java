@@ -20,22 +20,30 @@ public interface LeagueMapper {
     LeagueMapper INSTANCE = Mappers.getMapper(LeagueMapper.class);
 
     @Mapping(target = "gamesForLeague", source = "league", qualifiedByName = "gamesForLeague")
-//    @Mapping(target = "visitor", source = "league", qualifiedByName = "visitor")
+    @Mapping(target = "visitor", source = "league", qualifiedByName = "visitor")
     LeagueDto toDto(League league);
 
     @Mapping(target = "created", ignore = true)
     @Mapping(target = "ended", ignore = true)
     @Mapping(target = "visitor", ignore = true)
+    @Mapping(target = "games", ignore = true)
     League fromDto(LeagueDto league);
 
     @Named("gamesForLeague")
     default List<GameDto> gamesForLeague(League league) {
-        List<GameDto> games = new ArrayList<>();
-        if (league.getGames() == null) return games;
-        for (Game game : league.getGames()) {
-            games.add(GameMapper.INSTANCE.toDto(game, null));
+        List<GameDto> gameDtos = new ArrayList<>();
+        List<Game> games = league.getGames().stream().toList();
+        if (games.isEmpty()) return gameDtos;
+        for (Game game : games) {
+            // to prevent too much details
+            game.setLeague(null);
+            game.setPlayers(null);
+            game.setCards(null);
+            game.setResults(null); // do something here later eg calc a total
+            game.setPlaying(null);
+            gameDtos.add(GameMapper.INSTANCE.toDto(game, null));
         }
-        return games;
+        return gameDtos;
     }
     @Named("visitor")
     default VisitorDto visitor(League league) {

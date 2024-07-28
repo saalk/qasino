@@ -32,10 +32,8 @@ public class GameDto {
     // ref
     private LeagueDto league;
     private long initiator;
-//    private List<Card> cards;
-//    private List<PlayerDto> players;
-//    private Playing playing; // ignore
-//    private List<Result> results; // ignore
+    private List<CardDto> cards;
+    private List<PlayerDto> players;
 
     // Normal fields
     private GameState state;

@@ -12,6 +12,7 @@ import cloud.qasino.games.database.entity.enums.game.style.DeckConfiguration;
 import cloud.qasino.games.database.entity.enums.game.style.OneTimeInsurance;
 import cloud.qasino.games.database.entity.enums.game.style.RoundsToWin;
 import cloud.qasino.games.database.entity.enums.game.style.TurnsToWin;
+import cloud.qasino.games.dto.CardDto;
 import cloud.qasino.games.dto.GameDto;
 import cloud.qasino.games.dto.LeagueDto;
 import cloud.qasino.games.dto.PlayerDto;
@@ -21,6 +22,7 @@ import org.mapstruct.Mapping;
 import org.mapstruct.Named;
 import org.mapstruct.factory.Mappers;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -30,8 +32,9 @@ public interface GameMapper {
     // for testing and use in other mappers
     GameMapper INSTANCE = Mappers.getMapper(GameMapper.class);
 
-//    @Mapping(target = "players", source = "game", qualifiedByName = "players")
+    @Mapping(target = "players", source = "game", qualifiedByName = "players")
     @Mapping(target = "cardsInStock", source = "cards", qualifiedByName = "cardsInStock")
+    @Mapping(target = "cards", source = "cards", qualifiedByName = "cards")
     @Mapping(target = "gameStateGroup", source = "game", qualifiedByName = "gameStateGroup")
     @Mapping(target = "activePlayerInitiator", source = "game", qualifiedByName = "isActivePlayerInitiator")
     @Mapping(target = "anteToWin", source = "game", qualifiedByName = "anteToWin")
@@ -55,6 +58,8 @@ public interface GameMapper {
     @Mapping(target = "cards", ignore = true)
     @Mapping(target = "players", ignore = true)
     @Mapping(target = "results", ignore = true)
+    @Mapping(target = "playing", ignore = true)
+    @Mapping(target = "seats", ignore = true)
     Game fromDto(GameDto game);
 
     @Named("players")
@@ -77,6 +82,11 @@ public interface GameMapper {
                         .map(Card::getRankSuit)
                         .collect(Collectors.toList());
         return "[" + String.join("],[", stockCards) + "]";
+    }
+
+    @Named("cards")
+    default List<CardDto> cards(List<Card> cards) {
+        return CardMapper.INSTANCE.toDtoList(cards);
     }
 
     @Named("gameStateGroup")

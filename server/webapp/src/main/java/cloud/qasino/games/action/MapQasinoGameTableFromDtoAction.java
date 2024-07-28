@@ -40,6 +40,8 @@ public class MapQasinoGameTableFromDtoAction implements Action<MapQasinoGameTabl
                     table.setPlaying(null);
                     table.setSeats(null);
                     return EventOutput.Result.SUCCESS;
+                } else {
+                    actionDto.setPlayingPlayer(actionDto.getQasinoGame().getPlaying().getPlayer());
                 }
             } else {
                 // when game is quit before started

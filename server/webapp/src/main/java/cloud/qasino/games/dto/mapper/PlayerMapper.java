@@ -31,6 +31,10 @@ public interface PlayerMapper {
     @Mapping(target = "human", ignore = true)
     @Mapping(target = "winner", ignore = true)
     @Mapping(target = "visitor", ignore = true)
+    @Mapping(target = "created", ignore = true)
+    @Mapping(target = "game", ignore = true)
+    @Mapping(target = "playing", ignore = true)
+    @Mapping(target = "result", ignore = true)
     Player fromDto(PlayerDto player);
 
     @Mapping(target = "created", ignore = true)

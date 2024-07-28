@@ -43,7 +43,7 @@ public class AbstractThymeleafController {
     @Autowired
     MapQasinoGameTableFromDtoAction mapQasinoGameTableFromDtoAction;
     @Autowired
-    DeterminePossibleEventsAction determinePossibleEvents;
+    DeterminePossibleEventsAction determinePossibleEventsAction;
 
     @Autowired
     FindAllDtosForUsernameAction findDtos;
@@ -70,7 +70,7 @@ public class AbstractThymeleafController {
 
         findVisitorIdByAliasOrUsernameAction.perform(flowDto);
         loadEntitiesToDtoAction.perform(flowDto);
-        determinePossibleEvents.perform(flowDto);
+        determinePossibleEventsAction.perform(flowDto);
         mapQasinoGameTableFromDtoAction.perform(flowDto);
         setStatusIndicatorsBaseOnRetrievedDataAction.perform(flowDto);
         calculateQasinoStatisticsAction.perform(flowDto);

@@ -5,6 +5,7 @@ import cloud.qasino.games.database.entity.CardMove;
 import cloud.qasino.games.database.entity.Player;
 import cloud.qasino.games.database.entity.Playing;
 import cloud.qasino.games.database.entity.enums.card.Location;
+import cloud.qasino.games.dto.CardDto;
 import cloud.qasino.games.dto.HandDto;
 import cloud.qasino.games.dto.SeatDto;
 import org.mapstruct.Context;
@@ -98,8 +99,19 @@ public interface SeatMapper {
     }
 
     @Named("lastCardInHand")
-    default Card lastCardInHand(Player player, @Context Playing playing) {
-        return null;
+    default String lastCardInHand(Player player, @Context Playing playing) {
+        // player.getCards does not work!!
+        // player.getGame().getCards() does not work!!
+        List<Card> cards = playing.getGame().getCards();
+        if (cards == null) return "[null]";
+        if (cards.isEmpty()) return "[empty]";
+        List<Card> cardsInHand =
+                cards.stream()
+                        .filter(location -> location.getLocation().equals(Location.HAND))
+                        .filter(hand -> hand.getHand().getPlayerId() == player.getPlayerId())
+                        .collect(Collectors.toList());
+        String lastCardInHand = cardsInHand.get(cardsInHand.size()-1).getRankSuit();
+        return "[" + lastCardInHand + "]";
     }
 
     @Named("isSeatPlaying")
@@ -109,7 +121,11 @@ public interface SeatMapper {
 
     @Named("isSeatPlayerTheInitiator")
     default boolean seatPlayerTheInitiator(Player player, @Context Playing playing) {
-        return player.getPlayerId() == playing.getGame().getInitiator();
+        if (player.getVisitor() != null ) {
+            return player.getVisitor().getVisitorId() == playing.getGame().getInitiator();
+        } else {
+            return false;
+        }
     }
 
     @Named("seatCurrentBet")

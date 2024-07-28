@@ -232,12 +232,14 @@ public class LoadEntitiesToDtoAction implements Action<LoadEntitiesToDtoAction.D
             actionDto.getQasinoGame().setPlayers(actionDto.getQasinoGamePlayers());
             // when in validate there are no cards yet so this results in null
             actionDto.setCardsInTheGameSorted(cardRepository.findByGameOrderBySequenceAsc(actionDto.getQasinoGame()));
-            actionDto.setActivePlaying(foundGame.get().getPlaying());
-            if (actionDto.getActivePlaying() != null) {
-                actionDto.setSuppliedPlayingPlayerId(actionDto.getActivePlaying().getPlayer().getPlayerId());
+            List<Playing> playings = playingRepository.findByGameId(id);
 
-                actionDto.setAllCardMovesForTheGame(foundGame.get().getPlaying().getCardMoves());
+            if (playings != null && playings.get(0) != null) {
+                actionDto.setActivePlaying(playings.get(0));
+                actionDto.setSuppliedPlayingPlayerId(actionDto.getActivePlaying().getPlayer().getPlayerId());
+                actionDto.setAllCardMovesForTheGame(actionDto.getActivePlaying().getCardMoves());
             } else {
+                log.warn("240 actionDto.getActivePlaying() is null for game {}",actionDto.getQasinoGame().getGameId());
                 // TODO check if this is needed
 //                actionDto.setSuppliedPlayingPlayerId(
 //                        actionDto.getQasinoGamePlayers()

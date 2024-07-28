@@ -36,7 +36,7 @@ public class SeatDto {
     private int seatCurrentBet;
 
     private String cardsInHand;
-    private Card lastCardInHand;
+    private String lastCardInHand;
 
     private boolean isSeatPlayerTheInitiator;
     private long visitorId;

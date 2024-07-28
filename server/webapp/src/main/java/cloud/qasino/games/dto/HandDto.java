@@ -11,7 +11,7 @@ import java.util.List;
 public class HandDto {
 
     // core
-    List<Card> cards;
+    List<CardDto> cards;
     List<String> rankSuits;
 
     // derived

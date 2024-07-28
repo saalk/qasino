@@ -57,5 +57,13 @@ WHERE "game_id" = 15;
 
 DELETE "visitor" 
 WHERE "visitor_id" = 14;
+
+INSERT INTO "league" ("created", "name", "name_seq", "visitor_id", "is_active", "ended")
+VALUES ( '20240712-10:00-15114', 'leagueName', '1', '3', 'true', null);
+
+UPDATE "game" 
+SET  "league_id" = '1' 
+WHERE "game_id" = '6';
+
 ```
 

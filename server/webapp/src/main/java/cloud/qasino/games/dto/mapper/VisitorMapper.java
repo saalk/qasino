@@ -38,6 +38,7 @@ public interface VisitorMapper {
     @Mapping(target = "players", ignore = true)
     @Mapping(target = "leagues", ignore = true)
     @Mapping(target = "roles", ignore = true)
+    @Mapping(target = "password", ignore = true)
     Visitor fromDto(VisitorDto visitor);
 
     @Named("canRepay")

@@ -28,23 +28,15 @@ public interface PlayingMapper {
     // for testing and use in other mappers
     PlayingMapper INSTANCE = Mappers.getMapper(PlayingMapper.class);
 
-//    @Mapping(target = "game", source = "playing", qualifiedByName = "game")
-//    @Mapping(target = "player", source = "playing", qualifiedByName = "player")
 //    @Mapping(target = "cardMoves", source = "playing", qualifiedByName = "cardMoves")
+    @Mapping(target = "seats", ignore = true)
     PlayingDto toDto(Playing playing);
 
     @Mapping(target = "cardMoves", ignore = true)
+    @Mapping(target = "updated", ignore = true)
+    @Mapping(target = "game", ignore = true)
+    @Mapping(target = "player", ignore = true)
     Playing fromDto(PlayingDto playing);
-
-    @Named("game")
-    default GameDto game(Playing playing) {
-        return GameMapper.INSTANCE.toDto(playing.getGame(), playing.getGame().getCards());
-    }
-
-    @Named("player")
-    default PlayerDto player(Playing playing) {
-        return PlayerMapper.INSTANCE.toDto(playing.getPlayer(), null);
-    }
 
     @Named("cardMoves")
     default List<CardMove> cardMoves(Playing playing) {

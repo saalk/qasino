@@ -3,6 +3,7 @@ package cloud.qasino.games.action.dto;
 import cloud.qasino.games.dto.GameDto;
 import cloud.qasino.games.dto.LeagueDto;
 import cloud.qasino.games.dto.PlayingDto;
+import cloud.qasino.games.dto.ResultDto;
 import cloud.qasino.games.dto.VisitorDto;
 import cloud.qasino.games.dto.request.CreationDto;
 import cloud.qasino.games.dto.request.MessageDto;
@@ -35,9 +36,11 @@ public class Qasino
 //    private CreationDto creation = new CreationDto(); // TODO just uncomment
 
     private VisitorDto visitor;
-//    private LeagueDto league;
+    private LeagueDto league;
     private GameDto game;
-//    private PlayingDto playing;
+    private PlayingDto playing;
+    private List<ResultDto> results;
+
 //    private InvitationsDto invitations;
 
     // extra
