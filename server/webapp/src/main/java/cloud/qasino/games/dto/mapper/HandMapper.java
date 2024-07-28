@@ -22,22 +22,28 @@ public interface HandMapper {
     // for testing and use in other mappers
     HandMapper INSTANCE = Mappers.getMapper(HandMapper.class);
 
-    @Mapping(target = "cards", source = "cardMoves", qualifiedByName = "cards")
+    @Mapping(target = "rankSuitsList", source = "cardMoves", qualifiedByName = "rankSuitsList")
     @Mapping(target = "rankSuits", source = "cardMoves", qualifiedByName = "rankSuits")
     @Mapping(target = "roundNumber", source = "round", qualifiedByName = "roundNumber")
     @Mapping(target = "seatNumber", source = "seat", qualifiedByName = "seatNumber")
     @Mapping(target = "cardsInRoundAndSeat", source = "cardMoves", qualifiedByName = "cardsInRoundAndSeat")
     @Mapping(target = "cardsDeltaInRoundAndSeat", source = "cardMoves", qualifiedByName = "cardsDeltaInRoundAndSeat")
-    HandDto toDto(List<CardMove> cardMoves, int round,int seat);
+    HandDto toDto(List<CardMove> cardMoves, int round, int seat);
 
-    @Named("cards")
-    default List<CardDto> cards(List<CardMove> cardMoves, int round, int seat) {
-        return null;
+    @Named("rankSuitsList")
+    default List<String> rankSuitsList(List<CardMove> cardMoves) {
+        return cardMoves.stream()
+                .map(CardMove::getCardMoveDetails)
+                .collect(Collectors.toList());
     }
     @Named("rankSuits")
-    default List<String> rankSuits(List<CardMove> cardMoves, int round, int seat) {
-        return null;
+    default String rankSuits(List<CardMove> cardMoves) {
+        List<String> handStrings = cardMoves.stream()
+                .map(CardMove::getCardMoveDetails)
+                .collect(Collectors.toList());
+        return "[" + String.join("],[", handStrings) + "]";
     }
+
     @Named("roundNumber")
     default int roundNumber(int round) {
         return round;
@@ -47,11 +53,11 @@ public interface HandMapper {
         return seat;
     }
     @Named("cardsInRoundAndSeat")
-    default String cardsInRoundAndSeat(List<CardMove> cardMoves, int round, int seat) {
+    default String cardsInRoundAndSeat(List<CardMove> cardMoves) {
         return null;
     }
     @Named("cardsDeltaInRoundAndSeat")
-    default String cardsDeltaInRoundAndSeat(List<CardMove> cardMoves, int round, int seat) {
+    default String cardsDeltaInRoundAndSeat(List<CardMove> cardMoves) {
         return null;
     }
 

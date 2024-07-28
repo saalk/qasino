@@ -11,8 +11,8 @@ import java.util.List;
 public class HandDto {
 
     // core
-    List<CardDto> cards;
-    List<String> rankSuits;
+    List<String> rankSuitsList;
+    String rankSuits;
 
     // derived
     private int roundNumber;
