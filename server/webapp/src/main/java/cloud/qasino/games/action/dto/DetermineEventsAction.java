@@ -39,9 +39,7 @@ public class DetermineEventsAction extends ActionDto<EventOutput.Result> {
     public EventOutput.Result perform(Qasino qasino) {
 
         List<PlayEvent> playEvents = new ArrayList<>();
-        if (qasino.getGame() == null) {
-            playEvents = null;
-        } else {
+        if (qasino.getGame() != null) {
             switch (qasino.getGame().getState().getGroup()) {
                 case PLAYING -> {
                     switch (qasino.getGame().getType()) {
@@ -68,9 +66,7 @@ public class DetermineEventsAction extends ActionDto<EventOutput.Result> {
         qasino.getParams().setPossibleNextPlayEvents(playEvents);
 
         List<GameEvent> gameEvents = new ArrayList<>();
-        if (qasino.getGame() == null) {
-            gameEvents = START_GAME_EVENTS;
-        } else {
+        if (qasino.getGame() != null) {
             switch (qasino.getGame().getState().getGroup()) {
                 case SETUP -> gameEvents = SETUP_GAME_EVENTS;
                 case PREPARED -> gameEvents = PREPARED_GAME_EVENTS;

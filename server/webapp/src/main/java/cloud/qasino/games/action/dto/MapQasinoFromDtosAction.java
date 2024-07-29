@@ -136,7 +136,7 @@ public class MapQasinoFromDtosAction extends ActionDto<EventOutput.Result> {
         if (qasino.getLeague() != null) {
             if (!qasino.isActionNeeded()) {
                 qasino.setActionNeeded(true);
-                qasino.setAction("Manage your leagues");
+                if (qasino.getAction().isEmpty()) qasino.setAction("Manage your leagues");
             }
             navigationBarItem.setTitle("League[" + Integer.toHexString((int) qasino.getLeague().getLeagueId()) + "]");
             navigationBarItem.setStat("[0] active");
@@ -145,7 +145,6 @@ public class MapQasinoFromDtosAction extends ActionDto<EventOutput.Result> {
             qasino.setLeague(LeagueMapper.INSTANCE.toDto(League.buildDummy(null, "leagueName")));
         }
         navigationBarItems.add(navigationBarItem);
-
         qasino.setNavBarItems(navigationBarItems);
 
         return EventOutput.Result.SUCCESS;
