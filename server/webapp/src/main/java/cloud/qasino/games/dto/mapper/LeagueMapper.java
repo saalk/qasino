@@ -32,6 +32,7 @@ public interface LeagueMapper {
     @Named("gamesForLeague")
     default List<GameDto> gamesForLeague(League league) {
         List<GameDto> gameDtos = new ArrayList<>();
+        if (league.getGames() == null) return gameDtos;
         List<Game> games = league.getGames().stream().toList();
         if (games.isEmpty()) return gameDtos;
         for (Game game : games) {
@@ -45,6 +46,7 @@ public interface LeagueMapper {
         }
         return gameDtos;
     }
+
     @Named("visitor")
     default VisitorDto visitor(League league) {
         return VisitorMapper.INSTANCE.toDto(league.getVisitor());

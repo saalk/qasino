@@ -12,9 +12,9 @@ import cloud.qasino.games.database.repository.GameRepository;
 import cloud.qasino.games.database.repository.PlayerRepository;
 import cloud.qasino.games.dto.GameDto;
 import cloud.qasino.games.dto.PlayerDto;
+import cloud.qasino.games.dto.PlayingDto;
 import cloud.qasino.games.dto.VisitorDto;
 import cloud.qasino.games.dto.mapper.GameMapper;
-import cloud.qasino.games.dto.mapper.PlayerMapper;
 import cloud.qasino.games.dto.request.ParamsDto;
 import cloud.qasino.games.exception.MyBusinessException;
 import cloud.qasino.games.pattern.factory.Deck;
@@ -104,15 +104,17 @@ public class GameService {
         game = gameRepository.save(game);
         return GameMapper.INSTANCE.toDto(game,game.getCards());
     }
-//    public PlayerDto findNextPlayerForGame(GameDto game) {
-//        int totalSeats = game.getPlayers().size();
-////        TODO int currentSeat = game.getPlaying().getCurrentSeatNumber();
-//        int currentSeat = 1;
-//        if (totalSeats == 1 || currentSeat == totalSeats) {
-//            return game.getPlayers().get(0);
-//        }
-//        List<PlayerDto> sortedPlayers = StreamUtil.sortPlayerDtosOnSeatWithStream(game.getPlayers());
-//        return sortedPlayers.get((currentSeat - 1) + 1);
-//    }
+    public PlayerDto findNextPlayerForGame(GameDto game, PlayingDto playing) {
+        int totalSeats = game.getPlayers().size();
+        int currentSeat = 1;
+        if (playing != null ) {
+             currentSeat = playing.getCurrentSeatNumber();
+        }
+        if (totalSeats == 1 || currentSeat == totalSeats) {
+            return game.getPlayers().get(0);
+        }
+        List<PlayerDto> sortedPlayers = StreamUtil.sortPlayerDtosOnSeatWithStream(game.getPlayers());
+        return sortedPlayers.get((currentSeat - 1) + 1);
+    }
 
 }

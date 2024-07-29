@@ -7,16 +7,20 @@ import cloud.qasino.games.database.entity.League;
 import cloud.qasino.games.database.entity.Player;
 import cloud.qasino.games.database.entity.Playing;
 import cloud.qasino.games.database.entity.enums.card.Location;
+import cloud.qasino.games.database.repository.PlayingRepository;
+import cloud.qasino.games.database.service.PlayerService;
 import cloud.qasino.games.dto.GameDto;
 import cloud.qasino.games.dto.LeagueDto;
 import cloud.qasino.games.dto.PlayerDto;
 import cloud.qasino.games.dto.PlayingDto;
 import cloud.qasino.games.dto.SeatDto;
+import cloud.qasino.games.pattern.stream.StreamUtil;
 import org.mapstruct.Context;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Named;
 import org.mapstruct.factory.Mappers;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,6 +33,8 @@ public interface PlayingMapper {
     PlayingMapper INSTANCE = Mappers.getMapper(PlayingMapper.class);
 
 //    @Mapping(target = "cardMoves", source = "playing", qualifiedByName = "cardMoves")
+    @Mapping(target = "currentPlayer", source = "playing", qualifiedByName = "currentPlayer")
+    @Mapping(target = "nextPlayer", source = "playing", qualifiedByName = "nextPlayer")
     @Mapping(target = "seats", ignore = true)
     PlayingDto toDto(Playing playing);
 
@@ -41,6 +47,24 @@ public interface PlayingMapper {
     @Named("cardMoves")
     default List<CardMove> cardMoves(Playing playing) {
         return playing.getCardMoves();
+    }
+    @Named("currentPlayer")
+    default PlayerDto currentPlayer(Playing playing) {
+        return PlayerMapper.INSTANCE.toDto(playing.getPlayer(), playing.getGame().getCards());
+    }
+    @Named("nextPlayer")
+    default PlayerDto nextPlayer(Playing playing) {
+        int totalSeats = playing.getGame().getPlayers().size();
+        int currentSeat = 1;
+        if (playing != null ) {
+            currentSeat = playing.getCurrentSeatNumber();
+        }
+        if (totalSeats == 1 || currentSeat == totalSeats) {
+            return PlayerMapper.INSTANCE.toDto(playing.getGame().getPlayers().get(0), playing.getGame().getCards());
+        }
+        List <PlayerDto> unsortedPlayers = PlayerMapper.INSTANCE.toDtoList(playing.getGame().getPlayers(), playing.getGame().getCards());
+        List<PlayerDto> sortedPlayers = StreamUtil.sortPlayerDtosOnSeatWithStream(unsortedPlayers);
+        return sortedPlayers.get((currentSeat - 1) + 1);
     }
 
 

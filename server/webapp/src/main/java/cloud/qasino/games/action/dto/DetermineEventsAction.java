@@ -33,42 +33,27 @@ import static cloud.qasino.games.pattern.statemachine.event.PlayEvent.highLowPos
 
 @Slf4j
 @Component
-public class DetermineEventsAction implements Action<DetermineEventsAction.Dto, EventOutput.Result> {
-
-    @Resource
-    GameRepository gameRepository;
-    @Resource
-    VisitorRepository visitorRepository;
-    @Resource
-    PlayerRepository playerRepository;
-    @Resource
-    CardRepository cardRepository;
-    @Resource
-    PlayingRepository playingRepository;
-    @Resource
-    LeagueRepository leagueRepository;
-    @Resource
-    ResultsRepository resultsRepository;
+public class DetermineEventsAction extends ActionDto<EventOutput.Result> {
 
     @Override
-    public EventOutput.Result perform(Dto actionDto) {
+    public EventOutput.Result perform(Qasino qasino) {
 
         List<PlayEvent> playEvents = new ArrayList<>();
-        if (actionDto.getQasinoGame() == null) {
+        if (qasino.getGame() == null) {
             playEvents = null;
         } else {
-            switch (actionDto.getQasinoGame().getState().getGroup()) {
+            switch (qasino.getGame().getState().getGroup()) {
                 case PLAYING -> {
-                    switch (actionDto.getQasinoGame().getType()) {
+                    switch (qasino.getGame().getType()) {
                         case HIGHLOW -> {
-                            if (actionDto.getPlayingPlayer().isHuman()) {
+                            if (qasino.getPlaying().getCurrentPlayer().isHuman()) {
                                 playEvents = highLowPossibleHumanPlayings;
                             } else {
                                 playEvents = highLowPossibleBotPlayings;
                             }
                         }
                         case BLACKJACK -> {
-                            if (actionDto.getPlayingPlayer().isHuman()) {
+                            if (qasino.getPlaying().getCurrentPlayer().isHuman()) {
                                 playEvents = blackJackPossibleHumanPlaying;
                             } else {
                                 playEvents = blackJackPossibleBotPlaying;
@@ -80,13 +65,13 @@ public class DetermineEventsAction implements Action<DetermineEventsAction.Dto, 
                 default -> playEvents = null;
             }
         }
-        actionDto.setPossiblePlayEvents(playEvents);
+        qasino.getParams().setPossibleNextPlayEvents(playEvents);
 
         List<GameEvent> gameEvents = new ArrayList<>();
-        if (actionDto.getQasinoGame() == null) {
+        if (qasino.getGame() == null) {
             gameEvents = START_GAME_EVENTS;
         } else {
-            switch (actionDto.getQasinoGame().getState().getGroup()) {
+            switch (qasino.getGame().getState().getGroup()) {
                 case SETUP -> gameEvents = SETUP_GAME_EVENTS;
                 case PREPARED -> gameEvents = PREPARED_GAME_EVENTS;
                 case PLAYING -> gameEvents = PLAYING_GAME_EVENTS;
@@ -94,44 +79,7 @@ public class DetermineEventsAction implements Action<DetermineEventsAction.Dto, 
                 default -> gameEvents = START_GAME_EVENTS;
             }
         }
-        actionDto.setPossibleGameEvents(gameEvents);
-
+        qasino.getParams().setPossibleNextGameEvents(gameEvents);
         return EventOutput.Result.SUCCESS;
-    }
-
-    private void setNotFoundErrorMessage(Dto actionDto, String id, String value, String entity) {
-        actionDto.setErrorKey(id);
-        actionDto.setErrorValue(value);
-        actionDto.setNotFoundErrorMessage("[" + entity + "] not found for id [" + value + "]");
-//        log.warn("Errors setNotFoundErrorMessage!!: {}", actionDto.getErrorMessage());
-
-    }
-
-    public interface Dto {
-
-        // @formatter:off
-        String getErrorMessage();
-        GameEvent getSuppliedGameEvent();
-        PlayEvent getSuppliedPlayEvent();
-
-        // Getters
-        Game getQasinoGame();
-        Playing getActivePlaying();
-        Player getPlayingPlayer();
-
-        // Setters
-        void setPossiblePlayEvents(List<PlayEvent> playEvents);
-        void setPossibleGameEvents(List<GameEvent> gameEvents);
-
-
-        // error setters
-        // @formatter:off
-        void setBadRequestErrorMessage(String problem);
-        void setNotFoundErrorMessage(String problem);
-        void setConflictErrorMessage(String reason);
-        void setUnprocessableErrorMessage(String reason);
-        void setErrorKey(String errorKey);
-        void setErrorValue(String errorValue);
-        // @formatter:on
     }
 }

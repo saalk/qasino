@@ -19,6 +19,8 @@ public class PlayingDto {
 
     // ref
 //    private List<CardMove> cardMoves;
+    private PlayerDto currentPlayer;
+    private PlayerDto nextPlayer;
 
     // derived
     private List<SeatDto> seats;

@@ -234,12 +234,11 @@ public class LoadEntitiesToDtoAction implements Action<LoadEntitiesToDtoAction.D
             actionDto.setCardsInTheGameSorted(cardRepository.findByGameOrderBySequenceAsc(actionDto.getQasinoGame()));
             List<Playing> playings = playingRepository.findByGameId(id);
 
-            if (playings != null && playings.get(0) != null) {
+            if (!playings.isEmpty()) {
                 actionDto.setActivePlaying(playings.get(0));
                 actionDto.setSuppliedPlayingPlayerId(actionDto.getActivePlaying().getPlayer().getPlayerId());
                 actionDto.setAllCardMovesForTheGame(actionDto.getActivePlaying().getCardMoves());
             } else {
-                log.warn("240 actionDto.getActivePlaying() is null for game {}",actionDto.getQasinoGame().getGameId());
                 // TODO check if this is needed
 //                actionDto.setSuppliedPlayingPlayerId(
 //                        actionDto.getQasinoGamePlayers()

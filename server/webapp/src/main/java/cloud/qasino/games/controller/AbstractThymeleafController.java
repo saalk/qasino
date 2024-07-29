@@ -7,6 +7,7 @@ import cloud.qasino.games.action.LoadEntitiesToDtoAction;
 import cloud.qasino.games.action.MapQasinoGameTableFromDtoAction;
 import cloud.qasino.games.action.MapQasinoResponseFromDtoAction;
 import cloud.qasino.games.action.SetStatusIndicatorsBaseOnRetrievedDataAction;
+import cloud.qasino.games.action.dto.DetermineEventsAction;
 import cloud.qasino.games.action.dto.FindAllDtosForUsernameAction;
 import cloud.qasino.games.action.dto.CalculateStatisticsAction;
 import cloud.qasino.games.action.dto.MapQasinoFromDtosAction;
@@ -47,6 +48,7 @@ public class AbstractThymeleafController {
 
     // @formatter:off
     @Autowired FindAllDtosForUsernameAction findDtos;
+    @Autowired DetermineEventsAction determineEvents;
     @Autowired MapQasinoFromDtosAction mapQasino;
     @Autowired CalculateStatisticsAction calculateStatistics;
     // @formatter:on
@@ -81,10 +83,9 @@ public class AbstractThymeleafController {
     public void prepareQasino(HttpServletResponse response, Qasino qasino) {
 
         findDtos.perform(qasino);
+        determineEvents.perform(qasino);
         calculateStatistics.perform(qasino);
         mapQasino.perform(qasino);
-
-//        determinePossibleEvents.perform(flowDto);
 
     }
 
