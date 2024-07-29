@@ -11,6 +11,7 @@ import cloud.qasino.games.dto.QasinoFlowDto;
 import cloud.qasino.games.exception.MyNPException;
 import cloud.qasino.games.pattern.singleton.OnlineVisitorsPerDay;
 import cloud.qasino.games.pattern.statemachine.event.EventOutput;
+import cloud.qasino.games.pattern.statemachine.event.QasinoEvent;
 import cloud.qasino.games.response.QasinoResponse;
 import cloud.qasino.games.web.AjaxUtils;
 import cloud.qasino.games.web.MessageHelper;
@@ -119,6 +120,12 @@ public class HomeThymeleafController extends AbstractThymeleafController {
 //            return "redirect:/";
         }
         // 3 - process
+        // 4 - return new response
+        Qasino qasino = new Qasino();
+        qasino.getParams().setSuppliedQasinoEvent(QasinoEvent.LOGON);
+        prepareQasino(response, qasino);
+        var gson = new Gson();
+        log.warn("Qasino gson = {} ", gson.toJson(qasino));
         // 4 - return response
         prepareQasinoResponse(response, flowDto);
         model.addAttribute(flowDto.getQasinoResponse());
@@ -169,6 +176,12 @@ public class HomeThymeleafController extends AbstractThymeleafController {
         QasinoFlowDto flowDto = new QasinoFlowDto();
         // 2 - validate input
         // 3 - process
+        // 4 - return new response
+        Qasino qasino = new Qasino();
+        qasino.getParams().setSuppliedQasinoEvent(QasinoEvent.REGISTER);
+        prepareQasino(response, qasino);
+        var gson = new Gson();
+        log.warn("Qasino gson = {} ", gson.toJson(qasino));
         // 4 - return response
         prepareQasinoResponse(response, flowDto);
         model.addAttribute(flowDto.getQasinoResponse());
@@ -217,6 +230,13 @@ public class HomeThymeleafController extends AbstractThymeleafController {
         }
         // 3 - process
         signUpNewVisitorAction.perform(flowDto);
+        // 4 - return new response
+        Qasino qasino = new Qasino();
+        qasino.getParams().setSuppliedQasinoEvent(QasinoEvent.REGISTER);
+//        qasino.getParams().setSuppliedQasinoEvent(QasinoEvent.REGISTER);
+        prepareQasino(response, qasino);
+        var gson = new Gson();
+        log.warn("Qasino gson = {} ", gson.toJson(qasino));
         // 4 - return response
         prepareQasinoResponse(response, flowDto);
         qasinoResponse = flowDto.getQasinoResponse();

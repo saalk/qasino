@@ -3,11 +3,14 @@ package cloud.qasino.games.controller.thymeleaf;
 import cloud.qasino.games.action.CreateNewLeagueAction;
 import cloud.qasino.games.action.FindVisitorIdByAliasOrUsernameAction;
 import cloud.qasino.games.action.LoadEntitiesToDtoAction;
+import cloud.qasino.games.action.dto.Qasino;
 import cloud.qasino.games.controller.AbstractThymeleafController;
 import cloud.qasino.games.database.repository.LeagueRepository;
 import cloud.qasino.games.dto.QasinoFlowDto;
+import cloud.qasino.games.pattern.statemachine.event.QasinoEvent;
 import cloud.qasino.games.response.QasinoResponse;
 import cloud.qasino.games.pattern.statemachine.event.EventOutput;
+import com.google.gson.Gson;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -80,6 +83,12 @@ public class LeagueThymeleafController extends AbstractThymeleafController {
             return "redirect:league/" + id;
         }
         // get all entities
+        // 4 - return new response
+        Qasino qasino = new Qasino();
+        qasino.getParams().setSuppliedQasinoEvent(QasinoEvent.REGISTER);
+        prepareQasino(response, qasino);
+        var gson = new Gson();
+        log.warn("Qasino gson = {} ", gson.toJson(qasino));
         // 4 - return response
         prepareQasinoResponse(response, flowDto);
         model.addAttribute(flowDto.getQasinoResponse());
@@ -131,6 +140,12 @@ public class LeagueThymeleafController extends AbstractThymeleafController {
             return "redirect:/visitor";
 //            return ResponseEntity.status(HttpStatus.valueOf(flowDto.getHttpStatus())).headers(flowDto.getHeaders()).build();
         }
+        // 4 - return new response
+        Qasino qasino = new Qasino();
+        qasino.getParams().setSuppliedQasinoEvent(QasinoEvent.REGISTER);
+        prepareQasino(response, qasino);
+        var gson = new Gson();
+        log.warn("Qasino gson = {} ", gson.toJson(qasino));
         // 4 - return response
         prepareQasinoResponse(response, flowDto);
         model.addAttribute(flowDto.getQasinoResponse());
@@ -177,6 +192,12 @@ public class LeagueThymeleafController extends AbstractThymeleafController {
         // TODO check if league does not have games any more..
         leagueRepository.deleteById(flowDto.getSuppliedLeagueId());
         flowDto.setQasinoGameLeague(null);
+        // 4 - return new response
+        Qasino qasino = new Qasino();
+        qasino.getParams().setSuppliedQasinoEvent(QasinoEvent.REGISTER);
+        prepareQasino(response, qasino);
+        var gson = new Gson();
+        log.warn("Qasino gson = {} ", gson.toJson(qasino));
         // 4 - return response
         prepareQasinoResponse(response, flowDto);
         model.addAttribute(flowDto.getQasinoResponse());

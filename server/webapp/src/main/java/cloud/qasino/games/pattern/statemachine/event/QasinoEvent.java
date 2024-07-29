@@ -12,6 +12,7 @@ import java.util.Map;
 public enum QasinoEvent implements Event {
 
     // vistor events
+    REGISTER("register"),
     LOGON("logon"),
     REPAY("repay"),
     PAWN("pawn"),

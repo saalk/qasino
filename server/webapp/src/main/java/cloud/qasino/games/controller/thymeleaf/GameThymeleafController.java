@@ -110,6 +110,12 @@ public class GameThymeleafController extends AbstractThymeleafController {
             return SETUP_VIEW_LOCATION;
         }
         // 3 - process
+        // 4 - return new response
+        Qasino qasino = new Qasino();
+        qasino.getParams().setSuppliedVisitorUsername(principal.getName());
+        prepareQasino(response, qasino);
+        var gson = new Gson();
+        log.warn("Qasino gson = {} ", gson.toJson(qasino));
         // 4 - return response
         prepareQasinoResponse(response, flowDto);
         model.addAttribute(flowDto.getQasinoResponse());
@@ -282,6 +288,12 @@ public class GameThymeleafController extends AbstractThymeleafController {
         }
         // update game
         prepareGameAction.perform(flowDto);
+        // 4 - return new response
+        Qasino qasino = new Qasino();
+        qasino.getParams().setSuppliedVisitorUsername(principal.getName());
+        prepareQasino(response, qasino);
+        var gson = new Gson();
+        log.warn("Qasino gson = {} ", gson.toJson(qasino));
         // 4 - return response
         prepareQasinoResponse(response, flowDto);
         model.addAttribute(flowDto.getQasinoResponse());
@@ -386,6 +398,12 @@ public class GameThymeleafController extends AbstractThymeleafController {
         loadEntitiesToDtoAction.perform(flowDto);
         Player bot = playerServiceOld.addBotPlayerToAGame(flowDto.getQasinoGame(), flowDto.getSuppliedAvatar(), flowDto.getSuppliedAiLevel());
         playerRepository.save(bot);
+        // 4 - return new response
+        Qasino qasino = new Qasino();
+        qasino.getParams().setSuppliedVisitorUsername(principal.getName());
+        prepareQasino(response, qasino);
+        var gson = new Gson();
+        log.warn("Qasino gson = {} ", gson.toJson(qasino));
         // 4 - return response
         prepareQasinoResponse(response, flowDto);
         model.addAttribute(flowDto.getQasinoResponse());
@@ -434,6 +452,12 @@ public class GameThymeleafController extends AbstractThymeleafController {
         // delete
         gameRepository.deleteById(flowDto.getSuppliedGameId());
         flowDto.setQasinoGame(null);
+        // 4 - return new response
+        Qasino qasino = new Qasino();
+        qasino.getParams().setSuppliedVisitorUsername(principal.getName());
+        prepareQasino(response, qasino);
+        var gson = new Gson();
+        log.warn("Qasino gson = {} ", gson.toJson(qasino));
         // 4 - return response
         prepareQasinoResponse(response, flowDto);
         model.addAttribute(flowDto.getQasinoResponse());

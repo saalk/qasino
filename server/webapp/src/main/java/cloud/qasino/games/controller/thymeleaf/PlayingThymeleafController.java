@@ -269,6 +269,12 @@ public class PlayingThymeleafController extends AbstractThymeleafController {
         if (SUCCESS.equals(result)) {
             result = calculateAndFinishGameAction.perform(flowDto);
         }
+        // 4 - return new response
+        Qasino qasino = new Qasino();
+        qasino.getParams().setSuppliedVisitorUsername(principal.getName());
+        prepareQasino(response, qasino);
+        var gson = new Gson();
+        log.warn("Qasino gson = {} ", gson.toJson(qasino));
         // 4 - return response
         prepareQasinoResponse(response, flowDto);
         model.addAttribute(flowDto.getQasinoResponse());
