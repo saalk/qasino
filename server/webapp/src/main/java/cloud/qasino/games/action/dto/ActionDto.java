@@ -59,7 +59,7 @@ public abstract class ActionDto<OUTPUT> {
         }
         refreshOrFindPlayingForGame(qasino);
         if (qasino.getGame().getGameStateGroup().equals(GameStateGroup.FINISHED)) {
-//            refreshOrFindResultsForGame(qasino);
+            refreshOrFindResultsForGame(qasino);
         }
         return true; // 200 game found and id set
     }

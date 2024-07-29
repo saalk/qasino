@@ -22,7 +22,7 @@ public interface HandMapper {
     // for testing and use in other mappers
     HandMapper INSTANCE = Mappers.getMapper(HandMapper.class);
 
-    @Mapping(target = "rankSuitsList", source = "cardMoves", qualifiedByName = "rankSuitsList")
+//    @Mapping(target = "rankSuitsList", source = "cardMoves", qualifiedByName = "rankSuitsList")
     @Mapping(target = "rankSuits", source = "cardMoves", qualifiedByName = "rankSuits")
     @Mapping(target = "roundNumber", source = "round", qualifiedByName = "roundNumber")
     @Mapping(target = "seatNumber", source = "seat", qualifiedByName = "seatNumber")

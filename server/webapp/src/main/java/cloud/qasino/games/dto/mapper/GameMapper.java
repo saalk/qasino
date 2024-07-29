@@ -34,7 +34,7 @@ public interface GameMapper {
 
     @Mapping(target = "players", source = "game", qualifiedByName = "players")
     @Mapping(target = "cardsInStock", source = "cards", qualifiedByName = "cardsInStock")
-    @Mapping(target = "cards", source = "cards", qualifiedByName = "cards")
+//    @Mapping(target = "cards", source = "cards", qualifiedByName = "cards")
     @Mapping(target = "gameStateGroup", source = "game", qualifiedByName = "gameStateGroup")
     @Mapping(target = "activePlayerInitiator", source = "game", qualifiedByName = "isActivePlayerInitiator")
     @Mapping(target = "anteToWin", source = "game", qualifiedByName = "anteToWin")
