@@ -33,12 +33,12 @@ public class LoadVisitorDtoAction extends ActionDto<EventOutput.Result> {
     @Override
     public EventOutput.Result perform(Qasino qasino) {
 
-//        boolean isVisitorFound = refreshVisitor(qasino);
-//        if (!isVisitorFound) {
-//            // TODO make 404
-////          return new EventOutput(EventOutput.Result.FAILURE, actionDto.getIds().getSuppliedGameEvent(), actionDto.getIds().getSuppliedPlayEvent());
-//            throw new MyNPException("39 getVisitorSupplied", "visitorId [" + qasino.getParams().getSuppliedVisitorId() + "]");
-//        }
+        boolean isVisitorFound = refreshVisitor(qasino);
+        if (!isVisitorFound) {
+            // TODO make 404
+//          return new EventOutput(EventOutput.Result.FAILURE, actionDto.getIds().getSuppliedGameEvent(), actionDto.getIds().getSuppliedPlayEvent());
+            throw new MyNPException("39 getVisitorSupplied", "visitorId [" + qasino.getParams().getSuppliedVisitorId() + "]");
+        }
         return EventOutput.Result.SUCCESS;
     }
 }

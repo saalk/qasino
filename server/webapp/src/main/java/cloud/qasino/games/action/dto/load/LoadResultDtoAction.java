@@ -33,12 +33,12 @@ public class LoadResultDtoAction extends ActionDto<EventOutput.Result> {
     @Override
     public EventOutput.Result perform(Qasino qasino) {
 
-//        boolean isResultFound = refreshOrFindResultsForGame(qasino);
-//        if (!isResultFound) {
-//            // TODO make 404
-////          return new EventOutput(EventOutput.Result.FAILURE, actionDto.getIds().getSuppliedGameEvent(), actionDto.getIds().getSuppliedPlayEvent());
-//            throw new MyNPException("39 getResultSupplied", "resultId [" + qasino.getParams().getSuppliedGameId() + "]");
-//        }
+        boolean isResultFound = refreshOrFindResultsForGame(qasino);
+        if (!isResultFound) {
+            // TODO make 404
+//          return new EventOutput(EventOutput.Result.FAILURE, actionDto.getIds().getSuppliedGameEvent(), actionDto.getIds().getSuppliedPlayEvent());
+            throw new MyNPException("39 getResultSupplied", "resultId [" + qasino.getParams().getSuppliedGameId() + "]");
+        }
         return EventOutput.Result.SUCCESS;
     }
 }

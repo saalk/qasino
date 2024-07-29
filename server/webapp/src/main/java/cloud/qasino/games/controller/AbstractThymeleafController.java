@@ -45,12 +45,11 @@ public class AbstractThymeleafController {
     @Autowired
     DeterminePossibleEventsAction determinePossibleEventsAction;
 
-    @Autowired
-    FindAllDtosForUsernameAction findDtos;
-    @Autowired
-    MapQasinoFromDtosAction mapQasino;
-    @Autowired
-    CalculateStatisticsAction calculateStatistics;
+    // @formatter:off
+    @Autowired FindAllDtosForUsernameAction findDtos;
+    @Autowired MapQasinoFromDtosAction mapQasino;
+    @Autowired CalculateStatisticsAction calculateStatistics;
+    // @formatter:on
 
     public String prettyPrintJson(QasinoResponse qasinoResponse) {
         ObjectMapper objectMapper = new ObjectMapper();

@@ -26,7 +26,7 @@ public abstract class ActionDto<OUTPUT> {
     @Autowired @Lazy PlayerService playerService;
     @Autowired @Lazy PlayingService playingService;
 
-    // @formatter:on
+
     public abstract EventOutput.Result perform(Qasino qasino);
 
     protected boolean findVisitorByUsername(Qasino qasino) {
@@ -38,7 +38,6 @@ public abstract class ActionDto<OUTPUT> {
         refreshOrFindLeagueForLatestGame(qasino);
         return true; // visitor found and id set
     }
-
     protected boolean refreshVisitor(Qasino qasino) {
         qasino.setVisitor(visitorAndLeaguesService.findOneByVisitorId(qasino.getParams()));
         if (qasino.getVisitor() == null) return false; // 404 not found
@@ -47,7 +46,6 @@ public abstract class ActionDto<OUTPUT> {
         refreshOrFindLeagueForLatestGame(qasino);
         return true; // 200 visitor found and id set
     }
-
     protected boolean refreshOrFindLatestGame(Qasino qasino) {
         if (qasino.getParams().getSuppliedGameId() > 0) {
             qasino.setGame(gameService.findOneByGameId(qasino.getParams()));
@@ -63,7 +61,6 @@ public abstract class ActionDto<OUTPUT> {
         }
         return true; // 200 game found and id set
     }
-
     protected boolean refreshOrFindPlayingForGame(Qasino qasino) {
         if (qasino.getParams().getSuppliedGameId() > 0) {
             qasino.setPlaying(playingService.findByGameId(qasino.getParams()));
@@ -74,7 +71,6 @@ public abstract class ActionDto<OUTPUT> {
         }
         return true; // 200 playing found and id set
     }
-
     protected boolean refreshOrFindSeatsForPlaying(Qasino qasino) {
         List<SeatDto> seats = playingService.findByPlayingOrGameId(qasino.getParams());
         if (seats.isEmpty()) {
@@ -83,7 +79,6 @@ public abstract class ActionDto<OUTPUT> {
         qasino.getPlaying().setSeats(seats);
         return true; // 200 seat for playing found
     }
-
     protected boolean refreshOrFindResultsForGame(Qasino qasino) {
         if (qasino.getParams().getSuppliedGameId() > 0) {
             qasino.setResults(playingService.findResultsByGameId(qasino.getParams()));
@@ -91,7 +86,6 @@ public abstract class ActionDto<OUTPUT> {
         }
         return false;
     }
-
     protected boolean refreshOrFindLeagueForLatestGame(Qasino qasino) {
         if (qasino.getParams().getSuppliedLeagueId() > 0) {
             qasino.setLeague(visitorAndLeaguesService.findOneByLeagueId(qasino.getParams()));
