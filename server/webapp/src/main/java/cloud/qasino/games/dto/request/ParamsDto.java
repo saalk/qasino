@@ -26,10 +26,11 @@ public class ParamsDto {
     private long suppliedDeclinedPlayerId = 0;
 
     // Events
-    private QasinoEvent suppliedQasinoEvent = QasinoEvent.ERROR;
-    private GameEvent suppliedGameEvent = GameEvent.ERROR;
-    private PlayEvent suppliedPlayEvent = PlayEvent.ERROR;
+    private QasinoEvent suppliedQasinoEvent = QasinoEvent.NONE;
+    private GameEvent suppliedGameEvent = GameEvent.NONE;
+    private PlayEvent suppliedPlayEvent = PlayEvent.NONE;
 
+    List<QasinoEvent> possibleNextQasinoEvents = new ArrayList<>();
     List<PlayEvent> possibleNextPlayEvents = new ArrayList<>();
     List<GameEvent> possibleNextGameEvents = new ArrayList<>();
 

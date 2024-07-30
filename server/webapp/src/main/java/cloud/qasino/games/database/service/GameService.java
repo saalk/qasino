@@ -28,6 +28,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 
 @Service
@@ -48,7 +49,13 @@ public class GameService {
         return GameMapper.INSTANCE.toDto(retrievedGame, retrievedGame.getCards());
     };
     public GameDto findLatestGameForVisitorId(ParamsDto paramsDto){
-        Pageable pageable = PageRequest.of(0, 4);
+        if (paramsDto.getSuppliedGameId() > 0) {
+            Optional<Game> foundGame = gameRepository.findById(paramsDto.getSuppliedGameId());
+            if (foundGame.isPresent()) {
+                return GameMapper.INSTANCE.toDto(foundGame.get(),foundGame.get().getCards());
+            }
+        }
+        Pageable pageable = PageRequest.of(1, 4);
         List<Game> foundGame = gameRepository.findAllNewGamesForVisitorWithPage(paramsDto.getSuppliedVisitorId(), pageable);
         if (foundGame.isEmpty()) {
             foundGame = gameRepository.findAllStartedGamesForVisitorWithPage(paramsDto.getSuppliedVisitorId(), pageable);

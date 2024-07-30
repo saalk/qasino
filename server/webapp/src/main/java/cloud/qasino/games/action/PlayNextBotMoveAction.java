@@ -58,6 +58,15 @@ public class PlayNextBotMoveAction implements Action<PlayNextBotMoveAction.Dto, 
         Player player = playing.getPlayer();
 
         nextMove = NextMoveCalculator.next(game, player, playing);
+        switch (nextMove) {
+            case PASS, NEXT -> {
+                actionDto.setSuppliedPlayEvent(PlayEvent.PASS);
+            }
+            default -> {
+                actionDto.setSuppliedPlayEvent(PlayEvent.BOT);
+            }
+        }
+
         log.info("PlayNextBotMoveAction StrategyMove {}", nextMove);
         // TODO DetermineNextRoundOrEndGame -> move to separate action
 

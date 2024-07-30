@@ -29,6 +29,7 @@ public enum PlayEvent implements Event {
 
     // technical internal events
     ERROR("error"),
+    NONE("none"),
     DETERMINE_WINNER("determine_winner"),
     END_GAME("end_game"),
     ; // system events

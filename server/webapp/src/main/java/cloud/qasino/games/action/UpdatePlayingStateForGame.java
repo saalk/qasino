@@ -6,6 +6,7 @@ import cloud.qasino.games.database.entity.Player;
 import cloud.qasino.games.database.entity.enums.game.GameState;
 import cloud.qasino.games.database.repository.GameRepository;
 import cloud.qasino.games.database.security.Visitor;
+import cloud.qasino.games.database.service.GameServiceOld;
 import cloud.qasino.games.pattern.statemachine.event.EventOutput;
 import cloud.qasino.games.pattern.statemachine.event.GameEvent;
 import cloud.qasino.games.pattern.statemachine.event.PlayEvent;
@@ -22,44 +23,48 @@ public class UpdatePlayingStateForGame implements Action<UpdatePlayingStateForGa
     @Autowired
     GameRepository gameRepository;
 
+    @Autowired
+    private GameServiceOld gameServiceOld;
+
     @Override
     public EventOutput.Result perform(Dto actionDto) {
 
-        if (!(actionDto.getPlayingPlayer().isHuman())) {
-            if (actionDto.getQasinoGame().getState() != GameState.BOT_MOVE) {
-                actionDto.getQasinoGame().setState(GameState.BOT_MOVE);
-                actionDto.setQasinoGame(gameRepository.save(actionDto.getQasinoGame()));
+        if (actionDto.getPlayingPlayer() == null) return EventOutput.Result.SUCCESS;
+        switch (actionDto.getSuppliedPlayEvent()) {
+            case PASS -> {
+                // next player
+                actionDto.setQasinoGame(updateGameState(gameServiceOld.findNextPlayerForGame(actionDto.getQasinoGame()), actionDto.getQasinoGame()));
+            }
+            case DEAL, HIGHER, LOWER, BOT -> {
+                // existing player
+                actionDto.setQasinoGame(updateGameState(actionDto.getPlayingPlayer(), actionDto.getQasinoGame()));
             }
         }
-        if ((actionDto.getPlayingPlayer().isHuman())) {
-            if (actionDto.getQasinoGame().getInitiator() == actionDto.getPlayingPlayer().getPlayerId()) {
-                if (actionDto.getQasinoGame().getState() != GameState.INITIATOR_MOVE) {
-                    actionDto.getQasinoGame().setState(GameState.INITIATOR_MOVE);
-                    actionDto.setQasinoGame(gameRepository.save(actionDto.getQasinoGame()));
-                } else {
-                    if (actionDto.getQasinoGame().getState() != GameState.INVITEE_MOVE) {
-                        actionDto.getQasinoGame().setState(GameState.INVITEE_MOVE);
-                        actionDto.setQasinoGame(gameRepository.save(actionDto.getQasinoGame()));
-                    }
-                }
-            }
-
-        }
-
         return EventOutput.Result.SUCCESS;
     }
 
-    private void setBadRequestErrorMessage(Dto actionDto, String id, String value) {
-        actionDto.setErrorKey(id);
-        actionDto.setErrorValue(value);
-        actionDto.setBadRequestErrorMessage("Supplied value for leagueName is empty");
+    private Game updateGameState(Player player, Game game) {
+        if ((player.isHuman())) {
+            if (game.getInitiator() == player.getPlayerId()) {
+                if (game.getState() != GameState.INITIATOR_MOVE) {
+                    game.setState(GameState.INITIATOR_MOVE);
+                    return gameRepository.save(game);
+                } else {
+                    if (game.getState() != GameState.INVITEE_MOVE) {
+                        game.setState(GameState.INVITEE_MOVE);
+                        return gameRepository.save(game);
+                    }
+                }
+            }
+        } else {
+            if (game.getState() != GameState.BOT_MOVE) {
+                game.setState(GameState.BOT_MOVE);
+                return gameRepository.save(game);
+            }
+        }
+        return game;
     }
 
-    private void setConflictErrorMessage(Dto actionDto, String id, String value) {
-        actionDto.setErrorKey(id);
-        actionDto.setErrorValue(value);
-        actionDto.setConflictErrorMessage("leagueName [" + value + "] not available any more");
-    }
 
     public interface Dto {
 

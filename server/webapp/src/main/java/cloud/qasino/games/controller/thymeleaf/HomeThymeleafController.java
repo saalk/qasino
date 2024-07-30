@@ -178,7 +178,6 @@ public class HomeThymeleafController extends AbstractThymeleafController {
         // 3 - process
         // 4 - return new response
         Qasino qasino = new Qasino();
-        qasino.getParams().setSuppliedQasinoEvent(QasinoEvent.REGISTER);
         prepareQasino(response, qasino);
         var gson = new Gson();
         log.warn("Qasino gson = {} ", gson.toJson(qasino));
@@ -233,7 +232,6 @@ public class HomeThymeleafController extends AbstractThymeleafController {
         // 4 - return new response
         Qasino qasino = new Qasino();
         qasino.getParams().setSuppliedQasinoEvent(QasinoEvent.REGISTER);
-//        qasino.getParams().setSuppliedQasinoEvent(QasinoEvent.REGISTER);
         prepareQasino(response, qasino);
         var gson = new Gson();
         log.warn("Qasino gson = {} ", gson.toJson(qasino));

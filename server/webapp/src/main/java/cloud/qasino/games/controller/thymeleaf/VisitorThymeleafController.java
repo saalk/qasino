@@ -9,6 +9,7 @@ import cloud.qasino.games.action.dto.Qasino;
 import cloud.qasino.games.controller.AbstractThymeleafController;
 import cloud.qasino.games.database.security.VisitorRepository;
 import cloud.qasino.games.dto.QasinoFlowDto;
+import cloud.qasino.games.pattern.statemachine.event.QasinoEvent;
 import cloud.qasino.games.response.QasinoResponse;
 import cloud.qasino.games.pattern.statemachine.event.EventOutput;
 import com.google.gson.Gson;
@@ -146,6 +147,7 @@ public class VisitorThymeleafController extends AbstractThymeleafController {
         updateVisitorAction.perform(flowDto);
         // 4 - return new response
         Qasino qasino = new Qasino();
+        qasino.getParams().setSuppliedQasinoEvent(QasinoEvent.UPDATE_VISITOR);
         qasino.getParams().setSuppliedVisitorUsername(principal.getName());
         prepareQasino(response, qasino);
         var gson = new Gson();
@@ -160,6 +162,8 @@ public class VisitorThymeleafController extends AbstractThymeleafController {
     @PostMapping(value = "pawn")
     public String visitorPawnsShip(
             Model model,
+            Principal principal,
+
 //            @PathVariable("visitorId") Optional<String> id,
             @Valid @ModelAttribute QasinoResponse qasinoResponse,
             Errors errors, RedirectAttributes ra,
@@ -180,7 +184,9 @@ public class VisitorThymeleafController extends AbstractThymeleafController {
         handleSecuredLoanAction.perform(flowDto);
         // 4 - return new response
         Qasino qasino = new Qasino();
-//        qasino.getParams().setSuppliedVisitorUsername(principal.getName());
+        qasino.getParams().setSuppliedQasinoEvent(QasinoEvent.PAWN);
+        qasino.getParams().setSuppliedVisitorUsername(principal.getName());
+
         prepareQasino(response, qasino);
         var gson = new Gson();
         log.warn("Qasino gson = {} ", gson.toJson(qasino));
@@ -194,6 +200,8 @@ public class VisitorThymeleafController extends AbstractThymeleafController {
     @PostMapping(value = "repay")
     public String visitorRepaysLoan(
             Model model,
+            Principal principal,
+
 //            @PathVariable("visitorId") Optional<String> id,
             @Valid @ModelAttribute QasinoResponse qasinoResponse,
             Errors errors, RedirectAttributes ra,
@@ -214,7 +222,8 @@ public class VisitorThymeleafController extends AbstractThymeleafController {
         handleSecuredLoanAction.perform(flowDto);
         // 4 - return new response
         Qasino qasino = new Qasino();
-//        qasino.getParams().setSuppliedVisitorUsername(principal.getName());
+        qasino.getParams().setSuppliedQasinoEvent(QasinoEvent.REPAY);
+        qasino.getParams().setSuppliedVisitorUsername(principal.getName());
         prepareQasino(response, qasino);
         var gson = new Gson();
         log.warn("Qasino gson = {} ", gson.toJson(qasino));
@@ -229,6 +238,8 @@ public class VisitorThymeleafController extends AbstractThymeleafController {
     @DeleteMapping("visitor")
     public String deleteVisitor(
             Model model,
+            Principal principal,
+
 //            @PathVariable("visitorId") Optional<String> id,
             @Valid @ModelAttribute QasinoResponse qasinoResponse,
             Errors errors, RedirectAttributes ra,
@@ -253,7 +264,8 @@ public class VisitorThymeleafController extends AbstractThymeleafController {
         }
         // 4 - return new response
         Qasino qasino = new Qasino();
-//        qasino.getParams().setSuppliedVisitorUsername(principal.getName());
+        qasino.getParams().setSuppliedQasinoEvent(QasinoEvent.DELETE_VISITOR);
+        qasino.getParams().setSuppliedVisitorUsername(principal.getName());
         prepareQasino(response, qasino);
         var gson = new Gson();
         log.warn("Qasino gson = {} ", gson.toJson(qasino));

@@ -62,6 +62,7 @@ public interface ResultMapper {
     }
     @Named("visitor")
     default VisitorDto visitor(Result result) {
+        if (result.getPlayer().getPlayerId() != result.getVisitor().getVisitorId()) return null;
         return VisitorMapper.INSTANCE.toDto(result.getVisitor());
     }
     @Named("game")

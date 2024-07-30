@@ -7,6 +7,8 @@ import cloud.qasino.games.action.dto.Qasino;
 import cloud.qasino.games.controller.AbstractThymeleafController;
 import cloud.qasino.games.database.repository.LeagueRepository;
 import cloud.qasino.games.dto.QasinoFlowDto;
+import cloud.qasino.games.pattern.statemachine.event.GameEvent;
+import cloud.qasino.games.pattern.statemachine.event.PlayEvent;
 import cloud.qasino.games.pattern.statemachine.event.QasinoEvent;
 import cloud.qasino.games.response.QasinoResponse;
 import cloud.qasino.games.pattern.statemachine.event.EventOutput;
@@ -85,7 +87,8 @@ public class LeagueThymeleafController extends AbstractThymeleafController {
         // get all entities
         // 4 - return new response
         Qasino qasino = new Qasino();
-        qasino.getParams().setSuppliedQasinoEvent(QasinoEvent.REGISTER);
+        qasino.getParams().setSuppliedVisitorUsername(principal.getName());
+        qasino.getParams().setSuppliedLeagueId(Long.parseLong(id));
         prepareQasino(response, qasino);
         var gson = new Gson();
         log.warn("Qasino gson = {} ", gson.toJson(qasino));
@@ -97,7 +100,7 @@ public class LeagueThymeleafController extends AbstractThymeleafController {
 //        log.warn("HttpServletResponse: {}", response.getHeaderNames());
 //        log.warn("Model: {}", model);
 //        log.warn("Errors: {}", errors);
-        log.warn("get qasinoResponse: {}", flowDto.getQasinoResponse());
+//        log.warn("get qasinoResponse: {}", flowDto.getQasinoResponse());
         return LEAGUE_VIEW_LOCATION;
     }
 
@@ -142,7 +145,8 @@ public class LeagueThymeleafController extends AbstractThymeleafController {
         }
         // 4 - return new response
         Qasino qasino = new Qasino();
-        qasino.getParams().setSuppliedQasinoEvent(QasinoEvent.REGISTER);
+        qasino.getParams().setSuppliedQasinoEvent(QasinoEvent.CREATE_LEAGUE);
+        qasino.getParams().setSuppliedVisitorUsername(principal.getName());
         prepareQasino(response, qasino);
         var gson = new Gson();
         log.warn("Qasino gson = {} ", gson.toJson(qasino));
@@ -154,7 +158,7 @@ public class LeagueThymeleafController extends AbstractThymeleafController {
 //        log.warn("HttpServletResponse: {}", response.getHeaderNames());
 //        log.warn("Model: {}", model);
 //        log.warn("Errors: {}", errors);
-        log.warn("get qasinoResponse: {}", flowDto.getQasinoResponse());
+//        log.warn("get qasinoResponse: {}", flowDto.getQasinoResponse());
         return "redirect:league/" + flowDto.getQasinoResponse().getPageLeague().getSelectedLeague().getLeagueId();
     }
 
@@ -194,7 +198,9 @@ public class LeagueThymeleafController extends AbstractThymeleafController {
         flowDto.setQasinoGameLeague(null);
         // 4 - return new response
         Qasino qasino = new Qasino();
-        qasino.getParams().setSuppliedQasinoEvent(QasinoEvent.REGISTER);
+        qasino.getParams().setSuppliedQasinoEvent(QasinoEvent.DELETE_LEAGUE);
+        qasino.getParams().setSuppliedVisitorUsername(principal.getName());
+        qasino.getParams().setSuppliedLeagueId(Long.parseLong(id));
         prepareQasino(response, qasino);
         var gson = new Gson();
         log.warn("Qasino gson = {} ", gson.toJson(qasino));
@@ -206,7 +212,7 @@ public class LeagueThymeleafController extends AbstractThymeleafController {
 //        log.warn("HttpServletResponse: {}", response.getHeaderNames());
 //        log.warn("Model: {}", model);
 //        log.warn("Errors: {}", errors);
-        log.warn("get qasinoResponse: {}", flowDto.getQasinoResponse());
+//        log.warn("get qasinoResponse: {}", flowDto.getQasinoResponse());
 
         return "redirect:/visitor";
     }

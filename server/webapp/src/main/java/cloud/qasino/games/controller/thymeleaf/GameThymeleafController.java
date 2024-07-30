@@ -17,6 +17,7 @@ import cloud.qasino.games.database.service.PlayerServiceOld;
 import cloud.qasino.games.dto.QasinoFlowDto;
 import cloud.qasino.games.exception.MyBusinessException;
 import cloud.qasino.games.pattern.statemachine.event.EventOutput;
+import cloud.qasino.games.pattern.statemachine.event.GameEvent;
 import cloud.qasino.games.response.QasinoResponse;
 import com.google.gson.Gson;
 import jakarta.servlet.http.HttpServletResponse;
@@ -113,6 +114,7 @@ public class GameThymeleafController extends AbstractThymeleafController {
         // 4 - return new response
         Qasino qasino = new Qasino();
         qasino.getParams().setSuppliedVisitorUsername(principal.getName());
+        qasino.getParams().setSuppliedGameId(Long.parseLong(id));
         prepareQasino(response, qasino);
         var gson = new Gson();
         log.warn("Qasino gson = {} ", gson.toJson(qasino));
@@ -152,6 +154,7 @@ public class GameThymeleafController extends AbstractThymeleafController {
         // 4 - return new response
         Qasino qasino = new Qasino();
         qasino.getParams().setSuppliedVisitorUsername(principal.getName());
+        qasino.getParams().setSuppliedGameId(Long.parseLong(id));
         prepareQasino(response, qasino);
         var gson = new Gson();
         log.warn("Qasino gson = {} ", gson.toJson(qasino));
@@ -224,6 +227,14 @@ public class GameThymeleafController extends AbstractThymeleafController {
 //            return ResponseEntity.status(HttpStatus.valueOf(flowDto.getHttpStatus())).headers(flowDto.getHeaders()).build();
         }
         createNewGameAction.perform(flowDto);
+        // 4 - return new response
+        Qasino qasino = new Qasino();
+        qasino.getParams().setSuppliedGameEvent(GameEvent.START);
+        qasino.getParams().setSuppliedVisitorUsername(principal.getName());
+        qasino.getParams().setSuppliedGameId(Long.parseLong(id));
+        prepareQasino(response, qasino);
+        var gson = new Gson();
+        log.warn("Qasino gson = {} ", gson.toJson(qasino));
         // 4 - return response
         prepareQasinoResponse(response, flowDto);
         model.addAttribute(flowDto.getQasinoResponse());
@@ -290,7 +301,9 @@ public class GameThymeleafController extends AbstractThymeleafController {
         prepareGameAction.perform(flowDto);
         // 4 - return new response
         Qasino qasino = new Qasino();
+        qasino.getParams().setSuppliedGameEvent(GameEvent.VALIDATE);
         qasino.getParams().setSuppliedVisitorUsername(principal.getName());
+        qasino.getParams().setSuppliedGameId(Long.parseLong(id));
         prepareQasino(response, qasino);
         var gson = new Gson();
         log.warn("Qasino gson = {} ", gson.toJson(qasino));
@@ -357,6 +370,14 @@ public class GameThymeleafController extends AbstractThymeleafController {
             return "redirect:/setup/" + id;
         }
         updateStyleForGame.perform(flowDto);
+        // 4 - return new response
+        Qasino qasino = new Qasino();
+        qasino.getParams().setSuppliedGameEvent(GameEvent.VALIDATE);
+        qasino.getParams().setSuppliedVisitorUsername(principal.getName());
+        qasino.getParams().setSuppliedGameId(Long.parseLong(id));
+        prepareQasino(response, qasino);
+        var gson = new Gson();
+        log.warn("Qasino gson = {} ", gson.toJson(qasino));
         // 4 - return response
         prepareQasinoResponse(response, flowDto);
         model.addAttribute(flowDto.getQasinoResponse());
@@ -400,7 +421,9 @@ public class GameThymeleafController extends AbstractThymeleafController {
         playerRepository.save(bot);
         // 4 - return new response
         Qasino qasino = new Qasino();
+        qasino.getParams().setSuppliedGameEvent(GameEvent.ADD_BOT);
         qasino.getParams().setSuppliedVisitorUsername(principal.getName());
+        qasino.getParams().setSuppliedGameId(Long.parseLong(id));
         prepareQasino(response, qasino);
         var gson = new Gson();
         log.warn("Qasino gson = {} ", gson.toJson(qasino));
@@ -454,7 +477,9 @@ public class GameThymeleafController extends AbstractThymeleafController {
         flowDto.setQasinoGame(null);
         // 4 - return new response
         Qasino qasino = new Qasino();
+        qasino.getParams().setSuppliedGameEvent(GameEvent.ABANDON);
         qasino.getParams().setSuppliedVisitorUsername(principal.getName());
+        qasino.getParams().setSuppliedGameId(Long.parseLong(id));
         prepareQasino(response, qasino);
         var gson = new Gson();
         log.warn("Qasino gson = {} ", gson.toJson(qasino));

@@ -3,6 +3,7 @@ package cloud.qasino.games.action.dto;
 import cloud.qasino.games.database.entity.Game;
 import cloud.qasino.games.database.entity.League;
 import cloud.qasino.games.database.entity.enums.game.GameState;
+import cloud.qasino.games.database.entity.enums.player.PlayerType;
 import cloud.qasino.games.dto.mapper.GameMapper;
 import cloud.qasino.games.dto.mapper.LeagueMapper;
 import cloud.qasino.games.pattern.statemachine.event.EventOutput;
@@ -51,6 +52,7 @@ public class MapQasinoFromDtosAction extends ActionDto<EventOutput.Result> {
         navigationBarItem.setStat("[0/0] bots/humans");
 
         if (qasino.getGame() != null) {
+            qasino.setActionNeeded(false);
             switch (qasino.getGame().getState().getGroup()) {
                 case SETUP, PREPARED -> {
                     qasino.setActionNeeded(true);
@@ -64,14 +66,6 @@ public class MapQasinoFromDtosAction extends ActionDto<EventOutput.Result> {
                         humans = qasino.getGame().getPlayers().size() - bots;
                     }
                     navigationBarItem.setStat("[" + bots + "/" + humans + "] bots/humans");
-                }
-                case PLAYING -> {
-                    qasino.setActionNeeded(false);
-                }
-                case FINISHED, ERROR -> {
-                    qasino.setActionNeeded(false);
-                    // dummy game
-                    qasino.setGame(GameMapper.INSTANCE.toDto(Game.buildDummy(null, -1), null));
                 }
             }
         } else {
@@ -95,8 +89,6 @@ public class MapQasinoFromDtosAction extends ActionDto<EventOutput.Result> {
                     qasino.setAction(qasino.getGame().getState().getNextAction());
                     navigationBarItem.setTitle("Play[" +
                             Integer.toHexString((int) qasino.getGame().getGameId()) + "]");
-                    // TODO FIXXXX .NullPointerException: Cannot invoke "cloud.qasi
-                    //  no.games.database.entity.Playing.getCurrentRoundNumber()" because the return value of "cloud.qasino.games.action.MapQasinoFromDto$Dto.getActivePlaying()" is null
                     if (qasino.getPlaying() != null) { // games is still being validated
                         navigationBarItem.setStat(
                                 "[" + qasino.getPlaying().getCurrentRoundNumber() +
@@ -118,12 +110,21 @@ public class MapQasinoFromDtosAction extends ActionDto<EventOutput.Result> {
         navigationBarItem = new NavigationBarItem();
         navigationBarItem.setSequence(4);
         navigationBarItem.setTitle("Invite");
-        navigationBarItem.setStat("[0/0] setup/playing");
+        navigationBarItem.setStat("[0/0] total/pending");
         if (qasino.getGame() != null && qasino.getGame().getState().equals(GameState.PENDING_INVITATIONS)) {
             qasino.setActionNeeded(true);
             qasino.setAction(qasino.getGame().getState().getNextAction());
-            navigationBarItem.setTitle("Invites[]");
-            navigationBarItem.setStat("calculating..");
+            navigationBarItem.setTitle("Invites[" +
+                    Integer.toHexString((int) qasino.getGame().getGameId()) + "]");
+            long invitee = 0;
+            long invited = 0;
+            long rejected = 0;
+            if (qasino.getGame().getPlayers() != null) {
+                invitee = qasino.getGame().getPlayers().stream().filter(c -> c.getPlayerType() == PlayerType.INVITEE).count();
+                invited = qasino.getGame().getPlayers().stream().filter(c -> c.getPlayerType() == PlayerType.INVITED).count();
+                rejected = qasino.getGame().getPlayers().stream().filter(c -> c.getPlayerType() == PlayerType.REJECTED).count();
+            }
+            navigationBarItem.setStat("[" + invitee + invited + rejected+ "/" + invited + "] total/pending");
         }
         navigationBarItems.add(navigationBarItem);
 
@@ -131,7 +132,7 @@ public class MapQasinoFromDtosAction extends ActionDto<EventOutput.Result> {
         navigationBarItem = new NavigationBarItem();
         navigationBarItem.setSequence(5);
         navigationBarItem.setTitle("League");
-        navigationBarItem.setStat("[0] active");
+        navigationBarItem.setStat("[0] games");
         navigationBarItem.setVisible(false);
         if (qasino.getLeague() != null) {
             if (!qasino.isActionNeeded()) {
@@ -139,10 +140,7 @@ public class MapQasinoFromDtosAction extends ActionDto<EventOutput.Result> {
                 if (qasino.getAction().isEmpty()) qasino.setAction("Manage your leagues");
             }
             navigationBarItem.setTitle("League[" + Integer.toHexString((int) qasino.getLeague().getLeagueId()) + "]");
-            navigationBarItem.setStat("[0] active");
-        } else {
-            // set up dummy league
-            qasino.setLeague(LeagueMapper.INSTANCE.toDto(League.buildDummy(null, "leagueName")));
+            navigationBarItem.setStat("[" + qasino.getLeague().getGamesForLeague().size() + "] games");
         }
         navigationBarItems.add(navigationBarItem);
         qasino.setNavBarItems(navigationBarItems);

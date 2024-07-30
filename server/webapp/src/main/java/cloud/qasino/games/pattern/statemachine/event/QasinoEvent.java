@@ -12,11 +12,21 @@ import java.util.Map;
 public enum QasinoEvent implements Event {
 
     // vistor events
-    REGISTER("register"),
     LOGON("logon"),
     REPAY("repay"),
     PAWN("pawn"),
 
+    REGISTER("register"),
+    UPDATE_VISITOR("update_visitor"),
+    DELETE_VISITOR("delete_visitor"),
+
+    // league events
+    CREATE_LEAGUE("create_visitor"),
+    UPDATE_LEAGUE("update_visitor"),
+    DELETE_LEAGUE("delete_visitor"),
+
+    // misc
+    NONE("none"),
     ERROR("error");
 
     public static final Map<String, QasinoEvent> lookup

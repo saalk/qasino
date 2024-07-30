@@ -25,6 +25,8 @@ import cloud.qasino.games.database.repository.PlayerRepository;
 import cloud.qasino.games.database.repository.PlayingRepository;
 import cloud.qasino.games.dto.QasinoFlowDto;
 import cloud.qasino.games.pattern.statemachine.event.EventOutput;
+import cloud.qasino.games.pattern.statemachine.event.GameEvent;
+import cloud.qasino.games.pattern.statemachine.event.PlayEvent;
 import cloud.qasino.games.response.QasinoResponse;
 import com.google.gson.Gson;
 import jakarta.servlet.http.HttpServletResponse;
@@ -139,7 +141,9 @@ public class PlayingThymeleafController extends AbstractThymeleafController {
         loadEntitiesToDtoAction.perform(flowDto);
         // 4 - return new response
         Qasino qasino = new Qasino();
+        qasino.getParams().setSuppliedGameEvent(GameEvent.SHUFFLE);
         qasino.getParams().setSuppliedVisitorUsername(principal.getName());
+        qasino.getParams().setSuppliedGameId(Long.parseLong(id));
         prepareQasino(response, qasino);
         var gson = new Gson();
         log.warn("Qasino gson = {} ", gson.toJson(qasino));
@@ -218,7 +222,10 @@ public class PlayingThymeleafController extends AbstractThymeleafController {
         }
         // 4 - return new response
         Qasino qasino = new Qasino();
+        qasino.getParams().setSuppliedGameEvent(GameEvent.PLAY);
+        qasino.getParams().setSuppliedPlayEvent(PlayEvent.valueOf(trigger.toLowerCase()));
         qasino.getParams().setSuppliedVisitorUsername(principal.getName());
+        qasino.getParams().setSuppliedGameId(Long.parseLong(id));
         prepareQasino(response, qasino);
         var gson = new Gson();
         log.warn("Qasino gson = {} ", gson.toJson(qasino));
@@ -271,7 +278,9 @@ public class PlayingThymeleafController extends AbstractThymeleafController {
         }
         // 4 - return new response
         Qasino qasino = new Qasino();
+        qasino.getParams().setSuppliedGameEvent(GameEvent.STOP);
         qasino.getParams().setSuppliedVisitorUsername(principal.getName());
+        qasino.getParams().setSuppliedGameId(Long.parseLong(id));
         prepareQasino(response, qasino);
         var gson = new Gson();
         log.warn("Qasino gson = {} ", gson.toJson(qasino));

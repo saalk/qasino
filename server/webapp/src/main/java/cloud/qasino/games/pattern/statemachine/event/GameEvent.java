@@ -19,22 +19,24 @@ public enum GameEvent implements Event {
 
     // NEW & SETUP - initiated by visitor
     START("start a Game"),        // may not have initial bets
-    PENDING_INVITES("pending invite for other Visitor(s)"),
+    ADD_INVITEE("invite for other Visitor(s)"),
+    ADD_BOT("invite a Bot"),
 
     // PREPARED - validation by visitor
     VALIDATE("validate Game for playing"),  // no pending invitations
     SHUFFLE("shuffle and deal first Card"), // add cards to the game
 
     // PLAYING play event by player
-    PLAY("play Card(s)"),       // move some cards
+    PLAY("play Card(s) in the Game"),       // move some cards
 
     // STOP game stopped by player
-    STOP("stop the Game, no winner"),      // stop the game, no winner or results
+    STOP("stop the Game, elect no winner"),      // stop the game, no winner or results
 
     // specific triggers initiated by system
-    WINNER("declare a winner"),     // end game and declare the winner
-    ABANDON("abandoned Game"),    // game is abandonned
-    ERROR("error Game");    // bad label or null supplied
+    WINNER("end the Game and declare a winner"),     // end game and declare the winner
+    ABANDON("abandoned the Game without a winner"),    // game is abandonned
+    NONE("starting a Game not possible"),    // game is not possible
+    ERROR("Game in error");    // bad label or null supplied
 
     public static final Map<String, GameEvent> lookup
             = new HashMap<>();
@@ -44,13 +46,13 @@ public enum GameEvent implements Event {
     }
 
     public static final List<GameEvent> START_GAME_EVENTS = Arrays.asList(START);
-    public static final List<GameEvent> SETUP_GAME_EVENTS = Arrays.asList(PENDING_INVITES, VALIDATE);
+    public static final List<GameEvent> SETUP_GAME_EVENTS = Arrays.asList(ADD_INVITEE, VALIDATE);
     public static final List<GameEvent> PREPARED_GAME_EVENTS = List.of(SHUFFLE);
     public static final List<GameEvent> PLAYING_GAME_EVENTS = List.of(PLAY);
     public static final List<GameEvent> STOP_GAMES_EVENTS = Arrays.asList(STOP);
     public static final List<GameEvent> ERROR_GAME_EVENTS = Arrays.asList(WINNER, ABANDON, ERROR);
     public static final List<GameEvent> ALL_GAME_EVENTS =
-            Arrays.asList(START, PENDING_INVITES, VALIDATE, SHUFFLE, PLAY, STOP, WINNER, ABANDON, ERROR);
+            Arrays.asList(START, ADD_INVITEE, VALIDATE, SHUFFLE, PLAY, STOP, WINNER, ABANDON, ERROR);
 
     @Transient
     private String label;
