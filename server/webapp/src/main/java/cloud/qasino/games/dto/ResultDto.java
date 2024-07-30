@@ -40,10 +40,9 @@ public class ResultDto {
 //    private GameDto game;
     private long gameId;
     private int ante;
+
     // league
-    private String name;
-    private int nameSequence;
-    private boolean active;
+    private LeagueShortDto league;
 
     // Normal fields
     private Type type;

@@ -141,6 +141,7 @@ public class PlayingService {
 
     // PLAYING
     public void updatePlaying(Move move, Playing activePlaying, Player nextPlayer) {
+        if (move == Move.PASS) move = Move.DEAL;
         switch (move) {
             case HIGHER, LOWER -> {
                 activePlaying.setCurrentSeatNumber(activePlaying.getPlayer().getSeat());

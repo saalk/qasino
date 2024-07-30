@@ -109,7 +109,8 @@ public interface SeatMapper {
                 cards.stream()
                         .filter(location -> location.getLocation().equals(Location.HAND))
                         .filter(hand -> hand.getHand().getPlayerId() == player.getPlayerId())
-                        .collect(Collectors.toList());
+                        .toList();
+        if (cardsInHand.isEmpty()) return "[empty]";
         String lastCardInHand = cardsInHand.get(cardsInHand.size()-1).getRankSuit();
         return "[" + lastCardInHand + "]";
     }

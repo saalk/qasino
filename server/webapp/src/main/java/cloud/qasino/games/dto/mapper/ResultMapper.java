@@ -6,6 +6,7 @@ import cloud.qasino.games.database.entity.enums.player.AiLevel;
 import cloud.qasino.games.database.entity.enums.player.Avatar;
 import cloud.qasino.games.database.entity.enums.player.PlayerType;
 import cloud.qasino.games.dto.GameDto;
+import cloud.qasino.games.dto.LeagueShortDto;
 import cloud.qasino.games.dto.PlayerDto;
 import cloud.qasino.games.dto.ResultDto;
 import cloud.qasino.games.dto.VisitorDto;
@@ -40,9 +41,7 @@ public interface ResultMapper {
     @Mapping(target = "securedLoan", source = "result", qualifiedByName = "securedLoan")
     @Mapping(target = "gameId", source = "result", qualifiedByName = "gameId")
     @Mapping(target = "ante", source = "result", qualifiedByName = "ante")
-    @Mapping(target = "name", source = "result", qualifiedByName = "name")
-    @Mapping(target = "nameSequence", source = "result", qualifiedByName = "nameSequence")
-    @Mapping(target = "active", source = "result", qualifiedByName = "active")
+    @Mapping(target = "league", source = "result", qualifiedByName = "league")
     ResultDto toDto(Result result);
     List<ResultDto> toDtoList(List<Result> results);
 
@@ -130,19 +129,10 @@ public interface ResultMapper {
     default int ante(Result result) {
         return result.getGame().getAnte();
     }
-    @Named("name")
-    default String name(Result result) {
-        if(result.getGame().getLeague() == null) return "";
-        return result.getGame().getLeague().getName();
+    @Named("league")
+    default LeagueShortDto league(Result result) {
+        if(result.getGame().getLeague() == null) return null;
+        return LeagueShortMapper.INSTANCE.toDto(result.getGame().getLeague());
     }
-    @Named("nameSequence")
-    default int nameSequence(Result result) {
-        if(result.getGame().getLeague() == null) return 0;
-        return result.getGame().getLeague().getNameSequence();
-    }
-    @Named("active")
-    default boolean active(Result result) {
-        if(result.getGame().getLeague() == null) return false;
-        return result.getGame().getLeague().isActive();
-    }
+
 }

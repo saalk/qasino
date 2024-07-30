@@ -72,6 +72,7 @@ public class PlayNextBotMoveAction implements Action<PlayNextBotMoveAction.Dto, 
         }
 
         // Update PLAYING - could be new to new Player
+        // TODO what if PASS then deal to next player !!
         playingService.updatePlaying(nextMove, playing, nextPlayer);
         Playing newPlaying = playingRepository.save(playing);
         game.setPlaying(newPlaying);
