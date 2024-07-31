@@ -4,17 +4,15 @@ import cloud.qasino.games.action.SignUpNewVisitorAction;
 import cloud.qasino.games.action.dto.FindAllDtosForUsernameAction;
 import cloud.qasino.games.action.dto.MapQasinoFromDtosAction;
 import cloud.qasino.games.action.dto.Qasino;
+import cloud.qasino.games.action.dto.RegisterVisitorAction;
 import cloud.qasino.games.controller.AbstractThymeleafController;
 import cloud.qasino.games.database.security.MyUserDetailService;
 import cloud.qasino.games.database.security.MyUserPrincipal;
 import cloud.qasino.games.dto.QasinoFlowDto;
-import cloud.qasino.games.dto.validation.VisitorAdvanced;
 import cloud.qasino.games.dto.validation.VisitorBasic;
-import cloud.qasino.games.exception.MyNPException;
 import cloud.qasino.games.pattern.singleton.OnlineVisitorsPerDay;
 import cloud.qasino.games.pattern.statemachine.event.EventOutput;
 import cloud.qasino.games.pattern.statemachine.event.QasinoEvent;
-import cloud.qasino.games.response.QasinoResponse;
 import cloud.qasino.games.web.AjaxUtils;
 import cloud.qasino.games.web.MessageHelper;
 import com.google.common.base.Throwables;
@@ -32,7 +30,6 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.Errors;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -74,12 +71,12 @@ public class HomeThymeleafController extends AbstractThymeleafController {
     private static final String HOME_NOT_SIGNED_IN_LOCATION = "home/homeNotSignedIn";
     private static final String ERROR_GENERAL_LOCATION = "error/general";
 
-    EventOutput.Result result;
+//    EventOutput.Result result;
 
-    @Autowired
-    SignUpNewVisitorAction signUpNewVisitorAction;
-    @Autowired
-    private MyUserDetailService userDetailService;
+    // formatter:off
+    @Autowired private RegisterVisitorAction registerAction;
+    @Autowired private MyUserDetailService userDetailService;
+
     private final AuthenticationManager authenticationManager;
 
 
@@ -94,7 +91,7 @@ public class HomeThymeleafController extends AbstractThymeleafController {
             SignUpNewVisitorAction signUpNewVisitorAction
     ) {
         this.authenticationManager = authenticationManager;
-        this.signUpNewVisitorAction = signUpNewVisitorAction;
+        this.registerAction = registerAction;
     }
 
 //    @RequestMapping("favicon.ico")
@@ -159,18 +156,14 @@ public class HomeThymeleafController extends AbstractThymeleafController {
         log.warn("GetMapping: /register");
 
         // 1 - map input
-        QasinoFlowDto flowDto = new QasinoFlowDto();
+        Qasino qasino = new Qasino();
         // 2 - validate input
         // 3 - process
         // 4 - return new response
-        Qasino qasino = new Qasino();
         prepareQasino(response, qasino);
         var gson = new Gson();
         log.warn("Qasino gson = {} ", gson.toJson(qasino));
         model.addAttribute(qasino);
-        // 4 - return response
-//        prepareQasinoResponse(response, flowDto);
-//        model.addAttribute(flowDto.getQasinoResponse());
 
         if (AjaxUtils.isAjaxRequest(requestedWith)) {
 //            return HOME_SIGNUP_VIEW_LOCATION.concat(" :: qasinoResponse");
@@ -182,11 +175,9 @@ public class HomeThymeleafController extends AbstractThymeleafController {
     @PostMapping("register")
     public String register(
             Model model,
-//            @ModelAttribute QasinoResponse qasinoResponse,
             @Validated(VisitorBasic.class)
             @ModelAttribute("qasino") Qasino qasino,
             BindingResult result,
-//            Errors errors,
             RedirectAttributes ra,
             HttpServletResponse response
     ) {
@@ -194,42 +185,18 @@ public class HomeThymeleafController extends AbstractThymeleafController {
         log.warn("PostMapping: /register");
 
         // 1 - map input
-//        QasinoFlowDto flowDto = new QasinoFlowDto();
-//        flowDto.setPathVariables(
-//                "username", qasinoResponse.getPageVisitor().getSelectedVisitor().getUsername(),
-//                "alias", qasinoResponse.getPageVisitor().getSelectedVisitor().getAlias(),
-//                "email", qasinoResponse.getPageVisitor().getSelectedVisitor().getEmail(),
-//                "password", qasinoResponse.getPageVisitor().getSelectedVisitor().getPassword());
+        qasino.getParams().setSuppliedQasinoEvent(QasinoEvent.REGISTER);
         // 2 - validate input
-//        if (!flowDto.isInputValid() || errors.hasErrors()) {
-//            log.warn("Errors exist!!: {}", errors);
-//            log.warn("qasinoResponse: {}", flowDto.getQasinoResponse());
-//
-//            prepareQasinoResponse(response, flowDto);
-////            flowDto.setAction("Username incorrect");
-//            model.addAttribute(flowDto.getQasinoResponse());
-////            model.addAttribute(signupForm);
-//            return HOME_SIGNUP_VIEW_LOCATION;
-//        }
-        // 3 - process
-//        signUpNewVisitorAction.perform(flowDto);
-
         if (result.hasErrors()) {
             return "error";
         }
+        // 3 - process
+        registerAction.perform(qasino);
         // 4 - return new response
-        qasino.getParams().setSuppliedQasinoEvent(QasinoEvent.REGISTER);
-//        signUpNewVisitorAction.perform(flowDto);
         prepareQasino(response, qasino);
         var gson = new Gson();
         log.warn("Qasino gson = {} ", gson.toJson(qasino));
         model.addAttribute(qasino);
-        // 4 - return response
-//        prepareQasinoResponse(response, flowDto);
-//        qasinoResponse = flowDto.getQasinoResponse();
-
-//        model.addAttribute(flowDto.getQasinoResponse());
-
         // see /WEB-INF/i18n/messages.properties and /WEB-INF/views/homeSignedIn.html
         MessageHelper.addSuccessAttribute(ra, "signup.success");
         return "redirect:/";
@@ -244,15 +211,15 @@ public class HomeThymeleafController extends AbstractThymeleafController {
         log.warn("GetMapping: /");
 
         // 1 - map input
-        QasinoFlowDto flowDto = new QasinoFlowDto();
-        if (principal != null) flowDto.setPathVariables("username", principal.getName());
+//        QasinoFlowDto flowDto = new QasinoFlowDto();
+//        if (principal != null) flowDto.setPathVariables("username", principal.getName());
         // 2 - validate input
-        if (!flowDto.isInputValid()) {
-            prepareQasinoResponse(response, flowDto);
+//        if (!flowDto.isInputValid()) {
+//            prepareQasinoResponse(response, flowDto);
 //            flowDto.setAction("Username incorrect");
-            model.addAttribute(flowDto.getQasinoResponse());
-            return principal != null ? HOME_SIGNED_IN_LOCATION : HOME_NOT_SIGNED_IN_LOCATION;
-        }
+//            model.addAttribute(flowDto.getQasinoResponse());
+//            return principal != null ? HOME_SIGNED_IN_LOCATION : HOME_NOT_SIGNED_IN_LOCATION;
+//        }
         // 3 - process
         // 4 - return new response
         Qasino qasino = new Qasino();
@@ -262,8 +229,8 @@ public class HomeThymeleafController extends AbstractThymeleafController {
         log.warn("Qasino gson = {} ", gson.toJson(qasino));
         model.addAttribute(qasino);
         // 4 - return response
-        prepareQasinoResponse(response, flowDto);
-        model.addAttribute(flowDto.getQasinoResponse());
+//        prepareQasinoResponse(response, flowDto);
+//        model.addAttribute(flowDto.getQasinoResponse());
 //        log.warn("QasinoResponse gson = {} ", gson.toJson(flowDto.getQasinoResponse()));
 
         return principal != null ? HOME_SIGNED_IN_LOCATION : HOME_NOT_SIGNED_IN_LOCATION;

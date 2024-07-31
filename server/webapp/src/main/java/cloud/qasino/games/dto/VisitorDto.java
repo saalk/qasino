@@ -32,7 +32,7 @@ public class VisitorDto {
 //    private String created; // ignore
 
     // ref
-    private String rolesList;
+    private List<Role> rolesList;
 
     // derived
 //    private List<Game> initiatedGamesForVisitor;

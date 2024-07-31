@@ -54,8 +54,7 @@ public interface VisitorMapper {
         return true;
     }
     @Named("rolesList")
-    default String roles(Visitor visitor){
-        List<Role> roles = visitor.getRoles().stream().toList();
-        return roles.toString();
+    default List<Role> roles(Visitor visitor){
+        return visitor.getRoles().stream().toList();
     }
 }

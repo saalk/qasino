@@ -47,7 +47,7 @@ public abstract class QasinoSimulator {
 
     public Visitor visitor;
     public MyUserPrincipal principal;
-    public String visitorRoles;
+    public List<Role> visitorRoles;
 
     public VisitorDto visitorDto;
 
@@ -83,7 +83,7 @@ public abstract class QasinoSimulator {
         visitor.setVisitorId(INITIATOR_5);
         visitor.pawnShip(Visitor.pawnShipValue(0));
         principal = new MyUserPrincipal(visitor);
-        visitorRoles = visitor.getRoles().stream().toList().toString();
+        visitorRoles = visitor.getRoles().stream().toList();
 
         // visitor
         visitorDto = VisitorMapper.INSTANCE.toDto(visitor);

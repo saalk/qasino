@@ -93,26 +93,22 @@ public class VisitorAndLeaguesService {
     }
 
     @Transactional
-    public VisitorDto saveNewUser(VisitorDto userDto) {
+    public VisitorDto saveNewUser(Visitor user) {
         final Role basicRole = roleRepository.findByName("ROLE_USER");
-        List<Role> roles = new ArrayList<>();
-        roles.add(basicRole);
-//        userDto.setRolesList(roles);
-//        userDto.setPassword(encoder.encode(userDto.getPassword())); // ignore
-        Visitor visitor = VisitorMapper.INSTANCE.fromDto(userDto);
-        Visitor savedVisitor = visitorRepository.save(visitor);
+        user.setRoles(Collections.singleton(basicRole));
+        user.setPassword(encoder.encode(user.getPassword()));
+        Visitor savedVisitor = visitorRepository.save(user);
         Visitor retrievedVisitor = visitorRepository.getReferenceById(savedVisitor.getVisitorId());
         return VisitorMapper.INSTANCE.toDto(retrievedVisitor);
     }
     @Transactional
-    public VisitorDto saveNewAdmin(VisitorDto adminDto) {
-        final Role adminRole = roleRepository.findByName("ROLE_ADMIN");
+    public VisitorDto saveNewAdmin(Visitor admin) {
         List<Role> roles = new ArrayList<>();
-        roles.add(adminRole);
-//        adminDto.setRolesList(roles);
-//        adminDto.setPassword(encoder.encode(adminDto.getPassword())); // ignore
-        Visitor visitor = VisitorMapper.INSTANCE.fromDto(adminDto);
-        Visitor savedVisitor = visitorRepository.save(visitor);
+        roles.add(roleRepository.findByName("ROLE_USER"));
+        roles.add(roleRepository.findByName("ROLE_ADMIN"));
+        admin.setRoles(roles);
+        admin.setPassword(encoder.encode(admin.getPassword()));
+        Visitor savedVisitor = visitorRepository.save(admin);
         Visitor retrievedVisitor = visitorRepository.getReferenceById(savedVisitor.getVisitorId());
         return VisitorMapper.INSTANCE.toDto(retrievedVisitor);
     }
@@ -172,18 +168,16 @@ public class VisitorAndLeaguesService {
     public void createUserIfNotFound(Visitor search) {
         Visitor user = visitorRepository.findByUsername(search.getUsername());
         if (user == null) {
-            VisitorDto visitorDto = VisitorMapper.INSTANCE.toDto(user);
-            saveNewUser(visitorDto);
+            saveNewUser(search);
+            log.warn("createUserIfNotFound: {}",user);
         }
-        log.warn("createUserIfNotFound: {}",user);
     }
     @Transactional
     public void createAdminIfNotFound(Visitor search) {
         Visitor admin = visitorRepository.findByUsername(search.getUsername());
         if (admin == null) {
-            VisitorDto visitorDto = VisitorMapper.INSTANCE.toDto(admin);
-            saveNewAdmin(visitorDto);
+            saveNewAdmin(search);
+            log.warn("createAdminIfNotFound: {}",admin);
         }
-        log.warn("createAdminIfNotFound: {}",admin);
     }
 }
