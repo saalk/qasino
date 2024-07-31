@@ -16,7 +16,7 @@ class LeagueTest extends QasinoSimulator {
 
         assertThat(league.getName()).isEqualTo("topLeague");
         assertThat(league.getNameSequence()).isEqualTo(1);
-        assertThat(league.isActive()).isEqualTo(true);
+        assertThat(league.isActive()).isEqualTo(false);
         // leagues end by default at the end of the month
         LocalDateTime localDateAndTime = LocalDateTime.now().with(lastDayOfMonth());;
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd-HH:mm-ssSSS-nnnnnnnnn");
