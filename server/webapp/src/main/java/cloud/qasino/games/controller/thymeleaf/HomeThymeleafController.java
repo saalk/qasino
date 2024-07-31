@@ -126,6 +126,7 @@ public class HomeThymeleafController extends AbstractThymeleafController {
         prepareQasino(response, qasino);
         var gson = new Gson();
         log.warn("Qasino gson = {} ", gson.toJson(qasino));
+        model.addAttribute(qasino);
         // 4 - return response
         prepareQasinoResponse(response, flowDto);
         model.addAttribute(flowDto.getQasinoResponse());
@@ -181,6 +182,7 @@ public class HomeThymeleafController extends AbstractThymeleafController {
         prepareQasino(response, qasino);
         var gson = new Gson();
         log.warn("Qasino gson = {} ", gson.toJson(qasino));
+        model.addAttribute(qasino);
         // 4 - return response
         prepareQasinoResponse(response, flowDto);
         model.addAttribute(flowDto.getQasinoResponse());
@@ -235,6 +237,7 @@ public class HomeThymeleafController extends AbstractThymeleafController {
         prepareQasino(response, qasino);
         var gson = new Gson();
         log.warn("Qasino gson = {} ", gson.toJson(qasino));
+        model.addAttribute(qasino);
         // 4 - return response
         prepareQasinoResponse(response, flowDto);
         qasinoResponse = flowDto.getQasinoResponse();
@@ -276,6 +279,7 @@ public class HomeThymeleafController extends AbstractThymeleafController {
         prepareQasino(response, qasino);
         var gson = new Gson();
         log.warn("Qasino gson = {} ", gson.toJson(qasino));
+        model.addAttribute(qasino);
         // 4 - return response
         prepareQasinoResponse(response, flowDto);
         model.addAttribute(flowDto.getQasinoResponse());

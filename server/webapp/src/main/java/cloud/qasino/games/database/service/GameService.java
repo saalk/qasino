@@ -20,6 +20,7 @@ import cloud.qasino.games.exception.MyBusinessException;
 import cloud.qasino.games.pattern.factory.Deck;
 import cloud.qasino.games.pattern.factory.DeckFactory;
 import cloud.qasino.games.pattern.stream.StreamUtil;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.PageRequest;
@@ -30,7 +31,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-
+@Slf4j
 @Service
 @Lazy
 public class GameService {
@@ -55,8 +56,9 @@ public class GameService {
                 return GameMapper.INSTANCE.toDto(foundGame.get(),foundGame.get().getCards());
             }
         }
-        Pageable pageable = PageRequest.of(1, 4);
+        Pageable pageable = PageRequest.of(0, 4);
         List<Game> foundGame = gameRepository.findAllNewGamesForVisitorWithPage(paramsDto.getSuppliedVisitorId(), pageable);
+        log.warn("new found game {}", foundGame);
         if (foundGame.isEmpty()) {
             foundGame = gameRepository.findAllStartedGamesForVisitorWithPage(paramsDto.getSuppliedVisitorId(), pageable);
         }
