@@ -1,31 +1,22 @@
 package cloud.qasino.games.dto.request;
 
-import cloud.qasino.games.database.entity.Card;
-import cloud.qasino.games.database.entity.enums.card.Face;
 import cloud.qasino.games.database.entity.enums.card.Location;
-import cloud.qasino.games.database.entity.enums.card.Position;
-import cloud.qasino.games.database.entity.enums.game.Style;
 import cloud.qasino.games.database.entity.enums.game.Type;
-import cloud.qasino.games.database.entity.enums.game.gamestate.GameStateGroup;
-import cloud.qasino.games.database.entity.enums.move.Move;
 import cloud.qasino.games.database.entity.enums.player.AiLevel;
 import cloud.qasino.games.database.entity.enums.player.Avatar;
 import cloud.qasino.games.database.entity.enums.player.PlayerType;
-import cloud.qasino.games.pattern.statemachine.event.GameEvent;
-import cloud.qasino.games.pattern.statemachine.event.QasinoEvent;
-import cloud.qasino.games.pattern.statemachine.event.PlayEvent;
+import cloud.qasino.games.dto.validation.GameBasic;
+import cloud.qasino.games.dto.validation.LeagueBasic;
+import cloud.qasino.games.dto.validation.PlayerBasic;
+import cloud.qasino.games.dto.validation.QasinoBasic;
+import cloud.qasino.games.dto.validation.VisitorBasic;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import lombok.AccessLevel;
+import jakarta.validation.constraints.Size;
 import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.extern.slf4j.Slf4j;
-
-import java.util.List;
 
 @Data
 public class CreationDto {
@@ -33,46 +24,52 @@ public class CreationDto {
     // @formatter:off
 
     // paging
-    @Max(value = 5, message = "max 5 pages")
+    @Max(value = 5, message = "max 5 pages", groups = QasinoBasic.class)
     private int suppliedPage = 1;
-    @Max(value = 5, message = "max 5 rows")
+    @Max(value = 5, message = "max 5 rows", groups = QasinoBasic.class)
     private int suppliedMaxPerPage = 4;
 
     // visitor
-    @NotEmpty(message = "Username cannot be empty")
+    @NotBlank(message = "Username missing", groups = VisitorBasic.class)
     private String suppliedUsername = "username";
-    @Email(message = "Invalid is email")
-    private String suppliedEmail = "email";
-    @NotEmpty(message = "Password cannot empty")
-    private String suppliedPassword = "password";
-    @NotEmpty(message = "Alias cannot empty")
-    private String suppliedAlias = "alias" ;
+    @Email(message = "Email invalid", groups = VisitorBasic.class)
+    private String suppliedEmail = "email@acme.com";
+    @Size(min = 3, max = 15, message = "Password invalid 3-15 length", groups = VisitorBasic.class)
+    @NotBlank(message = "Password missing", groups = VisitorBasic.class)
+    private String suppliedPassword = "secret";
+    @NotBlank(message = "Alias missing", groups = VisitorBasic.class)
+    private String suppliedAlias = "alias";
 
     // league
-    @NotEmpty(message = "Name for League cannot be empty")
+    @NotBlank(message = "Name for League missing", groups = LeagueBasic.class)
     private String suppliedLeagueName = "league name";
 
     // player
-    @NotEmpty(message = "Player type [eg Bot, Invitee] cannot be empty")
+    @NotBlank(message = "Player type [eg Bot, Invitee] missing", groups = PlayerBasic.class)
     private PlayerType suppliedPlayerType = PlayerType.BOT; // bot, initiator or guest
-    @NotNull(message = "Player avatar [eg Elf, Goblin] cannot be empty")
+    @NotNull(message = "Player avatar [eg Elf, Goblin] missing", groups = PlayerBasic.class)
     private Avatar suppliedAvatar = Avatar.ELF;
-    @NotNull(message = "Player AiLevel [eg Smart, Human] cannot be empty")
+    @NotNull(message = "Player AiLevel [eg Smart, Human] missing", groups = PlayerBasic.class)
     private AiLevel suppliedAiLevel = AiLevel.AVERAGE;
 
     // game
-    @NotNull(message = "Game style [eg MaxRounds, AnteToWin] cannot be empty")
+    @NotNull(message = "Game style [eg MaxRounds, AnteToWin] missing", groups = GameBasic.class)
     private String suppliedStyle = "nrrn22";
-    @NotNull(message = "No Game type choses [eg Highlow, Blackjack]")
+    @NotNull(message = "Choose a type of game [eg Highlow, Blackjack]", groups = GameBasic.class)
     private Type suppliedType = Type.HIGHLOW;
-    @Min(value = 5, message = "min 5 ante")
+    @Min(value = 5, message = "Minimum ante is 5", groups = GameBasic.class)
+    @Min(value = 200, message = "Maximum ante is 200", groups = GameBasic.class)
     private int suppliedAnte = 20;
-    @Max(value = 3, message = "max 3 jokers")
+    @Min(value = 0, message = "No jokers is the minimum", groups = GameBasic.class)
+    @Max(value = 3, message = "3 jokers is the maxinum", groups = GameBasic.class)
     private int suppliedJokers = 3;
 
     // cardMove
+    @NotBlank(message = "card to move missing", groups = QasinoBasic.class)
     private String suppliedRankAndSuitList = "JR";
+    @NotNull(message = "new card location missing", groups = QasinoBasic.class)
     private Location suppliedLocation = Location.HAND;
+    @Max(value = 100, message = "max 100", groups = QasinoBasic.class)
     private int suppliedBet = 20;
 
 }

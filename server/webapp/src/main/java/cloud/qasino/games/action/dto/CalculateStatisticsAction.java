@@ -34,57 +34,53 @@ public class CalculateStatisticsAction extends ActionDto<EventOutput.Result> {
     public EventOutput.Result perform(Qasino qasino) {
 
         // @formatter:off
-        List<Statistic> statistics = new ArrayList<>();
         long initiator = qasino.getParams().getSuppliedVisitorId();
-        statistics.add(new Statistic("Visitors","All",
+        qasino.getStatistics().add(new Statistic("Visitors","All",
                 (int) visitorRepository.count(),
                 1
         ));
-        statistics.add(new Statistic("Leagues","All",
+        qasino.getStatistics().add(new Statistic("Leagues","All",
                 (int) leagueRepository.count(),
                 leagueRepository.countLeaguesForInitiator(String.valueOf(initiator))
         ));
-        statistics.add(new Statistic("Games","State:SETUP",
+        qasino.getStatistics().add(new Statistic("Games","State:SETUP",
                 gameRepository.countByStates(GameStateGroup.listGameStatesStringsForGameStateGroup(GameStateGroup.SETUP)),
                 gameRepository.countByStatesForInitiator(GameStateGroup.listGameStatesStringsForGameStateGroup(GameStateGroup.SETUP),initiator)
                 ));
-        statistics.add(new Statistic("Games","State:PREPARED",
+        qasino.getStatistics().add(new Statistic("Games","State:PREPARED",
                 gameRepository.countByStates(GameStateGroup.listGameStatesStringsForGameStateGroup(GameStateGroup.PREPARED)),
                 gameRepository.countByStatesForInitiator(GameStateGroup.listGameStatesStringsForGameStateGroup(GameStateGroup.PREPARED),initiator)
         ));
-        statistics.add(new Statistic("Games","State:PLAYING",
+        qasino.getStatistics().add(new Statistic("Games","State:PLAYING",
                 gameRepository.countByStates(GameStateGroup.listGameStatesStringsForGameStateGroup(GameStateGroup.PLAYING)),
                 gameRepository.countByStatesForInitiator(GameStateGroup.listGameStatesStringsForGameStateGroup(GameStateGroup.PLAYING),initiator)
                 ));
-        statistics.add(new Statistic("Games","State:FINISHED",
+        qasino.getStatistics().add(new Statistic("Games","State:FINISHED",
                 gameRepository.countByStates(GameStateGroup.listGameStatesStringsForGameStateGroup(GameStateGroup.FINISHED)),
                 gameRepository.countByStatesForInitiator(GameStateGroup.listGameStatesStringsForGameStateGroup(GameStateGroup.FINISHED),initiator)
                 ));
 //      statistics.add(new Statistic("total","Games","All",(int) gameRepository.count()));
-        statistics.add(new Statistic("Players","AiLevel:HUMAN",
+        qasino.getStatistics().add(new Statistic("Players","AiLevel:HUMAN",
                 playerRepository.countByAiLevel("true","HUMAN"),
                 playerRepository.countByAiLevelForInitiator("true","HUMAN",String.valueOf(initiator))
                 ));
-        statistics.add(new Statistic("Players","AiLevel:DUMB",
+        qasino.getStatistics().add(new Statistic("Players","AiLevel:DUMB",
                 playerRepository.countByAiLevel("false","DUMB"),
                 playerRepository.countByAiLevelForInitiator("false","DUMB",String.valueOf(initiator))
                 ));
-        statistics.add(new Statistic("Players","AiLevel:AVERAGE",
+        qasino.getStatistics().add(new Statistic("Players","AiLevel:AVERAGE",
                 playerRepository.countByAiLevel("false","AVERAGE"),
                 playerRepository.countByAiLevelForInitiator("false","AVERAGE",String.valueOf(initiator))
                 ));
-        statistics.add(new Statistic("Players","AiLevel:SMART",
+        qasino.getStatistics().add(new Statistic("Players","AiLevel:SMART",
                 playerRepository.countByAiLevel("false","SMART"),
                 playerRepository.countByAiLevelForInitiator("false","SMART",String.valueOf(initiator))
                 ));
-        statistics.add(new Statistic("Cards","All",
+        qasino.getStatistics().add(new Statistic("Cards","All",
                 (int) cardRepository.count(),
                 cardRepository.countCardsForInitiator(String.valueOf(initiator))
                 ));
-
-//        qasino.setStatistics(statistics); // TODO just uncomment
         return EventOutput.Result.SUCCESS;
     }
-
 }
 

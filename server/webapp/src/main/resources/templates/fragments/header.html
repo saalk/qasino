@@ -41,51 +41,51 @@
                 </a>
 <!--                <ul class="navbar-nav me-auto mb-2 mb-lg-0"-->
                 <ul class="nav navbar-nav navbar-left"
-                    th:if="${qasinoResponse != null && qasinoResponse.navBarItems != null}">
+                    th:if="${qasino != null && qasino.navBarItems != null}">
 
                     <li class="nav-item" th:classappend="${module == '/home' ? 'active' : ''}">
                         <a class="nav-link active" aria-current="page" href="#" th:href="@{/}" th:text="Home"></a>
                     </li>
 
-                    <li class="nav-item" th:if="${qasinoResponse.params.vid} != null">
+                    <li class="nav-item" th:if="${qasino.params.suppliedVisitorId} != null">
                         <a class="nav-link active" th:href="@{/visitor}"
-                           th:text="${qasinoResponse.navBarItems.^[sequence==1].title}">Visitor[]</a>
+                           th:text="${qasino.navBarItems.^[sequence==1].title}">Visitor[]</a>
                     </li>
-                    <li class="nav-item" th:if="${qasinoResponse.params.vid} == null">
+                    <li class="nav-item" th:if="${qasino.params.suppliedVisitorId} == null">
                         <a class="nav-link disable"
-                           th:text="${qasinoResponse.navBarItems.^[sequence==1].title}">Visitor</a>
+                           th:text="${qasino.navBarItems.^[sequence==1].title}">Visitor</a>
                     </li>
 
-                    <li class="nav-item" th:if="${qasinoResponse.params.gid != null && qasinoResponse.params.gid >= 0}">
-                        <a class="nav-link active" th:href="@{/setup/{path}(path=${qasinoResponse.params.gid})}"
-                           th:text="${qasinoResponse.navBarItems.^[sequence==2].title}">Setup[]</a>
+                    <li class="nav-item" th:if="${qasino.params.suppliedGameId != null && qasino.params.suppliedGameId >= 0}">
+                        <a class="nav-link active" th:href="@{/setup/{path}(path=${qasino.params.suppliedGameId})}"
+                           th:text="${qasino.navBarItems.^[sequence==2].title}">Setup[]</a>
                     </li>
-                    <li class="nav-item" th:if="${qasinoResponse.params.gid == null || qasinoResponse.params.gid < 0}">
+                    <li class="nav-item" th:if="${qasino.params.suppliedGameId == null || qasino.params.suppliedGameId < 0}">
                         <a class="nav-link disable"
-                           th:text="${qasinoResponse.navBarItems.^[sequence==2].title}">Setup</a>
+                           th:text="${qasino.navBarItems.^[sequence==2].title}">Setup</a>
                     </li>
 
-                    <li class="nav-item" th:if="${qasinoResponse.params.gid != null && qasinoResponse.params.gid > 0}">
-                        <a class="nav-link active" th:href="@{/play/{path}(path=${qasinoResponse.params.gid})}"
-                           th:text="${qasinoResponse.navBarItems.^[sequence==3].title}">Play[]</a>
+                    <li class="nav-item" th:if="${qasino.params.suppliedGameId != null && qasino.params.suppliedGameId > 0}">
+                        <a class="nav-link active" th:href="@{/play/{path}(path=${qasino.params.suppliedGameId})}"
+                           th:text="${qasino.navBarItems.^[sequence==3].title}">Play[]</a>
                     </li>
-                    <li class="nav-item" th:if="${qasinoResponse.params.gid == null || qasinoResponse.params.gid < 1}">
+                    <li class="nav-item" th:if="${qasino.params.suppliedGameId == null || qasino.params.suppliedGameId < 1}">
                         <a class="nav-link disable"
-                           th:text="${qasinoResponse.navBarItems.^[sequence==3].title}">Play</a>
+                           th:text="${qasino.navBarItems.^[sequence==3].title}">Play</a>
                     </li>
 
                     <li class="nav-item">
                         <a class="nav-link disabled" href="#" th:href="@{invite}" aria-disabled="true"
-                           th:text="${qasinoResponse.navBarItems.^[sequence==4].title}">Invites</a>
+                           th:text="${qasino.navBarItems.^[sequence==4].title}">Invites</a>
                     </li>
 
-                    <li class="nav-item" th:if="${qasinoResponse.params.lid != null && qasinoResponse.params.lid > 0}">
-                        <a class="nav-link active" th:href="@{/league/{path}(path=${qasinoResponse.params.lid})}"
-                           th:text="${qasinoResponse.navBarItems.^[sequence==5].title}">League[]</a>
+                    <li class="nav-item" th:if="${qasino.params.suppliedLeagueId != null && qasino.params.suppliedLeagueId > 0}">
+                        <a class="nav-link active" th:href="@{/league/{path}(path=${qasino.params.suppliedLeagueId})}"
+                           th:text="${qasino.navBarItems.^[sequence==5].title}">League[]</a>
                     </li>
-                    <li class="nav-item" th:if="${qasinoResponse.params.lid == null || qasinoResponse.params.lid < 1}">
+                    <li class="nav-item" th:if="${qasino.params.suppliedLeagueId == null || qasino.params.suppliedLeagueId < 1}">
                         <a class="nav-link disable"
-                           th:text="${qasinoResponse.navBarItems.^[sequence==5].title}">League</a>
+                           th:text="${qasino.navBarItems.^[sequence==5].title}">League</a>
                     </li>
 
                 </ul>

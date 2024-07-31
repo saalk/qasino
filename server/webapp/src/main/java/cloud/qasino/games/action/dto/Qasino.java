@@ -14,10 +14,12 @@ import cloud.qasino.games.response.view.NavigationBarItem;
 import cloud.qasino.games.response.view.enums.EnumOverview;
 import cloud.qasino.games.response.view.statistics.Statistic;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import jakarta.validation.Valid;
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -33,18 +35,18 @@ public class Qasino
 
     private MessageDto message = new MessageDto();
     private ParamsDto params = new ParamsDto();
-//    private CreationDto creation = new CreationDto(); // TODO just uncomment
+    @Valid
+    private CreationDto creation = new CreationDto(); // TODO just uncomment
 
     private VisitorDto visitor;
     private GameDto game;
     private PlayingDto playing;
     private List<ResultDto> results;
-    //    private InvitationsDto invitations;
+//    private InvitationsDto invitations;
     private LeagueDto league;
 
-
     // extra
-//    EnumOverview enumOverview = new EnumOverview(); // TODO just uncomment
-//    List<Statistic> statistics; // TODO just uncomment
+    EnumOverview enumOverview = new EnumOverview(); // TODO just uncomment
+    List<Statistic> statistics = new ArrayList<>(); // TODO just uncomment
 
 }

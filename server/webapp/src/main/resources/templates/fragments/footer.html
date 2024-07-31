@@ -9,8 +9,8 @@
 <div th:fragment="footer">
     <div class="specific-footer">
 
-        <div th:text="${qasinoResponse != null && qasinoResponse.action != null} ?
-            '> ' + ${qasinoResponse.action} :
+        <div th:text="${qasino != null && qasino.action != null} ?
+            '> ' + ${qasino.action} :
             'No messages from the Qasino...'">
         </div>
         &copy; 2016-<span th:text="${#temporals.format(#temporals.createNow(), 'yyyy')}">2017</span>
