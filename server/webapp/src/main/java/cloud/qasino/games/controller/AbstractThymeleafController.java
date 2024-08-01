@@ -7,9 +7,9 @@ import cloud.qasino.games.action.LoadEntitiesToDtoAction;
 import cloud.qasino.games.action.MapQasinoGameTableFromDtoAction;
 import cloud.qasino.games.action.MapQasinoResponseFromDtoAction;
 import cloud.qasino.games.action.SetStatusIndicatorsBaseOnRetrievedDataAction;
+import cloud.qasino.games.action.dto.CalculateStatisticsAction;
 import cloud.qasino.games.action.dto.DetermineEventsAction;
 import cloud.qasino.games.action.dto.FindAllDtosForUsernameAction;
-import cloud.qasino.games.action.dto.CalculateStatisticsAction;
 import cloud.qasino.games.action.dto.MapQasinoFromDtosAction;
 import cloud.qasino.games.action.dto.Qasino;
 import cloud.qasino.games.database.security.Visitor;
@@ -132,16 +132,16 @@ public class AbstractThymeleafController {
         }
 //        if (flowDto.getHttpStatus() > 299) {
 
-            // also add error to header
+        // also add error to header
 //            addKeyValueToHeader(flowDto.getErrorKey(), flowDto.getErrorValue());
 //            addKeyValueToHeader("Error", flowDto.getErrorMessage());
-            if (!flowDto.getErrorReason().isEmpty()) {
-                // also add error to header
-                response.setHeader("Q-Error-Key", flowDto.getErrorKey());
-                response.setHeader("Q-Error-Value", flowDto.getErrorValue());
-                response.setHeader("Q-Error-Reason", flowDto.getErrorReason());
-                response.setHeader("Q-Error-Message-Id", flowDto.getErrorMessage());
-            }
+        if (!flowDto.getErrorReason().isEmpty()) {
+            // also add error to header
+            response.setHeader("Q-Error-Key", flowDto.getErrorKey());
+            response.setHeader("Q-Error-Value", flowDto.getErrorValue());
+            response.setHeader("Q-Error-Reason", flowDto.getErrorReason());
+            response.setHeader("Q-Error-Message-Id", flowDto.getErrorMessage());
+        }
 
 //            MultiValueMap<String, String> headers = flowDto.getHeaders();
 //            headers.forEach((name, values) -> {
