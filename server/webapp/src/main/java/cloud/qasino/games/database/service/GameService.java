@@ -58,7 +58,6 @@ public class GameService {
         }
         Pageable pageable = PageRequest.of(0, 4);
         List<Game> foundGame = gameRepository.findAllNewGamesForVisitorWithPage(paramsDto.getSuppliedVisitorId(), pageable);
-        log.warn("new found game {}", foundGame);
         if (foundGame.isEmpty()) {
             foundGame = gameRepository.findAllStartedGamesForVisitorWithPage(paramsDto.getSuppliedVisitorId(), pageable);
         }
