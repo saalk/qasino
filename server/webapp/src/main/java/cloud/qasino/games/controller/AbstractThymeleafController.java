@@ -15,17 +15,19 @@ import cloud.qasino.games.action.dto.Qasino;
 import cloud.qasino.games.database.security.Visitor;
 import cloud.qasino.games.database.security.VisitorRepository;
 import cloud.qasino.games.dto.QasinoFlowDto;
-import cloud.qasino.games.response.QasinoResponse;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.gson.Gson;
 import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
 import java.security.Principal;
 
+@Slf4j
 public class AbstractThymeleafController {
 
     @Resource
@@ -53,12 +55,17 @@ public class AbstractThymeleafController {
     @Autowired CalculateStatisticsAction calculateStatistics;
     // @formatter:on
 
-    public String prettyPrintJson(QasinoResponse qasinoResponse) {
+    public void prettyPrintJson(Qasino qasino) {
         ObjectMapper objectMapper = new ObjectMapper();
         try {
-            return objectMapper.writeValueAsString(qasinoResponse);
+            log.warn("Qasino pretty print = {} ", objectMapper.writeValueAsString(qasino));
         } catch (JsonProcessingException e) {
-            throw new RuntimeException(e);
+            try {
+                var gson = new Gson();
+                log.warn("Qasino gson (pretty print failed) = {} ", gson.toJson(qasino));
+            } catch (StackOverflowError s){
+                log.warn("Qasino gson and pretty print failed");
+            }
         }
     }
 
@@ -86,6 +93,7 @@ public class AbstractThymeleafController {
         determineEvents.perform(qasino);
         calculateStatistics.perform(qasino);
         mapQasino.perform(qasino);
+        prettyPrintJson(qasino);
 
     }
 

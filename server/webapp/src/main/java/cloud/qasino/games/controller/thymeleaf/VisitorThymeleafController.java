@@ -9,10 +9,9 @@ import cloud.qasino.games.action.dto.Qasino;
 import cloud.qasino.games.controller.AbstractThymeleafController;
 import cloud.qasino.games.database.security.VisitorRepository;
 import cloud.qasino.games.dto.QasinoFlowDto;
+import cloud.qasino.games.pattern.statemachine.event.EventOutput;
 import cloud.qasino.games.pattern.statemachine.event.QasinoEvent;
 import cloud.qasino.games.response.QasinoResponse;
-import cloud.qasino.games.pattern.statemachine.event.EventOutput;
-import com.google.gson.Gson;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
@@ -71,7 +70,7 @@ public class VisitorThymeleafController extends AbstractThymeleafController {
     @Autowired
     public VisitorThymeleafController(
             VisitorRepository visitorRepository
-            ) {
+    ) {
 
         this.visitorRepository = visitorRepository;
     }
@@ -101,8 +100,6 @@ public class VisitorThymeleafController extends AbstractThymeleafController {
         Qasino qasino = new Qasino();
         qasino.getParams().setSuppliedVisitorUsername(principal.getName());
         prepareQasino(response, qasino);
-        var gson = new Gson();
-        log.warn("Qasino gson = {} ", gson.toJson(qasino));
         // 4 - return response
         prepareQasinoResponse(response, flowDto);
         model.addAttribute(flowDto.getQasinoResponse());
@@ -121,7 +118,7 @@ public class VisitorThymeleafController extends AbstractThymeleafController {
             HttpServletResponse response
     ) {
         log.warn("PostMapping: visitor");
-        log.warn("QasinoResponse {} !!", qasinoResponse );
+        log.warn("QasinoResponse {} !!", qasinoResponse);
 
 //        log.warn("post in qasinoResponse: {}", qasinoResponse);
 
@@ -150,8 +147,6 @@ public class VisitorThymeleafController extends AbstractThymeleafController {
         qasino.getParams().setSuppliedQasinoEvent(QasinoEvent.UPDATE_VISITOR);
         qasino.getParams().setSuppliedVisitorUsername(principal.getName());
         prepareQasino(response, qasino);
-        var gson = new Gson();
-        log.warn("Qasino gson = {} ", gson.toJson(qasino));
         // 4 - return response
         prepareQasinoResponse(response, flowDto);
         model.addAttribute(flowDto.getQasinoResponse());
@@ -188,8 +183,6 @@ public class VisitorThymeleafController extends AbstractThymeleafController {
         qasino.getParams().setSuppliedVisitorUsername(principal.getName());
 
         prepareQasino(response, qasino);
-        var gson = new Gson();
-        log.warn("Qasino gson = {} ", gson.toJson(qasino));
         // 4 - return response
         prepareQasinoResponse(response, flowDto);
         model.addAttribute(flowDto.getQasinoResponse());
@@ -225,8 +218,6 @@ public class VisitorThymeleafController extends AbstractThymeleafController {
         qasino.getParams().setSuppliedQasinoEvent(QasinoEvent.REPAY);
         qasino.getParams().setSuppliedVisitorUsername(principal.getName());
         prepareQasino(response, qasino);
-        var gson = new Gson();
-        log.warn("Qasino gson = {} ", gson.toJson(qasino));
         // 4 - return response
         prepareQasinoResponse(response, flowDto);
         model.addAttribute(flowDto.getQasinoResponse());
@@ -267,8 +258,6 @@ public class VisitorThymeleafController extends AbstractThymeleafController {
         qasino.getParams().setSuppliedQasinoEvent(QasinoEvent.DELETE_VISITOR);
         qasino.getParams().setSuppliedVisitorUsername(principal.getName());
         prepareQasino(response, qasino);
-        var gson = new Gson();
-        log.warn("Qasino gson = {} ", gson.toJson(qasino));
         // 4 - return response
         prepareQasinoResponse(response, flowDto);
         model.addAttribute(flowDto.getQasinoResponse());

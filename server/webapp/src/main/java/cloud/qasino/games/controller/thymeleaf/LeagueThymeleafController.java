@@ -12,7 +12,6 @@ import cloud.qasino.games.pattern.statemachine.event.PlayEvent;
 import cloud.qasino.games.pattern.statemachine.event.QasinoEvent;
 import cloud.qasino.games.response.QasinoResponse;
 import cloud.qasino.games.pattern.statemachine.event.EventOutput;
-import com.google.gson.Gson;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -90,8 +89,6 @@ public class LeagueThymeleafController extends AbstractThymeleafController {
         qasino.getParams().setSuppliedVisitorUsername(principal.getName());
         qasino.getParams().setSuppliedLeagueId(Long.parseLong(id));
         prepareQasino(response, qasino);
-        var gson = new Gson();
-        log.warn("Qasino gson = {} ", gson.toJson(qasino));
         // 4 - return response
         prepareQasinoResponse(response, flowDto);
         model.addAttribute(flowDto.getQasinoResponse());
@@ -148,8 +145,6 @@ public class LeagueThymeleafController extends AbstractThymeleafController {
         qasino.getParams().setSuppliedQasinoEvent(QasinoEvent.CREATE_LEAGUE);
         qasino.getParams().setSuppliedVisitorUsername(principal.getName());
         prepareQasino(response, qasino);
-        var gson = new Gson();
-        log.warn("Qasino gson = {} ", gson.toJson(qasino));
         // 4 - return response
         prepareQasinoResponse(response, flowDto);
         model.addAttribute(flowDto.getQasinoResponse());
@@ -202,8 +197,6 @@ public class LeagueThymeleafController extends AbstractThymeleafController {
         qasino.getParams().setSuppliedVisitorUsername(principal.getName());
         qasino.getParams().setSuppliedLeagueId(Long.parseLong(id));
         prepareQasino(response, qasino);
-        var gson = new Gson();
-        log.warn("Qasino gson = {} ", gson.toJson(qasino));
         // 4 - return response
         prepareQasinoResponse(response, flowDto);
         model.addAttribute(flowDto.getQasinoResponse());

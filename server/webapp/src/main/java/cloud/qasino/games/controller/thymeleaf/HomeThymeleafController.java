@@ -16,7 +16,6 @@ import cloud.qasino.games.pattern.statemachine.event.QasinoEvent;
 import cloud.qasino.games.web.AjaxUtils;
 import cloud.qasino.games.web.MessageHelper;
 import com.google.common.base.Throwables;
-import com.google.gson.Gson;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
@@ -71,7 +70,7 @@ public class HomeThymeleafController extends AbstractThymeleafController {
     private static final String HOME_NOT_SIGNED_IN_LOCATION = "home/homeNotSignedIn";
     private static final String ERROR_GENERAL_LOCATION = "error/general";
 
-//    EventOutput.Result result;
+    EventOutput.Result result;
 
     // formatter:off
     @Autowired private RegisterVisitorAction registerAction;
@@ -87,11 +86,8 @@ public class HomeThymeleafController extends AbstractThymeleafController {
 
     @Autowired
     public HomeThymeleafController(
-            AuthenticationManager authenticationManager,
-            SignUpNewVisitorAction signUpNewVisitorAction
-    ) {
+            AuthenticationManager authenticationManager) {
         this.authenticationManager = authenticationManager;
-        this.registerAction = registerAction;
     }
 
 //    @RequestMapping("favicon.ico")
@@ -115,8 +111,6 @@ public class HomeThymeleafController extends AbstractThymeleafController {
         // 3 - process
         // 4 - return new response
         prepareQasino(response, qasino);
-        var gson = new Gson();
-        log.warn("Qasino gson = {} ", gson.toJson(qasino));
         model.addAttribute(qasino);
 
         return HOME_SIGNIN_VIEW_LOCATION;
@@ -161,8 +155,6 @@ public class HomeThymeleafController extends AbstractThymeleafController {
         // 3 - process
         // 4 - return new response
         prepareQasino(response, qasino);
-        var gson = new Gson();
-        log.warn("Qasino gson = {} ", gson.toJson(qasino));
         model.addAttribute(qasino);
 
         if (AjaxUtils.isAjaxRequest(requestedWith)) {
@@ -194,8 +186,6 @@ public class HomeThymeleafController extends AbstractThymeleafController {
         registerAction.perform(qasino);
         // 4 - return new response
         prepareQasino(response, qasino);
-        var gson = new Gson();
-        log.warn("Qasino gson = {} ", gson.toJson(qasino));
         model.addAttribute(qasino);
         // see /WEB-INF/i18n/messages.properties and /WEB-INF/views/homeSignedIn.html
         MessageHelper.addSuccessAttribute(ra, "signup.success");
@@ -211,27 +201,24 @@ public class HomeThymeleafController extends AbstractThymeleafController {
         log.warn("GetMapping: /");
 
         // 1 - map input
-//        QasinoFlowDto flowDto = new QasinoFlowDto();
-//        if (principal != null) flowDto.setPathVariables("username", principal.getName());
+        QasinoFlowDto flowDto = new QasinoFlowDto();
+        if (principal != null) flowDto.setPathVariables("username", principal.getName());
         // 2 - validate input
-//        if (!flowDto.isInputValid()) {
-//            prepareQasinoResponse(response, flowDto);
-//            flowDto.setAction("Username incorrect");
-//            model.addAttribute(flowDto.getQasinoResponse());
-//            return principal != null ? HOME_SIGNED_IN_LOCATION : HOME_NOT_SIGNED_IN_LOCATION;
-//        }
+        if (!flowDto.isInputValid()) {
+            prepareQasinoResponse(response, flowDto);
+            flowDto.setAction("Username incorrect");
+            model.addAttribute(flowDto.getQasinoResponse());
+            return principal != null ? HOME_SIGNED_IN_LOCATION : HOME_NOT_SIGNED_IN_LOCATION;
+        }
         // 3 - process
         // 4 - return new response
         Qasino qasino = new Qasino();
         qasino.getParams().setSuppliedVisitorUsername(principal == null ? "":principal.getName());
         prepareQasino(response, qasino);
-        var gson = new Gson();
-        log.warn("Qasino gson = {} ", gson.toJson(qasino));
         model.addAttribute(qasino);
         // 4 - return response
-//        prepareQasinoResponse(response, flowDto);
-//        model.addAttribute(flowDto.getQasinoResponse());
-//        log.warn("QasinoResponse gson = {} ", gson.toJson(flowDto.getQasinoResponse()));
+        prepareQasinoResponse(response, flowDto);
+        model.addAttribute(flowDto.getQasinoResponse());
 
         return principal != null ? HOME_SIGNED_IN_LOCATION : HOME_NOT_SIGNED_IN_LOCATION;
     }

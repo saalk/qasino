@@ -19,7 +19,6 @@ import cloud.qasino.games.exception.MyBusinessException;
 import cloud.qasino.games.pattern.statemachine.event.EventOutput;
 import cloud.qasino.games.pattern.statemachine.event.GameEvent;
 import cloud.qasino.games.response.QasinoResponse;
-import com.google.gson.Gson;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
@@ -116,8 +115,6 @@ public class GameThymeleafController extends AbstractThymeleafController {
         qasino.getParams().setSuppliedVisitorUsername(principal.getName());
         qasino.getParams().setSuppliedGameId(Long.parseLong(id));
         prepareQasino(response, qasino);
-        var gson = new Gson();
-        log.warn("Qasino gson = {} ", gson.toJson(qasino));
         // 4 - return response
         prepareQasinoResponse(response, flowDto);
         model.addAttribute(flowDto.getQasinoResponse());
@@ -156,12 +153,9 @@ public class GameThymeleafController extends AbstractThymeleafController {
         qasino.getParams().setSuppliedVisitorUsername(principal.getName());
         qasino.getParams().setSuppliedGameId(Long.parseLong(id));
         prepareQasino(response, qasino);
-        var gson = new Gson();
-        log.warn("Qasino gson = {} ", gson.toJson(qasino));
         // 4 - return response
         prepareQasinoResponse(response, flowDto);
         model.addAttribute(flowDto.getQasinoResponse());
-//        log.warn("QasinoResponse = {} ", gson.toJson(flowDto.getQasinoResponse()));
 
         return PLAY_VIEW_LOCATION;
     }
@@ -233,8 +227,6 @@ public class GameThymeleafController extends AbstractThymeleafController {
         qasino.getParams().setSuppliedVisitorUsername(principal.getName());
         qasino.getParams().setSuppliedGameId(Long.parseLong(id));
         prepareQasino(response, qasino);
-        var gson = new Gson();
-        log.warn("Qasino gson = {} ", gson.toJson(qasino));
         // 4 - return response
         prepareQasinoResponse(response, flowDto);
         model.addAttribute(flowDto.getQasinoResponse());
@@ -305,8 +297,6 @@ public class GameThymeleafController extends AbstractThymeleafController {
         qasino.getParams().setSuppliedVisitorUsername(principal.getName());
         qasino.getParams().setSuppliedGameId(Long.parseLong(id));
         prepareQasino(response, qasino);
-        var gson = new Gson();
-        log.warn("Qasino gson = {} ", gson.toJson(qasino));
         // 4 - return response
         prepareQasinoResponse(response, flowDto);
         model.addAttribute(flowDto.getQasinoResponse());
@@ -376,8 +366,6 @@ public class GameThymeleafController extends AbstractThymeleafController {
         qasino.getParams().setSuppliedVisitorUsername(principal.getName());
         qasino.getParams().setSuppliedGameId(Long.parseLong(id));
         prepareQasino(response, qasino);
-        var gson = new Gson();
-        log.warn("Qasino gson = {} ", gson.toJson(qasino));
         // 4 - return response
         prepareQasinoResponse(response, flowDto);
         model.addAttribute(flowDto.getQasinoResponse());
@@ -425,8 +413,6 @@ public class GameThymeleafController extends AbstractThymeleafController {
         qasino.getParams().setSuppliedVisitorUsername(principal.getName());
         qasino.getParams().setSuppliedGameId(Long.parseLong(id));
         prepareQasino(response, qasino);
-        var gson = new Gson();
-        log.warn("Qasino gson = {} ", gson.toJson(qasino));
         // 4 - return response
         prepareQasinoResponse(response, flowDto);
         model.addAttribute(flowDto.getQasinoResponse());
@@ -481,8 +467,6 @@ public class GameThymeleafController extends AbstractThymeleafController {
         qasino.getParams().setSuppliedVisitorUsername(principal.getName());
         qasino.getParams().setSuppliedGameId(Long.parseLong(id));
         prepareQasino(response, qasino);
-        var gson = new Gson();
-        log.warn("Qasino gson = {} ", gson.toJson(qasino));
         // 4 - return response
         prepareQasinoResponse(response, flowDto);
         model.addAttribute(flowDto.getQasinoResponse());

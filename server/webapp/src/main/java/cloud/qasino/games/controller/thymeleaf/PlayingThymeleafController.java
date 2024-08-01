@@ -28,7 +28,6 @@ import cloud.qasino.games.pattern.statemachine.event.EventOutput;
 import cloud.qasino.games.pattern.statemachine.event.GameEvent;
 import cloud.qasino.games.pattern.statemachine.event.PlayEvent;
 import cloud.qasino.games.response.QasinoResponse;
-import com.google.gson.Gson;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -145,12 +144,9 @@ public class PlayingThymeleafController extends AbstractThymeleafController {
         qasino.getParams().setSuppliedVisitorUsername(principal.getName());
         qasino.getParams().setSuppliedGameId(Long.parseLong(id));
         prepareQasino(response, qasino);
-        var gson = new Gson();
-        log.warn("Qasino gson = {} ", gson.toJson(qasino));
         // 4 - return response
         prepareQasinoResponse(response, flowDto);
         model.addAttribute(flowDto.getQasinoResponse());
-//        log.warn("QasinoResponse gson = {} ", gson.toJson(flowDto.getQasinoResponse()));
 
         return "redirect:/setup/" + flowDto.getSuppliedGameId();
     }
@@ -227,12 +223,9 @@ public class PlayingThymeleafController extends AbstractThymeleafController {
         qasino.getParams().setSuppliedVisitorUsername(principal.getName());
         qasino.getParams().setSuppliedGameId(Long.parseLong(id));
         prepareQasino(response, qasino);
-        var gson = new Gson();
-        log.warn("Qasino gson = {} ", gson.toJson(qasino));
         // 4 - return response
         prepareQasinoResponse(response, flowDto);
         model.addAttribute(flowDto.getQasinoResponse());
-//        log.warn("QasinoResponse = {} ", gson.toJson(flowDto.getQasinoResponse()));
 
         return "redirect:/play/" + flowDto.getSuppliedGameId();
     }
@@ -282,8 +275,6 @@ public class PlayingThymeleafController extends AbstractThymeleafController {
         qasino.getParams().setSuppliedVisitorUsername(principal.getName());
         qasino.getParams().setSuppliedGameId(Long.parseLong(id));
         prepareQasino(response, qasino);
-        var gson = new Gson();
-        log.warn("Qasino gson = {} ", gson.toJson(qasino));
         // 4 - return response
         prepareQasinoResponse(response, flowDto);
         model.addAttribute(flowDto.getQasinoResponse());
