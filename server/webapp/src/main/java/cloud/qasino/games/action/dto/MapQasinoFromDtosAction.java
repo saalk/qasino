@@ -1,11 +1,7 @@
 package cloud.qasino.games.action.dto;
 
-import cloud.qasino.games.database.entity.Game;
-import cloud.qasino.games.database.entity.League;
 import cloud.qasino.games.database.entity.enums.game.GameState;
 import cloud.qasino.games.database.entity.enums.player.PlayerType;
-import cloud.qasino.games.dto.mapper.GameMapper;
-import cloud.qasino.games.dto.mapper.LeagueMapper;
 import cloud.qasino.games.pattern.statemachine.event.EventOutput;
 import cloud.qasino.games.response.view.NavigationBarItem;
 import lombok.extern.slf4j.Slf4j;
@@ -21,8 +17,8 @@ public class MapQasinoFromDtosAction extends ActionDto<EventOutput.Result> {
     @Override
     public EventOutput.Result perform(Qasino qasino) {
 
-        qasino.setActionNeeded(false);
-        qasino.setAction("No suggestions");
+        qasino.getMessage().setActionNeeded(false);
+        qasino.getMessage().setAction("No suggestions");
 
         List<NavigationBarItem> navigationBarItems = new ArrayList<>();
 
@@ -36,12 +32,12 @@ public class MapQasinoFromDtosAction extends ActionDto<EventOutput.Result> {
             navigationBarItem.setTitle("Visitor[" + qasino.getVisitor().getVisitorId() + "]");
             navigationBarItem.setStat("balance [" + qasino.getVisitor().getBalance() + "]");
             if (qasino.getVisitor().getBalance() == 0) {
-                qasino.setActionNeeded(true);
-                qasino.setAction("Pawn your ship for fiches");
+                qasino.getMessage().setActionNeeded(true);
+                qasino.getMessage().setAction("Pawn your ship for fiches");
             }
         } else {
-            qasino.setActionNeeded(true);
-            qasino.setAction("Logon visitor!");
+            qasino.getMessage().setActionNeeded(true);
+            qasino.getMessage().setAction("Logon visitor!");
         }
         navigationBarItems.add(navigationBarItem);
 
@@ -52,11 +48,11 @@ public class MapQasinoFromDtosAction extends ActionDto<EventOutput.Result> {
         navigationBarItem.setStat("[0/0] bots/humans");
 
         if (qasino.getGame() != null) {
-            qasino.setActionNeeded(false);
+            qasino.getMessage().setActionNeeded(false);
             switch (qasino.getGame().getState().getGroup()) {
                 case SETUP, PREPARED -> {
-                    qasino.setActionNeeded(true);
-                    qasino.setAction(qasino.getGame().getState().getNextAction());
+                    qasino.getMessage().setActionNeeded(true);
+                    qasino.getMessage().setAction(qasino.getGame().getState().getNextAction());
                     navigationBarItem.setTitle("Setup[" +
                             Integer.toHexString((int) qasino.getGame().getGameId()) + "]");
                     long bots = 0;
@@ -69,9 +65,9 @@ public class MapQasinoFromDtosAction extends ActionDto<EventOutput.Result> {
                 }
             }
         } else {
-            if (!qasino.isActionNeeded()) {
-                qasino.setActionNeeded(true);
-                qasino.setAction("Start a new game");
+            if (!qasino.getMessage().isActionNeeded()) {
+                qasino.getMessage().setActionNeeded(true);
+                qasino.getMessage().setAction("Start a new game");
             }
         }
         navigationBarItems.add(navigationBarItem);
@@ -85,8 +81,8 @@ public class MapQasinoFromDtosAction extends ActionDto<EventOutput.Result> {
         if (qasino.getGame() != null) {
             switch (qasino.getGame().getState().getGroup()) {
                 case PLAYING, FINISHED -> {
-                    qasino.setActionNeeded(true);
-                    qasino.setAction(qasino.getGame().getState().getNextAction());
+                    qasino.getMessage().setActionNeeded(true);
+                    qasino.getMessage().setAction(qasino.getGame().getState().getNextAction());
                     navigationBarItem.setTitle("Play[" +
                             Integer.toHexString((int) qasino.getGame().getGameId()) + "]");
                     if (qasino.getPlaying() != null) { // games is still being validated
@@ -99,9 +95,9 @@ public class MapQasinoFromDtosAction extends ActionDto<EventOutput.Result> {
                 }
             }
         } else {
-            if (!qasino.isActionNeeded()) {
-                qasino.setActionNeeded(true);
-                qasino.setAction("Play a game");
+            if (!qasino.getMessage().isActionNeeded()) {
+                qasino.getMessage().setActionNeeded(true);
+                qasino.getMessage().setAction("Play a game");
             }
         }
         navigationBarItems.add(navigationBarItem);
@@ -109,11 +105,11 @@ public class MapQasinoFromDtosAction extends ActionDto<EventOutput.Result> {
         // 4: Nav bar invitations
         navigationBarItem = new NavigationBarItem();
         navigationBarItem.setSequence(4);
-        navigationBarItem.setTitle("Invite");
-        navigationBarItem.setStat("[0/0] total/pending");
+        navigationBarItem.setTitle("Invites");
+        navigationBarItem.setStat("[0/0] game/others");
         if (qasino.getGame() != null && qasino.getGame().getState().equals(GameState.PENDING_INVITATIONS)) {
-            qasino.setActionNeeded(true);
-            qasino.setAction(qasino.getGame().getState().getNextAction());
+            qasino.getMessage().setActionNeeded(true);
+            qasino.getMessage().setAction(qasino.getGame().getState().getNextAction());
             navigationBarItem.setTitle("Invites[" +
                     Integer.toHexString((int) qasino.getGame().getGameId()) + "]");
             long invitee = 0;
@@ -124,7 +120,7 @@ public class MapQasinoFromDtosAction extends ActionDto<EventOutput.Result> {
                 invited = qasino.getGame().getPlayers().stream().filter(c -> c.getPlayerType() == PlayerType.INVITED).count();
                 rejected = qasino.getGame().getPlayers().stream().filter(c -> c.getPlayerType() == PlayerType.REJECTED).count();
             }
-            navigationBarItem.setStat("[" + invitee + invited + rejected+ "/" + invited + "] total/pending");
+            navigationBarItem.setStat("[" + invitee + invited + rejected + "/ 0] game/others");
         }
         navigationBarItems.add(navigationBarItem);
 
@@ -135,9 +131,9 @@ public class MapQasinoFromDtosAction extends ActionDto<EventOutput.Result> {
         navigationBarItem.setStat("[0] games");
         navigationBarItem.setVisible(false);
         if (qasino.getLeague() != null) {
-            if (!qasino.isActionNeeded()) {
-                qasino.setActionNeeded(true);
-                if (qasino.getAction().isEmpty()) qasino.setAction("Manage your leagues");
+            if (!qasino.getMessage().isActionNeeded()) {
+                qasino.getMessage().setActionNeeded(true);
+                if (qasino.getMessage().getAction().isEmpty()) qasino.getMessage().setAction("Manage your leagues");
             }
             navigationBarItem.setTitle("League[" + Integer.toHexString((int) qasino.getLeague().getLeagueId()) + "]");
             navigationBarItem.setStat("[" + qasino.getLeague().getGamesForLeague().size() + "] games");

@@ -11,10 +11,12 @@ import cloud.qasino.games.database.repository.CardRepository;
 import cloud.qasino.games.database.repository.GameRepository;
 import cloud.qasino.games.database.repository.PlayerRepository;
 import cloud.qasino.games.dto.GameDto;
+import cloud.qasino.games.dto.GameShortDto;
 import cloud.qasino.games.dto.PlayerDto;
 import cloud.qasino.games.dto.PlayingDto;
 import cloud.qasino.games.dto.VisitorDto;
 import cloud.qasino.games.dto.mapper.GameMapper;
+import cloud.qasino.games.dto.mapper.GameShortMapper;
 import cloud.qasino.games.dto.request.ParamsDto;
 import cloud.qasino.games.exception.MyBusinessException;
 import cloud.qasino.games.pattern.factory.Deck;
@@ -69,6 +71,15 @@ public class GameService {
         // BR 2
         return GameMapper.INSTANCE.toDto(foundGame.get(0),foundGame.get(0).getCards());
 
+    }
+    public List<GameShortDto> findInvitedGamesForVisitorId(ParamsDto paramsDto){
+        if (paramsDto.getSuppliedVisitorId() > 0) {
+            Pageable pageable = PageRequest.of(0, 4);
+            List<Game> foundGames = gameRepository.findAllNewGamesForVisitorWithPage(paramsDto.getSuppliedVisitorId(), pageable);
+            if (foundGames.isEmpty()) return null;
+            return GameShortMapper.INSTANCE.toDtoList(foundGames, null);
+        }
+        return new ArrayList<>();
     }
     public GameDto setupNewGameWithPlayerInitiator(GameDto gameDto, VisitorDto visitorDto) {
         Game game = GameMapper.INSTANCE.fromDto(gameDto);

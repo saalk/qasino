@@ -58,7 +58,29 @@ public class AbstractThymeleafController {
     public void prettyPrintJson(Qasino qasino) {
         ObjectMapper objectMapper = new ObjectMapper();
         try {
-            log.warn("Qasino pretty print = {} ", objectMapper.writeValueAsString(qasino));
+            log.warn("Qasino.getNavBarItems pretty print = {} ", objectMapper.writeValueAsString(qasino.getNavBarItems()));
+            log.warn("----------------------------------------");
+            log.warn("Qasino.getMessage pretty print = {} ", objectMapper.writeValueAsString(qasino.getMessage()));
+            log.warn("----------------------------------------");
+            log.warn("Qasino.getParams pretty print = {} ", objectMapper.writeValueAsString(qasino.getParams()));
+            log.warn("----------------------------------------");
+            log.warn("Qasino.getCreation print = {} ", objectMapper.writeValueAsString(qasino.getCreation()));
+            log.warn("----------------------------------------");
+            log.warn("Qasino.getVisitor pretty print = {} ", objectMapper.writeValueAsString(qasino.getVisitor()));
+            log.warn("----------------------------------------");
+            log.warn("Qasino.getGame pretty print = {} ", objectMapper.writeValueAsString(qasino.getGame()));
+            log.warn("----------------------------------------");
+            log.warn("Qasino.getPlaying pretty print = {} ", objectMapper.writeValueAsString(qasino.getPlaying()));
+            log.warn("----------------------------------------");
+            log.warn("Qasino.getResults pretty print = {} ", objectMapper.writeValueAsString(qasino.getResults()));
+            log.warn("----------------------------------------");
+            log.warn("Qasino.getInvitations pretty print = {} ", objectMapper.writeValueAsString(qasino.getInvitations()));
+            log.warn("----------------------------------------");
+            log.warn("Qasino.getLeague pretty print = {} ", objectMapper.writeValueAsString(qasino.getLeague()));
+//            log.warn("----------------------------------------");
+//            log.warn("Qasino.getEnumOverview pretty print = {} ", objectMapper.writeValueAsString(qasino.getEnumOverview()));
+//            log.warn("----------------------------------------");
+//            log.warn("Qasino.getStatistics pretty print = {} ", objectMapper.writeValueAsString(qasino.getStatistics()));
         } catch (JsonProcessingException e) {
             try {
                 var gson = new Gson();

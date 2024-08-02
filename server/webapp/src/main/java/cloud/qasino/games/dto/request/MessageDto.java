@@ -11,6 +11,7 @@ import cloud.qasino.games.database.entity.enums.move.Move;
 import cloud.qasino.games.database.entity.enums.player.AiLevel;
 import cloud.qasino.games.database.entity.enums.player.Avatar;
 import cloud.qasino.games.database.entity.enums.player.PlayerType;
+import cloud.qasino.games.pattern.singleton.OnlineVisitorsPerDay;
 import cloud.qasino.games.pattern.statemachine.event.GameEvent;
 import cloud.qasino.games.pattern.statemachine.event.QasinoEvent;
 import cloud.qasino.games.pattern.statemachine.event.PlayEvent;
@@ -28,9 +29,10 @@ import java.util.List;
 public class MessageDto {
 
     // FUNCTIONAL
-    @JsonProperty("Message")
-    private String action = "Empty";
-    @JsonProperty("ShowMessage")
+    private String action;
+    public void setAction(String action) {
+        this.action = "today's visitor count = " + OnlineVisitorsPerDay.getInstance().getOnlineVisitors() + " | " + action;
+    }
     private boolean actionNeeded = false;
 
 

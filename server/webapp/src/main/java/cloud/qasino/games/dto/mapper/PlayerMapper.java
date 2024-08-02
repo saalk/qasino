@@ -6,6 +6,7 @@ import cloud.qasino.games.database.entity.Player;
 import cloud.qasino.games.database.entity.Playing;
 import cloud.qasino.games.database.entity.enums.card.Location;
 import cloud.qasino.games.dto.PlayerDto;
+import cloud.qasino.games.dto.VisitorDto;
 import org.mapstruct.Context;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -23,6 +24,7 @@ public interface PlayerMapper {
     PlayerMapper INSTANCE = Mappers.getMapper(PlayerMapper.class);
 
     @Mapping(target = "cardsInHand", source = "player", qualifiedByName = "cardsInHand")
+    @Mapping(target = "visitor", source = "player", qualifiedByName = "visitor")
     PlayerDto toDto(Player player, @Context List<Card> cards);
 
     List<PlayerDto> toDtoList(List<Player> players, @Context List<Card> cards);
@@ -39,6 +41,13 @@ public interface PlayerMapper {
 
     @Mapping(target = "created", ignore = true)
     List<Player> fromDtoList(List<PlayerDto> playerDtos);
+
+    @Named("visitor")
+    default VisitorDto visitor(Player player, @Context List<Card> cards) {
+        // too much details for a playerDto
+        if (player.getVisitor() != null && player.getVisitor().getRoles() != null) player.getVisitor().setRoles(null);
+        return VisitorMapper.INSTANCE.toDto(player.getVisitor());
+    };
 
     @Named("cardsInHand")
     default String cardsInHand(Player player, @Context List<Card> cards) {

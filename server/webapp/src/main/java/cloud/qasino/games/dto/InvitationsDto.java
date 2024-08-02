@@ -17,12 +17,12 @@ import java.util.List;
 public class InvitationsDto {
 
     // buttons
-    // 1 accept or decline invitation for a game
-    // 2 when accepted and playable its selected game
+    // 1 accept or decline invitation for other game
+    // 2 accept or decline invitation for your current game
+    // 3 when accepted and playable and no current game its selected game
 
     // Main - 1, 2
-    @JsonProperty("GameInvitations")
-    private List<GameDto> gameInvitations;
+    private List<GameShortDto> gameInvitations;
 
 }
 

@@ -49,6 +49,10 @@ public interface LeagueMapper {
 
     @Named("visitor")
     default VisitorDto visitor(League league) {
+        if (league.getVisitor() == null) {
+            return null;
+        }
+        league.getVisitor().setRoles(null);
         return VisitorMapper.INSTANCE.toDto(league.getVisitor());
     }
 }

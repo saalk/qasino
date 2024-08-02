@@ -5,6 +5,7 @@ import cloud.qasino.games.database.service.GameService;
 import cloud.qasino.games.database.service.PlayerService;
 import cloud.qasino.games.database.service.PlayingService;
 import cloud.qasino.games.database.service.VisitorAndLeaguesService;
+import cloud.qasino.games.dto.InvitationsDto;
 import cloud.qasino.games.dto.SeatDto;
 import cloud.qasino.games.pattern.statemachine.event.EventOutput;
 import lombok.Getter;
@@ -26,7 +27,6 @@ public abstract class ActionDto<OUTPUT> {
     @Autowired @Lazy PlayerService playerService;
     @Autowired @Lazy PlayingService playingService;
 
-
     public abstract EventOutput.Result perform(Qasino qasino);
 
     protected boolean findVisitorByUsername(Qasino qasino) {
@@ -35,6 +35,7 @@ public abstract class ActionDto<OUTPUT> {
         if (qasino.getVisitor() == null) return false; // 404 not found
         qasino.getParams().setSuppliedVisitorId(qasino.getVisitor().getVisitorId());
         refreshOrFindLatestGame(qasino);
+        refreshOrFindInvitationsForVisitor(qasino);
         refreshOrFindLeagueForLatestGame(qasino);
         return true; // visitor found and id set
     }
@@ -43,8 +44,18 @@ public abstract class ActionDto<OUTPUT> {
         if (qasino.getVisitor() == null) return false; // 404 not found
         qasino.getParams().setSuppliedVisitorId(qasino.getVisitor().getVisitorId());
         refreshOrFindLatestGame(qasino);
+        refreshOrFindInvitationsForVisitor(qasino);
         refreshOrFindLeagueForLatestGame(qasino);
         return true; // 200 visitor found and id set
+    }
+    protected boolean refreshOrFindInvitationsForVisitor(Qasino qasino) {
+        qasino.setInvitations(new InvitationsDto());
+        if (qasino.getParams().getSuppliedVisitorId() > 0) {
+            qasino.getInvitations().setGameInvitations(gameService.findInvitedGamesForVisitorId(qasino.getParams()));
+            if (qasino.getInvitations() == null) return false; // 200 no invitations yet
+            return true;
+        }
+        return true; // 200 playing found and id set
     }
     protected boolean refreshOrFindLatestGame(Qasino qasino) {
         if (qasino.getParams().getSuppliedGameId() > 0) {

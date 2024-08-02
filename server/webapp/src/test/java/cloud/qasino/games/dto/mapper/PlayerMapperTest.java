@@ -13,6 +13,7 @@ import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @ExtendWith(MockitoExtension.class)
 class PlayerMapperTest extends QasinoSimulator {
@@ -23,7 +24,7 @@ class PlayerMapperTest extends QasinoSimulator {
         // core
         assertEquals(playerVisitorDto.getPlayerId(), playerVisitor.getPlayerId());
         // ref
-        assertFalse(playerVisitorDto.getVisitor().isRepayPossible());
+        assertTrue(playerVisitorDto.getVisitor().isRepayPossible());
         // normal fields
         assertEquals(playerVisitorDto.getSeat(), playerVisitor.getSeat());
         assertEquals(playerVisitorDto.isHuman(), playerVisitor.isHuman());

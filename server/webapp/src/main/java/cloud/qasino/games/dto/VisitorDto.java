@@ -32,11 +32,12 @@ public class VisitorDto {
 //    private String created; // ignore
 
     // ref
-    private List<Role> rolesList;
+    private List<RoleDto> rolesList;
+    private String roles;
 
     // derived
-//    private List<Game> initiatedGamesForVisitor;
-//    private List<Game> invitedGamesForVisitor;
+//    private List<GameDto> initiatedGamesForVisitor;
+//    private List<GameDto> invitedGamesForVisitor;
     boolean isAdmin;
     boolean isUser;
     private boolean isRepayPossible;
@@ -58,8 +59,8 @@ public class VisitorDto {
     private String week;
     private int weekday;
 
-//    private List<Player> players; // ignore
-//    private List<League> leagues; // ignore
+//    private List<PlayerDto> players; // ignore
+//    private List<LeagueDto> leagues; // ignore
 
 }
 

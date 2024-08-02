@@ -13,13 +13,13 @@ import cloud.qasino.games.database.entity.enums.move.Move;
 import cloud.qasino.games.database.entity.enums.player.AiLevel;
 import cloud.qasino.games.database.entity.enums.player.Avatar;
 import cloud.qasino.games.database.security.MyUserPrincipal;
-import cloud.qasino.games.database.security.Role;
 import cloud.qasino.games.database.security.Visitor;
 import cloud.qasino.games.dto.GameDto;
 import cloud.qasino.games.dto.LeagueDto;
 import cloud.qasino.games.dto.PlayerDto;
 import cloud.qasino.games.dto.PlayingDto;
 import cloud.qasino.games.dto.ResultDto;
+import cloud.qasino.games.dto.RoleDto;
 import cloud.qasino.games.dto.SeatDto;
 import cloud.qasino.games.dto.VisitorDto;
 import cloud.qasino.games.dto.mapper.GameMapper;
@@ -27,6 +27,7 @@ import cloud.qasino.games.dto.mapper.LeagueMapper;
 import cloud.qasino.games.dto.mapper.PlayerMapper;
 import cloud.qasino.games.dto.mapper.PlayingMapper;
 import cloud.qasino.games.dto.mapper.ResultMapper;
+import cloud.qasino.games.dto.mapper.RoleMapper;
 import cloud.qasino.games.dto.mapper.SeatMapper;
 import cloud.qasino.games.dto.mapper.VisitorMapper;
 import cloud.qasino.games.pattern.factory.Deck;
@@ -47,7 +48,7 @@ public abstract class QasinoSimulator {
 
     public Visitor visitor;
     public MyUserPrincipal principal;
-    public List<Role> visitorRoles;
+    public List<RoleDto> visitorRoles;
 
     public VisitorDto visitorDto;
 
@@ -83,7 +84,7 @@ public abstract class QasinoSimulator {
         visitor.setVisitorId(INITIATOR_5);
         visitor.pawnShip(Visitor.pawnShipValue(0));
         principal = new MyUserPrincipal(visitor);
-        visitorRoles = visitor.getRoles().stream().toList();
+        visitorRoles = RoleMapper.INSTANCE.toDtoList(visitor.getRoles().stream().toList());
 
         // visitor
         visitorDto = VisitorMapper.INSTANCE.toDto(visitor);

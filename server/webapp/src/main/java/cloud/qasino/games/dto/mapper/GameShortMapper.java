@@ -2,7 +2,6 @@ package cloud.qasino.games.dto.mapper;
 
 import cloud.qasino.games.database.entity.Card;
 import cloud.qasino.games.database.entity.Game;
-import cloud.qasino.games.database.entity.League;
 import cloud.qasino.games.database.entity.Player;
 import cloud.qasino.games.database.entity.enums.card.Location;
 import cloud.qasino.games.database.entity.enums.game.Style;
@@ -15,9 +14,9 @@ import cloud.qasino.games.database.entity.enums.game.style.RoundsToWin;
 import cloud.qasino.games.database.entity.enums.game.style.TurnsToWin;
 import cloud.qasino.games.dto.CardDto;
 import cloud.qasino.games.dto.GameDto;
+import cloud.qasino.games.dto.GameShortDto;
 import cloud.qasino.games.dto.LeagueDto;
 import cloud.qasino.games.dto.PlayerDto;
-import cloud.qasino.games.dto.VisitorDto;
 import org.mapstruct.Context;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -29,15 +28,15 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Mapper
-public interface GameMapper {
+public interface GameShortMapper {
 
     // for testing and use in other mappers
-    GameMapper INSTANCE = Mappers.getMapper(GameMapper.class);
+    GameShortMapper INSTANCE = Mappers.getMapper(GameShortMapper.class);
 
-    @Mapping(target = "players", source = "game", qualifiedByName = "players")
-    @Mapping(target = "league", source = "game", qualifiedByName = "league")
-    @Mapping(target = "cardsInStock", source = "cards", qualifiedByName = "cardsInStock")
-//    @Mapping(target = "cards", source = "cards", qualifiedByName = "cards")
+//    @Mapping(target = "players", ignore = true)
+//    @Mapping(target = "league", ignore = true)
+//    @Mapping(target = "cardsInStock", ignore = true)
+//    @Mapping(target = "cards", ignore = true)
     @Mapping(target = "gameStateGroup", source = "game", qualifiedByName = "gameStateGroup")
     @Mapping(target = "activePlayerInitiator", source = "game", qualifiedByName = "isActivePlayerInitiator")
     @Mapping(target = "anteToWin", source = "game", qualifiedByName = "anteToWin")
@@ -46,8 +45,8 @@ public interface GameMapper {
     @Mapping(target = "oneTimeInsurance", source = "game", qualifiedByName = "oneTimeInsurance")
     @Mapping(target = "roundsToWin", source = "game", qualifiedByName = "roundsToWin")
     @Mapping(target = "turnsToWin", source = "game", qualifiedByName = "turnsToWin")
-    GameDto toDto(Game game, @Context List<Card> cards);
-    List<GameDto> toDtoList(List<Game> games, @Context List<Card> cards);
+    GameShortDto toDto(Game game, @Context List<Card> cards);
+    List<GameShortDto> toDtoList(List<Game> games, @Context List<Card> cards);
 
     @Mapping(target = "updated", ignore = true)
     @Mapping(target = "league", ignore = true)
@@ -63,42 +62,7 @@ public interface GameMapper {
     @Mapping(target = "results", ignore = true)
     @Mapping(target = "playing", ignore = true)
     @Mapping(target = "seats", ignore = true)
-    Game fromDto(GameDto game);
-
-    @Named("players")
-    default List<PlayerDto> players(Game game) {
-        List<PlayerDto> playerDtos = new ArrayList<>();
-        if (game.getPlayers() == null) return null;
-        for (Player player : game.getPlayers() ) {
-            if (player.getVisitor() != null && player.getVisitor().getRoles() != null) player.getVisitor().setRoles(null);
-            playerDtos.add(PlayerMapper.INSTANCE.toDto(player, game.getCards()));
-        }
-        return playerDtos;
-    }
-
-    @Named("league")
-    default LeagueDto league(Game game) {
-        if (game.getLeague() == null) return null;
-        game.getLeague().setVisitor(null);
-        return LeagueMapper.INSTANCE.toDto(game.getLeague());
-    }
-
-    @Named("cardsInStock")
-    default String cardsInStock(List<Card> cards) {
-        if (cards == null ) return  "[null]";
-        if (cards.isEmpty() ) return  "[empty]";
-        List<String> stockCards =
-                cards.stream()
-                        .filter(location -> location.getLocation().equals(Location.STOCK))
-                        .map(Card::getRankSuit)
-                        .collect(Collectors.toList());
-        return "[" + String.join("],[", stockCards) + "]";
-    }
-
-    @Named("cards")
-    default List<CardDto> cards(List<Card> cards) {
-        return CardMapper.INSTANCE.toDtoList(cards);
-    }
+    Game fromDto(GameShortDto game);
 
     @Named("gameStateGroup")
     default GameStateGroup gameStateGroup(Game game) {
