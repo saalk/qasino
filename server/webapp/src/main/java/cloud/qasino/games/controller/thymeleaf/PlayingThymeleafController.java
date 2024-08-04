@@ -219,7 +219,7 @@ public class PlayingThymeleafController extends AbstractThymeleafController {
         // 4 - return new response
         Qasino qasino = new Qasino();
         qasino.getParams().setSuppliedGameEvent(GameEvent.PLAY);
-        qasino.getParams().setSuppliedPlayEvent(PlayEvent.valueOf(trigger.toLowerCase()));
+        qasino.getParams().setSuppliedPlayEvent(PlayEvent.fromLabel(trigger.toLowerCase()));
         qasino.getParams().setSuppliedVisitorUsername(principal.getName());
         qasino.getParams().setSuppliedGameId(Long.parseLong(id));
         prepareQasino(response, qasino);

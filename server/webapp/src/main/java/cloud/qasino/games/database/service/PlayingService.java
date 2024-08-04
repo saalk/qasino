@@ -73,7 +73,7 @@ public class PlayingService {
             game = playing.getGame();
         }
         List<SeatDto> seats = new ArrayList<>();
-
+        if (game.getPlayers() == null) return seats;
         for (Player player : game.getPlayers()) {
             seats.add(SeatMapper.INSTANCE.toDto(player, playing));
         }

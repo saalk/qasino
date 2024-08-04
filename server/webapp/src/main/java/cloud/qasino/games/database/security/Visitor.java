@@ -104,7 +104,6 @@ public class Visitor {
     @Column(name = "balance")
     private int balance;
 
-    @Setter(AccessLevel.NONE)
     @Column(name = "secured_loan")
     private int securedLoan;
 
@@ -260,16 +259,6 @@ public class Visitor {
         int seed = max <= 0 ? 1001 : max + 1;
         Random random = new Random();
         return random.nextInt(seed);
-    }
-
-    public String winCount(List<Player> playersPlayed) {
-        int won = 0;
-        for (Player player : playersPlayed) {
-            if (player.isWinner()) {
-                won++;
-            }
-        }
-        return "won/total: [" + won + "/" + playersPlayed.size() + "]";
     }
 
     @Override

@@ -12,6 +12,7 @@ import cloud.qasino.games.dto.LeagueDto;
 import cloud.qasino.games.dto.VisitorDto;
 import cloud.qasino.games.dto.mapper.LeagueMapper;
 import cloud.qasino.games.dto.mapper.VisitorMapper;
+import cloud.qasino.games.dto.request.CreationDto;
 import cloud.qasino.games.dto.request.ParamsDto;
 import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
@@ -90,6 +91,24 @@ public class VisitorAndLeaguesService {
         return Optional.ofNullable(emailId)
                 .filter(email -> email.contains("@"))
                 .map(email -> email.replaceAll("(.*?)@.*", "$1"));
+    }
+
+    public VisitorDto repayOrPawn(VisitorDto visitor) {
+        Visitor found = visitorRepository.findOneByVisitorId(visitor.getVisitorId());
+        found.setBalance(visitor.getBalance());
+        found.setSecuredLoan(visitor.getSecuredLoan());
+        Visitor saved = visitorRepository.save(found);
+        return VisitorMapper.INSTANCE.toDto(saved);
+    }
+
+    public VisitorDto updateUser(Long visitorId, CreationDto creation) {
+        Visitor found = visitorRepository.findOneByVisitorId(visitorId);
+        found.setAlias(creation.getSuppliedAlias());
+        found.setEmail(creation.getSuppliedEmail());
+        found.setUsername(encoder.encode(creation.getSuppliedPassword()));
+        found.setPassword(creation.getSuppliedUsername());
+        Visitor saved = visitorRepository.save(found);
+        return VisitorMapper.INSTANCE.toDto(saved);
     }
 
     @Transactional

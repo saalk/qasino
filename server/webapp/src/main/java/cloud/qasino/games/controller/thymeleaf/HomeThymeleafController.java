@@ -1,17 +1,11 @@
 package cloud.qasino.games.controller.thymeleaf;
 
-import cloud.qasino.games.action.SignUpNewVisitorAction;
-import cloud.qasino.games.action.dto.FindAllDtosForUsernameAction;
-import cloud.qasino.games.action.dto.MapQasinoFromDtosAction;
 import cloud.qasino.games.action.dto.Qasino;
 import cloud.qasino.games.action.dto.RegisterVisitorAction;
 import cloud.qasino.games.controller.AbstractThymeleafController;
-import cloud.qasino.games.database.security.MyUserDetailService;
 import cloud.qasino.games.database.security.MyUserPrincipal;
-import cloud.qasino.games.dto.QasinoFlowDto;
 import cloud.qasino.games.dto.validation.VisitorBasic;
 import cloud.qasino.games.pattern.singleton.OnlineVisitorsPerDay;
-import cloud.qasino.games.pattern.statemachine.event.EventOutput;
 import cloud.qasino.games.pattern.statemachine.event.QasinoEvent;
 import cloud.qasino.games.web.AjaxUtils;
 import cloud.qasino.games.web.MessageHelper;
@@ -48,7 +42,6 @@ import java.util.HashSet;
 import java.util.Set;
 
 // basic path /qasino
-// basic header @RequestHeader(value "visitor", required = true) int visitorId" // else 400
 //
 // 200 - ok
 // 201 - created
@@ -59,10 +52,10 @@ import java.util.Set;
 
 @Controller
 @ControllerAdvice
-//@Api(tags = {WebConfiguration.QASINO_TAG})
 @Slf4j
 public class HomeThymeleafController extends AbstractThymeleafController {
 
+    // formatter:off
     //    private static final String IMAGES_FAVICON_LOCATION = "static/images/favicon.ico";
     private static final String HOME_SIGNUP_VIEW_LOCATION = "home/register";
     private static final String HOME_SIGNIN_VIEW_LOCATION = "home/signin";
@@ -70,19 +63,11 @@ public class HomeThymeleafController extends AbstractThymeleafController {
     private static final String HOME_NOT_SIGNED_IN_LOCATION = "home/homeNotSignedIn";
     private static final String ERROR_GENERAL_LOCATION = "error/general";
 
-    EventOutput.Result result;
-
-    // formatter:off
-    @Autowired private RegisterVisitorAction registerAction;
-    @Autowired private MyUserDetailService userDetailService;
-
     private final AuthenticationManager authenticationManager;
 
-
     @Autowired
-    FindAllDtosForUsernameAction findDtos;
-    @Autowired
-    MapQasinoFromDtosAction mapQasino;
+    private RegisterVisitorAction registerAction;
+    // formatter:on
 
     @Autowired
     public HomeThymeleafController(
@@ -100,30 +85,24 @@ public class HomeThymeleafController extends AbstractThymeleafController {
     public String signin(
             Model model,
             @RequestParam(value = "error", required = false) String error,
-            HttpServletResponse response
-    ) {
-        log.warn("GetMapping: /signin");
+            HttpServletResponse response) {
 
         // 1 - map input
         Qasino qasino = new Qasino();
         qasino.getParams().setSuppliedQasinoEvent(QasinoEvent.LOGON);
         // 2 - validate input
         // 3 - process
-        // 4 - return new response
+        // 4 - return response
         prepareQasino(response, qasino);
         model.addAttribute(qasino);
-
         return HOME_SIGNIN_VIEW_LOCATION;
     }
 
     @PostMapping(value = "perform_signin") // works with get, post, put etc
     public ResponseEntity<Void> signin(
             @RequestBody LoginRequest loginRequest,
-            HttpServletResponse response
-    ) {
-        // TODO Seems this method is not called???
-        log.warn("PostMapping: /perform_signin");
-
+            HttpServletResponse response) {
+        log.warn("!!!!!!!!! PostMapping: /perform_signin");
         Authentication authenticationRequest =
                 UsernamePasswordAuthenticationToken.unauthenticated(loginRequest.username(), loginRequest.password());
         Authentication authenticationResponse =
@@ -144,19 +123,15 @@ public class HomeThymeleafController extends AbstractThymeleafController {
             Model model,
             @RequestHeader(value = "X-Requested-With", required = false)
             String requestedWith,
-            HttpServletResponse response
-    ) {
-
-        log.warn("GetMapping: /register");
+            HttpServletResponse response) {
 
         // 1 - map input
         Qasino qasino = new Qasino();
         // 2 - validate input
         // 3 - process
-        // 4 - return new response
+        // 4 - return response
         prepareQasino(response, qasino);
         model.addAttribute(qasino);
-
         if (AjaxUtils.isAjaxRequest(requestedWith)) {
 //            return HOME_SIGNUP_VIEW_LOCATION.concat(" :: qasinoResponse");
             return HOME_SIGNUP_VIEW_LOCATION.concat(" :: qasino");
@@ -171,10 +146,7 @@ public class HomeThymeleafController extends AbstractThymeleafController {
             @ModelAttribute("qasino") Qasino qasino,
             BindingResult result,
             RedirectAttributes ra,
-            HttpServletResponse response
-    ) {
-
-        log.warn("PostMapping: /register");
+            HttpServletResponse response) {
 
         // 1 - map input
         qasino.getParams().setSuppliedQasinoEvent(QasinoEvent.REGISTER);
@@ -184,7 +156,7 @@ public class HomeThymeleafController extends AbstractThymeleafController {
         }
         // 3 - process
         registerAction.perform(qasino);
-        // 4 - return new response
+        // 4 - return response
         prepareQasino(response, qasino);
         model.addAttribute(qasino);
         // see /WEB-INF/i18n/messages.properties and /WEB-INF/views/homeSignedIn.html
@@ -198,28 +170,14 @@ public class HomeThymeleafController extends AbstractThymeleafController {
             Principal principal,
             HttpServletResponse response) {
 
-        log.warn("GetMapping: /");
-
         // 1 - map input
-        QasinoFlowDto flowDto = new QasinoFlowDto();
-        if (principal != null) flowDto.setPathVariables("username", principal.getName());
-        // 2 - validate input
-        if (!flowDto.isInputValid()) {
-            prepareQasinoResponse(response, flowDto);
-            flowDto.setAction("Username incorrect");
-            model.addAttribute(flowDto.getQasinoResponse());
-            return principal != null ? HOME_SIGNED_IN_LOCATION : HOME_NOT_SIGNED_IN_LOCATION;
-        }
-        // 3 - process
-        // 4 - return new response
         Qasino qasino = new Qasino();
-        qasino.getParams().setSuppliedVisitorUsername(principal == null ? "":principal.getName());
+        qasino.getParams().setSuppliedVisitorUsername(principal == null ? "" : principal.getName());
+        // 2 - validate input
+        // 3 - process
+        // 4 - return response
         prepareQasino(response, qasino);
         model.addAttribute(qasino);
-        // 4 - return response
-        prepareQasinoResponse(response, flowDto);
-        model.addAttribute(flowDto.getQasinoResponse());
-
         return principal != null ? HOME_SIGNED_IN_LOCATION : HOME_NOT_SIGNED_IN_LOCATION;
     }
 

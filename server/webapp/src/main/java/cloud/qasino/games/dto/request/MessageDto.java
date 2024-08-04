@@ -36,7 +36,7 @@ public class MessageDto {
     private boolean actionNeeded = false;
 
 
-    // EXCEPTION - - TODO move out of DTO
+    // EXCEPTION HANDLING
     // 400 bad request "malformed entity syntax" - eg null, zero, not numeric or invalid enum
     // 404 not found "unknown id" - eg id not in db
     // 409 conflict "update sent at the wrong time" eg state not valid now/anymore
@@ -44,19 +44,20 @@ public class MessageDto {
     // @formatter:off
     @Setter(AccessLevel.NONE)
     private int httpStatus = 200;
-    private String errorKey = "Key";
-    private String errorValue = "Value";
     @Setter(AccessLevel.NONE)
     private String errorMessage = "";
     @Setter(AccessLevel.NONE)
     private String errorReason = "";
+
+    private String errorKey = "Key";
+    private String errorValue = "Value";
 
     public void setBadRequestErrorMessage(String problem) {
         this.errorMessage = "Supplied value for [" + this.errorKey + "] is [" + problem + "]";
         this.httpStatus = 400;
     }
     public void setNotFoundErrorMessage(String problem) {
-        String defaultProblem = problem.isEmpty() ? "not found" : problem;
+        String defaultProblem = (problem == null || problem.isEmpty()) ? "not found" : problem;
         this.errorMessage = "Supplied value for [" + this.errorKey + "] is [" + defaultProblem + "]";
         this.httpStatus = 400;
     }

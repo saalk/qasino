@@ -10,11 +10,11 @@
 <!-- the specific part of this html -->
 <div class="container">
     <div class="text-center">
-        <h1 th:text="${'Visitor - '+qasinoResponse.navBarItems.^[sequence==1].stat}">Visitor</h1>
-        <div th:if="${qasinoResponse.params.vid == -1}">
+        <h1 th:text="${'Visitor - '+qasino.navBarItems.^[sequence==1].stat}">Visitor</h1>
+        <div th:if="${qasino.params.suppliedVisitorId <= 0}">
             No (Visitor) Data
         </div>
-        <div th:unless="${qasinoResponse.params.vid == -1}">
+        <div th:unless="${qasino.params.suppliedVisitorId == 0}">
             <div th:replace="~{forms/visitor :: pawn-or-repay}"></div>
             <div th:replace="~{forms/visitor :: update}"></div>
         </div>

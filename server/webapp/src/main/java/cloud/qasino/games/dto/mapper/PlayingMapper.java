@@ -54,11 +54,13 @@ public interface PlayingMapper {
     }
     @Named("nextPlayer")
     default PlayerDto nextPlayer(Playing playing) {
-        int totalSeats = playing.getGame().getPlayers().size();
-        int currentSeat = 1;
-        if (playing != null ) {
-            currentSeat = playing.getCurrentSeatNumber();
+        int totalSeats = 0;
+        if (playing == null || playing.getGame() == null || playing.getGame().getPlayers() == null) {
+            return null;
+        } else {
+            totalSeats = playing.getGame().getPlayers().size();
         }
+        int currentSeat = playing.getCurrentSeatNumber();
         if (totalSeats == 1 || currentSeat == totalSeats) {
             return PlayerMapper.INSTANCE.toDto(playing.getGame().getPlayers().get(0), playing.getGame().getCards());
         }

@@ -2,6 +2,12 @@ package cloud.qasino.games.dto.request;
 
 import cloud.qasino.games.database.entity.enums.card.Location;
 import cloud.qasino.games.database.entity.enums.game.Type;
+import cloud.qasino.games.database.entity.enums.game.style.AnteToWin;
+import cloud.qasino.games.database.entity.enums.game.style.BettingStrategy;
+import cloud.qasino.games.database.entity.enums.game.style.DeckConfiguration;
+import cloud.qasino.games.database.entity.enums.game.style.OneTimeInsurance;
+import cloud.qasino.games.database.entity.enums.game.style.RoundsToWin;
+import cloud.qasino.games.database.entity.enums.game.style.TurnsToWin;
 import cloud.qasino.games.database.entity.enums.player.AiLevel;
 import cloud.qasino.games.database.entity.enums.player.Avatar;
 import cloud.qasino.games.database.entity.enums.player.PlayerType;
@@ -39,6 +45,8 @@ public class CreationDto {
     private String suppliedPassword = "secret";
     @NotBlank(message = "Alias missing", groups = VisitorBasic.class)
     private String suppliedAlias = "alias";
+    private boolean requestingToRepay = false;
+    private boolean offeringShipForPawn = false;
 
     // league
     @NotBlank(message = "Name for League missing", groups = LeagueBasic.class)
@@ -47,6 +55,9 @@ public class CreationDto {
     // player
     @NotBlank(message = "Player type [eg Bot, Invitee] missing", groups = PlayerBasic.class)
     private PlayerType suppliedPlayerType = PlayerType.BOT; // bot, initiator or guest
+    @Min(value = 10, message = "10 is the minimum bet ", groups = GameBasic.class)
+    @Max(value = 100, message = "100 is the maximum bet", groups = GameBasic.class)
+    private int suppliedFiches = 20;
     @NotNull(message = "Player avatar [eg Elf, Goblin] missing", groups = PlayerBasic.class)
     private Avatar suppliedAvatar = Avatar.ELF;
     @NotNull(message = "Player AiLevel [eg Smart, Human] missing", groups = PlayerBasic.class)
@@ -61,8 +72,14 @@ public class CreationDto {
     @Min(value = 200, message = "Maximum ante is 200", groups = GameBasic.class)
     private int suppliedAnte = 20;
     @Min(value = 0, message = "No jokers is the minimum", groups = GameBasic.class)
-    @Max(value = 3, message = "3 jokers is the maxinum", groups = GameBasic.class)
+    @Max(value = 3, message = "3 jokers is the maximum", groups = GameBasic.class)
     private int suppliedJokers = 3;
+    private AnteToWin suppliedAnteToWin; // maxrounds etc
+    private BettingStrategy suppliedBettingStrategy; // maxrounds etc
+    private DeckConfiguration suppliedDeckConfiguration; // maxrounds etc
+    private OneTimeInsurance suppliedOneTimeInsurance; // maxrounds etc
+    private RoundsToWin suppliedRoundsToWin; // maxrounds etc
+    private TurnsToWin suppliedTurnsToWin; // maxrounds etc
 
     // cardMove
     @NotBlank(message = "card to move missing", groups = QasinoBasic.class)
