@@ -27,6 +27,8 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import java.net.URI;
 import java.security.Principal;
 
+import static cloud.qasino.games.utils.QasinoUtils.prettyPrint;
+
 @Slf4j
 public class AbstractThymeleafController {
 
@@ -112,11 +114,6 @@ public class AbstractThymeleafController {
                 log.warn("Qasino gson and pretty print failed");
             }
         }
-    }
-    public String prettyPrint(Object uglyString)throws JsonProcessingException {
-        ObjectMapper objectMapper = new ObjectMapper();
-        String prettyJson = objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(uglyString);
-        return prettyJson;
     }
 
     //    private HttpHeaders headers = new HttpHeaders();

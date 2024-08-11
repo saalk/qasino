@@ -14,7 +14,9 @@ import cloud.qasino.games.dto.mapper.LeagueMapper;
 import cloud.qasino.games.dto.mapper.VisitorMapper;
 import cloud.qasino.games.dto.request.CreationDto;
 import cloud.qasino.games.dto.request.ParamsDto;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import jakarta.annotation.PostConstruct;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
@@ -22,7 +24,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -30,6 +31,8 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+
+import static cloud.qasino.games.utils.QasinoUtils.prettyPrint;
 
 @Service
 @Lazy
@@ -61,7 +64,7 @@ public class VisitorAndLeaguesService {
         return VisitorMapper.INSTANCE.toDto(retrievedVisitor);
     };
     public VisitorDto findOneByVisitorId(ParamsDto paramsDto) {
-        Visitor retrievedVisitor = visitorRepository.findOneByVisitorId(paramsDto.getSuppliedVisitorId());
+        Visitor retrievedVisitor = visitorRepository.getReferenceById(paramsDto.getSuppliedVisitorId());
         return VisitorMapper.INSTANCE.toDto(retrievedVisitor);
     };
     Optional<VisitorDto> findVisitorByAliasAndAliasSequence(VisitorDto visitorDto){
@@ -71,7 +74,7 @@ public class VisitorAndLeaguesService {
                 .map(visitor -> VisitorMapper.INSTANCE.toDto(visitor.get()));
     };
     public LeagueDto findOneByLeagueId(ParamsDto paramsDto) {
-        League retrievedLeague = leagueRepository.findOneByLeagueId(paramsDto.getSuppliedLeagueId());
+        League retrievedLeague = leagueRepository.getReferenceById(paramsDto.getSuppliedLeagueId());
         return LeagueMapper.INSTANCE.toDto(retrievedLeague);
     };
 
@@ -93,25 +96,33 @@ public class VisitorAndLeaguesService {
                 .map(email -> email.replaceAll("(.*?)@.*", "$1"));
     }
 
-    public VisitorDto repayOrPawn(VisitorDto visitor) {
-        Visitor found = visitorRepository.findOneByVisitorId(visitor.getVisitorId());
-        found.setBalance(visitor.getBalance());
-        found.setSecuredLoan(visitor.getSecuredLoan());
+    @SneakyThrows public VisitorDto repayOrPawn(Long visitorId, int balance, int securedLoan) {
+        Visitor found = visitorRepository.getReferenceById(visitorId);
+        found.setLeagues(leagueRepository.findLeaguesByVisitor(found));
+        log.warn("repayOrPawn found = {} ", prettyPrint(found));
+        found.setBalance(balance);
+        found.setSecuredLoan(securedLoan);
+        log.warn("repayOrPawn updated = {} ", prettyPrint(found));
         Visitor saved = visitorRepository.save(found);
+        log.warn("repayOrPawn saved = {} ", prettyPrint(saved));
+
         return VisitorMapper.INSTANCE.toDto(saved);
     }
 
-    public VisitorDto updateUser(Long visitorId, CreationDto creation) {
-        Visitor found = visitorRepository.findOneByVisitorId(visitorId);
+    public VisitorDto updateUser(Long visitorId, CreationDto creation)throws JsonProcessingException {
+        Visitor found = visitorRepository.getReferenceById(visitorId);
+        found.setLeagues(leagueRepository.findLeaguesByVisitor(found));
+        log.warn("updateUser found = {} ", prettyPrint(found));
         found.setAlias(creation.getSuppliedAlias());
         found.setEmail(creation.getSuppliedEmail());
         found.setUsername(encoder.encode(creation.getSuppliedPassword()));
         found.setPassword(creation.getSuppliedUsername());
+        log.warn("updateUser update = {} ", prettyPrint(found));
         Visitor saved = visitorRepository.save(found);
+        log.warn("updateUser saved = {} ", prettyPrint(saved));
         return VisitorMapper.INSTANCE.toDto(saved);
     }
 
-    @Transactional
     public VisitorDto saveNewUser(Visitor user) {
         final Role basicRole = roleRepository.findByName("ROLE_USER");
         user.setRoles(Collections.singleton(basicRole));
@@ -120,7 +131,6 @@ public class VisitorAndLeaguesService {
         Visitor retrievedVisitor = visitorRepository.getReferenceById(savedVisitor.getVisitorId());
         return VisitorMapper.INSTANCE.toDto(retrievedVisitor);
     }
-    @Transactional
     public VisitorDto saveNewAdmin(Visitor admin) {
         List<Role> roles = new ArrayList<>();
         roles.add(roleRepository.findByName("ROLE_USER"));
@@ -165,7 +175,6 @@ public class VisitorAndLeaguesService {
             createAdminIfNotFound(visitor);
         }
     }
-    @Transactional
     public Privilege createPrivilegeIfNotFound(String name) {
         Privilege privilege = privilegeRepository.findByName(name);
         if (privilege == null) {
@@ -174,7 +183,6 @@ public class VisitorAndLeaguesService {
         }
         return privilege;
     }
-    @Transactional
     public void createRoleIfNotFound(String name, Collection<Privilege> privileges) {
         Role role = roleRepository.findByName(name);
         if (role == null) {
@@ -183,7 +191,6 @@ public class VisitorAndLeaguesService {
             roleRepository.save(role);
         }
     }
-    @Transactional
     public void createUserIfNotFound(Visitor search) {
         Visitor user = visitorRepository.findByUsername(search.getUsername());
         if (user == null) {
@@ -191,7 +198,6 @@ public class VisitorAndLeaguesService {
             log.warn("createUserIfNotFound: {}",user);
         }
     }
-    @Transactional
     public void createAdminIfNotFound(Visitor search) {
         Visitor admin = visitorRepository.findByUsername(search.getUsername());
         if (admin == null) {

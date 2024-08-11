@@ -136,7 +136,7 @@ public class Visitor {
     @JsonIgnore
     // UsPl: a Visitor can start many Leagues
     // However bots cannot start a league
-    @OneToMany(mappedBy = "visitor", cascade = CascadeType.DETACH)
+    @OneToMany(mappedBy = "visitor", cascade = CascadeType.REMOVE)
     // just a reference, the actual fk column is in league not here!
     private List<League> leagues;
 

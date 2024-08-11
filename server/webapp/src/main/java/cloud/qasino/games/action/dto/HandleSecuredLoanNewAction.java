@@ -35,8 +35,8 @@ public class HandleSecuredLoanNewAction extends ActionDto<EventOutput.Result> {
             return EventOutput.Result.FAILURE;
         }
 
-        securedLoan = qasino.getVisitor().getSecuredLoan();
-        balance = qasino.getVisitor().getBalance();
+        this.securedLoan = qasino.getVisitor().getSecuredLoan();
+        this.balance = qasino.getVisitor().getBalance();
 
         if (qasino.getParams().getSuppliedQasinoEvent() == QasinoEvent.REPAY) {
             boolean repayOk = repayLoan();
@@ -52,43 +52,39 @@ public class HandleSecuredLoanNewAction extends ActionDto<EventOutput.Result> {
                 return EventOutput.Result.FAILURE;
             }
         }
-        qasino.getVisitor().setSecuredLoan(securedLoan);
-        qasino.getVisitor().setBalance(balance);
-        qasino.setVisitor(visitorAndLeaguesService.repayOrPawn(qasino.getVisitor()));
+
+        qasino.setVisitor(visitorAndLeaguesService.repayOrPawn(qasino.getVisitor().getVisitorId(), this.balance, this.securedLoan));
         return EventOutput.Result.SUCCESS;
     }
 
-    // formatter:off
+    // formatter:on
     private void setConflictErrorMessage(Qasino qasino, String id, String value) {
         qasino.getMessage().setErrorKey(id);
         qasino.getMessage().setErrorValue(value);
         qasino.getMessage().setConflictErrorMessage("Action [" + id + "] invalid");
     }
-
     private void setBadRequestErrorMessage(Qasino qasino, String id, String value) {
         qasino.getMessage().setErrorKey(id);
         qasino.getMessage().setErrorValue(value);
         qasino.getMessage().setBadRequestErrorMessage("Action [" + id + "] invalid");
     }
-
     public boolean repayLoan() {
-        if (balance >= securedLoan) {
-            balance = balance - securedLoan;
-            securedLoan = 0;
+        if (this.balance >= this.securedLoan) {
+            this.balance = this.balance - this.securedLoan;
+            this.securedLoan = 0;
             return true;
         }
         return false; // not enough balance to repay all
     }
-
     public boolean pawnShip(int max) {
         int seed = max <= 0 ? 1001 : max + 1;
         Random random = new Random();
         int pawnShipValue = random.nextInt(seed);
-        if (securedLoan > 0) {
+        if (this.securedLoan > 0) {
             return false; // repay first
         }
-        balance = balance + pawnShipValue;
-        securedLoan = pawnShipValue;
+        this.balance = this.balance + pawnShipValue;
+        this.securedLoan = pawnShipValue;
         return true;
     }
 

@@ -100,11 +100,11 @@ public class PlayingThymeleafController extends AbstractThymeleafController {
 
     @PostMapping(value = "shuffle/{gameId}")
     public String shuffleTheGame(
-            Model model,
             Principal principal,
             @PathVariable("gameId") String id,
             @ModelAttribute QasinoResponse qasinoResponse,
             BindingResult bindingResult,
+            Model model,
             Errors errors, RedirectAttributes ra,
             HttpServletResponse response
     ) {
@@ -153,11 +153,11 @@ public class PlayingThymeleafController extends AbstractThymeleafController {
 
     @PostMapping(value = "play/{playEvent}/{gameId}")
     public String playerMakesAMoveForAGame(
-            Model model,
             Principal principal,
             @PathVariable("gameId") String id,
             @ModelAttribute QasinoResponse qasinoResponse,
             BindingResult bindingResult,
+            Model model,
             Errors errors, RedirectAttributes ra,
             HttpServletResponse response,
             @PathVariable("playEvent") String trigger) {
@@ -232,11 +232,11 @@ public class PlayingThymeleafController extends AbstractThymeleafController {
 
     @PostMapping(value = "stop/{gameId}")
     public String stopPlayingTheGame(
-            Model model,
             Principal principal,
             @PathVariable("gameId") String id,
             @ModelAttribute QasinoResponse qasinoResponse,
             BindingResult bindingResult,
+            Model model,
             Errors errors, RedirectAttributes ra,
             HttpServletResponse response
     ) {

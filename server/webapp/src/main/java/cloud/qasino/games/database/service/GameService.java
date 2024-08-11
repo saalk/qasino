@@ -48,7 +48,7 @@ public class GameService {
 
     // find one
     public GameDto findOneByGameId(ParamsDto paramsDto) {
-        Game retrievedGame = gameRepository.findOneByGameId(paramsDto.getSuppliedVisitorId());
+        Game retrievedGame = gameRepository.getReferenceById(paramsDto.getSuppliedGameId());
         return GameMapper.INSTANCE.toDto(retrievedGame, retrievedGame.getCards());
     };
     public GameDto findLatestGameForVisitorId(ParamsDto paramsDto){

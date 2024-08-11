@@ -70,8 +70,8 @@ public class VisitorThymeleafController extends AbstractThymeleafController {
 
     @GetMapping("visitor")
     public String getVisitor(
-            Model model,
             Principal principal,
+            Model model,
             HttpServletResponse response) {
 
         // 1 - map input
@@ -89,11 +89,11 @@ public class VisitorThymeleafController extends AbstractThymeleafController {
 
     @PostMapping("visitor")
     public String putVisitor(
-            Model model,
             Principal principal,
             @Validated(VisitorBasic.class)
             @ModelAttribute("qasino") Qasino qasino,
-            BindingResult result,
+            BindingResult result, // can only be directly after @Validated/valid
+            Model model,
             RedirectAttributes ra,
             HttpServletResponse response
     ) {
@@ -116,9 +116,9 @@ public class VisitorThymeleafController extends AbstractThymeleafController {
 
     @PostMapping(value = "pawn")
     public String visitorPawnsShip(
-            Model model,
             Principal principal,
-            BindingResult result,
+//            BindingResult result, // can only be directly after @Validated/valid
+            Model model,
             RedirectAttributes ra,
             HttpServletResponse response) {
 
@@ -127,9 +127,9 @@ public class VisitorThymeleafController extends AbstractThymeleafController {
         qasino.getParams().setSuppliedQasinoEvent(QasinoEvent.PAWN);
         qasino.getParams().setSuppliedVisitorUsername(principal == null ? "" : principal.getName());
         // 2 - validate input
-        if (result.hasErrors()) {
-            return "error";
-        }
+//        if (result.hasErrors()) {
+//            return "error";
+//        }
         // 3 - process
         loadVisitorAction.perform(qasino);
         handleSecuredLoanAction.perform(qasino);
@@ -141,9 +141,9 @@ public class VisitorThymeleafController extends AbstractThymeleafController {
 
     @PostMapping(value = "repay")
     public String visitorRepaysLoan(
-            Model model,
             Principal principal,
-            BindingResult result,
+//            BindingResult result, // can only be directly after @Validated/valid
+            Model model,
             RedirectAttributes ra,
             HttpServletResponse response) {
 
@@ -152,9 +152,9 @@ public class VisitorThymeleafController extends AbstractThymeleafController {
         qasino.getParams().setSuppliedQasinoEvent(QasinoEvent.REPAY);
         qasino.getParams().setSuppliedVisitorUsername(principal == null ? "" : principal.getName());
         // 2 - validate input
-        if (result.hasErrors()) {
-            return "error";
-        }
+//        if (result.hasErrors()) {
+//            return "error";
+//        }
         // 3 - process
         loadVisitorAction.perform(qasino);
         handleSecuredLoanAction.perform(qasino);
@@ -166,9 +166,9 @@ public class VisitorThymeleafController extends AbstractThymeleafController {
 
     @DeleteMapping("visitor")
     public String deleteVisitor(
-            Model model,
             Principal principal,
-            BindingResult result,
+//            BindingResult result, // can only be directly after @Validated/valid
+            Model model,
             RedirectAttributes ra,
             HttpServletResponse response) {
 
@@ -177,9 +177,9 @@ public class VisitorThymeleafController extends AbstractThymeleafController {
         qasino.getParams().setSuppliedQasinoEvent(QasinoEvent.DELETE_VISITOR);
         qasino.getParams().setSuppliedVisitorUsername(principal == null ? "" : principal.getName());
         // 2 - validate input
-        if (result.hasErrors()) {
-            return "error";
-        }
+//        if (result.hasErrors()) {
+//            return "error";
+//        }
         // 3 - process
         loadVisitorAction.perform(qasino);
         visitorRepository.deleteById(qasino.getVisitor().getVisitorId());

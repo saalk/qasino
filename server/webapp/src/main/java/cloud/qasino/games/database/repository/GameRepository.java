@@ -19,7 +19,7 @@ import java.util.List;
 public interface GameRepository extends JpaRepository<Game, Long> {
 
     // findOne
-    Game findOneByGameId(Long gameId);
+//    Game findOneByGameId(Long gameId);
 
     // prepared queries
     public final static String FIND_ALL = "SELECT * FROM \"game\" ORDER BY \"updated\" DESC";

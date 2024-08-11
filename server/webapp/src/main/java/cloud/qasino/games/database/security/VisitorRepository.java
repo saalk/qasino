@@ -20,7 +20,7 @@ public interface VisitorRepository extends JpaRepository<Visitor, Long> {
     // find one
     @Query(value = "SELECT * FROM \"visitor\" u WHERE u.\"username\" = ?1", nativeQuery = true)
     Visitor findByUsername(@Param("username") String username);
-    Visitor findOneByVisitorId(Long visitorId);
+//    Visitor findOneByVisitorId(Long visitorId);
     Visitor findOneByEmail(String email);
     Optional<Visitor> findVisitorByVisitorId(Long visitorId);
     Optional<Visitor> findVisitorByAliasAndAliasSequence(String alias, int aliasSequence);

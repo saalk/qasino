@@ -28,7 +28,7 @@ public class UpdateVisitorAction implements Action<UpdateVisitorAction.Dto, Even
                 return EventOutput.Result.FAILURE;
             }
             // todo LOW split alias and number
-            Visitor visitorToUpdate = visitorRepository.findOneByVisitorId(actionDto.getSuppliedVisitorId());
+            Visitor visitorToUpdate = visitorRepository.getReferenceById(actionDto.getSuppliedVisitorId());
             visitorToUpdate.setAlias(actionDto.getSuppliedAlias());
 //            visitorToUpdate.setUsername(actionDto.getSuppliedUsername());
             visitorToUpdate.setEmail(actionDto.getSuppliedEmail());
