@@ -9,19 +9,20 @@ count all/you/active
 ## handy sql
 ```sql
 
--- GAME
+-- GAMES for initiater
 SELECT 
+g."game_id", c."sequence",
 g."type", g."updated", g."state", g."ante", g."initiator",
 t."playing_id", t."created",
-c."sequence",c."cardmove_id", c."move", c."created",c."card_move_details",c."card_id",c."bet",c."start_fiches",c."end_fiches",
+c."cardmove_id", c."move", c."created",c."card_move_details",c."card_id",c."bet",c."start_fiches",c."end_fiches",
 p."player_id",p."role",p."seat",p."fiches",p."ai_level"
 FROM 
 "game" AS g
 left JOIN "playing" AS t ON t."game_id" = g."game_id" 
 left JOIN "cardmove" AS c ON t."playing_id" = c."playing_id" 
 left JOIN "player" AS p ON c."player_id" = p."player_id"
-WHERE g."game_id" = 1
-ORDER BY c."sequence";
+WHERE g."initiator" = 3
+ORDER BY g."game_id" desc, c."sequence";
 
 -- ROLES
 SELECT 

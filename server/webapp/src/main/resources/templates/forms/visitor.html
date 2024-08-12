@@ -50,36 +50,36 @@
         </th:block>
         <fieldset>
             <div class="form-group"
-                 th:classappend="${#fields.hasErrors('${qasino.visitor.username}')}? 'has-error'">
+                 th:classappend="${#fields.hasErrors('${qasino.creation.suppliedUsername}')}? 'has-error'">
                 <label for="username" class="col-lg-2 control-label">Username</label>
                 <div class="col-lg-10">
                     <input disabled type="text" class="form-control" id="username" placeholder="Username"
-                           th:field="${qasino.visitor.username}"/>
+                           th:field="${qasino.creation.suppliedUsername}"/>
                     <span class="help-block"
-                          th:if="${#fields.hasErrors('${qasino.visitor.username}')}"
-                          th:errors="${qasino.visitor.username}">Incorrect username</span>
+                          th:if="${#fields.hasErrors('${qasino.creation.suppliedUsername}')}"
+                          th:errors="${qasino.creation.suppliedUsername}">Incorrect username</span>
                 </div>
             </div>
             <div class="form-group"
-                 th:classappend="${#fields.hasErrors('${qasino.visitor.alias}')}? 'has-error'">
+                 th:classappend="${#fields.hasErrors('${qasino.creation.suppliedAlias}')}? 'has-error'">
                 <label for="alias" class="col-lg-2 control-label">Alias</label>
                 <div class="col-lg-10">
                     <input type="text" class="form-control" id="alias" placeholder="Alias"
-                           th:field="${qasino.visitor.alias}"/>
+                           th:field="${qasino.creation.suppliedAlias}"/>
                     <span class="help-block"
-                          th:if="${#fields.hasErrors('${qasino.visitor.alias}')}"
-                          th:errors="${qasino.visitor.alias}">Incorrect alias</span>
+                          th:if="${#fields.hasErrors('${qasino.creation.suppliedAlias}')}"
+                          th:errors="${qasino.creation.suppliedAlias}">Incorrect alias</span>
                 </div>
             </div>
             <div class="form-group"
-                 th:classappend="${#fields.hasErrors('${qasino.visitor.email}')}? 'has-error'">
+                 th:classappend="${#fields.hasErrors('${qasino.creation.suppliedEmail}')}? 'has-error'">
                 <label for="email" class="col-lg-2 control-label">Email</label>
                 <div class="col-lg-10">
                     <input type="text" class="form-control" id="email" placeholder="Email"
-                           th:field="${qasino.visitor.email}"/>
+                           th:field="${qasino.creation.suppliedEmail}"/>
                     <span class="help-block"
-                          th:if="${#fields.hasErrors('${qasino.visitor.email}')}"
-                          th:errors="${qasino.visitor.email}">Incorrect email</span>
+                          th:if="${#fields.hasErrors('${qasino.creation.suppliedEmail}')}"
+                          th:errors="${qasino.creation.suppliedEmail}">Incorrect email</span>
                 </div>
             </div>
             <input type="hidden" id="visitorId"

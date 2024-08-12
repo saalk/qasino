@@ -53,11 +53,9 @@ public class VisitorThymeleafController extends AbstractThymeleafController {
 
     // formatter:of
     private static final String VISITOR_VIEW_LOCATION = "pages/visitor";
-    private static final String SETUP_VIEW_LOCATION = "pages/setup";
-    private static final String PLAY_VIEW_LOCATION = "pages/play";
 
     EventOutput.Result result;
-    private VisitorRepository visitorRepository;
+    private final VisitorRepository visitorRepository;
     @Autowired UpdateVisitorNewAction updateVisitorAction;
     @Autowired HandleSecuredLoanNewAction handleSecuredLoanAction;
     @Autowired LoadPrincipalDtoAction loadVisitorAction;

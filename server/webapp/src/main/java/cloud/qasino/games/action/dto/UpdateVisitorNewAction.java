@@ -1,12 +1,8 @@
 package cloud.qasino.games.action.dto;
 
-import cloud.qasino.games.database.security.Visitor;
 import cloud.qasino.games.database.security.VisitorRepository;
 import cloud.qasino.games.database.service.VisitorAndLeaguesService;
-import cloud.qasino.games.dto.VisitorDto;
 import cloud.qasino.games.pattern.statemachine.event.EventOutput;
-import cloud.qasino.games.pattern.statemachine.event.GameEvent;
-import cloud.qasino.games.pattern.statemachine.event.PlayEvent;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -17,8 +13,10 @@ import org.springframework.stereotype.Component;
 public class UpdateVisitorNewAction extends ActionDto<EventOutput.Result> {
 
     // formatter:off
-    @Resource VisitorRepository visitorRepository;
-    @Resource VisitorAndLeaguesService visitorAndLeaguesService;
+    @Resource
+    VisitorRepository visitorRepository;
+    @Resource
+    VisitorAndLeaguesService visitorAndLeaguesService;
     // formatter:on
 
     @Override
@@ -30,6 +28,8 @@ public class UpdateVisitorNewAction extends ActionDto<EventOutput.Result> {
                 setConflictErrorMessage(qasino, "alias", String.valueOf(qasino.getCreation().getSuppliedAlias()));
                 return EventOutput.Result.FAILURE;
             }
+            // todo LOW split alias and number
+            qasino.setVisitor(visitorAndLeaguesService.updateUser(qasino.getParams().getSuppliedVisitorId(), qasino.getCreation()));
         }
         return EventOutput.Result.SUCCESS;
     }

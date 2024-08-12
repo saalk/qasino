@@ -48,7 +48,6 @@ public class VisitorAndLeaguesService {
 
     private PasswordEncoder encoder;
 
-
     public VisitorAndLeaguesService(PasswordEncoder passwordEncoder) {
         this.encoder = passwordEncoder;
     }
@@ -57,7 +56,6 @@ public class VisitorAndLeaguesService {
     Long countByAlias(VisitorDto visitorDto) {
         return visitorRepository.countByAlias(visitorDto.getAlias());
     };
-
     // find one
     public VisitorDto findByUsername(ParamsDto paramsDto){
         Visitor retrievedVisitor = visitorRepository.findByUsername(paramsDto.getSuppliedVisitorUsername());
@@ -77,13 +75,11 @@ public class VisitorAndLeaguesService {
         League retrievedLeague = leagueRepository.getReferenceById(paramsDto.getSuppliedLeagueId());
         return LeagueMapper.INSTANCE.toDto(retrievedLeague);
     };
-
     // find many
     Page<VisitorDto> findAllVisitorsWithPage(Pageable pageable){
         Page<Visitor> visitorPage = visitorRepository.findAllVisitorsWithPage(pageable);
         return visitorPage.map(visitor -> VisitorMapper.INSTANCE.toDto(visitor));
     };
-
     // delete
     void removeUserByUsername(VisitorDto visitorDto) {
         visitorRepository.removeUserByUsername(visitorDto.getUsername());
@@ -95,37 +91,23 @@ public class VisitorAndLeaguesService {
                 .filter(email -> email.contains("@"))
                 .map(email -> email.replaceAll("(.*?)@.*", "$1"));
     }
-
-    @SneakyThrows public VisitorDto repayOrPawn(Long visitorId, int balance, int securedLoan) {
+    public VisitorDto repayOrPawn(Long visitorId, int balance, int securedLoan) {
         Visitor found = visitorRepository.getReferenceById(visitorId);
-//        List<League> foundLeagues = leagueRepository.findLeaguesByVisitor(found);
-//        for (League league : foundLeagues) {
-//            found.addLeague(league);
-//        }
-        log.warn("repayOrPawn found = {} ", prettyPrint(found));
         found.setBalance(balance);
         found.setSecuredLoan(securedLoan);
-        log.warn("repayOrPawn updated = {} ", prettyPrint(found));
         Visitor saved = visitorRepository.save(found);
-        log.warn("repayOrPawn saved = {} ", prettyPrint(saved));
 
         return VisitorMapper.INSTANCE.toDto(saved);
     }
-
-    public VisitorDto updateUser(Long visitorId, CreationDto creation)throws JsonProcessingException {
+    public VisitorDto updateUser(Long visitorId, CreationDto creation) {
         Visitor found = visitorRepository.getReferenceById(visitorId);
-//        found.setLeagues(leagueRepository.findLeaguesByVisitor(found));
-        log.warn("updateUser found = {} ", prettyPrint(found));
         found.setAlias(creation.getSuppliedAlias());
         found.setEmail(creation.getSuppliedEmail());
-        found.setUsername(encoder.encode(creation.getSuppliedPassword()));
-        found.setPassword(creation.getSuppliedUsername());
-        log.warn("updateUser update = {} ", prettyPrint(found));
+//        found.setPassword(encoder.encode(creation.getSuppliedPassword()));
+        found.setUsername(creation.getSuppliedUsername());
         Visitor saved = visitorRepository.save(found);
-        log.warn("updateUser saved = {} ", prettyPrint(saved));
         return VisitorMapper.INSTANCE.toDto(saved);
     }
-
     public VisitorDto saveNewUser(Visitor user) {
         final Role basicRole = roleRepository.findByName("ROLE_USER");
         user.setRoles(Collections.singleton(basicRole));

@@ -1,5 +1,6 @@
 package cloud.qasino.games.action.dto;
 
+import cloud.qasino.games.database.entity.enums.card.Location;
 import cloud.qasino.games.database.entity.enums.game.GameState;
 import cloud.qasino.games.database.entity.enums.player.PlayerType;
 import cloud.qasino.games.pattern.statemachine.event.EventOutput;
@@ -35,6 +36,9 @@ public class MapQasinoFromDtosAction extends ActionDto<EventOutput.Result> {
                 qasino.getMessage().setActionNeeded(true);
                 qasino.getMessage().setAction("Pawn your ship for fiches");
             }
+            qasino.getCreation().setSuppliedAlias(qasino.getVisitor().getAlias());
+            qasino.getCreation().setSuppliedEmail(qasino.getVisitor().getEmail());
+            qasino.getCreation().setSuppliedUsername(qasino.getVisitor().getUsername());
         } else {
             qasino.getMessage().setActionNeeded(true);
             qasino.getMessage().setAction("Logon visitor!");
@@ -64,6 +68,17 @@ public class MapQasinoFromDtosAction extends ActionDto<EventOutput.Result> {
                     navigationBarItem.setStat("[" + bots + "/" + humans + "] bots/humans");
                 }
             }
+            qasino.getCreation().setSuppliedAnte(qasino.getGame().getAnte());
+            qasino.getCreation().setSuppliedAnteToWin(qasino.getGame().getAnteToWin());
+            qasino.getCreation().setSuppliedBettingStrategy(qasino.getGame().getBettingStrategy());
+            qasino.getCreation().setSuppliedRoundsToWin(qasino.getGame().getRoundsToWin());
+            qasino.getCreation().setSuppliedTurnsToWin(qasino.getGame().getTurnsToWin());
+            qasino.getCreation().setSuppliedOneTimeInsurance(qasino.getGame().getOneTimeInsurance());
+            qasino.getCreation().setSuppliedType(qasino.getGame().getType());
+            qasino.getCreation().setSuppliedDeckConfiguration(qasino.getGame().getDeckConfiguration());
+            qasino.getCreation().setSuppliedStyle(qasino.getGame().getStyle());
+            qasino.getCreation().setSuppliedJokers(0);
+
         } else {
             if (!qasino.getMessage().isActionNeeded()) {
                 qasino.getMessage().setActionNeeded(true);
@@ -95,6 +110,8 @@ public class MapQasinoFromDtosAction extends ActionDto<EventOutput.Result> {
                 }
             }
         } else {
+
+            qasino.getCreation().setSuppliedLocation(Location.HAND);
             if (!qasino.getMessage().isActionNeeded()) {
                 qasino.getMessage().setActionNeeded(true);
                 qasino.getMessage().setAction("Play a game");
@@ -135,6 +152,7 @@ public class MapQasinoFromDtosAction extends ActionDto<EventOutput.Result> {
                 qasino.getMessage().setActionNeeded(true);
                 if (qasino.getMessage().getAction().isEmpty()) qasino.getMessage().setAction("Manage your leagues");
             }
+            qasino.getCreation().setSuppliedLeagueName(qasino.getLeague().getName());
             navigationBarItem.setTitle("League[" + Integer.toHexString((int) qasino.getLeague().getLeagueId()) + "]");
             navigationBarItem.setStat("[" + qasino.getLeague().getGamesForLeague().size() + "] games");
         }
