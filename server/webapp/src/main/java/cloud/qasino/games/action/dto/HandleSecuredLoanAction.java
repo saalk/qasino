@@ -11,7 +11,7 @@ import java.util.Random;
 
 @Slf4j
 @Component
-public class HandleSecuredLoanNewAction extends ActionDto<EventOutput.Result> {
+public class HandleSecuredLoanAction extends ActionDto<EventOutput.Result> {
 
     // formatter:off
     @Resource

@@ -1,30 +1,20 @@
 package cloud.qasino.games.controller.thymeleaf;
 
-import cloud.qasino.games.action.FindVisitorIdByAliasOrUsernameAction;
-import cloud.qasino.games.action.HandleSecuredLoanAction;
-import cloud.qasino.games.action.LoadEntitiesToDtoAction;
-import cloud.qasino.games.action.SignUpNewVisitorAction;
-import cloud.qasino.games.action.UpdateVisitorAction;
-import cloud.qasino.games.action.dto.HandleSecuredLoanNewAction;
+import cloud.qasino.games.action.dto.HandleSecuredLoanAction;
 import cloud.qasino.games.action.dto.Qasino;
-import cloud.qasino.games.action.dto.UpdateVisitorNewAction;
+import cloud.qasino.games.action.dto.UpdateVisitorAction;
 import cloud.qasino.games.action.dto.load.LoadPrincipalDtoAction;
-import cloud.qasino.games.action.dto.load.LoadVisitorDtoAction;
 import cloud.qasino.games.controller.AbstractThymeleafController;
 import cloud.qasino.games.database.security.VisitorRepository;
-import cloud.qasino.games.dto.QasinoFlowDto;
 import cloud.qasino.games.dto.validation.VisitorBasic;
 import cloud.qasino.games.pattern.statemachine.event.EventOutput;
 import cloud.qasino.games.pattern.statemachine.event.QasinoEvent;
-import cloud.qasino.games.response.QasinoResponse;
 import jakarta.servlet.http.HttpServletResponse;
-import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.Errors;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -34,8 +24,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.security.Principal;
-
-import static cloud.qasino.games.pattern.statemachine.event.EventOutput.Result.FAILURE;
 
 // basic path /qasino
 //
@@ -56,9 +44,12 @@ public class VisitorThymeleafController extends AbstractThymeleafController {
 
     EventOutput.Result result;
     private final VisitorRepository visitorRepository;
-    @Autowired UpdateVisitorNewAction updateVisitorAction;
-    @Autowired HandleSecuredLoanNewAction handleSecuredLoanAction;
-    @Autowired LoadPrincipalDtoAction loadVisitorAction;
+    @Autowired
+    UpdateVisitorAction updateVisitor;
+    @Autowired
+    HandleSecuredLoanAction handleSecuredLoan;
+    @Autowired
+    LoadPrincipalDtoAction loadVisitor;
 
     // formatter:on
     @Autowired
@@ -75,7 +66,7 @@ public class VisitorThymeleafController extends AbstractThymeleafController {
         // 1 - map input
         Qasino qasino = new Qasino();
         qasino.getParams().setSuppliedVisitorUsername(principal.getName());
-        loadVisitorAction.perform(qasino);
+        loadVisitor.perform(qasino);
         // 2 - validate input
         // 3 - process
         // 4 - return  response
@@ -104,8 +95,8 @@ public class VisitorThymeleafController extends AbstractThymeleafController {
             return "error";
         }
         // 3 - process
-        loadVisitorAction.perform(qasino);
-        updateVisitorAction.perform(qasino);
+        loadVisitor.perform(qasino);
+        updateVisitor.perform(qasino);
         // 4 - return response
         prepareQasino(response, qasino);
         model.addAttribute(qasino);
@@ -129,8 +120,8 @@ public class VisitorThymeleafController extends AbstractThymeleafController {
 //            return "error";
 //        }
         // 3 - process
-        loadVisitorAction.perform(qasino);
-        handleSecuredLoanAction.perform(qasino);
+        loadVisitor.perform(qasino);
+        handleSecuredLoan.perform(qasino);
         // 4 - return response
         prepareQasino(response, qasino);
         model.addAttribute(qasino);
@@ -154,8 +145,8 @@ public class VisitorThymeleafController extends AbstractThymeleafController {
 //            return "error";
 //        }
         // 3 - process
-        loadVisitorAction.perform(qasino);
-        handleSecuredLoanAction.perform(qasino);
+        loadVisitor.perform(qasino);
+        handleSecuredLoan.perform(qasino);
         // 4 - return response
         prepareQasino(response, qasino);
         model.addAttribute(qasino);
@@ -179,9 +170,9 @@ public class VisitorThymeleafController extends AbstractThymeleafController {
 //            return "error";
 //        }
         // 3 - process
-        loadVisitorAction.perform(qasino);
+        loadVisitor.perform(qasino);
         visitorRepository.deleteById(qasino.getVisitor().getVisitorId());
-        loadVisitorAction.perform(qasino);
+        loadVisitor.perform(qasino);
         // 4 - return response
         prepareQasino(response, qasino);
         model.addAttribute(qasino);

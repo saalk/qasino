@@ -6,7 +6,6 @@ import cloud.qasino.games.action.CreateNewGameAction;
 import cloud.qasino.games.action.CreateNewLeagueAction;
 import cloud.qasino.games.action.DeterminePossibleEventsAction;
 import cloud.qasino.games.action.FindVisitorIdByAliasOrUsernameAction;
-import cloud.qasino.games.action.HandleSecuredLoanAction;
 import cloud.qasino.games.action.IsGameConsistentForGameEventAction;
 import cloud.qasino.games.action.IsGameFinishedAction;
 import cloud.qasino.games.action.IsPlayerHumanAction;
@@ -15,24 +14,23 @@ import cloud.qasino.games.action.LoadEntitiesToDtoAction;
 import cloud.qasino.games.action.MapQasinoGameTableFromDtoAction;
 import cloud.qasino.games.action.MapQasinoResponseFromDtoAction;
 import cloud.qasino.games.action.PlayFirstMoveAction;
-import cloud.qasino.games.action.PlayNextHumanMoveAction;
-import cloud.qasino.games.action.StartGameForTypeAction;
 import cloud.qasino.games.action.PlayNextBotMoveAction;
+import cloud.qasino.games.action.PlayNextHumanMoveAction;
 import cloud.qasino.games.action.PrepareGameAction;
 import cloud.qasino.games.action.SetStatusIndicatorsBaseOnRetrievedDataAction;
 import cloud.qasino.games.action.SignUpNewVisitorAction;
+import cloud.qasino.games.action.StartGameForTypeAction;
 import cloud.qasino.games.action.StopGameAction;
 import cloud.qasino.games.action.UpdateFichesForPlayerAction;
 import cloud.qasino.games.action.UpdatePlayingStateForGame;
 import cloud.qasino.games.action.UpdateStyleForGame;
-import cloud.qasino.games.action.UpdateVisitorAction;
 import cloud.qasino.games.database.entity.Card;
 import cloud.qasino.games.database.entity.CardMove;
 import cloud.qasino.games.database.entity.Game;
 import cloud.qasino.games.database.entity.League;
 import cloud.qasino.games.database.entity.Player;
-import cloud.qasino.games.database.entity.Result;
 import cloud.qasino.games.database.entity.Playing;
+import cloud.qasino.games.database.entity.Result;
 import cloud.qasino.games.database.entity.enums.card.Face;
 import cloud.qasino.games.database.entity.enums.card.Location;
 import cloud.qasino.games.database.entity.enums.card.PlayingCard;
@@ -51,14 +49,14 @@ import cloud.qasino.games.database.entity.enums.player.AiLevel;
 import cloud.qasino.games.database.entity.enums.player.Avatar;
 import cloud.qasino.games.database.entity.enums.player.PlayerType;
 import cloud.qasino.games.database.security.Visitor;
-import cloud.qasino.games.pattern.statemachine.event.QasinoEvent;
-import cloud.qasino.games.response.view.SectionTable;
-import cloud.qasino.games.response.view.statistics.Statistic;
 import cloud.qasino.games.exception.MyBusinessException;
-import cloud.qasino.games.response.QasinoResponse;
 import cloud.qasino.games.pattern.statemachine.event.GameEvent;
 import cloud.qasino.games.pattern.statemachine.event.PlayEvent;
+import cloud.qasino.games.pattern.statemachine.event.QasinoEvent;
 import cloud.qasino.games.pattern.statemachine.event.interfaces.AbstractFlowDto;
+import cloud.qasino.games.response.QasinoResponse;
+import cloud.qasino.games.response.view.SectionTable;
+import cloud.qasino.games.response.view.statistics.Statistic;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
@@ -85,7 +83,6 @@ public class QasinoFlowDto extends AbstractFlowDto
         CreateNewLeagueAction.Dto,
         DeterminePossibleEventsAction.Dto,
         FindVisitorIdByAliasOrUsernameAction.Dto,
-        HandleSecuredLoanAction.Dto,
         IsGameConsistentForGameEventAction.Dto,
         IsPlayingConsistentForPlayEventAction.Dto,
         IsGameFinishedAction.Dto,
@@ -101,11 +98,9 @@ public class QasinoFlowDto extends AbstractFlowDto
         SignUpNewVisitorAction.Dto,
         StartGameForTypeAction.Dto,
         StopGameAction.Dto,
-        UpdateVisitorAction.Dto,
         UpdateStyleForGame.Dto,
         UpdatePlayingStateForGame.Dto,
-        UpdateFichesForPlayerAction.Dto
-{
+        UpdateFichesForPlayerAction.Dto {
     // suppress lombok setter for these fixed values
     @Setter(AccessLevel.NONE)
     private String applicationName = "qasino";
@@ -299,10 +294,12 @@ public class QasinoFlowDto extends AbstractFlowDto
     public void setPathVariables(String... pathVariables) {
         if (pathVariables == null) {
             throw new MyBusinessException("No pathVariables [" + Arrays.toString(pathVariables) + "]");
-        };
+        }
+        ;
         if (pathVariables.length % 2 != 0) {
             throw new MyBusinessException("PathVariables not even [" + Arrays.toString(pathVariables) + "]");
-        };
+        }
+        ;
         for (int i = 0; i < pathVariables.length; i = i + 2) {
             this.pathVariables.put(pathVariables[i], pathVariables[i + 1]);
         }

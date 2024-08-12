@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
 
 @Slf4j
 @Component
-public class UpdateVisitorNewAction extends ActionDto<EventOutput.Result> {
+public class UpdateVisitorAction extends ActionDto<EventOutput.Result> {
 
     // formatter:off
     @Resource
