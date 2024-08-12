@@ -20,6 +20,7 @@ import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
+import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -38,10 +39,11 @@ import java.util.Random;
 import java.util.Set;
 
 @Entity
-@DynamicUpdate
+// @DynamicUpdate
+// @Data for JPA entities is an antipattern
+// But we override equals, hash and toString and have noargs constructor.
+@Data
 @NoArgsConstructor
-@Getter
-@Setter
 @JsonIdentityInfo(generator = JSOGGenerator.class)
 //@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 @Table(name = "visitor", indexes =
@@ -50,9 +52,6 @@ import java.util.Set;
                 @Index(name = "username_index", columnList = "username", unique = true)
         })
 public class Visitor {
-
-    private static final String NOT_BLANK_MESSAGE = "{notBlank.message}";
-    private static final String EMAIL_MESSAGE = "{email.message}";
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -63,7 +62,6 @@ public class Visitor {
     @Column(name = "created", length = 25)
     private String created;
 
-    @NotBlank(message = Visitor.NOT_BLANK_MESSAGE)
     @Column(name = "username", length = 25, unique = true)
     private String username;
 
@@ -88,15 +86,12 @@ public class Visitor {
     @JsonProperty("aliasSequence")
     @Column(name = "alias_seq")
     private int aliasSequence;
-    @NotBlank(message = Visitor.NOT_BLANK_MESSAGE)
 
     // Normal fields
     @JsonProperty("alias")
     @Column(name = "alias", length = 50, nullable = false)
     private String alias;
 
-    @NotBlank(message = Visitor.NOT_BLANK_MESSAGE)
-    @Email(message = Visitor.EMAIL_MESSAGE)
     @JsonProperty("email")
     @Column(name = "email", length = 50, nullable = true)
     private String email;
@@ -128,17 +123,31 @@ public class Visitor {
 
     // PL: a Visitor becomes a Player when playing a GameSubTotals
     @JsonIgnore
-    @OneToMany(mappedBy = "visitor", cascade = CascadeType.REMOVE)
+//    @OneToMany(mappedBy = "visitor", cascade = CascadeType.REMOVE)
+    @OneToMany(mappedBy = "visitor") // no cascade otherwise league.visitor is set to null !!
     // just a reference, the actual fk column is in player not here!
     // However ai players are no visitors!
     private List<Player> players;
 
+    public void addPlayer(Player player) {
+        player.setVisitor(this);
+        List<Player> found = players.stream().filter(vis -> vis.getVisitor().getVisitorId() == this.getVisitorId()).toList();
+        if (found.isEmpty()) players.add(player);
+    }
+
     @JsonIgnore
     // UsPl: a Visitor can start many Leagues
     // However bots cannot start a league
-    @OneToMany(mappedBy = "visitor", cascade = CascadeType.REMOVE)
+//    @OneToMany(mappedBy = "visitor", cascade = CascadeType.REMOVE)
+    @OneToMany(mappedBy = "visitor") // no cascade otherwise league.visitor is set to null !!
     // just a reference, the actual fk column is in league not here!
     private List<League> leagues;
+
+    public void addLeague(League league) {
+        league.setVisitor(this);
+        List<League> found = leagues.stream().filter(vis -> vis.getVisitor().getVisitorId() == this.getVisitorId()).toList();
+        if (found.isEmpty()) leagues.add(league);
+    }
 
     private Visitor(Builder builder) {
         this.username = builder.username;

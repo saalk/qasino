@@ -36,7 +36,7 @@ import static java.time.temporal.TemporalAdjusters.next;
 // @Entity creates a direct link between class object(s) and table row(s)
 @Entity
 // @DynamicUpdate includes only columns which are actually being updated - not the cached insert
-@DynamicUpdate
+// @DynamicUpdate
 // @Data for JPA entities is an antipattern
 // But we override equals, hash and toString and have noargs constructor.
 @Data
@@ -58,7 +58,7 @@ public class League {
 
     // Foreign keys
     // many [League] can be part of one [Visitor]
-    @ManyToOne(cascade = CascadeType.DETACH)
+    @ManyToOne // no cascade otherwise league.visitor is set to null !!
     @JoinColumn(name = "visitor_id", referencedColumnName = "visitor_id", foreignKey = @ForeignKey
             (name = "fk_visitor_id"), nullable = false)
     private Visitor visitor;
@@ -77,7 +77,7 @@ public class League {
     // References - the actual FK are in other tables
     @JsonIgnore // otherwise the game does not show up - only as a ref in the response
     // one [League] can have many [Game]s
-    @OneToMany(mappedBy = "league", cascade = CascadeType.DETACH)
+    @OneToMany(mappedBy = "league") // no cascade otherwise league.visitor is set to null !!
     // just a reference, the actual fk column is in game not here !
     private List<Game> games;
 

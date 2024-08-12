@@ -98,7 +98,10 @@ public class VisitorAndLeaguesService {
 
     @SneakyThrows public VisitorDto repayOrPawn(Long visitorId, int balance, int securedLoan) {
         Visitor found = visitorRepository.getReferenceById(visitorId);
-        found.setLeagues(leagueRepository.findLeaguesByVisitor(found));
+//        List<League> foundLeagues = leagueRepository.findLeaguesByVisitor(found);
+//        for (League league : foundLeagues) {
+//            found.addLeague(league);
+//        }
         log.warn("repayOrPawn found = {} ", prettyPrint(found));
         found.setBalance(balance);
         found.setSecuredLoan(securedLoan);
@@ -111,7 +114,7 @@ public class VisitorAndLeaguesService {
 
     public VisitorDto updateUser(Long visitorId, CreationDto creation)throws JsonProcessingException {
         Visitor found = visitorRepository.getReferenceById(visitorId);
-        found.setLeagues(leagueRepository.findLeaguesByVisitor(found));
+//        found.setLeagues(leagueRepository.findLeaguesByVisitor(found));
         log.warn("updateUser found = {} ", prettyPrint(found));
         found.setAlias(creation.getSuppliedAlias());
         found.setEmail(creation.getSuppliedEmail());
