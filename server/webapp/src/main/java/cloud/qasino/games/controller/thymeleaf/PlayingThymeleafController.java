@@ -1,7 +1,7 @@
 package cloud.qasino.games.controller.thymeleaf;
 
 import cloud.qasino.games.action.CalculateAndFinishGameAction;
-import cloud.qasino.games.action.IsGameConsistentForGameEventAction;
+import cloud.qasino.games.action.dto.IsGameConsistentForGameEventAction;
 import cloud.qasino.games.action.IsGameFinishedAction;
 import cloud.qasino.games.action.IsPlayerHumanAction;
 import cloud.qasino.games.action.IsPlayingConsistentForPlayEventAction;
@@ -126,7 +126,7 @@ public class PlayingThymeleafController extends AbstractThymeleafController {
         }
         // 3 - process
         loadEntitiesToDtoAction.perform(flowDto);
-        result = isGameConsistentForGameEventAction.perform(flowDto);
+        result = isGameConsistentForGameEventAction.perform(null);
         if (FAILURE.equals(result)) {
             log.warn("Errors isGameConsistentForGameEvent!!: {}", errors);
             prepareQasinoResponse(response, flowDto);
@@ -186,7 +186,7 @@ public class PlayingThymeleafController extends AbstractThymeleafController {
         mapQasinoGameTableFromDtoAction.perform(flowDto);
 
         // logic
-        result = isGameConsistentForGameEventAction.perform(flowDto);
+        result = isGameConsistentForGameEventAction.perform(null);
         if (EventOutput.Result.FAILURE.equals(result)) {
             log.warn("Errors isGameConsistentForGameEvent!!: {}", errors);
             prepareQasinoResponse(response, flowDto);
@@ -258,7 +258,7 @@ public class PlayingThymeleafController extends AbstractThymeleafController {
         }
         // 3 - process
         loadEntitiesToDtoAction.perform(flowDto);
-        result = isGameConsistentForGameEventAction.perform(flowDto);
+        result = isGameConsistentForGameEventAction.perform(null);
         if (FAILURE.equals(result)) {
             log.warn("264 Errors isGameConsistentForGameEvent!!: {}", errors);
             prepareQasinoResponse(response, flowDto);

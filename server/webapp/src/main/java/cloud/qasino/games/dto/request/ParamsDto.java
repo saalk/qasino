@@ -4,8 +4,6 @@ import cloud.qasino.games.pattern.statemachine.event.GameEvent;
 import cloud.qasino.games.pattern.statemachine.event.QasinoEvent;
 import cloud.qasino.games.pattern.statemachine.event.PlayEvent;
 import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,6 +15,7 @@ public class ParamsDto {
     private long suppliedVisitorId = 0;
     private String suppliedVisitorUsername = "";
     private long suppliedGameId = 0;
+    private String suppliedGameStateGroup = "";
     private long suppliedPlayingId = 0;
     private long suppliedLeagueId = 0;
 

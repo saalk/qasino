@@ -7,62 +7,62 @@
 <body>
 <div th:fragment="update-or-stop-or-bot">
     <form class="form-narrow form-horizontal" method="post"
-          th:object="${qasinoResponse}"
-          th:fragment="QasinoResponse"
-          th:action="@{/validate/{path}(path=${qasinoResponse.pageGameSetup.selectedGame.gameId})}">
+          th:object="${qasino}"
+          th:fragment="Qasino"
+          th:action="@{/validate/{path}(path=${qasino.params.suppliedGameId})}">
         <!--/* Show general error message when form contains errors */-->
-        <th:block th:if="${#fields.hasErrors('${qasinoResponse.*}')}">
+        <th:block th:if="${#fields.hasErrors('${qasino.*}')}">
             <div th:replace="fragments/alert :: alert (type='danger', message='Form contains errors. Please try again.')">
                 Alert
             </div>
         </th:block>
         <fieldset>
             <div class="form-group"
-                 th:classappend="${#fields.hasErrors('${qasinoResponse.pageGameSetup.botPlayer.aiLevel}')}? 'has-error'">
+                 th:classappend="${#fields.hasErrors('${qasino.creation.suppliedAiLevel}')}? 'has-error'">
                 <label for="aiLevel" class="col-lg-2 control-label">Bot player AiLevel</label>
                 <div class="col-lg-10">
                     <input type="text" class="form-control" id="aiLevel" placeholder="AiLevel"
-                           th:field="${qasinoResponse.pageGameSetup.botPlayer.aiLevel}"/>
+                           th:field="${qasino.creation.suppliedAiLevel}"/>
                     <span class="help-block"
-                          th:if="${#fields.hasErrors('${qasinoResponse.pageGameSetup.botPlayer.aiLevel}')}"
-                          th:errors="${qasinoResponse.pageGameSetup.botPlayer.aiLevel}">Incorrect AiLevel</span>
+                          th:if="${#fields.hasErrors('${qasino.creation.suppliedAiLevel}')}"
+                          th:errors="${qasino.creation.suppliedAiLevel}">Incorrect AiLevel</span>
                 </div>
             </div>
             <div class="form-group"
-                 th:classappend="${#fields.hasErrors('${qasinoResponse.pageGameSetup.botPlayer.avatar}')}? 'has-error'">
+                 th:classappend="${#fields.hasErrors('${qasino.creation.suppliedAvatar}')}? 'has-error'">
                 <label for="avatar" class="col-lg-2 control-label">Bot players Avatar</label>
                 <div class="col-lg-10">
                     <input type="text" class="form-control" id="avatar" placeholder="Avatar"
-                           th:field="${qasinoResponse.pageGameSetup.botPlayer.avatar}"/>
+                           th:field="${qasino.creation.suppliedAvatar}"/>
                     <span class="help-block"
-                          th:if="${#fields.hasErrors('${qasinoResponse.pageGameSetup.botPlayer.avatar}')}"
-                          th:errors="${qasinoResponse.pageGameSetup.botPlayer.avatar}">Incorrect Avatar</span>
+                          th:if="${#fields.hasErrors('${qasino.creation.suppliedAvatar}')}"
+                          th:errors="${qasino.creation.suppliedAvatar}">Incorrect Avatar</span>
                 </div>
             </div>
             <div class="form-group"
-                 th:classappend="${#fields.hasErrors('${qasinoResponse.pageGameSetup.selectedGame.style}')}? 'has-error'">
+                 th:classappend="${#fields.hasErrors('${qasino.creation.suppliedStyle}')}? 'has-error'">
                 <label for="style" class="col-lg-2 control-label">Style</label>
                 <div class="col-lg-10">
                     <input disabled type="text" class="form-control" id="style" placeholder="Style"
-                           th:field="${qasinoResponse.pageGameSetup.selectedGame.style}"/>
+                           th:field="${qasino.creation.suppliedStyle}"/>
                     <span class="help-block"
-                          th:if="${#fields.hasErrors('${qasinoResponse.pageGameSetup.selectedGame.style}')}"
-                          th:errors="${qasinoResponse.pageGameSetup.selectedGame.style}">Incorrect style</span>
+                          th:if="${#fields.hasErrors('${qasino.creation.suppliedStyle}')}"
+                          th:errors="${qasino.creation.suppliedStyle}">Incorrect style</span>
                 </div>
             </div>
             <div class="form-group"
-                 th:classappend="${#fields.hasErrors('${qasinoResponse.pageGameSetup.selectedGame.ante}')}? 'has-error'">
+                 th:classappend="${#fields.hasErrors('${qasino.creation.suppliedAnte}')}? 'has-error'">
                 <label for="ante" class="col-lg-2 control-label">Ante</label>
                 <div class="col-lg-10">
                     <input type="text" class="form-control" id="ante" placeholder="Ante"
-                           th:field="${qasinoResponse.pageGameSetup.selectedGame.ante}"/>
+                           th:field="${qasino.creation.suppliedAnte}"/>
                     <span class="help-block"
-                          th:if="${#fields.hasErrors('${qasinoResponse.pageGameSetup.selectedGame.ante}')}"
-                          th:errors="${qasinoResponse.pageGameSetup.selectedGame.ante}">Incorrect ante</span>
+                          th:if="${#fields.hasErrors('${qasino.creation.suppliedAnte}')}"
+                          th:errors="${qasino.creation.suppliedAnte}">Incorrect ante</span>
                 </div>
             </div>
             <input type="hidden" id="gameId"
-                   th:field="${qasinoResponse.pageGameSetup.selectedGame.gameId}"/>
+                   th:field="${qasino.params.suppliedGameId}"/>
 
             <div class="form-group">
                 <div class="col-lg-offset-2 col-lg-10">
@@ -71,14 +71,14 @@
             </div>
             <div class="form-group">
                 <div class="col-lg-offset-2 col-lg-10">
-                    <button th:formaction="@{/bot/{path}(path=${qasinoResponse.pageGameSetup.selectedGame.gameId})}"
+                    <button th:formaction="@{/bot/{path}(path=${qasino.params.suppliedGameId})}"
                             type="submit" class="btn btn-default">Add bot
                     </button>
                 </div>
             </div>
             <div class="form-group">
                 <div class="col-lg-offset-2 col-lg-10">
-                    <button th:formaction="@{/stop/{path}(path=${qasinoResponse.pageGameSetup.selectedGame.gameId})}"
+                    <button th:formaction="@{/stop/{path}(path=${qasino.params.suppliedGameId})}"
                             type="submit" class="btn btn-default">Stop
                     </button>
                 </div>
@@ -88,11 +88,11 @@
 </div>
 <div th:fragment="dropdown-list-styles">
     <form class="form-narrow form-horizontal" method="post"
-          th:object="${qasinoResponse}"
-          th:fragment="QasinoResponse"
-          th:action="@{/style/{path}(path=${qasinoResponse.pageGameSetup.selectedGame.gameId})}">
+          th:object="${qasino}"
+          th:fragment="Qasino"
+          th:action="@{/style/{path}(path=${qasino.params.suppliedGameId})}">
         <!--/* Show general error message when form contains errors */-->
-        <th:block th:if="${#fields.hasErrors('${qasinoResponse.*}')}">
+        <th:block th:if="${#fields.hasErrors('${qasino.*}')}">
             <div th:replace="fragments/alert :: alert (type='danger', message='Form contains errors. Please try again.')">
                 Alert
             </div>
@@ -100,22 +100,22 @@
         <fieldset>
             <div class="form-group">
                 <label for="roundsToWin" class="col-lg-2 control-label"># Rounds wins</label>
-                <select class="form-control" id="roundsToWin" th:field="${qasinoResponse.pageGameSetup.roundsToWin}">
+                <select class="form-control" id="roundsToWin" th:field="${qasino.creation.suppliedRoundsToWin}">
                     <option value="0">Select # rounds</option>
-                    <option th:each="roundsToWin : ${qasinoResponse.enumOverview.game.style.roundsToWinList}"
+                    <option th:each="roundsToWin : ${qasino.enumOverview.game.style.roundsToWinList}"
                             th:value="${roundsToWin}" th:text="${roundsToWin}"></option>
                 </select>
             </div>
             <div class="form-group">
                 <label for="turnsToWin" class="col-lg-2 control-label"># Turns wins</label>
-                <select class="form-control" id="turnsToWin" th:field="${qasinoResponse.pageGameSetup.turnsToWin}">
+                <select class="form-control" id="turnsToWin" th:field="${qasino.creation.suppliedTurnsToWin}">
                     <option value="0">Select # turns</option>
-                    <option th:each="turnsToWin : ${qasinoResponse.enumOverview.game.style.turnsToWinList}"
+                    <option th:each="turnsToWin : ${qasino.enumOverview.game.style.turnsToWinList}"
                             th:value="${turnsToWin}" th:text="${turnsToWin}"></option>
                 </select>
             </div>
             <input type="hidden" id="gameId2"
-                   th:field="${qasinoResponse.pageGameSetup.selectedGame.gameId}"/>
+                   th:field="${qasino.params.suppliedGameId}"/>
 
             <div class="form-group">
                 <div class="col-lg-offset-2 col-lg-10">

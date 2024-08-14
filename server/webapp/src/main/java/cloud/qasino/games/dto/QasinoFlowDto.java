@@ -2,11 +2,9 @@ package cloud.qasino.games.dto;
 
 import cloud.qasino.games.action.CalculateAndFinishGameAction;
 import cloud.qasino.games.action.CalculateQasinoStatisticsAction;
-import cloud.qasino.games.action.CreateNewGameAction;
 import cloud.qasino.games.action.CreateNewLeagueAction;
 import cloud.qasino.games.action.DeterminePossibleEventsAction;
 import cloud.qasino.games.action.FindVisitorIdByAliasOrUsernameAction;
-import cloud.qasino.games.action.IsGameConsistentForGameEventAction;
 import cloud.qasino.games.action.IsGameFinishedAction;
 import cloud.qasino.games.action.IsPlayerHumanAction;
 import cloud.qasino.games.action.IsPlayingConsistentForPlayEventAction;
@@ -16,14 +14,12 @@ import cloud.qasino.games.action.MapQasinoResponseFromDtoAction;
 import cloud.qasino.games.action.PlayFirstMoveAction;
 import cloud.qasino.games.action.PlayNextBotMoveAction;
 import cloud.qasino.games.action.PlayNextHumanMoveAction;
-import cloud.qasino.games.action.PrepareGameAction;
 import cloud.qasino.games.action.SetStatusIndicatorsBaseOnRetrievedDataAction;
 import cloud.qasino.games.action.SignUpNewVisitorAction;
 import cloud.qasino.games.action.StartGameForTypeAction;
 import cloud.qasino.games.action.StopGameAction;
 import cloud.qasino.games.action.UpdateFichesForPlayerAction;
 import cloud.qasino.games.action.UpdatePlayingStateForGame;
-import cloud.qasino.games.action.UpdateStyleForGame;
 import cloud.qasino.games.database.entity.Card;
 import cloud.qasino.games.database.entity.CardMove;
 import cloud.qasino.games.database.entity.Game;
@@ -79,11 +75,9 @@ public class QasinoFlowDto extends AbstractFlowDto
         implements
         CalculateAndFinishGameAction.Dto,
         CalculateQasinoStatisticsAction.Dto,
-        CreateNewGameAction.Dto,
         CreateNewLeagueAction.Dto,
         DeterminePossibleEventsAction.Dto,
         FindVisitorIdByAliasOrUsernameAction.Dto,
-        IsGameConsistentForGameEventAction.Dto,
         IsPlayingConsistentForPlayEventAction.Dto,
         IsGameFinishedAction.Dto,
         IsPlayerHumanAction.Dto,
@@ -93,12 +87,10 @@ public class QasinoFlowDto extends AbstractFlowDto
         PlayNextHumanMoveAction.Dto,
         PlayNextBotMoveAction.Dto,
         PlayFirstMoveAction.Dto,
-        PrepareGameAction.Dto,
         SetStatusIndicatorsBaseOnRetrievedDataAction.Dto,
         SignUpNewVisitorAction.Dto,
         StartGameForTypeAction.Dto,
         StopGameAction.Dto,
-        UpdateStyleForGame.Dto,
         UpdatePlayingStateForGame.Dto,
         UpdateFichesForPlayerAction.Dto {
     // suppress lombok setter for these fixed values

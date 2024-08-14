@@ -39,17 +39,14 @@ import java.security.Principal;
 @Slf4j
 public class VisitorThymeleafController extends AbstractThymeleafController {
 
-    // formatter:of
+    // formatter:off
     private static final String VISITOR_VIEW_LOCATION = "pages/visitor";
 
     EventOutput.Result result;
     private final VisitorRepository visitorRepository;
-    @Autowired
-    UpdateVisitorAction updateVisitor;
-    @Autowired
-    HandleSecuredLoanAction handleSecuredLoan;
-    @Autowired
-    LoadPrincipalDtoAction loadVisitor;
+    @Autowired UpdateVisitorAction updateVisitor;
+    @Autowired HandleSecuredLoanAction handleSecuredLoan;
+    @Autowired LoadPrincipalDtoAction loadVisitor;
 
     // formatter:on
     @Autowired
@@ -72,7 +69,6 @@ public class VisitorThymeleafController extends AbstractThymeleafController {
         // 4 - return  response
         prepareQasino(response, qasino);
         model.addAttribute(qasino);
-        // 4 - return response
         return VISITOR_VIEW_LOCATION;
     }
 
@@ -84,8 +80,7 @@ public class VisitorThymeleafController extends AbstractThymeleafController {
             BindingResult result, // can only be directly after @Validated/valid
             Model model,
             RedirectAttributes ra,
-            HttpServletResponse response
-    ) {
+            HttpServletResponse response) {
 
         // 1 - map input
         qasino.getParams().setSuppliedQasinoEvent(QasinoEvent.UPDATE_VISITOR);

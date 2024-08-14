@@ -3,20 +3,29 @@ package cloud.qasino.games.database.service;
 import cloud.qasino.games.database.entity.Card;
 import cloud.qasino.games.database.entity.Game;
 import cloud.qasino.games.database.entity.League;
+import cloud.qasino.games.database.entity.Player;
 import cloud.qasino.games.database.entity.enums.card.Location;
 import cloud.qasino.games.database.entity.enums.card.PlayingCard;
 import cloud.qasino.games.database.entity.enums.game.GameState;
+import cloud.qasino.games.database.entity.enums.game.Style;
+import cloud.qasino.games.database.entity.enums.player.AiLevel;
 import cloud.qasino.games.database.entity.enums.player.Avatar;
+import cloud.qasino.games.database.entity.enums.player.PlayerType;
 import cloud.qasino.games.database.repository.CardRepository;
 import cloud.qasino.games.database.repository.GameRepository;
 import cloud.qasino.games.database.repository.PlayerRepository;
+import cloud.qasino.games.database.security.Visitor;
+import cloud.qasino.games.database.security.VisitorRepository;
 import cloud.qasino.games.dto.GameDto;
 import cloud.qasino.games.dto.GameShortDto;
+import cloud.qasino.games.dto.LeagueDto;
 import cloud.qasino.games.dto.PlayerDto;
 import cloud.qasino.games.dto.PlayingDto;
 import cloud.qasino.games.dto.VisitorDto;
 import cloud.qasino.games.dto.mapper.GameMapper;
 import cloud.qasino.games.dto.mapper.GameShortMapper;
+import cloud.qasino.games.dto.mapper.LeagueMapper;
+import cloud.qasino.games.dto.request.CreationDto;
 import cloud.qasino.games.dto.request.ParamsDto;
 import cloud.qasino.games.exception.MyBusinessException;
 import cloud.qasino.games.pattern.factory.Deck;
@@ -40,6 +49,7 @@ public class GameService {
 
     // @formatter:off
     @Autowired private GameRepository gameRepository;
+    @Autowired private VisitorRepository visitorRepository;
     @Autowired private CardRepository cardRepository;
     @Autowired private PlayerRepository playerRepository;
     @Autowired private PlayerServiceOld playerServiceOld;
@@ -81,16 +91,39 @@ public class GameService {
         }
         return new ArrayList<>();
     }
-    public GameDto setupNewGameWithPlayerInitiator(GameDto gameDto, VisitorDto visitorDto) {
-        Game game = GameMapper.INSTANCE.fromDto(gameDto);
-        game.setInitiator(visitorDto.getVisitorId());
-        Game newGame = gameRepository.save(game);
+    public GameDto setupNewGameWithPlayerInitiator(CreationDto creation, long initiator) {
+        Game game = new Game(
+                null,
+                creation.getSuppliedType().getLabel(),
+                initiator,
+                creation.getSuppliedStyle(),
+                creation.getSuppliedAnte());
         // TODO
-        playerServiceOld.addHumanVisitorPlayerToAGame(null, newGame, Avatar.ELF);
+        List<Player> allPlayersForTheGame = playerRepository.findByGame(game);
+        String avatarName = "avatarName";
+        Visitor visitor = visitorRepository.getReferenceById(initiator);
+        Player player = new Player(
+                visitor,
+                game,
+                PlayerType.INITIATOR,
+                visitor.getBalance(),
+                allPlayersForTheGame.size()+1,
+                creation.getSuppliedAvatar(),
+                avatarName,
+                AiLevel.HUMAN);
+        Player newPlayer = playerRepository.save(player);
+        Game newGame = gameRepository.save(game);
         return GameMapper.INSTANCE.toDto(newGame, newGame.getCards());
     }
-    public GameDto prepareExistingGame(GameDto gameDto, League league, String style, int ante) {
+    public GameDto updateStyleForGame(Style style, long gameId) {
+        Game game = gameRepository.getReferenceById(gameId);
+        game.setStyle(style.updateLabelFromEnums());
+        Game newGame = gameRepository.save(game);
+        return GameMapper.INSTANCE.toDto(newGame, newGame.getCards());
+    }
+    public GameDto prepareExistingGame(GameDto gameDto, LeagueDto leagueDto, String style, int ante) {
         Game game = GameMapper.INSTANCE.fromDto(gameDto);
+        League league = LeagueMapper.INSTANCE.fromDto(leagueDto);
         // You cannot change the initiator or the type
         if (!(league == null)) {
             game.setLeague(league);
