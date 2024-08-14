@@ -1,9 +1,9 @@
-package cloud.qasino.games.action;
+package cloud.qasino.games.action.dto.todo;
 
 import cloud.qasino.games.action.interfaces.Action;
 import cloud.qasino.games.database.entity.Game;
-import cloud.qasino.games.database.entity.Player;
 import cloud.qasino.games.database.entity.Playing;
+import cloud.qasino.games.database.entity.Player;
 import cloud.qasino.games.database.entity.enums.card.Face;
 import cloud.qasino.games.database.entity.enums.card.Location;
 import cloud.qasino.games.database.entity.enums.game.Style;
@@ -15,16 +15,16 @@ import cloud.qasino.games.database.service.PlayingService;
 import cloud.qasino.games.exception.MyNPException;
 import cloud.qasino.games.pattern.statemachine.event.EventOutput;
 import cloud.qasino.games.pattern.statemachine.event.PlayEvent;
+import cloud.qasino.games.pattern.strategy.NextMoveCalculator;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import static cloud.qasino.games.database.service.PlayingService.isRoundEqualToRoundsToWin;
-import static cloud.qasino.games.database.service.PlayingService.mapPlayEventToMove;
 
 @Slf4j
 @Component
-public class PlayNextHumanMoveAction implements Action<PlayNextHumanMoveAction.Dto, EventOutput.Result> {
+public class PlayNextBotMoveAction implements Action<PlayNextBotMoveAction.Dto, EventOutput.Result> {
 
     @Autowired
     PlayingService playingService;
@@ -33,15 +33,16 @@ public class PlayNextHumanMoveAction implements Action<PlayNextHumanMoveAction.D
     @Autowired
     private GameServiceOld gameServiceOld;
 
+
     @Override
     public EventOutput.Result perform(Dto actionDto) {
 
         if (!actionDto.getQasinoGame().getType().equals(Type.HIGHLOW)) {
-            throw new MyNPException("PlayNextHumanMoveAction", "error [" + actionDto.getQasinoGame().getType() + "]");
+            throw new MyNPException("PlayNextBotMoveAction", "error [" + actionDto.getQasinoGame().getType() + "]");
         }
 
         // Next move in HIGHLOW = a given move from location STOCK to location HAND with face UP
-        Move nextMove = mapPlayEventToMove(actionDto.getSuppliedPlayEvent());
+        Move nextMove = null;
         Location fromLocation = Location.STOCK;
         Location toLocation = Location.HAND;
         Face face = Face.UP;
@@ -54,9 +55,22 @@ public class PlayNextHumanMoveAction implements Action<PlayNextHumanMoveAction.D
         Playing playing = game.getPlaying();
         int currentSeat = playing.getCurrentSeatNumber();
         int currentRound = playing.getCurrentRoundNumber();
+        Player player = playing.getPlayer();
 
+        nextMove = NextMoveCalculator.next(game, player, playing);
+        switch (nextMove) {
+            case PASS, NEXT -> {
+                actionDto.setSuppliedPlayEvent(PlayEvent.PASS);
+            }
+            default -> {
+                actionDto.setSuppliedPlayEvent(PlayEvent.BOT);
+            }
+        }
+
+        log.info("PlayNextBotMoveAction StrategyMove {}", nextMove);
         // TODO DetermineNextRoundOrEndGame -> move to separate action
-        if (actionDto.getSuppliedPlayEvent() == PlayEvent.PASS) {
+
+        if (nextMove == Move.PASS) {
             if (totalSeats == currentSeat) {
                 if (isRoundEqualToRoundsToWin(Style.fromLabelWithDefault(game.getStyle()), currentRound)) {
                     actionDto.setSuppliedPlayEvent(PlayEvent.END_GAME);
@@ -67,6 +81,7 @@ public class PlayNextHumanMoveAction implements Action<PlayNextHumanMoveAction.D
         }
 
         // Update PLAYING - could be new to new Player
+        // TODO what if PASS then deal to next player !!
         playingService.updatePlaying(nextMove, playing, nextPlayer);
         Playing newPlaying = playingRepository.save(playing);
         game.setPlaying(newPlaying);
@@ -84,7 +99,6 @@ public class PlayNextHumanMoveAction implements Action<PlayNextHumanMoveAction.D
     // @formatter:off
     public interface Dto {
         Game getQasinoGame();
-        PlayEvent getSuppliedPlayEvent();
         void setSuppliedPlayEvent(PlayEvent playEvent);
     }
 }

@@ -1,18 +1,18 @@
 package cloud.qasino.games.controller.thymeleaf;
 
-import cloud.qasino.games.action.CalculateAndFinishGameAction;
+import cloud.qasino.games.action.dto.todo.CalculateAndFinishGameAction;
 import cloud.qasino.games.action.dto.IsGameConsistentForGameEventAction;
-import cloud.qasino.games.action.IsGameFinishedAction;
-import cloud.qasino.games.action.IsPlayerHumanAction;
-import cloud.qasino.games.action.IsPlayingConsistentForPlayEventAction;
+import cloud.qasino.games.action.dto.todo.IsGameFinishedAction;
+import cloud.qasino.games.action.dto.todo.IsPlayerHumanAction;
+import cloud.qasino.games.action.dto.todo.IsPlayingConsistentForPlayEventAction;
 import cloud.qasino.games.action.LoadEntitiesToDtoAction;
 import cloud.qasino.games.action.MapQasinoGameTableFromDtoAction;
-import cloud.qasino.games.action.PlayFirstMoveAction;
-import cloud.qasino.games.action.PlayNextBotMoveAction;
-import cloud.qasino.games.action.PlayNextHumanMoveAction;
-import cloud.qasino.games.action.StartGameForTypeAction;
+import cloud.qasino.games.action.dto.todo.PlayFirstMoveAction;
+import cloud.qasino.games.action.dto.todo.PlayNextBotMoveAction;
+import cloud.qasino.games.action.dto.todo.PlayNextHumanMoveAction;
+import cloud.qasino.games.action.dto.todo.StartGameForTypeAction;
 import cloud.qasino.games.action.StopGameAction;
-import cloud.qasino.games.action.UpdateFichesForPlayerAction;
+import cloud.qasino.games.action.dto.todo.UpdateFichesForPlayerAction;
 import cloud.qasino.games.action.UpdatePlayingStateForGame;
 import cloud.qasino.games.action.dto.FindAllDtosForUsernameAction;
 import cloud.qasino.games.action.dto.MapQasinoFromDtosAction;

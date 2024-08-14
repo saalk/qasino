@@ -1,37 +1,31 @@
-package cloud.qasino.games.action;
+package cloud.qasino.games.action.dto.todo;
 
 import cloud.qasino.games.action.interfaces.Action;
 import cloud.qasino.games.database.entity.Game;
 import cloud.qasino.games.database.entity.Player;
-import cloud.qasino.games.database.repository.GameRepository;
+import cloud.qasino.games.database.service.GameServiceOld;
 import cloud.qasino.games.pattern.statemachine.event.EventOutput;
 import cloud.qasino.games.pattern.statemachine.event.GameEvent;
 import cloud.qasino.games.pattern.statemachine.event.PlayEvent;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import jakarta.annotation.Resource;
+import java.util.List;
 
 @Slf4j
 @Component
-public class IsPlayerHumanAction implements Action<IsPlayerHumanAction.Dto, EventOutput.Result> {
+public class StartGameForTypeAction implements Action<StartGameForTypeAction.Dto, EventOutput.Result> {
 
-    @Resource
-    GameRepository gameRepository;
+    @Autowired
+    GameServiceOld gameServiceOld;
 
     @Override
     public EventOutput.Result perform(Dto actionDto) {
 
-        if (actionDto.getPlayingPlayer().isHuman()) {
-            return EventOutput.Result.SUCCESS;
-        }
-        return EventOutput.Result.FAILURE;
-    }
-
-    private void setBadRequestErrorMessage(Dto actionDto, String id, String value) {
-        actionDto.setErrorKey(id);
-        actionDto.setErrorValue(value);
-        actionDto.setBadRequestErrorMessage("Action [" + id + "] invalid");
+        // update a Game : create Cards for game according to the style and shuffle them
+        actionDto.setQasinoGame(gameServiceOld.addAndShuffleCardsForGame(actionDto.getQasinoGame()));
+        return EventOutput.Result.SUCCESS;
     }
 
     public interface Dto {
@@ -42,9 +36,9 @@ public class IsPlayerHumanAction implements Action<IsPlayerHumanAction.Dto, Even
         PlayEvent getSuppliedPlayEvent();
 
         // Getters
-        Player getPlayingPlayer();
+        List<Player> getQasinoGamePlayers();
         Game getQasinoGame();
-        // Setters
+
         void setQasinoGame(Game game);
 
         // error setters

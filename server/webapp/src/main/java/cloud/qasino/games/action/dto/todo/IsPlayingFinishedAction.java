@@ -1,4 +1,4 @@
-package cloud.qasino.games.action;
+package cloud.qasino.games.action.dto.todo;
 
 import cloud.qasino.games.action.interfaces.Action;
 import cloud.qasino.games.database.entity.Game;
@@ -14,7 +14,7 @@ import jakarta.annotation.Resource;
 
 @Slf4j
 @Component
-public class IsGameFinishedAction implements Action<IsGameFinishedAction.Dto, EventOutput.Result> {
+public class IsPlayingFinishedAction implements Action<IsPlayingFinishedAction.Dto, EventOutput.Result> {
 
     @Resource
     GameRepository gameRepository;
@@ -22,8 +22,8 @@ public class IsGameFinishedAction implements Action<IsGameFinishedAction.Dto, Ev
     @Override
     public EventOutput.Result perform(Dto actionDto) {
 
-        if (actionDto.getSuppliedPlayEvent().equals(PlayEvent.END_GAME)) {
-            actionDto.getQasinoGame().setState(GameState.FINISHED);
+        if (actionDto.getSuppliedPlayEvent().equals(PlayEvent.PASS)) {
+            actionDto.getQasinoGame().setState(GameState.INITIATOR_MOVE);
             gameRepository.save(actionDto.getQasinoGame());
             return EventOutput.Result.SUCCESS;
         }
