@@ -121,6 +121,38 @@ public class GameService {
         Game newGame = gameRepository.save(game);
         return GameMapper.INSTANCE.toDto(newGame, newGame.getCards());
     }
+    public GameDto updateStateForGame(GameState gameState, long gameId) {
+        Game game = gameRepository.getReferenceById(gameId);
+        game.setState(gameState);
+        Game newGame = gameRepository.save(game);
+        return GameMapper.INSTANCE.toDto(newGame, newGame.getCards());
+    }
+    public GameDto updatePlayingStateForGame(PlayerDto player, long gameId) {
+        Game game = gameRepository.getReferenceById(gameId);
+
+        if ((player.isHuman())) {
+            if (game.getInitiator() == player.getPlayerId()) {
+                if (game.getState() != GameState.INITIATOR_MOVE) {
+                    game.setState(GameState.INITIATOR_MOVE);
+                    Game updateGame = gameRepository.save(game);
+                    return GameMapper.INSTANCE.toDto(updateGame, updateGame.getCards());
+                } else {
+                    if (game.getState() != GameState.INVITEE_MOVE) {
+                        game.setState(GameState.INVITEE_MOVE);
+                        Game updateGame = gameRepository.save(game);
+                        return GameMapper.INSTANCE.toDto(updateGame, updateGame.getCards());
+                    }
+                }
+            }
+        } else {
+            if (game.getState() != GameState.BOT_MOVE) {
+                game.setState(GameState.BOT_MOVE);
+                Game updateGame = gameRepository.save(game);
+                return GameMapper.INSTANCE.toDto(updateGame, updateGame.getCards());
+            }
+        }
+        return GameMapper.INSTANCE.toDto(game, game.getCards());
+    }
     public GameDto prepareExistingGame(GameDto gameDto, LeagueDto leagueDto, String style, int ante) {
         Game game = GameMapper.INSTANCE.fromDto(gameDto);
         League league = LeagueMapper.INSTANCE.fromDto(leagueDto);

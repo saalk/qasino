@@ -1,25 +1,15 @@
 package cloud.qasino.games.dto;
 
-import cloud.qasino.games.action.dto.todo.CalculateAndFinishGameAction;
 import cloud.qasino.games.action.CalculateQasinoStatisticsAction;
 import cloud.qasino.games.action.CreateNewLeagueAction;
 import cloud.qasino.games.action.DeterminePossibleEventsAction;
 import cloud.qasino.games.action.FindVisitorIdByAliasOrUsernameAction;
-import cloud.qasino.games.action.dto.todo.IsGameFinishedAction;
-import cloud.qasino.games.action.dto.todo.IsPlayerHumanAction;
-import cloud.qasino.games.action.dto.todo.IsPlayingConsistentForPlayEventAction;
 import cloud.qasino.games.action.LoadEntitiesToDtoAction;
 import cloud.qasino.games.action.MapQasinoGameTableFromDtoAction;
 import cloud.qasino.games.action.MapQasinoResponseFromDtoAction;
-import cloud.qasino.games.action.dto.todo.PlayFirstMoveAction;
-import cloud.qasino.games.action.dto.todo.PlayNextBotMoveAction;
-import cloud.qasino.games.action.dto.todo.PlayNextHumanMoveAction;
 import cloud.qasino.games.action.SetStatusIndicatorsBaseOnRetrievedDataAction;
 import cloud.qasino.games.action.SignUpNewVisitorAction;
-import cloud.qasino.games.action.dto.todo.StartGameForTypeAction;
-import cloud.qasino.games.action.StopGameAction;
-import cloud.qasino.games.action.dto.todo.UpdateFichesForPlayerAction;
-import cloud.qasino.games.action.UpdatePlayingStateForGame;
+import cloud.qasino.games.action.dto.todo.StopGameAction;
 import cloud.qasino.games.database.entity.Card;
 import cloud.qasino.games.database.entity.CardMove;
 import cloud.qasino.games.database.entity.Game;
@@ -73,26 +63,15 @@ import java.util.Map;
 @Slf4j
 public class QasinoFlowDto extends AbstractFlowDto
         implements
-        CalculateAndFinishGameAction.Dto,
         CalculateQasinoStatisticsAction.Dto,
         CreateNewLeagueAction.Dto,
         DeterminePossibleEventsAction.Dto,
         FindVisitorIdByAliasOrUsernameAction.Dto,
-        IsPlayingConsistentForPlayEventAction.Dto,
-        IsGameFinishedAction.Dto,
-        IsPlayerHumanAction.Dto,
         LoadEntitiesToDtoAction.Dto,
         MapQasinoResponseFromDtoAction.Dto,
         MapQasinoGameTableFromDtoAction.Dto,
-        PlayNextHumanMoveAction.Dto,
-        PlayNextBotMoveAction.Dto,
-        PlayFirstMoveAction.Dto,
         SetStatusIndicatorsBaseOnRetrievedDataAction.Dto,
-        SignUpNewVisitorAction.Dto,
-        StartGameForTypeAction.Dto,
-        StopGameAction.Dto,
-        UpdatePlayingStateForGame.Dto,
-        UpdateFichesForPlayerAction.Dto {
+        SignUpNewVisitorAction.Dto{
     // suppress lombok setter for these fixed values
     @Setter(AccessLevel.NONE)
     private String applicationName = "qasino";

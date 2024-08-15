@@ -1,9 +1,9 @@
 package cloud.qasino.games.pattern.strategy.algorithm;
 
-import cloud.qasino.games.database.entity.Card;
-import cloud.qasino.games.database.entity.Game;
 import cloud.qasino.games.database.entity.enums.card.Location;
 import cloud.qasino.games.database.entity.enums.move.Move;
+import cloud.qasino.games.dto.CardDto;
+import cloud.qasino.games.dto.GameDto;
 import cloud.qasino.games.pattern.math.MathUtil;
 import cloud.qasino.games.pattern.strategy.MovePredictor;
 import cloud.qasino.games.pattern.strategy.NextMoveCalculator;
@@ -11,12 +11,11 @@ import cloud.qasino.games.pattern.stream.StreamUtil;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.List;
-import java.util.Optional;
 
 @Slf4j
 public class StupidMove extends NextMoveCalculator implements MovePredictor {
     @Override
-    public Move predictMove(Game game) {
+    public Move predictMove(GameDto game) {
 
         // fallback to random move when the game has no cards yet
         if (game == null || game.getCards() == null) {
@@ -25,8 +24,8 @@ public class StupidMove extends NextMoveCalculator implements MovePredictor {
             log.warn("StupidMove fallback to randomMove {}", move);
             return move;
         }
-        
-        List<Card> sortedCardsInHand = StreamUtil.sortCardsOnSequenceWithStream(game.getCards(), Location.HAND);
+
+        List<CardDto> sortedCardsInHand = StreamUtil.sortCardsOnSequenceWithStream(game.getCards(), Location.HAND);
 //        Optional<Card> lastCardPlayed = StreamUtil.findLastCardInSortedList(sortedCardsInHand);
 //        log.warn("StupidMove lastCardPlayed is {}", lastCardPlayed);
 //

@@ -144,4 +144,10 @@ public class PlayerService {
         Player newBot =  playerRepository.save(bot);
         return PlayerMapper.INSTANCE.toDto(newBot, null);
     }
+    public PlayerDto updatePlayerFiches(PlayerDto playerDto, int fiches ) {
+        Player player = PlayerMapper.INSTANCE.fromDto(playerDto);
+        player.setFiches(fiches);
+        Player updated =  playerRepository.save(player);
+        return PlayerMapper.INSTANCE.toDto(updated, null);
+    }
 }

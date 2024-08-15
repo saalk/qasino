@@ -1,5 +1,7 @@
 package cloud.qasino.games.action.dto.todo;
 
+import cloud.qasino.games.action.dto.ActionDto;
+import cloud.qasino.games.action.dto.Qasino;
 import cloud.qasino.games.action.interfaces.Action;
 import cloud.qasino.games.database.entity.Game;
 import cloud.qasino.games.database.entity.Playing;
@@ -10,6 +12,9 @@ import cloud.qasino.games.database.entity.enums.game.Type;
 import cloud.qasino.games.database.entity.enums.move.Move;
 import cloud.qasino.games.database.repository.PlayingRepository;
 import cloud.qasino.games.database.service.PlayingService;
+import cloud.qasino.games.dto.GameDto;
+import cloud.qasino.games.dto.PlayerDto;
+import cloud.qasino.games.dto.PlayingDto;
 import cloud.qasino.games.exception.MyNPException;
 import cloud.qasino.games.pattern.statemachine.event.EventOutput;
 import cloud.qasino.games.pattern.stream.StreamUtil;
@@ -19,18 +24,18 @@ import org.springframework.stereotype.Component;
 
 @Slf4j
 @Component
-public class PlayFirstMoveAction implements Action<PlayFirstMoveAction.Dto, EventOutput.Result> {
+public class PlayFirstMoveAction extends ActionDto<EventOutput.Result> {
 
-    @Autowired
-    PlayingService playingService;
-    @Autowired
-    private PlayingRepository playingRepository;
+    // @formatter:off
+    @Autowired PlayingService playingService;
+    @Autowired private PlayingRepository playingRepository;
+    // @formatter:on
 
     @Override
-    public EventOutput.Result perform(Dto actionDto) {
+    public EventOutput.Result perform(Qasino qasino) {
 
-        if (!actionDto.getQasinoGame().getType().equals(Type.HIGHLOW)) {
-            throw new MyNPException("PlayNext", "error [" + actionDto.getQasinoGame().getType() + "]");
+        if (!qasino.getGame().getType().equals(Type.HIGHLOW)) {
+            throw new MyNPException("PlayNext", "error [" + qasino.getGame().getType() + "]");
         }
 
         // First 1 move in HIGHLOW is move DEAL from location STOCK to location HAND with face UP
@@ -41,16 +46,16 @@ public class PlayFirstMoveAction implements Action<PlayFirstMoveAction.Dto, Even
         int howMany = 1;
 
         // Local fields
-        Game game = actionDto.getQasinoGame();
-        Player firstPlayer = StreamUtil.findFirstPlayerBySeat(game.getPlayers());
+        GameDto game = qasino.getGame();
+        PlayerDto firstPlayer = StreamUtil.findFirstPlayerBySeat(game.getPlayers());
 
         // new PLAYING
-        Playing firstPlaying = new Playing(game, firstPlayer);
-        Playing savedPlaying = playingRepository.saveAndFlush(firstPlaying);
-        game.setPlaying(savedPlaying);
+        PlayingDto firstPlaying = playingService.createPlaying(game.getGameId(), firstPlayer.getPlayerId());
+        qasino.setPlaying(firstPlaying);
 
         // Deal CARDs (and update CARDMOVE)
         playingService.dealCardsToPlayer(
+                firstPlaying,
                 game,
                 firstDeal,
                 fromLocation,
@@ -58,10 +63,5 @@ public class PlayFirstMoveAction implements Action<PlayFirstMoveAction.Dto, Even
                 face,
                 howMany);
         return EventOutput.Result.SUCCESS;
-    }
-
-    public interface Dto {
-
-        Game getQasinoGame();
     }
 }

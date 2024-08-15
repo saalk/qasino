@@ -1,9 +1,12 @@
 package cloud.qasino.games.action.dto.todo;
 
+import cloud.qasino.games.action.dto.ActionDto;
+import cloud.qasino.games.action.dto.Qasino;
 import cloud.qasino.games.action.interfaces.Action;
 import cloud.qasino.games.database.entity.Game;
 import cloud.qasino.games.database.entity.enums.game.GameState;
 import cloud.qasino.games.database.repository.GameRepository;
+import cloud.qasino.games.database.service.GameService;
 import cloud.qasino.games.pattern.statemachine.event.EventOutput;
 import cloud.qasino.games.pattern.statemachine.event.GameEvent;
 import cloud.qasino.games.pattern.statemachine.event.PlayEvent;
@@ -14,48 +17,26 @@ import jakarta.annotation.Resource;
 
 @Slf4j
 @Component
-public class IsGameFinishedAction implements Action<IsGameFinishedAction.Dto, EventOutput.Result> {
+public class IsGameFinishedAction extends ActionDto<EventOutput.Result> {
 
-    @Resource
-    GameRepository gameRepository;
+    // @formatter:off
+    @Resource GameService gameService;
+    // @formatter:on
 
     @Override
-    public EventOutput.Result perform(Dto actionDto) {
+    public EventOutput.Result perform(Qasino qasino) {
 
-        if (actionDto.getSuppliedPlayEvent().equals(PlayEvent.END_GAME)) {
-            actionDto.getQasinoGame().setState(GameState.FINISHED);
-            gameRepository.save(actionDto.getQasinoGame());
+        if (qasino.getParams().getSuppliedPlayEvent().equals(PlayEvent.END_GAME)) {
+            gameService.updateStateForGame(GameState.FINISHED, qasino.getParams().getSuppliedGameId());
+            qasino.getGame().setState(GameState.FINISHED);
             return EventOutput.Result.SUCCESS;
         }
         return EventOutput.Result.FAILURE;
     }
 
-    private void setBadRequestErrorMessage(Dto actionDto, String id, String value) {
-        actionDto.setErrorKey(id);
-        actionDto.setErrorValue(value);
-        actionDto.setBadRequestErrorMessage("Action [" + id + "] invalid");
-    }
-
-    public interface Dto {
-
-        // @formatter:off
-        String getErrorMessage();
-        GameEvent getSuppliedGameEvent();
-        PlayEvent getSuppliedPlayEvent();
-
-        // Getters
-        Game getQasinoGame();
-        // Setters
-        void setQasinoGame(Game game);
-
-        // error setters
-        // @formatter:off
-        void setBadRequestErrorMessage(String problem);
-        void setNotFoundErrorMessage(String problem);
-        void setConflictErrorMessage(String reason);
-        void setUnprocessableErrorMessage(String reason);
-        void setErrorKey(String errorKey);
-        void setErrorValue(String errorValue);
-        // @formatter:on
+    private void setBadRequestErrorMessage(Qasino qasino, String id, String value) {
+        qasino.getMessage().setErrorKey(id);
+        qasino.getMessage().setErrorValue(value);
+        qasino.getMessage().setBadRequestErrorMessage("Action [" + id + "] invalid");
     }
 }

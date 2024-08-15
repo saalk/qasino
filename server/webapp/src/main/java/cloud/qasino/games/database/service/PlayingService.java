@@ -14,11 +14,16 @@ import cloud.qasino.games.database.entity.enums.move.Move;
 import cloud.qasino.games.database.repository.CardMoveRepository;
 import cloud.qasino.games.database.repository.CardRepository;
 import cloud.qasino.games.database.repository.GameRepository;
+import cloud.qasino.games.database.repository.PlayerRepository;
 import cloud.qasino.games.database.repository.PlayingRepository;
 import cloud.qasino.games.database.repository.ResultsRepository;
+import cloud.qasino.games.dto.CardDto;
+import cloud.qasino.games.dto.GameDto;
+import cloud.qasino.games.dto.PlayerDto;
 import cloud.qasino.games.dto.PlayingDto;
 import cloud.qasino.games.dto.ResultDto;
 import cloud.qasino.games.dto.SeatDto;
+import cloud.qasino.games.dto.mapper.PlayerMapper;
 import cloud.qasino.games.dto.mapper.PlayingMapper;
 import cloud.qasino.games.dto.mapper.ResultMapper;
 import cloud.qasino.games.dto.mapper.SeatMapper;
@@ -40,6 +45,7 @@ public class PlayingService {
 
     // @formatter:off
     @Autowired private PlayingRepository playingRepository;
+    @Autowired private PlayerRepository playerRepository;
     @Autowired private ResultsRepository resultsRepository;
     @Autowired private CardMoveRepository cardMoveRepository;
     @Autowired private CardRepository cardRepository;
@@ -59,7 +65,6 @@ public class PlayingService {
         List<Result> results = resultsRepository.findByGameId(paramsDto.getSuppliedGameId());
         return ResultMapper.INSTANCE.toDtoList(results);
     }
-
     public List<SeatDto> findByPlayingOrGameId(ParamsDto paramsDto) {
         List<Playing> playings = playingRepository.findByGameId(paramsDto.getSuppliedGameId());
         Playing playing;
@@ -79,29 +84,24 @@ public class PlayingService {
         }
         return seats;
     }
-
-    public List<CardMove> findCardMovesForGame(Game game) {
-        Playing playing = game.getPlaying();
+    public List<CardMove> findCardMovesForGame(PlayingDto playing) {
         if (playing == null) {
             // when game is quit before started
             return null;
         }
-        return cardMoveRepository.findByPlayingOrderBySequenceAsc(playing);
+        return cardMoveRepository.findByPlayingIdOrderBySequenceAsc(playing.getPlayingId());
     }
 
     // save CARD & CARDMOVE
 //    @Transactional
-    public void dealCardsToPlayer(Game game, Move move, Location oldLocation, Location newLocation, Face face, int howMany) {
-        Playing activePlaying = game.getPlaying();
-        log.warn("activePlaying <{}", activePlaying);
-        Player player = activePlaying.getPlayer();
-        log.warn("player <{}", player);
-        List<Card> topCardsInStock = getTopNCardsByLocationForGame(game, oldLocation, howMany);
+    public void dealCardsToPlayer(PlayingDto playing, GameDto game, Move move, Location oldLocation, Location newLocation, Face face, int howMany) {
+        List<CardDto> topCardsInStock = getTopNCardsByLocationForGame(game, oldLocation, howMany);
         log.warn("topCardsInStock <{}>", topCardsInStock);
         List<Card> cardsDealt = new ArrayList<>();
 
-        for (Card card : topCardsInStock) {
-            Card cardDealt = card;
+        Player player = playerRepository.getReferenceById(playing.getCurrentPlayer().getPlayerId());
+        for (CardDto card : topCardsInStock) {
+            Card cardDealt = cardRepository.getReferenceById(card.getCardId());
             log.warn("card <{}>", card);
 
             cardDealt.setLocation(newLocation);
@@ -109,14 +109,15 @@ public class PlayingService {
             cardDealt.setHand(player);
             log.warn("cardDealt <{}>", cardDealt);
             cardsDealt.add(cardRepository.save(cardDealt));
-            storeCardMoveForPlaying(activePlaying,cardDealt,move,newLocation);
+            storeCardMoveForPlaying(playing.getPlayingId(),cardDealt,move,newLocation);
         }
     }
-    private static List<Card> getTopNCardsByLocationForGame(Game game, Location location, int howMany) {
-        List<Card> orderedCards = StreamUtil.sortCardsOnSequenceWithStream(game.getCards(),location);
+    private static List<CardDto> getTopNCardsByLocationForGame(GameDto game, Location location, int howMany) {
+        List<CardDto> orderedCards = StreamUtil.sortCardsOnSequenceWithStream(game.getCards(),location);
         return StreamUtil.findFirstNCards(orderedCards, howMany);
     }
-    private void storeCardMoveForPlaying(Playing activePlaying, Card cardMoved, Move move, Location location) {
+    private void storeCardMoveForPlaying(long activePlayingId, Card cardMoved, Move move, Location location) {
+        Playing activePlaying = playingRepository.getReferenceById(activePlayingId);
         CardMove newMove = new CardMove(
                 activePlaying,
                 activePlaying.getPlayer(),
@@ -140,7 +141,16 @@ public class PlayingService {
     }
 
     // PLAYING
-    public void updatePlaying(Move move, Playing activePlaying, Player nextPlayer) {
+    public PlayingDto createPlaying(long gameId, long firstPlayerId) {
+        Game game = gameRepository.getReferenceById(gameId);
+        Player player = playerRepository.getReferenceById(firstPlayerId);
+        Playing savedPlaying = playingRepository.saveAndFlush(new Playing(game,player));
+        return PlayingMapper.INSTANCE.toDto(savedPlaying);
+    }
+    public PlayingDto updatePlaying(Move move, long activePlayingId, long nextPlayerId) {
+        Player nextPlayer = playerRepository.getReferenceById(nextPlayerId);
+        Playing activePlaying = playingRepository.getReferenceById(activePlayingId);
+
         if (move == Move.PASS) move = Move.DEAL;
         switch (move) {
             case HIGHER, LOWER -> {
@@ -154,6 +164,9 @@ public class PlayingService {
             }
             default -> throw new MyNPException("PlayNext", "updateActivePlaying [" + move + "]");
         }
+        Playing savedPlaying = playingRepository.save(activePlaying);
+        return PlayingMapper.INSTANCE.toDto(savedPlaying);
+
     }
 
     // STYLE
@@ -213,6 +226,4 @@ public class PlayingService {
             default -> throw new MyNPException("PlayNext", "playEvent [" + playEvent + "]");
         }
     }
-
-
 }

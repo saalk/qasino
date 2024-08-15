@@ -39,7 +39,7 @@ import java.security.Principal;
 @Slf4j
 public class VisitorThymeleafController extends AbstractThymeleafController {
 
-    // formatter:off
+    // @formatter:off
     private static final String VISITOR_VIEW_LOCATION = "pages/visitor";
 
     EventOutput.Result result;
@@ -48,7 +48,7 @@ public class VisitorThymeleafController extends AbstractThymeleafController {
     @Autowired HandleSecuredLoanAction handleSecuredLoan;
     @Autowired LoadPrincipalDtoAction loadVisitor;
 
-    // formatter:on
+    // @formatter:on
     @Autowired
     public VisitorThymeleafController(VisitorRepository visitorRepository) {
         this.visitorRepository = visitorRepository;

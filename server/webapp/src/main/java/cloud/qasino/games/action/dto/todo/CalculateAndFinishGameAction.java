@@ -1,5 +1,7 @@
 package cloud.qasino.games.action.dto.todo;
 
+import cloud.qasino.games.action.dto.ActionDto;
+import cloud.qasino.games.action.dto.Qasino;
 import cloud.qasino.games.action.interfaces.Action;
 import cloud.qasino.games.action.util.ActionUtils;
 import cloud.qasino.games.database.entity.CardMove;
@@ -12,6 +14,11 @@ import cloud.qasino.games.database.repository.ResultsRepository;
 import cloud.qasino.games.database.security.Visitor;
 import cloud.qasino.games.database.security.VisitorRepository;
 import cloud.qasino.games.database.service.PlayingService;
+import cloud.qasino.games.database.service.ResultsService;
+import cloud.qasino.games.dto.PlayerDto;
+import cloud.qasino.games.dto.ResultDto;
+import cloud.qasino.games.dto.VisitorDto;
+import cloud.qasino.games.dto.mapper.VisitorMapper;
 import cloud.qasino.games.pattern.statemachine.event.EventOutput;
 import cloud.qasino.games.pattern.statemachine.event.GameEvent;
 import cloud.qasino.games.pattern.statemachine.event.PlayEvent;
@@ -27,51 +34,49 @@ import java.util.Optional;
 
 @Slf4j
 @Component
-public class CalculateAndFinishGameAction implements Action<CalculateAndFinishGameAction.Dto, EventOutput.Result> {
+public class CalculateAndFinishGameAction extends ActionDto<EventOutput.Result> {
 
-    @Resource
-    PlayingService playingService;
-    @Resource
-    CardRepository cardRepository;
-    @Resource
-    ResultsRepository resultsRepository;
-    @Resource
-    VisitorRepository visitorRepository;
+    // @formatter:off
+    @Resource ResultsService resultsService;
+    @Resource PlayingService playingService;
+    @Resource CardRepository cardRepository;
+    @Resource ResultsRepository resultsRepository;
+    @Resource VisitorRepository visitorRepository;
 
     @Override
-    public EventOutput.Result perform(CalculateAndFinishGameAction.Dto actionDto) {
+    public EventOutput.Result perform(Qasino qasino) {
 
-        List<Result> results = resultsRepository.findByGame(actionDto.getQasinoGame());
+        List<ResultDto> results = resultsService.findByGame(qasino.getParams());
 
         if (!(results.isEmpty())) {
-            actionDto.setGameResults(results);
+            qasino.setResults(results);
             return EventOutput.Result.SUCCESS;
-        } else if (actionDto.getQasinoGame() == null) {
-            actionDto.setGameResults(null);
+        } else if (qasino.getGame() == null) {
+            qasino.setResults(null);
             return EventOutput.Result.SUCCESS;
-        } else if (actionDto.getQasinoGame().getState().getGroup() != GameStateGroup.FINISHED) {
-            actionDto.setGameResults(null);
+        } else if (qasino.getGame().getState().getGroup() != GameStateGroup.FINISHED) {
+            qasino.setResults(null);
             return EventOutput.Result.SUCCESS;
         }
 
         // make a players profit list
         HashMap<Long, Integer> playersProfit = new HashMap<>();
-        List<Player> players = actionDto.getQasinoGame().getPlayers();
-        for (Player player : players) {
+        List<PlayerDto> players = qasino.getGame().getPlayers();
+        for (PlayerDto player : players) {
             playersProfit.put(player.getPlayerId(), 0);
         }
 
         // get all the card moves sorted
-        actionDto.setAllCardMovesForTheGame(playingService.findCardMovesForGame(actionDto.getQasinoGame()));
-        if (actionDto.getAllCardMovesForTheGame() == null || players.isEmpty()) {
+        List<CardMove> cardMoves = playingService.findCardMovesForGame(qasino.getPlaying());
+        if (cardMoves.isEmpty() || players.isEmpty()) {
             // some error happened - just stop calculating
             return EventOutput.Result.SUCCESS;
         }
 
         // calculate all players profits - loop cardMoves per player
-        for (Player player : players) {
+        for (PlayerDto player : players) {
             // iterate per player - should be same as end - begin
-            for (CardMove cardMove : actionDto.getAllCardMovesForTheGame()) {
+            for (CardMove cardMove : cardMoves) {
                 if (cardMove.getPlayerId() != player.getPlayerId()) {
                     continue; // go to next move
                 }
@@ -84,10 +89,10 @@ public class CalculateAndFinishGameAction implements Action<CalculateAndFinishGa
         // rank playersProfit by highest desc and create results
         HashMap<Long, Integer> playerProfitSortedOnValue = ActionUtils.sortByValue(playersProfit);
 
-        Player winner = null;
+        PlayerDto winner = null;
         for (Map.Entry<Long, Integer> en : playerProfitSortedOnValue.entrySet()) {
 
-            Player player = ActionUtils.findPlayerByPlayerId(players, en.getKey());
+            PlayerDto player = ActionUtils.findPlayerByPlayerId(players, en.getKey());
             boolean won = false;
             // first player has highest profit and thus wins !!
             if (winner == null) {
@@ -96,47 +101,19 @@ public class CalculateAndFinishGameAction implements Action<CalculateAndFinishGa
             }
             // en.getKey()
             // en.getValue()
-            Optional<Visitor> initiator = visitorRepository.findVisitorByVisitorId(actionDto.getQasinoGame().getInitiator());
+            Optional<Visitor> initiator = visitorRepository.findVisitorByVisitorId(qasino.getGame().getInitiator());
             Visitor initiatorFound = initiator.isPresent() ? initiator.get() : null;
-            resultsRepository.save(new Result(
+            VisitorDto visitorDto = VisitorMapper.INSTANCE.toDto(initiatorFound);
+            resultsService.createResult(
                     player,
-                    initiatorFound,
-                    actionDto.getQasinoGame(),
-                    actionDto.getQasinoGame().getType(),
+                    visitorDto,
+                    qasino.getGame(),
                     en.getValue(),
                     won
-            ));
+            );
         }
-        actionDto.setGameResults(resultsRepository.findByGame(actionDto.getQasinoGame()));
+        qasino.setResults(resultsService.findByGame(qasino.getParams()));
         return EventOutput.Result.SUCCESS;
-    }
-
-    public interface Dto {
-
-        // @formatter:off
-        // Getters
-        String getErrorMessage();
-        GameEvent getSuppliedGameEvent();
-        PlayEvent getSuppliedPlayEvent();
-
-        Game getQasinoGame();
-        Visitor getQasinoVisitor();
-        long getSuppliedGameId();
-        List<CardMove> getAllCardMovesForTheGame();
-
-        // Setters
-        void setAllCardMovesForTheGame(List<CardMove> cardMoves);
-        void setGameResults(List<Result> results);
-
-        // error setters
-        // @formatter:off
-//        void setBadRequestErrorMessage(String problem);
-//        void setNotFoundErrorMessage(String problem);
-//        void setConflictErrorMessage(String reason);
-//        void setUnprocessableErrorMessage(String reason);
-//        void setErrorKey(String errorKey);
-//        void setErrorValue(String errorValue);
-        // @formatter:on
     }
 }
 

@@ -1,5 +1,7 @@
 package cloud.qasino.games.action.dto.todo;
 
+import cloud.qasino.games.action.dto.ActionDto;
+import cloud.qasino.games.action.dto.Qasino;
 import cloud.qasino.games.action.interfaces.Action;
 import cloud.qasino.games.database.entity.Game;
 import cloud.qasino.games.database.entity.Player;
@@ -14,47 +16,20 @@ import jakarta.annotation.Resource;
 
 @Slf4j
 @Component
-public class IsPlayerHumanAction implements Action<IsPlayerHumanAction.Dto, EventOutput.Result> {
-
-    @Resource
-    GameRepository gameRepository;
+public class IsPlayerHumanAction extends ActionDto<EventOutput.Result> {
 
     @Override
-    public EventOutput.Result perform(Dto actionDto) {
+    public EventOutput.Result perform(Qasino qasino) {
 
-        if (actionDto.getPlayingPlayer().isHuman()) {
+        if (qasino.getPlaying().getCurrentPlayer().isHuman()) {
             return EventOutput.Result.SUCCESS;
         }
         return EventOutput.Result.FAILURE;
     }
 
-    private void setBadRequestErrorMessage(Dto actionDto, String id, String value) {
-        actionDto.setErrorKey(id);
-        actionDto.setErrorValue(value);
-        actionDto.setBadRequestErrorMessage("Action [" + id + "] invalid");
-    }
-
-    public interface Dto {
-
-        // @formatter:off
-        String getErrorMessage();
-        GameEvent getSuppliedGameEvent();
-        PlayEvent getSuppliedPlayEvent();
-
-        // Getters
-        Player getPlayingPlayer();
-        Game getQasinoGame();
-        // Setters
-        void setQasinoGame(Game game);
-
-        // error setters
-        // @formatter:off
-        void setBadRequestErrorMessage(String problem);
-        void setNotFoundErrorMessage(String problem);
-        void setConflictErrorMessage(String reason);
-        void setUnprocessableErrorMessage(String reason);
-        void setErrorKey(String errorKey);
-        void setErrorValue(String errorValue);
-        // @formatter:on
+    private void setBadRequestErrorMessage(Qasino qasino, String id, String value) {
+        qasino.getMessage().setErrorKey(id);
+        qasino.getMessage().setErrorValue(value);
+        qasino.getMessage().setBadRequestErrorMessage("Action [" + id + "] invalid");
     }
 }

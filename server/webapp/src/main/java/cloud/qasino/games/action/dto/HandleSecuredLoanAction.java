@@ -13,12 +13,12 @@ import java.util.Random;
 @Component
 public class HandleSecuredLoanAction extends ActionDto<EventOutput.Result> {
 
-    // formatter:off
+    // @formatter:off
     @Resource
     VisitorAndLeaguesService visitorAndLeaguesService;
     private int securedLoan;
     private int balance;
-    // formatter:on
+    // @formatter:on
 
     @Override
     public EventOutput.Result perform(Qasino qasino) {
@@ -57,7 +57,7 @@ public class HandleSecuredLoanAction extends ActionDto<EventOutput.Result> {
         return EventOutput.Result.SUCCESS;
     }
 
-    // formatter:on
+    // @formatter:on
     private void setConflictErrorMessage(Qasino qasino, String id, String value) {
         qasino.getMessage().setErrorKey(id);
         qasino.getMessage().setErrorValue(value);

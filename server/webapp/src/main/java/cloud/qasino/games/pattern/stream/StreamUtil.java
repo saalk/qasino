@@ -6,6 +6,7 @@ import cloud.qasino.games.database.entity.Player;
 import cloud.qasino.games.database.entity.enums.card.Location;
 import cloud.qasino.games.database.entity.enums.card.PlayingCard;
 import cloud.qasino.games.database.entity.enums.game.Type;
+import cloud.qasino.games.dto.CardDto;
 import cloud.qasino.games.dto.PlayerDto;
 import cloud.qasino.games.exception.MyNPException;
 import cloud.qasino.games.pattern.comparator.ComparatorUtil;
@@ -24,7 +25,7 @@ public class StreamUtil {
     // filter() then limit() - find the first X then collect() as limit returns another stream
 
     // sort
-    public static List<Card> sortCardsOnSequenceWithStream(List<Card> unsortedCardList, Location location) {
+    public static List<CardDto> sortCardsOnSequenceWithStream(List<CardDto> unsortedCardList, Location location) {
         if (location != null) {
             return unsortedCardList.
                     stream().
@@ -66,15 +67,15 @@ public class StreamUtil {
     }
 
     // map and sum
-    public static int countCardValuesOnRankAndSuit(List<Card> unsortedCardList) {
+    public static int countCardValuesOnRankAndSuit(List<CardDto> unsortedCardList) {
         return unsortedCardList.stream()
                 .mapToInt(value -> PlayingCard.calculateValueWithDefaultHighlow(value.getRankSuit(), Type.HIGHLOW))
                 .sum();
     }
 
     // find first or limit and collect
-    public static Player findFirstPlayerBySeat(List<Player> players) {
-        Optional<Player> player = players
+    public static PlayerDto findFirstPlayerBySeat(List<PlayerDto> players) {
+        Optional<PlayerDto> player = players
                 .stream()
                 .filter(p -> p.getSeat() == 1)
                 .findFirst();
@@ -84,13 +85,13 @@ public class StreamUtil {
             return player.get();
         }
     }
-    public static Optional<Card> findLastCardInSortedList(List<Card> sortedCardList) {
+    public static Optional<CardDto> findLastCardInSortedList(List<CardDto> sortedCardList) {
         return sortedCardList.
                 stream().
                 sorted(ComparatorUtil.cardSequenceComparator().reversed()).
                 findFirst(); // can be replaced with max() ?????
     }
-    public static List<Card> findFirstNCards(List<Card> sortedCardList, int howMany) {
+    public static List<CardDto> findFirstNCards(List<CardDto> sortedCardList, int howMany) {
         return sortedCardList.stream().limit(howMany).collect(Collectors.toList());
     }
 }

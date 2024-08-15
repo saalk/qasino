@@ -38,7 +38,7 @@ import static cloud.qasino.games.pattern.statemachine.event.EventOutput.Result.F
 @Slf4j
 public class GameThymeleafController extends AbstractThymeleafController {
 
-    // formatter:off
+    // @formatter:off
     private static final String SETUP_VIEW_LOCATION = "pages/setup";
     private static final String PLAY_VIEW_LOCATION = "pages/play";
 
@@ -52,7 +52,7 @@ public class GameThymeleafController extends AbstractThymeleafController {
     @Autowired CreateNewGameAction createNewGameAction;
     @Autowired PrepareGameAction prepareGameAction;
     @Autowired UpdateStyleForGame updateStyleForGame;
-    // formatter:on
+    // @formatter:on
 
     @Autowired
     public GameThymeleafController(

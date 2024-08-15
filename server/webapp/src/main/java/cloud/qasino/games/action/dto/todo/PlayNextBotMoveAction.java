@@ -1,9 +1,7 @@
 package cloud.qasino.games.action.dto.todo;
 
-import cloud.qasino.games.action.interfaces.Action;
-import cloud.qasino.games.database.entity.Game;
-import cloud.qasino.games.database.entity.Playing;
-import cloud.qasino.games.database.entity.Player;
+import cloud.qasino.games.action.dto.ActionDto;
+import cloud.qasino.games.action.dto.Qasino;
 import cloud.qasino.games.database.entity.enums.card.Face;
 import cloud.qasino.games.database.entity.enums.card.Location;
 import cloud.qasino.games.database.entity.enums.game.Style;
@@ -12,6 +10,9 @@ import cloud.qasino.games.database.entity.enums.move.Move;
 import cloud.qasino.games.database.repository.PlayingRepository;
 import cloud.qasino.games.database.service.GameServiceOld;
 import cloud.qasino.games.database.service.PlayingService;
+import cloud.qasino.games.dto.GameDto;
+import cloud.qasino.games.dto.PlayerDto;
+import cloud.qasino.games.dto.PlayingDto;
 import cloud.qasino.games.exception.MyNPException;
 import cloud.qasino.games.pattern.statemachine.event.EventOutput;
 import cloud.qasino.games.pattern.statemachine.event.PlayEvent;
@@ -24,21 +25,17 @@ import static cloud.qasino.games.database.service.PlayingService.isRoundEqualToR
 
 @Slf4j
 @Component
-public class PlayNextBotMoveAction implements Action<PlayNextBotMoveAction.Dto, EventOutput.Result> {
+public class PlayNextBotMoveAction extends ActionDto<EventOutput.Result> {
 
-    @Autowired
-    PlayingService playingService;
-    @Autowired
-    PlayingRepository playingRepository;
-    @Autowired
-    private GameServiceOld gameServiceOld;
-
+    // @formatter:off
+    @Autowired PlayingService playingService;
+    // @formatter:on
 
     @Override
-    public EventOutput.Result perform(Dto actionDto) {
+    public EventOutput.Result perform(Qasino qasino) {
 
-        if (!actionDto.getQasinoGame().getType().equals(Type.HIGHLOW)) {
-            throw new MyNPException("PlayNextBotMoveAction", "error [" + actionDto.getQasinoGame().getType() + "]");
+        if (!qasino.getGame().getType().equals(Type.HIGHLOW)) {
+            throw new MyNPException("PlayNextBotMoveAction", "error [" + qasino.getGame().getType() + "]");
         }
 
         // Next move in HIGHLOW = a given move from location STOCK to location HAND with face UP
@@ -49,21 +46,20 @@ public class PlayNextBotMoveAction implements Action<PlayNextBotMoveAction.Dto, 
         int howMany = 1;
 
         // Local fields
-        Game game = actionDto.getQasinoGame();
-        Player nextPlayer = gameServiceOld.findNextPlayerForGame(game);
-        int totalSeats = game.getPlayers().size();
-        Playing playing = game.getPlaying();
+//        Player nextPlayer = gameServiceOld.findNextPlayerForGame(game);
+        int totalSeats = qasino.getGame().getPlayers().size();
+        PlayingDto playing = qasino.getPlaying();
         int currentSeat = playing.getCurrentSeatNumber();
         int currentRound = playing.getCurrentRoundNumber();
-        Player player = playing.getPlayer();
+        PlayerDto currentPlayer = playing.getCurrentPlayer();
 
-        nextMove = NextMoveCalculator.next(game, player, playing);
+        nextMove = NextMoveCalculator.next(qasino.getGame(), currentPlayer, playing);
         switch (nextMove) {
             case PASS, NEXT -> {
-                actionDto.setSuppliedPlayEvent(PlayEvent.PASS);
+                qasino.getParams().setSuppliedPlayEvent(PlayEvent.PASS);
             }
             default -> {
-                actionDto.setSuppliedPlayEvent(PlayEvent.BOT);
+                qasino.getParams().setSuppliedPlayEvent(PlayEvent.BOT);
             }
         }
 
@@ -72,8 +68,8 @@ public class PlayNextBotMoveAction implements Action<PlayNextBotMoveAction.Dto, 
 
         if (nextMove == Move.PASS) {
             if (totalSeats == currentSeat) {
-                if (isRoundEqualToRoundsToWin(Style.fromLabelWithDefault(game.getStyle()), currentRound)) {
-                    actionDto.setSuppliedPlayEvent(PlayEvent.END_GAME);
+                if (isRoundEqualToRoundsToWin(Style.fromLabelWithDefault(qasino.getGame().getStyle()), currentRound)) {
+                    qasino.getParams().setSuppliedPlayEvent(PlayEvent.END_GAME);
                     return EventOutput.Result.SUCCESS;
                 }
                 playing.setCurrentRoundNumber(currentRound + 1);
@@ -82,23 +78,18 @@ public class PlayNextBotMoveAction implements Action<PlayNextBotMoveAction.Dto, 
 
         // Update PLAYING - could be new to new Player
         // TODO what if PASS then deal to next player !!
-        playingService.updatePlaying(nextMove, playing, nextPlayer);
-        Playing newPlaying = playingRepository.save(playing);
-        game.setPlaying(newPlaying);
+        PlayingDto newPlaying = playingService.updatePlaying(nextMove, playing.getPlayingId(), playing.getNextPlayer().getPlayerId());
+        qasino.setPlaying(newPlaying);
 
         // Deal CARDs (and update CARDMOVE)
         playingService.dealCardsToPlayer(
-                game,
+                newPlaying,
+                qasino.getGame(),
                 nextMove,
                 fromLocation,
                 toLocation,
                 face,
                 howMany);
         return EventOutput.Result.SUCCESS;
-    }
-    // @formatter:off
-    public interface Dto {
-        Game getQasinoGame();
-        void setSuppliedPlayEvent(PlayEvent playEvent);
     }
 }

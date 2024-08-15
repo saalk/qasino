@@ -1,5 +1,7 @@
 package cloud.qasino.games.action.dto.todo;
 
+import cloud.qasino.games.action.dto.ActionDto;
+import cloud.qasino.games.action.dto.Qasino;
 import cloud.qasino.games.action.interfaces.Action;
 import cloud.qasino.games.database.entity.Player;
 import cloud.qasino.games.database.entity.Playing;
@@ -14,38 +16,37 @@ import jakarta.annotation.Resource;
 
 @Slf4j
 @Component
-public class IsPlayingConsistentForPlayEventAction implements Action<IsPlayingConsistentForPlayEventAction.Dto, EventOutput.Result> {
+public class IsPlayingConsistentForPlayEventAction extends ActionDto<EventOutput.Result> {
 
-    @Resource
-    VisitorRepository visitorRepository;
+    @Resource VisitorRepository visitorRepository;
 
     @Override
-    public EventOutput.Result perform(Dto actionDto) {
+    public EventOutput.Result perform(Qasino qasino) {
 
-        actionDto.setErrorKey("PlayEvent");
-        actionDto.setErrorValue(actionDto.getSuppliedPlayEvent().getLabel());
+        qasino.getMessage().setErrorKey("PlayEvent");
+        qasino.getMessage().setErrorValue(qasino.getParams().getSuppliedPlayEvent().getLabel());
 
         boolean noError = true;
-        switch (actionDto.getSuppliedPlayEvent()) {
+        switch (qasino.getParams().getSuppliedPlayEvent()) {
             case LOWER -> {
-                noError = playingShouldHaveActiveHumanPlayer(actionDto);
-                if (noError) noError = playingShouldHaveNextPlayer(actionDto);
+                noError = playingShouldHaveActiveHumanPlayer(qasino);
+                if (noError) noError = playingShouldHaveNextPlayer(qasino);
             }
             case HIGHER -> {
-                noError = playingShouldHaveActiveHumanPlayer(actionDto);
-                if (noError) noError = playingShouldHaveNextPlayer(actionDto);
+                noError = playingShouldHaveActiveHumanPlayer(qasino);
+                if (noError) noError = playingShouldHaveNextPlayer(qasino);
             }
             case PASS -> {
-                noError = playingShouldHaveActiveHumanPlayer(actionDto);
-                if (noError) noError = playingShouldHaveNextPlayer(actionDto);
+                noError = playingShouldHaveActiveHumanPlayer(qasino);
+                if (noError) noError = playingShouldHaveNextPlayer(qasino);
             }
             case BOT -> {
-                noError = playingShouldHaveActiveBotPlayer(actionDto);
-                if (noError) noError = playingShouldHaveNextPlayer(actionDto);
+                noError = playingShouldHaveActiveBotPlayer(qasino);
+                if (noError) noError = playingShouldHaveNextPlayer(qasino);
             }
             case DEAL -> {
-                noError = playingShouldHaveCurrentMoveNumberNotZero(actionDto);
-                if (noError) noError = playingShouldHavePlayer(actionDto);
+                noError = playingShouldHaveCurrentMoveNumberNotZero(qasino);
+                if (noError) noError = playingShouldHavePlayer(qasino);
             }
             case SPLIT -> {
             }
@@ -54,79 +55,54 @@ public class IsPlayingConsistentForPlayEventAction implements Action<IsPlayingCo
 
     }
 
-    private boolean playingShouldHaveCurrentMoveNumberNotZero(Dto actionDto) {
-        if (actionDto.getActivePlaying().getCurrentMoveNumber() <= 0) {
+    private boolean playingShouldHaveCurrentMoveNumberNotZero(Qasino qasino) {
+        if (qasino.getPlaying().getCurrentMoveNumber() <= 0) {
             log.warn("!moveNumber");
-            setUnprocessableErrorMessage(actionDto, "Action [" + actionDto.getSuppliedPlayEvent() +
-                    "] invalid - playing has incorrect number of " + actionDto.getActivePlaying().getCurrentMoveNumber()
+            setUnprocessableErrorMessage(qasino, "Action [" + qasino.getParams().getSuppliedPlayEvent() +
+                    "] invalid - playing has incorrect number of " + qasino.getPlaying().getCurrentMoveNumber()
             );
             return false;
         }
         return true;
     }
-    private boolean playingShouldHaveNextPlayer(Dto actionDto) {
-        if (actionDto.getNextPlayer() == null) {
+    private boolean playingShouldHaveNextPlayer(Qasino qasino) {
+        if (qasino.getPlaying().getNextPlayer() == null) {
             log.warn("!nextplayer");
-            setUnprocessableErrorMessage(actionDto, "Action [" + actionDto.getSuppliedPlayEvent() +
+            setUnprocessableErrorMessage(qasino, "Action [" + qasino.getParams().getSuppliedPlayEvent() +
                     "] invalid - playing has no next player ");
             return false;
         }
         return true;
     }
-    private boolean playingShouldHavePlayer(Dto actionDto) {
-        if (actionDto.getActivePlaying().getPlayer() == null) {
+    private boolean playingShouldHavePlayer(Qasino qasino) {
+        if (qasino.getPlaying().getCurrentPlayer() == null) {
             log.warn("!initiator");
-            setUnprocessableErrorMessage(actionDto, "Action [" + actionDto.getSuppliedPlayEvent() +
+            setUnprocessableErrorMessage(qasino, "Action [" + qasino.getParams().getSuppliedPlayEvent() +
                     "] invalid - playing has no active player ");
             return false;
         }
         return true;
     }
-    private boolean playingShouldHaveActiveHumanPlayer(Dto actionDto) {
-        if (!actionDto.getPlayingPlayer().isHuman()) {
+    private boolean playingShouldHaveActiveHumanPlayer(Qasino qasino) {
+        if (!qasino.getPlaying().getCurrentPlayer().isHuman()) {
             log.warn("!human");
-            setUnprocessableErrorMessage(actionDto, "Action [" + actionDto.getSuppliedPlayEvent() +
+            setUnprocessableErrorMessage(qasino, "Action [" + qasino.getParams().getSuppliedPlayEvent() +
                     "] inconsistent - this playing event is not for human player ");
             return false;
         }
         return true;
     }
-    private boolean playingShouldHaveActiveBotPlayer(Dto actionDto) {
-        if (actionDto.getPlayingPlayer().isHuman()) {
+    private boolean playingShouldHaveActiveBotPlayer(Qasino qasino) {
+        if (qasino.getPlaying().getCurrentPlayer().isHuman()) {
             log.warn("!human");
-            setUnprocessableErrorMessage(actionDto, "Action [" + actionDto.getSuppliedPlayEvent() +
+            setUnprocessableErrorMessage(qasino, "Action [" + qasino.getParams().getSuppliedPlayEvent() +
                     "] inconsistent - this playing event is not for bot player ");
             return false;
         }
         return true;
     }
 
-    void setUnprocessableErrorMessage(Dto actionDto, String reason) {
-//        actionDto.setErrorKey(id); - already set
-//        actionDto.setErrorValue(value); - already set
-        actionDto.setUnprocessableErrorMessage(reason);
-    }
-
-    public interface Dto {
-
-        // @formatter:off
-        String getErrorMessage();
-        GameEvent getSuppliedGameEvent();
-        PlayEvent getSuppliedPlayEvent();
-
-        // Getters
-        Playing getActivePlaying();
-        Player getPlayingPlayer();
-        Player getNextPlayer();
-
-        // error setters
-        // @formatter:off
-        void setBadRequestErrorMessage(String problem);
-        void setNotFoundErrorMessage(String problem);
-        void setConflictErrorMessage(String reason);
-        void setUnprocessableErrorMessage(String reason);
-        void setErrorKey(String errorKey);
-        void setErrorValue(String errorValue);
-        // @formatter:on
+    void setUnprocessableErrorMessage(Qasino qasino, String reason) {
+        qasino.getMessage().setUnprocessableErrorMessage(reason);
     }
 }

@@ -1,9 +1,9 @@
 package cloud.qasino.games.pattern.strategy;
 
-import cloud.qasino.games.database.entity.Game;
-import cloud.qasino.games.database.entity.Player;
-import cloud.qasino.games.database.entity.Playing;
 import cloud.qasino.games.database.entity.enums.move.Move;
+import cloud.qasino.games.dto.GameDto;
+import cloud.qasino.games.dto.PlayerDto;
+import cloud.qasino.games.dto.PlayingDto;
 import cloud.qasino.games.exception.MyNPException;
 import cloud.qasino.games.pattern.strategy.algorithm.NormalMove;
 import cloud.qasino.games.pattern.strategy.algorithm.RandomMove;
@@ -15,7 +15,7 @@ public class NextMoveCalculator {
 
     enum NextMove {StupidMove, RandomMove, NormalMove, SmartMove, PassMove}
 
-    public static Move next(Game game, Player player, Playing playing) {
+    public static Move next(GameDto game, PlayerDto player, PlayingDto playing) {
 
         // @formatter:off
         NextMove next = predict(game, player, playing);
@@ -30,7 +30,7 @@ public class NextMoveCalculator {
         // @formatter:on
     }
 
-    private static NextMove predict(Game game, Player player, Playing playing) {
+    private static NextMove predict(GameDto game, PlayerDto player, PlayingDto playing) {
         NextMove next = NextMove.RandomMove;
         switch (player.getAiLevel()) {
             case DUMB -> {

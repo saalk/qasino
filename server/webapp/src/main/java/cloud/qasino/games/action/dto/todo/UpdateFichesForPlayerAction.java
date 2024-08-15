@@ -1,19 +1,17 @@
 package cloud.qasino.games.action.dto.todo;
 
-import cloud.qasino.games.action.interfaces.Action;
+import cloud.qasino.games.action.dto.ActionDto;
+import cloud.qasino.games.action.dto.Qasino;
 import cloud.qasino.games.database.entity.Card;
 import cloud.qasino.games.database.entity.CardMove;
-import cloud.qasino.games.database.entity.Game;
-import cloud.qasino.games.database.entity.Player;
 import cloud.qasino.games.database.entity.enums.card.PlayingCard;
 import cloud.qasino.games.database.entity.enums.move.Move;
 import cloud.qasino.games.database.repository.CardMoveRepository;
 import cloud.qasino.games.database.repository.CardRepository;
 import cloud.qasino.games.database.repository.PlayerRepository;
+import cloud.qasino.games.database.service.PlayerService;
 import cloud.qasino.games.database.service.PlayingService;
 import cloud.qasino.games.pattern.statemachine.event.EventOutput;
-import cloud.qasino.games.pattern.statemachine.event.GameEvent;
-import cloud.qasino.games.pattern.statemachine.event.PlayEvent;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -24,34 +22,32 @@ import java.util.Optional;
 
 @Slf4j
 @Component
-public class UpdateFichesForPlayerAction implements Action<UpdateFichesForPlayerAction.Dto, EventOutput.Result> {
+public class UpdateFichesForPlayerAction extends ActionDto<EventOutput.Result> {
 
-    @Resource
-    CardMoveRepository cardMoveRepository;
-    @Resource
-    CardRepository cardRepository;
-    @Resource
-    PlayerRepository playerRepository;
-
-    @Autowired
-    PlayingService playingService;
+    // @formatter:off
+    @Resource CardMoveRepository cardMoveRepository;
+    @Resource CardRepository cardRepository;
+    @Resource PlayerRepository playerRepository;
+    @Autowired PlayingService playingService;
+    @Autowired PlayerService playerService;
+    // @formatter:on
 
     @Override
-    public EventOutput.Result perform(Dto actionDto) {
+    public EventOutput.Result perform(Qasino qasino) {
 
         Optional<Card> previousCardMoveCard = Optional.of(new Card());
         CardMove previousCardMove;
-        List<CardMove> cardMoves = cardMoveRepository.findByPlayerIdOrderBySequenceAsc(actionDto.getPlayingPlayer().getPlayerId());
+        List<CardMove> cardMoves = cardMoveRepository.findByPlayerIdOrderBySequenceAsc(qasino.getPlaying().getCurrentPlayer().getPlayerId());
         for (CardMove cardMove : cardMoves) {
             switch (cardMove.getMove()) {
                 case HIGHER, LOWER -> {
                     if (cardMove.getBet() == 0) {
                         // calculation needed
                         if (previousCardMoveCard.isEmpty()) {
-                            setConflictErrorMessage(actionDto, "Move", String.valueOf(cardMove.getMove()));
+                            setConflictErrorMessage(qasino, "Move", String.valueOf(cardMove.getMove()));
                             return EventOutput.Result.FAILURE;
                         }
-                        updateWinOfLoss(actionDto, cardMove, previousCardMoveCard.orElse(null));
+                        updateWinOfLoss(qasino, cardMove, previousCardMoveCard.orElse(null));
                     }
                 }
             }
@@ -61,26 +57,24 @@ public class UpdateFichesForPlayerAction implements Action<UpdateFichesForPlayer
         return EventOutput.Result.SUCCESS;
     }
 
-    private void updateWinOfLoss(Dto actionDto, CardMove cardMove, Card previousCardMoveCard) {
-        cardMove.setBet(actionDto.getQasinoGame().getAnte());
-        cardMove.setStartFiches(actionDto.getPlayingPlayer().getFiches());
+    private void updateWinOfLoss(Qasino qasino, CardMove cardMove, Card previousCardMoveCard) {
+        cardMove.setBet(qasino.getGame().getAnte());
+        cardMove.setStartFiches(qasino.getPlaying().getCurrentPlayer().getFiches());
         Optional<Card> previousCard = cardRepository.findById(previousCardMoveCard.getCardId());
         Optional<Card> currentCard = cardRepository.findById(cardMove.getCardId());
         cardMove.setEndFiches(
                 cardMove.getStartFiches() +
-                        calculateWinOrLoss(actionDto, cardMove.getMove(), previousCard.get(), currentCard.get()));
+                        calculateWinOrLoss(qasino, cardMove.getMove(), previousCard.get(), currentCard.get()));
         cardMoveRepository.save(cardMove);
-        actionDto.getPlayingPlayer().setFiches(cardMove.getEndFiches());
-        playerRepository.save(actionDto.getPlayingPlayer());
-        actionDto.setAllCardMovesForTheGame(playingService.findCardMovesForGame(actionDto.getQasinoGame())); // can be null
+        qasino.getPlaying().setCurrentPlayer(playerService.updatePlayerFiches(qasino.getPlaying().getCurrentPlayer(), cardMove.getEndFiches()));
     }
-    private int calculateWinOrLoss(Dto actionDto, Move move, Card previous, Card current) {
-        int previousValue = PlayingCard.calculateValueWithDefaultHighlow(previous.getRankSuit(), actionDto.getQasinoGame().getType());
-        int currentValue = PlayingCard.calculateValueWithDefaultHighlow(current.getRankSuit(), actionDto.getQasinoGame().getType());
+    private int calculateWinOrLoss(Qasino qasino, Move move, Card previous, Card current) {
+        int previousValue = PlayingCard.calculateValueWithDefaultHighlow(previous.getRankSuit(), qasino.getGame().getType());
+        int currentValue = PlayingCard.calculateValueWithDefaultHighlow(current.getRankSuit(), qasino.getGame().getType());
         // calculate if the bet is added or subtracted
         if (previousValue == 0 || currentValue == 0) {
             // joker now or previous so ok you win the bet
-            return -actionDto.getQasinoGame().getAnte();
+            return qasino.getGame().getAnte();
         }
         if (previousValue == currentValue) {
             // with values being equal, you don't win or loose
@@ -88,51 +82,25 @@ public class UpdateFichesForPlayerAction implements Action<UpdateFichesForPlayer
         }
         if (move.equals(Move.HIGHER) && currentValue < previousValue) {
             // predicted higher and it is
-            return -actionDto.getQasinoGame().getAnte();
+            return qasino.getGame().getAnte();
         }
         if (move.equals(Move.LOWER) && currentValue > previousValue) {
             // predicted lower and it is
-            return -actionDto.getQasinoGame().getAnte();
+            return qasino.getGame().getAnte();
         }
-        return actionDto.getQasinoGame().getAnte();
+        return qasino.getGame().getAnte();
     }
 
-    void setErrorMessageConflictWithDeal(Dto actionDto, String id, String value) {
-        actionDto.setErrorKey(id);
-        actionDto.setErrorValue(value);
-        actionDto.setConflictErrorMessage("Action [" + id + "] invalid, dealt card has a bet");
+    void setErrorMessageConflictWithDeal(Qasino qasino, String id, String value) {
+        qasino.getMessage().setErrorKey(id);
+        qasino.getMessage().setErrorValue(value);
+        qasino.getMessage().setConflictErrorMessage("Action [" + id + "] invalid, dealt card has a bet");
     }
 
-    void setConflictErrorMessage(Dto actionDto, String id, String value) {
-        actionDto.setErrorKey(id);
-        actionDto.setErrorValue(value);
-        actionDto.setConflictErrorMessage("Action [" + id + "] invalid, no previous card dealt");
+    void setConflictErrorMessage(Qasino qasino, String id, String value) {
+        qasino.getMessage().setErrorKey(id);
+        qasino.getMessage().setErrorValue(value);
+        qasino.getMessage().setConflictErrorMessage("Action [" + id + "] invalid, no previous card dealt");
     }
 
-    public interface Dto {
-
-        // @formatter:off
-        String getErrorMessage();
-        GameEvent getSuppliedGameEvent();
-        PlayEvent getSuppliedPlayEvent();
-
-        // Getters
-        List<CardMove> getAllCardMovesForTheGame();
-        Game getQasinoGame();
-        Player getPlayingPlayer();
-
-        // Setters
-        void setPlayingPlayer(Player player);
-        void setAllCardMovesForTheGame(List<CardMove> cardMoves);
-
-        // error setters
-        // @formatter:off
-        void setBadRequestErrorMessage(String problem);
-        void setNotFoundErrorMessage(String problem);
-        void setConflictErrorMessage(String reason);
-        void setUnprocessableErrorMessage(String reason);
-        void setErrorKey(String errorKey);
-        void setErrorValue(String errorValue);
-        // @formatter:on
-    }
 }

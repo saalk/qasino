@@ -1,6 +1,7 @@
 package cloud.qasino.games.action.util;
 
 import cloud.qasino.games.database.entity.Player;
+import cloud.qasino.games.dto.PlayerDto;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -37,7 +38,7 @@ public class ActionUtils  {
         }
         return lines;
     }
-    public static Player findPlayerByPlayerId(Collection<Player> listPlayers, Long playerId) {
+    public static PlayerDto findPlayerByPlayerId(Collection<PlayerDto> listPlayers, Long playerId) {
         return listPlayers.stream()
                 .filter(p -> playerId.equals(p.getPlayerId()))
                 .findFirst()

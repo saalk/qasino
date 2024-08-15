@@ -1,9 +1,13 @@
 package cloud.qasino.games.action.dto.todo;
 
+import cloud.qasino.games.action.dto.ActionDto;
+import cloud.qasino.games.action.dto.Qasino;
 import cloud.qasino.games.action.interfaces.Action;
 import cloud.qasino.games.database.entity.Game;
 import cloud.qasino.games.database.entity.Player;
+import cloud.qasino.games.database.service.GameService;
 import cloud.qasino.games.database.service.GameServiceOld;
+import cloud.qasino.games.database.service.PlayingService;
 import cloud.qasino.games.pattern.statemachine.event.EventOutput;
 import cloud.qasino.games.pattern.statemachine.event.GameEvent;
 import cloud.qasino.games.pattern.statemachine.event.PlayEvent;
@@ -15,40 +19,18 @@ import java.util.List;
 
 @Slf4j
 @Component
-public class StartGameForTypeAction implements Action<StartGameForTypeAction.Dto, EventOutput.Result> {
+public class StartGameForTypeAction extends ActionDto<EventOutput.Result> {
 
-    @Autowired
-    GameServiceOld gameServiceOld;
+    // @formatter:off
+    @Autowired GameService gameService;
+    // @formatter:on
 
     @Override
-    public EventOutput.Result perform(Dto actionDto) {
+    public EventOutput.Result perform(Qasino qasino) {
 
         // update a Game : create Cards for game according to the style and shuffle them
-        actionDto.setQasinoGame(gameServiceOld.addAndShuffleCardsForGame(actionDto.getQasinoGame()));
+        qasino.setGame(gameService.addAndShuffleCardsForAGame(qasino.getGame()));
         return EventOutput.Result.SUCCESS;
     }
 
-    public interface Dto {
-
-        // @formatter:off
-        String getErrorMessage();
-        GameEvent getSuppliedGameEvent();
-        PlayEvent getSuppliedPlayEvent();
-
-        // Getters
-        List<Player> getQasinoGamePlayers();
-        Game getQasinoGame();
-
-        void setQasinoGame(Game game);
-
-        // error setters
-        // @formatter:off
-        void setBadRequestErrorMessage(String problem);
-        void setNotFoundErrorMessage(String problem);
-        void setConflictErrorMessage(String reason);
-        void setUnprocessableErrorMessage(String reason);
-        void setErrorKey(String errorKey);
-        void setErrorValue(String errorValue);
-        // @formatter:on
-    }
 }

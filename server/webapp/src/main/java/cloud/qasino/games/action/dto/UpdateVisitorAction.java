@@ -12,12 +12,12 @@ import org.springframework.stereotype.Component;
 @Component
 public class UpdateVisitorAction extends ActionDto<EventOutput.Result> {
 
-    // formatter:off
+    // @formatter:off
     @Resource
     VisitorRepository visitorRepository;
     @Resource
     VisitorAndLeaguesService visitorAndLeaguesService;
-    // formatter:on
+    // @formatter:on
 
     @Override
     public EventOutput.Result perform(Qasino qasino) {

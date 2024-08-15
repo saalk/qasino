@@ -32,7 +32,7 @@ public class GameDto {
     // ref
     private LeagueDto league;
     private long initiator;
-//    private List<CardDto> cards; // works but not needed
+    private List<CardDto> cards; // works but not needed
     private List<PlayerDto> players;
 
     // Normal fields

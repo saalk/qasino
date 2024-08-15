@@ -55,7 +55,7 @@ import java.util.Set;
 @Slf4j
 public class HomeThymeleafController extends AbstractThymeleafController {
 
-    // formatter:off
+    // @formatter:off
     //    private static final String IMAGES_FAVICON_LOCATION = "static/images/favicon.ico";
     private static final String HOME_SIGNUP_VIEW_LOCATION = "home/register";
     private static final String HOME_SIGNIN_VIEW_LOCATION = "home/signin";
@@ -67,7 +67,7 @@ public class HomeThymeleafController extends AbstractThymeleafController {
 
     @Autowired
     private RegisterVisitorAction registerAction;
-    // formatter:on
+    // @formatter:on
 
     @Autowired
     public HomeThymeleafController(

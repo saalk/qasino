@@ -21,7 +21,7 @@ import java.util.List;
 @Data
 public class Qasino {
 
-    // formatting:off
+    // @formatter:off
     private List<NavigationBarItem> navBarItems;
     private MessageDto message = new MessageDto();
     private ParamsDto params = new ParamsDto();

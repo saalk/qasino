@@ -1,5 +1,7 @@
 package cloud.qasino.games.action.dto.todo;
 
+import cloud.qasino.games.action.dto.ActionDto;
+import cloud.qasino.games.action.dto.Qasino;
 import cloud.qasino.games.action.interfaces.Action;
 import cloud.qasino.games.database.entity.Game;
 import cloud.qasino.games.database.entity.Player;
@@ -12,6 +14,8 @@ import cloud.qasino.games.database.entity.enums.move.Move;
 import cloud.qasino.games.database.repository.PlayingRepository;
 import cloud.qasino.games.database.service.GameServiceOld;
 import cloud.qasino.games.database.service.PlayingService;
+import cloud.qasino.games.dto.PlayerDto;
+import cloud.qasino.games.dto.PlayingDto;
 import cloud.qasino.games.exception.MyNPException;
 import cloud.qasino.games.pattern.statemachine.event.EventOutput;
 import cloud.qasino.games.pattern.statemachine.event.PlayEvent;
@@ -24,42 +28,38 @@ import static cloud.qasino.games.database.service.PlayingService.mapPlayEventToM
 
 @Slf4j
 @Component
-public class PlayNextHumanMoveAction implements Action<PlayNextHumanMoveAction.Dto, EventOutput.Result> {
+public class PlayNextHumanMoveAction extends ActionDto<EventOutput.Result> {
 
-    @Autowired
-    PlayingService playingService;
-    @Autowired
-    PlayingRepository playingRepository;
-    @Autowired
-    private GameServiceOld gameServiceOld;
+    // @formatter:off
+    @Autowired PlayingService playingService;
+    @Autowired PlayingRepository playingRepository;
 
     @Override
-    public EventOutput.Result perform(Dto actionDto) {
+    public EventOutput.Result perform(Qasino qasino) {
 
-        if (!actionDto.getQasinoGame().getType().equals(Type.HIGHLOW)) {
-            throw new MyNPException("PlayNextHumanMoveAction", "error [" + actionDto.getQasinoGame().getType() + "]");
+        if (!qasino.getGame().getType().equals(Type.HIGHLOW)) {
+            throw new MyNPException("PlayNextHumanMoveAction", "error [" + qasino.getGame().getType() + "]");
         }
 
         // Next move in HIGHLOW = a given move from location STOCK to location HAND with face UP
-        Move nextMove = mapPlayEventToMove(actionDto.getSuppliedPlayEvent());
+        Move nextMove = mapPlayEventToMove(qasino.getParams().getSuppliedPlayEvent());
         Location fromLocation = Location.STOCK;
         Location toLocation = Location.HAND;
         Face face = Face.UP;
         int howMany = 1;
 
         // Local fields
-        Game game = actionDto.getQasinoGame();
-        Player nextPlayer = gameServiceOld.findNextPlayerForGame(game);
-        int totalSeats = game.getPlayers().size();
-        Playing playing = game.getPlaying();
+        PlayerDto nextPlayer = qasino.getPlaying().getNextPlayer();
+        int totalSeats = qasino.getGame().getPlayers().size();
+        PlayingDto playing = qasino.getPlaying();
         int currentSeat = playing.getCurrentSeatNumber();
         int currentRound = playing.getCurrentRoundNumber();
 
         // TODO DetermineNextRoundOrEndGame -> move to separate action
-        if (actionDto.getSuppliedPlayEvent() == PlayEvent.PASS) {
+        if (qasino.getParams().getSuppliedPlayEvent() == PlayEvent.PASS) {
             if (totalSeats == currentSeat) {
-                if (isRoundEqualToRoundsToWin(Style.fromLabelWithDefault(game.getStyle()), currentRound)) {
-                    actionDto.setSuppliedPlayEvent(PlayEvent.END_GAME);
+                if (isRoundEqualToRoundsToWin(Style.fromLabelWithDefault(qasino.getGame().getStyle()), currentRound)) {
+                    qasino.getParams().setSuppliedPlayEvent(PlayEvent.END_GAME);
                     return EventOutput.Result.SUCCESS;
                 }
                 playing.setCurrentRoundNumber(currentRound + 1);
@@ -67,24 +67,18 @@ public class PlayNextHumanMoveAction implements Action<PlayNextHumanMoveAction.D
         }
 
         // Update PLAYING - could be new to new Player
-        playingService.updatePlaying(nextMove, playing, nextPlayer);
-        Playing newPlaying = playingRepository.save(playing);
-        game.setPlaying(newPlaying);
+        PlayingDto newPlaying = playingService.updatePlaying(nextMove, playing.getPlayingId(), playing.getNextPlayer().getPlayerId());
+        qasino.setPlaying(newPlaying);
 
         // Deal CARDs (and update CARDMOVE)
         playingService.dealCardsToPlayer(
-                game,
+                newPlaying,
+                qasino.getGame(),
                 nextMove,
                 fromLocation,
                 toLocation,
                 face,
                 howMany);
         return EventOutput.Result.SUCCESS;
-    }
-    // @formatter:off
-    public interface Dto {
-        Game getQasinoGame();
-        PlayEvent getSuppliedPlayEvent();
-        void setSuppliedPlayEvent(PlayEvent playEvent);
     }
 }
