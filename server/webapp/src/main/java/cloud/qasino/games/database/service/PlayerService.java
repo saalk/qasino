@@ -45,6 +45,7 @@ public class PlayerService {
     }
 
     public PlayerDto acceptInvitationForAGame(PlayerDto playerDto) {
+
         Player invitee = PlayerMapper.INSTANCE.fromDto(playerDto);
         invitee.setPlayerType(PlayerType.INVITEE);
         Player accepted =  playerRepository.save(invitee);

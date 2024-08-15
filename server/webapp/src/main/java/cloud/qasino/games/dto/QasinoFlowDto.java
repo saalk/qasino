@@ -1,7 +1,7 @@
 package cloud.qasino.games.dto;
 
 import cloud.qasino.games.action.old.CalculateQasinoStatisticsAction;
-import cloud.qasino.games.action.old.CreateNewLeagueAction;
+import cloud.qasino.games.action.league.CreateNewLeagueAction;
 import cloud.qasino.games.action.old.DeterminePossibleEventsAction;
 import cloud.qasino.games.action.old.FindVisitorIdByAliasOrUsernameAction;
 import cloud.qasino.games.action.old.LoadEntitiesToDtoAction;
@@ -63,7 +63,6 @@ import java.util.Map;
 public class QasinoFlowDto extends AbstractFlowDto
         implements
         CalculateQasinoStatisticsAction.Dto,
-        CreateNewLeagueAction.Dto,
         DeterminePossibleEventsAction.Dto,
         FindVisitorIdByAliasOrUsernameAction.Dto,
         LoadEntitiesToDtoAction.Dto,

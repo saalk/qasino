@@ -48,10 +48,10 @@ public class GameThymeleafController extends AbstractThymeleafController {
     @Autowired PlayerService playerService;
 
     @Autowired LoadPrincipalDtoAction loadVisitor;
-    @Autowired IsGameConsistentForGameEventAction isGameConsistentForGameEventAction;
-    @Autowired CreateNewGameAction createNewGameAction;
-    @Autowired PrepareGameAction prepareGameAction;
-    @Autowired UpdateStyleForGame updateStyleForGame;
+    @Autowired IsGameConsistentForGameEventAction isGameConsistent;
+    @Autowired CreateNewGameAction createNewGame;
+    @Autowired PrepareGameAction prepareGame;
+    @Autowired UpdateStyleForGame updateGameStyle;
     // @formatter:on
 
     @Autowired
@@ -74,12 +74,10 @@ public class GameThymeleafController extends AbstractThymeleafController {
         Qasino qasino = new Qasino();
         qasino.getParams().setSuppliedVisitorUsername(principal.getName());
         qasino.getParams().setSuppliedGameId(Long.parseLong(id));
-        loadVisitor.perform(qasino);
         // 2 - validate input
         // 3 - process
+        loadVisitor.perform(qasino);
         // 4 - return  response
-        // 3 - process
-        // 4 - return response
         prepareQasino(response, qasino);
         model.addAttribute(qasino);
         return SETUP_VIEW_LOCATION;
@@ -127,15 +125,15 @@ public class GameThymeleafController extends AbstractThymeleafController {
         }
         // 3 - process
         loadVisitor.perform(qasino);
-        output = isGameConsistentForGameEventAction.perform(qasino);
+        output = isGameConsistent.perform(qasino);
         if (FAILURE.equals(output)) {
             log.warn("Errors isGameConsistentForGameEvent!!");
             prepareQasino(response, qasino);
             model.addAttribute(qasino);
             return "redirect:/visitor";
         }
-        createNewGameAction.perform(qasino);
-        // 4 - return new response
+        createNewGame.perform(qasino);
+        // 4 - return response
         prepareQasino(response, qasino);
         model.addAttribute(qasino);
         return "redirect:/setup/" + qasino.getGame().getGameId();
@@ -163,14 +161,14 @@ public class GameThymeleafController extends AbstractThymeleafController {
         }
         // 3 - process
         loadVisitor.perform(qasino);
-        output = isGameConsistentForGameEventAction.perform(qasino);
+        output = isGameConsistent.perform(qasino);
         if (FAILURE.equals(output)) {
             log.warn("Errors isGameConsistentForGameEvent!!");
             prepareQasino(response, qasino);
             model.addAttribute(qasino);
             return "redirect:/setup/" + id;
         }
-        prepareGameAction.perform(qasino);
+        prepareGame.perform(qasino);
         // 4 - return response
         prepareQasino(response, qasino);
         model.addAttribute(qasino);
@@ -197,7 +195,7 @@ public class GameThymeleafController extends AbstractThymeleafController {
         }
         // 3 - process
         loadVisitor.perform(qasino);
-        updateStyleForGame.perform(qasino);
+        updateGameStyle.perform(qasino);
         // 4 - return response
         prepareQasino(response, qasino);
         model.addAttribute(qasino);
