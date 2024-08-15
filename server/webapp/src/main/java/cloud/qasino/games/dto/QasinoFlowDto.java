@@ -1,15 +1,14 @@
 package cloud.qasino.games.dto;
 
-import cloud.qasino.games.action.CalculateQasinoStatisticsAction;
-import cloud.qasino.games.action.CreateNewLeagueAction;
-import cloud.qasino.games.action.DeterminePossibleEventsAction;
-import cloud.qasino.games.action.FindVisitorIdByAliasOrUsernameAction;
-import cloud.qasino.games.action.LoadEntitiesToDtoAction;
-import cloud.qasino.games.action.MapQasinoGameTableFromDtoAction;
-import cloud.qasino.games.action.MapQasinoResponseFromDtoAction;
-import cloud.qasino.games.action.SetStatusIndicatorsBaseOnRetrievedDataAction;
-import cloud.qasino.games.action.SignUpNewVisitorAction;
-import cloud.qasino.games.action.dto.todo.StopGameAction;
+import cloud.qasino.games.action.old.CalculateQasinoStatisticsAction;
+import cloud.qasino.games.action.old.CreateNewLeagueAction;
+import cloud.qasino.games.action.old.DeterminePossibleEventsAction;
+import cloud.qasino.games.action.old.FindVisitorIdByAliasOrUsernameAction;
+import cloud.qasino.games.action.old.LoadEntitiesToDtoAction;
+import cloud.qasino.games.action.old.MapQasinoGameTableFromDtoAction;
+import cloud.qasino.games.action.old.MapQasinoResponseFromDtoAction;
+import cloud.qasino.games.action.old.SetStatusIndicatorsBaseOnRetrievedDataAction;
+import cloud.qasino.games.action.old.SignUpNewVisitorAction;
 import cloud.qasino.games.database.entity.Card;
 import cloud.qasino.games.database.entity.CardMove;
 import cloud.qasino.games.database.entity.Game;

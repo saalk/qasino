@@ -1,7 +1,7 @@
 package cloud.qasino.games.controller.thymeleaf;
 
 import cloud.qasino.games.action.dto.Qasino;
-import cloud.qasino.games.action.dto.RegisterVisitorAction;
+import cloud.qasino.games.action.visitor.RegisterVisitorAction;
 import cloud.qasino.games.controller.AbstractThymeleafController;
 import cloud.qasino.games.database.security.MyUserPrincipal;
 import cloud.qasino.games.dto.validation.VisitorBasic;

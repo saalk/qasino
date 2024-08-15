@@ -1,12 +1,12 @@
 package cloud.qasino.games.controller;
 
-import cloud.qasino.games.action.CalculateQasinoStatisticsAction;
-import cloud.qasino.games.action.DeterminePossibleEventsAction;
-import cloud.qasino.games.action.FindVisitorIdByAliasOrUsernameAction;
-import cloud.qasino.games.action.LoadEntitiesToDtoAction;
-import cloud.qasino.games.action.MapQasinoGameTableFromDtoAction;
-import cloud.qasino.games.action.MapQasinoResponseFromDtoAction;
-import cloud.qasino.games.action.SetStatusIndicatorsBaseOnRetrievedDataAction;
+import cloud.qasino.games.action.old.CalculateQasinoStatisticsAction;
+import cloud.qasino.games.action.old.DeterminePossibleEventsAction;
+import cloud.qasino.games.action.old.FindVisitorIdByAliasOrUsernameAction;
+import cloud.qasino.games.action.old.LoadEntitiesToDtoAction;
+import cloud.qasino.games.action.old.MapQasinoGameTableFromDtoAction;
+import cloud.qasino.games.action.old.MapQasinoResponseFromDtoAction;
+import cloud.qasino.games.action.old.SetStatusIndicatorsBaseOnRetrievedDataAction;
 import cloud.qasino.games.action.dto.CalculateStatisticsAction;
 import cloud.qasino.games.action.dto.DetermineEventsAction;
 import cloud.qasino.games.action.dto.FindAllDtosForUsernameAction;
@@ -16,7 +16,6 @@ import cloud.qasino.games.database.security.Visitor;
 import cloud.qasino.games.database.security.VisitorRepository;
 import cloud.qasino.games.dto.QasinoFlowDto;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpServletResponse;

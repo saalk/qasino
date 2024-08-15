@@ -1,14 +1,12 @@
 package cloud.qasino.games.controller.thymeleaf;
 
-import cloud.qasino.games.action.CreateNewLeagueAction;
-import cloud.qasino.games.action.FindVisitorIdByAliasOrUsernameAction;
-import cloud.qasino.games.action.LoadEntitiesToDtoAction;
+import cloud.qasino.games.action.old.CreateNewLeagueAction;
+import cloud.qasino.games.action.old.FindVisitorIdByAliasOrUsernameAction;
+import cloud.qasino.games.action.old.LoadEntitiesToDtoAction;
 import cloud.qasino.games.action.dto.Qasino;
 import cloud.qasino.games.controller.AbstractThymeleafController;
 import cloud.qasino.games.database.repository.LeagueRepository;
 import cloud.qasino.games.dto.QasinoFlowDto;
-import cloud.qasino.games.pattern.statemachine.event.GameEvent;
-import cloud.qasino.games.pattern.statemachine.event.PlayEvent;
 import cloud.qasino.games.pattern.statemachine.event.QasinoEvent;
 import cloud.qasino.games.response.QasinoResponse;
 import cloud.qasino.games.pattern.statemachine.event.EventOutput;

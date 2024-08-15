@@ -1,8 +1,8 @@
 package cloud.qasino.games.controller.thymeleaf;
 
-import cloud.qasino.games.action.dto.HandleSecuredLoanAction;
+import cloud.qasino.games.action.visitor.HandleSecuredLoanAction;
 import cloud.qasino.games.action.dto.Qasino;
-import cloud.qasino.games.action.dto.UpdateVisitorAction;
+import cloud.qasino.games.action.visitor.UpdateVisitorAction;
 import cloud.qasino.games.action.dto.load.LoadPrincipalDtoAction;
 import cloud.qasino.games.controller.AbstractThymeleafController;
 import cloud.qasino.games.database.security.VisitorRepository;

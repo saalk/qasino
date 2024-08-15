@@ -1,6 +1,6 @@
 package cloud.qasino.games.controller.thymeleaf;
 
-import cloud.qasino.games.action.LoadEntitiesToDtoAction;
+import cloud.qasino.games.action.old.LoadEntitiesToDtoAction;
 import cloud.qasino.games.controller.AbstractThymeleafController;
 import cloud.qasino.games.database.entity.Player;
 import cloud.qasino.games.database.repository.PlayerRepository;

@@ -1,6 +1,6 @@
 package cloud.qasino.games.pattern.statemachine;
 
-import cloud.qasino.games.action.LoadEntitiesToDtoAction;
+import cloud.qasino.games.action.old.LoadEntitiesToDtoAction;
 import cloud.qasino.games.pattern.statemachine.event.EventOutput;
 import cloud.qasino.games.pattern.statemachine.event.GameEvent;
 import cloud.qasino.games.pattern.statemachine.event.interfaces.AbstractFlowDto;

@@ -1,13 +1,10 @@
-package cloud.qasino.games.action.dto.todo;
+package cloud.qasino.games.action.playing;
 
 import cloud.qasino.games.action.dto.ActionDto;
 import cloud.qasino.games.action.dto.Qasino;
-import cloud.qasino.games.action.interfaces.Action;
-import cloud.qasino.games.database.entity.Game;
-import cloud.qasino.games.database.entity.Player;
-import cloud.qasino.games.database.repository.GameRepository;
+import cloud.qasino.games.database.entity.enums.game.GameState;
+import cloud.qasino.games.database.service.GameService;
 import cloud.qasino.games.pattern.statemachine.event.EventOutput;
-import cloud.qasino.games.pattern.statemachine.event.GameEvent;
 import cloud.qasino.games.pattern.statemachine.event.PlayEvent;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -16,12 +13,18 @@ import jakarta.annotation.Resource;
 
 @Slf4j
 @Component
-public class IsPlayerHumanAction extends ActionDto<EventOutput.Result> {
+public class IsGameFinishedAction extends ActionDto<EventOutput.Result> {
+
+    // @formatter:off
+    @Resource GameService gameService;
+    // @formatter:on
 
     @Override
     public EventOutput.Result perform(Qasino qasino) {
 
-        if (qasino.getPlaying().getCurrentPlayer().isHuman()) {
+        if (qasino.getParams().getSuppliedPlayEvent().equals(PlayEvent.END_GAME)) {
+            gameService.updateStateForGame(GameState.FINISHED, qasino.getParams().getSuppliedGameId());
+            qasino.getGame().setState(GameState.FINISHED);
             return EventOutput.Result.SUCCESS;
         }
         return EventOutput.Result.FAILURE;

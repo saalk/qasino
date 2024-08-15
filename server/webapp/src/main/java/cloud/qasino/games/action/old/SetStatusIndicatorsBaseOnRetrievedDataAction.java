@@ -1,4 +1,4 @@
-package cloud.qasino.games.action;
+package cloud.qasino.games.action.old;
 
 import cloud.qasino.games.action.interfaces.Action;
 import cloud.qasino.games.database.entity.*;

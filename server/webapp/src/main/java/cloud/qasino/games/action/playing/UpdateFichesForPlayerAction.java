@@ -1,4 +1,4 @@
-package cloud.qasino.games.action.dto.todo;
+package cloud.qasino.games.action.playing;
 
 import cloud.qasino.games.action.dto.ActionDto;
 import cloud.qasino.games.action.dto.Qasino;

@@ -1,5 +1,7 @@
-package cloud.qasino.games.action.dto;
+package cloud.qasino.games.action.visitor;
 
+import cloud.qasino.games.action.dto.ActionDto;
+import cloud.qasino.games.action.dto.Qasino;
 import cloud.qasino.games.database.security.VisitorRepository;
 import cloud.qasino.games.database.service.VisitorAndLeaguesService;
 import cloud.qasino.games.pattern.statemachine.event.EventOutput;

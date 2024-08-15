@@ -1,11 +1,7 @@
-package cloud.qasino.games.action.dto.todo;
+package cloud.qasino.games.action.playing;
 
 import cloud.qasino.games.action.dto.ActionDto;
 import cloud.qasino.games.action.dto.Qasino;
-import cloud.qasino.games.action.interfaces.Action;
-import cloud.qasino.games.database.entity.Game;
-import cloud.qasino.games.database.entity.Playing;
-import cloud.qasino.games.database.entity.Player;
 import cloud.qasino.games.database.entity.enums.card.Face;
 import cloud.qasino.games.database.entity.enums.card.Location;
 import cloud.qasino.games.database.entity.enums.game.Type;

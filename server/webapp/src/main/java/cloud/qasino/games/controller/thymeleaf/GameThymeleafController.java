@@ -2,10 +2,10 @@ package cloud.qasino.games.controller.thymeleaf;
 
 import cloud.qasino.games.action.dto.Qasino;
 import cloud.qasino.games.action.dto.load.LoadPrincipalDtoAction;
-import cloud.qasino.games.action.dto.CreateNewGameAction;
-import cloud.qasino.games.action.dto.IsGameConsistentForGameEventAction;
-import cloud.qasino.games.action.dto.PrepareGameAction;
-import cloud.qasino.games.action.dto.UpdateStyleForGame;
+import cloud.qasino.games.action.game.CreateNewGameAction;
+import cloud.qasino.games.action.game.IsGameConsistentForGameEventAction;
+import cloud.qasino.games.action.game.PrepareGameAction;
+import cloud.qasino.games.action.game.UpdateStyleForGame;
 import cloud.qasino.games.controller.AbstractThymeleafController;
 import cloud.qasino.games.database.repository.GameRepository;
 import cloud.qasino.games.database.repository.PlayerRepository;
