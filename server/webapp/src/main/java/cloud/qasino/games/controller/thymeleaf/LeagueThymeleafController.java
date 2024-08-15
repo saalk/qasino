@@ -1,14 +1,12 @@
 package cloud.qasino.games.controller.thymeleaf;
 
+import cloud.qasino.games.action.dto.Qasino;
 import cloud.qasino.games.action.dto.load.LoadPrincipalDtoAction;
 import cloud.qasino.games.action.league.CreateNewLeagueAction;
-import cloud.qasino.games.action.old.FindVisitorIdByAliasOrUsernameAction;
-import cloud.qasino.games.action.old.LoadEntitiesToDtoAction;
-import cloud.qasino.games.action.dto.Qasino;
 import cloud.qasino.games.controller.AbstractThymeleafController;
 import cloud.qasino.games.database.repository.LeagueRepository;
-import cloud.qasino.games.pattern.statemachine.event.QasinoEvent;
 import cloud.qasino.games.pattern.statemachine.event.EventOutput;
+import cloud.qasino.games.pattern.statemachine.event.QasinoEvent;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,9 +38,7 @@ public class LeagueThymeleafController extends AbstractThymeleafController {
     private LeagueRepository leagueRepository;
 
     @Autowired LoadPrincipalDtoAction loadVisitor;
-    @Autowired LoadEntitiesToDtoAction loadEntitiesToDtoAction;
     @Autowired CreateNewLeagueAction createNewLeagueAction;
-    @Autowired FindVisitorIdByAliasOrUsernameAction findVisitorIdByAliasOrUsernameAction;
     // @formatter:on
 
     @Autowired

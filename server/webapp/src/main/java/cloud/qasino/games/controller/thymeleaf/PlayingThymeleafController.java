@@ -1,23 +1,19 @@
 package cloud.qasino.games.controller.thymeleaf;
 
-import cloud.qasino.games.action.old.LoadEntitiesToDtoAction;
-import cloud.qasino.games.action.old.MapQasinoGameTableFromDtoAction;
-import cloud.qasino.games.action.game.StopGameAction;
-import cloud.qasino.games.action.playing.UpdatePlayingStateForGame;
-import cloud.qasino.games.action.dto.FindAllDtosForUsernameAction;
-import cloud.qasino.games.action.game.IsGameConsistentForGameEventAction;
-import cloud.qasino.games.action.dto.MapQasinoFromDtosAction;
 import cloud.qasino.games.action.dto.Qasino;
 import cloud.qasino.games.action.dto.load.LoadPrincipalDtoAction;
 import cloud.qasino.games.action.game.CalculateAndFinishGameAction;
+import cloud.qasino.games.action.game.IsGameConsistentForGameEventAction;
+import cloud.qasino.games.action.game.StartGameForTypeAction;
+import cloud.qasino.games.action.game.StopGameAction;
 import cloud.qasino.games.action.playing.IsGameFinishedAction;
 import cloud.qasino.games.action.playing.IsPlayerHumanAction;
 import cloud.qasino.games.action.playing.IsPlayingConsistentForPlayEventAction;
 import cloud.qasino.games.action.playing.PlayFirstMoveAction;
 import cloud.qasino.games.action.playing.PlayNextBotMoveAction;
 import cloud.qasino.games.action.playing.PlayNextHumanMoveAction;
-import cloud.qasino.games.action.game.StartGameForTypeAction;
 import cloud.qasino.games.action.playing.UpdateFichesForPlayerAction;
+import cloud.qasino.games.action.playing.UpdatePlayingStateForGame;
 import cloud.qasino.games.controller.AbstractThymeleafController;
 import cloud.qasino.games.database.repository.CardMoveRepository;
 import cloud.qasino.games.database.repository.CardRepository;
@@ -62,14 +58,10 @@ public class PlayingThymeleafController extends AbstractThymeleafController {
     @Autowired StartGameForTypeAction startGameForTypeAction;
     @Autowired PlayFirstMoveAction playFirstMoveAction;
     @Autowired StopGameAction stopGameAction;
-    @Autowired LoadEntitiesToDtoAction loadEntitiesToDtoAction;
-    @Autowired MapQasinoGameTableFromDtoAction mapQasinoGameTableFromDtoAction;
     @Autowired PlayNextHumanMoveAction playNextHumanMoveAction;
     @Autowired IsPlayerHumanAction isPlayerHumanAction;
     @Autowired PlayNextBotMoveAction playNextBotMoveAction;
     @Autowired UpdatePlayingStateForGame updatePlayingStateForGame;
-    @Autowired FindAllDtosForUsernameAction findDtos;
-    @Autowired MapQasinoFromDtosAction mapQasino;
     // @formatter:on
 
     @Autowired

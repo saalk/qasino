@@ -1,14 +1,5 @@
 package cloud.qasino.games.dto;
 
-import cloud.qasino.games.action.old.CalculateQasinoStatisticsAction;
-import cloud.qasino.games.action.league.CreateNewLeagueAction;
-import cloud.qasino.games.action.old.DeterminePossibleEventsAction;
-import cloud.qasino.games.action.old.FindVisitorIdByAliasOrUsernameAction;
-import cloud.qasino.games.action.old.LoadEntitiesToDtoAction;
-import cloud.qasino.games.action.old.MapQasinoGameTableFromDtoAction;
-import cloud.qasino.games.action.old.MapQasinoResponseFromDtoAction;
-import cloud.qasino.games.action.old.SetStatusIndicatorsBaseOnRetrievedDataAction;
-import cloud.qasino.games.action.old.SignUpNewVisitorAction;
 import cloud.qasino.games.database.entity.Card;
 import cloud.qasino.games.database.entity.CardMove;
 import cloud.qasino.games.database.entity.Game;
@@ -60,16 +51,7 @@ import java.util.Map;
 @Getter
 @Setter
 @Slf4j
-public class QasinoFlowDto extends AbstractFlowDto
-        implements
-        CalculateQasinoStatisticsAction.Dto,
-        DeterminePossibleEventsAction.Dto,
-        FindVisitorIdByAliasOrUsernameAction.Dto,
-        LoadEntitiesToDtoAction.Dto,
-        MapQasinoResponseFromDtoAction.Dto,
-        MapQasinoGameTableFromDtoAction.Dto,
-        SetStatusIndicatorsBaseOnRetrievedDataAction.Dto,
-        SignUpNewVisitorAction.Dto{
+public class QasinoFlowDto extends AbstractFlowDto {
     // suppress lombok setter for these fixed values
     @Setter(AccessLevel.NONE)
     private String applicationName = "qasino";

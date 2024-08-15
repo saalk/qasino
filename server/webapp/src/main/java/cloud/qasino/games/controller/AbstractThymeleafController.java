@@ -1,12 +1,5 @@
 package cloud.qasino.games.controller;
 
-import cloud.qasino.games.action.old.CalculateQasinoStatisticsAction;
-import cloud.qasino.games.action.old.DeterminePossibleEventsAction;
-import cloud.qasino.games.action.old.FindVisitorIdByAliasOrUsernameAction;
-import cloud.qasino.games.action.old.LoadEntitiesToDtoAction;
-import cloud.qasino.games.action.old.MapQasinoGameTableFromDtoAction;
-import cloud.qasino.games.action.old.MapQasinoResponseFromDtoAction;
-import cloud.qasino.games.action.old.SetStatusIndicatorsBaseOnRetrievedDataAction;
 import cloud.qasino.games.action.dto.CalculateStatisticsAction;
 import cloud.qasino.games.action.dto.DetermineEventsAction;
 import cloud.qasino.games.action.dto.FindAllDtosForUsernameAction;
@@ -34,21 +27,6 @@ public class AbstractThymeleafController {
     @Resource
     VisitorRepository visitorRepository;
 
-    @Autowired
-    LoadEntitiesToDtoAction loadEntitiesToDtoAction;
-    @Autowired
-    FindVisitorIdByAliasOrUsernameAction findVisitorIdByAliasOrUsernameAction;
-    @Autowired
-    SetStatusIndicatorsBaseOnRetrievedDataAction setStatusIndicatorsBaseOnRetrievedDataAction;
-    @Autowired
-    CalculateQasinoStatisticsAction calculateQasinoStatisticsAction;
-    @Autowired
-    MapQasinoResponseFromDtoAction mapQasinoResponseFromDtoAction;
-    @Autowired
-    MapQasinoGameTableFromDtoAction mapQasinoGameTableFromDtoAction;
-    @Autowired
-    DeterminePossibleEventsAction determinePossibleEventsAction;
-
     // @formatter:off
     @Autowired FindAllDtosForUsernameAction findDtos;
     @Autowired DetermineEventsAction determineEvents;
@@ -58,18 +36,6 @@ public class AbstractThymeleafController {
     public String getPricipalVisitorId(Principal principal) {
         Visitor visitor = visitorRepository.findByUsername(principal.getName());
         return String.valueOf(visitor.getVisitorId());
-    }
-    public void prepareQasinoResponse(HttpServletResponse response, QasinoFlowDto flowDto) {
-
-        findVisitorIdByAliasOrUsernameAction.perform(flowDto);
-        loadEntitiesToDtoAction.perform(flowDto);
-        determinePossibleEventsAction.perform(flowDto);
-        mapQasinoGameTableFromDtoAction.perform(flowDto);
-        setStatusIndicatorsBaseOnRetrievedDataAction.perform(flowDto);
-        calculateQasinoStatisticsAction.perform(flowDto);
-        mapQasinoResponseFromDtoAction.perform(flowDto);
-        setHttpResponseHeader(response, flowDto);
-
     }
     public void prepareQasino(HttpServletResponse response, Qasino qasino) {
 
