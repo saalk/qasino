@@ -1,17 +1,16 @@
 package cloud.qasino.games.handler;
 
-import cloud.qasino.games.request.QasinoRequest;
+import cloud.qasino.games.dto.Qasino;
+import cloud.qasino.games.database.security.Visitor;
+import cloud.qasino.games.pattern.statemachine.QasinoStateMachine;
 import cloud.qasino.games.response.QasinoResponse;
-import cloud.qasino.games.response.QasinoResponseMapper;
-import cloud.qasino.games.statemachine.QasinoStateMachine;
-import cloud.qasino.games.dto.QasinoFlowDTO;
+import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
-import jakarta.annotation.Resource;
 import java.time.LocalTime;
 
-import static cloud.qasino.games.statemachine.event.GameEvent.START;
+import static cloud.qasino.games.pattern.statemachine.event.GameEvent.START;
 
 @Slf4j
 @Component
@@ -24,16 +23,17 @@ public class GameHandler {
         log.warn("########## Start of initialize: " + LocalTime.now());
         log.warn("########## Start of initialize: " + LocalTime.now());
 
-        QasinoRequest request = new QasinoRequest(); // pathvariables
+        Visitor request = new Visitor(); // pathvariables
         // validate and give 400 if needed
-        QasinoFlowDTO flowDTO = new QasinoFlowDTO();
-        flowDTO.setSuppliedVisitorId(visitorId);
-//      flowDTO.addQasinoRequest(request);
+        Qasino flowDto = new Qasino();
+        flowDto.getParams().setSuppliedVisitorId(visitorId);
+//      flowDto.addQasinoRequest(request);
 
-        qasinoStateMachine.handleEvent(START, flowDTO);
+        qasinoStateMachine.handleEvent(START, flowDto);
         log.warn("########## Start of initialize: " + LocalTime.now());
 
-        return new QasinoResponseMapper().map(flowDTO);
+//        return new QasinoResponseMapper().map(flowDto);
+        return null;
     }
 
 }

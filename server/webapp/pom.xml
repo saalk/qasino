@@ -30,6 +30,7 @@
 		<jackson-jsog.version>1.1.1</jackson-jsog.version>
 
 		<!-- 3: utility -->
+		<org.mapstruct.version>1.6.0.Beta1</org.mapstruct.version>
 		<commons-collections4.version>4.4</commons-collections4.version>
 		<commons-io.version>2.15.1</commons-io.version>
 		<!--		<commons-text.version>1.11</commons-text.version>-->
@@ -61,7 +62,7 @@
 		<surefire-logger-api.version>3.2.5</surefire-logger-api.version>
 		<maven-assembly-plugin.version>3.3.0</maven-assembly-plugin.version>
 		<exec-maven-plugin.version>1.6.0</exec-maven-plugin.version>
-		<maven-compiler-plugin.version>3.8.1</maven-compiler-plugin.version>
+		<maven-compiler-plugin.version>3.11.0</maven-compiler-plugin.version>
 		<versions-maven-plugin.version>2.7</versions-maven-plugin.version>
 
 	</properties>
@@ -184,6 +185,16 @@
 		</dependency>
 
 		<!-- 3: utility -->
+		<dependency>
+			<groupId>com.google.code.gson</groupId>
+			<artifactId>gson</artifactId>
+			<version>2.11.0</version>
+		</dependency>
+		<dependency>
+			<groupId>org.mapstruct</groupId>
+			<artifactId>mapstruct</artifactId>
+			<version>${org.mapstruct.version}</version>
+		</dependency>
 		<dependency>
 			<groupId>com.google.guava</groupId>
 			<artifactId>guava</artifactId>
@@ -356,6 +367,7 @@
 <!--					</execution>-->
 <!--				</executions>-->
 <!--			</plugin>-->
+
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
@@ -405,6 +417,20 @@
 					</compilerArgs>
 					<source>${java.version}</source>
 					<target>${java.version}</target>
+					<annotationProcessorPaths>
+						// The order of the processors is important.
+						<path>
+							<groupId>org.projectlombok</groupId>
+							<artifactId>lombok</artifactId>
+							<version>${lombok.version}</version>
+						</path>
+						<path>
+							<groupId>org.mapstruct</groupId>
+							<artifactId>mapstruct-processor</artifactId>
+							<version>${org.mapstruct.version}</version>
+						</path>
+						<!-- other annotation processors -->
+					</annotationProcessorPaths>
 				</configuration>
 			</plugin>
 			<!--separating it and unit tests directories-->

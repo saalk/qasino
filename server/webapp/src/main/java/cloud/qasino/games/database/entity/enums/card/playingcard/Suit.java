@@ -46,7 +46,12 @@ public enum Suit implements LabeledEnum {
         // the integer is not out of the bounds of the array by passing a
         // bound argument to nextInt(). The bound argument is the total
         // number of directions, which will not exceed the size of the array.
-        return suits[SUIT.nextInt(suits.length)];
+        Suit suit = suits[SUIT.nextInt(suits.length)];
+        while (suit == Suit.JOKERS) {
+            // we dont want the suit joker
+            suit = suits[SUIT.nextInt(suits.length)];
+        };
+        return suit;
     }
 
     public static final Map<String, Suit> suitMapNoError = new HashMap<>();

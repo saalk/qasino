@@ -89,19 +89,23 @@ public class PlayingCard {
     }
     public static List<PlayingCard> createDeckForRandomSuitWithXJokers(int addJokers) {
         Suit randomSuit = Suit.randomSuit();
+        log.info("randomSuit is {} ", randomSuit);
+
         return createDeckForSuitWithXJokers(randomSuit, addJokers);
     }
     public static List<PlayingCard> createDeckForSuitWithXJokers(Suit suit, int addJokers) {
         List<PlayingCard> newDeck = new ArrayList<>(); // static so init all the time
-        for (int i = 0; i < addJokers; i++) {
-            newDeck.add(joker);
-        }
         switch (suit) {
             case CLUBS -> newDeck.addAll(clubsDeckNoJoker);
             case DIAMONDS -> newDeck.addAll(diamondsDeckNoJoker);
             case HEARTS -> newDeck.addAll(heartsDeckNoJoker);
             case SPADES -> newDeck.addAll(spadesDeckNoJoker);
-            }
+            default ->
+                    throw new MyNPException("createDeckForSuitWithXJokers","suit [" + suit + "]");
+        }
+        for (int i = 0; i < addJokers; i++) {
+            newDeck.add(joker);
+        }
         return newDeck;
     }
     public static boolean isValid2LetterCardId(String rankAndSuit) {

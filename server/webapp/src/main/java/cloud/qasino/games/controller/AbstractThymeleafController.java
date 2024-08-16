@@ -1,71 +1,82 @@
 package cloud.qasino.games.controller;
 
-import cloud.qasino.games.action.CalculateQasinoStatisticsAction;
-import cloud.qasino.games.action.DeterminePossibleEventsAction;
-import cloud.qasino.games.action.FindVisitorIdByAliasOrUsernameAction;
-import cloud.qasino.games.action.LoadEntitiesToDtoAction;
-import cloud.qasino.games.action.MapQasinoGameTableFromDtoAction;
-import cloud.qasino.games.action.MapQasinoResponseFromDtoAction;
-import cloud.qasino.games.action.SetStatusIndicatorsBaseOnRetrievedDataAction;
+import cloud.qasino.games.action.common.CalculateStatisticsAction;
+import cloud.qasino.games.action.common.DetermineEventsAction;
+import cloud.qasino.games.action.common.FindAllDtosForUsernameAction;
+import cloud.qasino.games.action.common.MapQasinoFromDtosAction;
+import cloud.qasino.games.dto.Qasino;
 import cloud.qasino.games.database.security.Visitor;
 import cloud.qasino.games.database.security.VisitorRepository;
-import cloud.qasino.games.dto.QasinoFlowDTO;
-import cloud.qasino.games.response.QasinoResponse;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.gson.Gson;
 import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
 import java.security.Principal;
 
+import static cloud.qasino.games.utils.QasinoUtils.prettyPrint;
+
+@Slf4j
 public class AbstractThymeleafController {
 
     @Resource
     VisitorRepository visitorRepository;
 
-    @Autowired
-    LoadEntitiesToDtoAction loadEntitiesToDtoAction;
-    @Autowired
-    FindVisitorIdByAliasOrUsernameAction findVisitorIdByAliasOrUsernameAction;
-    @Autowired
-    SetStatusIndicatorsBaseOnRetrievedDataAction setStatusIndicatorsBaseOnRetrievedDataAction;
-    @Autowired
-    CalculateQasinoStatisticsAction calculateQasinoStatisticsAction;
-    @Autowired
-    MapQasinoResponseFromDtoAction mapQasinoResponseFromDtoAction;
-    @Autowired
-    MapQasinoGameTableFromDtoAction mapQasinoGameTableFromDtoAction;
-    @Autowired
-    DeterminePossibleEventsAction determinePossibleEvents;
-
-    public String prettyPrintJson(QasinoResponse qasinoResponse) {
-        ObjectMapper objectMapper = new ObjectMapper();
-        try {
-            return objectMapper.writeValueAsString(qasinoResponse);
-        } catch (JsonProcessingException e) {
-            throw new RuntimeException(e);
-        }
-    }
+    // @formatter:off
+    @Autowired FindAllDtosForUsernameAction findDtos;
+    @Autowired DetermineEventsAction determineEvents;
+    @Autowired MapQasinoFromDtosAction mapQasino;
+    @Autowired CalculateStatisticsAction calculateStatistics;
 
     public String getPricipalVisitorId(Principal principal) {
         Visitor visitor = visitorRepository.findByUsername(principal.getName());
         return String.valueOf(visitor.getVisitorId());
     }
+    public void prepareQasino(HttpServletResponse response, Qasino qasino) {
 
-    public void prepareQasinoResponse(HttpServletResponse response, QasinoFlowDTO flowDTO) {
+        findDtos.perform(qasino);
+        determineEvents.perform(qasino);
+        calculateStatistics.perform(qasino);
+        mapQasino.perform(qasino);
+        logQasino(qasino);
 
-        findVisitorIdByAliasOrUsernameAction.perform(flowDTO);
-        loadEntitiesToDtoAction.perform(flowDTO);
-        determinePossibleEvents.perform(flowDTO);
-        mapQasinoGameTableFromDtoAction.perform(flowDTO);
-        setStatusIndicatorsBaseOnRetrievedDataAction.perform(flowDTO);
-        calculateQasinoStatisticsAction.perform(flowDTO);
-        mapQasinoResponseFromDtoAction.perform(flowDTO);
-        setHttpResponseHeader(response, flowDTO);
-
+    }
+    public void logQasino(Qasino qasino) {
+        try {
+//            log.warn("Qasino.getNavBarItems pretty print = {} ", prettyPrint(qasino.getNavBarItems()));
+//            log.warn("----------------------------------------");
+//            log.warn("Qasino.getMessage pretty print = {} ", prettyPrint(qasino.getMessage()));
+//            log.warn("----------------------------------------");
+//            log.warn("Qasino.getParams pretty print = {} ", prettyPrint(qasino.getParams()));
+//            log.warn("----------------------------------------");
+//            log.warn("Qasino.getCreation print = {} ", prettyPrint(qasino.getCreation()));
+            log.warn("----------------------------------------");
+//            log.warn("Qasino.getVisitor pretty print = {} ", prettyPrint(qasino.getVisitor()));
+//            log.warn("----------------------------------------");
+//            log.warn("Qasino.getGame pretty print = {} ", prettyPrint(qasino.getGame()));
+//            log.warn("----------------------------------------");
+//            log.warn("Qasino.getPlaying pretty print = {} ", prettyPrint(qasino.getPlaying()));
+//            log.warn("----------------------------------------");
+//            log.warn("Qasino.getResults pretty print = {} ", prettyPrint(qasino.getResults()));
+//            log.warn("----------------------------------------");
+            log.warn("Qasino.getInvitations pretty print = {} ", prettyPrint(qasino.getInvitations()));
+//            log.warn("----------------------------------------");
+//            log.warn("Qasino.getLeague pretty print = {} ", prettyPrint(qasino.getLeague()));
+//            log.warn("----------------------------------------");
+//            log.warn("Qasino.getEnumOverview pretty print = {} ", prettyPrint(qasino.getEnumOverview()));
+//            log.warn("----------------------------------------");
+//            log.warn("Qasino.getStatistics pretty print = {} ", prettyPrint(qasino.getStatistics()));
+        } catch (JsonProcessingException e) {
+            try {
+                var gson = new Gson();
+                log.warn("Qasino gson (pretty print failed) = {} ", gson.toJson(qasino));
+            } catch (StackOverflowError s){
+                log.warn("Qasino gson and pretty print failed");
+            }
+        }
     }
 
     //    private HttpHeaders headers = new HttpHeaders();
@@ -76,53 +87,53 @@ public class AbstractThymeleafController {
 //        this.headers.add(key, value);
 //    }
 
-    private void setHttpResponseHeader(HttpServletResponse response, QasinoFlowDTO flowDTO) {
-        uri = ServletUriComponentsBuilder.fromCurrentRequest()
-                .path("")
-                .buildAndExpand(flowDTO.getPathVariables(), flowDTO.getRequestParams())
-                .toUri();
+    private void setHttpResponseHeader(HttpServletResponse response, Qasino qasino) {
+//        uri = ServletUriComponentsBuilder.fromCurrentRequest()
+//                .path("")
+//                .buildAndExpand(qasino.getPathVariables(), qasino.getRequestParams())
+//                .toUri();
 //        this.headers.add("URI", String.valueOf(uri));
         response.setHeader("Q-Uri", String.valueOf(uri));
         response.setHeader("Q-Visitor-Id", "-1");
         response.setHeader("Q-Game-Id", "-1");
         response.setHeader("Q-League-Id", "-1");
-        response.setHeader("Q-Turn-Player-Id", "-1");
-        response.setHeader("Q-Turn-Id", "-1");
+        response.setHeader("Q-Playing-Player-Id", "-1");
+        response.setHeader("Q-Playing-Id", "-1");
 
         response.setHeader("Q-Error-Key", "");
         response.setHeader("Q-Error-Value", "");
         response.setHeader("Q-Error-Reason", "");
         response.setHeader("Q-Error-Message-Id", "");
 
-        if (flowDTO.getQasinoVisitor() != null) {
-            response.setHeader("Q-Visitor-Id", String.valueOf(flowDTO.getQasinoVisitor().getVisitorId()));
+        if (qasino.getVisitor() != null) {
+            response.setHeader("Q-Visitor-Id", String.valueOf(qasino.getVisitor().getVisitorId()));
         }
-        if (flowDTO.getQasinoGame() != null) {
-            response.setHeader("Q-Game-Id", String.valueOf(flowDTO.getQasinoGame().getGameId()));
+        if (qasino.getGame() != null) {
+            response.setHeader("Q-Game-Id", String.valueOf(qasino.getGame().getGameId()));
         }
-        if (flowDTO.getQasinoGameLeague() != null) {
-            response.setHeader("Q-League-Id", String.valueOf(flowDTO.getQasinoGameLeague().getLeagueId()));
+        if (qasino.getLeague() != null) {
+            response.setHeader("Q-League-Id", String.valueOf(qasino.getLeague().getLeagueId()));
         }
-        if (flowDTO.getTurnPlayer() != null) {
-            response.setHeader("Q-Turn-Player-Id", String.valueOf(flowDTO.getTurnPlayer().getPlayerId()));
+        if (qasino.getPlaying().getCurrentPlayer() != null) {
+            response.setHeader("Q-Playing-Player-Id", String.valueOf(qasino.getPlaying().getCurrentPlayer().getPlayerId()));
         }
-        if (flowDTO.getActiveTurn() != null) {
-            response.setHeader("Q-Turn-Id", String.valueOf(flowDTO.getActiveTurn().getTurnId()));
+        if (qasino.getPlaying() != null) {
+            response.setHeader("Q-Playing-Id", String.valueOf(qasino.getPlaying().getPlayingId()));
         }
-//        if (flowDTO.getHttpStatus() > 299) {
+//        if (flowDto.getHttpStatus() > 299) {
 
+        // also add error to header
+//            addKeyValueToHeader(flowDto.getErrorKey(), flowDto.getErrorValue());
+//            addKeyValueToHeader("Error", flowDto.getErrorMessage());
+        if (!qasino.getMessage().getErrorReason().isEmpty()) {
             // also add error to header
-//            addKeyValueToHeader(flowDTO.getErrorKey(), flowDTO.getErrorValue());
-//            addKeyValueToHeader("Error", flowDTO.getErrorMessage());
-            if (!flowDTO.getErrorReason().isEmpty()) {
-                // also add error to header
-                response.setHeader("Q-Error-Key", flowDTO.getErrorKey());
-                response.setHeader("Q-Error-Value", flowDTO.getErrorValue());
-                response.setHeader("Q-Error-Reason", flowDTO.getErrorReason());
-                response.setHeader("Q-Error-Message-Id", flowDTO.getErrorMessage());
-            }
+            response.setHeader("Q-Error-Key", qasino.getMessage().getErrorKey());
+            response.setHeader("Q-Error-Value", qasino.getMessage().getErrorValue());
+            response.setHeader("Q-Error-Reason", qasino.getMessage().getErrorReason());
+            response.setHeader("Q-Error-Message-Id", qasino.getMessage().getErrorMessage());
+        }
 
-//            MultiValueMap<String, String> headers = flowDTO.getHeaders();
+//            MultiValueMap<String, String> headers = flowDto.getHeaders();
 //            headers.forEach((name, values) -> {
 //                for (String value : values) {
 //                    response.setHeader(name, value);

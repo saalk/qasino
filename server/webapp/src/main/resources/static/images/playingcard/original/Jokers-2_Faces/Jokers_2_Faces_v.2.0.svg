@@ -515,7 +515,7 @@
                style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:30px;line-height:125%;font-family:Caladea;-inkscape-font-specification:'Caladea, Normal';text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;filter:url(#filter5450-1)"
                id="text4367"
                sodipodi:linespacing="125%"><tspan
-                 sodipodi:role="line"
+                 sodipodi:playerType="line"
                  id="tspan4369"
                  x="413.36325"
                  y="367.82623"
@@ -641,7 +641,7 @@
                  y="367.90271"
                  x="413.36325"
                  id="tspan4247"
-                 sodipodi:role="line">Joker</tspan></text>
+                 sodipodi:playerType="line">Joker</tspan></text>
           </g>
         </g>
       </g>
@@ -699,7 +699,7 @@
                  y="367.82623"
                  x="413.36325"
                  id="tspan4335"
-                 sodipodi:role="line"
+                 sodipodi:playerType="line"
                  dx="0 2 2 2 2">Joker</tspan></text>
           </g>
         </g>
@@ -754,7 +754,7 @@
                id="text4355"
                sodipodi:linespacing="125%"
                transform="matrix(1,0,0,1.1748535,0,-65.004052)"><tspan
-                 sodipodi:role="line"
+                 sodipodi:playerType="line"
                  id="tspan4357"
                  x="413.36325"
                  y="367.90271"

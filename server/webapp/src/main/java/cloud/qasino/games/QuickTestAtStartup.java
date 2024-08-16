@@ -5,23 +5,23 @@ import cloud.qasino.games.database.entity.CardMove;
 import cloud.qasino.games.database.entity.Game;
 import cloud.qasino.games.database.entity.League;
 import cloud.qasino.games.database.entity.Player;
-import cloud.qasino.games.database.entity.Turn;
+import cloud.qasino.games.database.entity.Playing;
 import cloud.qasino.games.database.entity.enums.card.Location;
 import cloud.qasino.games.database.entity.enums.card.PlayingCard;
 import cloud.qasino.games.database.entity.enums.game.GameState;
 import cloud.qasino.games.database.entity.enums.move.Move;
 import cloud.qasino.games.database.entity.enums.player.AiLevel;
 import cloud.qasino.games.database.entity.enums.player.Avatar;
-import cloud.qasino.games.database.entity.enums.player.Role;
+import cloud.qasino.games.database.entity.enums.player.PlayerType;
 import cloud.qasino.games.database.repository.CardMoveRepository;
 import cloud.qasino.games.database.repository.CardRepository;
 import cloud.qasino.games.database.repository.GameRepository;
 import cloud.qasino.games.database.repository.LeagueRepository;
 import cloud.qasino.games.database.repository.PlayerRepository;
-import cloud.qasino.games.database.repository.TurnRepository;
+import cloud.qasino.games.database.repository.PlayingRepository;
 import cloud.qasino.games.database.security.Visitor;
 import cloud.qasino.games.database.security.VisitorRepository;
-import cloud.qasino.games.database.security.VisitorService;
+import cloud.qasino.games.database.security.VisitorServiceOld;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -44,7 +44,7 @@ public class QuickTestAtStartup implements ApplicationRunner {
     private String activeProfiles;
 
     @Autowired
-    private VisitorService visitorService;
+    private VisitorServiceOld visitorServiceOld;
 
     @Autowired
     VisitorRepository visitorRepository;
@@ -57,7 +57,7 @@ public class QuickTestAtStartup implements ApplicationRunner {
     @Autowired
     CardRepository cardRepository;
     @Autowired
-    TurnRepository turnRepository;
+    PlayingRepository playingRepository;
     @Autowired
     CardMoveRepository cardMoveRepository;
 
@@ -88,15 +88,15 @@ public class QuickTestAtStartup implements ApplicationRunner {
 
         int pawn = Visitor.pawnShipValue(0);
         visitor.pawnShip(pawn);
-        visitor = visitorService.saveUser(visitor);
+        visitor = visitorServiceOld.saveUser(visitor);
 
         pawn = Visitor.pawnShipValue(0);
         friend1.pawnShip(pawn);
-        friend1 = visitorService.saveUser(friend1);
+        friend1 = visitorServiceOld.saveUser(friend1);
 
         pawn = Visitor.pawnShipValue(0);
         friend2.pawnShip(pawn);
-        friend2 = visitorService.saveUser(friend2);
+        friend2 = visitorServiceOld.saveUser(friend2);
 
         // The visitor starts a league
         League league = League.buildDummy(visitor,"");
@@ -138,18 +138,18 @@ public class QuickTestAtStartup implements ApplicationRunner {
         );
         invites = playerRepository.findAllPlayersInvitedForAGame(game.getGameId(), pageable);
         for (Player invite : invites) {
-            if (invite.getRole().equals(Role.INVITED)) {
-                invite.setRole(Role.ACCEPTED);
+            if (invite.getPlayerType().equals(PlayerType.INVITED)) {
+                invite.setPlayerType(PlayerType.INVITEE);
                 playerRepository.save(invite);
             }
         }
         game.setState(GameState.PREPARED);
         gameRepository.save(game);
 
-        // The main player initiates a turn with round 1 player 1 and gets a card
-        Turn turn = new Turn(game, visitorAndBot.get(0).getPlayerId());
-        turnRepository.save(turn);
-        CardMove cardMove = new CardMove(turn, visitorAndBot.get(0), 0, Move.DEAL,
+        // The main player initiates a playing with round 1 player 1 and gets a card
+        Playing playing = new Playing(game, visitorAndBot.get(0));
+        playingRepository.save(playing);
+        CardMove cardMove = new CardMove(playing, visitorAndBot.get(0), 0, Move.DEAL,
                 Location.HAND, "details");
         cardMoveRepository.save(cardMove);
     }

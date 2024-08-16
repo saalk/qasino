@@ -2,12 +2,12 @@ package cloud.qasino.games.config;
 
 import cloud.qasino.games.database.entity.enums.game.style.*;
 import cloud.qasino.games.database.entity.enums.game.GameState;
-import cloud.qasino.games.statemachine.event.GameEvent;
+import cloud.qasino.games.database.entity.enums.player.PlayerType;
+import cloud.qasino.games.pattern.statemachine.event.GameEvent;
 import cloud.qasino.games.database.entity.enums.move.Move;
 import cloud.qasino.games.database.entity.enums.game.Type;
 import cloud.qasino.games.database.entity.enums.player.AiLevel;
 import cloud.qasino.games.database.entity.enums.player.Avatar;
-import cloud.qasino.games.database.entity.enums.player.Role;
 import cloud.qasino.games.database.entity.enums.card.Face;
 import cloud.qasino.games.database.entity.enums.card.Location;
 import cloud.qasino.games.database.entity.enums.card.Position;
@@ -106,8 +106,8 @@ public interface Constants {
                         AiLevel.fromLabelWithDefault(e) != AiLevel.ERROR ||
                         EnumUtils.isValidEnum(Avatar.class, e) ||
                         Avatar.fromLabelWithDefault(e) != Avatar.ERROR ||
-                        EnumUtils.isValidEnum(Role.class, e) ||
-                        Role.fromLabelWithDefault(e) != Role.ERROR ||
+                        EnumUtils.isValidEnum(PlayerType.class, e) ||
+                        PlayerType.fromLabelWithDefault(e) != PlayerType.ERROR ||
                         EnumUtils.isValidEnum(Face.class, e) ||
                         Face.fromLabelWithDefault(e) != Face.ERROR ||
                         EnumUtils.isValidEnum(Location.class, e) ||

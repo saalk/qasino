@@ -1,9 +1,15 @@
 package cloud.qasino.games.response;
 
-import cloud.qasino.games.dto.enums.EnumOverview;
-import cloud.qasino.games.dto.elements.*;
-import cloud.qasino.games.dto.enums.Params;
-import cloud.qasino.games.dto.statistics.Statistic;
+import cloud.qasino.games.pattern.singleton.OnlineVisitorsPerDay;
+import cloud.qasino.games.response.view.NavigationBarItem;
+import cloud.qasino.games.dto.model.InvitationsDto;
+import cloud.qasino.games.response.view.PageGamePlay;
+import cloud.qasino.games.response.view.PageGameSetup;
+import cloud.qasino.games.response.view.PageLeague;
+import cloud.qasino.games.response.view.PageVisitor;
+import cloud.qasino.games.response.view.enums.EnumOverview;
+import cloud.qasino.games.response.view.enums.Params;
+import cloud.qasino.games.response.view.statistics.Statistic;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -20,6 +26,9 @@ public class QasinoResponse {
 
     @JsonProperty("Message")
     private String action;
+    public void setAction(String action) {
+        this.action = "today's visitor count = " + OnlineVisitorsPerDay.getInstance().getOnlineVisitors() + " | " + action;
+    }
     @JsonProperty("ShowMessage")
     private boolean actionNeeded;
 
@@ -38,7 +47,7 @@ public class QasinoResponse {
     @JsonProperty("PageGamePlay")
     private PageGamePlay pageGamePlay;
     @JsonProperty("PageGameInvitations")
-    private PageGameInvitations pageGameInvitations;
+    private InvitationsDto invitationsDTO;
     @JsonProperty("PageLeague")
     private PageLeague pageLeague;
 

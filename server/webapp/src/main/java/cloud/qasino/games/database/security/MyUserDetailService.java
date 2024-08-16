@@ -1,5 +1,7 @@
 package cloud.qasino.games.database.security;
 
+import cloud.qasino.games.dto.model.VisitorDto;
+import cloud.qasino.games.pattern.singleton.OnlineVisitorsPerDay;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -13,7 +15,6 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.security.Principal;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -33,10 +34,24 @@ public class MyUserDetailService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        final Visitor visitor = visitorRepository.findByUsername(username);
-        log.warn("visitor found: {}",visitor.toString());
+        Visitor visitor = visitorRepository.findByUsername(username);
         if (visitor == null) {
             throw new UsernameNotFoundException("Visitor [" + username + "] not found");
+        } else {
+            log.warn("visitor found: {}", visitor);
+            OnlineVisitorsPerDay.getInstance().newLogon();
+
+        }
+        MyUserPrincipal principal = new MyUserPrincipal(visitor);
+        log.warn("Principal found: {}", principal.toString());
+        return principal;
+    }
+
+    public UserDetails loadUserByUsername(VisitorDto visitorDto) throws UsernameNotFoundException {
+        final Visitor visitor = visitorRepository.findByUsername(visitorDto.getUsername());
+        log.warn("visitor found: {}",visitor.toString());
+        if (visitor == null) {
+            throw new UsernameNotFoundException("Visitor [" + visitorDto.getUsername() + "] not found");
         }
         MyUserPrincipal principal = new MyUserPrincipal(visitor);
         log.warn("Principal found: {}", principal.toString());

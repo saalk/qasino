@@ -23,7 +23,7 @@ public enum GameState implements LabeledEnum {
     PREPARED("prepared", "Game validated, start shuffling", GameStateGroup.PREPARED),
 
     // HIGHLOW
-    STARTED("started", "Game shuffled, proceed with a move", GameStateGroup.PLAYING),
+    STARTED("started", "Game shuffled, proceed to play", GameStateGroup.PLAYING),
     INITIATOR_MOVE("initiator_move", "Play a move", GameStateGroup.PLAYING),
     INVITEE_MOVE("invitee_move", "Waiting for invitee to do a move", GameStateGroup.PLAYING),
     BOT_MOVE("bot_move", "Push the bot player to do a next move", GameStateGroup.PLAYING),

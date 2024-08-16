@@ -1,8 +1,10 @@
 package cloud.qasino.games.database.repository;
 
+import cloud.qasino.games.database.entity.Player;
 import cloud.qasino.games.database.entity.enums.game.GameState;
 import cloud.qasino.games.database.entity.Game;
 import cloud.qasino.games.database.entity.League;
+import cloud.qasino.games.database.security.Visitor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -15,6 +17,9 @@ import java.util.List;
 
 @Repository
 public interface GameRepository extends JpaRepository<Game, Long> {
+
+    // findOne
+//    Game findOneByGameId(Long gameId);
 
     // prepared queries
     public final static String FIND_ALL = "SELECT * FROM \"game\" ORDER BY \"updated\" DESC";
@@ -63,6 +68,20 @@ public interface GameRepository extends JpaRepository<Game, Long> {
     public final static String COUNT_ALL_INITIATED_BY_VISITOR_ID =
             "SELECT count(*) FROM \"game\" WHERE \"initiator\" = :visitorId ";
 
+
+    public final static String FIND_ALL_INVITED_FOR_VISITOR_ID =
+            "SELECT b.* FROM \"game\" as a JOIN \"player\" as b " +
+                    "WHERE a.\"game_id\" = b.\"game_id\" " +
+                    "AND b.\"visitor_id\" = :visitorId " +
+                    "AND b.\"playerType\" IN ('INVITED','INVITEE','REJECTED') " +
+                    "ORDER BY a.\"updated\" DESC ";
+    public final static String COUNT_ALL_INVITED_FOR_VISITOR_ID =
+            "SELECT count(b.*) FROM \"game\" as a JOIN \"player\" as b " +
+                    "WHERE a.\"game_id\" = b.\"game_id\" " +
+                    "AND b.\"visitor_id\" = :visitorId " +
+                    "AND b.\"playerType\" IN ('INVITED','INVITEE','REJECTED') ";
+
+
     public final static String FIND_NEWGAMES_BY_VISITOR_ID =
             "SELECT a.* FROM \"game\" as a JOIN \"player\" b " +
                     "WHERE a.\"game_id\" = b.\"game_id\" " +
@@ -79,13 +98,13 @@ public interface GameRepository extends JpaRepository<Game, Long> {
             "SELECT a.* FROM \"game\" as a JOIN \"player\" as b " +
                     "WHERE a.\"game_id\" = b.\"game_id\" " +
                     "AND b.\"visitor_id\" = :visitorId " +
-                    "AND a.\"state\" IN ('STARTED','NEXT_MOVE','NEXT_TURN') " +
+                    "AND a.\"state\" IN ('STARTED','INITIATOR_MOVE','INVITEE_MOVE','BOT_MOVE') " +
                     "ORDER BY a.\"updated\" DESC ";
     public final static String COUNT_STARTEDGAMES_BY_VISITOR_ID =
             "SELECT count(a.*) FROM \"game\" as a JOIN \"player\" as b " +
                     "WHERE a.\"game_id\" = b.\"game_id\" " +
                     "AND b.\"visitor_id\" = :visitorId " +
-                    "AND a.\"state\" IN ('STARTED','NEXT_MOVE','NEXT_TURN') ";
+                    "AND a.\"state\" IN ('STARTED','INITIATOR_MOVE','INVITEE_MOVE','BOT_MOVE') ";
 
     public final static String FIND_FINISHEDGAMES_BY_VISITOR_ID =
             "SELECT a.* FROM \"game\" as a JOIN \"player\" as b " +
@@ -133,7 +152,7 @@ public interface GameRepository extends JpaRepository<Game, Long> {
     List<Game> findAllGamesWithPage(Pageable pageable);
 
     @Query(value = FIND_STATES, countQuery = COUNT_STATES,nativeQuery = true)
-    List<Game> findActiveGameNodeStates(
+    List<Game> findGameNodeStates(
             @Param(value = "states") List<GameState> states,
             Pageable pageable);
 
@@ -152,11 +171,17 @@ public interface GameRepository extends JpaRepository<Game, Long> {
             @Param("visitorId") long visitorId,
             Pageable pageable);
 
+    @Query(value = FIND_ALL_INVITED_FOR_VISITOR_ID, countQuery = COUNT_ALL_INVITED_FOR_VISITOR_ID, nativeQuery = true)
+    public List<Player> findAllInvitedPlayersForVisitorWithPage(
+            @Param("visitorId") long visitorId,
+            Pageable pageable);
+
     // TODO - FIX ME
     @Query(value = FIND_ALL_INITIATED_BY_VISITOR_ID, countQuery = COUNT_ALL_INITIATED_BY_VISITOR_ID, nativeQuery = true)
     public List<Game> findAllInitiatedGamesForVisitorWithPage(
             @Param("visitorId") long visitorId,
             Pageable pageable);
+
 
     @Query(value = FIND_ALL_INVITED_BY_VISITOR_ID, countQuery = COUNT_ALL_INVITED_BY_VISITOR_ID, nativeQuery = true)
     public List<Game> findAllInvitedGamesForVisitorWithPage(

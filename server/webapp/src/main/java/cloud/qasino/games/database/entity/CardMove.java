@@ -7,7 +7,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.voodoodyne.jackson.jsog.JSOGGenerator;
 import lombok.AccessLevel;
-import lombok.Getter;
+import lombok.Data;
 import lombok.Setter;
 import org.hibernate.annotations.DynamicUpdate;
 
@@ -20,7 +20,6 @@ import jakarta.persistence.ForeignKey;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.Index;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
@@ -28,63 +27,58 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Objects;
 
+// @Entity creates a direct link between class object(s) and table row(s)
 @Entity
+// @DynamicUpdate includes only columns which are actually being updated - not the cached insert
 @DynamicUpdate
-@Getter
-@Setter
-@JsonIdentityInfo(generator = JSOGGenerator.class)
+// @Data for JPA entities is an antipattern
+// But we override equals, hash and toString and have noargs constructor.
+@Data
+@JsonIdentityInfo(generator = JSOGGenerator.class, property = "cardMoveId")
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
-@Table(name = "cardmove", indexes =
-        {@Index(name = "cardmove_turn_index", columnList = "turn_id", unique = false),
+@Table(name = "cardmove", indexes = {
+//        @Index(name = "cardmove_playing_index", columnList = "playing_id", unique = false),
                 // not needed : @Index(name = "cardmove_index", columnList = "cardmove_id", unique = true)
         }
 )
 public class CardMove {
 
+    // @formatter:off
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "cardmove_id")
+    @Column(name = "cardmove_id", nullable = false)
     private long cardMoveId;
-
     @JsonIgnore
     @Column(name = "created", length = 25)
     private String created;
 
-
     // Foreign keys
-
     @JsonIgnore
-    // many cardmoves can be part of a turn
+    // many [CardMove] are part of one [Playing]
     @ManyToOne(cascade = CascadeType.DETACH)
-    @JoinColumn(name = "turn_id", referencedColumnName = "turn_id", foreignKey = @ForeignKey
-            (name = "fk_turn_id"), nullable = true)
-    private Turn turn;
-
+    @JoinColumn(name = "playing_id", referencedColumnName = "playing_id", foreignKey = @ForeignKey
+            (name = "fk_playing_id"), nullable = false)
+    private Playing playing;
+    // one [CardMove] can be part of one [Player]
     @Column(name = "player_id")
     private long playerId;
-
+    // TODO move cards can be in one move in future
+    // one [CardMove] can be part of one [Card]
     @Column(name = "card_id", nullable = true)
     private long cardId;
 
-    // cardMove basics, what move does the player make
+    // Normal fields
     @Enumerated(EnumType.STRING)
     @Column(name = "move", nullable = false)
     private Move move;
-
-
-    // json
     @Column(name = "cardMove_details", nullable = true)
     private String cardMoveDetails;
-
-    // json fields, filled in by engine
     @Setter(AccessLevel.NONE)
     @Column(name = "sequence")
     private String sequence;
-
     @Enumerated(EnumType.STRING)
     @Column(name = "location", nullable = true)
     private Location location;
-
     @Column(name = "bet", nullable = true)
     private int bet;
     @Column(name = "start_fiches", nullable = true)
@@ -92,7 +86,8 @@ public class CardMove {
     @Column(name = "end_fiches", nullable = true)
     private int endFiches;
 
-    // References
+    // References - the actual FK are in other tables
+    // none
 
     public CardMove() {
         setCreated();
@@ -101,9 +96,9 @@ public class CardMove {
         setEndFiches(0);
     }
 
-    public CardMove(Turn turn, Player player, long cardId, Move move, Location location, String details) {
+    public CardMove(Playing playing, Player player, long cardId, Move move, Location location, String details) {
         this();
-        this.turn = turn;
+        this.playing = playing;
         this.playerId = player.getPlayerId();
         this.cardId = cardId;
 
@@ -121,12 +116,12 @@ public class CardMove {
         this.created = result.substring(0, 20);
     }
 
-    public void setSequence(int round, int seat, int turn) {
+    public void setSequence(int round, int seat, int move) {
         // xxyyzz format
         this.sequence =
             String.format("%02d", round) +
             String.format("%02d", seat) +
-            String.format("%02d", turn);
+            String.format("%02d", move);
     }
     public int getRoundFromSequence() {
         return Integer.parseInt(this.sequence.substring(0,2));
@@ -155,7 +150,7 @@ public class CardMove {
     public String toString() {
         return "(" +
                 "cardMoveId=" + this.cardMoveId +
-                ", turnId=" + this.turn.getTurnId() +
+                ", playingId=" + this.playing.getPlayingId() +
                 ", playerId=" + this.playerId +
                 ", cardId=" + this.cardId +
                 ", move=" + this.move.getLabel() +
@@ -167,6 +162,4 @@ public class CardMove {
                 ", endFiches=" + this.endFiches +
                 ")";
     }
-
-
 }

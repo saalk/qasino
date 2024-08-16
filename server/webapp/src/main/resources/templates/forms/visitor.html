@@ -8,11 +8,11 @@
 <div th:fragment="pawn-or-repay">
     <!-- the specific part of this html -->
     <form class="form-narrow form-horizontal" method="post"
-          th:action="@{${qasinoResponse.pageVisitor.selectedVisitor.balance == 0 ? '/pawn' : '/repay'}}"
-          th:object="${qasinoResponse}"
-          th:fragment="QasinoResponse">
+          th:action="@{${qasino.visitor.balance == 0 ? '/pawn' : '/repay'}}"
+          th:object="${qasino}"
+          th:fragment="qasino">
         <!--/* Show general error message when form contains errors */-->
-        <th:block th:if="${#fields.hasErrors('${qasinoResponse.*}')}">
+        <th:block th:if="${#fields.hasErrors('${qasino.*}')}">
             <div th:replace="fragments/alert :: alert (type='danger', message='Form contains errors. Please try again.')">
                 Alert
             </div>
@@ -22,68 +22,68 @@
                 <label for="balance" class="col-lg-2 control-label">Balance</label>
                 <div class="col-lg-10">
                     <input disabled type="text" class="form-control" id="balance" placeholder="Balance"
-                           th:field="${qasinoResponse.pageVisitor.selectedVisitor.balance}"/>
+                           th:field="${qasino.visitor.balance}"/>
                 </div>
             </div>
             <div class="form-group">
                 <div class="col-lg-offset-2 col-lg-10">
                     <button type="submit" class="btn btn-default"
-                            th:text="${qasinoResponse.pageVisitor.selectedVisitor.balance} == 0 ? 'Pawn':'Repay'">
+                            th:text="${qasino.visitor.balance} == 0 ? 'Pawn':'Repay'">
                         Pawn or Repay
                     </button>
                 </div>
             </div>
             <input type="hidden" id="visitorId2"
-                   th:field="${qasinoResponse.pageVisitor.selectedVisitor.visitorId}"/>
+                   th:field="${qasino.params.suppliedVisitorId}"/>
         </fieldset>
     </form>
 </div>
 <div th:fragment="update">
     <form class="form-narrow form-horizontal" method="post" th:action="@{/visitor}"
-          th:object="${qasinoResponse}"
-          th:fragment="QasinoResponse">
+          th:object="${qasino}"
+          th:fragment="qasino">
         <!--/* Show general error message when form contains errors */-->
-        <th:block th:if="${#fields.hasErrors('${qasinoResponse.*}')}">
+        <th:block th:if="${#fields.hasErrors('${qasino.*}')}">
             <div th:replace="fragments/alert :: alert (type='danger', message='Form contains errors. Please try again.')">
                 Alert
             </div>
         </th:block>
         <fieldset>
             <div class="form-group"
-                 th:classappend="${#fields.hasErrors('${qasinoResponse.pageVisitor.selectedVisitor.username}')}? 'has-error'">
+                 th:classappend="${#fields.hasErrors('${qasino.creation.suppliedUsername}')}? 'has-error'">
                 <label for="username" class="col-lg-2 control-label">Username</label>
                 <div class="col-lg-10">
                     <input disabled type="text" class="form-control" id="username" placeholder="Username"
-                           th:field="${qasinoResponse.pageVisitor.selectedVisitor.username}"/>
+                           th:field="${qasino.creation.suppliedUsername}"/>
                     <span class="help-block"
-                          th:if="${#fields.hasErrors('${qasinoResponse.pageVisitor.selectedVisitor.username}')}"
-                          th:errors="${qasinoResponse.pageVisitor.selectedVisitor.username}">Incorrect username</span>
+                          th:if="${#fields.hasErrors('${qasino.creation.suppliedUsername}')}"
+                          th:errors="${qasino.creation.suppliedUsername}">Incorrect username</span>
                 </div>
             </div>
             <div class="form-group"
-                 th:classappend="${#fields.hasErrors('${qasinoResponse.pageVisitor.selectedVisitor.alias}')}? 'has-error'">
+                 th:classappend="${#fields.hasErrors('${qasino.creation.suppliedAlias}')}? 'has-error'">
                 <label for="alias" class="col-lg-2 control-label">Alias</label>
                 <div class="col-lg-10">
                     <input type="text" class="form-control" id="alias" placeholder="Alias"
-                           th:field="${qasinoResponse.pageVisitor.selectedVisitor.alias}"/>
+                           th:field="${qasino.creation.suppliedAlias}"/>
                     <span class="help-block"
-                          th:if="${#fields.hasErrors('${qasinoResponse.pageVisitor.selectedVisitor.alias}')}"
-                          th:errors="${qasinoResponse.pageVisitor.selectedVisitor.alias}">Incorrect alias</span>
+                          th:if="${#fields.hasErrors('${qasino.creation.suppliedAlias}')}"
+                          th:errors="${qasino.creation.suppliedAlias}">Incorrect alias</span>
                 </div>
             </div>
             <div class="form-group"
-                 th:classappend="${#fields.hasErrors('${qasinoResponse.pageVisitor.selectedVisitor.email}')}? 'has-error'">
+                 th:classappend="${#fields.hasErrors('${qasino.creation.suppliedEmail}')}? 'has-error'">
                 <label for="email" class="col-lg-2 control-label">Email</label>
                 <div class="col-lg-10">
                     <input type="text" class="form-control" id="email" placeholder="Email"
-                           th:field="${qasinoResponse.pageVisitor.selectedVisitor.email}"/>
+                           th:field="${qasino.creation.suppliedEmail}"/>
                     <span class="help-block"
-                          th:if="${#fields.hasErrors('${qasinoResponse.pageVisitor.selectedVisitor.email}')}"
-                          th:errors="${qasinoResponse.pageVisitor.selectedVisitor.email}">Incorrect email</span>
+                          th:if="${#fields.hasErrors('${qasino.creation.suppliedEmail}')}"
+                          th:errors="${qasino.creation.suppliedEmail}">Incorrect email</span>
                 </div>
             </div>
             <input type="hidden" id="visitorId"
-                   th:field="${qasinoResponse.pageVisitor.selectedVisitor.visitorId}"/>
+                   th:field="${qasino.params.suppliedVisitorId}"/>
             <div class="form-group">
                 <div class="col-lg-offset-2 col-lg-10">
                     <button type="submit" class="btn btn-default">Save</button>

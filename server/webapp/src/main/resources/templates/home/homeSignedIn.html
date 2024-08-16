@@ -17,7 +17,7 @@
                 &nbsp;
             </div>
         </th:block>
-        <h1>Welcome to the Qasino floor!</h1>
+        <h1>Welcome on the Qasino floor!</h1>
         <span th:text="'What happened until today: ' + ${#dates.format(#dates.createNow(),'YYYY-MM-dd HH:mm')}"></span>
         <br><br>
         <table class="u-full-width">
@@ -30,12 +30,12 @@
             </tr>
             </thead>
             <tbody>
-            <tr th:if="${qasinoResponse.statistics.empty}">
+            <tr th:if="${qasino.statistics.empty}">
                 <td colspan="2"> No Statistics Available</td>
             </tr>
             <!-- #lists is SPEL -->
-            <tr th:unless="${#lists.isEmpty(qasinoResponse.statistics)}"
-                th:each="statistic : ${qasinoResponse.statistics}">
+            <tr th:unless="${#lists.isEmpty(qasino.statistics)}"
+                th:each="statistic : ${qasino.statistics}">
                 <td><span th:text="${statistic.table}"> Table </span></td>
                 <td><span th:text="${statistic.filter}"> Filter </span></td>
                 <td><span th:text="${statistic.count}"> Count </span></td>

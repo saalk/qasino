@@ -1,10 +1,10 @@
 package cloud.qasino.games.orchestration.interfaces;
 
-import cloud.qasino.games.statemachine.event.EventOutput;
-import cloud.qasino.games.statemachine.event.interfaces.AbstractEvent;
-import cloud.qasino.games.statemachine.event.interfaces.AbstractFlowDTO;
+import cloud.qasino.games.pattern.statemachine.event.EventOutput;
+import cloud.qasino.games.pattern.statemachine.event.interfaces.AbstractEvent;
+import cloud.qasino.games.pattern.statemachine.event.interfaces.AbstractFlowDto;
 
-public abstract class StatelessCheck<T extends AbstractFlowDTO> extends AbstractEvent {
+public abstract class StatelessCheck<T extends AbstractFlowDto> extends AbstractEvent {
     @SuppressWarnings("unchecked")
     @Override
     protected EventOutput execution(final Object... eventOutput) {
@@ -18,9 +18,9 @@ public abstract class StatelessCheck<T extends AbstractFlowDTO> extends Abstract
 
     protected abstract boolean check(final T flowDto);
     protected String getGameEvent(final T flowDto) {
-        return flowDto.getCurrentGameEvent().toString();
+        return flowDto.getGameEvent().toString();
     };
-    protected String getTurnEvent(final T flowDto) {
-        return flowDto.getCurrentGameEvent().toString();
+    protected String getPlayEvent(final T flowDto) {
+        return flowDto.getGameEvent().toString();
     };
 }

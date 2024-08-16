@@ -2,6 +2,7 @@ package cloud.qasino.games.database.entity;
 
 import cloud.qasino.games.database.entity.enums.game.Type;
 import cloud.qasino.games.database.entity.enums.game.GameState;
+import cloud.qasino.games.simulator.QasinoSimulator;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;

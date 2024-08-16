@@ -9,11 +9,11 @@
 <div th:fragment="footer">
     <div class="specific-footer">
 
-        <div th:text="${qasinoResponse != null && qasinoResponse.action != null} ?
-            '> ' + ${qasinoResponse.action} :
+        <div th:text="${qasino != null && qasino.message != null && qasino.message.action != null} ?
+            '> ' + ${qasino.message.action} :
             'No messages from the Qasino...'">
         </div>
-        &copy; <span th:text="${#temporals.format(#temporals.createNow(), 'yyyy')}">2017</span>
+        &copy; 2016-<span th:text="${#temporals.format(#temporals.createNow(), 'yyyy')}">2017</span>
         Saalk@github.com - trying to beat
         <a href="https://medium.com/@uwehook/sturgeons-law-285c007406db">sturgeon's law</a>
         <br>
@@ -23,6 +23,7 @@
             <li><a href="https://github.com/necolas/normalize.css">Normalize css </a></li>
             <li><a href="https://www.thymeleaf.org/">Thymeleaf </a></li>
             <li><a href="https://spring.io/projects/spring-boot">Springboot </a></li>
+            <li><a href="https://refactoring.guru/design-patterns/catalog">Design-patterns </a></li>
         </ul>
     </div>
 </div>

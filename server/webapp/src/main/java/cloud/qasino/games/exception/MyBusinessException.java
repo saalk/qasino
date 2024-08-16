@@ -7,14 +7,17 @@ import java.util.InputMismatchException;
 // - custom checked exception (eg, filenotfound), we have to extend the java.lang.Exception class.
 public class MyBusinessException
         extends RuntimeException {
+
     public MyBusinessException(String errorMessage, Throwable err) {
-        super("MyBusinessException :: " + errorMessage, err);
+        super("Business rule violation :: " + errorMessage + ", check the Qasino policy", err);
     }
+
     public MyBusinessException(String errorMessage) {
-        super("MyNPException :: " + errorMessage, new InputMismatchException("IME"));
+        super("Business rule violation :: " + errorMessage + ", check the Qasino policy", new InputMismatchException("IME"));
     }
+
     public MyBusinessException(String method, String errorMessage) {
-        super("MyBusinessException in method [" + method + "] :: " + errorMessage, new InputMismatchException("IME"));
+        super("Business rule violation in method [" + method + "] :: " + errorMessage + ", check the Qasino policy", new InputMismatchException("IME"));
     }
 }
 

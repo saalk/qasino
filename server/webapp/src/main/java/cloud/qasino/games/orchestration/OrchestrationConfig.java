@@ -1,17 +1,17 @@
 package cloud.qasino.games.orchestration;
 
-import cloud.qasino.games.action.interfaces.Action;
+import cloud.qasino.games.action.common.GenericLookupsAction;
 import cloud.qasino.games.orchestration.interfaces.EventHandlingResponse;
 import cloud.qasino.games.orchestration.interfaces.Expression;
 import cloud.qasino.games.database.entity.enums.game.GameState;
-import cloud.qasino.games.statemachine.event.GameEvent;
-import cloud.qasino.games.statemachine.event.interfaces.Event;
+import cloud.qasino.games.pattern.statemachine.event.GameEvent;
+import cloud.qasino.games.pattern.statemachine.event.interfaces.Event;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.*;
 
-import static cloud.qasino.games.statemachine.event.GameEvent.START;
-import static cloud.qasino.games.statemachine.event.EventOutput.Result.SUCCESS;
+import static cloud.qasino.games.pattern.statemachine.event.GameEvent.START;
+import static cloud.qasino.games.pattern.statemachine.event.EventOutput.Result.SUCCESS;
 
 /**
  * Contains states, events handled by certain states, actions to be carried out and transitions.
@@ -26,8 +26,8 @@ public class OrchestrationConfig {
     //private final RetryCriteria retryCriteria = new RetryCriteria();
     private Map<GameState, StateConfig> stateConfigMap = new LinkedHashMap<GameState, StateConfig>();
     private Map<Event, List<GameState>> statesPermittingEvent = new HashMap<>();
-    private List<Class<? extends Action>> actionsBeforeEvent = new ArrayList<>();
-    private List<Class<? extends Action>> actionsAfterEvent = new ArrayList<>();
+    private List<Class<? extends GenericLookupsAction>> actionsBeforeEvent = new ArrayList<>();
+    private List<Class<? extends GenericLookupsAction>> actionsAfterEvent = new ArrayList<>();
     private Map<Class<? extends Exception>, Transition> exceptionToTransitionMap = new LinkedHashMap<>();
     private boolean rethrowExceptions = false;
     private EventHandlingResponse defaultResponse;
@@ -123,7 +123,7 @@ public class OrchestrationConfig {
      * @param action
      * @return OrchestrationConfig
      */
-    public OrchestrationConfig beforeEventPerform(final Class<? extends Action> action) {
+    public OrchestrationConfig beforeEventPerform(final Class<? extends GenericLookupsAction> action) {
         actionsBeforeEvent.add(action);
         return this;
     }
@@ -134,7 +134,7 @@ public class OrchestrationConfig {
      * @param action
      * @return OrchestrationConfig
      */
-    public OrchestrationConfig afterEventPerform(final Class<? extends Action> action) {
+    public OrchestrationConfig afterEventPerform(final Class<? extends GenericLookupsAction> action) {
         actionsAfterEvent.add(action);
         return this;
     }
@@ -144,7 +144,7 @@ public class OrchestrationConfig {
      */
     Collection<ActionConfig> getBeforeEventActions() {
         List<ActionConfig> result = new ArrayList<>();
-        for (Class<? extends Action> action : actionsBeforeEvent) {
+        for (Class<? extends GenericLookupsAction> action : actionsBeforeEvent) {
             result.add(new ActionConfig(null, action));
         }
         return result;
@@ -155,7 +155,7 @@ public class OrchestrationConfig {
      */
     public List<ActionConfig> getAfterEventActions() {
         List<ActionConfig> result = new ArrayList<>();
-        for (Class<? extends Action> action : actionsAfterEvent) {
+        for (Class<? extends GenericLookupsAction> action : actionsAfterEvent) {
             result.add(new ActionConfig(null, action));
         }
         return result;
@@ -170,7 +170,7 @@ public class OrchestrationConfig {
 
     /**
      * Configures a transition to a next state if a certain exception type (or supertype) is caught while performing an action
-     * Sets (frontend) response on DTO
+     * Sets (frontend) response on Dto
      *
      * @param exceptionClass
      * @param nextState
@@ -225,7 +225,7 @@ public class OrchestrationConfig {
     }
 
     /**
-     * Configures a default response to be set on DTO in case flow does not result in other specific response
+     * Configures a default response to be set on Dto in case flow does not result in other specific response
      *
      * @param defaultResponse
      * @return
@@ -344,7 +344,7 @@ public class OrchestrationConfig {
          * @param action
          * @return ActionConfig
          */
-        public ActionConfig onEntryPerform(Class<? extends Action> action) {
+        public ActionConfig onEntryPerform(Class<? extends GenericLookupsAction> action) {
             return onEvent(START).perform(action);
         }
 
@@ -406,7 +406,7 @@ public class OrchestrationConfig {
          * @param action
          * @return ActionConfig
          */
-        public ActionConfig perform(Class<? extends Action> action) {
+        public ActionConfig perform(Class<? extends GenericLookupsAction> action) {
             ActionConfig actionConfig = new ActionConfig(this, action);
             actions.add(actionConfig);
             return actionConfig;
@@ -451,12 +451,12 @@ public class OrchestrationConfig {
          */
         public EventConfig transition(GameState nextState) {
             onState(nextState);
-            perform((Class<? extends Action>) OkAction.class).onResult(SUCCESS, nextState);
+            perform((Class<? extends GenericLookupsAction>) OkAction.class).onResult(SUCCESS, nextState);
             return this;
         }
 
         public void transition(final GameState nextState, final Event nextEvent) {
-            perform((Class<? extends Action>) OkAction.class).onResult(SUCCESS, nextState, nextEvent);
+            perform((Class<? extends GenericLookupsAction>) OkAction.class).onResult(SUCCESS, nextState, nextEvent);
         }
 
         /**
@@ -464,7 +464,7 @@ public class OrchestrationConfig {
          */
         Collection<ActionConfig> getAfterEventActions() {
             List<ActionConfig> result = new ArrayList<>();
-            for (Class<? extends Action> action : actionsAfterEvent) {
+            for (Class<? extends GenericLookupsAction> action : actionsAfterEvent) {
                 result.add(new ActionConfig(this, action));
             }
             return result;
@@ -486,7 +486,7 @@ public class OrchestrationConfig {
     public class ActionConfig {
 
         private EventConfig event;
-        private Class<? extends Action> action;
+        private Class<? extends GenericLookupsAction> action;
         //TODO  unchecked call
         private Map<Object, Transition> resultTransitionMap = new HashMap();
         private Map<Class<? extends Exception>, Transition> exceptionToTransitionMap = new LinkedHashMap<>();
@@ -498,7 +498,7 @@ public class OrchestrationConfig {
          * @param event
          * @param action
          */
-        ActionConfig(EventConfig event, Class<? extends Action> action) {
+        ActionConfig(EventConfig event, Class<? extends GenericLookupsAction> action) {
             this.event = event;
             this.action = action;
         }
@@ -513,14 +513,14 @@ public class OrchestrationConfig {
          * @param action
          * @return ActionConfig
          */
-        public ActionConfig perform(Class<? extends Action> action) {
+        public ActionConfig perform(Class<? extends GenericLookupsAction> action) {
             return event.perform(action);
         }
 
         /**
          * @return Class<? extends Action>
          */
-        Class<? extends Action> getAction() {
+        Class<? extends GenericLookupsAction> getAction() {
             return action;
         }
 
@@ -554,7 +554,7 @@ public class OrchestrationConfig {
         }
 
         /**
-         * @param response to be set on DTO
+         * @param response to be set on Dto
          */
         public ActionConfig onResult(final Object expectedResult, final GameState nextState, final EventHandlingResponse
                 response) {
@@ -564,7 +564,7 @@ public class OrchestrationConfig {
         /**
          * @param expectedResult
          * @param nextState
-         * @param response       to be set on DTO
+         * @param response       to be set on Dto
          * @param nextEvent      to be fired immidiately after transition
          * @return
          */

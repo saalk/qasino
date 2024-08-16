@@ -12,5 +12,6 @@
 - [Linux](./webapp/docs/notes/3-Linux/0-index.md)
 - [Java Http](./webapp/docs/notes/4-Java-http/0-index.md)
 - [Springboot](./webapp/docs/notes/5-Springboot/0-index.md)
-- [Testing](./webapp/docs/notes/6-Testing/0-index.md)
+- [Thyme](./webapp/docs/notes/6-Java-Thymeleaf/0-index.md)
 - [Coding](./webapp/docs/notes/7-Java8-Coding-examples/0-index.md)
+- [Patterns](./webapp/docs/notes/8-Java-Patterns/0-index.md)

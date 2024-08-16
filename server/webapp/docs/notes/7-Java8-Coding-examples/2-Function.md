@@ -1,6 +1,6 @@
 Back to [Index](0-index.md)
 # Function
-Java 8 - Function
+## Java 8 - Function
 Java 8 introduced the Function interface (from the java.util.function package), which represents a function that takes one argument and produces a result. The Function interface has a method andThen that facilitates function composition.
 ```java
  Function<Integer, Integer> addTwo = x -> x + 2;
