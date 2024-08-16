@@ -20,30 +20,30 @@
                 <label for="type2" class="col-lg-2 control-label">Game</label>
                 <div class="col-lg-10">
                     <input disabled type="text" class="form-control" id="type2" placeholder="Type"
-                           th:field="${qasino.creation.suppliedType}"/>
+                           th:field="${qasino.game.type}"/>
                 </div>
             </div>
             <div class="form-group">
                 <label for="state" class="col-lg-2 control-label">State</label>
                 <div class="col-lg-10">
                     <input disabled type="text" class="form-control" id="state" placeholder="State"
-                           th:field="${qasino.creation.suppliedState}"/>
+                           th:field="${qasino.game.state}"/>
                 </div>
             </div>
             <div class="form-group">
                 <div class="col-lg-offset-2 col-lg-10" th:if="${qasino.params.suppliedGameStateGroup} == 'SETUP'">
-                    <button class="btn btn-default" th:formaction="@{/validate/{path}(path=${qasino.creation.suppliedgameId})}" type="submit">
+                    <button class="btn btn-default" th:formaction="@{/validate/{path}(path=${qasino.params.suppliedGameId})}" type="submit">
                         Validate
                     </button>
                 </div>
                 <div class="col-lg-offset-2 col-lg-10" th:if="${qasino.params.suppliedGameStateGroup} == 'PREPARED'">
-                    <button class="btn btn-default" th:formaction="@{/shuffle/{path}(path=${qasino.creation.suppliedgameId})}" type="submit">
+                    <button class="btn btn-default" th:formaction="@{/shuffle/{path}(path=${qasino.params.suppliedGameId})}" type="submit">
                         Shuffle
                     </button>
                 </div>
             </div>
             <input type="hidden" id="gameId"
-                   th:field="${qasino.creation.suppliedgameId}"/>
+                   th:field="${qasino.params.suppliedGameId}"/>
         </fieldset>
     </form>
 </div>

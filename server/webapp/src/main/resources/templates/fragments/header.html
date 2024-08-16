@@ -74,8 +74,12 @@
                            th:text="${qasino.navBarItems.^[sequence==3].title}">Play</a>
                     </li>
 
-                    <li class="nav-item">
-                        <a class="nav-link disabled" href="#" th:href="@{invite}" aria-disabled="true"
+                    <li class="nav-item" th:if="${qasino.invitations != null}">
+                        <a class="nav-link active" th:href="@{/invite}"
+                           th:text="${qasino.navBarItems.^[sequence==4].title}">Invites</a>
+                    </li>
+                    <li class="nav-item" th:if="${qasino.invitations == null}">
+                        <a class="nav-link disable"
                            th:text="${qasino.navBarItems.^[sequence==4].title}">Invites</a>
                     </li>
 

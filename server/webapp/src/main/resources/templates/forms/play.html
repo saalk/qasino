@@ -28,37 +28,37 @@
                 </div>
             </div>
             <div class="form-group"
-                 th:classappend="${#fields.hasErrors('${qasino.creation.suppliedState}')}? 'has-error'">
+                 th:classappend="${#fields.hasErrors('${qasino.game.state}')}? 'has-error'">
                 <label for="state" class="col-lg-2 control-label">State</label>
                 <div class="col-lg-10">
                     <input disabled type="text" class="form-control" id="state"
                            placeholder="State"
-                           th:field="${qasino.creation.suppliedState}"/>
+                           th:field="${qasino.game.state}"/>
                     <span class="help-block"
-                          th:if="${#fields.hasErrors('${qasino.creation.suppliedState}')}"
+                          th:if="${#fields.hasErrors('${qasino.game.state}')}"
                           th:errors="${qasino.creation.suppliedState}">Incorrect state</span>
                 </div>
             </div>
             <div class="form-group"
-                 th:classappend="${#fields.hasErrors('${qasino.creation.suppliedStyle}')}? 'has-error'">
+                 th:classappend="${#fields.hasErrors('${qasino.game.style}')}? 'has-error'">
                 <label for="style2" class="col-lg-2 control-label">Style</label>
                 <div class="col-lg-10">
                     <input disabled type="text" class="form-control" id="style2" placeholder="Style"
-                           th:field="${qasino.creation.suppliedStyle}"/>
+                           th:field="${qasino.game.style}"/>
                     <span class="help-block"
-                          th:if="${#fields.hasErrors('${qasino.creation.suppliedStyle}')}"
-                          th:errors="${qasino.creation.suppliedStyle}">Incorrect style</span>
+                          th:if="${#fields.hasErrors('${qasino.game.style}')}"
+                          th:errors="${qasino.game.style}">Incorrect style</span>
                 </div>
             </div>
             <div class="form-group"
-                 th:classappend="${#fields.hasErrors('${qasino.creation.suppliedAnte}')}? 'has-error'">
+                 th:classappend="${#fields.hasErrors('${qasino.game.ante}')}? 'has-error'">
                 <label for="ante" class="col-lg-2 control-label">Ante</label>
                 <div class="col-lg-10">
                     <input disabled type="text" class="form-control" id="ante" placeholder="Ante"
-                           th:field="${qasino.creation.suppliedAnte}"/>
+                           th:field="${qasino.game.ante}"/>
                     <span class="help-block"
-                          th:if="${#fields.hasErrors('${qasino.creation.suppliedAnte}')}"
-                          th:errors="${qasino.creation.suppliedAnte}">Incorrect ante</span>
+                          th:if="${#fields.hasErrors('${qasino.game.ante}')}"
+                          th:errors="${qasino.game.ante}">Incorrect ante</span>
                 </div>
             </div>
             <!--            <div class="form-group"-->
@@ -131,7 +131,7 @@
             <!--    </tr>-->
             <!-- #lists is SPEL -->
             <tr th:unless="${#lists.isEmpty(qasino.results)}"
-                th:each="result : ${qasino.result}">
+                th:each="result : ${qasino.results}">
                 <td><span th:text="${result.seatId}">Seat</span></td>
                 <td><span th:text="${result.winner}">Winner?</span></td>
                 <td><span th:text="${result.avatarName}">Avatar</span></td>

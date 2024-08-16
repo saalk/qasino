@@ -14,6 +14,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ControllerAdvice;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -29,7 +30,7 @@ import java.security.Principal;
 public class InvitationsThymeleafController extends AbstractThymeleafController {
 
     // @formatter:off
-    private static final String INVITES_VIEW_LOCATION = "pages/invites";
+    private static final String INVITES_VIEW_LOCATION = "pages/invite";
 
     EventOutput.Result output;
     private PlayerRepository playerRepository;
@@ -43,6 +44,24 @@ public class InvitationsThymeleafController extends AbstractThymeleafController 
             PlayerService playerService) {
         this.playerRepository = playerRepository;
         this.playerService = playerService;
+    }
+
+    @GetMapping("/invite")
+    public String getLeague(
+            Principal principal,
+            Model model,
+            HttpServletResponse response) {
+
+        // 1 - map input
+        Qasino qasino = new Qasino();
+        qasino.getParams().setSuppliedVisitorUsername(principal.getName());
+        // 2 - validate input
+        // 3 - process
+        loadVisitor.perform(qasino);
+        // 4 - return  response
+        prepareQasino(response, qasino);
+        model.addAttribute(qasino);
+        return INVITES_VIEW_LOCATION;
     }
 
     @PostMapping(value = "/invite/{otherVisitorId}/game/{gameId}")
