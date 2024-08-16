@@ -1,15 +1,14 @@
 package cloud.qasino.games.dto.mapper;
 
-import cloud.qasino.games.database.entity.League;
 import cloud.qasino.games.database.entity.Result;
 import cloud.qasino.games.database.entity.enums.player.AiLevel;
 import cloud.qasino.games.database.entity.enums.player.Avatar;
 import cloud.qasino.games.database.entity.enums.player.PlayerType;
-import cloud.qasino.games.dto.GameDto;
-import cloud.qasino.games.dto.LeagueShortDto;
-import cloud.qasino.games.dto.PlayerDto;
-import cloud.qasino.games.dto.ResultDto;
-import cloud.qasino.games.dto.VisitorDto;
+import cloud.qasino.games.dto.model.GameDto;
+import cloud.qasino.games.dto.model.LeagueShortDto;
+import cloud.qasino.games.dto.model.PlayerDto;
+import cloud.qasino.games.dto.model.ResultDto;
+import cloud.qasino.games.dto.model.VisitorDto;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Named;
@@ -27,7 +26,7 @@ public interface ResultMapper {
 //    @Mapping(target = "visitor", source = "result", qualifiedByName = "visitor")
 //    @Mapping(target = "game", source = "result", qualifiedByName = "game")
 
-    @Mapping(target = "seat", source = "result", qualifiedByName = "seat")
+    @Mapping(target = "seatId", source = "result", qualifiedByName = "seatId")
     @Mapping(target = "human", source = "result", qualifiedByName = "human")
     @Mapping(target = "playerType", source = "result", qualifiedByName = "playerType")
     @Mapping(target = "fiches", source = "result", qualifiedByName = "fiches")
@@ -70,8 +69,8 @@ public interface ResultMapper {
         return GameMapper.INSTANCE.toDto(result.getGame(), result.getGame().getCards());
     }
 
-    @Named("seat")
-    default int seat(Result result) {
+    @Named("seatId")
+    default int seatId(Result result) {
         return result.getPlayer().getSeat();
     }
     @Named("human")

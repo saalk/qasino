@@ -1,7 +1,8 @@
 package cloud.qasino.games.orchestration;
 
-import cloud.qasino.games.action.interfaces.Action;
-import cloud.qasino.games.action.interfaces.ActionOutput;
+import cloud.qasino.games.action.common.GenericLookupsAction;
+import cloud.qasino.games.dto.Qasino;
+import cloud.qasino.games.action.common.interfaces.ActionOutput;
 import cloud.qasino.games.database.entity.enums.game.GameState;
 import cloud.qasino.games.pattern.statemachine.event.interfaces.AbstractFlowDto;
 import cloud.qasino.games.pattern.statemachine.event.interfaces.Event;
@@ -113,7 +114,7 @@ public class QasinoEventHandler {
     private <T extends AbstractFlowDto> ActionResult performAction(final T flowDto, final
     OrchestrationConfig.ActionConfig actionConfig) {
 
-        Action action = applicationContext.getBean(actionConfig.getAction());
+        GenericLookupsAction action = applicationContext.getBean(actionConfig.getAction());
         if (action == null) {
             throw new IllegalStateException("No bean present for event " + actionConfig.getEvent() + ", make " +
                     "sure it's annotated with @Component");
@@ -123,7 +124,7 @@ public class QasinoEventHandler {
         RuntimeException resultingException = null;
         try {
             //TODO  unchecked call
-            Object output = action.perform(flowDto);
+            Object output = action.perform((Qasino) flowDto);
             if (output instanceof ActionOutput) {
                 output = ((ActionOutput) output).getResult();
             }

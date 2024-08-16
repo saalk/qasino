@@ -1,6 +1,7 @@
 package cloud.qasino.games.dto.request;
 
 import cloud.qasino.games.database.entity.enums.card.Location;
+import cloud.qasino.games.database.entity.enums.game.GameState;
 import cloud.qasino.games.database.entity.enums.game.Type;
 import cloud.qasino.games.database.entity.enums.game.style.AnteToWin;
 import cloud.qasino.games.database.entity.enums.game.style.BettingStrategy;
@@ -64,6 +65,7 @@ public class CreationDto {
     private AiLevel suppliedAiLevel = AiLevel.AVERAGE;
 
     // game
+    private GameState suppliedState; // ???
     @NotNull(message = "Game style [eg MaxRounds, AnteToWin] missing", groups = GameBasic.class)
     private String suppliedStyle = "nrrn22";
     @NotNull(message = "Choose a type of game [eg Highlow, Blackjack]", groups = GameBasic.class)

@@ -2,7 +2,7 @@ package cloud.qasino.games.response;
 
 import cloud.qasino.games.pattern.singleton.OnlineVisitorsPerDay;
 import cloud.qasino.games.response.view.NavigationBarItem;
-import cloud.qasino.games.dto.InvitationsDto;
+import cloud.qasino.games.dto.model.InvitationsDto;
 import cloud.qasino.games.response.view.PageGamePlay;
 import cloud.qasino.games.response.view.PageGameSetup;
 import cloud.qasino.games.response.view.PageLeague;

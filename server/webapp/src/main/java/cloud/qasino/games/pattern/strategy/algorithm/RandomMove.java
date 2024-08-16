@@ -1,7 +1,7 @@
 package cloud.qasino.games.pattern.strategy.algorithm;
 
 import cloud.qasino.games.database.entity.enums.move.Move;
-import cloud.qasino.games.dto.GameDto;
+import cloud.qasino.games.dto.model.GameDto;
 import cloud.qasino.games.pattern.strategy.MovePredictor;
 import cloud.qasino.games.pattern.strategy.NextMoveCalculator;
 

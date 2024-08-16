@@ -1,7 +1,7 @@
 package cloud.qasino.games.action.playing;
 
-import cloud.qasino.games.action.dto.ActionDto;
-import cloud.qasino.games.action.dto.Qasino;
+import cloud.qasino.games.action.common.GenericLookupsAction;
+import cloud.qasino.games.dto.Qasino;
 import cloud.qasino.games.database.entity.Card;
 import cloud.qasino.games.database.entity.CardMove;
 import cloud.qasino.games.database.entity.enums.card.PlayingCard;
@@ -22,7 +22,7 @@ import java.util.Optional;
 
 @Slf4j
 @Component
-public class UpdateFichesForPlayerAction extends ActionDto<EventOutput.Result> {
+public class UpdateFichesForPlayerAction extends GenericLookupsAction<EventOutput.Result> {
 
     // @formatter:off
     @Resource CardMoveRepository cardMoveRepository;

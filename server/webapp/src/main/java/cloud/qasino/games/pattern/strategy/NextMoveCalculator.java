@@ -1,9 +1,9 @@
 package cloud.qasino.games.pattern.strategy;
 
 import cloud.qasino.games.database.entity.enums.move.Move;
-import cloud.qasino.games.dto.GameDto;
-import cloud.qasino.games.dto.PlayerDto;
-import cloud.qasino.games.dto.PlayingDto;
+import cloud.qasino.games.dto.model.GameDto;
+import cloud.qasino.games.dto.model.PlayerDto;
+import cloud.qasino.games.dto.model.PlayingDto;
 import cloud.qasino.games.exception.MyNPException;
 import cloud.qasino.games.pattern.strategy.algorithm.NormalMove;
 import cloud.qasino.games.pattern.strategy.algorithm.RandomMove;

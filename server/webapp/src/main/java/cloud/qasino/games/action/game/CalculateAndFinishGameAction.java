@@ -1,8 +1,8 @@
 package cloud.qasino.games.action.game;
 
-import cloud.qasino.games.action.dto.ActionDto;
-import cloud.qasino.games.action.dto.Qasino;
-import cloud.qasino.games.action.util.ActionUtils;
+import cloud.qasino.games.action.common.GenericLookupsAction;
+import cloud.qasino.games.dto.Qasino;
+import cloud.qasino.games.action.common.ActionUtils;
 import cloud.qasino.games.database.entity.CardMove;
 import cloud.qasino.games.database.entity.enums.game.gamestate.GameStateGroup;
 import cloud.qasino.games.database.repository.CardRepository;
@@ -11,9 +11,9 @@ import cloud.qasino.games.database.security.Visitor;
 import cloud.qasino.games.database.security.VisitorRepository;
 import cloud.qasino.games.database.service.PlayingService;
 import cloud.qasino.games.database.service.ResultsService;
-import cloud.qasino.games.dto.PlayerDto;
-import cloud.qasino.games.dto.ResultDto;
-import cloud.qasino.games.dto.VisitorDto;
+import cloud.qasino.games.dto.model.PlayerDto;
+import cloud.qasino.games.dto.model.ResultDto;
+import cloud.qasino.games.dto.model.VisitorDto;
 import cloud.qasino.games.dto.mapper.VisitorMapper;
 import cloud.qasino.games.pattern.statemachine.event.EventOutput;
 import jakarta.annotation.Resource;
@@ -28,7 +28,7 @@ import java.util.Optional;
 
 @Slf4j
 @Component
-public class CalculateAndFinishGameAction extends ActionDto<EventOutput.Result> {
+public class CalculateAndFinishGameAction extends GenericLookupsAction<EventOutput.Result> {
 
     // @formatter:off
     @Resource ResultsService resultsService;

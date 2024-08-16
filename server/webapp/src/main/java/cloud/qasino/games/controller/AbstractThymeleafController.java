@@ -1,20 +1,18 @@
 package cloud.qasino.games.controller;
 
-import cloud.qasino.games.action.dto.CalculateStatisticsAction;
-import cloud.qasino.games.action.dto.DetermineEventsAction;
-import cloud.qasino.games.action.dto.FindAllDtosForUsernameAction;
-import cloud.qasino.games.action.dto.MapQasinoFromDtosAction;
-import cloud.qasino.games.action.dto.Qasino;
+import cloud.qasino.games.action.common.CalculateStatisticsAction;
+import cloud.qasino.games.action.common.DetermineEventsAction;
+import cloud.qasino.games.action.common.FindAllDtosForUsernameAction;
+import cloud.qasino.games.action.common.MapQasinoFromDtosAction;
+import cloud.qasino.games.dto.Qasino;
 import cloud.qasino.games.database.security.Visitor;
 import cloud.qasino.games.database.security.VisitorRepository;
-import cloud.qasino.games.dto.QasinoFlowDto;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.google.gson.Gson;
 import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
 import java.security.Principal;
@@ -89,11 +87,11 @@ public class AbstractThymeleafController {
 //        this.headers.add(key, value);
 //    }
 
-    private void setHttpResponseHeader(HttpServletResponse response, QasinoFlowDto flowDto) {
-        uri = ServletUriComponentsBuilder.fromCurrentRequest()
-                .path("")
-                .buildAndExpand(flowDto.getPathVariables(), flowDto.getRequestParams())
-                .toUri();
+    private void setHttpResponseHeader(HttpServletResponse response, Qasino qasino) {
+//        uri = ServletUriComponentsBuilder.fromCurrentRequest()
+//                .path("")
+//                .buildAndExpand(qasino.getPathVariables(), qasino.getRequestParams())
+//                .toUri();
 //        this.headers.add("URI", String.valueOf(uri));
         response.setHeader("Q-Uri", String.valueOf(uri));
         response.setHeader("Q-Visitor-Id", "-1");
@@ -107,32 +105,32 @@ public class AbstractThymeleafController {
         response.setHeader("Q-Error-Reason", "");
         response.setHeader("Q-Error-Message-Id", "");
 
-        if (flowDto.getQasinoVisitor() != null) {
-            response.setHeader("Q-Visitor-Id", String.valueOf(flowDto.getQasinoVisitor().getVisitorId()));
+        if (qasino.getVisitor() != null) {
+            response.setHeader("Q-Visitor-Id", String.valueOf(qasino.getVisitor().getVisitorId()));
         }
-        if (flowDto.getQasinoGame() != null) {
-            response.setHeader("Q-Game-Id", String.valueOf(flowDto.getQasinoGame().getGameId()));
+        if (qasino.getGame() != null) {
+            response.setHeader("Q-Game-Id", String.valueOf(qasino.getGame().getGameId()));
         }
-        if (flowDto.getQasinoGameLeague() != null) {
-            response.setHeader("Q-League-Id", String.valueOf(flowDto.getQasinoGameLeague().getLeagueId()));
+        if (qasino.getLeague() != null) {
+            response.setHeader("Q-League-Id", String.valueOf(qasino.getLeague().getLeagueId()));
         }
-        if (flowDto.getPlayingPlayer() != null) {
-            response.setHeader("Q-Playing-Player-Id", String.valueOf(flowDto.getPlayingPlayer().getPlayerId()));
+        if (qasino.getPlaying().getCurrentPlayer() != null) {
+            response.setHeader("Q-Playing-Player-Id", String.valueOf(qasino.getPlaying().getCurrentPlayer().getPlayerId()));
         }
-        if (flowDto.getActivePlaying() != null) {
-            response.setHeader("Q-Playing-Id", String.valueOf(flowDto.getActivePlaying().getPlayingId()));
+        if (qasino.getPlaying() != null) {
+            response.setHeader("Q-Playing-Id", String.valueOf(qasino.getPlaying().getPlayingId()));
         }
 //        if (flowDto.getHttpStatus() > 299) {
 
         // also add error to header
 //            addKeyValueToHeader(flowDto.getErrorKey(), flowDto.getErrorValue());
 //            addKeyValueToHeader("Error", flowDto.getErrorMessage());
-        if (!flowDto.getErrorReason().isEmpty()) {
+        if (!qasino.getMessage().getErrorReason().isEmpty()) {
             // also add error to header
-            response.setHeader("Q-Error-Key", flowDto.getErrorKey());
-            response.setHeader("Q-Error-Value", flowDto.getErrorValue());
-            response.setHeader("Q-Error-Reason", flowDto.getErrorReason());
-            response.setHeader("Q-Error-Message-Id", flowDto.getErrorMessage());
+            response.setHeader("Q-Error-Key", qasino.getMessage().getErrorKey());
+            response.setHeader("Q-Error-Value", qasino.getMessage().getErrorValue());
+            response.setHeader("Q-Error-Reason", qasino.getMessage().getErrorReason());
+            response.setHeader("Q-Error-Message-Id", qasino.getMessage().getErrorMessage());
         }
 
 //            MultiValueMap<String, String> headers = flowDto.getHeaders();

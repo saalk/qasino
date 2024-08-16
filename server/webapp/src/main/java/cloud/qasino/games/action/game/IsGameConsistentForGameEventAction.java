@@ -1,9 +1,9 @@
 package cloud.qasino.games.action.game;
 
-import cloud.qasino.games.action.dto.ActionDto;
-import cloud.qasino.games.action.dto.Qasino;
+import cloud.qasino.games.action.common.GenericLookupsAction;
+import cloud.qasino.games.dto.Qasino;
 import cloud.qasino.games.database.entity.enums.game.gamestate.GameStateGroup;
-import cloud.qasino.games.dto.PlayerDto;
+import cloud.qasino.games.dto.model.PlayerDto;
 import cloud.qasino.games.pattern.statemachine.event.EventOutput;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -24,7 +24,7 @@ import java.util.Optional;
  * BR1)
  * @return Result.SUCCESS or FAILURE (404) when not found
  */
-public class IsGameConsistentForGameEventAction extends ActionDto<EventOutput.Result> {
+public class IsGameConsistentForGameEventAction extends GenericLookupsAction<EventOutput.Result> {
 
     @Override
     public EventOutput.Result perform(Qasino qasino) {

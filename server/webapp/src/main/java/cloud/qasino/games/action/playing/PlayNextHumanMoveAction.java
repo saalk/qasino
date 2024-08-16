@@ -1,7 +1,7 @@
 package cloud.qasino.games.action.playing;
 
-import cloud.qasino.games.action.dto.ActionDto;
-import cloud.qasino.games.action.dto.Qasino;
+import cloud.qasino.games.action.common.GenericLookupsAction;
+import cloud.qasino.games.dto.Qasino;
 import cloud.qasino.games.database.entity.enums.card.Face;
 import cloud.qasino.games.database.entity.enums.card.Location;
 import cloud.qasino.games.database.entity.enums.game.Style;
@@ -9,8 +9,8 @@ import cloud.qasino.games.database.entity.enums.game.Type;
 import cloud.qasino.games.database.entity.enums.move.Move;
 import cloud.qasino.games.database.repository.PlayingRepository;
 import cloud.qasino.games.database.service.PlayingService;
-import cloud.qasino.games.dto.PlayerDto;
-import cloud.qasino.games.dto.PlayingDto;
+import cloud.qasino.games.dto.model.PlayerDto;
+import cloud.qasino.games.dto.model.PlayingDto;
 import cloud.qasino.games.exception.MyNPException;
 import cloud.qasino.games.pattern.statemachine.event.EventOutput;
 import cloud.qasino.games.pattern.statemachine.event.PlayEvent;
@@ -23,7 +23,7 @@ import static cloud.qasino.games.database.service.PlayingService.mapPlayEventToM
 
 @Slf4j
 @Component
-public class PlayNextHumanMoveAction extends ActionDto<EventOutput.Result> {
+public class PlayNextHumanMoveAction extends GenericLookupsAction<EventOutput.Result> {
 
     // @formatter:off
     @Autowired PlayingService playingService;

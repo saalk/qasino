@@ -1,7 +1,7 @@
 package cloud.qasino.games.action.playing;
 
-import cloud.qasino.games.action.dto.ActionDto;
-import cloud.qasino.games.action.dto.Qasino;
+import cloud.qasino.games.action.common.GenericLookupsAction;
+import cloud.qasino.games.dto.Qasino;
 import cloud.qasino.games.database.security.VisitorRepository;
 import cloud.qasino.games.pattern.statemachine.event.EventOutput;
 import lombok.extern.slf4j.Slf4j;
@@ -11,7 +11,7 @@ import jakarta.annotation.Resource;
 
 @Slf4j
 @Component
-public class IsPlayingConsistentForPlayEventAction extends ActionDto<EventOutput.Result> {
+public class IsPlayingConsistentForPlayEventAction extends GenericLookupsAction<EventOutput.Result> {
 
     @Resource VisitorRepository visitorRepository;
 

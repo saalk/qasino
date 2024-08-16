@@ -1,30 +1,16 @@
 package cloud.qasino.games.dto.mapper;
 
-import cloud.qasino.games.database.entity.Card;
 import cloud.qasino.games.database.entity.CardMove;
-import cloud.qasino.games.database.entity.Game;
-import cloud.qasino.games.database.entity.League;
-import cloud.qasino.games.database.entity.Player;
 import cloud.qasino.games.database.entity.Playing;
-import cloud.qasino.games.database.entity.enums.card.Location;
-import cloud.qasino.games.database.repository.PlayingRepository;
-import cloud.qasino.games.database.service.PlayerService;
-import cloud.qasino.games.dto.GameDto;
-import cloud.qasino.games.dto.LeagueDto;
-import cloud.qasino.games.dto.PlayerDto;
-import cloud.qasino.games.dto.PlayingDto;
-import cloud.qasino.games.dto.SeatDto;
+import cloud.qasino.games.dto.model.PlayerDto;
+import cloud.qasino.games.dto.model.PlayingDto;
 import cloud.qasino.games.pattern.stream.StreamUtil;
-import org.mapstruct.Context;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Named;
 import org.mapstruct.factory.Mappers;
-import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Mapper
 public interface PlayingMapper {

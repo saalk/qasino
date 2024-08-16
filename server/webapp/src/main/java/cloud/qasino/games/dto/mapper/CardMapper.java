@@ -1,13 +1,7 @@
 package cloud.qasino.games.dto.mapper;
 
 import cloud.qasino.games.database.entity.Card;
-import cloud.qasino.games.database.entity.Player;
-import cloud.qasino.games.database.security.Role;
-import cloud.qasino.games.database.security.Visitor;
-import cloud.qasino.games.dto.CardDto;
-import cloud.qasino.games.dto.PlayerDto;
-import cloud.qasino.games.dto.VisitorDto;
-import org.mapstruct.Context;
+import cloud.qasino.games.dto.model.CardDto;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Named;

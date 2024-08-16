@@ -1,7 +1,8 @@
 package cloud.qasino.games.pattern.statemachine.event.interfaces;
 
-import cloud.qasino.games.action.interfaces.Action;
-import cloud.qasino.games.action.interfaces.ActionOutput;
+import cloud.qasino.games.action.common.GenericLookupsAction;
+import cloud.qasino.games.action.common.interfaces.Action;
+import cloud.qasino.games.action.common.interfaces.ActionOutput;
 import cloud.qasino.games.pattern.statemachine.event.EventOutput;
 
 /**
@@ -11,7 +12,7 @@ import cloud.qasino.games.pattern.statemachine.event.EventOutput;
  * @param <OUTPUT>
  */
 @Deprecated
-public abstract class AbstractEvent<INPUT extends AbstractFlowDto, OUTPUT> implements Action<INPUT, ActionOutput<OUTPUT>> {
+public abstract class AbstractEvent<INPUT extends AbstractFlowDto, OUTPUT> extends GenericLookupsAction<INPUT> {
 
     protected abstract EventOutput execution(Object... eventOutput);
 

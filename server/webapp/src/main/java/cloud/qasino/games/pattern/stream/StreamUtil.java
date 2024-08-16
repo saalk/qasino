@@ -1,13 +1,12 @@
 package cloud.qasino.games.pattern.stream;
 
-import cloud.qasino.games.database.entity.Card;
 import cloud.qasino.games.database.entity.CardMove;
 import cloud.qasino.games.database.entity.Player;
 import cloud.qasino.games.database.entity.enums.card.Location;
 import cloud.qasino.games.database.entity.enums.card.PlayingCard;
 import cloud.qasino.games.database.entity.enums.game.Type;
-import cloud.qasino.games.dto.CardDto;
-import cloud.qasino.games.dto.PlayerDto;
+import cloud.qasino.games.dto.model.CardDto;
+import cloud.qasino.games.dto.model.PlayerDto;
 import cloud.qasino.games.exception.MyNPException;
 import cloud.qasino.games.pattern.comparator.ComparatorUtil;
 

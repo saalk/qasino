@@ -1,16 +1,16 @@
 package cloud.qasino.games.action.playing;
 
-import cloud.qasino.games.action.dto.ActionDto;
-import cloud.qasino.games.action.dto.Qasino;
+import cloud.qasino.games.action.common.GenericLookupsAction;
+import cloud.qasino.games.dto.Qasino;
 import cloud.qasino.games.database.entity.enums.card.Face;
 import cloud.qasino.games.database.entity.enums.card.Location;
 import cloud.qasino.games.database.entity.enums.game.Type;
 import cloud.qasino.games.database.entity.enums.move.Move;
 import cloud.qasino.games.database.repository.PlayingRepository;
 import cloud.qasino.games.database.service.PlayingService;
-import cloud.qasino.games.dto.GameDto;
-import cloud.qasino.games.dto.PlayerDto;
-import cloud.qasino.games.dto.PlayingDto;
+import cloud.qasino.games.dto.model.GameDto;
+import cloud.qasino.games.dto.model.PlayerDto;
+import cloud.qasino.games.dto.model.PlayingDto;
 import cloud.qasino.games.exception.MyNPException;
 import cloud.qasino.games.pattern.statemachine.event.EventOutput;
 import cloud.qasino.games.pattern.stream.StreamUtil;
@@ -20,7 +20,7 @@ import org.springframework.stereotype.Component;
 
 @Slf4j
 @Component
-public class PlayFirstMoveAction extends ActionDto<EventOutput.Result> {
+public class PlayFirstMoveAction extends GenericLookupsAction<EventOutput.Result> {
 
     // @formatter:off
     @Autowired PlayingService playingService;

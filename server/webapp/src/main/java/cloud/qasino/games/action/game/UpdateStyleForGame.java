@@ -1,7 +1,7 @@
 package cloud.qasino.games.action.game;
 
-import cloud.qasino.games.action.dto.ActionDto;
-import cloud.qasino.games.action.dto.Qasino;
+import cloud.qasino.games.action.common.GenericLookupsAction;
+import cloud.qasino.games.dto.Qasino;
 import cloud.qasino.games.database.entity.enums.game.Style;
 import cloud.qasino.games.database.service.GameService;
 import cloud.qasino.games.pattern.statemachine.event.EventOutput;
@@ -13,7 +13,7 @@ import static cloud.qasino.games.database.entity.enums.game.Style.fromLabelWithD
 
 @Slf4j
 @Component
-public class UpdateStyleForGame extends ActionDto<EventOutput.Result> {
+public class UpdateStyleForGame extends GenericLookupsAction<EventOutput.Result> {
 
     @Autowired
     GameService gameService;

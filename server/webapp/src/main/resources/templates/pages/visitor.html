@@ -10,7 +10,7 @@
 <!-- the specific part of this html -->
 <div class="container">
     <div class="text-center">
-        <h1 th:text="${'Visitor - '+qasino.navBarItems.^[sequence==1].stat}">Visitor</h1>
+        <h1 th:text="${'Visitor - ' + qasino.navBarItems.^[sequence==1].stat}">Visitor</h1>
         <div th:if="${qasino.params.suppliedVisitorId <= 0}">
             No (Visitor) Data
         </div>

@@ -1,10 +1,9 @@
 package cloud.qasino.games.pattern.comparator;
 
-import cloud.qasino.games.database.entity.Card;
 import cloud.qasino.games.database.entity.CardMove;
 import cloud.qasino.games.database.entity.Player;
-import cloud.qasino.games.dto.CardDto;
-import cloud.qasino.games.dto.PlayerDto;
+import cloud.qasino.games.dto.model.CardDto;
+import cloud.qasino.games.dto.model.PlayerDto;
 
 import java.util.Comparator;
 

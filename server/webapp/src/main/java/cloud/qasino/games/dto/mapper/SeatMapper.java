@@ -5,9 +5,8 @@ import cloud.qasino.games.database.entity.CardMove;
 import cloud.qasino.games.database.entity.Player;
 import cloud.qasino.games.database.entity.Playing;
 import cloud.qasino.games.database.entity.enums.card.Location;
-import cloud.qasino.games.dto.CardDto;
-import cloud.qasino.games.dto.HandDto;
-import cloud.qasino.games.dto.SeatDto;
+import cloud.qasino.games.dto.model.HandDto;
+import cloud.qasino.games.dto.model.SeatDto;
 import org.mapstruct.Context;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -24,6 +23,7 @@ public interface SeatMapper {
     // for testing and use in other mappers
     SeatMapper INSTANCE = Mappers.getMapper(SeatMapper.class);
 
+    @Mapping(target = "seatId", source = "player", qualifiedByName = "seatId")
     @Mapping(target = "playerId", source = "player", qualifiedByName = "playerId")
     @Mapping(target = "hands", source = "player", qualifiedByName = "hands")
     @Mapping(target = "cardsInHand", source = "player", qualifiedByName = "cardsInHand")
@@ -35,6 +35,11 @@ public interface SeatMapper {
     @Mapping(target = "username", source = "player", qualifiedByName = "username")
     @Mapping(target = "seatStartBalance", source = "player", qualifiedByName = "seatStartBalance")
     SeatDto toDto(Player player, @Context Playing playing);
+
+    @Named("seatId")
+    default int seatId(Player player, @Context Playing playing) {
+        return player.getSeat();
+    }
 
     @Named("playerId")
     default long playerId(Player player, @Context Playing playing) {

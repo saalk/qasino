@@ -1,7 +1,7 @@
 package cloud.qasino.games.action.visitor;
 
-import cloud.qasino.games.action.dto.ActionDto;
-import cloud.qasino.games.action.dto.Qasino;
+import cloud.qasino.games.action.common.GenericLookupsAction;
+import cloud.qasino.games.dto.Qasino;
 import cloud.qasino.games.database.security.VisitorRepository;
 import cloud.qasino.games.database.service.VisitorAndLeaguesService;
 import cloud.qasino.games.pattern.statemachine.event.EventOutput;
@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
 
 @Slf4j
 @Component
-public class UpdateVisitorAction extends ActionDto<EventOutput.Result> {
+public class UpdateVisitorAction extends GenericLookupsAction<EventOutput.Result> {
 
     // @formatter:off
     @Resource

@@ -1,13 +1,13 @@
 package cloud.qasino.games.action.visitor;
 
-import cloud.qasino.games.action.dto.ActionDto;
-import cloud.qasino.games.action.dto.Qasino;
+import cloud.qasino.games.action.common.GenericLookupsAction;
+import cloud.qasino.games.dto.Qasino;
 import cloud.qasino.games.database.security.Role;
 import cloud.qasino.games.database.security.Visitor;
 import cloud.qasino.games.database.security.VisitorRepository;
 import cloud.qasino.games.database.security.VisitorServiceOld;
 import cloud.qasino.games.database.service.VisitorAndLeaguesService;
-import cloud.qasino.games.dto.VisitorDto;
+import cloud.qasino.games.dto.model.VisitorDto;
 import cloud.qasino.games.exception.MyNPException;
 import cloud.qasino.games.pattern.statemachine.event.EventOutput;
 import jakarta.annotation.Resource;
@@ -20,7 +20,7 @@ import java.util.Collections;
 
 @Slf4j
 @Component
-public class RegisterVisitorAction extends ActionDto<EventOutput.Result> {
+public class RegisterVisitorAction extends GenericLookupsAction<EventOutput.Result> {
 
     @Resource
     VisitorRepository visitorRepository;

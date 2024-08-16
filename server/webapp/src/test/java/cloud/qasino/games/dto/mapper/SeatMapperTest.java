@@ -25,7 +25,7 @@ class SeatMapperTest extends QasinoSimulator {
         assertEquals(playerVisitorSeatDto.getPlayerId(), playerVisitor.getPlayerId());
         // ref
         // normal fields
-        assertEquals(playerVisitorSeatDto.getSeat(), playerVisitor.getSeat());
+        assertEquals(playerVisitorSeatDto.getSeatId(), playerVisitor.getSeat());
         assertEquals(playerVisitorSeatDto.isHuman(), playerVisitor.isHuman());
         assertEquals(playerVisitorSeatDto.getPlayerType(), playerVisitor.getPlayerType());
         assertEquals(playerVisitorSeatDto.getFiches(), playerVisitor.getFiches());

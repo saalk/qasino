@@ -1,19 +1,20 @@
 package cloud.qasino.games.pattern.statemachine;
 
-import cloud.qasino.games.action.old.LoadEntitiesToDtoAction;
+import cloud.qasino.games.action.common.load.LoadPrincipalDtoAction;
+import cloud.qasino.games.orchestration.OrchestrationConfig;
+import cloud.qasino.games.orchestration.QasinoEventHandler;
 import cloud.qasino.games.pattern.statemachine.event.EventOutput;
 import cloud.qasino.games.pattern.statemachine.event.GameEvent;
 import cloud.qasino.games.pattern.statemachine.event.interfaces.AbstractFlowDto;
 import cloud.qasino.games.pattern.statemachine.event.interfaces.Event;
-import cloud.qasino.games.orchestration.OrchestrationConfig;
-import cloud.qasino.games.orchestration.QasinoEventHandler;
+import jakarta.annotation.PostConstruct;
+import jakarta.annotation.Resource;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
 
-import jakarta.annotation.PostConstruct;
-import jakarta.annotation.Resource;
-
-import static cloud.qasino.games.database.entity.enums.game.GameState.*;
+import static cloud.qasino.games.database.entity.enums.game.GameState.ERROR;
+import static cloud.qasino.games.database.entity.enums.game.GameState.INITIALIZED;
+import static cloud.qasino.games.database.entity.enums.game.GameState.PREPARED;
 
 @Component
 public class QasinoStateMachine { // implements QasinoAsyncConfiguration.ASyncEventHandler {
@@ -23,20 +24,20 @@ public class QasinoStateMachine { // implements QasinoAsyncConfiguration.ASyncEv
     static {
         // @formatter:off
         qasinoConfiguration
-                .beforeEventPerform(LoadEntitiesToDtoAction.class)
-                .afterEventPerform(LoadEntitiesToDtoAction.class)
+                .beforeEventPerform(LoadPrincipalDtoAction.class)
+                .afterEventPerform(LoadPrincipalDtoAction.class)
                 .onResult(Exception.class, ERROR)
                 .rethrowExceptions();
 
         qasinoConfiguration
                 .onState(INITIALIZED)
                 .onEvent(GameEvent.START)
-                .perform(LoadEntitiesToDtoAction.class)
+                .perform(LoadPrincipalDtoAction.class)
                 .onResult(EventOutput.Result.FAILURE, ERROR)   //Move catches RunTime Exceptions. So we need this.
-                .perform(LoadEntitiesToDtoAction.class)
-                .perform(LoadEntitiesToDtoAction.class)
+                .perform(LoadPrincipalDtoAction.class)
+                .perform(LoadPrincipalDtoAction.class)
                 .onResult(EventOutput.Result.FAILURE, ERROR)
-                .perform(LoadEntitiesToDtoAction.class)
+                .perform(LoadPrincipalDtoAction.class)
                 .onResult(EventOutput.Result.SUCCESS, PREPARED);
     }
 

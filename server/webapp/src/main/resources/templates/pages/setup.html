@@ -10,7 +10,7 @@
 <!-- the specific part of this html -->
 <div class="container">
     <div class="text-center">
-        <h1 th:text="${'Setup - '+qasino.navBarItems.^[sequence==2].stat}">Setup</h1>
+        <h1 th:text="${'Setup - ' + qasino.navBarItems.^[sequence==2].stat}">Setup</h1>
         <div th:if="${qasino.params.suppliedGameId} > 0 and ${qasino.params.suppliedGameStateGroup} == 'PLAYING'">
             Continue with playing the current game
         </div>

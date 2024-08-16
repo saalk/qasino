@@ -1,7 +1,7 @@
 package cloud.qasino.games.action.playing;
 
-import cloud.qasino.games.action.dto.ActionDto;
-import cloud.qasino.games.action.dto.Qasino;
+import cloud.qasino.games.action.common.GenericLookupsAction;
+import cloud.qasino.games.dto.Qasino;
 import cloud.qasino.games.database.entity.enums.game.GameState;
 import cloud.qasino.games.database.service.GameService;
 import cloud.qasino.games.pattern.statemachine.event.EventOutput;
@@ -13,7 +13,7 @@ import jakarta.annotation.Resource;
 
 @Slf4j
 @Component
-public class IsGameFinishedAction extends ActionDto<EventOutput.Result> {
+public class IsGameFinishedAction extends GenericLookupsAction<EventOutput.Result> {
 
     // @formatter:off
     @Resource GameService gameService;

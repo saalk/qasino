@@ -1,7 +1,7 @@
 package cloud.qasino.games.action.playing;
 
-import cloud.qasino.games.action.dto.ActionDto;
-import cloud.qasino.games.action.dto.Qasino;
+import cloud.qasino.games.action.common.GenericLookupsAction;
+import cloud.qasino.games.dto.Qasino;
 import cloud.qasino.games.database.repository.GameRepository;
 import cloud.qasino.games.database.service.GameService;
 import cloud.qasino.games.pattern.statemachine.event.EventOutput;
@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 
 @Slf4j
 @Component
-public class UpdatePlayingStateForGame extends ActionDto<EventOutput.Result> {
+public class UpdatePlayingStateForGame extends GenericLookupsAction<EventOutput.Result> {
 
     // @formatter:off
     @Autowired GameRepository gameRepository;

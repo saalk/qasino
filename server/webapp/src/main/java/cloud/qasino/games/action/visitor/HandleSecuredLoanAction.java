@@ -1,7 +1,7 @@
 package cloud.qasino.games.action.visitor;
 
-import cloud.qasino.games.action.dto.ActionDto;
-import cloud.qasino.games.action.dto.Qasino;
+import cloud.qasino.games.action.common.GenericLookupsAction;
+import cloud.qasino.games.dto.Qasino;
 import cloud.qasino.games.database.service.VisitorAndLeaguesService;
 import cloud.qasino.games.pattern.statemachine.event.EventOutput;
 import cloud.qasino.games.pattern.statemachine.event.QasinoEvent;
@@ -13,7 +13,7 @@ import java.util.Random;
 
 @Slf4j
 @Component
-public class HandleSecuredLoanAction extends ActionDto<EventOutput.Result> {
+public class HandleSecuredLoanAction extends GenericLookupsAction<EventOutput.Result> {
 
     // @formatter:off
     @Resource

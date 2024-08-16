@@ -8,15 +8,13 @@ import cloud.qasino.games.database.security.Role;
 import cloud.qasino.games.database.security.RoleRepository;
 import cloud.qasino.games.database.security.Visitor;
 import cloud.qasino.games.database.security.VisitorRepository;
-import cloud.qasino.games.dto.LeagueDto;
-import cloud.qasino.games.dto.VisitorDto;
+import cloud.qasino.games.dto.model.LeagueDto;
+import cloud.qasino.games.dto.model.VisitorDto;
 import cloud.qasino.games.dto.mapper.LeagueMapper;
 import cloud.qasino.games.dto.mapper.VisitorMapper;
 import cloud.qasino.games.dto.request.CreationDto;
 import cloud.qasino.games.dto.request.ParamsDto;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import jakarta.annotation.PostConstruct;
-import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
@@ -31,8 +29,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-
-import static cloud.qasino.games.utils.QasinoUtils.prettyPrint;
 
 @Service
 @Lazy

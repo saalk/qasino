@@ -1,6 +1,6 @@
 package cloud.qasino.games.database.security;
 
-import cloud.qasino.games.dto.VisitorDto;
+import cloud.qasino.games.dto.model.VisitorDto;
 import cloud.qasino.games.pattern.singleton.OnlineVisitorsPerDay;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +15,6 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.security.Principal;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
