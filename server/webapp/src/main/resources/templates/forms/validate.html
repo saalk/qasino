@@ -31,12 +31,12 @@
                 </div>
             </div>
             <div class="form-group">
-                <div class="col-lg-offset-2 col-lg-10" th:if="${qasino.params.gsg} == 'SETUP'">
+                <div class="col-lg-offset-2 col-lg-10" th:if="${qasino.params.suppliedGameStateGroup} == 'SETUP'">
                     <button class="btn btn-default" th:formaction="@{/validate/{path}(path=${qasino.creation.suppliedgameId})}" type="submit">
                         Validate
                     </button>
                 </div>
-                <div class="col-lg-offset-2 col-lg-10" th:if="${qasino.params.gsg} == 'PREPARED'">
+                <div class="col-lg-offset-2 col-lg-10" th:if="${qasino.params.suppliedGameStateGroup} == 'PREPARED'">
                     <button class="btn btn-default" th:formaction="@{/shuffle/{path}(path=${qasino.creation.suppliedgameId})}" type="submit">
                         Shuffle
                     </button>
