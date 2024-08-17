@@ -41,61 +41,40 @@ public class VisitorService {
         this.encoder = passwordEncoder;
     }
 
-    // lifecycle of a visitor
-    public VisitorDto saveNewUser(Visitor user) {
-        final Role basicRole = roleRepository.findByName("ROLE_USER");
-        user.setRoles(Collections.singleton(basicRole));
-        user.setPassword(encoder.encode(user.getPassword()));
-        Visitor savedVisitor = visitorRepository.save(user);
-        Visitor retrievedVisitor = visitorRepository.getReferenceById(savedVisitor.getVisitorId());
-        return VisitorMapper.INSTANCE.toDto(retrievedVisitor);
-    }
-    public VisitorDto saveNewAdmin(Visitor admin) {
-        List<Role> roles = new ArrayList<>();
-        roles.add(roleRepository.findByName("ROLE_USER"));
-        roles.add(roleRepository.findByName("ROLE_ADMIN"));
-        admin.setRoles(roles);
-        admin.setPassword(encoder.encode(admin.getPassword()));
-        Visitor savedVisitor = visitorRepository.save(admin);
-        Visitor retrievedVisitor = visitorRepository.getReferenceById(savedVisitor.getVisitorId());
-        return VisitorMapper.INSTANCE.toDto(retrievedVisitor);
-    }
-    public VisitorDto findByUsername(ParamsDto paramsDto){
-        Visitor retrievedVisitor = visitorRepository.findByUsername(paramsDto.getSuppliedVisitorUsername());
+    // lifecycle of a visitor - aim to pass params and creation dto's for consistency for all services
+    public VisitorDto findByUsername(String username){
+        Visitor retrievedVisitor = visitorRepository.findByUsername(username);
         return VisitorMapper.INSTANCE.toDto(retrievedVisitor);
     };
     public VisitorDto findOneByVisitorId(ParamsDto paramsDto) {
         Visitor retrievedVisitor = visitorRepository.getReferenceById(paramsDto.getSuppliedVisitorId());
         return VisitorMapper.INSTANCE.toDto(retrievedVisitor);
     };
-    Optional<VisitorDto> findVisitorByAliasAndAliasSequence(VisitorDto visitorDto){
-        Optional<Visitor> retrievedVisitor = visitorRepository.findVisitorByAliasAndAliasSequence(visitorDto.getAlias(),visitorDto.getAliasSequence());
+    public Optional<VisitorDto> findVisitorByAliasAndAliasSequence(String alias, int aliasSeq){
+        Optional<Visitor> retrievedVisitor = visitorRepository.findVisitorByAliasAndAliasSequence(alias,aliasSeq);
         return Optional.ofNullable(retrievedVisitor)
                 .filter(Optional::isPresent) // lambda is => visitor -> visitor.isPresent()
                 .map(visitor -> VisitorMapper.INSTANCE.toDto(visitor.get()));
     };
-    Page<VisitorDto> findAllVisitorsWithPage(Pageable pageable){
+    public Page<VisitorDto> findAllVisitorsWithPage(Pageable pageable){
         Page<Visitor> visitorPage = visitorRepository.findAllVisitorsWithPage(pageable);
         return visitorPage.map(visitor -> VisitorMapper.INSTANCE.toDto(visitor));
     };
-    Long countByAlias(VisitorDto visitorDto) {
-        return visitorRepository.countByAlias(visitorDto.getAlias());
-    };
-    public Optional<String> substringUserFromEmail(final String emailId) {
+    public Optional<String> substringUserFromEmail(String emailId) {
         return Optional.ofNullable(emailId)
                 .filter(email -> email.contains("@"))
                 .map(email -> email.replaceAll("(.*?)@.*", "$1"));
     }
-    public VisitorDto repayOrPawn(Long visitorId, int balance, int securedLoan) {
-        Visitor found = visitorRepository.getReferenceById(visitorId);
+    public VisitorDto repayOrPawn(ParamsDto paramsDto, int balance, int securedLoan) {
+        Visitor found = visitorRepository.getReferenceById(paramsDto.getSuppliedVisitorId());
         found.setBalance(balance);
         found.setSecuredLoan(securedLoan);
         Visitor saved = visitorRepository.save(found);
 
         return VisitorMapper.INSTANCE.toDto(saved);
     }
-    public VisitorDto updateUser(Long visitorId, CreationDto creation) {
-        Visitor found = visitorRepository.getReferenceById(visitorId);
+    public VisitorDto updateUser(ParamsDto paramsDto, CreationDto creation) {
+        Visitor found = visitorRepository.getReferenceById(paramsDto.getSuppliedVisitorId());
         found.setAlias(creation.getSuppliedAlias());
         found.setEmail(creation.getSuppliedEmail());
 //        found.setPassword(encoder.encode(creation.getSuppliedPassword()));
@@ -103,8 +82,12 @@ public class VisitorService {
         Visitor saved = visitorRepository.save(found);
         return VisitorMapper.INSTANCE.toDto(saved);
     }
-    void removeUserByUsername(VisitorDto visitorDto) {
-        visitorRepository.removeUserByUsername(visitorDto.getUsername());
+    public void removeUserByUsername(String username) {
+        visitorRepository.removeUserByUsername(username);
+    };
+
+    public Long countByAlias(String alias) {
+        return visitorRepository.countByAlias(alias);
     };
 
     @PostConstruct
@@ -140,7 +123,8 @@ public class VisitorService {
             createAdminIfNotFound(visitor);
         }
     }
-    public Privilege createPrivilegeIfNotFound(String name) {
+
+    Privilege createPrivilegeIfNotFound(String name) {
         Privilege privilege = privilegeRepository.findByName(name);
         if (privilege == null) {
             privilege = new Privilege(name);
@@ -148,7 +132,7 @@ public class VisitorService {
         }
         return privilege;
     }
-    public void createRoleIfNotFound(String name, Collection<Privilege> privileges) {
+    void createRoleIfNotFound(String name, Collection<Privilege> privileges) {
         Role role = roleRepository.findByName(name);
         if (role == null) {
             role = new Role(name);
@@ -156,14 +140,32 @@ public class VisitorService {
             roleRepository.save(role);
         }
     }
-    public void createUserIfNotFound(Visitor search) {
+    public VisitorDto saveNewUser(Visitor user) {
+        final Role basicRole = roleRepository.findByName("ROLE_USER");
+        user.setRoles(Collections.singleton(basicRole));
+        user.setPassword(encoder.encode(user.getPassword()));
+        Visitor savedVisitor = visitorRepository.save(user);
+        Visitor retrievedVisitor = visitorRepository.getReferenceById(savedVisitor.getVisitorId());
+        return VisitorMapper.INSTANCE.toDto(retrievedVisitor);
+    }
+    public VisitorDto saveNewAdmin(Visitor admin) {
+        List<Role> roles = new ArrayList<>();
+        roles.add(roleRepository.findByName("ROLE_USER"));
+        roles.add(roleRepository.findByName("ROLE_ADMIN"));
+        admin.setRoles(roles);
+        admin.setPassword(encoder.encode(admin.getPassword()));
+        Visitor savedVisitor = visitorRepository.save(admin);
+        Visitor retrievedVisitor = visitorRepository.getReferenceById(savedVisitor.getVisitorId());
+        return VisitorMapper.INSTANCE.toDto(retrievedVisitor);
+    }
+    void createUserIfNotFound(Visitor search) {
         Visitor user = visitorRepository.findByUsername(search.getUsername());
         if (user == null) {
             saveNewUser(search);
             log.warn("createUserIfNotFound: {}",user);
         }
     }
-    public void createAdminIfNotFound(Visitor search) {
+    void createAdminIfNotFound(Visitor search) {
         Visitor admin = visitorRepository.findByUsername(search.getUsername());
         if (admin == null) {
             saveNewAdmin(search);

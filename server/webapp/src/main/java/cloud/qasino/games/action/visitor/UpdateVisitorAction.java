@@ -15,23 +15,20 @@ import org.springframework.stereotype.Component;
 public class UpdateVisitorAction extends GenericLookupsAction<EventOutput.Result> {
 
     // @formatter:off
-    @Resource
-    VisitorRepository visitorRepository;
-    @Resource
-    VisitorService visitorService;
+    @Resource VisitorService visitorService;
     // @formatter:on
 
     @Override
     public EventOutput.Result perform(Qasino qasino) {
 
         if (!(StringUtils.isEmpty(qasino.getCreation().getSuppliedAlias()))) {
-            int sequence = Math.toIntExact(visitorRepository.countByAlias(qasino.getCreation().getSuppliedAlias()));
+            int sequence = Math.toIntExact(visitorService.countByAlias(qasino.getCreation().getSuppliedAlias()));
             if (sequence != 0) {
                 setConflictErrorMessage(qasino, "alias", String.valueOf(qasino.getCreation().getSuppliedAlias()));
                 return EventOutput.Result.FAILURE;
             }
             // todo LOW split alias and number
-            qasino.setVisitor(visitorService.updateUser(qasino.getParams().getSuppliedVisitorId(), qasino.getCreation()));
+            qasino.setVisitor(visitorService.updateUser(qasino.getParams(), qasino.getCreation()));
         }
         return EventOutput.Result.SUCCESS;
     }

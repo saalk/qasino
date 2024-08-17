@@ -19,9 +19,10 @@ import cloud.qasino.games.database.repository.GameRepository;
 import cloud.qasino.games.database.repository.LeagueRepository;
 import cloud.qasino.games.database.repository.PlayerRepository;
 import cloud.qasino.games.database.repository.PlayingRepository;
+import cloud.qasino.games.database.security.Role;
+import cloud.qasino.games.database.security.RoleRepository;
 import cloud.qasino.games.database.security.Visitor;
 import cloud.qasino.games.database.security.VisitorRepository;
-import cloud.qasino.games.database.security.VisitorServiceOld;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -43,24 +44,16 @@ public class QuickTestAtStartup implements ApplicationRunner {
     @Value("${spring.profiles.active:}")
     private String activeProfiles;
 
-    @Autowired
-    private VisitorServiceOld visitorServiceOld;
-
-    @Autowired
-    VisitorRepository visitorRepository;
-    @Autowired
-    LeagueRepository leagueRepository;
-    @Autowired
-    GameRepository gameRepository;
-    @Autowired
-    PlayerRepository playerRepository;
-    @Autowired
-    CardRepository cardRepository;
-    @Autowired
-    PlayingRepository playingRepository;
-    @Autowired
-    CardMoveRepository cardMoveRepository;
-
+    // @formatter:off
+    @Autowired VisitorRepository visitorRepository;
+    @Autowired RoleRepository roleRepository;
+    @Autowired LeagueRepository leagueRepository;
+    @Autowired GameRepository gameRepository;
+    @Autowired PlayerRepository playerRepository;
+    @Autowired CardRepository cardRepository;
+    @Autowired PlayingRepository playingRepository;
+    @Autowired CardMoveRepository cardMoveRepository;
+    // @formatter:on
 
     @Override
     public void run(ApplicationArguments args) throws Exception {
@@ -88,15 +81,22 @@ public class QuickTestAtStartup implements ApplicationRunner {
 
         int pawn = Visitor.pawnShipValue(0);
         visitor.pawnShip(pawn);
-        visitor = visitorServiceOld.saveUser(visitor);
+        Role basicRole = roleRepository.findByName("ROLE_USER");
+        visitor.setRoles(Collections.singleton(basicRole));
+        visitor.setPassword(visitor.getPassword());
+        visitor = visitorRepository.save(visitor);
 
         pawn = Visitor.pawnShipValue(0);
         friend1.pawnShip(pawn);
-        friend1 = visitorServiceOld.saveUser(friend1);
+        friend1.setRoles(Collections.singleton(basicRole));
+        friend1.setPassword(friend1.getPassword());
+        friend1 = visitorRepository.save(friend1);
 
         pawn = Visitor.pawnShipValue(0);
         friend2.pawnShip(pawn);
-        friend2 = visitorServiceOld.saveUser(friend2);
+        friend2.setRoles(Collections.singleton(basicRole));
+        friend2.setPassword(friend2.getPassword());
+        friend2 = visitorRepository.save(friend2);
 
         // The visitor starts a league
         League league = League.buildDummy(visitor,"");

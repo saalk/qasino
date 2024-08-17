@@ -5,6 +5,7 @@ import cloud.qasino.games.dto.Qasino;
 import cloud.qasino.games.database.entity.enums.game.Style;
 import cloud.qasino.games.database.service.GameService;
 import cloud.qasino.games.pattern.statemachine.event.EventOutput;
+import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -15,8 +16,9 @@ import static cloud.qasino.games.database.entity.enums.game.Style.fromLabelWithD
 @Component
 public class UpdateStyleForGame extends GenericLookupsAction<EventOutput.Result> {
 
-    @Autowired
-    GameService gameService;
+    // @formatter:off
+    @Resource GameService gameService;
+    // @formatter:on
 
     @Override
     public EventOutput.Result perform(Qasino qasino) {
@@ -41,7 +43,7 @@ public class UpdateStyleForGame extends GenericLookupsAction<EventOutput.Result>
         if (qasino.getCreation().getSuppliedTurnsToWin() != null) {
             style.setTurnsToWin(qasino.getCreation().getSuppliedTurnsToWin());
         }
-        qasino.setGame(gameService.updateStyleForGame(style, qasino.getGame().getGameId()));
+        qasino.setGame(gameService.updateStyleForGame(qasino.getParams(), style));
         return EventOutput.Result.SUCCESS;
     }
 

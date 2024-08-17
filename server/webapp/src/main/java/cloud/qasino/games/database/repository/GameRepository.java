@@ -18,188 +18,153 @@ import java.util.List;
 @Repository
 public interface GameRepository extends JpaRepository<Game, Long> {
 
-    // findOne
-//    Game findOneByGameId(Long gameId);
+    // @formatter:off
+
+    // counts
+    Integer countByLeague(League league);
+    @Query(value = COUNT_STATES, nativeQuery = true)
+    Integer countByStates(@Param(value = "states") String[] states);
+    @Query(value = COUNT_STATES_FOR_INITIATOR, nativeQuery = true)
+    Integer countByStatesForInitiator(@Param(value = "states") String[] states, @Param(value = "initiator") long initiator);
+    @Query(value = COUNT_TODAY, nativeQuery = true)
+    Integer countByToday(String year, String month, String weekday);
+    @Query(value = COUNT_WEEK, nativeQuery = true)
+    Integer countByThisWeek(String year, String week);
+    @Query(value = COUNT_MONTH, nativeQuery = true)
+    Integer countByThisMonth(String year, String month);
+
+    // special finds
+    List<Game> findGamesByLeague(League league);
+    @Query(value = FIND_ALL_BY_INITIATOR_ID, countQuery = COUNT_ALL_BY_INITIATOR_ID, nativeQuery = true)
+    public List<Game> findAllGamesForInitiatorWithPage(
+            @Param("initiator") long initiator,
+            Pageable pageable);
+    List<Game> findByInitiator(long initiator);
+
+    // list with paging
+    @Query(value = FIND_ALL, countQuery = COUNT_ALL, nativeQuery = true)
+    List<Game> findAllGamesWithPage(Pageable pageable);
+    @Query(value = FIND_STATES, countQuery = COUNT_STATES,nativeQuery = true)
+    List<Game> findGameNodeStates(
+            @Param(value = "states") List<GameState> states,
+            Pageable pageable);
+    @Query(value = FIND_NEWGAMES_BY_VISITOR_ID, countQuery = COUNT_NEWGAMES_BY_VISITOR_ID, nativeQuery = true)
+    public List<Game> findAllNewGamesForVisitorWithPage(
+            @Param("visitorId") long visitorId,
+            Pageable pageable);
+    @Query(value = FIND_STARTEDGAMES_BY_VISITOR_ID, countQuery = COUNT_STARTEDGAMES_BY_VISITOR_ID, nativeQuery = true)
+    public List<Game> findAllStartedGamesForVisitorWithPage(
+            @Param("visitorId") long visitorId,
+            Pageable pageable);
+    @Query(value = FIND_FINISHEDGAMES_BY_VISITOR_ID, countQuery = COUNT_FINISHEDGAMES_BY_VISITOR_ID, nativeQuery = true)
+    public List<Game> findAllFinishedGamesForVisitorWithPage(
+            @Param("visitorId") long visitorId,
+            Pageable pageable);
+    @Query(value = FIND_ALL_INVITED_FOR_VISITOR_ID, countQuery = COUNT_ALL_INVITED_FOR_VISITOR_ID, nativeQuery = true)
+    public List<Player> findAllInvitedPlayersForVisitorWithPage(
+            @Param("visitorId") long visitorId,
+            Pageable pageable);
+    // TODO - FIX ME
+    @Query(value = FIND_ALL_INITIATED_BY_VISITOR_ID, countQuery = COUNT_ALL_INITIATED_BY_VISITOR_ID, nativeQuery = true)
+    public List<Game> findAllInitiatedGamesForVisitorWithPage(
+            @Param("visitorId") long visitorId,
+            Pageable pageable);
+    @Query(value = FIND_ALL_INVITED_BY_VISITOR_ID, countQuery = COUNT_ALL_INVITED_BY_VISITOR_ID, nativeQuery = true)
+    public List<Game> findAllInvitedGamesForVisitorWithPage(
+            @Param("visitorId") long visitorId,
+            Pageable pageable);
 
     // prepared queries
-    public final static String FIND_ALL = "SELECT * FROM \"game\" ORDER BY \"updated\" DESC";
-    public final static String COUNT_ALL = "SELECT count(*) FROM \"game\"";
-    public final static String FIND_STATES = "SELECT * FROM \"game\" as g WHERE g.\"state\" IN :states";
-    public final static String COUNT_STATES = "SELECT count(*) FROM \"game\" as g WHERE g.\"state\" IN (:states)";
-    public final static String COUNT_STATES_FOR_INITIATOR = "SELECT count(*) FROM \"game\" as g WHERE g.\"state\" IN (:states) AND g.\"initiator\" = :initiator ";
-    public final static String COUNT_TODAY =
-            "SELECT count(*) FROM \"game\" as g " +
-                    "WHERE g.\"year\" = :year " +
-                    "AND g.\"month\" = :month " +
-                    "AND g.\"weekday\" = :weekday ";
-    public final static String COUNT_WEEK =
-            "SELECT count(*) FROM \"game\" as g " +
-                    "WHERE g.\"year\" = :year " +
-                    "AND g.\"week\" = :week ";
-    public final static String COUNT_MONTH =
-            "SELECT count(*) FROM \"game\" g " +
-                    "WHERE g.\"year\" = :year " +
-                    "AND g.\"month\" = :month ";
+    String FIND_ALL =     "SELECT *        FROM \"game\" ORDER BY \"updated\" DESC";
+    String COUNT_ALL =    "SELECT count(*) FROM \"game\"";
+    String FIND_STATES =  "SELECT *        FROM \"game\" as g WHERE g.\"state\" IN :states";
+    String COUNT_STATES = "SELECT count(*) FROM \"game\" as g WHERE g.\"state\" IN (:states)";
+    String COUNT_STATES_FOR_INITIATOR = "SELECT count(*) FROM \"game\" as g WHERE g.\"state\" IN (:states) AND g.\"initiator\" = :initiator ";
+    String COUNT_TODAY =  "SELECT count(*) FROM \"game\" as g WHERE g.\"year\" = :year AND g.\"month\" = :month AND g.\"weekday\" = :weekday ";
+    String COUNT_WEEK =   "SELECT count(*) FROM \"game\" as g WHERE g.\"year\" = :year AND g.\"week\" = :week ";
+    String COUNT_MONTH =  "SELECT count(*) FROM \"game\" as g WHERE g.\"year\" = :year AND g.\"month\" = :month ";
 
-
-    public final static String FIND_ALL_BY_INITIATOR_ID =
-            "SELECT * FROM \"game\" as a " +
-                    "WHERE a.\"initiator\" = :initiator " +
-                    "ORDER BY a.\"updated\" DESC ";
-    public final static String COUNT_ALL_BY_INITIATOR_ID =
-            "SELECT count(*) FROM \"game\" as a " +
-                    "WHERE a.\"initiator\" = :initiator ";
-
-
-    public final static String FIND_ALL_INVITED_BY_VISITOR_ID =
-            "SELECT a.* FROM \"game\" as a JOIN \"player\" as b " +
+    String FIND_ALL_BY_INITIATOR_ID       = "SELECT *        FROM \"game\" as a WHERE a.\"initiator\" = :initiator ORDER BY a.\"updated\" DESC ";
+    String COUNT_ALL_BY_INITIATOR_ID      = "SELECT count(*) FROM \"game\" as a WHERE a.\"initiator\" = :initiator ";
+    String FIND_ALL_INVITED_BY_VISITOR_ID =
+            "SELECT a.*      FROM \"game\" as a " +
+                    "JOIN \"player\" as b " +
                     "WHERE a.\"game_id\" = b.\"game_id\" " +
                     "AND b.\"visitor_id\" = :visitorId " +
                     "AND a.\"initiator\" != :visitorId " +
                     "ORDER BY a.\"updated\" DESC ";
-    public final static String COUNT_ALL_INVITED_BY_VISITOR_ID =
-            "SELECT count(a.*) FROM \"game\" as a JOIN \"player\" as b " +
+    String COUNT_ALL_INVITED_BY_VISITOR_ID =
+            "SELECT count(a.*) FROM \"game\" as a " +
+                    "JOIN \"player\" as b " +
                     "WHERE a.\"game_id\" = b.\"game_id\" " +
                     "AND b.\"visitor_id\" = :visitorId " +
                     "AND a.\"initiator\" != :visitorId ";
 
-    public final static String FIND_ALL_INITIATED_BY_VISITOR_ID =
+    String FIND_ALL_INITIATED_BY_VISITOR_ID =
             "SELECT * FROM \"game\" WHERE \"initiator\" = :visitorId ORDER BY \"updated\" desc ";
-    public final static String COUNT_ALL_INITIATED_BY_VISITOR_ID =
+    String COUNT_ALL_INITIATED_BY_VISITOR_ID =
             "SELECT count(*) FROM \"game\" WHERE \"initiator\" = :visitorId ";
 
 
-    public final static String FIND_ALL_INVITED_FOR_VISITOR_ID =
+    String FIND_ALL_INVITED_FOR_VISITOR_ID =
             "SELECT b.* FROM \"game\" as a JOIN \"player\" as b " +
                     "WHERE a.\"game_id\" = b.\"game_id\" " +
                     "AND b.\"visitor_id\" = :visitorId " +
                     "AND b.\"playerType\" IN ('INVITED','INVITEE','REJECTED') " +
                     "ORDER BY a.\"updated\" DESC ";
-    public final static String COUNT_ALL_INVITED_FOR_VISITOR_ID =
+    String COUNT_ALL_INVITED_FOR_VISITOR_ID =
             "SELECT count(b.*) FROM \"game\" as a JOIN \"player\" as b " +
                     "WHERE a.\"game_id\" = b.\"game_id\" " +
                     "AND b.\"visitor_id\" = :visitorId " +
                     "AND b.\"playerType\" IN ('INVITED','INVITEE','REJECTED') ";
 
 
-    public final static String FIND_NEWGAMES_BY_VISITOR_ID =
+    String FIND_NEWGAMES_BY_VISITOR_ID =
             "SELECT a.* FROM \"game\" as a JOIN \"player\" b " +
                     "WHERE a.\"game_id\" = b.\"game_id\" " +
                     "AND b.\"visitor_id\" = :visitorId " +
-                     "AND a.\"state\" IN ('INITIALIZED','PENDING_INVITATIONS','PREPARED') " +
+                    "AND a.\"state\" IN ('INITIALIZED','PENDING_INVITATIONS','PREPARED') " +
                     "ORDER BY a.\"updated\" DESC ";
-    public final static String COUNT_NEWGAMES_BY_VISITOR_ID =
+    String COUNT_NEWGAMES_BY_VISITOR_ID =
             "SELECT count(a.*) FROM \"game\" as a JOIN \"player\" b " +
                     "WHERE a.\"game_id\" = b.\"game_id\" " +
                     "AND b.\"visitor_id\" = :visitorId " +
                     "AND a.\"state\" IN ('INITIALIZED','PENDING_INVITATIONS','PREPARED') ";
 
-    public final static String FIND_STARTEDGAMES_BY_VISITOR_ID =
+    String FIND_STARTEDGAMES_BY_VISITOR_ID =
             "SELECT a.* FROM \"game\" as a JOIN \"player\" as b " +
                     "WHERE a.\"game_id\" = b.\"game_id\" " +
                     "AND b.\"visitor_id\" = :visitorId " +
                     "AND a.\"state\" IN ('STARTED','INITIATOR_MOVE','INVITEE_MOVE','BOT_MOVE') " +
                     "ORDER BY a.\"updated\" DESC ";
-    public final static String COUNT_STARTEDGAMES_BY_VISITOR_ID =
+    String COUNT_STARTEDGAMES_BY_VISITOR_ID =
             "SELECT count(a.*) FROM \"game\" as a JOIN \"player\" as b " +
                     "WHERE a.\"game_id\" = b.\"game_id\" " +
                     "AND b.\"visitor_id\" = :visitorId " +
                     "AND a.\"state\" IN ('STARTED','INITIATOR_MOVE','INVITEE_MOVE','BOT_MOVE') ";
 
-    public final static String FIND_FINISHEDGAMES_BY_VISITOR_ID =
+    String FIND_FINISHEDGAMES_BY_VISITOR_ID =
             "SELECT a.* FROM \"game\" as a JOIN \"player\" as b " +
                     "WHERE a.\"game_id\" = b.\"game_id\" " +
                     "AND b.\"visitor_id\" = :visitorId " +
                     "AND a.\"state\" IN ('FINISHED','QUIT','CANCELLED') " +
                     "ORDER BY a.\"updated\" DESC ";
-    public final static String COUNT_FINISHEDGAMES_BY_VISITOR_ID =
+    String COUNT_FINISHEDGAMES_BY_VISITOR_ID =
             "SELECT count(a.*) FROM \"game\" as a JOIN \"player\" as b " +
                     "WHERE a.\"game_id\" = b.\"game_id\" " +
                     "AND b.\"visitor_id\" = :visitorId " +
                     "AND a.\"state\" IN ('FINISHED','QUIT','CANCELLED') ";
 
-    // counts
-    Integer countByLeague(League league);
-
-    @Query(value = COUNT_STATES, nativeQuery = true)
-    Integer countByStates(@Param(value = "states") String[] states);
-
-    @Query(value = COUNT_STATES_FOR_INITIATOR, nativeQuery = true)
-    Integer countByStatesForInitiator(@Param(value = "states") String[] states, @Param(value = "initiator") long initiator);
-
-
-    @Query(value = COUNT_TODAY, nativeQuery = true)
-    Integer countByToday(String year, String month, String weekday);
-
-    @Query(value = COUNT_WEEK, nativeQuery = true)
-    Integer countByThisWeek(String year, String week);
-
-    @Query(value = COUNT_MONTH, nativeQuery = true)
-    Integer countByThisMonth(String year, String month);
-
-    // special finds
-    List<Game> findGamesByLeague(League league);
-
-    @Query(value = FIND_ALL_BY_INITIATOR_ID, countQuery = COUNT_ALL_BY_INITIATOR_ID, nativeQuery = true)
-    public List<Game> findAllGamesForInitiatorWithPage(
-            @Param("initiator") long initiator,
-            Pageable pageable);
-
-    List<Game> findByInitiator(long initiator);
-
-    // list with paging
-    @Query(value = FIND_ALL, countQuery = COUNT_ALL, nativeQuery = true)
-    List<Game> findAllGamesWithPage(Pageable pageable);
-
-    @Query(value = FIND_STATES, countQuery = COUNT_STATES,nativeQuery = true)
-    List<Game> findGameNodeStates(
-            @Param(value = "states") List<GameState> states,
-            Pageable pageable);
-
-    @Query(value = FIND_NEWGAMES_BY_VISITOR_ID, countQuery = COUNT_NEWGAMES_BY_VISITOR_ID, nativeQuery = true)
-    public List<Game> findAllNewGamesForVisitorWithPage(
-            @Param("visitorId") long visitorId,
-            Pageable pageable);
-
-    @Query(value = FIND_STARTEDGAMES_BY_VISITOR_ID, countQuery = COUNT_STARTEDGAMES_BY_VISITOR_ID, nativeQuery = true)
-    public List<Game> findAllStartedGamesForVisitorWithPage(
-            @Param("visitorId") long visitorId,
-            Pageable pageable);
-
-    @Query(value = FIND_FINISHEDGAMES_BY_VISITOR_ID, countQuery = COUNT_FINISHEDGAMES_BY_VISITOR_ID, nativeQuery = true)
-    public List<Game> findAllFinishedGamesForVisitorWithPage(
-            @Param("visitorId") long visitorId,
-            Pageable pageable);
-
-    @Query(value = FIND_ALL_INVITED_FOR_VISITOR_ID, countQuery = COUNT_ALL_INVITED_FOR_VISITOR_ID, nativeQuery = true)
-    public List<Player> findAllInvitedPlayersForVisitorWithPage(
-            @Param("visitorId") long visitorId,
-            Pageable pageable);
-
-    // TODO - FIX ME
-    @Query(value = FIND_ALL_INITIATED_BY_VISITOR_ID, countQuery = COUNT_ALL_INITIATED_BY_VISITOR_ID, nativeQuery = true)
-    public List<Game> findAllInitiatedGamesForVisitorWithPage(
-            @Param("visitorId") long visitorId,
-            Pageable pageable);
-
-
-    @Query(value = FIND_ALL_INVITED_BY_VISITOR_ID, countQuery = COUNT_ALL_INVITED_BY_VISITOR_ID, nativeQuery = true)
-    public List<Game> findAllInvitedGamesForVisitorWithPage(
-            @Param("visitorId") long visitorId,
-            Pageable pageable);
-
+    
     default String getYear() {
         return String.valueOf(LocalDate.now().getYear());
     }
-
     default String getMonth() {
         return String.valueOf(LocalDate.now().getMonth());
     }
-
     default String getDay() {
         return String.valueOf(LocalDate.now().getDayOfMonth());
     }
-
     default String getWeek() {
         DateTimeFormatter week = DateTimeFormatter.ofPattern("w");
         return String.valueOf(LocalDate.now().format(week));

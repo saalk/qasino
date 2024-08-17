@@ -4,9 +4,11 @@ import cloud.qasino.games.action.common.CalculateStatisticsAction;
 import cloud.qasino.games.action.common.DetermineEventsAction;
 import cloud.qasino.games.action.common.FindAllDtosForUsernameAction;
 import cloud.qasino.games.action.common.MapQasinoFromDtosAction;
-import cloud.qasino.games.dto.Qasino;
 import cloud.qasino.games.database.security.Visitor;
 import cloud.qasino.games.database.security.VisitorRepository;
+import cloud.qasino.games.database.service.VisitorService;
+import cloud.qasino.games.dto.Qasino;
+import cloud.qasino.games.dto.model.VisitorDto;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.google.gson.Gson;
 import jakarta.annotation.Resource;
@@ -23,7 +25,7 @@ import static cloud.qasino.games.utils.QasinoUtils.prettyPrint;
 public class AbstractThymeleafController {
 
     @Resource
-    VisitorRepository visitorRepository;
+    VisitorService visitorService;
 
     // @formatter:off
     @Autowired FindAllDtosForUsernameAction findDtos;
@@ -32,7 +34,7 @@ public class AbstractThymeleafController {
     @Autowired CalculateStatisticsAction calculateStatistics;
 
     public String getPricipalVisitorId(Principal principal) {
-        Visitor visitor = visitorRepository.findByUsername(principal.getName());
+        VisitorDto visitor = visitorService.findByUsername(principal.getName());
         return String.valueOf(visitor.getVisitorId());
     }
     public void prepareQasino(HttpServletResponse response, Qasino qasino) {

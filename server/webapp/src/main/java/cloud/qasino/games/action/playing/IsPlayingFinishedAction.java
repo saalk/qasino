@@ -23,7 +23,7 @@ public class IsPlayingFinishedAction extends GenericLookupsAction<EventOutput.Re
     public EventOutput.Result perform(Qasino qasino) {
 
         if (qasino.getParams().getSuppliedPlayEvent().equals(PlayEvent.PASS)) {
-            gameService.updateStateForGame(GameState.INITIATOR_MOVE, qasino.getParams().getSuppliedGameId());
+            gameService.updateStateForGame(qasino.getParams(), GameState.INITIATOR_MOVE);
             qasino.getGame().setState(GameState.FINISHED);
             return EventOutput.Result.SUCCESS;
         }

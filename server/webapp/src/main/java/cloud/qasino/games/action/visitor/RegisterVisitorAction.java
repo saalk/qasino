@@ -1,16 +1,13 @@
 package cloud.qasino.games.action.visitor;
 
 import cloud.qasino.games.action.common.GenericLookupsAction;
-import cloud.qasino.games.dto.Qasino;
 import cloud.qasino.games.database.security.Role;
 import cloud.qasino.games.database.security.Visitor;
-import cloud.qasino.games.database.security.VisitorRepository;
-import cloud.qasino.games.database.security.VisitorServiceOld;
 import cloud.qasino.games.database.service.VisitorService;
+import cloud.qasino.games.dto.Qasino;
 import cloud.qasino.games.dto.model.VisitorDto;
 import cloud.qasino.games.exception.MyNPException;
 import cloud.qasino.games.pattern.statemachine.event.EventOutput;
-import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,19 +19,15 @@ import java.util.Collections;
 @Component
 public class RegisterVisitorAction extends GenericLookupsAction<EventOutput.Result> {
 
-    @Resource
-    VisitorRepository visitorRepository;
-
-    @Autowired
-    private VisitorServiceOld visitorServiceOld;
-    @Autowired
-    private VisitorService visitorService;
+    // @formatter:off
+    @Autowired private VisitorService visitorService;
+    // @formatter:on
 
     @Override
     public EventOutput.Result perform(Qasino qasino) {
 
         if (!(StringUtils.isEmpty(qasino.getCreation().getSuppliedAlias()))) {
-            int sequence = Math.toIntExact(visitorRepository.countByAlias(qasino.getCreation().getSuppliedAlias()));
+            int sequence = Math.toIntExact(visitorService.countByAlias(qasino.getCreation().getSuppliedAlias()));
             sequence++;
             // todo LOW split alias and number
             if (

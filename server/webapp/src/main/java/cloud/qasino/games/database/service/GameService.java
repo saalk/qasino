@@ -51,7 +51,7 @@ public class GameService {
     @Autowired private CardRepository cardRepository;
     @Autowired private PlayerRepository playerRepository;
 
-    // lifecycle of a game
+    // lifecycle of a game - aim to pass params and creation dto's for consistency for all services
     public GameDto findOneByGameId(ParamsDto paramsDto) {
         Game retrievedGame = gameRepository.getReferenceById(paramsDto.getSuppliedGameId());
         return GameMapper.INSTANCE.toDto(retrievedGame, retrievedGame.getCards());
@@ -110,20 +110,20 @@ public class GameService {
         Game newGame = gameRepository.save(game);
         return GameMapper.INSTANCE.toDto(newGame, newGame.getCards());
     }
-    public GameDto updateStyleForGame(Style style, long gameId) {
-        Game game = gameRepository.getReferenceById(gameId);
+    public GameDto updateStyleForGame(ParamsDto paramsDto, Style style) {
+        Game game = gameRepository.getReferenceById(paramsDto.getSuppliedGameId());
         game.setStyle(style.updateLabelFromEnums());
         Game newGame = gameRepository.save(game);
         return GameMapper.INSTANCE.toDto(newGame, newGame.getCards());
     }
-    public GameDto updateStateForGame(GameState gameState, long gameId) {
-        Game game = gameRepository.getReferenceById(gameId);
+    public GameDto updateStateForGame(ParamsDto paramsDto, GameState gameState) {
+        Game game = gameRepository.getReferenceById(paramsDto.getSuppliedGameId());
         game.setState(gameState);
         Game newGame = gameRepository.save(game);
         return GameMapper.INSTANCE.toDto(newGame, newGame.getCards());
     }
-    public GameDto updatePlayingStateForGame(PlayerDto player, long gameId) {
-        Game game = gameRepository.getReferenceById(gameId);
+    public GameDto updatePlayingStateForGame(ParamsDto paramsDto, PlayerDto player) {
+        Game game = gameRepository.getReferenceById(paramsDto.getSuppliedGameId());
 
         if ((player.isHuman())) {
             if (game.getInitiator() == player.getPlayerId()) {

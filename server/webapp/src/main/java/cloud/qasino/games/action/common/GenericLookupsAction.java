@@ -34,7 +34,7 @@ public abstract class GenericLookupsAction<OUTPUT> {
 
     protected boolean findVisitorByUsername(Qasino qasino) {
         if (qasino.getParams().getSuppliedVisitorUsername().isEmpty()) return true; // 200 not logon yet
-        qasino.setVisitor(visitorService.findByUsername(qasino.getParams()));
+        qasino.setVisitor(visitorService.findByUsername(qasino.getParams().getSuppliedVisitorUsername()));
         if (qasino.getVisitor() == null) return false; // 404 not found
         qasino.getParams().setSuppliedVisitorId(qasino.getVisitor().getVisitorId());
         refreshOrFindLatestGame(qasino);

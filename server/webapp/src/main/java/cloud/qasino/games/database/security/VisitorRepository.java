@@ -17,20 +17,15 @@ public interface VisitorRepository extends JpaRepository<Visitor, Long> {
     // counts
     Long countByAlias(String alias);
 
-    // find one
+    // lifecycle of a visitor - aim to not used the dto's
+    Visitor findOneByEmail(String email);
     @Query(value = "SELECT * FROM \"visitor\" u WHERE u.\"username\" = ?1", nativeQuery = true)
     Visitor findByUsername(@Param("username") String username);
-//    Visitor findOneByVisitorId(Long visitorId);
-    Visitor findOneByEmail(String email);
     Optional<Visitor> findVisitorByVisitorId(Long visitorId);
     Optional<Visitor> findVisitorByAliasAndAliasSequence(String alias, int aliasSequence);
-
-    // find many
     @Query(value = "SELECT *        FROM \"visitor\" ORDER BY \"visitor_id\" ",
       countQuery = "SELECT count(*) FROM \"visitor\" ",
             nativeQuery = true)
     Page<Visitor> findAllVisitorsWithPage(Pageable pageable);
-
-    // delete
     void removeUserByUsername(String username);
 }

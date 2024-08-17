@@ -2,9 +2,23 @@
 - a Java 17 Spring-Boot 3 based application
 - [Running the app](./Running-the-app.md)
 
-# TODO 
-- no bet in cardmove when deal etc
-- ...
+# Coding Concepts
+### DRY 
+“Don't Repeat Yourself.” 
+- have a single source of truth rather than copy-paste code
+- aim is to reduce repetitive patterns and duplicate code and logic 
+- in favor of modular and referenceable code
+
+### KISS
+“Keep It Simple, Stupid”
+- goal is to prioritize straightforward solutions over complex ones
+- clear and descriptive variable and method names
+
+### YAGNI
+“You Ain’t Gonna Need It”
+- implement functionality only when it is truly necessary
+- delivering the most critical features in a timely manner
+
 
 # Notes
 - [Shortcuts](./webapp/docs/notes/1-Shortcuts/0-index.md)

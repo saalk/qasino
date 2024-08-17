@@ -14,17 +14,20 @@ import java.util.Optional;
 @Repository
 public interface LeagueRepository extends JpaRepository<League, Long> {
 
+    // @formatter:off
+
     // counts
     Long countByName(String leagueName);
+
+    // lifecycle of a league - aim to not used the dto's
     String COUNT_LEAGUES_FOR_INITIATOR = "SELECT count(*) FROM \"league\" as l WHERE l.\"visitor_id\" = :initiator";
     @Query(value = COUNT_LEAGUES_FOR_INITIATOR, nativeQuery = true)
     Integer countLeaguesForInitiator(@Param(value = "initiator") String initiator);
 
-    // finds
+    // lifecycle of a visitor - aim to not used the dto's
     Optional<League> findLeagueByNameAndNameSequence(String leagueName, int leagueNameSequence);
     @Query(value = "SELECT * FROM \"league\" where \"game_id\" = :gameId ", nativeQuery = true)
     League findByGameId(Long gameId);
-
     public final static String FIND_LEAGUES_FOR_VISITOR_ID =
             "SELECT * FROM \"league\" a WHERE a.\"visitor_id\" = :visitorId " +
                     "AND a.\"is_active\" = CAST('true' AS BOOLEAN) ";
@@ -35,7 +38,6 @@ public interface LeagueRepository extends JpaRepository<League, Long> {
     public List<League> findLeaguesForVisitorWithPage(
             @Param("visitorId") long visitorId,
             Pageable pageable);
-
     public List<League> findLeaguesByVisitor(
             Visitor visitor);
 }

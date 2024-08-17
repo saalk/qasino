@@ -55,7 +55,7 @@ public class HandleSecuredLoanAction extends GenericLookupsAction<EventOutput.Re
             }
         }
 
-        qasino.setVisitor(visitorService.repayOrPawn(qasino.getVisitor().getVisitorId(), this.balance, this.securedLoan));
+        qasino.setVisitor(visitorService.repayOrPawn(qasino.getParams(), this.balance, this.securedLoan));
         return EventOutput.Result.SUCCESS;
     }
 

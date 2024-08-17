@@ -5,6 +5,7 @@ import cloud.qasino.games.dto.Qasino;
 import cloud.qasino.games.database.repository.GameRepository;
 import cloud.qasino.games.database.service.GameService;
 import cloud.qasino.games.pattern.statemachine.event.EventOutput;
+import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -14,8 +15,8 @@ import org.springframework.stereotype.Component;
 public class UpdatePlayingStateForGame extends GenericLookupsAction<EventOutput.Result> {
 
     // @formatter:off
-    @Autowired GameRepository gameRepository;
-    @Autowired private GameService gameService;
+    @Resource GameService gameService;
+    // @formatter:on
 
     @Override
     public EventOutput.Result perform(Qasino qasino) {
@@ -24,11 +25,11 @@ public class UpdatePlayingStateForGame extends GenericLookupsAction<EventOutput.
         switch (qasino.getParams().getSuppliedPlayEvent()) {
             case PASS -> {
                 // next player
-                qasino.setGame(gameService.updatePlayingStateForGame(qasino.getPlaying().getNextPlayer(), qasino.getGame().getGameId()));
+                qasino.setGame(gameService.updatePlayingStateForGame(qasino.getParams(), qasino.getPlaying().getNextPlayer()));
             }
             case DEAL, HIGHER, LOWER, BOT -> {
                 // existing player
-                qasino.setGame(gameService.updatePlayingStateForGame(qasino.getPlaying().getCurrentPlayer(), qasino.getGame().getGameId()));
+                qasino.setGame(gameService.updatePlayingStateForGame(qasino.getParams(), qasino.getPlaying().getCurrentPlayer()));
             }
         }
         return EventOutput.Result.SUCCESS;
