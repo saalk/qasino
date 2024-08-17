@@ -74,14 +74,14 @@ public class StreamUtil {
 
     // find first or limit and collect
     public static PlayerDto findFirstPlayerBySeat(List<PlayerDto> players) {
-        Optional<PlayerDto> player = players
+        Optional<PlayerDto> firstPlayer = players
                 .stream()
                 .filter(p -> p.getSeat() == 1)
                 .findFirst();
-        if (player.isEmpty()) {
+        if (firstPlayer.isEmpty()) {
             throw new MyNPException("findFirstPlayerBySeat", "players [" + Arrays.toString(players.toArray()) + "]");
         } else {
-            return player.get();
+            return firstPlayer.get();
         }
     }
     public static Optional<CardDto> findLastCardInSortedList(List<CardDto> sortedCardList) {

@@ -45,13 +45,13 @@ public class Playing {
 
     // Foreign keys
     // one [Playing] can be part of one [Game]
-    @OneToOne (cascade = CascadeType.DETACH)
+    @OneToOne
 	@JoinColumn(name = "game_id", referencedColumnName = "game_id",foreignKey = @ForeignKey(name =
 			"fk_game_id"), nullable=false)
 	private Game game;
 
     // one [Player] can be part of one [Playing]
-    @OneToOne (cascade = CascadeType.DETACH)
+    @OneToOne
     @JoinColumn(name = "player_id", referencedColumnName = "player_id",foreignKey = @ForeignKey(name =
             "fk_player_id"), nullable=false)
     private Player player;
@@ -85,7 +85,7 @@ public class Playing {
 
     // References - the actual FK are in other tables
     // one [Playing] is parent for many [CardMoves]
-    @OneToMany(mappedBy = "playing", cascade = CascadeType.DETACH)
+    @OneToMany(mappedBy = "playing")
     private List<CardMove> cardMoves = new ArrayList<>();
 
     public Playing() {

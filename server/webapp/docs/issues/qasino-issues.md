@@ -1,10 +1,16 @@
-# Issues
+# Tech Issues
 
-## 1 - no nice error handling with toast
-error no message eg Action [VALIDATE] invalid - game has incorrect ante of 0
+- no nice error handling
+- better use of patterns - rules 
+- dry,kiss,yagni
+- use of toolkit
 
-## 2 stats overall and for selected player
-count all/you/active
+
+# Business
+
+- League functions
+- Multiplayer
+- Another cardgame
 
 ## handy sql
 ```sql

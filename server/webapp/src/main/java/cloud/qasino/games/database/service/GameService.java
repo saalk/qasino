@@ -15,14 +15,14 @@ import cloud.qasino.games.database.repository.GameRepository;
 import cloud.qasino.games.database.repository.PlayerRepository;
 import cloud.qasino.games.database.security.Visitor;
 import cloud.qasino.games.database.security.VisitorRepository;
+import cloud.qasino.games.dto.mapper.GameMapper;
+import cloud.qasino.games.dto.mapper.GameShortMapper;
+import cloud.qasino.games.dto.mapper.LeagueMapper;
 import cloud.qasino.games.dto.model.GameDto;
 import cloud.qasino.games.dto.model.GameShortDto;
 import cloud.qasino.games.dto.model.LeagueDto;
 import cloud.qasino.games.dto.model.PlayerDto;
 import cloud.qasino.games.dto.model.PlayingDto;
-import cloud.qasino.games.dto.mapper.GameMapper;
-import cloud.qasino.games.dto.mapper.GameShortMapper;
-import cloud.qasino.games.dto.mapper.LeagueMapper;
 import cloud.qasino.games.dto.request.CreationDto;
 import cloud.qasino.games.dto.request.ParamsDto;
 import cloud.qasino.games.exception.MyBusinessException;
@@ -87,6 +87,7 @@ public class GameService {
         return new ArrayList<>();
     }
     public GameDto setupNewGameWithPlayerInitiator(CreationDto creation, long initiator) {
+        log.warn("setupNewGameWithPlayerInitiator initiator [{}]",initiator);
         Game game = new Game(
                 null,
                 creation.getSuppliedType().getLabel(),
@@ -94,9 +95,13 @@ public class GameService {
                 creation.getSuppliedStyle(),
                 creation.getSuppliedAnte());
         Game newGame = gameRepository.save(game);
+        log.warn("setupNewGameWithPlayerInitiator game [{}]",game);
+
 //        List<Player> allPlayersForTheGame = playerRepository.findByGame(savedGame);
         String avatarName = "avatarName";
         Visitor visitor = visitorRepository.getReferenceById(initiator);
+        log.warn("setupNewGameWithPlayerInitiator visitor [{}]",visitor);
+
         Player player = new Player(
                 visitor,
                 game,
@@ -166,7 +171,7 @@ public class GameService {
     }
     public GameDto addAndShuffleCardsForAGame(GameDto gameDto) {
         Game game = GameMapper.INSTANCE.fromDto(gameDto);
-        if (!game.getCards().isEmpty())
+        if (game.getCards() != null)
             throw new MyBusinessException("addAndShuffleCardsForAGame", "this game already has cards [" + game.getGameId() + "]");
         Deck deck = DeckFactory.createShuffledDeck(game, 0);
         List<PlayingCard> playingCards = deck.getPlayingCards();

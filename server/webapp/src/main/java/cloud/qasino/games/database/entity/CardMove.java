@@ -55,7 +55,7 @@ public class CardMove {
     // Foreign keys
     @JsonIgnore
     // many [CardMove] are part of one [Playing]
-    @ManyToOne(cascade = CascadeType.DETACH)
+    @ManyToOne
     @JoinColumn(name = "playing_id", referencedColumnName = "playing_id", foreignKey = @ForeignKey
             (name = "fk_playing_id"), nullable = false)
     private Playing playing;

@@ -148,14 +148,14 @@ public class Game {
     */
     @JsonIgnore
     // one [Game] can have many [Card]s
-    @OneToMany(mappedBy = "game", cascade = CascadeType.DETACH)
+    @OneToMany(mappedBy = "game")
     private List<Card> cards;
     // one [Game] can have many [Player]s
-    @OneToMany(mappedBy = "game", cascade = CascadeType.DETACH)
+    @OneToMany(mappedBy = "game")
     private List<Player> players;
     @JsonIgnore
     // one [Game] can have one [Playing], holding the current player, round, seat and move
-    @OneToOne(mappedBy = "game", cascade = CascadeType.DETACH)
+    @OneToOne(mappedBy = "game")
     private Playing playing;
     // TODO is this needed as its related to a player that is related to a game
     // one [Game] can have many [Result]s, one per player

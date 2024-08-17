@@ -54,7 +54,7 @@ public class GameThymeleafController extends AbstractThymeleafController {
 
     @Autowired
     public GameThymeleafController(
-            PlayerRepository playerRepository) {
+            GameRepository gameRepository) {
         this.gameRepository = gameRepository;
     }
 
@@ -98,10 +98,10 @@ public class GameThymeleafController extends AbstractThymeleafController {
         return PLAY_VIEW_LOCATION;
     }
 
-    @PostMapping("start/{gameId}")
+    @PostMapping("start/{visitorId}")
     public String startGame(
             Principal principal,
-            @PathVariable("gameId") String id,
+            @PathVariable("visitorId") String id,
             @Validated(GameBasic.class)
             @ModelAttribute("qasino") Qasino qasino,
             BindingResult result, // can only be directly after @Validated/valid
