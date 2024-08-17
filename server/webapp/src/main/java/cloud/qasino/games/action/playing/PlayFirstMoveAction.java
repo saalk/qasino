@@ -24,7 +24,6 @@ public class PlayFirstMoveAction extends GenericLookupsAction<EventOutput.Result
 
     // @formatter:off
     @Autowired PlayingService playingService;
-    @Autowired private PlayingRepository playingRepository;
     // @formatter:on
 
     @Override

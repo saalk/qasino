@@ -49,7 +49,7 @@ public class PlayingService {
     @Autowired private CardRepository cardRepository;
     @Autowired private GameRepository gameRepository;
 
-    // finds
+    // FINDS - aim to pass params and creation dto's for consistency for all services
     public PlayingDto findByGameId(ParamsDto paramsDto) {
         List<Playing> playings = playingRepository.findByGameId(paramsDto.getSuppliedGameId());
         if (playings.isEmpty()) {

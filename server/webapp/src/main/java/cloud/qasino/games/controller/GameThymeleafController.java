@@ -1,6 +1,5 @@
 package cloud.qasino.games.controller;
 
-import cloud.qasino.games.dto.Qasino;
 import cloud.qasino.games.action.common.load.LoadPrincipalDtoAction;
 import cloud.qasino.games.action.game.CreateNewGameAction;
 import cloud.qasino.games.action.game.IsGameConsistentForGameEventAction;
@@ -9,6 +8,7 @@ import cloud.qasino.games.action.game.UpdateStyleForGame;
 import cloud.qasino.games.database.repository.GameRepository;
 import cloud.qasino.games.database.repository.PlayerRepository;
 import cloud.qasino.games.database.service.PlayerService;
+import cloud.qasino.games.dto.Qasino;
 import cloud.qasino.games.dto.validation.GameBasic;
 import cloud.qasino.games.pattern.statemachine.event.EventOutput;
 import cloud.qasino.games.pattern.statemachine.event.GameEvent;
@@ -43,7 +43,6 @@ public class GameThymeleafController extends AbstractThymeleafController {
 
     EventOutput.Result output;
     private GameRepository gameRepository;
-    private PlayerRepository playerRepository;
     @Autowired PlayerService playerService;
 
     @Autowired LoadPrincipalDtoAction loadVisitor;
@@ -55,11 +54,8 @@ public class GameThymeleafController extends AbstractThymeleafController {
 
     @Autowired
     public GameThymeleafController(
-            GameRepository gameRepository,
             PlayerRepository playerRepository) {
-
         this.gameRepository = gameRepository;
-        this.playerRepository = playerRepository;
     }
 
     @GetMapping("setup/{gameId}")

@@ -27,7 +27,7 @@ public class PlayNextHumanMoveAction extends GenericLookupsAction<EventOutput.Re
 
     // @formatter:off
     @Autowired PlayingService playingService;
-    @Autowired PlayingRepository playingRepository;
+    // @formatter:on
 
     @Override
     public EventOutput.Result perform(Qasino qasino) {

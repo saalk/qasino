@@ -1,6 +1,5 @@
 package cloud.qasino.games.controller;
 
-import cloud.qasino.games.dto.Qasino;
 import cloud.qasino.games.action.common.load.LoadPrincipalDtoAction;
 import cloud.qasino.games.action.game.CalculateAndFinishGameAction;
 import cloud.qasino.games.action.game.IsGameConsistentForGameEventAction;
@@ -14,11 +13,7 @@ import cloud.qasino.games.action.playing.PlayNextBotMoveAction;
 import cloud.qasino.games.action.playing.PlayNextHumanMoveAction;
 import cloud.qasino.games.action.playing.UpdateFichesForPlayerAction;
 import cloud.qasino.games.action.playing.UpdatePlayingStateForGame;
-import cloud.qasino.games.database.repository.CardMoveRepository;
-import cloud.qasino.games.database.repository.CardRepository;
-import cloud.qasino.games.database.repository.GameRepository;
-import cloud.qasino.games.database.repository.PlayerRepository;
-import cloud.qasino.games.database.repository.PlayingRepository;
+import cloud.qasino.games.dto.Qasino;
 import cloud.qasino.games.pattern.statemachine.event.EventOutput;
 import cloud.qasino.games.pattern.statemachine.event.GameEvent;
 import cloud.qasino.games.pattern.statemachine.event.PlayEvent;
@@ -62,15 +57,6 @@ public class PlayingThymeleafController extends AbstractThymeleafController {
     @Autowired PlayNextBotMoveAction playNextBotMoveAction;
     @Autowired UpdatePlayingStateForGame updatePlayingStateForGame;
     // @formatter:on
-
-    @Autowired
-    public PlayingThymeleafController(
-            GameRepository gameRepository,
-            PlayerRepository playerRepository,
-            CardRepository cardRepository,
-            PlayingRepository playingRepository,
-            CardMoveRepository cardMoveRepository) {
-    }
 
     @PostMapping(value = "shuffle/{gameId}")
     public String shuffleTheGame(
