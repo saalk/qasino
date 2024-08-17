@@ -32,11 +32,9 @@ import static cloud.qasino.games.pattern.comparator.ComparatorUtil.playerSeatCom
 public class PlayerService {
 
     // @formatter:off
-    @Autowired private GameRepository gameRepository;
-    @Autowired private CardRepository cardRepository;
     @Autowired private PlayerRepository playerRepository;
 
-    // lifecycle of a player
+    // lifecycle of a player - aim to pass params and creation dto's for consistency for all services
     public PlayerDto addHumanVisitorPlayerToAGame(VisitorDto visitorDto, GameDto gameDto, Avatar avatar) {
         Game game = GameMapper.INSTANCE.fromDto(gameDto);
         Visitor initiator = VisitorMapper.INSTANCE.fromDto(visitorDto);
