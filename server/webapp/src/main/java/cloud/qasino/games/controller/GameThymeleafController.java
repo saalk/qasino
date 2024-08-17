@@ -112,7 +112,7 @@ public class GameThymeleafController extends AbstractThymeleafController {
         // 1 - map input
         qasino.getParams().setSuppliedGameEvent(GameEvent.START);
         qasino.getParams().setSuppliedVisitorUsername(principal.getName());
-        qasino.getParams().setSuppliedGameId(Long.parseLong(id));
+        qasino.getParams().setSuppliedVisitorId(Long.parseLong(id));
 //        "ante", "type", "style", "avatar",
         // 2 - validate input
         if (result.hasErrors()) {

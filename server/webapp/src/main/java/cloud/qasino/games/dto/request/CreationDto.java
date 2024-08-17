@@ -65,13 +65,12 @@ public class CreationDto {
     private AiLevel suppliedAiLevel = AiLevel.AVERAGE;
 
     // game
-    private GameState suppliedState; // ???
     @NotNull(message = "Game style [eg MaxRounds, AnteToWin] missing", groups = GameBasic.class)
     private String suppliedStyle = "nrrn22";
     @NotNull(message = "Choose a type of game [eg Highlow, Blackjack]", groups = GameBasic.class)
     private Type suppliedType = Type.HIGHLOW;
     @Min(value = 5, message = "Minimum ante is 5", groups = GameBasic.class)
-    @Min(value = 200, message = "Maximum ante is 200", groups = GameBasic.class)
+    @Max(value = 200, message = "Maximum ante is 200", groups = GameBasic.class)
     private int suppliedAnte = 20;
     @Min(value = 0, message = "No jokers is the minimum", groups = GameBasic.class)
     @Max(value = 3, message = "3 jokers is the maximum", groups = GameBasic.class)
@@ -88,6 +87,7 @@ public class CreationDto {
     private String suppliedRankAndSuitList = "JR";
     @NotNull(message = "new card location missing", groups = QasinoBasic.class)
     private Location suppliedLocation = Location.HAND;
+    @Min(value = 10, message = "min bet is 10", groups = QasinoBasic.class)
     @Max(value = 100, message = "max 100", groups = QasinoBasic.class)
     private int suppliedBet = 20;
 

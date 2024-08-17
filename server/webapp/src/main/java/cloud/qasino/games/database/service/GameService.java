@@ -93,8 +93,8 @@ public class GameService {
                 initiator,
                 creation.getSuppliedStyle(),
                 creation.getSuppliedAnte());
-        // TODO
-        List<Player> allPlayersForTheGame = playerRepository.findByGame(game);
+        Game newGame = gameRepository.save(game);
+//        List<Player> allPlayersForTheGame = playerRepository.findByGame(savedGame);
         String avatarName = "avatarName";
         Visitor visitor = visitorRepository.getReferenceById(initiator);
         Player player = new Player(
@@ -102,12 +102,11 @@ public class GameService {
                 game,
                 PlayerType.INITIATOR,
                 visitor.getBalance(),
-                allPlayersForTheGame.size()+1,
+                1,
                 creation.getSuppliedAvatar(),
                 avatarName,
                 AiLevel.HUMAN);
-        Player newPlayer = playerRepository.save(player);
-        Game newGame = gameRepository.save(game);
+        playerRepository.save(player);
         return GameMapper.INSTANCE.toDto(newGame, newGame.getCards());
     }
     public GameDto updateStyleForGame(ParamsDto paramsDto, Style style) {

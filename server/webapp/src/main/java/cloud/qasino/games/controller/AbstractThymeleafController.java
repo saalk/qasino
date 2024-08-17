@@ -44,7 +44,6 @@ public class AbstractThymeleafController {
         calculateStatistics.perform(qasino);
         mapQasino.perform(qasino);
         logQasino(qasino);
-
     }
     public void logQasino(Qasino qasino) {
         try {
@@ -52,19 +51,19 @@ public class AbstractThymeleafController {
 //            log.warn("----------------------------------------");
 //            log.warn("Qasino.getMessage pretty print = {} ", prettyPrint(qasino.getMessage()));
 //            log.warn("----------------------------------------");
-            log.warn("Qasino.getParams pretty print = {} ", prettyPrint(qasino.getParams()));
-            log.warn("----------------------------------------");
-//            log.warn("Qasino.getCreation print = {} ", prettyPrint(qasino.getCreation()));
+//            log.warn("Qasino.getParams pretty print = {} ", prettyPrint(qasino.getParams()));
+//            log.warn("----------------------------------------");
+            log.warn("Qasino.getCreation print = {} ", prettyPrint(qasino.getCreation()));
             log.warn("----------------------------------------");
 //            log.warn("Qasino.getVisitor pretty print = {} ", prettyPrint(qasino.getVisitor()));
 //            log.warn("----------------------------------------");
-            log.warn("Qasino.getGame pretty print = {} ", prettyPrint(qasino.getGame()));
-            log.warn("----------------------------------------");
+//            log.warn("Qasino.getGame pretty print = {} ", prettyPrint(qasino.getGame()));
+//            log.warn("----------------------------------------");
 //            log.warn("Qasino.getPlaying pretty print = {} ", prettyPrint(qasino.getPlaying()));
 //            log.warn("----------------------------------------");
 //            log.warn("Qasino.getResults pretty print = {} ", prettyPrint(qasino.getResults()));
 //            log.warn("----------------------------------------");
-            log.warn("Qasino.getInvitations pretty print = {} ", prettyPrint(qasino.getInvitations()));
+//            log.warn("Qasino.getInvitations pretty print = {} ", prettyPrint(qasino.getInvitations()));
 //            log.warn("----------------------------------------");
 //            log.warn("Qasino.getLeague pretty print = {} ", prettyPrint(qasino.getLeague()));
 //            log.warn("----------------------------------------");
