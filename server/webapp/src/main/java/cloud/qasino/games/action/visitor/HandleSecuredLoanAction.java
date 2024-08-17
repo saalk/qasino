@@ -2,7 +2,7 @@ package cloud.qasino.games.action.visitor;
 
 import cloud.qasino.games.action.common.GenericLookupsAction;
 import cloud.qasino.games.dto.Qasino;
-import cloud.qasino.games.database.service.VisitorAndLeaguesService;
+import cloud.qasino.games.database.service.VisitorService;
 import cloud.qasino.games.pattern.statemachine.event.EventOutput;
 import cloud.qasino.games.pattern.statemachine.event.QasinoEvent;
 import jakarta.annotation.Resource;
@@ -17,7 +17,7 @@ public class HandleSecuredLoanAction extends GenericLookupsAction<EventOutput.Re
 
     // @formatter:off
     @Resource
-    VisitorAndLeaguesService visitorAndLeaguesService;
+    VisitorService visitorService;
     private int securedLoan;
     private int balance;
     // @formatter:on
@@ -55,7 +55,7 @@ public class HandleSecuredLoanAction extends GenericLookupsAction<EventOutput.Re
             }
         }
 
-        qasino.setVisitor(visitorAndLeaguesService.repayOrPawn(qasino.getVisitor().getVisitorId(), this.balance, this.securedLoan));
+        qasino.setVisitor(visitorService.repayOrPawn(qasino.getVisitor().getVisitorId(), this.balance, this.securedLoan));
         return EventOutput.Result.SUCCESS;
     }
 

@@ -50,11 +50,8 @@ public class GameService {
     @Autowired private VisitorRepository visitorRepository;
     @Autowired private CardRepository cardRepository;
     @Autowired private PlayerRepository playerRepository;
-    @Autowired private PlayerServiceOld playerServiceOld;
 
-    // counts
-
-    // find one
+    // lifecycle of a game
     public GameDto findOneByGameId(ParamsDto paramsDto) {
         Game retrievedGame = gameRepository.getReferenceById(paramsDto.getSuppliedGameId());
         return GameMapper.INSTANCE.toDto(retrievedGame, retrievedGame.getCards());

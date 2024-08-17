@@ -1,8 +1,10 @@
 package cloud.qasino.games.pattern.comparator;
 
 import cloud.qasino.games.database.entity.CardMove;
+import cloud.qasino.games.database.entity.Game;
 import cloud.qasino.games.database.entity.Player;
 import cloud.qasino.games.dto.model.CardDto;
+import cloud.qasino.games.dto.model.GameDto;
 import cloud.qasino.games.dto.model.PlayerDto;
 
 import java.util.Comparator;
@@ -31,7 +33,8 @@ public class ComparatorUtil {
     //
     // Usage Collections.sort(cardList, new CardComparator());
 
-    // This Comparator can compare the sequence of cards  and can be passed to a compare function
+    // @formatter:off
+    // This Comparator can compare the sequence and can be passed to a compare function
     public static Comparator<CardDto> cardSequenceComparator() {
         return Comparator.comparing(CardDto::getSequence);
     }
@@ -43,6 +46,9 @@ public class ComparatorUtil {
     }
     public static Comparator<PlayerDto> playerDtoSeatComparator() {
         return Comparator.comparing(PlayerDto::getSeat);
+    }
+    public static Comparator<GameDto> gameAnteComparator() {
+        return Comparator.comparing(GameDto::getAnte);
     }
 
 }

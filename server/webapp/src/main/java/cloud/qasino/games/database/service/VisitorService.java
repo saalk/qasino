@@ -1,17 +1,13 @@
 package cloud.qasino.games.database.service;
 
-import cloud.qasino.games.database.entity.League;
-import cloud.qasino.games.database.repository.LeagueRepository;
 import cloud.qasino.games.database.security.Privilege;
 import cloud.qasino.games.database.security.PrivilegeRepository;
 import cloud.qasino.games.database.security.Role;
 import cloud.qasino.games.database.security.RoleRepository;
 import cloud.qasino.games.database.security.Visitor;
 import cloud.qasino.games.database.security.VisitorRepository;
-import cloud.qasino.games.dto.model.LeagueDto;
-import cloud.qasino.games.dto.model.VisitorDto;
-import cloud.qasino.games.dto.mapper.LeagueMapper;
 import cloud.qasino.games.dto.mapper.VisitorMapper;
+import cloud.qasino.games.dto.model.VisitorDto;
 import cloud.qasino.games.dto.request.CreationDto;
 import cloud.qasino.games.dto.request.ParamsDto;
 import jakarta.annotation.PostConstruct;
@@ -33,26 +29,37 @@ import java.util.Optional;
 @Service
 @Lazy
 @Slf4j
-public class VisitorAndLeaguesService {
+public class VisitorService {
 
     // @formatter:off
     @Autowired private VisitorRepository visitorRepository;
     @Autowired private RoleRepository roleRepository;
     @Autowired private PrivilegeRepository privilegeRepository;
-    @Autowired private LeagueRepository leagueRepository;
-//    LeagueMapper leagueMapper;
 
-    private PasswordEncoder encoder;
-
-    public VisitorAndLeaguesService(PasswordEncoder passwordEncoder) {
+    private final PasswordEncoder encoder;
+    public VisitorService(PasswordEncoder passwordEncoder) {
         this.encoder = passwordEncoder;
     }
 
-    // counts
-    Long countByAlias(VisitorDto visitorDto) {
-        return visitorRepository.countByAlias(visitorDto.getAlias());
-    };
-    // find one
+    // lifecycle of a visitor
+    public VisitorDto saveNewUser(Visitor user) {
+        final Role basicRole = roleRepository.findByName("ROLE_USER");
+        user.setRoles(Collections.singleton(basicRole));
+        user.setPassword(encoder.encode(user.getPassword()));
+        Visitor savedVisitor = visitorRepository.save(user);
+        Visitor retrievedVisitor = visitorRepository.getReferenceById(savedVisitor.getVisitorId());
+        return VisitorMapper.INSTANCE.toDto(retrievedVisitor);
+    }
+    public VisitorDto saveNewAdmin(Visitor admin) {
+        List<Role> roles = new ArrayList<>();
+        roles.add(roleRepository.findByName("ROLE_USER"));
+        roles.add(roleRepository.findByName("ROLE_ADMIN"));
+        admin.setRoles(roles);
+        admin.setPassword(encoder.encode(admin.getPassword()));
+        Visitor savedVisitor = visitorRepository.save(admin);
+        Visitor retrievedVisitor = visitorRepository.getReferenceById(savedVisitor.getVisitorId());
+        return VisitorMapper.INSTANCE.toDto(retrievedVisitor);
+    }
     public VisitorDto findByUsername(ParamsDto paramsDto){
         Visitor retrievedVisitor = visitorRepository.findByUsername(paramsDto.getSuppliedVisitorUsername());
         return VisitorMapper.INSTANCE.toDto(retrievedVisitor);
@@ -67,21 +74,13 @@ public class VisitorAndLeaguesService {
                 .filter(Optional::isPresent) // lambda is => visitor -> visitor.isPresent()
                 .map(visitor -> VisitorMapper.INSTANCE.toDto(visitor.get()));
     };
-    public LeagueDto findOneByLeagueId(ParamsDto paramsDto) {
-        League retrievedLeague = leagueRepository.getReferenceById(paramsDto.getSuppliedLeagueId());
-        return LeagueMapper.INSTANCE.toDto(retrievedLeague);
-    };
-    // find many
     Page<VisitorDto> findAllVisitorsWithPage(Pageable pageable){
         Page<Visitor> visitorPage = visitorRepository.findAllVisitorsWithPage(pageable);
         return visitorPage.map(visitor -> VisitorMapper.INSTANCE.toDto(visitor));
     };
-    // delete
-    void removeUserByUsername(VisitorDto visitorDto) {
-        visitorRepository.removeUserByUsername(visitorDto.getUsername());
+    Long countByAlias(VisitorDto visitorDto) {
+        return visitorRepository.countByAlias(visitorDto.getAlias());
     };
-
-    // special
     public Optional<String> substringUserFromEmail(final String emailId) {
         return Optional.ofNullable(emailId)
                 .filter(email -> email.contains("@"))
@@ -104,24 +103,9 @@ public class VisitorAndLeaguesService {
         Visitor saved = visitorRepository.save(found);
         return VisitorMapper.INSTANCE.toDto(saved);
     }
-    public VisitorDto saveNewUser(Visitor user) {
-        final Role basicRole = roleRepository.findByName("ROLE_USER");
-        user.setRoles(Collections.singleton(basicRole));
-        user.setPassword(encoder.encode(user.getPassword()));
-        Visitor savedVisitor = visitorRepository.save(user);
-        Visitor retrievedVisitor = visitorRepository.getReferenceById(savedVisitor.getVisitorId());
-        return VisitorMapper.INSTANCE.toDto(retrievedVisitor);
-    }
-    public VisitorDto saveNewAdmin(Visitor admin) {
-        List<Role> roles = new ArrayList<>();
-        roles.add(roleRepository.findByName("ROLE_USER"));
-        roles.add(roleRepository.findByName("ROLE_ADMIN"));
-        admin.setRoles(roles);
-        admin.setPassword(encoder.encode(admin.getPassword()));
-        Visitor savedVisitor = visitorRepository.save(admin);
-        Visitor retrievedVisitor = visitorRepository.getReferenceById(savedVisitor.getVisitorId());
-        return VisitorMapper.INSTANCE.toDto(retrievedVisitor);
-    }
+    void removeUserByUsername(VisitorDto visitorDto) {
+        visitorRepository.removeUserByUsername(visitorDto.getUsername());
+    };
 
     @PostConstruct
     public void initialize() {

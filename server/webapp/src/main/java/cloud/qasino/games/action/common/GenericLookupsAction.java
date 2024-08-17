@@ -2,9 +2,10 @@ package cloud.qasino.games.action.common;
 
 import cloud.qasino.games.database.entity.enums.game.gamestate.GameStateGroup;
 import cloud.qasino.games.database.service.GameService;
+import cloud.qasino.games.database.service.LeaguesService;
 import cloud.qasino.games.database.service.PlayerService;
 import cloud.qasino.games.database.service.PlayingService;
-import cloud.qasino.games.database.service.VisitorAndLeaguesService;
+import cloud.qasino.games.database.service.VisitorService;
 import cloud.qasino.games.dto.Qasino;
 import cloud.qasino.games.dto.model.InvitationsDto;
 import cloud.qasino.games.dto.model.SeatDto;
@@ -23,7 +24,8 @@ public abstract class GenericLookupsAction<OUTPUT> {
 
     // @formatter:off
     // we do not always need every services so its lazy loading here and at the actionDto
-    @Autowired VisitorAndLeaguesService visitorAndLeaguesService;
+    @Autowired VisitorService visitorService;
+    @Autowired LeaguesService leaguesService;
     @Autowired GameService gameService;
     @Autowired @Lazy PlayerService playerService;
     @Autowired @Lazy PlayingService playingService;
@@ -32,7 +34,7 @@ public abstract class GenericLookupsAction<OUTPUT> {
 
     protected boolean findVisitorByUsername(Qasino qasino) {
         if (qasino.getParams().getSuppliedVisitorUsername().isEmpty()) return true; // 200 not logon yet
-        qasino.setVisitor(visitorAndLeaguesService.findByUsername(qasino.getParams()));
+        qasino.setVisitor(visitorService.findByUsername(qasino.getParams()));
         if (qasino.getVisitor() == null) return false; // 404 not found
         qasino.getParams().setSuppliedVisitorId(qasino.getVisitor().getVisitorId());
         refreshOrFindLatestGame(qasino);
@@ -41,7 +43,7 @@ public abstract class GenericLookupsAction<OUTPUT> {
         return true; // visitor found and id set
     }
     protected boolean refreshVisitor(Qasino qasino) {
-        qasino.setVisitor(visitorAndLeaguesService.findOneByVisitorId(qasino.getParams()));
+        qasino.setVisitor(visitorService.findOneByVisitorId(qasino.getParams()));
         if (qasino.getVisitor() == null) return false; // 404 not found
         qasino.getParams().setSuppliedVisitorId(qasino.getVisitor().getVisitorId());
         refreshOrFindLatestGame(qasino);
@@ -101,12 +103,12 @@ public abstract class GenericLookupsAction<OUTPUT> {
     }
     protected boolean refreshOrFindLeagueForLatestGame(Qasino qasino) {
         if (qasino.getParams().getSuppliedLeagueId() > 0) {
-            qasino.setLeague(visitorAndLeaguesService.findOneByLeagueId(qasino.getParams()));
+            qasino.setLeague(leaguesService.findOneByLeagueId(qasino.getParams()));
             return qasino.getLeague() != null; // 404 not found
         }
         if (qasino.getParams().getSuppliedGameId() > 0 && qasino.getGame().getLeague() != null) {
             qasino.getParams().setSuppliedLeagueId(qasino.getGame().getLeague().getLeagueId());
-            qasino.setLeague(visitorAndLeaguesService.findOneByLeagueId(qasino.getParams()));
+            qasino.setLeague(leaguesService.findOneByLeagueId(qasino.getParams()));
             return qasino.getLeague() != null; // 200 or 404 not found
         }
         return false; // 404 -> no game yet or latest game has no league

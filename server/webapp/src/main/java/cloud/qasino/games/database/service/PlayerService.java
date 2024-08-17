@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static cloud.qasino.games.config.Constants.DEFAULT_PAWN_SHIP_BOT;
+import static cloud.qasino.games.pattern.comparator.ComparatorUtil.playerSeatComparator;
 
 @Service
 @Lazy
@@ -35,15 +36,70 @@ public class PlayerService {
     @Autowired private CardRepository cardRepository;
     @Autowired private PlayerRepository playerRepository;
 
-    // Since Java 8, there are several static methods added to the Comparator interface
-    // that can take lambda expressions to create a Comparator object.
-    // We can use its comparing() method to construct a Comparator
+    // lifecycle of a player
+    public PlayerDto addHumanVisitorPlayerToAGame(VisitorDto visitorDto, GameDto gameDto, Avatar avatar) {
+        Game game = GameMapper.INSTANCE.fromDto(gameDto);
+        Visitor initiator = VisitorMapper.INSTANCE.fromDto(visitorDto);
 
-    // This Comparator can compare seats and can be passed to a compare function
-    public static Comparator<Player> playerSeatComparator() {
-        return Comparator.comparing(Player::getSeat);
+        List<Player> allPlayersForTheGame = playerRepository.findByGame(game);
+        String avatarName = "avatarName";
+        Player visitor = new Player(
+                initiator,
+                game,
+                PlayerType.INITIATOR,
+                initiator.getBalance(),
+                allPlayersForTheGame.size()+1,
+                avatar,
+                avatarName,
+                AiLevel.HUMAN);
+        Player newPlayer =  playerRepository.save(visitor);
+        return PlayerMapper.INSTANCE.toDto(newPlayer, null);
     }
+    public PlayerDto addInvitedHumanPlayerToAGame(VisitorDto visitorDto, GameDto gameDto, Avatar avatar) {
+        Game game = GameMapper.INSTANCE.fromDto(gameDto);
+        Visitor invitee = VisitorMapper.INSTANCE.fromDto(visitorDto);
 
+        List<Player> allPlayersForTheGame = playerRepository.findByGame(game);
+        String avatarName = "avatarName";
+        Player player = new Player(
+                null,
+                game,
+                PlayerType.INVITED,
+                invitee.getBalance(),
+                allPlayersForTheGame.size()+1,
+                avatar,
+                avatarName,
+                AiLevel.HUMAN);
+        Player newPlayer =  playerRepository.save(player);
+        return PlayerMapper.INSTANCE.toDto(newPlayer, null);
+    }
+    public PlayerDto addBotPlayerToAGame(GameDto gameDto, Avatar avatar, AiLevel aiLevel) {
+        Game game = GameMapper.INSTANCE.fromDto(gameDto);
+
+        if (aiLevel == AiLevel.HUMAN) {
+            throw new MyBusinessException("addBotPlayerToAGame", "this aiLevel cannot become a bot player [" + aiLevel + "]");
+        }
+        List<Player> allPlayersForTheGame = playerRepository.findByGame(game);
+        int fiches = (int) (Math.random() * DEFAULT_PAWN_SHIP_BOT + 1);
+        String avatarName = "avatarName";
+        Player bot = new Player(
+                null,
+                game,
+                PlayerType.BOT,
+                fiches,
+                allPlayersForTheGame.size()+1,
+                avatar,
+                avatarName,
+                aiLevel);
+        Player newBot =  playerRepository.save(bot);
+        return PlayerMapper.INSTANCE.toDto(newBot, null);
+    }
+    public PlayerDto updatePlayerFiches(PlayerDto playerDto, int fiches ) {
+        Player player = PlayerMapper.INSTANCE.fromDto(playerDto);
+        player.setFiches(fiches);
+        Player updated =  playerRepository.save(player);
+        return PlayerMapper.INSTANCE.toDto(updated, null);
+    }
     public PlayerDto acceptInvitationForAGame(PlayerDto playerDto) {
 
         Player invitee = PlayerMapper.INSTANCE.fromDto(playerDto);
@@ -87,68 +143,5 @@ public class PlayerService {
         allPlayersForTheGame.get(currentSeat - 1).setSeat(currentSeat + 1);
         allPlayersForTheGame.get(currentSeat).setSeat(currentSeat-1);
         return playerDtos;
-    }
-    public PlayerDto addHumanVisitorPlayerToAGame(VisitorDto visitorDto, GameDto gameDto, Avatar avatar) {
-        Game game = GameMapper.INSTANCE.fromDto(gameDto);
-        Visitor initiator = VisitorMapper.INSTANCE.fromDto(visitorDto);
-
-        List<Player> allPlayersForTheGame = playerRepository.findByGame(game);
-        String avatarName = "avatarName";
-        Player visitor = new Player(
-                initiator,
-                game,
-                PlayerType.INITIATOR,
-                initiator.getBalance(),
-                allPlayersForTheGame.size()+1,
-                avatar,
-                avatarName,
-                AiLevel.HUMAN);
-        Player newPlayer =  playerRepository.save(visitor);
-        return PlayerMapper.INSTANCE.toDto(newPlayer, null);
-    }
-    public PlayerDto addInvitedHumanPlayerToAGame(VisitorDto visitorDto, GameDto gameDto, Avatar avatar) {
-        Game game = GameMapper.INSTANCE.fromDto(gameDto);
-        Visitor invitee = VisitorMapper.INSTANCE.fromDto(visitorDto);
-
-        List<Player> allPlayersForTheGame = playerRepository.findByGame(game);
-        String avatarName = "avatarName";
-        Player player = new Player(
-            null,
-            game,
-            PlayerType.INVITED,
-            invitee.getBalance(),
-            allPlayersForTheGame.size()+1,
-            avatar,
-            avatarName,
-            AiLevel.HUMAN);
-        Player newPlayer =  playerRepository.save(player);
-        return PlayerMapper.INSTANCE.toDto(newPlayer, null);
-    }
-    public PlayerDto addBotPlayerToAGame(GameDto gameDto, Avatar avatar, AiLevel aiLevel) {
-        Game game = GameMapper.INSTANCE.fromDto(gameDto);
-
-        if (aiLevel == AiLevel.HUMAN) {
-            throw new MyBusinessException("addBotPlayerToAGame", "this aiLevel cannot become a bot player [" + aiLevel + "]");
-        }
-        List<Player> allPlayersForTheGame = playerRepository.findByGame(game);
-        int fiches = (int) (Math.random() * DEFAULT_PAWN_SHIP_BOT + 1);
-        String avatarName = "avatarName";
-        Player bot = new Player(
-                null,
-                game,
-                PlayerType.BOT,
-                fiches,
-                allPlayersForTheGame.size()+1,
-                avatar,
-                avatarName,
-                aiLevel);
-        Player newBot =  playerRepository.save(bot);
-        return PlayerMapper.INSTANCE.toDto(newBot, null);
-    }
-    public PlayerDto updatePlayerFiches(PlayerDto playerDto, int fiches ) {
-        Player player = PlayerMapper.INSTANCE.fromDto(playerDto);
-        player.setFiches(fiches);
-        Player updated =  playerRepository.save(player);
-        return PlayerMapper.INSTANCE.toDto(updated, null);
     }
 }

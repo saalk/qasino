@@ -3,7 +3,7 @@ package cloud.qasino.games.action.visitor;
 import cloud.qasino.games.action.common.GenericLookupsAction;
 import cloud.qasino.games.dto.Qasino;
 import cloud.qasino.games.database.security.VisitorRepository;
-import cloud.qasino.games.database.service.VisitorAndLeaguesService;
+import cloud.qasino.games.database.service.VisitorService;
 import cloud.qasino.games.pattern.statemachine.event.EventOutput;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
@@ -18,7 +18,7 @@ public class UpdateVisitorAction extends GenericLookupsAction<EventOutput.Result
     @Resource
     VisitorRepository visitorRepository;
     @Resource
-    VisitorAndLeaguesService visitorAndLeaguesService;
+    VisitorService visitorService;
     // @formatter:on
 
     @Override
@@ -31,7 +31,7 @@ public class UpdateVisitorAction extends GenericLookupsAction<EventOutput.Result
                 return EventOutput.Result.FAILURE;
             }
             // todo LOW split alias and number
-            qasino.setVisitor(visitorAndLeaguesService.updateUser(qasino.getParams().getSuppliedVisitorId(), qasino.getCreation()));
+            qasino.setVisitor(visitorService.updateUser(qasino.getParams().getSuppliedVisitorId(), qasino.getCreation()));
         }
         return EventOutput.Result.SUCCESS;
     }

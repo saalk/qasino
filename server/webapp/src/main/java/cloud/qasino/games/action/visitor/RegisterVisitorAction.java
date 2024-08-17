@@ -6,7 +6,7 @@ import cloud.qasino.games.database.security.Role;
 import cloud.qasino.games.database.security.Visitor;
 import cloud.qasino.games.database.security.VisitorRepository;
 import cloud.qasino.games.database.security.VisitorServiceOld;
-import cloud.qasino.games.database.service.VisitorAndLeaguesService;
+import cloud.qasino.games.database.service.VisitorService;
 import cloud.qasino.games.dto.model.VisitorDto;
 import cloud.qasino.games.exception.MyNPException;
 import cloud.qasino.games.pattern.statemachine.event.EventOutput;
@@ -28,7 +28,7 @@ public class RegisterVisitorAction extends GenericLookupsAction<EventOutput.Resu
     @Autowired
     private VisitorServiceOld visitorServiceOld;
     @Autowired
-    private VisitorAndLeaguesService visitorAndLeaguesService;
+    private VisitorService visitorService;
 
     @Override
     public EventOutput.Result perform(Qasino qasino) {
@@ -49,7 +49,7 @@ public class RegisterVisitorAction extends GenericLookupsAction<EventOutput.Resu
             ) {
                 throw new MyNPException("SignUpNewVisitorAction", "sign_on [" + qasino.getCreation().getSuppliedPassword() + "]");
             }
-            VisitorDto createdVisitor = visitorAndLeaguesService.saveNewUser(new Visitor.Builder()
+            VisitorDto createdVisitor = visitorService.saveNewUser(new Visitor.Builder()
                     .withAlias(qasino.getCreation().getSuppliedAlias())
                     .withAliasSequence(sequence)
                     .withBalance(0)
