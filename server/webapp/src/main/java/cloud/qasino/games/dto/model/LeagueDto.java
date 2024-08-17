@@ -1,5 +1,7 @@
 package cloud.qasino.games.dto.model;
 
+import cloud.qasino.games.database.entity.League;
+import cloud.qasino.games.database.entity.Result;
 import lombok.Data;
 
 import java.util.List;
@@ -18,7 +20,10 @@ public class LeagueDto {
 
     // ref
     private VisitorDto visitor;
+//    private List<League> visitorLeagues;
+
     private List<GameDto> gamesForLeague;
+//    private List<Result> resultsForLeague;
 
     // Normal fields
     private String name;

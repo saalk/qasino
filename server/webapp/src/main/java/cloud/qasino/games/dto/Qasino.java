@@ -10,9 +10,9 @@ import cloud.qasino.games.dto.request.CreationDto;
 import cloud.qasino.games.dto.request.MessageDto;
 import cloud.qasino.games.dto.request.ParamsDto;
 import cloud.qasino.games.pattern.statemachine.event.interfaces.AbstractFlowDto;
-import cloud.qasino.games.response.view.NavigationBarItem;
-import cloud.qasino.games.response.view.enums.EnumOverview;
-import cloud.qasino.games.response.view.statistics.Statistic;
+import cloud.qasino.games.response.NavigationBarItem;
+import cloud.qasino.games.response.enums.EnumOverview;
+import cloud.qasino.games.response.statistics.Statistic;
 import jakarta.validation.Valid;
 import lombok.Data;
 

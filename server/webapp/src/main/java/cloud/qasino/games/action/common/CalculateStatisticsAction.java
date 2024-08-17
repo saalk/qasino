@@ -8,7 +8,7 @@ import cloud.qasino.games.database.repository.PlayerRepository;
 import cloud.qasino.games.database.security.VisitorRepository;
 import cloud.qasino.games.dto.Qasino;
 import cloud.qasino.games.pattern.statemachine.event.EventOutput;
-import cloud.qasino.games.response.view.statistics.Statistic;
+import cloud.qasino.games.response.statistics.Statistic;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

@@ -1,4 +1,4 @@
-package cloud.qasino.games.response.view;
+package cloud.qasino.games.response;
 
 import lombok.Data;
 import lombok.Getter;

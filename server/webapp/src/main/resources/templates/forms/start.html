@@ -18,7 +18,7 @@
         </th:block>
         <fieldset>
             <div class="form-group"
-                 th:classappend="${#fields.hasErrors('${qasino.pageGameSetup.selectedGame.type}')}? 'has-error'">
+                 th:classappend="${#fields.hasErrors('${qasino.creation.suppliedType}')}? 'has-error'">
                 <label for="type" class="col-lg-2 control-label">Game setup</label>
                 <div class="col-lg-10">
                     <input type="text" class="form-control" id="type" placeholder="Type"

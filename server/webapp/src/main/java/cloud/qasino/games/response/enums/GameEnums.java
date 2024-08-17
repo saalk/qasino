@@ -1,4 +1,4 @@
-package cloud.qasino.games.response.view.enums;
+package cloud.qasino.games.response.enums;
 
 import cloud.qasino.games.database.entity.enums.game.GameState;
 import cloud.qasino.games.database.entity.enums.game.Type;

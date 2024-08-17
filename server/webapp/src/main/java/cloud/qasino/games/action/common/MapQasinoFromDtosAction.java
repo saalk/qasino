@@ -5,7 +5,7 @@ import cloud.qasino.games.database.entity.enums.game.GameState;
 import cloud.qasino.games.database.entity.enums.player.PlayerType;
 import cloud.qasino.games.dto.Qasino;
 import cloud.qasino.games.pattern.statemachine.event.EventOutput;
-import cloud.qasino.games.response.view.NavigationBarItem;
+import cloud.qasino.games.response.NavigationBarItem;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 

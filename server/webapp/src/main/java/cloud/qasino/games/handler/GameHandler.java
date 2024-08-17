@@ -1,9 +1,8 @@
 package cloud.qasino.games.handler;
 
-import cloud.qasino.games.dto.Qasino;
 import cloud.qasino.games.database.security.Visitor;
+import cloud.qasino.games.dto.Qasino;
 import cloud.qasino.games.pattern.statemachine.QasinoStateMachine;
-import cloud.qasino.games.response.QasinoResponse;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -19,7 +18,7 @@ public class GameHandler {
     @Resource
     private QasinoStateMachine qasinoStateMachine;
 
-    public QasinoResponse qasinoAndVisitor(final Long visitorId) {
+    public Qasino qasinoAndVisitor(final Long visitorId) {
         log.warn("########## Start of initialize: " + LocalTime.now());
         log.warn("########## Start of initialize: " + LocalTime.now());
 
