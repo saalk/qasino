@@ -67,9 +67,9 @@ public abstract class GenericLookupsAction<OUTPUT> {
         } else {
             qasino.setGame(gameService.findLatestGameForVisitorId(qasino.getParams()));
             if (qasino.getGame() == null) return true; // 200 no game yet
-            qasino.getParams().setSuppliedGameId(qasino.getGame().getGameId());
-            qasino.getParams().setSuppliedGameStateGroup(qasino.getGame().getState().getGroup().toString());
         }
+        qasino.getParams().setSuppliedGameId(qasino.getGame().getGameId());
+        qasino.getParams().setSuppliedGameStateGroup(qasino.getGame().getState().getGroup().toString());
         refreshOrFindPlayingForGame(qasino);
         if (qasino.getGame().getGameStateGroup().equals(GameStateGroup.FINISHED)) {
             refreshOrFindResultsForGame(qasino);
