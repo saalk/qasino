@@ -55,23 +55,9 @@ public class RegisterVisitorAction extends GenericLookupsAction<EventOutput.Resu
             qasino.getParams().setSuppliedVisitorId(createdVisitor.getVisitorId());
             qasino.setVisitor(createdVisitor);
         } else {
-            setBadRequestErrorMessage(qasino, "username", String.valueOf(qasino.getCreation().getSuppliedUsername()));
-            throw new MyNPException("103 gameEvent", "sign_on [" + qasino.getCreation().getSuppliedAlias() + "]");
-//            return EventOutput.Result.FAILURE;
+            qasino.getMessage().setBadRequestErrorMessage("alias", String.valueOf(qasino.getCreation().getSuppliedAlias()),"empty");
+            return EventOutput.Result.FAILURE;
         }
         return EventOutput.Result.SUCCESS;
     }
-
-    private void setBadRequestErrorMessage(Qasino qasino, String id, String value) {
-        qasino.getMessage().setErrorKey(id);
-        qasino.getMessage().setErrorValue(value);
-        qasino.getMessage().setBadRequestErrorMessage("empty");
-    }
-
-    private void setConflictErrorMessage(Qasino qasino, String id, String value) {
-        qasino.getMessage().setErrorKey(id);
-        qasino.getMessage().setErrorValue(value);
-        qasino.getMessage().setConflictErrorMessage("username [" + value + "] not available any more");
-    }
-
 }

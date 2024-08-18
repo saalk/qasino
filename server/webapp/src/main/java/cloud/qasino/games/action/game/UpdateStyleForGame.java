@@ -47,15 +47,4 @@ public class UpdateStyleForGame extends GenericLookupsAction<EventOutput.Result>
         return EventOutput.Result.SUCCESS;
     }
 
-    private void setBadRequestErrorMessage(Qasino qasino, String id, String value) {
-        qasino.getMessage().setErrorKey(id);
-        qasino.getMessage().setErrorValue(value);
-        qasino.getMessage().setBadRequestErrorMessage("Supplied value for leagueName is empty");
-    }
-
-    private void setConflictErrorMessage(Qasino qasino, String id, String value) {
-        qasino.getMessage().setErrorKey(id);
-        qasino.getMessage().setErrorValue(value);
-        qasino.getMessage().setConflictErrorMessage("leagueName [" + value + "] not available any more");
-    }
 }

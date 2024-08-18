@@ -7,7 +7,11 @@
 <div th:fragment="alert (type, message)" th:assert="${!#strings.isEmpty(type) and !#strings.isEmpty(message)}"
      class="alert alert-dismissable" th:classappend="'alert-' + ${type}">
     <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-    <span th:text="${message}">Test</span>
+    <ul>
+        <li><span th:text="'httpStatus : ' + ${qasino.message.httpStatus}">httpStatus</span></li>
+        <li><span th:text="'errorMessage : ' + ${qasino.message.errorMessage}">errorMessage</span></li>
+        <li><span th:text="'errorReason : ' + ${qasino.message.errorReason}">errorReason</span></li>
+    </ul>
 </div>
 </body>
 </html>

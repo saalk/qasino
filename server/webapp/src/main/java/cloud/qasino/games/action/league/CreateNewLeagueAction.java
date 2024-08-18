@@ -28,7 +28,7 @@ public class CreateNewLeagueAction extends GenericLookupsAction<EventOutput.Resu
         if (!(StringUtils.isEmpty(qasino.getCreation().getSuppliedLeagueName()))) {
             int sequence = Math.toIntExact(leaguesService.countByName(qasino.getCreation().getSuppliedLeagueName()));
             if (sequence != 0) {
-                setConflictErrorMessage(qasino, "leagueName", String.valueOf(qasino.getCreation().getSuppliedLeagueName()));
+                qasino.getMessage().setConflictErrorMessage("leagueName",String.valueOf(qasino.getCreation().getSuppliedLeagueName()),"leagueName [" + String.valueOf(qasino.getCreation().getSuppliedLeagueName()) + "] not available any more");
                 return EventOutput.Result.FAILURE;
             }
             Visitor visitor = VisitorMapper.INSTANCE.fromDto(qasino.getVisitor());
@@ -40,21 +40,9 @@ public class CreateNewLeagueAction extends GenericLookupsAction<EventOutput.Resu
             qasino.setLeague(createdLeague);
             qasino.getParams().setSuppliedLeagueId(createdLeague.getLeagueId());
         } else {
-            setBadRequestErrorMessage(qasino, "leagueName", String.valueOf(qasino.getCreation().getSuppliedLeagueName()));
+            qasino.getMessage().setBadRequestErrorMessage("leagueName", String.valueOf(qasino.getCreation().getSuppliedLeagueName()),"Supplied value for leagueName is empty");
             return EventOutput.Result.FAILURE;
         }
         return EventOutput.Result.SUCCESS;
-    }
-
-    private void setBadRequestErrorMessage(Qasino qasino, String id, String value) {
-        qasino.getMessage().setErrorKey(id);
-        qasino.getMessage().setErrorValue(value);
-        qasino.getMessage().setBadRequestErrorMessage("Supplied value for leagueName is empty");
-    }
-
-    private void setConflictErrorMessage(Qasino qasino, String id, String value) {
-        qasino.getMessage().setErrorKey(id);
-        qasino.getMessage().setErrorValue(value);
-        qasino.getMessage().setConflictErrorMessage("leagueName [" + value + "] not available any more");
     }
 }

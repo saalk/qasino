@@ -40,6 +40,7 @@ public class GameThymeleafController extends AbstractThymeleafController {
     // @formatter:off
     private static final String SETUP_VIEW_LOCATION = "pages/setup";
     private static final String PLAY_VIEW_LOCATION = "pages/play";
+    private static final String ERROR_VIEW_LOCATION = "pages/error";
 
     EventOutput.Result output;
     private GameRepository gameRepository;
@@ -56,46 +57,6 @@ public class GameThymeleafController extends AbstractThymeleafController {
     public GameThymeleafController(
             GameRepository gameRepository) {
         this.gameRepository = gameRepository;
-    }
-
-    @GetMapping("setup/{gameId}")
-    public String getGameSetup(
-            Principal principal,
-            Model model,
-            @PathVariable("gameId") String id,
-            HttpServletResponse response) {
-
-        // 1 - map input
-        Qasino qasino = new Qasino();
-        qasino.getParams().setSuppliedVisitorUsername(principal.getName());
-        qasino.getParams().setSuppliedGameId(Long.parseLong(id));
-        // 2 - validate input
-        // 3 - process
-        loadVisitor.perform(qasino);
-        // 4 - return  response
-        prepareQasino(response, qasino);
-        model.addAttribute(qasino);
-        return SETUP_VIEW_LOCATION;
-    }
-
-    @GetMapping("play/{gameId}")
-    public String getGamePlay(
-            Principal principal,
-            Model model,
-            @PathVariable("gameId") String id,
-            HttpServletResponse response) {
-
-        // 1 - map input
-        Qasino qasino = new Qasino();
-        qasino.getParams().setSuppliedVisitorUsername(principal.getName());
-        qasino.getParams().setSuppliedGameId(Long.parseLong(id));
-        loadVisitor.perform(qasino);
-        // 2 - validate input
-        // 3 - process
-        // 4 - return  response
-        prepareQasino(response, qasino);
-        model.addAttribute(qasino);
-        return PLAY_VIEW_LOCATION;
     }
 
     @PostMapping("start/{visitorId}")
@@ -122,17 +83,41 @@ public class GameThymeleafController extends AbstractThymeleafController {
         loadVisitor.perform(qasino);
         output = isGameConsistent.perform(qasino);
         if (FAILURE.equals(output)) {
-            log.warn("Errors isGameConsistentForGameEvent!!");
             prepareQasino(response, qasino);
             model.addAttribute(qasino);
-            return "redirect:/visitor";
+            return ERROR_VIEW_LOCATION;
         }
-        createNewGame.perform(qasino);
+        output = createNewGame.perform(qasino);
+        if (FAILURE.equals(output)) {
+            prepareQasino(response, qasino);
+            model.addAttribute(qasino);
+            return ERROR_VIEW_LOCATION;
+        }
         // 4 - return response
         prepareQasino(response, qasino);
         model.addAttribute(qasino);
         return "redirect:/setup/" + qasino.getGame().getGameId();
 //        return "redirect:/visitor";
+    }
+
+    @GetMapping("setup/{gameId}")
+    public String getGameSetup(
+            Principal principal,
+            Model model,
+            @PathVariable("gameId") String id,
+            HttpServletResponse response) {
+
+        // 1 - map input
+        Qasino qasino = new Qasino();
+        qasino.getParams().setSuppliedVisitorUsername(principal.getName());
+        qasino.getParams().setSuppliedGameId(Long.parseLong(id));
+        // 2 - validate input
+        // 3 - process
+        loadVisitor.perform(qasino);
+        // 4 - return  response
+        prepareQasino(response, qasino);
+        model.addAttribute(qasino);
+        return SETUP_VIEW_LOCATION;
     }
 
     @PostMapping("validate/{gameId}")
@@ -158,16 +143,35 @@ public class GameThymeleafController extends AbstractThymeleafController {
         loadVisitor.perform(qasino);
         output = isGameConsistent.perform(qasino);
         if (FAILURE.equals(output)) {
-            log.warn("Errors isGameConsistentForGameEvent!!");
             prepareQasino(response, qasino);
             model.addAttribute(qasino);
-            return "redirect:/setup/" + id;
+            return ERROR_VIEW_LOCATION;
         }
         prepareGame.perform(qasino);
         // 4 - return response
         prepareQasino(response, qasino);
         model.addAttribute(qasino);
         return "redirect:/setup/" + id;
+    }
+
+    @GetMapping("play/{gameId}")
+    public String getGamePlay(
+            Principal principal,
+            Model model,
+            @PathVariable("gameId") String id,
+            HttpServletResponse response) {
+
+        // 1 - map input
+        Qasino qasino = new Qasino();
+        qasino.getParams().setSuppliedVisitorUsername(principal.getName());
+        qasino.getParams().setSuppliedGameId(Long.parseLong(id));
+        loadVisitor.perform(qasino);
+        // 2 - validate input
+        // 3 - process
+        // 4 - return  response
+        prepareQasino(response, qasino);
+        model.addAttribute(qasino);
+        return PLAY_VIEW_LOCATION;
     }
 
     @PostMapping("style/{gameId}")
@@ -190,7 +194,12 @@ public class GameThymeleafController extends AbstractThymeleafController {
         }
         // 3 - process
         loadVisitor.perform(qasino);
-        updateGameStyle.perform(qasino);
+        output = updateGameStyle.perform(qasino);
+        if (FAILURE.equals(output)) {
+            prepareQasino(response, qasino);
+            model.addAttribute(qasino);
+            return ERROR_VIEW_LOCATION;
+        }
         // 4 - return response
         prepareQasino(response, qasino);
         model.addAttribute(qasino);

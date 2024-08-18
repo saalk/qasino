@@ -26,14 +26,12 @@ public class HandleSecuredLoanAction extends GenericLookupsAction<EventOutput.Re
     public EventOutput.Result perform(Qasino qasino) {
 
         if (qasino.getVisitor() == null) {
-            qasino.getMessage().setErrorKey("visitorId");
-            qasino.getMessage().setNotFoundErrorMessage(null);
+            qasino.getMessage().setNotFoundErrorMessage("visitorId","null",null);
             return EventOutput.Result.FAILURE;
         }
         if (qasino.getParams().getSuppliedQasinoEvent() != QasinoEvent.PAWN &&
                 qasino.getParams().getSuppliedQasinoEvent() != QasinoEvent.REPAY) {
-            qasino.getMessage().setErrorKey("pawn or repay");
-            qasino.getMessage().setBadRequestErrorMessage("not supplied");
+            qasino.getMessage().setBadRequestErrorMessage("QasinoEvent","pawn or repay","not supplied");
             return EventOutput.Result.FAILURE;
         }
 
@@ -43,14 +41,14 @@ public class HandleSecuredLoanAction extends GenericLookupsAction<EventOutput.Re
         if (qasino.getParams().getSuppliedQasinoEvent() == QasinoEvent.REPAY) {
             boolean repayOk = repayLoan();
             if (!repayOk) {
-                setConflictErrorMessage(qasino, "Repay", "Repay loan with balance not possible, balance too low");
+                qasino.getMessage().setConflictErrorMessage("Repay","Repay loan with balance not possible, balance too low","Action [Repay] invalid");
                 return EventOutput.Result.FAILURE;
             }
 
         } else {
             boolean pawnOk = pawnShip(0);
             if (!pawnOk) {
-                setConflictErrorMessage(qasino, "Pawn", "Ship already pawned, repay first");
+                qasino.getMessage().setConflictErrorMessage("Pawn","Ship already pawned, repay first","Action [Pawn] invalid");
                 return EventOutput.Result.FAILURE;
             }
         }
@@ -60,16 +58,6 @@ public class HandleSecuredLoanAction extends GenericLookupsAction<EventOutput.Re
     }
 
     // @formatter:on
-    private void setConflictErrorMessage(Qasino qasino, String id, String value) {
-        qasino.getMessage().setErrorKey(id);
-        qasino.getMessage().setErrorValue(value);
-        qasino.getMessage().setConflictErrorMessage("Action [" + id + "] invalid");
-    }
-    private void setBadRequestErrorMessage(Qasino qasino, String id, String value) {
-        qasino.getMessage().setErrorKey(id);
-        qasino.getMessage().setErrorValue(value);
-        qasino.getMessage().setBadRequestErrorMessage("Action [" + id + "] invalid");
-    }
     public boolean repayLoan() {
         if (this.balance >= this.securedLoan) {
             this.balance = this.balance - this.securedLoan;

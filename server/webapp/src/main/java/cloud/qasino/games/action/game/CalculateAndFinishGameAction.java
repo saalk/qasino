@@ -53,6 +53,7 @@ public class CalculateAndFinishGameAction extends GenericLookupsAction<EventOutp
             return EventOutput.Result.SUCCESS;
         }
 
+        log.warn("CalculateAndFinishGameAction {}",qasino.getGame());
         // make a players profit list
         HashMap<Long, Integer> playersProfit = new HashMap<>();
         List<PlayerDto> players = qasino.getGame().getPlayers();

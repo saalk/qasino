@@ -3,6 +3,10 @@
 - [Running the app](./Running-the-app.md)
 
 # Coding Concepts
+
+MVP, YAGNI and so forth apply to functionalities not flexibility and extensibility.
+But the MVP principle never justifies brittle software. If software is brittle, it can’t be updated to reflect new needs, and often needs to be thrown out in a year. And if your software needs to be thrown out it is not viable. It is at best a prototype.
+
 ### DRY 
 “Don't Repeat Yourself.” 
 - have a single source of truth rather than copy-paste code
@@ -18,7 +22,6 @@
 “You Ain’t Gonna Need It”
 - implement functionality only when it is truly necessary
 - delivering the most critical features in a timely manner
-
 
 # Notes
 - [Shortcuts](./webapp/docs/notes/1-Shortcuts/0-index.md)

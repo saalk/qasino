@@ -9,8 +9,10 @@
 <div th:replace="~{fragments/header :: header}">Header</div>
 <!-- the specific part of this html -->
 <div class="container">
-    <div th:replace="fragments/alert :: alert (type='danger', message=${errorMessage})">Error: Error</div>
-    <div th:insert="~{fragments/footer :: footer}"></div>
+    <div class="text-center">
+        <div th:replace="~{fragments/alert :: alert (type='danger', message=${qasino.message.httpStatus})}">404</div>
+        <div th:insert ="~{fragments/footer :: footer}"></div>
+    </div>
 </div>
 </body>
 </html>

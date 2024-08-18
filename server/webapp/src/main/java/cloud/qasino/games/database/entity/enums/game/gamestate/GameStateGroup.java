@@ -17,7 +17,7 @@ import java.util.Map;
 public enum GameStateGroup {
     SETUP("setup"),
     PREPARED("prepared"),
-    PLAYING("started"),
+    PLAYING("playing"),
     FINISHED("finished"),
     ERROR("error");
 

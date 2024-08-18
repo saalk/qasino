@@ -23,22 +23,10 @@ public class StopGameAction extends GenericLookupsAction<EventOutput.Result> {
     public EventOutput.Result perform(Qasino qasino) {
 
         if (qasino.getParams().getSuppliedGameEvent().equals(GameEvent.STOP)) {
-            gameService.updateStateForGame(qasino.getParams(), GameState.QUIT);
-            qasino.getGame().setState(GameState.QUIT);
+            qasino.setGame(gameService.updateStateForGame(qasino.getParams(), GameState.QUIT));
             return EventOutput.Result.SUCCESS;
         }
         return EventOutput.Result.FAILURE;
-    }
-
-    private void setBadRequestErrorMessage(Qasino qasino, String id, String value) {
-        qasino.getMessage().setErrorKey(id);
-        qasino.getMessage().setErrorValue(value);
-        qasino.getMessage().setBadRequestErrorMessage("Supplied value for leagueName is empty");
-    }
-    private void setConflictErrorMessage(Qasino qasino, String id, String value) {
-        qasino.getMessage().setErrorKey(id);
-        qasino.getMessage().setErrorValue(value);
-        qasino.getMessage().setConflictErrorMessage("leagueName [" + value + "] not available any more");
     }
 
 }

@@ -17,12 +17,13 @@ import java.util.Map;
 @Getter
 public enum GameState implements LabeledEnum {
 
-    // SETUP
-    INITIALIZED("initialized", "Game started, validate the game setup", GameStateGroup.SETUP),
+    // SETUP - NEW
+    INITIALIZED("initialized", "Game initialized, validate the game setup", GameStateGroup.SETUP),
     PENDING_INVITATIONS("pending_invitations", "Awaiting player invitations", GameStateGroup.SETUP),
+    // SETUP - VALIDATE
     PREPARED("prepared", "Game validated, start shuffling", GameStateGroup.PREPARED),
 
-    // HIGHLOW
+    // PLAY
     STARTED("started", "Game shuffled, proceed to play", GameStateGroup.PLAYING),
     INITIATOR_MOVE("initiator_move", "Play a move", GameStateGroup.PLAYING),
     INVITEE_MOVE("invitee_move", "Waiting for invitee to do a move", GameStateGroup.PLAYING),

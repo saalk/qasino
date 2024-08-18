@@ -42,32 +42,35 @@ public class MessageDto {
     // 409 conflict "update sent at the wrong time" eg state not valid now/anymore
     // 422 unprocessable "unable to process action" eg event not in correct order
     // @formatter:off
-    @Setter(AccessLevel.NONE)
     private int httpStatus = 200;
-    @Setter(AccessLevel.NONE)
-    private String errorMessage = "";
-    @Setter(AccessLevel.NONE)
+    private String errorMessage = "All is processed correctly";
     private String errorReason = "";
 
     private String errorKey = "Key";
     private String errorValue = "Value";
 
-    public void setBadRequestErrorMessage(String problem) {
+    public void setBadRequestErrorMessage(String key, String value, String problem) {
+        setErrorKey(key);
+        setErrorValue(value);
         this.errorMessage = "Supplied value for [" + this.errorKey + "] is [" + problem + "]";
         this.httpStatus = 400;
     }
-    public void setNotFoundErrorMessage(String problem) {
+    public void setNotFoundErrorMessage(String key, String value, String problem) {
+        setErrorKey(key);
+        setErrorValue(value);
         String defaultProblem = (problem == null || problem.isEmpty()) ? "not found" : problem;
         this.errorMessage = "Supplied value for [" + this.errorKey + "] is [" + defaultProblem + "]";
-        this.httpStatus = 400;
+        this.httpStatus = 404;
     }
-    public void setConflictErrorMessage(String reason) {
+    public void setConflictErrorMessage(String key, String value, String reason) {
+        setErrorKey(key);
+        setErrorValue(value);
         String defaultReason = reason.isEmpty() ? "Reason cannot be given" : reason;
         this.errorMessage = this.errorKey + " [" + this.errorValue + "] not valid now/anymore";
         this.errorReason = defaultReason;
         this.httpStatus = 409;
     }
-    public void setUnprocessableErrorMessage(String reason) {
+    public void setUnprocessableErrorMessage(String key, String value, String reason) {
         String defaultReason = reason.isEmpty() ? "Reason cannot be given" : reason;
         this.errorMessage = this.errorKey + " [" + this.errorValue + "] cannot be processed";
         this.errorReason = defaultReason;

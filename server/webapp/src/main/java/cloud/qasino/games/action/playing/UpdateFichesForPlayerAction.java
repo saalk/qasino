@@ -44,7 +44,7 @@ public class UpdateFichesForPlayerAction extends GenericLookupsAction<EventOutpu
                     if (cardMove.getBet() == 0) {
                         // calculation needed
                         if (previousCardMoveCard.isEmpty()) {
-                            setConflictErrorMessage(qasino, "Move", String.valueOf(cardMove.getMove()));
+                            qasino.getMessage().setConflictErrorMessage("Move",String.valueOf(cardMove.getMove()), "Action [" + String.valueOf(cardMove.getMove()) + "] invalid, no previous card dealt");
                             return EventOutput.Result.FAILURE;
                         }
                         updateWinOfLoss(qasino, cardMove, previousCardMoveCard.orElse(null));
@@ -89,18 +89,6 @@ public class UpdateFichesForPlayerAction extends GenericLookupsAction<EventOutpu
             return qasino.getGame().getAnte();
         }
         return qasino.getGame().getAnte();
-    }
-
-    void setErrorMessageConflictWithDeal(Qasino qasino, String id, String value) {
-        qasino.getMessage().setErrorKey(id);
-        qasino.getMessage().setErrorValue(value);
-        qasino.getMessage().setConflictErrorMessage("Action [" + id + "] invalid, dealt card has a bet");
-    }
-
-    void setConflictErrorMessage(Qasino qasino, String id, String value) {
-        qasino.getMessage().setErrorKey(id);
-        qasino.getMessage().setErrorValue(value);
-        qasino.getMessage().setConflictErrorMessage("Action [" + id + "] invalid, no previous card dealt");
     }
 
 }

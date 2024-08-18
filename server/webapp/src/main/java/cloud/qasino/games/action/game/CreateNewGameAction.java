@@ -22,6 +22,7 @@ public class CreateNewGameAction extends GenericLookupsAction<EventOutput.Result
                 qasino.getCreation(),
                 qasino.getParams().getSuppliedVisitorId()
         ));
+        qasino.getParams().setSuppliedGameId(qasino.getGame().getGameId());
         return EventOutput.Result.SUCCESS;
     }
 }

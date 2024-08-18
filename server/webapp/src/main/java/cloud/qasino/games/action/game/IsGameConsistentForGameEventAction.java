@@ -1,8 +1,8 @@
 package cloud.qasino.games.action.game;
 
 import cloud.qasino.games.action.common.GenericLookupsAction;
-import cloud.qasino.games.dto.Qasino;
 import cloud.qasino.games.database.entity.enums.game.gamestate.GameStateGroup;
+import cloud.qasino.games.dto.Qasino;
 import cloud.qasino.games.dto.model.PlayerDto;
 import cloud.qasino.games.pattern.statemachine.event.EventOutput;
 import lombok.extern.slf4j.Slf4j;
@@ -82,8 +82,9 @@ public class IsGameConsistentForGameEventAction extends GenericLookupsAction<Eve
             reasonPart.add(GameStateGroup.PLAYING.getLabel());
         }
         if (!reasonPart.isEmpty()) {
-            log.warn("!exists");
-            setUnprocessableErrorMessage(qasino,
+            qasino.getMessage().setUnprocessableErrorMessage(
+                    "GameEvent",
+                    qasino.getParams().getSuppliedGameEvent().getLabel(),
                     "Action [" +
                             qasino.getParams().getSuppliedGameEvent() +
                             "] is invalid - game already exists with game state group [" +
@@ -99,16 +100,19 @@ public class IsGameConsistentForGameEventAction extends GenericLookupsAction<Eve
                         .filter(p -> p.getSeat() == 1)
                         .findFirst();
         if (player.isEmpty()) {
-            log.warn("!seats");
-            setUnprocessableErrorMessage(qasino, "Action [" + qasino.getParams().getSuppliedGameEvent() + "] invalid - no correct seat order for player(s)");
+            qasino.getMessage().setUnprocessableErrorMessage(
+                    "GameEvent",
+                    qasino.getParams().getSuppliedGameEvent().getLabel(),
+            "Action [" + qasino.getParams().getSuppliedGameEvent() + "] invalid - no correct seat order for player(s)");
             return false;
         }
         return true;
     }
     private boolean gameShouldHaveStateInCorrectGameStateGroup(Qasino qasino, List<GameStateGroup> gameStateGroups) {
         if (!(gameStateGroups.contains(qasino.getGame().getState().getGroup()))) {
-            log.warn("!state");
-            setUnprocessableErrorMessage(qasino,
+            qasino.getMessage().setUnprocessableErrorMessage(
+                    "GameEvent",
+                    qasino.getParams().getSuppliedGameEvent().getLabel(),
                     "Action [" +
                             qasino.getParams().getSuppliedGameEvent() +
                             "] is invalid - game state [" +
@@ -122,8 +126,9 @@ public class IsGameConsistentForGameEventAction extends GenericLookupsAction<Eve
     }
     private boolean gameShouldHaveAnte(Qasino qasino) {
         if (qasino.getGame().getAnte() <= 0) {
-            log.warn("!ante");
-            setUnprocessableErrorMessage(qasino,
+            qasino.getMessage().setUnprocessableErrorMessage(
+                    "GameEvent",
+                    qasino.getParams().getSuppliedGameEvent().getLabel(),
                     "Action [" +
                             qasino.getParams().getSuppliedGameEvent() +
                             "] invalid - game has incorrect ante of " +
@@ -135,8 +140,9 @@ public class IsGameConsistentForGameEventAction extends GenericLookupsAction<Eve
     }
     private boolean gameShouldHaveVisitorWithBalance(Qasino qasino) {
         if (qasino.getGame().getInitiator() == 0) {
-            log.warn("!initiator");
-            setUnprocessableErrorMessage(qasino,
+            qasino.getMessage().setUnprocessableErrorMessage(
+                    "GameEvent",
+                    qasino.getParams().getSuppliedGameEvent().getLabel(),
                     "Action [" +
                             qasino.getParams().getSuppliedGameEvent() +
                             "] invalid - game has no initiator "
@@ -144,8 +150,9 @@ public class IsGameConsistentForGameEventAction extends GenericLookupsAction<Eve
             return false;
         }
         if (qasino.getVisitor().getBalance() == 0) {
-            log.warn("!balance");
-            setUnprocessableErrorMessage(qasino,
+            qasino.getMessage().setUnprocessableErrorMessage(
+                    "GameEvent",
+                    qasino.getParams().getSuppliedGameEvent().getLabel(),
                     "Action [" +
                             qasino.getParams().getSuppliedGameEvent() +
                             "] invalid - initiator has no balance "
@@ -156,8 +163,9 @@ public class IsGameConsistentForGameEventAction extends GenericLookupsAction<Eve
     }
     private boolean gameShouldHaveInitiator(Qasino qasino) {
         if (qasino.getGame().getInitiator() == 0) {
-            log.warn("!initiator");
-            setUnprocessableErrorMessage(qasino,
+            qasino.getMessage().setUnprocessableErrorMessage(
+                    "GameEvent",
+                    qasino.getParams().getSuppliedGameEvent().getLabel(),
                     "Action [" +
                             qasino.getParams().getSuppliedGameEvent() +
                             "] invalid - game has no initiator "
@@ -169,8 +177,9 @@ public class IsGameConsistentForGameEventAction extends GenericLookupsAction<Eve
     private boolean gameShouldHavePlayersWithFiches(Qasino qasino) {
         for (PlayerDto player : qasino.getGame().getPlayers()) {
             if (player.getFiches() == 0) {
-                log.warn("!fiches");
-                setUnprocessableErrorMessage(qasino,
+                qasino.getMessage().setUnprocessableErrorMessage(
+                        "GameEvent",
+                        qasino.getParams().getSuppliedGameEvent().getLabel(),
                         "Action [" +
                                 qasino.getParams().getSuppliedGameEvent() +
                                 "] invalid - this player has no fiches " +
@@ -185,8 +194,9 @@ public class IsGameConsistentForGameEventAction extends GenericLookupsAction<Eve
     private boolean gameShouldHaveCardsAndPlaying(Qasino qasino) {
         if (qasino.getPlaying() == null ||
                 qasino.getGame().getCardsInStock().isEmpty()) {
-            log.warn("!turn and/or cards");
-            setUnprocessableErrorMessage(qasino,
+            qasino.getMessage().setUnprocessableErrorMessage(
+                    "GameEvent",
+                    qasino.getParams().getSuppliedGameEvent().getLabel(),
                     "Action [" +
                             qasino.getParams().getSuppliedGameEvent() +
                             "] invalid - game has no cards and or a playing"
@@ -198,8 +208,9 @@ public class IsGameConsistentForGameEventAction extends GenericLookupsAction<Eve
     }
     private boolean gameShouldHaveAResult(Qasino qasino) {
         if (qasino.getResults().isEmpty()) {
-            log.warn("!turn and/or cards");
-            setUnprocessableErrorMessage(qasino,
+            qasino.getMessage().setUnprocessableErrorMessage(
+                    "GameEvent",
+                    qasino.getParams().getSuppliedGameEvent().getLabel(),
                     "Action [" +
                             qasino.getParams().getSuppliedGameEvent() +
                             "] invalid - game has no result"
@@ -216,13 +227,4 @@ public class IsGameConsistentForGameEventAction extends GenericLookupsAction<Eve
     public EventOutput success(Qasino qasino) {
         return new EventOutput(EventOutput.Result.FAILURE, qasino.getParams().getSuppliedGameEvent(), qasino.getParams().getSuppliedPlayEvent());
     }
-
-    // @formatter:on
-
-    private void setUnprocessableErrorMessage(Qasino qasino, String reason) {
-//        qasino.setErrorKey(id); - already set
-//        qasino.setErrorValue(value); - already set
-        qasino.getMessage().setUnprocessableErrorMessage(reason);
-    }
-
 }

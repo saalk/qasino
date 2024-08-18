@@ -41,6 +41,7 @@ import static cloud.qasino.games.pattern.statemachine.event.EventOutput.Result.S
 public class PlayingThymeleafController extends AbstractThymeleafController {
 
     // @formatter:off
+    private static final String ERROR_VIEW_LOCATION = "pages/error";
     EventOutput.Result output;
 
     @Autowired LoadPrincipalDtoAction loadVisitor;
@@ -77,13 +78,22 @@ public class PlayingThymeleafController extends AbstractThymeleafController {
         loadVisitor.perform(qasino);
         output = isGameConsistentForGameEventAction.perform(qasino);
         if (FAILURE.equals(output)) {
-            log.warn("Errors isGameConsistentForGameEvent!!");
             prepareQasino(response, qasino);
             model.addAttribute(qasino);
-            return "redirect:/setup/" + qasino.getParams().getSuppliedGameId();
+            return ERROR_VIEW_LOCATION;
         }
-        startGameForTypeAction.perform(qasino);
-        playFirstMoveAction.perform(qasino);
+        output = startGameForTypeAction.perform(qasino);
+        if (FAILURE.equals(output)) {
+            prepareQasino(response, qasino);
+            model.addAttribute(qasino);
+            return ERROR_VIEW_LOCATION;
+        }
+        output = playFirstMoveAction.perform(qasino);
+        if (FAILURE.equals(output)) {
+            prepareQasino(response, qasino);
+            model.addAttribute(qasino);
+            return ERROR_VIEW_LOCATION;
+        }
         // 4 - return response
         prepareQasino(response, qasino);
         model.addAttribute(qasino);
@@ -113,18 +123,16 @@ public class PlayingThymeleafController extends AbstractThymeleafController {
         // 3 - process
         loadVisitor.perform(qasino);
         output = isGameConsistentForGameEventAction.perform(qasino);
-        if (EventOutput.Result.FAILURE.equals(output)) {
-            log.warn("Errors isGameConsistentForGameEvent!!");
+        if (FAILURE.equals(output)) {
             prepareQasino(response, qasino);
             model.addAttribute(qasino);
-            return "redirect:/play/" + qasino.getParams().getSuppliedGameId();
+            return ERROR_VIEW_LOCATION;
         }
         output = isPlayingConsistentForPlayEventAction.perform(qasino);
-        if (EventOutput.Result.FAILURE.equals(output)) {
-            log.warn("Errors isPlayingConsistentForPlayEvent!!: ");
+        if (FAILURE.equals(output)) {
             prepareQasino(response, qasino);
             model.addAttribute(qasino);
-            return "redirect:/play/" + qasino.getParams().getSuppliedGameId();
+            return ERROR_VIEW_LOCATION;
         }
 //        result = canPlayerStillPlay.perform(qasino); // for now stop after one round
         output = isPlayerHumanAction.perform(qasino);
@@ -136,7 +144,12 @@ public class PlayingThymeleafController extends AbstractThymeleafController {
             log.warn("playNextBotMoveAction {}", qasino.getParams().getSuppliedGameEvent());
             playNextBotMoveAction.perform(qasino);
         }
-        updateFichesForPlayerAction.perform(qasino);
+        output = updateFichesForPlayerAction.perform(qasino);
+        if (FAILURE.equals(output)) {
+            prepareQasino(response, qasino);
+            model.addAttribute(qasino);
+            return ERROR_VIEW_LOCATION;
+        }
         output = isGameFinishedAction.perform(qasino);
         if (SUCCESS.equals(output)) {
             output = calculateAndFinishGameAction.perform(qasino);
@@ -171,12 +184,16 @@ public class PlayingThymeleafController extends AbstractThymeleafController {
         loadVisitor.perform(qasino);
         output = isGameConsistentForGameEventAction.perform(qasino);
         if (FAILURE.equals(output)) {
-            log.warn("Errors isGameConsistentForGameEvent!!");
             prepareQasino(response, qasino);
             model.addAttribute(qasino);
-            return "redirect:/setup/" + qasino.getParams().getSuppliedGameId();
+            return ERROR_VIEW_LOCATION;
         }
         output = stopGameAction.perform(qasino);
+        if (FAILURE.equals(output)) {
+            prepareQasino(response, qasino);
+            model.addAttribute(qasino);
+            return ERROR_VIEW_LOCATION;
+        }
         if (SUCCESS.equals(output)) {
             output = calculateAndFinishGameAction.perform(qasino);
         }

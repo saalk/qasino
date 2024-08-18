@@ -15,13 +15,13 @@
             Continue with playing the current game
         </div>
         <div th:if="${qasino.params.suppliedGameStateGroup} == 'FINISHED' or ${qasino.params.suppliedGameId < 1}">
-            <div th:replace="~{forms/start :: start}"></div>
+            <div th:replace="~{forms/new :: new}"></div>
         </div>
         <div th:if="${qasino.params.suppliedGameId} > 0 and ${qasino.params.suppliedGameStateGroup} != 'FINISHED' and ${qasino.params.suppliedGameStateGroup} != 'PLAYING'">
-            <div th:replace="~{forms/setup :: update-or-stop-or-bot}"></div>
+            <div th:replace="~{forms/update :: update-or-stop-or-bot}"></div>
         </div>
         <div th:if="${qasino.params.suppliedGameId} > 0 and ${qasino.params.suppliedGameStateGroup} != 'FINISHED' and ${qasino.params.suppliedGameStateGroup} != 'PLAYING'">
-            <div th:replace="~{forms/setup :: dropdown-list-styles}"></div>
+            <div th:replace="~{forms/update :: dropdown-list-styles}"></div>
         </div>
         <div th:if="${qasino.params.suppliedGameId} > 0 and ${qasino.params.suppliedGameStateGroup} != 'FINISHED' and ${qasino.params.suppliedGameStateGroup} != 'PLAYING'">
             <div th:replace="~{forms/validate :: validate-or-shuffle}"></div>

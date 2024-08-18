@@ -2,10 +2,8 @@ package cloud.qasino.games.controller;
 
 import cloud.qasino.games.action.common.CalculateStatisticsAction;
 import cloud.qasino.games.action.common.DetermineEventsAction;
-import cloud.qasino.games.action.common.FindAllDtosForUsernameAction;
 import cloud.qasino.games.action.common.MapQasinoFromDtosAction;
-import cloud.qasino.games.database.security.Visitor;
-import cloud.qasino.games.database.security.VisitorRepository;
+import cloud.qasino.games.action.common.load.LoadPrincipalDtoAction;
 import cloud.qasino.games.database.service.VisitorService;
 import cloud.qasino.games.dto.Qasino;
 import cloud.qasino.games.dto.model.VisitorDto;
@@ -28,7 +26,7 @@ public class AbstractThymeleafController {
     VisitorService visitorService;
 
     // @formatter:off
-    @Autowired FindAllDtosForUsernameAction findDtos;
+    @Autowired LoadPrincipalDtoAction loadVisitor;
     @Autowired DetermineEventsAction determineEvents;
     @Autowired MapQasinoFromDtosAction mapQasino;
     @Autowired CalculateStatisticsAction calculateStatistics;
@@ -39,7 +37,7 @@ public class AbstractThymeleafController {
     }
     public void prepareQasino(HttpServletResponse response, Qasino qasino) {
 
-        findDtos.perform(qasino);
+        loadVisitor.perform(qasino);
         determineEvents.perform(qasino);
         calculateStatistics.perform(qasino);
         mapQasino.perform(qasino);

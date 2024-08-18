@@ -30,9 +30,4 @@ public class IsPlayingFinishedAction extends GenericLookupsAction<EventOutput.Re
         return EventOutput.Result.FAILURE;
     }
 
-    private void setBadRequestErrorMessage(Qasino qasino, String id, String value) {
-        qasino.getMessage().setErrorKey(id);
-        qasino.getMessage().setErrorValue(value);
-        qasino.getMessage().setBadRequestErrorMessage("Action [" + id + "] invalid");
-    }
 }

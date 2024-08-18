@@ -24,6 +24,8 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.security.Principal;
 
+import static cloud.qasino.games.pattern.statemachine.event.EventOutput.Result.FAILURE;
+
 // basic path /qasino
 //
 // 200 - ok
@@ -40,6 +42,7 @@ public class VisitorThymeleafController extends AbstractThymeleafController {
 
     // @formatter:off
     private static final String VISITOR_VIEW_LOCATION = "pages/visitor";
+    private static final String ERROR_VIEW_LOCATION = "pages/error";
 
     EventOutput.Result output;
     private final VisitorRepository visitorRepository;
@@ -90,7 +93,12 @@ public class VisitorThymeleafController extends AbstractThymeleafController {
         }
         // 3 - process
         loadVisitor.perform(qasino);
-        updateVisitor.perform(qasino);
+        output = updateVisitor.perform(qasino);
+        if (FAILURE.equals(output)) {
+            prepareQasino(response, qasino);
+            model.addAttribute(qasino);
+            return ERROR_VIEW_LOCATION;
+        }
         // 4 - return response
         prepareQasino(response, qasino);
         model.addAttribute(qasino);
@@ -115,7 +123,12 @@ public class VisitorThymeleafController extends AbstractThymeleafController {
 //        }
         // 3 - process
         loadVisitor.perform(qasino);
-        handleSecuredLoan.perform(qasino);
+        output = handleSecuredLoan.perform(qasino);
+        if (FAILURE.equals(output)) {
+            prepareQasino(response, qasino);
+            model.addAttribute(qasino);
+            return ERROR_VIEW_LOCATION;
+        }
         // 4 - return response
         prepareQasino(response, qasino);
         model.addAttribute(qasino);
@@ -140,7 +153,12 @@ public class VisitorThymeleafController extends AbstractThymeleafController {
 //        }
         // 3 - process
         loadVisitor.perform(qasino);
-        handleSecuredLoan.perform(qasino);
+        output = handleSecuredLoan.perform(qasino);
+        if (FAILURE.equals(output)) {
+            prepareQasino(response, qasino);
+            model.addAttribute(qasino);
+            return ERROR_VIEW_LOCATION;
+        }
         // 4 - return response
         prepareQasino(response, qasino);
         model.addAttribute(qasino);
