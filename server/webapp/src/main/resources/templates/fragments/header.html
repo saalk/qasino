@@ -75,7 +75,7 @@
                     </li>
 
                     <li class="nav-item" th:if="${qasino.invitations != null}">
-                        <a class="nav-link active" th:href="@{/invite}"
+                        <a class="nav-link active" th:href="@{/invites}"
                            th:text="${qasino.navBarItems.^[sequence==4].title}">Invite[]</a>
                     </li>
                     <li class="nav-item" th:if="${qasino.invitations == null}">

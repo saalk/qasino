@@ -58,7 +58,7 @@ public class VisitorService {
     };
     public Page<VisitorDto> findAllVisitorsWithPage(Pageable pageable){
         Page<Visitor> visitorPage = visitorRepository.findAllVisitorsWithPage(pageable);
-        return visitorPage.map(visitor -> VisitorMapper.INSTANCE.toDto(visitor));
+        return visitorPage.map(VisitorMapper.INSTANCE::toDto);
     };
     public Optional<String> substringUserFromEmail(String emailId) {
         return Optional.ofNullable(emailId)

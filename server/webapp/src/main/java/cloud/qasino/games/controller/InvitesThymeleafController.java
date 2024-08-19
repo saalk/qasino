@@ -23,14 +23,17 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.security.Principal;
 
+import static cloud.qasino.games.pattern.statemachine.event.EventOutput.Result.FAILURE;
+
 @Controller
 @ControllerAdvice
 //@Api(tags = {WebConfiguration.QASINO_TAG})
 @Slf4j
-public class InvitationsThymeleafController extends AbstractThymeleafController {
+public class InvitesThymeleafController extends AbstractThymeleafController {
 
     // @formatter:off
-    private static final String INVITES_VIEW_LOCATION = "pages/invite";
+    private static final String INVITES_VIEW_LOCATION = "pages/invites";
+    private static final String ERROR_VIEW_LOCATION = "pages/error";
 
     EventOutput.Result output;
     private PlayerRepository playerRepository;
@@ -39,14 +42,14 @@ public class InvitationsThymeleafController extends AbstractThymeleafController 
     // @formatter:on
 
     @Autowired
-    public InvitationsThymeleafController(
+    public InvitesThymeleafController(
             PlayerRepository playerRepository,
             PlayerService playerService) {
         this.playerRepository = playerRepository;
         this.playerService = playerService;
     }
 
-    @GetMapping("/invite")
+    @GetMapping("/invites")
     public String getLeague(
             Principal principal,
             Model model,
@@ -64,7 +67,7 @@ public class InvitationsThymeleafController extends AbstractThymeleafController 
         return INVITES_VIEW_LOCATION;
     }
 
-    @PostMapping(value = "/invite/{otherVisitorId}/game/{gameId}")
+    @PostMapping(value = "/invites/{otherVisitorId}/game/{gameId}")
     public String inviteVisitorForAGame(
             Principal principal,
             Model model,
@@ -83,7 +86,9 @@ public class InvitationsThymeleafController extends AbstractThymeleafController 
         // "invitedVisitorId", "avatar"
         // 2 - validate input
         if (result.hasErrors()) {
-            return "error";
+            prepareQasino(response, qasino);
+            model.addAttribute(qasino);
+            return ERROR_VIEW_LOCATION;
         }
         // 3 - process
         loadVisitor.perform(qasino);
@@ -92,7 +97,7 @@ public class InvitationsThymeleafController extends AbstractThymeleafController 
         // 4 - return response
         prepareQasino(response, qasino);
         model.addAttribute(qasino);
-        return "redirect:setup/" + qasino.getParams().getSuppliedGameId();
+        return INVITES_VIEW_LOCATION;
     }
 
     @PostMapping(value = "/accept/{gameId}")
@@ -105,8 +110,6 @@ public class InvitationsThymeleafController extends AbstractThymeleafController 
             RedirectAttributes ra,
             HttpServletResponse response) {
 
-        log.warn("PostMapping: /accept/{gameId}");
-
         // 1 - map input
         qasino.getParams().setSuppliedGameEvent(GameEvent.ADD_INVITEE);
         qasino.getParams().setSuppliedVisitorUsername(principal.getName());
@@ -114,14 +117,16 @@ public class InvitationsThymeleafController extends AbstractThymeleafController 
         // "gameId", "visitorId", "acceptedPlayerId", "fiches", "gameEvent", "invite"
         // 2 - validate input
         if (result.hasErrors()) {
-            return "error";
+            prepareQasino(response, qasino);
+            model.addAttribute(qasino);
+            return ERROR_VIEW_LOCATION;
         }
         // 3 - process
         playerService.acceptInvitationForAGame(null);
         // 4 - return response
         prepareQasino(response, qasino);
         model.addAttribute(qasino);
-        return "redirect:invitations/";
+        return "redirect:invites/";
     }
 
     @PutMapping(value = "/decline/{gameId}")
@@ -140,14 +145,16 @@ public class InvitationsThymeleafController extends AbstractThymeleafController 
         // "gameId", "visitorId", "declinedPlayerId", "gameEvent", "decline"
         // 2 - validate input
         if (result.hasErrors()) {
-            return "error";
+            prepareQasino(response, qasino);
+            model.addAttribute(qasino);
+            return ERROR_VIEW_LOCATION;
         }
         // 3 - process
         playerService.rejectInvitationForAGame(null);
         // 4 - return response
         prepareQasino(response, qasino);
         model.addAttribute(qasino);
-        return "redirect:invitations/";
+        return "redirect:invites/";
     }
 }
 

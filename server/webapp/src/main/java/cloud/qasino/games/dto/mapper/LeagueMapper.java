@@ -22,6 +22,7 @@ public interface LeagueMapper {
     @Mapping(target = "gamesForLeague", source = "league", qualifiedByName = "gamesForLeague")
     @Mapping(target = "visitor", source = "league", qualifiedByName = "visitor")
     LeagueDto toDto(League league);
+    List<LeagueDto> toDtoList(List<League> league);
 
     @Mapping(target = "created", ignore = true)
     @Mapping(target = "ended", ignore = true)

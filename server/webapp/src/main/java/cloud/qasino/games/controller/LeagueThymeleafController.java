@@ -32,6 +32,7 @@ public class LeagueThymeleafController extends AbstractThymeleafController {
 
     // @formatter:off
     private static final String LEAGUE_VIEW_LOCATION = "pages/league";
+    private static final String ERROR_VIEW_LOCATION = "pages/error";
 
     EventOutput.Result output;
     private LeagueRepository leagueRepository;
@@ -80,17 +81,18 @@ public class LeagueThymeleafController extends AbstractThymeleafController {
         // "leagueName"
         // 2 - validate input
         if (result.hasErrors()) {
-            return "error";
+            prepareQasino(response, qasino);
+            model.addAttribute(qasino);
+            return ERROR_VIEW_LOCATION;
         }
         // 3 - process
         loadVisitor.perform(qasino);
         // create - League for Visitor
         output = createNewLeagueAction.perform(qasino);
         if (FAILURE.equals(output)) {
-            log.warn("Errors createNewLeagueAction!!");
             prepareQasino(response, qasino);
             model.addAttribute(qasino);
-            return "redirect:/visitor";
+            return ERROR_VIEW_LOCATION;
         }
         // 4 - return response
         prepareQasino(response, qasino);
@@ -114,7 +116,9 @@ public class LeagueThymeleafController extends AbstractThymeleafController {
         qasino.getParams().setSuppliedLeagueId(Long.parseLong(id));
         // 2 - validate input
         if (result.hasErrors()) {
-            return "error";
+            prepareQasino(response, qasino);
+            model.addAttribute(qasino);
+            return ERROR_VIEW_LOCATION;
         }
         // 3 - process
         loadVisitor.perform(qasino);

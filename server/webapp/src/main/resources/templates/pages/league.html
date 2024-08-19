@@ -11,10 +11,7 @@
 <div class="container">
     <div class="text-center">
         <h1 th:text="${'League - '+qasino.navBarItems.^[sequence==5].stat}">League</h1>
-        <div th:if="${qasino.params.suppliedLeagueId == 0}">
-            No League created
-        </div>
-        <div th:unless="${qasino.params.suppliedLeagueId == 0}">
+        <div th:if="${qasino.params.suppliedLeagueId > 0}">
             Under construction ...
         </div>
     </div>

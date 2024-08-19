@@ -28,9 +28,10 @@ public interface LeagueRepository extends JpaRepository<League, Long> {
     Optional<League> findLeagueByNameAndNameSequence(String leagueName, int leagueNameSequence);
     @Query(value = "SELECT * FROM \"league\" where \"game_id\" = :gameId ", nativeQuery = true)
     League findByGameId(Long gameId);
+
     public final static String FIND_LEAGUES_FOR_VISITOR_ID =
             "SELECT * FROM \"league\" a WHERE a.\"visitor_id\" = :visitorId " +
-                    "AND a.\"is_active\" = CAST('true' AS BOOLEAN) ";
+                    "AND a.\"is_active\" = CAST('true' AS BOOLEAN) ORDER BY \"created\" desc ";
     public final static String COUNT_LEAGUES_FOR_VISITOR_ID =
             "SELECT count(*) FROM \"league\" a WHERE a.\"visitor_id\" = :visitorId " +
                     "AND a.\"is_active\" = CAST('true' AS BOOLEAN) ";

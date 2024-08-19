@@ -111,6 +111,10 @@ public abstract class GenericLookupsAction<OUTPUT> {
             qasino.setLeague(leaguesService.findOneByLeagueId(qasino.getParams()));
             return qasino.getLeague() != null; // 200 or 404 not found
         }
-        return false; // 404 -> no game yet or latest game has no league
+        qasino.setLeague(leaguesService.findlatestLeagueForVisitor(qasino.getParams()));
+        if (qasino.getLeague() != null) {
+            qasino.getParams().setSuppliedLeagueId(qasino.getLeague().getLeagueId());
+        }
+        return qasino.getLeague() != null; // 404 not found
     }
 }

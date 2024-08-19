@@ -71,6 +71,8 @@ public class MessageDto {
         this.httpStatus = 409;
     }
     public void setUnprocessableErrorMessage(String key, String value, String reason) {
+        setErrorKey(key);
+        setErrorValue(value);
         String defaultReason = reason.isEmpty() ? "Reason cannot be given" : reason;
         this.errorMessage = this.errorKey + " [" + this.errorValue + "] cannot be processed";
         this.errorReason = defaultReason;
