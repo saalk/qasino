@@ -168,7 +168,7 @@ public class GameService {
         }
         game.setState(GameState.PREPARED);
         gameRepository.save(game);
-        return  GameMapper.INSTANCE.toDto(game, game.getCards());
+        return GameMapper.INSTANCE.toDto(game, game.getCards());
     }
     public GameDto addAndShuffleCardsForAGame(ParamsDto paramsDto) {
         Game game = gameRepository.getReferenceById(paramsDto.getSuppliedGameId());

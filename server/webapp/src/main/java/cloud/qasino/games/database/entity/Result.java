@@ -42,19 +42,19 @@ public class Result {
 
     // Foreign keys
     // one [Result] always belongs to one [Player]
-    @OneToOne(cascade = CascadeType.DETACH)
+    @OneToOne
     @JoinColumn(name = "player_id", referencedColumnName = "player_id", foreignKey = @ForeignKey
             (name = "fk_player_id"), nullable = false)
     private Player player;
     // many [Result] can belong to one [Visitor]
     // TODO the Initiator can win the Games as a Player - not sure if we want this relation
-    @ManyToOne(cascade = CascadeType.DETACH)
+    @ManyToOne
     @JoinColumn(name = "visitor_id", referencedColumnName = "visitor_id", foreignKey = @ForeignKey
             (name = "fk_visitor_id"), nullable = true)
     private Visitor visitor;
     // many [Result] can belong to one [Game]
     // TODO the game already has a result for a Player - not sure if we want this relation
-    @ManyToOne (cascade = CascadeType.DETACH)
+    @ManyToOne
     @JoinColumn(name = "game_id", referencedColumnName = "game_id",foreignKey = @ForeignKey(name =
             "fk_game_id"), nullable=false)
     private Game game;

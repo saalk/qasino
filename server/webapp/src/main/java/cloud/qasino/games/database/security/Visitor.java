@@ -39,7 +39,7 @@ import java.util.Random;
 import java.util.Set;
 
 @Entity
-// @DynamicUpdate
+ @DynamicUpdate
 // @Data for JPA entities is an antipattern
 // But we override equals, hash and toString and have noargs constructor.
 @Data

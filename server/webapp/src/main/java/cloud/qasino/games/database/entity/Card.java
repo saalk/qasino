@@ -42,14 +42,14 @@ public class Card {
     // Foreign keys
     @JsonIgnore
     // many [Card] can be part of one [Game]
-    @ManyToOne(cascade = CascadeType.DETACH)
+    @ManyToOne
     @JoinColumn(name = "game_id", referencedColumnName = "game_id", foreignKey =
     @ForeignKey(name =
             "fk_game_id"), nullable=false)
     private Game game;
     @JsonIgnore
     // one [Card] can be part of one [Player] or none
-    @OneToOne(optional=true, cascade = CascadeType.DETACH, fetch= FetchType.LAZY)
+    @OneToOne(optional=true)
     @JoinColumn(name = "player_id", referencedColumnName = "player_id", foreignKey =
     @ForeignKey(name =
             "fk_player_id"), nullable=true)

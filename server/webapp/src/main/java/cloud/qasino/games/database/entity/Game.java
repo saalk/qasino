@@ -160,7 +160,7 @@ public class Game {
     private Playing playing;
     // TODO is this needed as its related to a player that is related to a game
     // one [Game] can have many [Result]s, one per player
-    @OneToMany(mappedBy = "game", cascade = CascadeType.DETACH)
+    @OneToMany(mappedBy = "game")
     private List<Result> results;
 
     public Game() {

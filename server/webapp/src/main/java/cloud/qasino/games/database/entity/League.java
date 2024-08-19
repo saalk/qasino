@@ -36,7 +36,7 @@ import static java.time.temporal.TemporalAdjusters.next;
 // @Entity creates a direct link between class object(s) and table row(s)
 @Entity
 // @DynamicUpdate includes only columns which are actually being updated - not the cached insert
-// @DynamicUpdate
+ @DynamicUpdate
 // @Data for JPA entities is an antipattern
 // But we override equals, hash and toString and have noargs constructor.
 @Data
