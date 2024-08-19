@@ -59,8 +59,10 @@ SET  "player_id" = '1'
 WHERE "card_id" = 2;
 
 UPDATE "game" 
-SET  "state" = 'STARTED' 
-WHERE "game_id" = 15;
+SET  
+    "state" = 'STARTED' ,  
+    "initiator" = 3
+WHERE "game_id" = 11;
 
 DELETE "visitor" 
 WHERE "visitor_id" = 14;

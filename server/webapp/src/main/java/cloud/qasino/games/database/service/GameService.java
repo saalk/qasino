@@ -152,8 +152,8 @@ public class GameService {
         }
         return GameMapper.INSTANCE.toDto(game, game.getCards());
     }
-    public GameDto prepareExistingGame(GameDto gameDto, LeagueDto leagueDto, String style, int ante) {
-        Game game = GameMapper.INSTANCE.fromDto(gameDto);
+    public GameDto prepareExistingGame(ParamsDto paramsDto, LeagueDto leagueDto, String style, int ante) {
+        Game game = gameRepository.getReferenceById(paramsDto.getSuppliedGameId());
         League league = LeagueMapper.INSTANCE.fromDto(leagueDto);
         // You cannot change the initiator or the type
         if (!(league == null)) {
@@ -169,8 +169,8 @@ public class GameService {
         Game newGame = gameRepository.save(game);
         return  GameMapper.INSTANCE.toDto(newGame,newGame.getCards());
     }
-    public GameDto addAndShuffleCardsForAGame(GameDto gameDto) {
-        Game game = GameMapper.INSTANCE.fromDto(gameDto);
+    public GameDto addAndShuffleCardsForAGame(ParamsDto paramsDto) {
+        Game game = gameRepository.getReferenceById(paramsDto.getSuppliedGameId());
         if (game.getCards() != null)
             throw new MyBusinessException("addAndShuffleCardsForAGame", "this game already has cards [" + game.getGameId() + "]");
         Deck deck = DeckFactory.createShuffledDeck(game, 0);

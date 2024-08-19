@@ -69,33 +69,33 @@ public class DetermineEventsAction extends GenericLookupsAction<EventOutput.Resu
     }
     private static List<PlayEvent> getPlayEvents(Qasino qasino) {
         List<PlayEvent> playEvents = new ArrayList<>();
-        if (qasino.getVisitor() == null) return Collections.singletonList(PlayEvent.NONE);
-        if (qasino.getGame() != null) {
-            switch (qasino.getGame().getState().getGroup()) {
-                case PLAYING -> {
-                    switch (qasino.getGame().getType()) {
-                        case HIGHLOW -> {
-                            if (qasino.getPlaying().getCurrentPlayer().isHuman()) {
-                                playEvents = highLowPossibleHumanPlayings;
-                            } else {
-                                playEvents = highLowPossibleBotPlayings;
-                            }
-                        }
-                        case BLACKJACK -> {
-                            if (qasino.getPlaying().getCurrentPlayer().isHuman()) {
-                                playEvents = blackJackPossibleHumanPlaying;
-                            } else {
-                                playEvents = blackJackPossibleBotPlaying;
-                            }
-                        }
-                        default -> playEvents = Collections.singletonList(PlayEvent.NONE);
-                    }
-                }
-                default -> playEvents = Collections.singletonList(PlayEvent.NONE);
-            }
-        } else {
-            playEvents = Collections.singletonList(PlayEvent.NONE);
+        if (qasino.getVisitor() == null || qasino.getPlaying() == null || qasino.getGame() == null) {
+            return Collections.singletonList(PlayEvent.NONE);
         }
+
+        switch (qasino.getGame().getState().getGroup()) {
+            case PLAYING -> {
+                switch (qasino.getGame().getType()) {
+                    case HIGHLOW -> {
+                        if (qasino.getPlaying().getCurrentPlayer().isHuman()) {
+                            playEvents = highLowPossibleHumanPlayings;
+                        } else {
+                            playEvents = highLowPossibleBotPlayings;
+                        }
+                    }
+                    case BLACKJACK -> {
+                        if (qasino.getPlaying().getCurrentPlayer().isHuman()) {
+                            playEvents = blackJackPossibleHumanPlaying;
+                        } else {
+                            playEvents = blackJackPossibleBotPlaying;
+                        }
+                    }
+                    default -> playEvents = Collections.singletonList(PlayEvent.NONE);
+                }
+            }
+            default -> playEvents = Collections.singletonList(PlayEvent.NONE);
+        }
+
         return playEvents;
     }
 }

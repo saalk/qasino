@@ -20,7 +20,7 @@ public class StartGameForTypeAction extends GenericLookupsAction<EventOutput.Res
     public EventOutput.Result perform(Qasino qasino) {
 
         // update a Game : create Cards for game according to the style and shuffle them
-        qasino.setGame(gameService.addAndShuffleCardsForAGame(qasino.getGame()));
+        qasino.setGame(gameService.addAndShuffleCardsForAGame(qasino.getParams()));
         return EventOutput.Result.SUCCESS;
     }
 

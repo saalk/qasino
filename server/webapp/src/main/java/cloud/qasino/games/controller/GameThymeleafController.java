@@ -59,8 +59,8 @@ public class GameThymeleafController extends AbstractThymeleafController {
         this.gameRepository = gameRepository;
     }
 
-    @PostMapping("start/{visitorId}")
-    public String startGame(
+    @PostMapping("new/{visitorId}")
+    public String newGame(
             Principal principal,
             @PathVariable("visitorId") String id,
             @Validated(GameBasic.class)
@@ -77,7 +77,9 @@ public class GameThymeleafController extends AbstractThymeleafController {
 //        "ante", "type", "style", "avatar",
         // 2 - validate input
         if (result.hasErrors()) {
-            return "error";
+            prepareQasino(response, qasino);
+            model.addAttribute(qasino);
+            return ERROR_VIEW_LOCATION;
         }
         // 3 - process
         loadVisitor.perform(qasino);
@@ -120,7 +122,7 @@ public class GameThymeleafController extends AbstractThymeleafController {
         return SETUP_VIEW_LOCATION;
     }
 
-    @PostMapping("validate/{gameId}")
+    @PostMapping("validate/{gameId}") // button update and validate is same
     public String validateGame(
             Principal principal,
             Model model,

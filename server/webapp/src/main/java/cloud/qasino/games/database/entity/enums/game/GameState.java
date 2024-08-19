@@ -30,9 +30,9 @@ public enum GameState implements LabeledEnum {
     BOT_MOVE("bot_move", "Push the bot player to do a next move", GameStateGroup.PLAYING),
 
     // ENDED
-    FINISHED("finished", "Game finished, view results and start a new one", GameStateGroup.FINISHED),
-    QUIT("quit", "Game stopped, start a new one", GameStateGroup.FINISHED),
-    CANCELLED("cancelled", "Game abandoned, start a new one", GameStateGroup.FINISHED),
+    FINISHED("finished", "Game finished, view results and setup a new one", GameStateGroup.FINISHED),
+    QUIT("quit", "Game stopped, setup a new one", GameStateGroup.FINISHED),
+    CANCELLED("cancelled", "Game abandoned, setup a new one", GameStateGroup.FINISHED),
 
     // ERROR
     ERROR("error", "Game in error", GameStateGroup.ERROR);

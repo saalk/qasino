@@ -20,7 +20,7 @@ public class PrepareGameAction extends GenericLookupsAction<EventOutput.Result> 
 
         // update Game
         qasino.setGame(gameService.prepareExistingGame(
-                qasino.getGame(),
+                qasino.getParams(),
                 qasino.getLeague(),
                 qasino.getCreation().getSuppliedStyle(),
                 qasino.getCreation().getSuppliedAnte()));

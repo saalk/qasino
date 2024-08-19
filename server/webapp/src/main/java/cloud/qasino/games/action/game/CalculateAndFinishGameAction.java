@@ -48,7 +48,10 @@ public class CalculateAndFinishGameAction extends GenericLookupsAction<EventOutp
         } else if (qasino.getGame() == null) {
             qasino.setResults(null);
             return EventOutput.Result.SUCCESS;
-        } else if (qasino.getGame().getState().getGroup() != GameStateGroup.FINISHED) {
+        } else if (qasino.getPlaying() == null) { // stopped before playing
+            qasino.setResults(null);
+            return EventOutput.Result.SUCCESS;
+        } else if (qasino.getGame().getState().getGroup() != GameStateGroup.FINISHED) { // still playing
             qasino.setResults(null);
             return EventOutput.Result.SUCCESS;
         }

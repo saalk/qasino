@@ -90,28 +90,31 @@
             <th>Hand</th>
         </tr>
         </thead>
-        <tbody>
-        <!--    <tr th:if="${qasino.creation.table.seats.empty}">-->
-        <!--        <td colspan="2"> No Seats Available</td>-->
-        <!--    </tr>-->
-        <!-- #lists is SPEL -->
-        <tr th:unless="${#lists.isEmpty(qasino.playing.seats)}"
-            th:each="seat : ${qasino.playing.seats}">
-            <td><span th:text="${seat.seatId}">Seat</span></td>
-            <td><span th:text="${seat.isSeatPlaying}">Playing?</span></td>
-            <td><span th:text="${seat.avatarName}">Avatar name</span></td>
-            <td><span th:text="${seat.aiLevel}">AiLevel</span></td>
-            <td><span th:text="${seat.seatStartBalance}">Start</span></td>
-            <td><span th:text="${seat.fiches}">Fiches</span></td>
-            <td><span th:text="${seat.cardsInHand}">Hand</span></td>
-        </tr>
-        </tbody>
+        <div th:if="${qasino.playing} != null">
+            <tbody>
+            <!--    <tr th:if="${qasino.creation.table.seats.empty}">-->
+            <!--        <td colspan="2"> No Seats Available</td>-->
+            <!--    </tr>-->
+            <!-- #lists is SPEL -->
+
+            <tr th:unless="${#lists.isEmpty(qasino.playing.seats)}"
+                th:each="seat : ${qasino.playing.seats}">
+                <td><span th:text="${seat.seatId}">Seat</span></td>
+                <td><span th:text="${seat.isSeatPlaying}">Playing?</span></td>
+                <td><span th:text="${seat.avatarName}">Avatar name</span></td>
+                <td><span th:text="${seat.aiLevel}">AiLevel</span></td>
+                <td><span th:text="${seat.seatStartBalance}">Start</span></td>
+                <td><span th:text="${seat.fiches}">Fiches</span></td>
+                <td><span th:text="${seat.cardsInHand}">Hand</span></td>
+            </tr>
+            </tbody>
+        </div>
     </table>
 </div>
 <div th:fragment="results-table">
     <fieldset>
-<!--        <div class="form-group">Result-->
-<!--        </div>-->
+        <!--        <div class="form-group">Result-->
+        <!--        </div>-->
         <div class="form-group">
             <label class="col-lg-2 control-label">Result</label>
         </div>
