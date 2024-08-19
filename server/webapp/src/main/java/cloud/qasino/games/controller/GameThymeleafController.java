@@ -43,7 +43,7 @@ public class GameThymeleafController extends AbstractThymeleafController {
     private static final String ERROR_VIEW_LOCATION = "pages/error";
 
     EventOutput.Result output;
-    private GameRepository gameRepository;
+    private final GameRepository gameRepository;
     @Autowired PlayerService playerService;
 
     @Autowired LoadPrincipalDtoAction loadVisitor;

@@ -158,6 +158,14 @@ public class GameService {
     }
     public GameDto prepareExistingGame(ParamsDto paramsDto, String style, int ante) {
         Game game = gameRepository.getReferenceById(paramsDto.getSuppliedGameId());
+//        if (paramsDto.getSuppliedLeagueId() > 0) {
+//            League league = leagueRepository.getReferenceById(paramsDto.getSuppliedLeagueId());
+//            Visitor visitor = visitorRepository.getReferenceById(league.getVisitor().getVisitorId());
+//            league.setVisitor(visitor);
+//            leagueRepository.save(league);
+//            game.setLeague(league);
+//            log.warn("league saved");
+//        }
         // You cannot change the initiator or the type
         // You cannot change the league from supplied it crashes
         if (!(style == null)) {

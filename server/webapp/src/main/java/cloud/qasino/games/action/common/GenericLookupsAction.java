@@ -40,7 +40,7 @@ public abstract class GenericLookupsAction<OUTPUT> {
         if (qasino.getVisitor() == null) return false; // 404 not found
         qasino.getParams().setSuppliedVisitorId(qasino.getVisitor().getVisitorId());
         refreshOrFindLatestGame(qasino);
-//        refreshOrFindInvitationsForVisitor(qasino);
+        refreshOrFindInvitationsForVisitor(qasino);
         refreshOrFindLeagueForLatestGame(qasino);
         return true; // visitor found and id set
     }
@@ -49,7 +49,7 @@ public abstract class GenericLookupsAction<OUTPUT> {
         if (qasino.getVisitor() == null) return false; // 404 not found
         qasino.getParams().setSuppliedVisitorId(qasino.getVisitor().getVisitorId());
         refreshOrFindLatestGame(qasino);
-//        refreshOrFindInvitationsForVisitor(qasino);
+        refreshOrFindInvitationsForVisitor(qasino);
         refreshOrFindLeagueForLatestGame(qasino);
         return true; // 200 visitor found and id set
     }
