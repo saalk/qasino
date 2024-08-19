@@ -59,7 +59,6 @@ public class LeagueThymeleafController extends AbstractThymeleafController {
         qasino.getParams().setSuppliedLeagueId(Long.parseLong(id));
         // 2 - validate input
         // 3 - process
-        loadVisitor.perform(qasino);
         // 4 - return  response
         prepareQasino(response, qasino);
         model.addAttribute(qasino);
@@ -81,6 +80,7 @@ public class LeagueThymeleafController extends AbstractThymeleafController {
         // "leagueName"
         // 2 - validate input
         if (result.hasErrors()) {
+            log.warn("errors in supplied data {}", result);
             prepareQasino(response, qasino);
             model.addAttribute(qasino);
             return ERROR_VIEW_LOCATION;
@@ -116,6 +116,7 @@ public class LeagueThymeleafController extends AbstractThymeleafController {
         qasino.getParams().setSuppliedLeagueId(Long.parseLong(id));
         // 2 - validate input
         if (result.hasErrors()) {
+            log.warn("errors in supplied data {}", result);
             prepareQasino(response, qasino);
             model.addAttribute(qasino);
             return ERROR_VIEW_LOCATION;

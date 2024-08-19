@@ -77,6 +77,7 @@ public class GameThymeleafController extends AbstractThymeleafController {
 //        "ante", "type", "style", "avatar",
         // 2 - validate input
         if (result.hasErrors()) {
+            log.warn("errors in supplied data {}", result);
             prepareQasino(response, qasino);
             model.addAttribute(qasino);
             return ERROR_VIEW_LOCATION;
@@ -85,12 +86,14 @@ public class GameThymeleafController extends AbstractThymeleafController {
         loadVisitor.perform(qasino);
         output = isGameConsistent.perform(qasino);
         if (FAILURE.equals(output)) {
+            log.warn("errors !!");
             prepareQasino(response, qasino);
             model.addAttribute(qasino);
             return ERROR_VIEW_LOCATION;
         }
         output = createNewGame.perform(qasino);
         if (FAILURE.equals(output)) {
+            log.warn("errors !!!");
             prepareQasino(response, qasino);
             model.addAttribute(qasino);
             return ERROR_VIEW_LOCATION;
@@ -115,7 +118,6 @@ public class GameThymeleafController extends AbstractThymeleafController {
         qasino.getParams().setSuppliedGameId(Long.parseLong(id));
         // 2 - validate input
         // 3 - process
-        loadVisitor.perform(qasino);
         // 4 - return  response
         prepareQasino(response, qasino);
         model.addAttribute(qasino);
@@ -139,7 +141,10 @@ public class GameThymeleafController extends AbstractThymeleafController {
 //      "ante"
         // 2 - validate input
         if (result.hasErrors()) {
-            return "error";
+            log.warn("errors in supplied data {}", result);
+            prepareQasino(response, qasino);
+            model.addAttribute(qasino);
+            return ERROR_VIEW_LOCATION;
         }
         // 3 - process
         loadVisitor.perform(qasino);
@@ -167,7 +172,6 @@ public class GameThymeleafController extends AbstractThymeleafController {
         Qasino qasino = new Qasino();
         qasino.getParams().setSuppliedVisitorUsername(principal.getName());
         qasino.getParams().setSuppliedGameId(Long.parseLong(id));
-        loadVisitor.perform(qasino);
         // 2 - validate input
         // 3 - process
         // 4 - return  response
@@ -192,7 +196,10 @@ public class GameThymeleafController extends AbstractThymeleafController {
         qasino.getParams().setSuppliedGameId(Long.parseLong(id));
         // 2 - validate input
         if (result.hasErrors()) {
-            return "error";
+            log.warn("errors in supplied data {}", result);
+            prepareQasino(response, qasino);
+            model.addAttribute(qasino);
+            return ERROR_VIEW_LOCATION;
         }
         // 3 - process
         loadVisitor.perform(qasino);
@@ -225,7 +232,10 @@ public class GameThymeleafController extends AbstractThymeleafController {
 //        "avatar", "aiLevel"
         // 2 - validate input
         if (result.hasErrors()) {
-            return "error";
+            log.warn("errors in supplied data {}", result);
+            prepareQasino(response, qasino);
+            model.addAttribute(qasino);
+            return ERROR_VIEW_LOCATION;
         }
         // 3 - process
         loadVisitor.perform(qasino);
@@ -253,7 +263,10 @@ public class GameThymeleafController extends AbstractThymeleafController {
         qasino.getParams().setSuppliedGameId(Long.parseLong(id));
         // 2 - validate input
         if (result.hasErrors()) {
-            return "error";
+            log.warn("errors in supplied data {}", result);
+            prepareQasino(response, qasino);
+            model.addAttribute(qasino);
+            return ERROR_VIEW_LOCATION;
         }
         // 3 - process
         loadVisitor.perform(qasino);

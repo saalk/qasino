@@ -65,7 +65,6 @@ public class VisitorThymeleafController extends AbstractThymeleafController {
         // 1 - map input
         Qasino qasino = new Qasino();
         qasino.getParams().setSuppliedVisitorUsername(principal.getName());
-        loadVisitor.perform(qasino);
         // 2 - validate input
         // 3 - process
         // 4 - return  response
@@ -89,7 +88,10 @@ public class VisitorThymeleafController extends AbstractThymeleafController {
         qasino.getParams().setSuppliedVisitorUsername(principal.getName());
         // 2 - validate input
         if (result.hasErrors()) {
-            return "error";
+            log.warn("errors in supplied data {}", result);
+            prepareQasino(response, qasino);
+            model.addAttribute(qasino);
+            return ERROR_VIEW_LOCATION;
         }
         // 3 - process
         loadVisitor.perform(qasino);

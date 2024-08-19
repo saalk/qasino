@@ -60,7 +60,7 @@ public class HomeThymeleafController extends AbstractThymeleafController {
     private static final String HOME_SIGNIN_VIEW_LOCATION = "home/signin";
     private static final String HOME_SIGNED_IN_LOCATION = "home/homeSignedIn";
     private static final String HOME_NOT_SIGNED_IN_LOCATION = "home/homeNotSignedIn";
-    private static final String ERROR_GENERAL_LOCATION = "error/general";
+    private static final String ERROR_VIEW_LOCATION = "pages/error";
 
     private final AuthenticationManager authenticationManager;
 
@@ -151,7 +151,10 @@ public class HomeThymeleafController extends AbstractThymeleafController {
         qasino.getParams().setSuppliedQasinoEvent(QasinoEvent.REGISTER);
         // 2 - validate input
         if (result.hasErrors()) {
-            return "error";
+            log.warn("errors in supplied data {}", result);
+            prepareQasino(response, qasino);
+            model.addAttribute(qasino);
+            return ERROR_VIEW_LOCATION;
         }
         // 3 - process
         registerAction.perform(qasino);
@@ -196,7 +199,7 @@ public class HomeThymeleafController extends AbstractThymeleafController {
         String message = MessageFormat.format("{0} returned for {1} with message {2}",
                 statusCode, requestUri, exceptionMessage
         );
-        return ERROR_GENERAL_LOCATION;
+        return ERROR_VIEW_LOCATION;
     }
 
     private String getExceptionMessage(Throwable throwable, Integer statusCode) {

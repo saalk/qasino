@@ -60,7 +60,6 @@ public class InvitesThymeleafController extends AbstractThymeleafController {
         qasino.getParams().setSuppliedVisitorUsername(principal.getName());
         // 2 - validate input
         // 3 - process
-        loadVisitor.perform(qasino);
         // 4 - return  response
         prepareQasino(response, qasino);
         model.addAttribute(qasino);
@@ -86,6 +85,7 @@ public class InvitesThymeleafController extends AbstractThymeleafController {
         // "invitedVisitorId", "avatar"
         // 2 - validate input
         if (result.hasErrors()) {
+            log.warn("errors in supplied data {}", result);
             prepareQasino(response, qasino);
             model.addAttribute(qasino);
             return ERROR_VIEW_LOCATION;
@@ -117,6 +117,7 @@ public class InvitesThymeleafController extends AbstractThymeleafController {
         // "gameId", "visitorId", "acceptedPlayerId", "fiches", "gameEvent", "invite"
         // 2 - validate input
         if (result.hasErrors()) {
+            log.warn("errors in supplied data {}", result);
             prepareQasino(response, qasino);
             model.addAttribute(qasino);
             return ERROR_VIEW_LOCATION;
@@ -145,6 +146,7 @@ public class InvitesThymeleafController extends AbstractThymeleafController {
         // "gameId", "visitorId", "declinedPlayerId", "gameEvent", "decline"
         // 2 - validate input
         if (result.hasErrors()) {
+            log.warn("errors in supplied data {}", result);
             prepareQasino(response, qasino);
             model.addAttribute(qasino);
             return ERROR_VIEW_LOCATION;

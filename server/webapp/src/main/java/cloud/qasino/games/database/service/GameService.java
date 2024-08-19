@@ -12,6 +12,7 @@ import cloud.qasino.games.database.entity.enums.player.AiLevel;
 import cloud.qasino.games.database.entity.enums.player.PlayerType;
 import cloud.qasino.games.database.repository.CardRepository;
 import cloud.qasino.games.database.repository.GameRepository;
+import cloud.qasino.games.database.repository.LeagueRepository;
 import cloud.qasino.games.database.repository.PlayerRepository;
 import cloud.qasino.games.database.security.Visitor;
 import cloud.qasino.games.database.security.VisitorRepository;
@@ -47,13 +48,16 @@ public class GameService {
 
     // @formatter:off
     @Autowired private GameRepository gameRepository;
+    @Autowired private LeagueRepository leagueRepository;
     @Autowired private VisitorRepository visitorRepository;
     @Autowired private CardRepository cardRepository;
     @Autowired private PlayerRepository playerRepository;
+    // @formatter:on
 
     // lifecycle of a game - aim to pass params and creation dto's for consistency for all services
     public GameDto findOneByGameId(ParamsDto paramsDto) {
         Game retrievedGame = gameRepository.getReferenceById(paramsDto.getSuppliedGameId());
+        log.warn("findOneByGameId {}", retrievedGame);
         return GameMapper.INSTANCE.toDto(retrievedGame, retrievedGame.getCards());
     };
     public GameDto findLatestGameForVisitorId(ParamsDto paramsDto){
@@ -77,7 +81,7 @@ public class GameService {
         return GameMapper.INSTANCE.toDto(foundGame.get(0),foundGame.get(0).getCards());
 
     }
-    public List<GameShortDto> findInvitedGamesForVisitorId(ParamsDto paramsDto){
+    public List<GameShortDto> findInvitedGamesShortForVisitorId(ParamsDto paramsDto){
         if (paramsDto.getSuppliedVisitorId() > 0) {
             Pageable pageable = PageRequest.of(0, 4);
             List<Game> foundGames = gameRepository.findAllNewGamesForVisitorWithPage(paramsDto.getSuppliedVisitorId(), pageable);
@@ -152,13 +156,10 @@ public class GameService {
         }
         return GameMapper.INSTANCE.toDto(game, game.getCards());
     }
-    public GameDto prepareExistingGame(ParamsDto paramsDto, LeagueDto leagueDto, String style, int ante) {
+    public GameDto prepareExistingGame(ParamsDto paramsDto, String style, int ante) {
         Game game = gameRepository.getReferenceById(paramsDto.getSuppliedGameId());
-        League league = LeagueMapper.INSTANCE.fromDto(leagueDto);
         // You cannot change the initiator or the type
-        if (!(league == null)) {
-            game.setLeague(league);
-        }
+        // You cannot change the league from supplied it crashes
         if (!(style == null)) {
             game.setStyle(style);
         }
@@ -166,8 +167,8 @@ public class GameService {
             game.setAnte(ante);
         }
         game.setState(GameState.PREPARED);
-        Game newGame = gameRepository.save(game);
-        return  GameMapper.INSTANCE.toDto(newGame,newGame.getCards());
+        gameRepository.save(game);
+        return  GameMapper.INSTANCE.toDto(game, game.getCards());
     }
     public GameDto addAndShuffleCardsForAGame(ParamsDto paramsDto) {
         Game game = gameRepository.getReferenceById(paramsDto.getSuppliedGameId());

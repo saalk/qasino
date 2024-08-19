@@ -5,8 +5,10 @@ import cloud.qasino.games.database.entity.enums.game.GameState;
 import cloud.qasino.games.database.entity.Game;
 import cloud.qasino.games.database.entity.League;
 import cloud.qasino.games.database.security.Visitor;
+import jakarta.transaction.Transactional;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
@@ -19,6 +21,14 @@ import java.util.List;
 public interface GameRepository extends JpaRepository<Game, Long> {
 
     // @formatter:off
+    @Transactional
+    @Query(value = "update \"game\" as g " +
+            "set g.\"ante\"    = :ante, " +
+            "    g.\"style\"   = :style, " +
+            "    g.\"state\"   = :state " +
+            "where g.\"game_id\" = :game_id "
+            , nativeQuery = true)
+    void update(@Param("ante") int ante, @Param("style") String style, @Param("state") String state, @Param("game_id") long game_id);
 
     // counts
     Integer countByLeague(League league);

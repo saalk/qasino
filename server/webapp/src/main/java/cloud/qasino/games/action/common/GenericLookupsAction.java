@@ -12,11 +12,13 @@ import cloud.qasino.games.dto.model.SeatDto;
 import cloud.qasino.games.pattern.statemachine.event.EventOutput;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
 import org.hibernate.validator.internal.util.stereotypes.Lazy;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
 
+@Slf4j
 @Setter
 @Getter
 // Implement OUTPUT with EventOutput.Result or boolean TRUE/FALSE
@@ -38,7 +40,7 @@ public abstract class GenericLookupsAction<OUTPUT> {
         if (qasino.getVisitor() == null) return false; // 404 not found
         qasino.getParams().setSuppliedVisitorId(qasino.getVisitor().getVisitorId());
         refreshOrFindLatestGame(qasino);
-        refreshOrFindInvitationsForVisitor(qasino);
+//        refreshOrFindInvitationsForVisitor(qasino);
         refreshOrFindLeagueForLatestGame(qasino);
         return true; // visitor found and id set
     }
@@ -47,14 +49,14 @@ public abstract class GenericLookupsAction<OUTPUT> {
         if (qasino.getVisitor() == null) return false; // 404 not found
         qasino.getParams().setSuppliedVisitorId(qasino.getVisitor().getVisitorId());
         refreshOrFindLatestGame(qasino);
-        refreshOrFindInvitationsForVisitor(qasino);
+//        refreshOrFindInvitationsForVisitor(qasino);
         refreshOrFindLeagueForLatestGame(qasino);
         return true; // 200 visitor found and id set
     }
     protected boolean refreshOrFindInvitationsForVisitor(Qasino qasino) {
         qasino.setInvitations(new InvitationsDto());
         if (qasino.getParams().getSuppliedVisitorId() > 0) {
-            qasino.getInvitations().setGameInvitations(gameService.findInvitedGamesForVisitorId(qasino.getParams()));
+            qasino.getInvitations().setGameInvitations(gameService.findInvitedGamesShortForVisitorId(qasino.getParams()));
             if (qasino.getInvitations() == null) return false; // 200 no invitations yet
             return true;
         }
@@ -63,6 +65,7 @@ public abstract class GenericLookupsAction<OUTPUT> {
     protected boolean refreshOrFindLatestGame(Qasino qasino) {
         if (qasino.getParams().getSuppliedGameId() > 0) {
             qasino.setGame(gameService.findOneByGameId(qasino.getParams()));
+            log.warn("refreshOrFindLatestGame {}", qasino.getGame());
             if (qasino.getGame() == null) return false; // 404 not found
         } else {
             qasino.setGame(gameService.findLatestGameForVisitorId(qasino.getParams()));

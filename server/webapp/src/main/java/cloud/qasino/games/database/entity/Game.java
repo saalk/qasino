@@ -12,6 +12,7 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.ForeignKey;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -59,7 +60,7 @@ public class Game {
     // Foreign keys
     @JsonIgnore
     // many [Game] can be part of one [League]
-    @ManyToOne(cascade = CascadeType.DETACH)
+    @ManyToOne
     @JoinColumn(name = "league_id", referencedColumnName = "league_id", foreignKey = @ForeignKey
             (name = "fk_league_id"), nullable = true)
     private League league;
@@ -331,7 +332,9 @@ public class Game {
                 ", type=" + this.type +
                 ", style=" + this.style +
                 ", ante=" + this.ante +
-                ", playingId=" + (this.playing == null? "": this.playing.getPlayingId()) +
+                ", cardsCount=" + (this.cards == null? "null": this.cards.size()) +
+                ", playerCount=" + (this.players == null? "null": this.players.size()) +
+                ", playingId=" + (this.playing == null? "null": this.playing.getPlayingId()) +
                 ")";
     }
 }

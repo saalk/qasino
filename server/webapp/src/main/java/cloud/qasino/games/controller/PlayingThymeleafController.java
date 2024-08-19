@@ -118,7 +118,10 @@ public class PlayingThymeleafController extends AbstractThymeleafController {
         qasino.getParams().setSuppliedGameId(Long.parseLong(id));
         // 2 - validate input
         if (result.hasErrors()) {
-            return "error";
+            log.warn("errors in supplied data {}", result);
+            prepareQasino(response, qasino);
+            model.addAttribute(qasino);
+            return ERROR_VIEW_LOCATION;
         }
         // 3 - process
         loadVisitor.perform(qasino);
@@ -178,7 +181,10 @@ public class PlayingThymeleafController extends AbstractThymeleafController {
         qasino.getParams().setSuppliedGameId(Long.parseLong(id));
         // 2 - validate input
         if (result.hasErrors()) {
-            return "error";
+            log.warn("errors in supplied data {}", result);
+            prepareQasino(response, qasino);
+            model.addAttribute(qasino);
+            return ERROR_VIEW_LOCATION;
         }
         // 3 - process
         loadVisitor.perform(qasino);
