@@ -19,10 +19,10 @@ public class LeagueDto {
 //    String created; // ignore
 
     // ref
-    private VisitorDto visitor;
+    private VisitorShortDto visitor;
 //    private List<League> visitorLeagues;
 
-    private List<GameDto> gamesForLeague;
+    private List<GameShortDto> gamesForLeague;
 //    private List<Result> resultsForLeague;
 
     // Normal fields

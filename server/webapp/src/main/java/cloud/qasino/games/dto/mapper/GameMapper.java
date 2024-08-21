@@ -15,6 +15,7 @@ import cloud.qasino.games.database.entity.enums.game.style.TurnsToWin;
 import cloud.qasino.games.dto.model.CardDto;
 import cloud.qasino.games.dto.model.GameDto;
 import cloud.qasino.games.dto.model.LeagueDto;
+import cloud.qasino.games.dto.model.LeagueShortDto;
 import cloud.qasino.games.dto.model.PlayerDto;
 import org.mapstruct.Context;
 import org.mapstruct.Mapper;
@@ -75,10 +76,9 @@ public interface GameMapper {
     }
 
     @Named("league")
-    default LeagueDto league(Game game) {
+    default LeagueShortDto league(Game game) {
         if (game.getLeague() == null) return null;
-        game.getLeague().setVisitor(null);
-        return LeagueMapper.INSTANCE.toDto(game.getLeague());
+        return LeagueShortMapper.INSTANCE.toDto(game.getLeague());
     }
 
     @Named("cardsInStock")

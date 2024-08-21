@@ -42,14 +42,17 @@ public class IsGameConsistentForGameEventAction extends GenericLookupsAction<Eve
                 noError = gameShouldHaveStateInCorrectGameStateGroup(qasino,
                         List.of(GameStateGroup.SETUP, GameStateGroup.PREPARED));
                 if (noError) noError = gameShouldHaveVisitorWithBalance(qasino);
-
                 if (noError) noError = gameShouldHaveAnte(qasino);
                 if (noError) noError = gameShouldHaveInitiator(qasino);
                 if (noError) noError = gameShouldHavePlayersWithFiches(qasino);
                 if (noError) noError = playersShouldHaveSeats(qasino);
+                if (noError) noError = playersShouldHaveSeats(qasino);
+                if (noError) noError = gameShouldNotHaveCardsOrPlaying(qasino);
+
             }
             case SHUFFLE -> {
                 noError = gameShouldHaveStateInCorrectGameStateGroup(qasino, Collections.singletonList(GameStateGroup.PREPARED));
+                if (noError) noError = gameShouldNotHaveCardsOrPlaying(qasino);
             }
             case PLAY -> {
                 noError = gameShouldHaveStateInCorrectGameStateGroup(qasino, Collections.singletonList(GameStateGroup.PLAYING));
@@ -200,6 +203,31 @@ public class IsGameConsistentForGameEventAction extends GenericLookupsAction<Eve
                     "Action [" +
                             qasino.getParams().getSuppliedGameEvent() +
                             "] invalid - game has no cards and or a playing"
+
+            );
+            return false;
+        }
+        return true;
+    }
+    private boolean gameShouldNotHaveCardsOrPlaying(Qasino qasino) {
+        if (qasino.getPlaying() != null) {
+            qasino.getMessage().setUnprocessableErrorMessage(
+                    "GameEvent",
+                    qasino.getParams().getSuppliedGameEvent().getLabel(),
+                    "Action [" +
+                            qasino.getParams().getSuppliedGameEvent() +
+                            "] invalid - game already has playing"
+
+            );
+            return false;
+        }
+        if (!qasino.getGame().getCards().isEmpty()) {
+            qasino.getMessage().setUnprocessableErrorMessage(
+                    "GameEvent",
+                    qasino.getParams().getSuppliedGameEvent().getLabel(),
+                    "Action [" +
+                            qasino.getParams().getSuppliedGameEvent() +
+                            "] invalid - game already has cards"
 
             );
             return false;

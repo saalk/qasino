@@ -28,9 +28,9 @@ public class GameDto {
 //    private String updated; // ignore
 
     // ref
-    private LeagueDto league;
+    private LeagueShortDto league;
     private long initiator;
-    @JsonIgnore
+//    @JsonIgnore
     private List<CardDto> cards;
     private List<PlayerDto> players;
 

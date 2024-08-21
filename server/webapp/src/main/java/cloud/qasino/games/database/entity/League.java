@@ -5,10 +5,8 @@ import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.voodoodyne.jackson.jsog.JSOGGenerator;
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
 import jakarta.persistence.ForeignKey;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -20,7 +18,6 @@ import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.Getter;
-import org.hibernate.annotations.DynamicUpdate;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
@@ -37,7 +34,7 @@ import static java.time.temporal.TemporalAdjusters.next;
 // @Entity creates a direct link between class object(s) and table row(s)
 @Entity
 // @DynamicUpdate includes only columns which are actually being updated - not the cached insert
- @DynamicUpdate
+// @DynamicUpdate
 // @Data for JPA entities is an antipattern
 // But we override equals, hash and toString and have noargs constructor.
 @Data

@@ -43,13 +43,13 @@ public class Player {
     // Foreign keys
     // UsPl: a Visitor can play many Games as a Player
     // However ai players are no visitors!
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.DETACH)
     @JoinColumn(name = "visitor_id", referencedColumnName = "visitor_id", foreignKey = @ForeignKey
             (name = "fk_visitor_id"), nullable = true)
     private Visitor visitor;
 
     // PlGa: many Players can play the same Game
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.DETACH)
     @JoinColumn(name = "game_id", referencedColumnName = "game_id", foreignKey = @ForeignKey
             (name = "fk_game_id"), nullable = true)
     private Game game;
@@ -89,16 +89,16 @@ public class Player {
     // REFERENCES
 
     // one [Player] can have one [Playing], holding the current player, round, seat and move
-    @OneToOne(mappedBy = "player")
+    @OneToOne(mappedBy = "player", cascade = CascadeType.DETACH)
     private Playing playing;
 
     // GaWi: one [Player] is the Winner of the GameSubTotals in the end
-    @OneToOne(mappedBy = "player")
+    @OneToOne(mappedBy = "player", cascade = CascadeType.DETACH)
     // just a reference the fk column is in "game" not here!
     private Result result;// = new Result();
 
     // HO: A [Player] holds one or more [Card]s after playing
-    @OneToMany(mappedBy = "hand")
+    @OneToMany(mappedBy = "hand", cascade = CascadeType.DETACH)
     // just a reference, the actual fk column is in "game" not here !
     final private List<Card> cards = new ArrayList<>();
 

@@ -15,6 +15,22 @@
 ## handy sql
 ```sql
 
+-- PLAYERS for game with optional PLAYING and CARDMOVES if any
+SELECT 
+g."game_id", p."seat", c."sequence",
+g."type", g."updated", g."state", g."ante", g."initiator",
+p."player_id", p."role", p."fiches",p."ai_level",
+t."playing_id", t."created",
+c."cardmove_id", c."move",
+FROM 
+"game" AS g
+left JOIN "player" AS p ON g."game_id" = p."game_id"
+left JOIN "playing" AS t ON t."game_id" = g."game_id" 
+left JOIN "cardmove" AS c ON t."playing_id" = c."playing_id" AND c."player_id" = p."player_id"
+WHERE g."game_id" = 12
+ORDER BY 
+p."seat", c."sequence";
+
 -- GAMES for initiater
 SELECT 
 g."game_id", c."sequence",
@@ -30,7 +46,7 @@ left JOIN "player" AS p ON c."player_id" = p."player_id"
 WHERE g."initiator" = 3
 ORDER BY g."game_id" desc, c."sequence";
 
--- ROLES
+-- ROLES for visitor
 SELECT 
 v."visitor_id", v."username",
 r."role_id", r."name",
@@ -42,7 +58,7 @@ left JOIN "roles_privileges" AS rp ON rp."role_id" = r."role_id"
 left JOIN "privilege" AS p ON p."privilege_id" = rp."privilege_id"
 ORDER BY v."visitor_id";
 
--- playing
+-- PLAYING for visitor
 SELECT 
 v."visitor_id", v."username",
 g."game_id", g."state",

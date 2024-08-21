@@ -3,8 +3,10 @@ package cloud.qasino.games.dto.mapper;
 import cloud.qasino.games.database.entity.Game;
 import cloud.qasino.games.database.entity.League;
 import cloud.qasino.games.dto.model.GameDto;
+import cloud.qasino.games.dto.model.GameShortDto;
 import cloud.qasino.games.dto.model.LeagueDto;
 import cloud.qasino.games.dto.model.VisitorDto;
+import cloud.qasino.games.dto.model.VisitorShortDto;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Named;
@@ -31,29 +33,22 @@ public interface LeagueMapper {
     League fromDto(LeagueDto league);
 
     @Named("gamesForLeague")
-    default List<GameDto> gamesForLeague(League league) {
-        List<GameDto> gameDtos = new ArrayList<>();
+    default List<GameShortDto> gamesForLeague(League league) {
+        List<GameShortDto> gameDtos = new ArrayList<>();
         if (league.getGames() == null) return gameDtos;
         List<Game> games = league.getGames().stream().toList();
         if (games.isEmpty()) return gameDtos;
         for (Game game : games) {
-            // to prevent too much details
-            game.setLeague(null);
-            game.setPlayers(null);
-            game.setCards(null);
-            game.setResults(null); // do something here later eg calc a total
-            game.setPlaying(null);
-            gameDtos.add(GameMapper.INSTANCE.toDto(game, null));
+            gameDtos.add(GameShortMapper.INSTANCE.toDto(game, null));
         }
         return gameDtos;
     }
 
     @Named("visitor")
-    default VisitorDto visitor(League league) {
+    default VisitorShortDto visitor(League league) {
         if (league.getVisitor() == null) {
             return null;
         }
-        league.getVisitor().setRoles(null);
-        return VisitorMapper.INSTANCE.toDto(league.getVisitor());
+        return VisitorShortMapper.INSTANCE.toDto(league.getVisitor());
     }
 }

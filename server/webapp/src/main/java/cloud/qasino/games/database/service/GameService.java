@@ -180,7 +180,7 @@ public class GameService {
     }
     public GameDto addAndShuffleCardsForAGame(ParamsDto paramsDto) {
         Game game = gameRepository.getReferenceById(paramsDto.getSuppliedGameId());
-        if (game.getCards() != null)
+        if (!game.getCards().isEmpty())
             throw new MyBusinessException("addAndShuffleCardsForAGame", "this game already has cards [" + game.getGameId() + "]");
         Deck deck = DeckFactory.createShuffledDeck(game, 0);
         List<PlayingCard> playingCards = deck.getPlayingCards();

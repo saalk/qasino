@@ -60,7 +60,7 @@ public class Game {
     // Foreign keys
     @JsonIgnore
     // many [Game] can be part of one [League]
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.DETACH)
     @JoinColumn(name = "league_id", referencedColumnName = "league_id", foreignKey = @ForeignKey
             (name = "fk_league_id"), nullable = true)
     private League league;
@@ -149,10 +149,10 @@ public class Game {
     */
     @JsonIgnore
     // one [Game] can have many [Card]s
-    @OneToMany(mappedBy = "game")
+    @OneToMany(mappedBy = "game", cascade = CascadeType.DETACH)
     private List<Card> cards;
     // one [Game] can have many [Player]s
-    @OneToMany(mappedBy = "game")
+    @OneToMany(mappedBy = "game", cascade = CascadeType.DETACH)
     private List<Player> players;
     @JsonIgnore
     // one [Game] can have one [Playing], holding the current player, round, seat and move
