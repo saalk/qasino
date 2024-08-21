@@ -12,23 +12,12 @@ import org.springframework.stereotype.Component;
 @Component
 public class IsPlayingConsistentForPlayEventAction extends GenericLookupsAction<EventOutput.Result> {
 
-    @Resource
-    VisitorRepository visitorRepository;
-
     @Override
     public EventOutput.Result perform(Qasino qasino) {
 
         boolean noError = true;
         switch (qasino.getParams().getSuppliedPlayEvent()) {
-            case LOWER -> {
-                noError = playingShouldHaveActiveHumanPlayer(qasino);
-                if (noError) noError = playingShouldHaveNextPlayer(qasino);
-            }
-            case HIGHER -> {
-                noError = playingShouldHaveActiveHumanPlayer(qasino);
-                if (noError) noError = playingShouldHaveNextPlayer(qasino);
-            }
-            case PASS -> {
+            case LOWER, HIGHER, PASS -> {
                 noError = playingShouldHaveActiveHumanPlayer(qasino);
                 if (noError) noError = playingShouldHaveNextPlayer(qasino);
             }
@@ -39,8 +28,6 @@ public class IsPlayingConsistentForPlayEventAction extends GenericLookupsAction<
             case DEAL -> {
                 noError = playingShouldHaveCurrentMoveNumberNotZero(qasino);
                 if (noError) noError = playingShouldHavePlayer(qasino);
-            }
-            case SPLIT -> {
             }
         }
         return noError ? EventOutput.Result.SUCCESS : EventOutput.Result.FAILURE;

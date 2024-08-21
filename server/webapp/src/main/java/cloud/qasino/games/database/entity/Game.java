@@ -152,7 +152,7 @@ public class Game {
     @OneToMany(mappedBy = "game", cascade = CascadeType.DETACH)
     private List<Card> cards;
     // one [Game] can have many [Player]s
-    @OneToMany(mappedBy = "game", cascade = CascadeType.DETACH)
+    @OneToMany(mappedBy = "game")
     private List<Player> players;
     @JsonIgnore
     // one [Game] can have one [Playing], holding the current player, round, seat and move

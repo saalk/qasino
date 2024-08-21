@@ -42,14 +42,14 @@ public class Player {
 
     // Foreign keys
     // UsPl: a Visitor can play many Games as a Player
-    // However ai players are no visitors!
-    @ManyToOne(cascade = CascadeType.DETACH)
+    // However AI players are no visitors!
+    @ManyToOne
     @JoinColumn(name = "visitor_id", referencedColumnName = "visitor_id", foreignKey = @ForeignKey
             (name = "fk_visitor_id"), nullable = true)
     private Visitor visitor;
 
     // PlGa: many Players can play the same Game
-    @ManyToOne(cascade = CascadeType.DETACH)
+    @ManyToOne
     @JoinColumn(name = "game_id", referencedColumnName = "game_id", foreignKey = @ForeignKey
             (name = "fk_game_id"), nullable = true)
     private Game game;

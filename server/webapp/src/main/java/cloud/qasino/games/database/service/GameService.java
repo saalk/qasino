@@ -27,6 +27,7 @@ import cloud.qasino.games.dto.model.PlayingDto;
 import cloud.qasino.games.dto.request.CreationDto;
 import cloud.qasino.games.dto.request.ParamsDto;
 import cloud.qasino.games.exception.MyBusinessException;
+import cloud.qasino.games.exception.MyNPException;
 import cloud.qasino.games.pattern.factory.Deck;
 import cloud.qasino.games.pattern.factory.DeckFactory;
 import cloud.qasino.games.pattern.stream.StreamUtil;
@@ -57,6 +58,9 @@ public class GameService {
     // lifecycle of a game - aim to pass params and creation dto's for consistency for all services
     public GameDto findOneByGameId(ParamsDto paramsDto) {
         Game retrievedGame = gameRepository.getReferenceById(paramsDto.getSuppliedGameId());
+        if (retrievedGame.getPlaying() != null && retrievedGame.getPlayers().isEmpty()) {
+            throw new MyNPException("findOneByGameId", "error [" + retrievedGame+ "]");
+        }
         log.warn("findOneByGameId {}", retrievedGame);
         return GameMapper.INSTANCE.toDto(retrievedGame, retrievedGame.getCards());
     };
@@ -132,7 +136,9 @@ public class GameService {
     }
     public GameDto updatePlayingStateForGame(ParamsDto paramsDto, PlayerDto player) {
         Game game = gameRepository.getReferenceById(paramsDto.getSuppliedGameId());
-
+        if (game.getPlaying() != null && game.getPlayers().isEmpty()) {
+            throw new MyNPException("findOneByGameId", "error [" + game+ "]");
+        }
         if ((player.isHuman())) {
             if (game.getInitiator() == player.getPlayerId()) {
                 if (game.getState() != GameState.INITIATOR_MOVE) {

@@ -93,26 +93,25 @@ public class PlayerService {
         return PlayerMapper.INSTANCE.toDto(newBot, null);
     }
     public PlayerDto updatePlayerFiches(PlayerDto playerDto, int fiches ) {
-        Player player = PlayerMapper.INSTANCE.fromDto(playerDto);
+        Player player = playerRepository.getReferenceById(playerDto.getPlayerId());
         player.setFiches(fiches);
         Player updated =  playerRepository.save(player);
         return PlayerMapper.INSTANCE.toDto(updated, null);
     }
     public PlayerDto acceptInvitationForAGame(PlayerDto playerDto) {
-
-        Player invitee = PlayerMapper.INSTANCE.fromDto(playerDto);
+        Player invitee = playerRepository.getReferenceById(playerDto.getPlayerId());
         invitee.setPlayerType(PlayerType.INVITEE);
         Player accepted =  playerRepository.save(invitee);
         return PlayerMapper.INSTANCE.toDto(accepted, null);
     }
     public PlayerDto rejectInvitationForAGame(PlayerDto playerDto) {
-        Player invitee = PlayerMapper.INSTANCE.fromDto(playerDto);
+        Player invitee = playerRepository.getReferenceById(playerDto.getPlayerId());
         invitee.setPlayerType(PlayerType.REJECTED);
         Player rejected =  playerRepository.save(invitee);
         return PlayerMapper.INSTANCE.toDto(rejected, null);
     }
     public List<PlayerDto> seatOneUpForPlayer(PlayerDto playerDto) {
-        Player seatUp = PlayerMapper.INSTANCE.fromDto(playerDto);
+        Player seatUp = playerRepository.getReferenceById(playerDto.getPlayerId());
         List<Player> allPlayersForTheGame = playerRepository.findByGame(seatUp.getGame());
 
         List<PlayerDto> playerDtos = allPlayersForTheGame.stream()

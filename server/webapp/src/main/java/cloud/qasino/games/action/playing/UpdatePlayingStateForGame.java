@@ -4,6 +4,7 @@ import cloud.qasino.games.action.common.GenericLookupsAction;
 import cloud.qasino.games.dto.Qasino;
 import cloud.qasino.games.database.repository.GameRepository;
 import cloud.qasino.games.database.service.GameService;
+import cloud.qasino.games.exception.MyNPException;
 import cloud.qasino.games.pattern.statemachine.event.EventOutput;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
@@ -31,6 +32,9 @@ public class UpdatePlayingStateForGame extends GenericLookupsAction<EventOutput.
                 // existing player
                 qasino.setGame(gameService.updatePlayingStateForGame(qasino.getParams(), qasino.getPlaying().getCurrentPlayer()));
             }
+        }
+        if (qasino.getGame().getPlayers().isEmpty()) {
+            throw new MyNPException("UpdatePlayingStateForGame", "error [" + qasino.getGame()+ "]");
         }
         return EventOutput.Result.SUCCESS;
     }

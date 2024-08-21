@@ -142,7 +142,7 @@ public class PlayingService {
     public PlayingDto createPlaying(long gameId, long firstPlayerId) {
         Game game = gameRepository.getReferenceById(gameId);
         Player player = playerRepository.getReferenceById(firstPlayerId);
-        Playing savedPlaying = playingRepository.saveAndFlush(new Playing(game,player));
+        Playing savedPlaying = playingRepository.save(new Playing(game,player));
         return PlayingMapper.INSTANCE.toDto(savedPlaying);
     }
     public PlayingDto updatePlaying(Move move, long activePlayingId, long nextPlayerId) {

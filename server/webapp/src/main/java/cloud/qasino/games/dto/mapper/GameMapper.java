@@ -69,7 +69,8 @@ public interface GameMapper {
         List<PlayerDto> playerDtos = new ArrayList<>();
         if (game.getPlayers() == null) return null;
         for (Player player : game.getPlayers() ) {
-            if (player.getVisitor() != null && player.getVisitor().getRoles() != null) player.getVisitor().setRoles(null);
+//            if (player.getVisitor() != null && player.getVisitor().getRoles() != null)
+//                player.getVisitor().setRoles(null);
             playerDtos.add(PlayerMapper.INSTANCE.toDto(player, game.getCards()));
         }
         return playerDtos;

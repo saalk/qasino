@@ -50,7 +50,7 @@ public interface PlayingMapper {
         if (totalSeats == 1 || currentSeat == totalSeats) {
             return PlayerMapper.INSTANCE.toDto(playing.getGame().getPlayers().get(0), playing.getGame().getCards());
         }
-        List <PlayerDto> unsortedPlayers = PlayerMapper.INSTANCE.toDtoList(playing.getGame().getPlayers(), playing.getGame().getCards());
+        List<PlayerDto> unsortedPlayers = PlayerMapper.INSTANCE.toDtoList(playing.getGame().getPlayers(), playing.getGame().getCards());
         List<PlayerDto> sortedPlayers = StreamUtil.sortPlayerDtosOnSeatWithStream(unsortedPlayers);
         return sortedPlayers.get((currentSeat - 1) + 1);
     }

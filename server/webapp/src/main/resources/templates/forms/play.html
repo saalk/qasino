@@ -186,7 +186,7 @@
         <fieldset>
             <div class="form-group"
                  th:classappend="${#fields.hasErrors('${qasino.game.cardsInStock}')}? 'has-error'">
-                <label for="deck" th:text="${'Deck - values: J=0, A=1, 2-10, J=11, Q=12, K=13'}"
+                <label for="deck" th:text="${'Deck - values A(1),2-10,JQK'}"
                        class="col-lg-2 control-label">Placeholder</label>
                 <div class="col-lg-21">
                     <input readonly type="text" class="form-control" id="deck" placeholder="Deck"

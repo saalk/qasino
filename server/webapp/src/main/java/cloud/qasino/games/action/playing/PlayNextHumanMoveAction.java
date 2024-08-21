@@ -46,6 +46,9 @@ public class PlayNextHumanMoveAction extends GenericLookupsAction<EventOutput.Re
         // Local fields
         PlayerDto nextPlayer = qasino.getPlaying().getNextPlayer();
         int totalSeats = qasino.getGame().getPlayers().size();
+        if (qasino.getGame().getPlayers().isEmpty()) {
+            throw new MyNPException("PlayNextHumanMoveAction", "error [" + qasino.getGame()+ "]");
+        }
         PlayingDto playing = qasino.getPlaying();
         int currentSeat = playing.getCurrentSeatNumber();
         int currentRound = playing.getCurrentRoundNumber();

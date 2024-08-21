@@ -41,6 +41,7 @@ import static cloud.qasino.games.pattern.statemachine.event.EventOutput.Result.S
 public class PlayingThymeleafController extends AbstractThymeleafController {
 
     // @formatter:off
+    private static final String PLAY_VIEW_LOCATION = "pages/play";
     private static final String ERROR_VIEW_LOCATION = "pages/error";
     EventOutput.Result output;
 
@@ -94,6 +95,12 @@ public class PlayingThymeleafController extends AbstractThymeleafController {
             model.addAttribute(qasino);
             return ERROR_VIEW_LOCATION;
         }
+        output = updatePlayingStateForGame.perform(qasino);
+        if (FAILURE.equals(output)) {
+            prepareQasino(response, qasino);
+            model.addAttribute(qasino);
+            return ERROR_VIEW_LOCATION;
+        }
         // 4 - return response
         prepareQasino(response, qasino);
         model.addAttribute(qasino);
@@ -103,13 +110,13 @@ public class PlayingThymeleafController extends AbstractThymeleafController {
     @PostMapping(value = "play/{playEvent}/{gameId}")
     public String playerMakesAMoveForAGame(
             Principal principal,
+            @PathVariable("playEvent") String trigger,
             @PathVariable("gameId") String id,
             @ModelAttribute("qasino") Qasino qasino,
             BindingResult result,
             Model model,
             RedirectAttributes ra,
-            HttpServletResponse response,
-            @PathVariable("playEvent") String trigger) {
+            HttpServletResponse response) {
 
         // 1 - map input
         qasino.getParams().setSuppliedGameEvent(GameEvent.PLAY);
@@ -118,7 +125,6 @@ public class PlayingThymeleafController extends AbstractThymeleafController {
         qasino.getParams().setSuppliedGameId(Long.parseLong(id));
         // 2 - validate input
         if (result.hasErrors()) {
-            log.warn("errors in supplied data {}", result);
             prepareQasino(response, qasino);
             model.addAttribute(qasino);
             return ERROR_VIEW_LOCATION;
@@ -139,13 +145,18 @@ public class PlayingThymeleafController extends AbstractThymeleafController {
         }
 //        result = canPlayerStillPlay.perform(qasino); // for now stop after one round
         output = isPlayerHumanAction.perform(qasino);
-        updatePlayingStateForGame.perform(qasino);
         if (SUCCESS.equals(output)) {
             log.warn("playNextHumanMoveAction {}", qasino.getParams().getSuppliedGameEvent());
             playNextHumanMoveAction.perform(qasino);
         } else {
             log.warn("playNextBotMoveAction {}", qasino.getParams().getSuppliedGameEvent());
             playNextBotMoveAction.perform(qasino);
+        }
+        output = updatePlayingStateForGame.perform(qasino);
+        if (FAILURE.equals(output)) {
+            prepareQasino(response, qasino);
+            model.addAttribute(qasino);
+            return ERROR_VIEW_LOCATION;
         }
         output = updateFichesForPlayerAction.perform(qasino);
         if (FAILURE.equals(output)) {
@@ -172,8 +183,6 @@ public class PlayingThymeleafController extends AbstractThymeleafController {
             Model model,
             RedirectAttributes ra,
             HttpServletResponse response) {
-
-        log.warn("PostMapping: stop/{gameId}");
 
         // 1 - map input
         qasino.getParams().setSuppliedGameEvent(GameEvent.STOP);

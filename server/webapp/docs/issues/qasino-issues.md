@@ -12,6 +12,8 @@
 ## handy sql
 ```sql
 
+SELECT * FROM "player" order by "player_id" desc;
+
 -- PLAYERS for game with optional PLAYING and CARDMOVES if any
 SELECT 
 g."game_id", p."seat", c."sequence",
@@ -66,6 +68,12 @@ left JOIN "game" AS g ON v."visitor_id" = g."initiator"
 left JOIN "playing" AS t ON t."game_id" = g."game_id"
 left JOIN "player" AS p ON p."player_id" = t."player_id"
 ORDER BY v."visitor_id";
+
+UPDATE "player" 
+SET  
+    "game_id" = 12 ,  
+    "visitor_id" = 3
+WHERE "player_id" = 18;
 
 UPDATE "card" 
 SET  "player_id" = '1' 
