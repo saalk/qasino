@@ -1,16 +1,13 @@
 # Tech Issues
-
 - no nice error handling
-- better use of patterns - rules 
-- dry,kiss,yagni
+- better use of patterns - rules
 - use of toolkit
 
 
 # Business
-
 - League functions
 - Multiplayer
-- Another cardgame
+- Another card game
 
 ## handy sql
 ```sql

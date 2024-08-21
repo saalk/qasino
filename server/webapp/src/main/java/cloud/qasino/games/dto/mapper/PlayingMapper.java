@@ -54,6 +54,4 @@ public interface PlayingMapper {
         List<PlayerDto> sortedPlayers = StreamUtil.sortPlayerDtosOnSeatWithStream(unsortedPlayers);
         return sortedPlayers.get((currentSeat - 1) + 1);
     }
-
-
 }

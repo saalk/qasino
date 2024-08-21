@@ -66,6 +66,14 @@ th.no-line {
     flex: 0 0 auto;
     width: 200%;
     }
+    .col-lg-21 {
+    flex: 0 0 auto;
+    width: 210%;
+    }
+    .col-lg-22 {
+    flex: 0 0 auto;
+    width: 220%;
+    }
 }
 /* Header
 –––––––––––––––––––––––––––––––––––––––––––––––––– */

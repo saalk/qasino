@@ -139,12 +139,11 @@ public class GameService {
                     game.setState(GameState.INITIATOR_MOVE);
                     Game updateGame = gameRepository.save(game);
                     return GameMapper.INSTANCE.toDto(updateGame, updateGame.getCards());
-                } else {
-                    if (game.getState() != GameState.INVITEE_MOVE) {
-                        game.setState(GameState.INVITEE_MOVE);
-                        Game updateGame = gameRepository.save(game);
-                        return GameMapper.INSTANCE.toDto(updateGame, updateGame.getCards());
-                    }
+                }
+                if (game.getState() != GameState.INVITEE_MOVE) {
+                    game.setState(GameState.INVITEE_MOVE);
+                    Game updateGame = gameRepository.save(game);
+                    return GameMapper.INSTANCE.toDto(updateGame, updateGame.getCards());
                 }
             }
         } else {
@@ -158,16 +157,6 @@ public class GameService {
     }
     public GameDto prepareExistingGame(ParamsDto paramsDto, String style, int ante) {
         Game game = gameRepository.getReferenceById(paramsDto.getSuppliedGameId());
-//        if (paramsDto.getSuppliedLeagueId() > 0) {
-//            League league = leagueRepository.getReferenceById(paramsDto.getSuppliedLeagueId());
-//            Visitor visitor = visitorRepository.getReferenceById(league.getVisitor().getVisitorId());
-//            league.setVisitor(visitor);
-//            leagueRepository.save(league);
-//            game.setLeague(league);
-//            log.warn("league saved");
-//        }
-        // You cannot change the initiator or the type
-        // You cannot change the league from supplied it crashes
         if (!(style == null)) {
             game.setStyle(style);
         }
@@ -180,8 +169,6 @@ public class GameService {
     }
     public GameDto addAndShuffleCardsForAGame(ParamsDto paramsDto) {
         Game game = gameRepository.getReferenceById(paramsDto.getSuppliedGameId());
-        if (!game.getCards().isEmpty())
-            throw new MyBusinessException("addAndShuffleCardsForAGame", "this game already has cards [" + game.getGameId() + "]");
         Deck deck = DeckFactory.createShuffledDeck(game, 0);
         List<PlayingCard> playingCards = deck.getPlayingCards();
         List<Card> cards = new ArrayList<>();
