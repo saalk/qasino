@@ -116,6 +116,7 @@ public class GameService {
                 game,
                 PlayerType.INITIATOR,
                 visitor.getBalance(),
+                visitor.getBalance(),
                 1,
                 creation.getSuppliedAvatar(),
                 avatarName,

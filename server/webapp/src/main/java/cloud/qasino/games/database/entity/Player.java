@@ -68,6 +68,9 @@ public class Player {
     @Column(name = "role", nullable = false, length = 20)
     private PlayerType playerType;
 
+    @Column(name = "startFiches")
+    private int startFiches;
+
     @Column(name = "fiches")
     private int fiches;
 
@@ -112,12 +115,13 @@ public class Player {
         this.seat = 1;
     }
 
-    public Player(Visitor visitor, Game game, PlayerType playerType, int fiches, int seat, Avatar avatar, String avatarName, AiLevel aiLevel) {
+    public Player(Visitor visitor, Game game, PlayerType playerType, int startFiches, int fiches, int seat, Avatar avatar, String avatarName, AiLevel aiLevel) {
         this();
         this.visitor = visitor;
         this.game = game;
         this.playerType = playerType;
 
+        this.startFiches = startFiches;
         this.fiches = fiches;
         this.seat = seat;
 
@@ -135,15 +139,15 @@ public class Player {
     public static Player buildDummyBot(Game game, Avatar avatar, AiLevel aiLevel) {
         if (avatar == null) avatar = Avatar.GOBLIN;
         if (aiLevel == null) aiLevel = AiLevel.AVERAGE;
-        return new Player(null, game, PlayerType.BOT, 99, 99, avatar, "avatarName", aiLevel);
+        return new Player(null, game, PlayerType.BOT, 99, 99, 99, avatar, "avatarName", aiLevel);
     }
     public static Player buildDummyHuman(Visitor visitor, Game game, Avatar avatar) {
         if (avatar == null) avatar = Avatar.GOBLIN;
-        return new Player(visitor, game, PlayerType.INITIATOR,99, 99, avatar, "avatarName", AiLevel.HUMAN);
+        return new Player(visitor, game, PlayerType.INITIATOR,99, 99, 99, avatar, "avatarName", AiLevel.HUMAN);
     }
     public static Player buildDummyInvitee(Visitor visitor, Game game, Avatar avatar) {
         if (avatar == null) avatar = Avatar.GOBLIN;
-        return new Player(visitor, game, PlayerType.INVITED,99, 99, avatar, "avatarName", AiLevel.HUMAN);
+        return new Player(visitor, game, PlayerType.INVITED,99, 99, 99, avatar, "avatarName", AiLevel.HUMAN);
     }
 
     public void setAiLevel(AiLevel aiLevel) {

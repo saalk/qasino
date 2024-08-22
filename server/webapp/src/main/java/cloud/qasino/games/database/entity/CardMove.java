@@ -109,6 +109,12 @@ public class CardMove {
         this.sequence = "000000";
     }
 
+    public void setFiches(int start, int end, int bet) {
+        this.bet = bet;
+        this.startFiches = start;
+        this.endFiches = end;
+    }
+
     public void setCreated() {
         LocalDateTime localDateAndTime = LocalDateTime.now();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd-HH:mm-ssSSS-nnnnnnnnn");

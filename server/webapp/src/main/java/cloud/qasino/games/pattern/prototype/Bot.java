@@ -12,7 +12,7 @@ public abstract class Bot<T> extends Player implements Cloneable {
     private boolean human;
 
     public Bot(Visitor visitor, Game game, PlayerType playerType, int fiches, int seat, Avatar avatar, String avatarName, AiLevel aiLevel) {
-        super(visitor, game, playerType, fiches, seat, avatar, avatarName, aiLevel);
+        super(visitor, game, playerType, fiches, fiches, seat, avatar, avatarName, aiLevel);
         human = false;
     }
 
