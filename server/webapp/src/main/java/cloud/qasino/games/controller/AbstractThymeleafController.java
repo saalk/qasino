@@ -47,8 +47,8 @@ public class AbstractThymeleafController {
         try {
 //            log.warn("Qasino.getNavBarItems pretty print = {} ", prettyPrint(qasino.getNavBarItems()));
 //            log.warn("----------------------------------------");
-//            log.warn("Qasino.getMessage pretty print = {} ", prettyPrint(qasino.getMessage()));
-//            log.warn("----------------------------------------");
+            log.warn("Qasino.getMessage pretty print = {} ", prettyPrint(qasino.getMessage().getAction()));
+            log.warn("----------------------------------------");
 //            log.warn("Qasino.getParams pretty print = {} ", prettyPrint(qasino.getParams()));
 //            log.warn("----------------------------------------");
 //            log.warn("Qasino.getCreation print = {} ", prettyPrint(qasino.getCreation()));
@@ -63,8 +63,8 @@ public class AbstractThymeleafController {
 //            log.warn("----------------------------------------");
 //            log.warn("Qasino.getInvitations pretty print = {} ", prettyPrint(qasino.getInvitations()));
 //            log.warn("----------------------------------------");
-            log.warn("Qasino.getLeague pretty print = {} ", prettyPrint(qasino.getLeague()));
-            log.warn("----------------------------------------");
+//            log.warn("Qasino.getLeague pretty print = {} ", prettyPrint(qasino.getLeague()));
+//            log.warn("----------------------------------------");
 //            log.warn("Qasino.getEnumOverview pretty print = {} ", prettyPrint(qasino.getEnumOverview()));
 //            log.warn("----------------------------------------");
 //            log.warn("Qasino.getStatistics pretty print = {} ", prettyPrint(qasino.getStatistics()));
