@@ -93,7 +93,7 @@ public class InvitesThymeleafController extends AbstractThymeleafController {
         // 3 - process
         loadVisitor.perform(qasino);
         playerService.addInvitedHumanPlayerToAGame(
-                qasino.getVisitor(), qasino.getGame(), qasino.getCreation().getSuppliedAvatar());
+                qasino.getParams(), qasino.getCreation().getSuppliedAvatar());
         // 4 - return response
         prepareQasino(response, qasino);
         model.addAttribute(qasino);

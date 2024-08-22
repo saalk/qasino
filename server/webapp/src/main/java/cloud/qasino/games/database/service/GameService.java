@@ -94,21 +94,22 @@ public class GameService {
         }
         return new ArrayList<>();
     }
-    public GameDto setupNewGameWithPlayerInitiator(CreationDto creation, long initiator) {
-        log.warn("setupNewGameWithPlayerInitiator initiator [{}]",initiator);
+    public GameDto setupNewGameWithPlayerInitiator(CreationDto creation, long initiator, long leagueId) {
+//        log.warn("setupNewGameWithPlayerInitiator initiator [{}]",initiator);
+        League league = leagueRepository.getReferenceById(leagueId);
         Game game = new Game(
-                null,
+                league,
                 creation.getSuppliedType().getLabel(),
                 initiator,
                 creation.getSuppliedStyle(),
                 creation.getSuppliedAnte());
         Game newGame = gameRepository.save(game);
-        log.warn("setupNewGameWithPlayerInitiator game [{}]",game);
+//        log.warn("setupNewGameWithPlayerInitiator game [{}]",game);
 
 //        List<Player> allPlayersForTheGame = playerRepository.findByGame(savedGame);
         String avatarName = "avatarName";
         Visitor visitor = visitorRepository.getReferenceById(initiator);
-        log.warn("setupNewGameWithPlayerInitiator visitor [{}]",visitor);
+//        log.warn("setupNewGameWithPlayerInitiator visitor [{}]",visitor);
 
         Player player = new Player(
                 visitor,
@@ -201,5 +202,4 @@ public class GameService {
         List<PlayerDto> sortedPlayers = StreamUtil.sortPlayerDtosOnSeatWithStream(game.getPlayers());
         return sortedPlayers.get((currentSeat - 1) + 1);
     }
-
 }

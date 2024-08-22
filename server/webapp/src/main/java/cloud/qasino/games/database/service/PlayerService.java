@@ -5,22 +5,22 @@ import cloud.qasino.games.database.entity.Player;
 import cloud.qasino.games.database.entity.enums.player.AiLevel;
 import cloud.qasino.games.database.entity.enums.player.Avatar;
 import cloud.qasino.games.database.entity.enums.player.PlayerType;
-import cloud.qasino.games.database.repository.CardRepository;
 import cloud.qasino.games.database.repository.GameRepository;
 import cloud.qasino.games.database.repository.PlayerRepository;
 import cloud.qasino.games.database.security.Visitor;
+import cloud.qasino.games.database.security.VisitorRepository;
 import cloud.qasino.games.dto.model.GameDto;
 import cloud.qasino.games.dto.model.PlayerDto;
 import cloud.qasino.games.dto.model.VisitorDto;
 import cloud.qasino.games.dto.mapper.GameMapper;
 import cloud.qasino.games.dto.mapper.PlayerMapper;
 import cloud.qasino.games.dto.mapper.VisitorMapper;
+import cloud.qasino.games.dto.request.ParamsDto;
 import cloud.qasino.games.exception.MyBusinessException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
-import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -33,11 +33,13 @@ public class PlayerService {
 
     // @formatter:off
     @Autowired private PlayerRepository playerRepository;
+    @Autowired private VisitorRepository visitorRepository;
+    @Autowired private GameRepository gameRepository;
 
     // lifecycle of a player - aim to pass params and creation dto's for consistency for all services
-    public PlayerDto addHumanVisitorPlayerToAGame(VisitorDto visitorDto, GameDto gameDto, Avatar avatar) {
-        Game game = GameMapper.INSTANCE.fromDto(gameDto);
-        Visitor initiator = VisitorMapper.INSTANCE.fromDto(visitorDto);
+    public PlayerDto addHumanVisitorPlayerToAGame(ParamsDto params, GameDto gameDto, Avatar avatar) {
+        Game game  = gameRepository.getReferenceById(params.getSuppliedGameId());
+        Visitor initiator = visitorRepository.getReferenceById(params.getSuppliedInvitedVisitorId());
 
         List<Player> allPlayersForTheGame = playerRepository.findByGame(game);
         String avatarName = "avatarName";
@@ -53,14 +55,14 @@ public class PlayerService {
         Player newPlayer =  playerRepository.save(visitor);
         return PlayerMapper.INSTANCE.toDto(newPlayer, null);
     }
-    public PlayerDto addInvitedHumanPlayerToAGame(VisitorDto visitorDto, GameDto gameDto, Avatar avatar) {
-        Game game = GameMapper.INSTANCE.fromDto(gameDto);
-        Visitor invitee = VisitorMapper.INSTANCE.fromDto(visitorDto);
+    public PlayerDto addInvitedHumanPlayerToAGame(ParamsDto params, Avatar avatar) {
+        Game game  = gameRepository.getReferenceById(params.getSuppliedGameId());
+        Visitor invitee  = visitorRepository.getReferenceById(params.getSuppliedInvitedVisitorId());
 
         List<Player> allPlayersForTheGame = playerRepository.findByGame(game);
         String avatarName = "avatarName";
         Player player = new Player(
-                null,
+                invitee,
                 game,
                 PlayerType.INVITED,
                 invitee.getBalance(),
@@ -71,9 +73,8 @@ public class PlayerService {
         Player newPlayer =  playerRepository.save(player);
         return PlayerMapper.INSTANCE.toDto(newPlayer, null);
     }
-    public PlayerDto addBotPlayerToAGame(GameDto gameDto, Avatar avatar, AiLevel aiLevel) {
-        Game game = GameMapper.INSTANCE.fromDto(gameDto);
-
+    public PlayerDto addBotPlayerToAGame(ParamsDto params, Avatar avatar, AiLevel aiLevel) {
+        Game game  = gameRepository.getReferenceById(params.getSuppliedGameId());
         if (aiLevel == AiLevel.HUMAN) {
             throw new MyBusinessException("addBotPlayerToAGame", "this aiLevel cannot become a bot player [" + aiLevel + "]");
         }
@@ -92,26 +93,26 @@ public class PlayerService {
         Player newBot =  playerRepository.save(bot);
         return PlayerMapper.INSTANCE.toDto(newBot, null);
     }
-    public PlayerDto updatePlayerFiches(PlayerDto playerDto, int fiches ) {
-        Player player = playerRepository.getReferenceById(playerDto.getPlayerId());
+    public PlayerDto updatePlayerFiches(long playerId, int fiches ) {
+        Player player = playerRepository.getReferenceById(playerId);
         player.setFiches(fiches);
         Player updated =  playerRepository.save(player);
         return PlayerMapper.INSTANCE.toDto(updated, null);
     }
-    public PlayerDto acceptInvitationForAGame(PlayerDto playerDto) {
-        Player invitee = playerRepository.getReferenceById(playerDto.getPlayerId());
+    public PlayerDto acceptInvitationForAGame(ParamsDto params) {
+        Player invitee = playerRepository.getReferenceById(params.getSuppliedAcceptedPlayerId());
         invitee.setPlayerType(PlayerType.INVITEE);
         Player accepted =  playerRepository.save(invitee);
         return PlayerMapper.INSTANCE.toDto(accepted, null);
     }
-    public PlayerDto rejectInvitationForAGame(PlayerDto playerDto) {
-        Player invitee = playerRepository.getReferenceById(playerDto.getPlayerId());
+    public PlayerDto rejectInvitationForAGame(ParamsDto params) {
+        Player invitee = playerRepository.getReferenceById(params.getSuppliedRejectedPlayerId());
         invitee.setPlayerType(PlayerType.REJECTED);
         Player rejected =  playerRepository.save(invitee);
         return PlayerMapper.INSTANCE.toDto(rejected, null);
     }
-    public List<PlayerDto> seatOneUpForPlayer(PlayerDto playerDto) {
-        Player seatUp = playerRepository.getReferenceById(playerDto.getPlayerId());
+    public List<PlayerDto> seatOneUpForPlayer(long playerId) {
+        Player seatUp = playerRepository.getReferenceById(playerId);
         List<Player> allPlayersForTheGame = playerRepository.findByGame(seatUp.getGame());
 
         List<PlayerDto> playerDtos = allPlayersForTheGame.stream()

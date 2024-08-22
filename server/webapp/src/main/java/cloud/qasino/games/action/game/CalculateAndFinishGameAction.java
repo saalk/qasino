@@ -100,12 +100,11 @@ public class CalculateAndFinishGameAction extends GenericLookupsAction<EventOutp
             // en.getKey()
             // en.getValue()
             Optional<Visitor> initiator = visitorRepository.findVisitorByVisitorId(qasino.getGame().getInitiator());
-            Visitor initiatorFound = initiator.isPresent() ? initiator.get() : null;
-            VisitorDto visitorDto = VisitorMapper.INSTANCE.toDto(initiatorFound);
+            long initiatorFound = initiator.isPresent() ? initiator.get().getVisitorId() : null;
             resultsService.createResult(
-                    player,
-                    visitorDto,
-                    qasino.getGame(),
+                    qasino.getParams(),
+                    player.getPlayerId(),
+                    initiatorFound,
                     en.getValue(),
                     won
             );

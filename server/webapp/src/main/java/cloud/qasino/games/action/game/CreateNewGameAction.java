@@ -20,7 +20,8 @@ public class CreateNewGameAction extends GenericLookupsAction<EventOutput.Result
 
         qasino.setGame(gameService.setupNewGameWithPlayerInitiator(
                 qasino.getCreation(),
-                qasino.getParams().getSuppliedVisitorId()
+                qasino.getParams().getSuppliedVisitorId(),
+                qasino.getParams().getSuppliedLeagueId()
         ));
         qasino.getParams().setSuppliedGameId(qasino.getGame().getGameId());
         return EventOutput.Result.SUCCESS;

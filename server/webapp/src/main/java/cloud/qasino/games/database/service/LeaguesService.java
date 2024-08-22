@@ -50,9 +50,7 @@ public class LeaguesService {
         League retrievedLeague = leagueRepository.getReferenceById(savedLeague.getLeagueId());
         return LeagueMapper.INSTANCE.toDto(retrievedLeague);
     }
-
     public Long countByName(String name) {
         return leagueRepository.countByName(name);
-    };
-
+    }
 }

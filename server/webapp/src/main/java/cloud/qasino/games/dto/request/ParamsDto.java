@@ -22,7 +22,7 @@ public class ParamsDto {
     // TODO all logic for this ids
     private long suppliedInvitedVisitorId = 0;
     private long suppliedAcceptedPlayerId = 0;
-    private long suppliedDeclinedPlayerId = 0;
+    private long suppliedRejectedPlayerId = 0;
 
     // Events
     private QasinoEvent suppliedQasinoEvent = QasinoEvent.NONE;

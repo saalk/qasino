@@ -66,7 +66,7 @@ public class UpdateFichesForPlayerAction extends GenericLookupsAction<EventOutpu
                 cardMove.getStartFiches() +
                         calculateWinOrLoss(qasino, cardMove.getMove(), previousCard.get(), currentCard.get()));
         cardMoveRepository.save(cardMove);
-        qasino.getPlaying().setCurrentPlayer(playerService.updatePlayerFiches(qasino.getPlaying().getCurrentPlayer(), cardMove.getEndFiches()));
+        qasino.getPlaying().setCurrentPlayer(playerService.updatePlayerFiches(qasino.getPlaying().getCurrentPlayer().getPlayerId(), cardMove.getEndFiches()));
     }
     private int calculateWinOrLoss(Qasino qasino, Move move, Card previous, Card current) {
         int previousValue = PlayingCard.calculateValueWithDefaultHighlow(previous.getRankSuit(), qasino.getGame().getType());

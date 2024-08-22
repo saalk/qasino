@@ -239,7 +239,7 @@ public class GameThymeleafController extends AbstractThymeleafController {
         }
         // 3 - process
         loadVisitor.perform(qasino);
-        playerService.addBotPlayerToAGame(qasino.getGame(), qasino.getCreation().getSuppliedAvatar(), qasino.getCreation().getSuppliedAiLevel());
+        playerService.addBotPlayerToAGame(qasino.getParams(), qasino.getCreation().getSuppliedAvatar(), qasino.getCreation().getSuppliedAiLevel());
         loadVisitor.perform(qasino);
         // 4 - return response
         prepareQasino(response, qasino);
