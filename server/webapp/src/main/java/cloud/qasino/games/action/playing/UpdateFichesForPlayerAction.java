@@ -47,6 +47,8 @@ public class UpdateFichesForPlayerAction extends GenericLookupsAction<EventOutpu
                             qasino.getMessage().setConflictErrorMessage("Move",String.valueOf(cardMove.getMove()), "Action [" + String.valueOf(cardMove.getMove()) + "] invalid, no previous card dealt");
                             return EventOutput.Result.FAILURE;
                         }
+                        log.warn("UpdateFichesForPlayerAction cardMove {} ", cardMove);
+
                         updateWinOfLoss(qasino, cardMove, previousCardMoveCard.orElse(null));
                     }
                 }
@@ -85,18 +87,18 @@ public class UpdateFichesForPlayerAction extends GenericLookupsAction<EventOutpu
             // with values being equal, you don't win or loose
             return 0;
         }
-        if (move.equals(Move.HIGHER) && currentValue < previousValue) {
+        if (move.equals(Move.HIGHER) && (currentValue > previousValue)) {
             // predicted higher and it is
-            log.warn("predicted higher and it is");
+            log.warn("predicted [{}] higher and it is, returning {}", move, qasino.getGame().getAnte());
             return qasino.getGame().getAnte();
 
         }
-        if (move.equals(Move.LOWER) && currentValue > previousValue) {
+        if (move.equals(Move.LOWER) && (currentValue < previousValue)) {
             // predicted lower and it is
-            log.warn("predicted lower and it is");
+            log.warn("predicted [{}] lower and it is, returning {}",move,qasino.getGame().getAnte());
             return qasino.getGame().getAnte();
         }
-        log.warn("predicted lower or higher wrong");
+        log.warn("predicted lower or higher wrong return: {}",-qasino.getGame().getAnte());
         return -qasino.getGame().getAnte();
     }
 

@@ -61,7 +61,7 @@ public class GameService {
         if (retrievedGame.getPlaying() != null && retrievedGame.getPlayers().isEmpty()) {
             throw new MyNPException("findOneByGameId", "error [" + retrievedGame+ "]");
         }
-        log.warn("findOneByGameId {}", retrievedGame);
+//        log.warn("findOneByGameId {}", retrievedGame);
         return GameMapper.INSTANCE.toDto(retrievedGame, retrievedGame.getCards());
     };
     public GameDto findLatestGameForVisitorId(ParamsDto paramsDto){

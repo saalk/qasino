@@ -68,7 +68,7 @@ public class IsGameConsistentForGameEventAction extends GenericLookupsAction<Eve
                 if (noError) noError = gameShouldHaveCardsAndPlaying(qasino);
             }
         }
-        log.warn("isGameConsistentForGameEvent noerror {}", noError);
+//        log.warn("isGameConsistentForGameEvent noerror {}", noError);
         return noError ? EventOutput.Result.SUCCESS : EventOutput.Result.FAILURE;
     }
 
