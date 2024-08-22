@@ -72,15 +72,15 @@ public class UpdateFichesForPlayerAction extends GenericLookupsAction<EventOutpu
     }
     private int calculateWinOrLoss(Qasino qasino, Move move, Card previous, Card current) {
         int previousValue = PlayingCard.calculateValueWithDefaultHighlow(previous.getRankSuit(), qasino.getGame().getType());
-        log.warn("calculateWinOrLoss previousValue {} ", previousValue);
+//        log.warn("calculateWinOrLoss previousValue {} ", previousValue);
 
         int currentValue = PlayingCard.calculateValueWithDefaultHighlow(current.getRankSuit(), qasino.getGame().getType());
-        log.warn("calculateWinOrLoss currentValue {} ", currentValue);
+//        log.warn("calculateWinOrLoss currentValue {} ", currentValue);
 
         // calculate if the bet is added or subtracted
         if (previousValue == 0 || currentValue == 0) {
             // joker now or previous so ok you win the bet
-            log.warn("joker now or previous so ok you win the bet");
+//            log.warn("joker now or previous so ok you win the bet");
             return qasino.getGame().getAnte();
         }
         if (previousValue == currentValue) {
@@ -89,16 +89,16 @@ public class UpdateFichesForPlayerAction extends GenericLookupsAction<EventOutpu
         }
         if (move.equals(Move.HIGHER) && (currentValue > previousValue)) {
             // predicted higher and it is
-            log.warn("predicted [{}] higher and it is, returning {}", move, qasino.getGame().getAnte());
+//            log.warn("predicted [{}] higher and it is, returning {}", move, qasino.getGame().getAnte());
             return qasino.getGame().getAnte();
 
         }
         if (move.equals(Move.LOWER) && (currentValue < previousValue)) {
             // predicted lower and it is
-            log.warn("predicted [{}] lower and it is, returning {}",move,qasino.getGame().getAnte());
+//            log.warn("predicted [{}] lower and it is, returning {}",move,qasino.getGame().getAnte());
             return qasino.getGame().getAnte();
         }
-        log.warn("predicted lower or higher wrong return: {}",-qasino.getGame().getAnte());
+//        log.warn("predicted lower or higher wrong return: {}",-qasino.getGame().getAnte());
         return -qasino.getGame().getAnte();
     }
 
