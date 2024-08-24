@@ -25,6 +25,7 @@ public class PlayerDto {
     private int seat;
     private boolean human;
     private PlayerType playerType;
+    private int startFiches;
     private int fiches;
     private Avatar avatar;
     private String avatarName;

@@ -215,7 +215,7 @@ public class PlayingThymeleafController extends AbstractThymeleafController {
         // 4 - return response
         prepareQasino(response, qasino);
         model.addAttribute(qasino);
-        return "redirect:/visitor";
+        return "redirect:/play/" + qasino.getParams().getSuppliedGameId();
     }
 }
 

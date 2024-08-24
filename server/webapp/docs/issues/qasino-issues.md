@@ -69,6 +69,10 @@ left JOIN "playing" AS t ON t."game_id" = g."game_id"
 left JOIN "player" AS p ON p."player_id" = t."player_id"
 ORDER BY v."visitor_id";
 
+alter table "player"
+add "start_fiches" integer default (0);
+
+
 UPDATE "player" 
 SET  
     "game_id" = 12 ,  

@@ -153,7 +153,6 @@ public interface SeatMapper {
 
     @Named("seatStartBalance")
     default int seatStartBalance(Player player, @Context Playing playing) {
-        if (player.getVisitor() == null) return 0; // bots are no visitor
-        return player.getVisitor().getBalance();
+        return player.getStartFiches();
     }
 }

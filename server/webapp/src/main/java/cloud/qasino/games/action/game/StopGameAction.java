@@ -23,7 +23,7 @@ public class StopGameAction extends GenericLookupsAction<EventOutput.Result> {
     public EventOutput.Result perform(Qasino qasino) {
 
         if (qasino.getParams().getSuppliedGameEvent().equals(GameEvent.STOP)) {
-            qasino.setGame(gameService.updateStateForGame(qasino.getParams(), GameState.QUIT));
+            qasino.setGame(gameService.updateStateForGame(qasino.getParams(), GameState.STOPPED));
             return EventOutput.Result.SUCCESS;
         }
         return EventOutput.Result.FAILURE;

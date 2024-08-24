@@ -31,7 +31,7 @@ public enum GameState implements LabeledEnum {
 
     // ENDED
     FINISHED("finished", "Game finished, view results and setup a new one", GameStateGroup.FINISHED),
-    QUIT("quit", "Game stopped, setup a new one", GameStateGroup.FINISHED),
+    STOPPED("stopped", "Game stopped, setup a new one", GameStateGroup.FINISHED),
     CANCELLED("cancelled", "Game abandoned, setup a new one", GameStateGroup.FINISHED),
 
     // ERROR
