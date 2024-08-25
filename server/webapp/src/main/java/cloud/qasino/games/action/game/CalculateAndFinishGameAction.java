@@ -86,14 +86,17 @@ public class CalculateAndFinishGameAction extends GenericLookupsAction<EventOutp
 
         // rank playersProfit by highest desc and create results
         HashMap<Long, Integer> playerProfitSortedOnValue = ActionUtils.sortByValue(playersProfit);
+        log.warn("winner playerProfitSortedOnValue {}", playerProfitSortedOnValue.size());
 
         PlayerDto winner = null;
         for (Map.Entry<Long, Integer> en : playerProfitSortedOnValue.entrySet()) {
-
+            log.warn("winner key {}", en.getKey());
             PlayerDto player = ActionUtils.findPlayerByPlayerId(players, en.getKey());
+            log.warn("winner player {}", player);
             boolean won = false;
             // first player has highest profit and thus wins !!
             if (winner == null) {
+                log.warn("winner won {}", winner);
                 winner = player;
                 won = true;
             }

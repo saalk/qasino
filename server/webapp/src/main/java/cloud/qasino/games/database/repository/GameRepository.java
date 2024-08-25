@@ -157,13 +157,13 @@ public interface GameRepository extends JpaRepository<Game, Long> {
             "SELECT a.* FROM \"game\" as a JOIN \"player\" as b " +
                     "WHERE a.\"game_id\" = b.\"game_id\" " +
                     "AND b.\"visitor_id\" = :visitorId " +
-                    "AND a.\"state\" IN ('FINISHED','QUIT','CANCELLED') " +
+                    "AND a.\"state\" IN ('FINISHED','STOPPED','CANCELLED') " +
                     "ORDER BY a.\"updated\" DESC ";
     String COUNT_FINISHEDGAMES_BY_VISITOR_ID =
             "SELECT count(a.*) FROM \"game\" as a JOIN \"player\" as b " +
                     "WHERE a.\"game_id\" = b.\"game_id\" " +
                     "AND b.\"visitor_id\" = :visitorId " +
-                    "AND a.\"state\" IN ('FINISHED','QUIT','CANCELLED') ";
+                    "AND a.\"state\" IN ('FINISHED','STOPPED','CANCELLED') ";
 
     
     default String getYear() {
