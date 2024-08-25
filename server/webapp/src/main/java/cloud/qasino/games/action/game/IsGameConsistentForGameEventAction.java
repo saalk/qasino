@@ -77,6 +77,7 @@ public class IsGameConsistentForGameEventAction extends GenericLookupsAction<Eve
     private boolean noGameInSetupOrPlayingShouldAlreadyExist(Qasino qasino) {
 
         List<String> reasonPart = new ArrayList<>();
+        if (qasino.getGame() == null) return true;
         if (qasino.getGame().getState().getGroup() == GameStateGroup.SETUP) {
             reasonPart.add(GameStateGroup.SETUP.getLabel());
         } else if (qasino.getGame().getState().getGroup() == GameStateGroup.PREPARED) {

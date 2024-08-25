@@ -96,7 +96,10 @@ public class GameService {
     }
     public GameDto setupNewGameWithPlayerInitiator(CreationDto creation, long initiator, long leagueId) {
 //        log.warn("setupNewGameWithPlayerInitiator initiator [{}]",initiator);
-        League league = leagueRepository.getReferenceById(leagueId);
+        League league = null;
+        if (leagueId > 0) {
+            league = leagueRepository.getReferenceById(leagueId);
+        }
         Game game = new Game(
                 league,
                 creation.getSuppliedType().getLabel(),

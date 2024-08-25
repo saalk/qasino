@@ -49,10 +49,9 @@ public class Card {
     private Game game;
     @JsonIgnore
     // one [Card] can be part of one [Player] or none
-    @OneToOne(optional=true)
+    @OneToOne
     @JoinColumn(name = "player_id", referencedColumnName = "player_id", foreignKey =
-    @ForeignKey(name =
-            "fk_player_id"), nullable=true)
+    @ForeignKey(name ="fk_player_id"))
     private Player hand;
 
     // Normal fields

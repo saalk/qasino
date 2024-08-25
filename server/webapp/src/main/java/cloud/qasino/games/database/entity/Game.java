@@ -60,7 +60,7 @@ public class Game {
     // Foreign keys
     @JsonIgnore
     // many [Game] can be part of one [League]
-    @ManyToOne(cascade = CascadeType.DETACH)
+    @ManyToOne
     @JoinColumn(name = "league_id", referencedColumnName = "league_id", foreignKey = @ForeignKey
             (name = "fk_league_id"), nullable = true)
     private League league;
