@@ -51,6 +51,7 @@ public class ResultsService {
         } else {
             initiator  = null;
         }
+//        log.warn("result isWinner {}", (isWinner) ? "true" : "false");
         Result result = resultsRepository.save(new Result(
                 player,
                 initiator,

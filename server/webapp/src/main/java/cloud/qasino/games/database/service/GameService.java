@@ -135,9 +135,7 @@ public class GameService {
     }
     public GameDto updateStateForGame(ParamsDto paramsDto, GameState gameState) {
         Game game = gameRepository.getReferenceById(paramsDto.getSuppliedGameId());
-        log.warn("stop game 1 {}", game);
         game.setState(gameState);
-        log.warn("stop game 2 {}", game);
         Game newGame = gameRepository.save(game);
         return GameMapper.INSTANCE.toDto(newGame, newGame.getCards());
     }

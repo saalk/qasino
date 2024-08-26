@@ -41,7 +41,7 @@ public class PlayFirstMoveAction extends GenericLookupsAction<EventOutput.Result
         int howMany = 1;
 
         // Local fields
-        log.warn("PlayFirstMoveAction game {}",qasino.getGame());
+//        log.warn("PlayFirstMoveAction game {}",qasino.getGame());
         GameDto game = qasino.getGame();
         PlayerDto firstPlayer = StreamUtil.findFirstPlayerBySeat(game.getPlayers());
 

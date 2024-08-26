@@ -74,7 +74,7 @@ public class Result {
     @Setter(AccessLevel.NONE)
     @Column(name = "fiches_won")
     private int fichesWon;
-    @Column(name = "winner", length = 2)
+    @Column(name = "winner")
     private boolean winner;
 
     // References - the actual FK are in other tables

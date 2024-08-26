@@ -100,12 +100,10 @@ public class PlayingService {
         Player player = playerRepository.getReferenceById(playing.getCurrentPlayer().getPlayerId());
         for (CardDto card : topCardsInStock) {
             Card cardDealt = cardRepository.getReferenceById(card.getCardId());
-            log.warn("card <{}>", card);
 
             cardDealt.setLocation(newLocation);
             cardDealt.setFace(face);
             cardDealt.setHand(player);
-            log.warn("cardDealt <{}>", cardDealt);
             cardsDealt.add(cardRepository.save(cardDealt));
             storeCardMoveForPlaying(playing.getPlayingId(),cardDealt,move,newLocation);
         }

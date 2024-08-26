@@ -33,7 +33,7 @@ public interface ResultMapper {
     @Mapping(target = "avatar", source = "result", qualifiedByName = "avatar")
     @Mapping(target = "avatarName", source = "result", qualifiedByName = "avatarName")
     @Mapping(target = "aiLevel", source = "result", qualifiedByName = "aiLevel")
-    @Mapping(target = "winner", source = "result", qualifiedByName = "winner")
+//    @Mapping(target = "winner", source = "result", qualifiedByName = "winner")
     @Mapping(target = "username", source = "result", qualifiedByName = "username")
     @Mapping(target = "alias", source = "result", qualifiedByName = "alias")
     @Mapping(target = "balance", source = "result", qualifiedByName = "balance")
@@ -97,10 +97,10 @@ public interface ResultMapper {
     default AiLevel aiLevel(Result result) {
         return result.getPlayer().getAiLevel();
     }
-    @Named("winner")
-    default boolean winner(Result result) {
-        return result.getPlayer().isWinner();
-    }
+//    @Named("winner")
+//    default boolean winner(Result result) {
+//        return result.getPlayer().isWinner();
+//    }
     @Named("username")
     default String username(Result result) {
         if (result.getVisitor() == null)  return "";

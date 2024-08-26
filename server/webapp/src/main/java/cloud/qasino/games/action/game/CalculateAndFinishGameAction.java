@@ -1,8 +1,7 @@
 package cloud.qasino.games.action.game;
 
-import cloud.qasino.games.action.common.GenericLookupsAction;
-import cloud.qasino.games.dto.Qasino;
 import cloud.qasino.games.action.common.ActionUtils;
+import cloud.qasino.games.action.common.GenericLookupsAction;
 import cloud.qasino.games.database.entity.CardMove;
 import cloud.qasino.games.database.entity.enums.game.gamestate.GameStateGroup;
 import cloud.qasino.games.database.repository.CardRepository;
@@ -11,10 +10,9 @@ import cloud.qasino.games.database.security.Visitor;
 import cloud.qasino.games.database.security.VisitorRepository;
 import cloud.qasino.games.database.service.PlayingService;
 import cloud.qasino.games.database.service.ResultsService;
+import cloud.qasino.games.dto.Qasino;
 import cloud.qasino.games.dto.model.PlayerDto;
 import cloud.qasino.games.dto.model.ResultDto;
-import cloud.qasino.games.dto.model.VisitorDto;
-import cloud.qasino.games.dto.mapper.VisitorMapper;
 import cloud.qasino.games.pattern.statemachine.event.EventOutput;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
@@ -36,6 +34,7 @@ public class CalculateAndFinishGameAction extends GenericLookupsAction<EventOutp
     @Resource CardRepository cardRepository;
     @Resource ResultsRepository resultsRepository;
     @Resource VisitorRepository visitorRepository;
+    // @formatter:on
 
     @Override
     public EventOutput.Result perform(Qasino qasino) {
@@ -85,25 +84,17 @@ public class CalculateAndFinishGameAction extends GenericLookupsAction<EventOutp
         }
 
         // rank playersProfit by highest desc and create results
-        HashMap<Long, Integer> playerProfitSortedOnValue = ActionUtils.sortByValue(playersProfit);
-        log.warn("winner playerProfitSortedOnValue {}", playerProfitSortedOnValue.size());
+        HashMap<Long, Integer> playerProfitSortedOnValue = ActionUtils.sortByValueDesc(playersProfit);
 
-        PlayerDto winner = null;
+        boolean won = true;
         for (Map.Entry<Long, Integer> en : playerProfitSortedOnValue.entrySet()) {
-            log.warn("winner key {}", en.getKey());
             PlayerDto player = ActionUtils.findPlayerByPlayerId(players, en.getKey());
-            log.warn("winner player {}", player);
-            boolean won = false;
             // first player has highest profit and thus wins !!
-            if (winner == null) {
-                log.warn("winner won {}", winner);
-                winner = player;
-                won = true;
-            }
-            // en.getKey()
-            // en.getValue()
             Optional<Visitor> initiator = visitorRepository.findVisitorByVisitorId(qasino.getGame().getInitiator());
             long initiatorFound = initiator.isPresent() ? initiator.get().getVisitorId() : null;
+//            log.warn("result isWinner {}", (won) ? "true" : "false");
+//            log.warn("result player {} value {}", player.getPlayerId(), en.getValue() );
+
             resultsService.createResult(
                     qasino.getParams(),
                     player.getPlayerId(),
@@ -111,6 +102,10 @@ public class CalculateAndFinishGameAction extends GenericLookupsAction<EventOutp
                     en.getValue(),
                     won
             );
+            if (won) {
+                won = false; // there can be only one
+            }
+
         }
         qasino.setResults(resultsService.findByGame(qasino.getParams()));
         return EventOutput.Result.SUCCESS;

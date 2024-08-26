@@ -47,8 +47,6 @@ public class UpdateFichesForPlayerAction extends GenericLookupsAction<EventOutpu
                             qasino.getMessage().setConflictErrorMessage("Move",String.valueOf(cardMove.getMove()), "Action [" + String.valueOf(cardMove.getMove()) + "] invalid, no previous card dealt");
                             return EventOutput.Result.FAILURE;
                         }
-                        log.warn("UpdateFichesForPlayerAction cardMove {} ", cardMove);
-
                         updateWinOfLoss(qasino, cardMove, previousCardMoveCard.orElse(null));
                     }
                 }
