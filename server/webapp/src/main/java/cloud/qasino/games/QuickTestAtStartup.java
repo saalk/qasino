@@ -58,14 +58,14 @@ public class QuickTestAtStartup implements ApplicationRunner {
     @Override
     public void run(ApplicationArguments args) throws Exception {
         String[] profiles = activeProfiles.split(",");
-        log.warn("\nCurrently active profile - {} ", profiles[0]);
+        log.info("\nCurrently active profile - {} ", profiles[0]);
 
         String optionTest = "";
         if (args.getOptionValues("test") != null) {
             optionTest = args.getOptionValues("test").toString();
         }
 
-        log.warn("\nApplication started with argument '--test=' is: \n {}\n",
+        log.info("\nApplication started with argument '--test=' is: \n {}\n",
                 optionTest);
         if (profiles[0].equals("dev") && !optionTest.isEmpty() && !optionTest.equals("[skip]")) tests();
     }

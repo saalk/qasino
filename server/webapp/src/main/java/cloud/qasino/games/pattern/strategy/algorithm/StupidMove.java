@@ -19,20 +19,20 @@ public class StupidMove extends NextMoveCalculator implements MovePredictor {
 
         // fallback to random move when the game has no cards yet
         if (game == null || game.getCards() == null) {
-            log.warn("StupidMove game.getCards is {}", game.getCards());
+            log.info("StupidMove game.getCards is {}", game.getCards());
             Move move = new RandomMove().predictMove(game);
-            log.warn("StupidMove fallback to randomMove {}", move);
+            log.info("StupidMove fallback to randomMove {}", move);
             return move;
         }
 
         List<CardDto> sortedCardsInHand = StreamUtil.sortCardsOnSequenceWithStream(game.getCards(), Location.HAND);
 //        Optional<Card> lastCardPlayed = StreamUtil.findLastCardInSortedList(sortedCardsInHand);
-//        log.warn("StupidMove lastCardPlayed is {}", lastCardPlayed);
+//        log.info("StupidMove lastCardPlayed is {}", lastCardPlayed);
 //
 //        // fallback to random move when the game has no cards yet
 //        if (lastCardPlayed.isEmpty())  {
 //            Move move = new RandomMove().predictMove(game);
-//            log.warn("StupidMove fallback to randomMove {}", move);
+//            log.info("StupidMove fallback to randomMove {}", move);
 //            return move;
 //        }
 
@@ -41,10 +41,10 @@ public class StupidMove extends NextMoveCalculator implements MovePredictor {
         double averageCardsLeftInStockValue = MathUtil.roundToNDigits(totalValueCardsInStock / (double) sortedCardsInHand.size(), 1);
         double averageValueDeck = MathUtil.roundToNDigits(totalValueDeck / (double) game.getCards().size(), 1);
 
-        log.warn("StupidMove averageCardsLeftInStockValue is {}", averageCardsLeftInStockValue);
-        log.warn("StupidMove averageValueDeck is {}", averageValueDeck);
+        log.info("StupidMove averageCardsLeftInStockValue is {}", averageCardsLeftInStockValue);
+        log.info("StupidMove averageValueDeck is {}", averageValueDeck);
 
-        log.warn("StupidMove is {}", (averageCardsLeftInStockValue > averageValueDeck ? Move.LOWER : Move.HIGHER));
+        log.info("StupidMove is {}", (averageCardsLeftInStockValue > averageValueDeck ? Move.LOWER : Move.HIGHER));
 
         return (averageCardsLeftInStockValue > averageValueDeck ? Move.LOWER : Move.HIGHER);
     }

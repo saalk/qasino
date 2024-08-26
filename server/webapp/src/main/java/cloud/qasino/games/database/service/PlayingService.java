@@ -94,7 +94,7 @@ public class PlayingService {
 //    @Transactional
     public void dealCardsToPlayer(PlayingDto playing, GameDto game, Move move, Location oldLocation, Location newLocation, Face face, int howMany) {
         List<CardDto> topCardsInStock = getTopNCardsByLocationForGame(game, oldLocation, howMany);
-//        log.warn("topCardsInStock <{}>", topCardsInStock);
+//        log.info("topCardsInStock <{}>", topCardsInStock);
         List<Card> cardsDealt = new ArrayList<>();
 
         Player player = playerRepository.getReferenceById(playing.getCurrentPlayer().getPlayerId());
@@ -125,7 +125,7 @@ public class PlayingService {
                 activePlaying.getCurrentRoundNumber(),
                 activePlaying.getPlayer().getSeat(),
                 activePlaying.getCurrentMoveNumber());
-//        log.warn("newMove <{}>", newMove);
+//        log.info("newMove <{}>", newMove);
         cardMoveRepository.save(newMove);
     }
 

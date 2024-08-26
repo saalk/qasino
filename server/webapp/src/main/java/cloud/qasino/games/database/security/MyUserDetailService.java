@@ -38,23 +38,23 @@ public class MyUserDetailService implements UserDetailsService {
         if (visitor == null) {
             throw new UsernameNotFoundException("Visitor [" + username + "] not found");
         } else {
-            log.warn("visitor found: {}", visitor);
+//            log.info("visitor found: {}", visitor);
             OnlineVisitorsPerDay.getInstance().newLogon();
 
         }
         MyUserPrincipal principal = new MyUserPrincipal(visitor);
-        log.warn("Principal found: {}", principal.toString());
+//        log.info("Principal found: {}", principal.toString());
         return principal;
     }
 
     public UserDetails loadUserByUsername(VisitorDto visitorDto) throws UsernameNotFoundException {
         final Visitor visitor = visitorRepository.findByUsername(visitorDto.getUsername());
-        log.warn("visitor found: {}",visitor.toString());
+//        log.info("visitor found: {}",visitor.toString());
         if (visitor == null) {
             throw new UsernameNotFoundException("Visitor [" + visitorDto.getUsername() + "] not found");
         }
         MyUserPrincipal principal = new MyUserPrincipal(visitor);
-        log.warn("Principal found: {}", principal.toString());
+//        log.info("Principal found: {}", principal.toString());
         return principal;
     }
 

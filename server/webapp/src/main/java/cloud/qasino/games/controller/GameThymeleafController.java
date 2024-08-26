@@ -77,7 +77,7 @@ public class GameThymeleafController extends AbstractThymeleafController {
 //        "ante", "type", "style", "avatar",
         // 2 - validate input
         if (result.hasErrors()) {
-            log.warn("errors in supplied data {}", result);
+            log.info("errors in supplied data {}", result);
             prepareQasino(response, qasino);
             model.addAttribute(qasino);
             return ERROR_VIEW_LOCATION;
@@ -86,14 +86,14 @@ public class GameThymeleafController extends AbstractThymeleafController {
         loadVisitor.perform(qasino);
         output = isGameConsistent.perform(qasino);
         if (FAILURE.equals(output)) {
-            log.warn("errors !!");
+            log.info("errors !!");
             prepareQasino(response, qasino);
             model.addAttribute(qasino);
             return ERROR_VIEW_LOCATION;
         }
         output = createNewGame.perform(qasino);
         if (FAILURE.equals(output)) {
-            log.warn("errors !!!");
+            log.info("errors !!!");
             prepareQasino(response, qasino);
             model.addAttribute(qasino);
             return ERROR_VIEW_LOCATION;
@@ -141,7 +141,7 @@ public class GameThymeleafController extends AbstractThymeleafController {
 //      "ante"
         // 2 - validate input
         if (result.hasErrors()) {
-            log.warn("errors in supplied data {}", result);
+            log.info("errors in supplied data {}", result);
             prepareQasino(response, qasino);
             model.addAttribute(qasino);
             return ERROR_VIEW_LOCATION;
@@ -196,7 +196,7 @@ public class GameThymeleafController extends AbstractThymeleafController {
         qasino.getParams().setSuppliedGameId(Long.parseLong(id));
         // 2 - validate input
         if (result.hasErrors()) {
-            log.warn("errors in supplied data {}", result);
+            log.info("errors in supplied data {}", result);
             prepareQasino(response, qasino);
             model.addAttribute(qasino);
             return ERROR_VIEW_LOCATION;
@@ -232,7 +232,7 @@ public class GameThymeleafController extends AbstractThymeleafController {
 //        "avatar", "aiLevel"
         // 2 - validate input
         if (result.hasErrors()) {
-            log.warn("errors in supplied data {}", result);
+            log.info("errors in supplied data {}", result);
             prepareQasino(response, qasino);
             model.addAttribute(qasino);
             return ERROR_VIEW_LOCATION;
@@ -263,7 +263,7 @@ public class GameThymeleafController extends AbstractThymeleafController {
         qasino.getParams().setSuppliedGameId(Long.parseLong(id));
         // 2 - validate input
         if (result.hasErrors()) {
-            log.warn("errors in supplied data {}", result);
+            log.info("errors in supplied data {}", result);
             prepareQasino(response, qasino);
             model.addAttribute(qasino);
             return ERROR_VIEW_LOCATION;

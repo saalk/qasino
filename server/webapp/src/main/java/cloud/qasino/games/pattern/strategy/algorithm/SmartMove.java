@@ -19,26 +19,26 @@ public class SmartMove extends NextMoveCalculator implements MovePredictor {
 
         // fallback to random move when the game has no cards yet
         if (game == null || game.getCards() == null) {
-            log.warn("SmartMove game.getCards is {}", game.getCards());
+            log.info("SmartMove game.getCards is {}", game.getCards());
             Move move = new RandomMove().predictMove(game);
-            log.warn("SmartMove fallback to randomMove {}", move);
+            log.info("SmartMove fallback to randomMove {}", move);
             return move;
         }
 
         List<CardDto> sortedCardsInHand = StreamUtil.sortCardsOnSequenceWithStream(game.getCards(), Location.HAND);
         if (sortedCardsInHand.isEmpty()) {
-            log.warn("SmartMove sortedCardsInHand is {}", sortedCardsInHand);
+            log.info("SmartMove sortedCardsInHand is {}", sortedCardsInHand);
             Move move = new RandomMove().predictMove(game);
-            log.warn("SmartMove fallback to randomMove {}", move);
+            log.info("SmartMove fallback to randomMove {}", move);
             return move;
         }
 
 //        Optional<Card> lastCardPlayed = StreamUtil.findLastCardInSortedList(sortedCardsInHand);
 //
-//        log.warn("SmartMove lastCardPlayed is {}", lastCardPlayed);
+//        log.info("SmartMove lastCardPlayed is {}", lastCardPlayed);
 //        if (lastCardPlayed.isEmpty()) {
 //            Move move = new RandomMove().predictMove(game);
-//            log.warn("SmartMove fallback to randomMove {}", move);
+//            log.info("SmartMove fallback to randomMove {}", move);
 //            return move;
 //        }
         // fallback to random move when the game has no cards yet
@@ -48,10 +48,10 @@ public class SmartMove extends NextMoveCalculator implements MovePredictor {
         double averageCardsLeftInStockValue = MathUtil.roundToNDigits(totalValueCardsInStock / (double) sortedCardsInHand.size(), 1);
         double averageValueDeck = MathUtil.roundToNDigits(totalValueDeck / (double) game.getCards().size(), 1);
 
-        log.warn("SmartMove averageCardsLeftInStockValue is {}", averageCardsLeftInStockValue);
-        log.warn("SmartMove averageValueDeck is {}", averageValueDeck);
+        log.info("SmartMove averageCardsLeftInStockValue is {}", averageCardsLeftInStockValue);
+        log.info("SmartMove averageValueDeck is {}", averageValueDeck);
 
-        log.warn("SmartMove is {}", (averageCardsLeftInStockValue > averageValueDeck ? Move.LOWER : Move.HIGHER));
+        log.info("SmartMove is {}", (averageCardsLeftInStockValue > averageValueDeck ? Move.LOWER : Move.HIGHER));
 
         return (averageCardsLeftInStockValue > averageValueDeck ? Move.LOWER : Move.HIGHER);
     }

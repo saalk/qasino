@@ -65,10 +65,10 @@ public abstract class GenericLookupsAction<OUTPUT> {
     protected boolean refreshOrFindLatestGame(Qasino qasino) {
         if (qasino.getParams().getSuppliedGameId() > 0) {
             qasino.setGame(gameService.findOneByGameId(qasino.getParams()));
-//            log.warn("refreshOrFindLatestGame by game id {}", qasino.getGame());
+//            log.info("refreshOrFindLatestGame by game id {}", qasino.getGame());
             if (qasino.getGame() == null) return false; // 404 not found
         } else {
-//            log.warn("refreshOrFindLatestGame by visitor id {}", qasino.getGame());
+//            log.info("refreshOrFindLatestGame by visitor id {}", qasino.getGame());
             qasino.setGame(gameService.findLatestGameForVisitorId(qasino.getParams()));
             if (qasino.getGame() == null) return true; // 200 no game yet
             qasino.getParams().setSuppliedGameId(qasino.getGame().getGameId());

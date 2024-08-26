@@ -162,14 +162,14 @@ public class VisitorService {
         Visitor user = visitorRepository.findByUsername(search.getUsername());
         if (user == null) {
             saveNewUser(search);
-            log.warn("createUserIfNotFound: {}",user);
+            log.info("createUserIfNotFound: {}",user);
         }
     }
     void createAdminIfNotFound(Visitor search) {
         Visitor admin = visitorRepository.findByUsername(search.getUsername());
         if (admin == null) {
             saveNewAdmin(search);
-            log.warn("createAdminIfNotFound: {}",admin);
+            log.info("createAdminIfNotFound: {}",admin);
         }
     }
 }

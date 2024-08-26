@@ -32,7 +32,7 @@
 //    @Bean
 //    @Override
 //    public DataSource dataSource() {
-//        log.warn("Datasource for in-memory database");
+//        log.info("Datasource for in-memory database");
 //        DriverManagerDataSource dataSource = new DriverManagerDataSource();
 //        dataSource.setDriverClassName("org.h2.Driver");
 //        dataSource.setUrl("jdbc:h2:mem:test;DB_CLOSE_DELAY=-1");
@@ -46,7 +46,7 @@
 //    public EntityManagerFactory entityManagerFactory(final DataSource dataSource,
 //                                                     @Value("${param.database.generate.tables:true}") final boolean isGeneratingTables,
 //                                                     @Value("${param.database.show.sql:true}") final boolean isShowingSql) {
-//        log.warn("Entity Manager Factory for in-memory database");
+//        log.info("Entity Manager Factory for in-memory database");
 //        HibernateJpaVendorAdapter vendor = new HibernateJpaVendorAdapter();
 //        vendor.setGenerateDdl(isGeneratingTables);
 //        vendor.setShowSql(isShowingSql);

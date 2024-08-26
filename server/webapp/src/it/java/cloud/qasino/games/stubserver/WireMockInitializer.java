@@ -49,7 +49,7 @@ public class WireMockInitializer implements ApplicationContextInitializer<Config
 
         configurableApplicationContext.addApplicationListener(applicationEvent -> {
             if (applicationEvent instanceof ContextClosedEvent) {
-                log.warn("!!! Shutting down wiremock server !!! ... not happy with when this is happening, do some investigations why");
+                log.info("!!! Shutting down wiremock server !!! ... not happy with when this is happening, do some investigations why");
                 wireMockServer.stop();
             }
         });

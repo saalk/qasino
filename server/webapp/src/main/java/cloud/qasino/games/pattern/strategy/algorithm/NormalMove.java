@@ -22,20 +22,20 @@ public class NormalMove extends NextMoveCalculator implements MovePredictor {
 
         // fallback to random move when the game has no cards yet
         if (game == null || game.getCards() == null) {
-            log.warn("NormalMove game.getCards is {}", game.getCards());
+            log.info("NormalMove game.getCards is {}", game.getCards());
             Move move = new RandomMove().predictMove(game);
-            log.warn("NormalMove fallback game.getCards() == null to randomMove {}", move);
+            log.info("NormalMove fallback game.getCards() == null to randomMove {}", move);
             return move;
         }
 
         List<CardDto> sortedCardsInHand = StreamUtil.sortCardsOnSequenceWithStream(game.getCards(), Location.HAND);
         Optional<CardDto> lastCardPlayed = StreamUtil.findLastCardInSortedList(sortedCardsInHand);
-        log.warn("NormalMove lastCardPlayed is {}", lastCardPlayed);
+        log.info("NormalMove lastCardPlayed is {}", lastCardPlayed);
 
         // fallback to random move when the game has no cards yet
         if (lastCardPlayed.isEmpty()) {
             Move move = new RandomMove().predictMove(game);
-            log.warn("NormalMove fallback lastCardPlayed.isEmpty() to randomMove {}", move);
+            log.info("NormalMove fallback lastCardPlayed.isEmpty() to randomMove {}", move);
             return move;
         }
 
@@ -43,10 +43,10 @@ public class NormalMove extends NextMoveCalculator implements MovePredictor {
         double averageValueDeck = MathUtil.roundToNDigits(totalValueDeck / (double) game.getCards().size(), 1);
         int valuePreviousCard = PlayingCard.calculateValueWithDefaultHighlow(lastCardPlayed.get().getRankSuit(), Type.HIGHLOW);
 
-        log.warn("NormalMove averageValueDeck is {}", averageValueDeck);
-        log.warn("NormalMove valuePreviousCard is {}", valuePreviousCard);
+        log.info("NormalMove averageValueDeck is {}", averageValueDeck);
+        log.info("NormalMove valuePreviousCard is {}", valuePreviousCard);
 
-        log.warn("NormalMove is {}", (valuePreviousCard > averageValueDeck ? Move.LOWER : Move.HIGHER));
+        log.info("NormalMove is {}", (valuePreviousCard > averageValueDeck ? Move.LOWER : Move.HIGHER));
 
         return (valuePreviousCard > averageValueDeck ? Move.LOWER : Move.HIGHER);
     }

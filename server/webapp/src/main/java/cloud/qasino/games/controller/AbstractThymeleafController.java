@@ -45,35 +45,35 @@ public class AbstractThymeleafController {
     }
     public void logQasino(Qasino qasino) {
         try {
-//            log.warn("Qasino.getNavBarItems pretty print = {} ", prettyPrint(qasino.getNavBarItems()));
-//            log.warn("----------------------------------------");
-            log.warn("Qasino.getMessage pretty print = {} ", prettyPrint(qasino.getMessage().getAction()));
-            log.warn("----------------------------------------");
-//            log.warn("Qasino.getParams pretty print = {} ", prettyPrint(qasino.getParams()));
-//            log.warn("----------------------------------------");
-//            log.warn("Qasino.getCreation print = {} ", prettyPrint(qasino.getCreation()));
-//            log.warn("----------------------------------------");
-//            log.warn("Qasino.getVisitor pretty print = {} ", prettyPrint(qasino.getVisitor()));
-//            log.warn("----------------------------------------");
-//            log.warn("Qasino.getGame pretty print = {} ", prettyPrint(qasino.getGame()));
-//            log.warn("----------------------------------------");
-//            log.warn("Qasino.getPlaying pretty print = {} ", prettyPrint(qasino.getPlaying()));
-//            log.warn("----------------------------------------");
-//            log.warn("Qasino.getResults pretty print = {} ", prettyPrint(qasino.getResults()));
-//            log.warn("----------------------------------------");
-//            log.warn("Qasino.getInvitations pretty print = {} ", prettyPrint(qasino.getInvitations()));
-//            log.warn("----------------------------------------");
-//            log.warn("Qasino.getLeague pretty print = {} ", prettyPrint(qasino.getLeague()));
-//            log.warn("----------------------------------------");
-//            log.warn("Qasino.getEnumOverview pretty print = {} ", prettyPrint(qasino.getEnumOverview()));
-//            log.warn("----------------------------------------");
-//            log.warn("Qasino.getStatistics pretty print = {} ", prettyPrint(qasino.getStatistics()));
+//            log.info("Qasino.getNavBarItems pretty print = {} ", prettyPrint(qasino.getNavBarItems()));
+//            log.info("----------------------------------------");
+            log.info("Qasino.getMessage pretty print = {} ", prettyPrint(qasino.getMessage().getAction()));
+            log.info("----------------------------------------");
+//            log.info("Qasino.getParams pretty print = {} ", prettyPrint(qasino.getParams()));
+//            log.info("----------------------------------------");
+//            log.info("Qasino.getCreation print = {} ", prettyPrint(qasino.getCreation()));
+//            log.info("----------------------------------------");
+//            log.info("Qasino.getVisitor pretty print = {} ", prettyPrint(qasino.getVisitor()));
+//            log.info("----------------------------------------");
+//            log.info("Qasino.getGame pretty print = {} ", prettyPrint(qasino.getGame()));
+//            log.info("----------------------------------------");
+//            log.info("Qasino.getPlaying pretty print = {} ", prettyPrint(qasino.getPlaying()));
+//            log.info("----------------------------------------");
+//            log.info("Qasino.getResults pretty print = {} ", prettyPrint(qasino.getResults()));
+//            log.info("----------------------------------------");
+//            log.info("Qasino.getInvitations pretty print = {} ", prettyPrint(qasino.getInvitations()));
+//            log.info("----------------------------------------");
+//            log.info("Qasino.getLeague pretty print = {} ", prettyPrint(qasino.getLeague()));
+//            log.info("----------------------------------------");
+//            log.info("Qasino.getEnumOverview pretty print = {} ", prettyPrint(qasino.getEnumOverview()));
+//            log.info("----------------------------------------");
+//            log.info("Qasino.getStatistics pretty print = {} ", prettyPrint(qasino.getStatistics()));
         } catch (JsonProcessingException e) {
             try {
                 var gson = new Gson();
-                log.warn("Qasino gson (pretty print failed) = {} ", gson.toJson(qasino));
+                log.info("Qasino gson (pretty print failed) = {} ", gson.toJson(qasino));
             } catch (StackOverflowError s){
-                log.warn("Qasino gson and pretty print failed");
+                log.info("Qasino gson and pretty print failed");
             }
         }
     }

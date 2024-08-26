@@ -36,7 +36,7 @@
 //        waitForExecutionsToComplete(requestId, expectedState, customerId, null);
 //
 //        final CreditCardRequestEntity request = requestService.getCreditCardRequest(requestId, customerId);
-//        log.warn("Waiting finished, current state is {}", request.getCurrentState());
+//        log.info("Waiting finished, current state is {}", request.getCurrentState());
 //        if (!expectedState.equals(request.getCurrentState())) {
 //            throw new RuntimeException(String.format(
 //                    "Wrong end state reached, state is %s instead of %s",
@@ -55,7 +55,7 @@
 //        waitForExecutionsToComplete(requestId, expectedState, customerId, waitTime);
 //
 //        final CreditCardRequestEntity request = requestService.getCreditCardRequest(requestId, customerId);
-//        log.warn("Waiting finished, current state is {}", request.getCurrentState());
+//        log.info("Waiting finished, current state is {}", request.getCurrentState());
 //        if (!expectedState.equals(request.getCurrentState())) {
 //            throw new RuntimeException(String.format(
 //                    "Wrong end state reached, state is %s instead of %s",
@@ -72,11 +72,11 @@
 //                    .pollInterval(new Duration(250, TimeUnit.MILLISECONDS))
 //                    .until(() -> {
 //                        final CreditCardsStates currentState = requestService.getCreditCardRequest(requestId, customerId).getCurrentState();
-//                        log.warn("Current state of request is {}", currentState);
+//                        log.info("Current state of request is {}", currentState);
 //                        return expectedState.equals(currentState) || endStates.contains(currentState);
 //                    });
 //        } catch (ConditionTimeoutException e) {
-//            log.warn("No end state reached, current state: {}",
+//            log.info("No end state reached, current state: {}",
 //                    requestService.getCreditCardRequest(requestId, customerId).getCurrentState());
 //            throw e;
 //        }
@@ -115,12 +115,12 @@
 //    public void cancelAllRequestsForCustomer(String customerId) {
 //        List<CreditCardRequestEntity> preAuthorizedRequests = requestService.getPreAuthorizedRequestsForCustomerForRequestType(customerId, CreditCardsRequestTypes.APPLY_CARD_SERVICE);
 //        if (preAuthorizedRequests != null && !preAuthorizedRequests.isEmpty()) {
-//            log.warn("pre authorized requests exist for this request id");
+//            log.info("pre authorized requests exist for this request id");
 //            requestService.batchUpdateCreditCardRequestList(preAuthorizedRequests, CreditCardsStates.CANCELLED);
 //        }
 //        List<CreditCardRequestEntity> postAuthorizedRequests = requestService.getPostAuthorizedRequestsForCustomer(customerId);
 //        if (postAuthorizedRequests != null && !postAuthorizedRequests.isEmpty()) {
-//            log.warn("post authorized requests exist for this request id");
+//            log.info("post authorized requests exist for this request id");
 //            requestService.batchUpdateCreditCardRequestList(postAuthorizedRequests, CreditCardsStates.CANCELLED);
 //        }
 //    }

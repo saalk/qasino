@@ -146,10 +146,10 @@ public class PlayingThymeleafController extends AbstractThymeleafController {
 //        result = canPlayerStillPlay.perform(qasino); // for now stop after one round
         output = isPlayerHumanAction.perform(qasino);
         if (SUCCESS.equals(output)) {
-            log.warn("playNextHumanMoveAction {}", qasino.getParams().getSuppliedGameEvent());
+            log.info("playNextHumanMoveAction {}", qasino.getParams().getSuppliedGameEvent());
             playNextHumanMoveAction.perform(qasino);
         } else {
-            log.warn("playNextBotMoveAction {}", qasino.getParams().getSuppliedGameEvent());
+            log.info("playNextBotMoveAction {}", qasino.getParams().getSuppliedGameEvent());
             playNextBotMoveAction.perform(qasino);
         }
         output = updatePlayingStateForGame.perform(qasino);
@@ -190,7 +190,7 @@ public class PlayingThymeleafController extends AbstractThymeleafController {
         qasino.getParams().setSuppliedGameId(Long.parseLong(id));
         // 2 - validate input
         if (result.hasErrors()) {
-            log.warn("errors in supplied data {}", result);
+            log.info("errors in supplied data {}", result);
             prepareQasino(response, qasino);
             model.addAttribute(qasino);
             return ERROR_VIEW_LOCATION;

@@ -88,7 +88,7 @@ public class VisitorThymeleafController extends AbstractThymeleafController {
         qasino.getParams().setSuppliedVisitorUsername(principal.getName());
         // 2 - validate input
         if (result.hasErrors()) {
-            log.warn("errors in supplied data {}", result);
+            log.info("errors in supplied data {}", result);
             prepareQasino(response, qasino);
             model.addAttribute(qasino);
             return ERROR_VIEW_LOCATION;

@@ -55,7 +55,7 @@ public class CalculateAndFinishGameAction extends GenericLookupsAction<EventOutp
             return EventOutput.Result.SUCCESS;
         }
 
-//        log.warn("CalculateAndFinishGameAction {}",qasino.getGame());
+//        log.info("CalculateAndFinishGameAction {}",qasino.getGame());
         // make a players profit list
         HashMap<Long, Integer> playersProfit = new HashMap<>();
         List<PlayerDto> players = qasino.getGame().getPlayers();
@@ -92,8 +92,8 @@ public class CalculateAndFinishGameAction extends GenericLookupsAction<EventOutp
             // first player has highest profit and thus wins !!
             Optional<Visitor> initiator = visitorRepository.findVisitorByVisitorId(qasino.getGame().getInitiator());
             long initiatorFound = initiator.isPresent() ? initiator.get().getVisitorId() : null;
-//            log.warn("result isWinner {}", (won) ? "true" : "false");
-//            log.warn("result player {} value {}", player.getPlayerId(), en.getValue() );
+//            log.info("result isWinner {}", (won) ? "true" : "false");
+//            log.info("result player {} value {}", player.getPlayerId(), en.getValue() );
 
             resultsService.createResult(
                     qasino.getParams(),

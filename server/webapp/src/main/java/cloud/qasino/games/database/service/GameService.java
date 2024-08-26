@@ -61,7 +61,7 @@ public class GameService {
         if (retrievedGame.getPlaying() != null && retrievedGame.getPlayers().isEmpty()) {
             throw new MyNPException("findOneByGameId", "error [" + retrievedGame+ "]");
         }
-//        log.warn("findOneByGameId {}", retrievedGame);
+//        log.info("findOneByGameId {}", retrievedGame);
         return GameMapper.INSTANCE.toDto(retrievedGame, retrievedGame.getCards());
     };
     public GameDto findLatestGameForVisitorId(ParamsDto paramsDto){
@@ -95,7 +95,7 @@ public class GameService {
         return new ArrayList<>();
     }
     public GameDto setupNewGameWithPlayerInitiator(CreationDto creation, long initiator, long leagueId) {
-//        log.warn("setupNewGameWithPlayerInitiator initiator [{}]",initiator);
+//        log.info("setupNewGameWithPlayerInitiator initiator [{}]",initiator);
         League league = null;
         if (leagueId > 0) {
             league = leagueRepository.getReferenceById(leagueId);
@@ -107,12 +107,12 @@ public class GameService {
                 creation.getSuppliedStyle(),
                 creation.getSuppliedAnte());
         Game newGame = gameRepository.save(game);
-//        log.warn("setupNewGameWithPlayerInitiator game [{}]",game);
+//        log.info("setupNewGameWithPlayerInitiator game [{}]",game);
 
 //        List<Player> allPlayersForTheGame = playerRepository.findByGame(savedGame);
         String avatarName = "avatarName";
         Visitor visitor = visitorRepository.getReferenceById(initiator);
-//        log.warn("setupNewGameWithPlayerInitiator visitor [{}]",visitor);
+//        log.info("setupNewGameWithPlayerInitiator visitor [{}]",visitor);
 
         Player player = new Player(
                 visitor,

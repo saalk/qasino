@@ -101,13 +101,12 @@ public class HomeThymeleafController extends AbstractThymeleafController {
     public ResponseEntity<Void> signin(
             @RequestBody LoginRequest loginRequest,
             HttpServletResponse response) {
-        log.warn("!!!!!!!!! PostMapping: /perform_signin");
         Authentication authenticationRequest =
                 UsernamePasswordAuthenticationToken.unauthenticated(loginRequest.username(), loginRequest.password());
         Authentication authenticationResponse =
                 this.authenticationManager.authenticate(authenticationRequest);
-        log.warn("PostMapping: perform_signin");
-        log.warn("LoginRequest: {}", loginRequest);
+        log.info("PostMapping: perform_signin");
+        log.info("LoginRequest: {}", loginRequest);
         if (authenticationResponse.isAuthenticated()) {
             OnlineVisitorsPerDay.getInstance().newLogon();
         }
@@ -151,8 +150,19 @@ public class HomeThymeleafController extends AbstractThymeleafController {
         qasino.getParams().setSuppliedQasinoEvent(QasinoEvent.REGISTER);
         // 2 - validate input
         if (result.hasErrors()) {
-            log.warn("errors in supplied data {}", result);
+            log.info("errors in supplied data {}", result);
             prepareQasino(response, qasino);
+            model.addAttribute(qasino);
+            return ERROR_VIEW_LOCATION;
+        }
+        if (OnlineVisitorsPerDay.getInstance().getOnlineVisitors() > 3) {
+            prepareQasino(response, qasino);
+            qasino.getMessage().setBadRequestErrorMessage(
+                    "GameEvent",
+                    qasino.getParams().getSuppliedQasinoEvent().getLabel(),
+                    "Action [" +
+                            qasino.getParams().getSuppliedGameEvent() +
+                            "] is invalid - max registrations is 3 per day");
             model.addAttribute(qasino);
             return ERROR_VIEW_LOCATION;
         }
@@ -176,6 +186,20 @@ public class HomeThymeleafController extends AbstractThymeleafController {
         Qasino qasino = new Qasino();
         qasino.getParams().setSuppliedVisitorUsername(principal == null ? "" : principal.getName());
         // 2 - validate input
+        if (OnlineVisitorsPerDay.getInstance().getOnlineVisitors() > 3) {
+            prepareQasino(response, qasino);
+
+            qasino.getParams().setSuppliedQasinoEvent(QasinoEvent.LOGON);
+            principal = null;
+            qasino.getMessage().setBadRequestErrorMessage(
+                    "GameEvent",
+                    qasino.getParams().getSuppliedQasinoEvent().getLabel(),
+                    "Action [" +
+                            qasino.getParams().getSuppliedGameEvent() +
+                            "] is invalid - max visitors is 3 per day");
+            model.addAttribute(qasino);
+            return ERROR_VIEW_LOCATION;
+        }
         // 3 - process
         // 4 - return response
         prepareQasino(response, qasino);

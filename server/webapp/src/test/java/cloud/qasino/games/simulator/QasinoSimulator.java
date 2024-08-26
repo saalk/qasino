@@ -135,7 +135,7 @@ public abstract class QasinoSimulator {
         gameDto = GameMapper.INSTANCE.toDto(game, game.getCards());
 
         playing = new Playing(game, playerVisitor);
-//        log.warn("playing data <{}>", playing);
+//        log.info("playing data <{}>", playing);
 
         List<CardMove> cardMoves = new ArrayList<>();
         for (Card card : cards) {
