@@ -2,13 +2,13 @@ Back - [Java index](0-index.md)
 
 ## Creational
 
-Pattern Name | Description
-- | -
-Singleton | The singleton pattern restricts the initialization of a class to ensure that only one instance of the class can be created.
-Factory | The factory pattern takes out the responsibility of instantiating a object from the class to a Factory class.
-Abstract Factory | Allows us to create a Factory for factory classes.
-Builder | Creating an object step by step and a method to finally get the object instance.
-Prototype | Creating a new object instance from another similar instance and then modify according to our requirements.
+| Pattern Name     | Description                                                                                                                 |
+|------------------|-----------------------------------------------------------------------------------------------------------------------------|
+| Singleton        | The singleton pattern restricts the initialization of a class to ensure that only one instance of the class can be created. |
+| Factory          | The factory pattern takes out the responsibility of instantiating a object from the class to a Factory class.               |
+| Abstract Factory | Allows us to create a Factory for factory classes.                                                                          |
+| Builder          | Creating an object step by step and a method to finally get the object instance.                                            |
+| Prototype        | Creating a new object instance from another similar instance and then modify according to our requirements.                 |
 
 ### Singleton - never needed
 First of all, let's distinguish between Single Object and Singleton. The latter is one of many possible implementations of the former. And the Single Object's problems are different from Singleton's problems. Single Objects are not inherently bad and sometimes are the only way to do things. In short:
@@ -37,6 +37,10 @@ public class Singleton {
 ### Factory - somtimes needed
 The factory design pattern is used when we have a superclass with multiple sub-classes and based on input, we need to return one of the sub-class. This pattern takes out the responsibility of the instantiation of a class from the client program to the factory class.
 
+// Venkat 2024
+Factory method - the method uses inheritance hierarchy so we can override a method
+Typically you have an abstract base class for it / interfaces are better.
+
 The Factory pattern is useful when you 
 - need to create multiple objects that share similar functionality, 
 - -but differ in the implementation details. 
@@ -54,7 +58,11 @@ The Factory pattern consists of three components:
 public interface Vehicle {
   void start();
   void stop();
+  default void drive() {
+      System.out.println("Running the car"); // this is benefit of interface - Venkat DEVOXX 2024
+  } 
 }
+
 // concrete classes
 public class Car implements Vehicle {
   @Override  public void start() { System.out.println("Starting car");  }
@@ -64,16 +72,18 @@ public class Motorcycle implements Vehicle {
   @Override  public void start() { System.out.println("Starting motorcycle");  }
   @Override  public void stop() { System.out.println("Stopping motorcycle");  }
 }
+
 // the factory class
 public class VehicleFactory {
+    
   public static Vehicle createVehicle(String type) {
-  if (type.equalsIgnoreCase("car")) {
-    return new Car();
-  } else if (type.equalsIgnoreCase("motorcycle")) {
-    return new Motorcycle();
-  } else {
-    throw new IllegalArgumentException("Invalid vehicle type: " + type);
-  }
+      if (type.equalsIgnoreCase("car")) {
+        return new Car();
+      } else if (type.equalsIgnoreCase("motorcycle")) {
+        return new Motorcycle();
+      } else {
+        throw new IllegalArgumentException("Invalid vehicle type: " + type);
+      }
   }
 }
 ```
@@ -95,8 +105,6 @@ Cons:
 ### Abstract Factory Patter vs normal Factory Pattern
 
 The main difference between a "factory method" and an "abstract factory" is that the factory method is a method, and an abstract factory is an object.
-
-
 To show you the difference, here is a factory method in use:
 
 ```java
@@ -152,6 +160,11 @@ The abstract factory is an object that has multiple factory methods on it. Looki
 What they're saying is that there is an object A, who wants to make a Foo object. Instead of making the Foo object itself (e.g., with a factory method), it's going to get a different object (the abstract factory) to create the Foo object.
 
 ### Builder - always needed
+// Venkat DEVOXX 2024
+ in the mailer class: send(Consumer<mailer> block)
+ mailer -> mailer.from().to()
+
+
 
 ### Prototype
 The Prototype pattern is generally used when we have an instance of the class (prototype) and we’d like to create new objects by just copying the prototype.

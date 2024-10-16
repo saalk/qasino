@@ -1,5 +1,7 @@
 ```sql
 
+SCRIPT TO 'C:\Users\vande\IdeaProjects\hobby-projects\qasino\server\webapp\docs\sql\backup-2024-10-16.sql'
+
 SELECT * FROM "player" order by "player_id" desc;
 
 -- PLAYERS for game with optional PLAYING and CARDMOVES if any

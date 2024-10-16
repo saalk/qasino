@@ -7,7 +7,20 @@ In essence streams are
 - allowing us to operate with that source, 
 - -it does NOT store the data and 
 - it NEVER modifies the data.
-- 
+
+// Venkat DEVOXX 2024
+Before - external iterator: 
+ var names = List.of("Tom","Jerry") 
+ for (int i = 0, i < names.size() ; i++) -> names.get(i) // names.get(i).equals
+Now - internal iterator
+ names.forEach()
+
+IMPERATIVE = statement and expression -> afterwards look at result
+FUNCTIONAL = often use expressions instead of statements 
+    -> names.stream().takeWhile()
+    -> names.stream().limit
+
+
 Streams operate on Collections (List<Integer>) and Arrays (int[])
 
 ```java

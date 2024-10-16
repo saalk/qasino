@@ -18,7 +18,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 class GameMapperTest extends QasinoSimulator {
 
     @Test
-    void givenSimulatedQasino_andMaps_thenProducesCorrectDto() {
+    void inASimulatedCasinoTest_allWorks() {
 
         // core
         assertEquals(gameDto.getGameId(), game.getGameId());

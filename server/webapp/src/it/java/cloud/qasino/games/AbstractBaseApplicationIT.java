@@ -22,7 +22,6 @@ import java.util.Map;
         , classes = GamesApplication.class
 )
 @TestPropertySources({
-        @TestPropertySource(locations = "/application-ittest.properties"),
         @TestPropertySource(locations = "/application-business.properties")
 })
 @ContextConfiguration(classes = IntegrationTestConfiguration.class)

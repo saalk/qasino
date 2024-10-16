@@ -4,6 +4,13 @@ Back to [Index](0-index.md)
 Optional is a concept indicating that a certain entity or object may or may not have a value. Optional should not be used in the hope of getting rid of errors like NPE.
 But in case of Optional, when they are calling Optional.get(), you know what they're doing.
 
+// from Venkat DEVOXX 2024
+1/2 You want to be confident in programming so no null check everywhere: return value or an Optional<T>
+1/2 If you see an optional you know you have to query before use.
+3 Don't use Optional<T> for private fields -> just crash
+4 Don't use Optional<T> method parameters, they are not benefit eg setInfo(Optional<String> info) {} -> caller has to do extra logic
+  - use overloading eg setInfor() {}
+
 (Being Explicit is a good thing)
 ```java
 Optional<User> findUserById(String userId) { ... };
@@ -35,12 +42,20 @@ public static Optional<User> findUserByName(String name) {
     //  .orElseGet(() -> getNameFromDatabase());
     //  .orElseThrow(()-> new IllegalStateException("Value is empty")));
     return opt;
+    
+    // plain java from venkat
+    if (user == null) {
+        return Optional.empty();
+    } 
+    return Optional.of("data");
+            
 }
 
 public static void changeUserName(String oldFirstName, String newFirstName) {
     findUserByFirstName(oldFirstName)
         .ifPresent(user -> user.setFirstName(newFirstName));
     //  .ifPresent((user)->System.out.println(user)); 
+    //  .ifPresentOrElse // from java 9
 }
 ```
 ### Optional.of, Optional.ofNullable
@@ -59,7 +74,7 @@ otherwise, it returns an Optional<Address> containing user’s address.
 
 ```java
 // Extract User's address using map() method.
-Optional<Address> addressOptional = userOptional.map(User::getAddress)
+Optional<Address> addressOptional = userOptional.map(User::getAddress);
 
 // filter address from India
 Optional<Address> indianAddressOptional = addressOptional.filter(address -> address.getCountry().equalsIgnoreCase("India"));

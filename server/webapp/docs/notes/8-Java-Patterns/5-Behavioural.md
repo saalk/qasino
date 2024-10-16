@@ -22,7 +22,15 @@ Strategy pattern is also known as Policy Pattern. We define multiple algorithms 
 
 **Used when**
 
-When you have multiple algorithms that can be used interchangeably based on different contexts, such as sorting algorithms (bubble sort, merge sort, quick sort), searching algorithms, compression algorithms, etc.
+// Venkat DEVOXX 2024
+We have an algorithm and we want to vary a small part of it
+Java 1.1 had anonymous inner classes and use them for Strategy interface
+A strategy is basically a function -> implement them with lambdas
+
+When you have multiple algorithms that can be used interchangeably based on different contexts, such as 
+- sorting algorithms (bubble sort, merge sort, quick sort), 
+- searching algorithms, 
+- compression algorithms, etc.
 
 ![img_2.png](img_2.png)
 
@@ -36,12 +44,11 @@ When you have multiple algorithms that can be used interchangeably based on diff
     public void pay(int amount) {
         System.out.println(amount + " paid using Paypal.");
     }
-... // public class ShoppingCart
+    // public class ShoppingCart
     public void pay(PaymentStrategy paymentMethod){
         int amount = calculateTotal();
         paymentMethod.pay(amount);
     }    
-...
     
 // the run is    
 ShoppingCart cart = new ShoppingCart();

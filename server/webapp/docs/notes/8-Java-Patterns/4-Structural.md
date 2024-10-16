@@ -26,6 +26,33 @@ httpClient.execute(new HttpGet("http://www.google.com"),
     }
 );
 ```
+## Decorator Pattern
+Modify the functionality of an object at runtime
+// Venkat DEVOXX 2204 - camera is a decorator pattern - different lenses, filter etc
+// you can concat functions -> data clensers, mask, uncompress
+
+```java
+import java.awt.Color;
+import java.util.function.Function;
+
+public class Camera {
+    private Function <Color, Color> filter; 
+    public Color snap(Color input);
+    
+    public Camera(Function<Color, Color>... filters) {
+        filter.Stream.of(filters)
+                .reduce(input -> input, (result, aFilter) -> result.andThen(aFilter));
+        filter.Stream.of(filterS)
+                .reduce()
+    }
+}
+    public static void process(Camera camera) {
+        print snap;
+}
+
+// process(new Camera(Color::brighter, Color::darker)); // Color -> color:brighter()
+
+```
 
 ## Behavioral Design Patterns
 

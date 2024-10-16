@@ -25,6 +25,7 @@
 
 		<!-- 2: database -->
 		<h2.version>2.2.224</h2.version>
+		<postgresql.version>2.2.224</postgresql.version>
 		<mariadb-java-client.version>2.5.2</mariadb-java-client.version>
 		<tomcat-dbcp.version>9.0.1</tomcat-dbcp.version>
 		<jackson-jsog.version>1.1.1</jackson-jsog.version>
@@ -67,6 +68,25 @@
 
 	</properties>
 
+	<repositories>
+		<repository>
+			<id>spring-milestones</id>
+			<name>Spring Milestones</name>
+			<url>https://repo.spring.io/milestone</url>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+		</repository>
+		<repository>
+			<id>spring-snapshots</id>
+			<name>Spring Snapshots</name>
+			<url>https://repo.spring.io/snapshot</url>
+			<releases>
+				<enabled>false</enabled>
+			</releases>
+		</repository>
+	</repositories>
+
 	<!-- Dependencies are libraries that either must be included in the jar/war file or are expected to be found in
 		 the container such as GlassFish -->
 	<dependencies>
@@ -88,6 +108,18 @@
 			<groupId>org.springframework.security</groupId>
 			<artifactId>spring-security-data</artifactId>
 		</dependency>
+		<!-- spring ai -->
+<!--		<dependency>-->
+<!--			<groupId>org.springframework.ai</groupId>-->
+<!--			<artifactId>spring-ai-bom</artifactId>-->
+<!--			<version>1.0.0-SNAPSHOT</version>-->
+<!--			<type>pom</type>-->
+<!--			<scope>import</scope>-->
+<!--		</dependency>-->
+<!--		<dependency>-->
+<!--			<groupId>org.springframework.ai</groupId>-->
+<!--			<artifactId>spring-ai-ollama-spring-boot-starter</artifactId>-->
+<!--		</dependency>-->
 		<dependency>
 			<groupId>org.thymeleaf.extras</groupId>
 			<artifactId>thymeleaf-extras-springsecurity6</artifactId>
@@ -163,6 +195,14 @@
 			<!-- spring boot can decide version also -->
 			<scope>runtime</scope>
 		</dependency>
+		<!-- use Postgresql as a heroku database -->
+		<dependency>
+			<groupId>org.postgresql</groupId>
+			<artifactId>postgresql</artifactId>
+<!--			<version>${h2.version}</version>-->
+			<!-- spring boot can decide version also -->
+			<scope>runtime</scope>
+		</dependency>
 		<!-- use Tomcat JDBC Connection Pooling -->
 		<!-- so don't use DriverManagerDataSource from spring any more -->
 		<dependency>
@@ -229,27 +269,6 @@
 			<optional>true</optional>
 			<version>${lombok.version}</version>
 		</dependency>
-
-		<!-- 4: GraphQL dependencies -->
-		<!--		<dependency>-->
-		<!--			<groupId>com.graphql-java-kickstart</groupId>-->
-		<!--			&lt;!&ndash; GraphQL core &ndash;&gt;-->
-		<!--			<artifactId>graphql-spring-boot-starter</artifactId>-->
-		<!--			<version>${graphql-spring-boot-starter.version}</version>-->
-		<!--		</dependency>-->
-		<!--		<dependency>-->
-		<!--			<groupId>com.graphql-java-kickstart</groupId>-->
-		<!--			&lt;!&ndash; to embed GraphiQL tool &ndash;&gt;-->
-		<!--			<artifactId>graphiql-spring-boot-starter</artifactId>-->
-		<!--			<version>${graphiql-spring-boot-starter.version}</version>-->
-		<!--			<scope>runtime</scope>-->
-		<!--		</dependency>-->
-		<!--		<dependency>-->
-		<!--			<groupId>com.graphql-java-kickstart</groupId>-->
-		<!--			&lt;!&ndash; use the GraphQL schema language to build your graphql-java schema &ndash;&gt;-->
-		<!--			<artifactId>graphql-java-tools</artifactId>-->
-		<!--			<version>${graphql-java-tools.version}</version>-->
-		<!--		</dependency>-->
 
 		<!-- 5: readability -->
 <!--		<dependency>-->
@@ -376,7 +395,7 @@
 				<!-- used dev when spring-boot:run is executed -->
 				<configuration>
 					<profiles>
-						<profile>dev</profile>
+						<profile>h2</profile>
 						<excludeDevtools>false</excludeDevtools>
 					</profiles>
 				</configuration>

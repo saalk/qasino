@@ -6,9 +6,13 @@ Back - [Java index](0-index.md)
 **Gangs of Four (GoF) Design Patterns**
 This book was first published in 1994 and it’s one of the most popular books to learn design patterns. The book was authored by Erich Gamma, Richard Helm, Ralph Johnson, and John Vlissides. It got nicknamed as Gangs of Four design patterns because of four authors. Furthermore, it got a shorter name as “GoF Design Patterns”.
 
+// from Venkat DEVOXX 2024
+A powerful language does not need a lot of design patters
+Eg Lambda 
+
 Patterns always have two parts: the how and the when. Not just do you need to know how to implement them, you also have to know when to use them and when to leave them alone.
 
-## solid
+## SOLID
 The SOLID design principles help us create maintainable, reusable, and flexible software designs. Each letter in the acronym SOLID stands for a specific principle.
 Here is what each letter in the acronym stands for:
 S: Single responsibility principle.
