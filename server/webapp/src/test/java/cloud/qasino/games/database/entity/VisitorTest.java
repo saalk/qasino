@@ -1,6 +1,5 @@
 package cloud.qasino.games.database.entity;
 
-import cloud.qasino.games.database.security.Visitor;
 import cloud.qasino.games.simulator.QasinoSimulator;
 import org.junit.jupiter.api.Test;
 

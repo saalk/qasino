@@ -22,7 +22,7 @@ public class DumbBot extends Bot<DumbBot> {
     @Override
     public DumbBot clone() throws CloneNotSupportedException {
         // Cast to DumbBot as super returns Object
-        DumbBot cloned = (DumbBot) super.clone();
+        DumbBot cloned = super.clone();
 //        cloned.hobbies = new ArrayList<>(this.hobbies); // Deep copying of mutable fields.
         aiLevel = AiLevel.DUMB;
         return cloned;

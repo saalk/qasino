@@ -44,7 +44,7 @@ public enum Avatar implements LabeledEnum {
 
     static {
         for (Avatar avatar : EnumSet.allOf(Avatar.class))
-            if (!avatar.getLabel().toLowerCase().equals("error"))
+            if (!avatar.getLabel().equalsIgnoreCase("error"))
                 avatarMapNoError.put(avatar.getLabel(), avatar);
     }
 

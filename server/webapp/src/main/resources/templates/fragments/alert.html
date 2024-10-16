@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" lang="en">
 <head>
-</head>
+    <title></title></head>
 <body>
 <!--/*  Multiple fragments may be defined in one file */-->
 <div th:fragment="alert (type, message)" th:assert="${!#strings.isEmpty(type) and !#strings.isEmpty(message)}"

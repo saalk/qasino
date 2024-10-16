@@ -54,7 +54,7 @@ public enum GameState implements LabeledEnum {
 
     static {
         for (GameState gameState : EnumSet.allOf(GameState.class))
-            if (!gameState.getLabel().toLowerCase().equals("error"))
+            if (!gameState.getLabel().equalsIgnoreCase("error"))
                 lookupNoError.put(gameState.getLabel(), gameState);
     }
 

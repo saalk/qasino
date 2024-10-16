@@ -24,7 +24,7 @@ public class UpdateVisitorAction extends GenericLookupsAction<EventOutput.Result
             int sequence = Math.toIntExact(visitorService.countByAlias(qasino.getCreation().getSuppliedAlias()));
             if (sequence != 0 &&
                     !qasino.getCreation().getSuppliedAlias().equals(qasino.getVisitor().getAlias())) {
-                qasino.getMessage().setConflictErrorMessage("alias", String.valueOf(qasino.getCreation().getSuppliedAlias()), "alias [" + String.valueOf(qasino.getCreation().getSuppliedAlias()) + "] not available any more");
+                qasino.getMessage().setConflictErrorMessage("alias", qasino.getCreation().getSuppliedAlias(), "alias [" + qasino.getCreation().getSuppliedAlias() + "] not available any more");
                 return EventOutput.Result.FAILURE;
             }
             // todo LOW split alias and number

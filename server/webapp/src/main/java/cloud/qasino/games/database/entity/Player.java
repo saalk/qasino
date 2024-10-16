@@ -129,11 +129,7 @@ public class Player {
         this.avatarName = avatarName;
         this.aiLevel = aiLevel;
 
-        if (aiLevel == AiLevel.HUMAN) {
-            this.human = true;
-        } else {
-            this.human = false;
-        }
+        this.human = aiLevel == AiLevel.HUMAN;
     }
 
     public static Player buildDummyBot(Game game, Avatar avatar, AiLevel aiLevel) {
@@ -152,11 +148,7 @@ public class Player {
 
     public void setAiLevel(AiLevel aiLevel) {
         this.aiLevel = aiLevel;
-        if (aiLevel == AiLevel.HUMAN) {
-            this.human = true;
-        } else {
-            this.human = false;
-        }
+        this.human = aiLevel == AiLevel.HUMAN;
     }
 
     @Override

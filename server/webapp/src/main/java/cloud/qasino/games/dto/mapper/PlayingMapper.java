@@ -40,7 +40,7 @@ public interface PlayingMapper {
     }
     @Named("nextPlayer")
     default PlayerDto nextPlayer(Playing playing) {
-        int totalSeats = 0;
+        int totalSeats;
         if (playing == null || playing.getGame() == null || playing.getGame().getPlayers() == null) {
             return null;
         } else {

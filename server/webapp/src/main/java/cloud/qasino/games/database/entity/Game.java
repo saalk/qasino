@@ -12,7 +12,6 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
-import jakarta.persistence.FetchType;
 import jakarta.persistence.ForeignKey;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -261,7 +260,7 @@ public class Game {
     public boolean switchPlayers(int sequence, int direction) {
 
         // check if playing order is up (-1) or down (+1)
-        boolean playingOrderChanged = false;
+        boolean playingOrderChanged  ;
         boolean moveTowardsFirst = false;
         boolean moveTowardsLast = false;
 

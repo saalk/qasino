@@ -1,18 +1,11 @@
 package cloud.qasino.games.dto.mapper;
 
-import cloud.qasino.games.database.security.Role;
 import cloud.qasino.games.database.security.Visitor;
-import cloud.qasino.games.dto.model.RoleDto;
-import cloud.qasino.games.dto.model.VisitorDto;
 import cloud.qasino.games.dto.model.VisitorShortDto;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Named;
 import org.mapstruct.factory.Mappers;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 @Mapper
 public interface VisitorShortMapper {

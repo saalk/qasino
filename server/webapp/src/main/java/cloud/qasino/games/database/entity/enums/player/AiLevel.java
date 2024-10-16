@@ -38,7 +38,7 @@ public enum AiLevel implements LabeledEnum {
             = new HashMap<>();
     static {
         for(AiLevel aiLevel : EnumSet.allOf(AiLevel.class))
-            if (!aiLevel.getLabel().toLowerCase().equals("error"))
+            if (!aiLevel.getLabel().equalsIgnoreCase("error"))
                 aiLevelMapNoError.put(aiLevel.getLabel(), aiLevel);
     }
 

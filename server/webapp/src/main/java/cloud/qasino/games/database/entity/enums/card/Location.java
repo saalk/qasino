@@ -60,7 +60,7 @@ public enum Location implements LabeledEnum {
             = new HashMap<>();
     static {
         for(Location location : EnumSet.allOf(Location.class))
-            if (!location.getLabel().toLowerCase().equals("error"))
+            if (!location.getLabel().equalsIgnoreCase("error"))
                 locationMapNoError.put(location.getLabel(), location);
     }
 

@@ -1,8 +1,6 @@
 package cloud.qasino.games.response;
 
 import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
 
 @Data
 //@JsonIdentityInfo(generator = JSOGGenerator.class)

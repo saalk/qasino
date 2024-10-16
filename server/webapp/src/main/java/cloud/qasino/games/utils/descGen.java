@@ -258,7 +258,7 @@ public class descGen{
     public static String[] lineReader(File filename) throws IOException {
 		 BufferedReader br = new BufferedReader(new FileReader(filename));
 		 String[] fields = null;
-	        List lines = new ArrayList<String>();
+	        List<String> lines = new ArrayList<>();
 	        for(String line = br.readLine();line != null;line = br.readLine()) {
 	            fields = line.split(", ");
 	        }

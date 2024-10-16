@@ -9,7 +9,7 @@ import cloud.qasino.games.database.security.Visitor;
 
 public abstract class Bot<T> extends Player implements Cloneable {
 
-    private boolean human;
+    private final boolean human;
 
     public Bot(Visitor visitor, Game game, PlayerType playerType, int fiches, int seat, Avatar avatar, String avatarName, AiLevel aiLevel) {
         super(visitor, game, playerType, fiches, fiches, seat, avatar, avatarName, aiLevel);

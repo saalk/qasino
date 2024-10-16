@@ -1,17 +1,10 @@
 package cloud.qasino.games.dto.mapper;
 
-import cloud.qasino.games.database.entity.Game;
 import cloud.qasino.games.database.entity.League;
-import cloud.qasino.games.dto.model.GameShortDto;
 import cloud.qasino.games.dto.model.LeagueShortDto;
-import cloud.qasino.games.dto.model.VisitorShortDto;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import org.mapstruct.Named;
 import org.mapstruct.factory.Mappers;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @Mapper
 public interface LeagueShortMapper {

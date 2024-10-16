@@ -7,8 +7,7 @@ public class QasinoUtils {
 
     public static String prettyPrint(Object uglyString)throws JsonProcessingException {
         ObjectMapper objectMapper = new ObjectMapper();
-        String prettyJson = objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(uglyString);
-        return prettyJson;
+        return objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(uglyString);
     }
 
 }

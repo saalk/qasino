@@ -25,8 +25,7 @@ public interface PlayerRepository extends JpaRepository<Player, Long> {
     // SPECIAL FINDS
     String  FIND_PLAYERS_INVITED_FOR_A_GAME = "SELECT      b.* FROM \"game\" as a JOIN \"player\" as b WHERE a.\"game_id\" = b.\"game_id\" AND b.\"role\" IN ('INVITED','ACCEPTED','REJECTED') AND a.\"game_id\" = :gameId ";
     String COUNT_PLAYERS_INVITED_FOR_A_GAME = "SELECT count(*) FROM \"game\" as a JOIN \"player\" as b WHERE a.\"game_id\" = b.\"game_id\" AND a.\"role\" IN ('INVITED','ACCEPTED','REJECTED') AND a.\"game_id\" = :gameId ";
-    @Query(value = FIND_PLAYERS_INVITED_FOR_A_GAME, countQuery = COUNT_PLAYERS_INVITED_FOR_A_GAME, nativeQuery = true)
-    public List<Player> findAllPlayersInvitedForAGame(@Param("gameId") long gameId, Pageable pageable);
+    @Query(value = FIND_PLAYERS_INVITED_FOR_A_GAME, countQuery = COUNT_PLAYERS_INVITED_FOR_A_GAME, nativeQuery = true) List<Player> findAllPlayersInvitedForAGame(@Param("gameId") long gameId, Pageable pageable);
 
     String FIND_PLAYERS_FOR_A_GAME_ORDER_BY_SEAT = "SELECT * FROM \"player\" p WHERE p.\"game_id\" = :game_id ORDER BY \"seat\" ASC";
     List<Player> findByGameOrderBySeatAsc(Game game);

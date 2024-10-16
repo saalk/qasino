@@ -147,43 +147,17 @@ public class PlayingCard {
         Type localType = type == null ? Type.HIGHLOW : type;
         switch (localType) {
             case HIGHLOW -> {
-                switch (rank) {
-                    case JOKER:
-                        return 0;
-                    case ACE:
-                        return 1;
-                    case KING:
-                        return 13;
-                    case QUEEN:
-                        return 12;
-                    case JACK:
-                        return 11;
-                    default:
+                return switch (rank) {case JOKER->0;case ACE->1;case KING->13;case QUEEN->12;case JACK->11;default->
                         // 2 until 10
-                        return Integer.parseInt(rank.getLabel());
-                }
+                        Integer.parseInt(rank.getLabel());};
             }
             case BLACKJACK -> {
-                switch (rank) {
-                    case JOKER:
-                        return 0;
-                    case ACE:
-                        return 1; // or 11
-                    case KING:
-                        return 10;
-                    case QUEEN:
-                        return 10;
-                    case JACK:
-                        return 10;
-                    default:
+                return switch (rank) {case JOKER->0;case ACE->1; // or 11
+                    case KING->10;case QUEEN->10;case JACK->10;default->
                         // 2 until 10
-                        return Integer.parseInt(rank.getLabel());
-                }
+                        Integer.parseInt(rank.getLabel());};
             }
-            case ERROR -> {
-                throw new MyBusinessException("This type is in error [" + type + "]");
-
-            }
+            case ERROR -> throw new MyBusinessException("This type is in error [" + type + "]");
             default ->
                     throw new MyBusinessException("This type is not forseen [" + type + "]");
         }

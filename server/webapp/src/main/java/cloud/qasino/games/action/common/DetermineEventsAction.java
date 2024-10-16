@@ -68,7 +68,7 @@ public class DetermineEventsAction extends GenericLookupsAction<EventOutput.Resu
         return gameEvents;
     }
     private static List<PlayEvent> getPlayEvents(Qasino qasino) {
-        List<PlayEvent> playEvents = new ArrayList<>();
+        List<PlayEvent> playEvents  ;
         if (qasino.getVisitor() == null || qasino.getPlaying() == null || qasino.getGame() == null) {
             return Collections.singletonList(PlayEvent.NONE);
         }

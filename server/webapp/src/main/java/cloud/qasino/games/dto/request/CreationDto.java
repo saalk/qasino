@@ -1,7 +1,6 @@
 package cloud.qasino.games.dto.request;
 
 import cloud.qasino.games.database.entity.enums.card.Location;
-import cloud.qasino.games.database.entity.enums.game.GameState;
 import cloud.qasino.games.database.entity.enums.game.Type;
 import cloud.qasino.games.database.entity.enums.game.style.AnteToWin;
 import cloud.qasino.games.database.entity.enums.game.style.BettingStrategy;

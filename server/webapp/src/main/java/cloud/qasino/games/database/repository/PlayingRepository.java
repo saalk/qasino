@@ -1,6 +1,5 @@
 package cloud.qasino.games.database.repository;
 
-import cloud.qasino.games.database.entity.CardMove;
 import cloud.qasino.games.database.entity.Playing;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;

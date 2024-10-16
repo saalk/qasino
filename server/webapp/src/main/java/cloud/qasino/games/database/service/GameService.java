@@ -18,15 +18,12 @@ import cloud.qasino.games.database.security.Visitor;
 import cloud.qasino.games.database.security.VisitorRepository;
 import cloud.qasino.games.dto.mapper.GameMapper;
 import cloud.qasino.games.dto.mapper.GameShortMapper;
-import cloud.qasino.games.dto.mapper.LeagueMapper;
 import cloud.qasino.games.dto.model.GameDto;
 import cloud.qasino.games.dto.model.GameShortDto;
-import cloud.qasino.games.dto.model.LeagueDto;
 import cloud.qasino.games.dto.model.PlayerDto;
 import cloud.qasino.games.dto.model.PlayingDto;
 import cloud.qasino.games.dto.request.CreationDto;
 import cloud.qasino.games.dto.request.ParamsDto;
-import cloud.qasino.games.exception.MyBusinessException;
 import cloud.qasino.games.exception.MyNPException;
 import cloud.qasino.games.pattern.factory.Deck;
 import cloud.qasino.games.pattern.factory.DeckFactory;
@@ -63,7 +60,8 @@ public class GameService {
         }
 //        log.info("findOneByGameId {}", retrievedGame);
         return GameMapper.INSTANCE.toDto(retrievedGame, retrievedGame.getCards());
-    };
+    }
+
     public GameDto findLatestGameForVisitorId(ParamsDto paramsDto){
         if (paramsDto.getSuppliedGameId() > 0) {
             Optional<Game> foundGame = gameRepository.findById(paramsDto.getSuppliedGameId());
@@ -151,11 +149,9 @@ public class GameService {
                     Game updateGame = gameRepository.save(game);
                     return GameMapper.INSTANCE.toDto(updateGame, updateGame.getCards());
                 }
-                if (game.getState() != GameState.INVITEE_MOVE) {
-                    game.setState(GameState.INVITEE_MOVE);
-                    Game updateGame = gameRepository.save(game);
-                    return GameMapper.INSTANCE.toDto(updateGame, updateGame.getCards());
-                }
+                game.setState(GameState.INVITEE_MOVE);
+                Game updateGame = gameRepository.save(game);
+                return GameMapper.INSTANCE.toDto(updateGame, updateGame.getCards());
             }
         } else {
             if (game.getState() != GameState.BOT_MOVE) {

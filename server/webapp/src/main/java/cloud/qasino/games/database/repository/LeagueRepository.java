@@ -29,16 +29,15 @@ public interface LeagueRepository extends JpaRepository<League, Long> {
     @Query(value = "SELECT * FROM \"league\" where \"game_id\" = :gameId ", nativeQuery = true)
     League findByGameId(Long gameId);
 
-    public final static String FIND_LEAGUES_FOR_VISITOR_ID =
+    String FIND_LEAGUES_FOR_VISITOR_ID =
             "SELECT * FROM \"league\" a WHERE a.\"visitor_id\" = :visitorId " +
                     "AND a.\"is_active\" = CAST('true' AS BOOLEAN) ORDER BY \"created\" desc ";
-    public final static String COUNT_LEAGUES_FOR_VISITOR_ID =
+    String COUNT_LEAGUES_FOR_VISITOR_ID =
             "SELECT count(*) FROM \"league\" a WHERE a.\"visitor_id\" = :visitorId " +
                     "AND a.\"is_active\" = CAST('true' AS BOOLEAN) ";
-    @Query(value = FIND_LEAGUES_FOR_VISITOR_ID, countQuery = COUNT_LEAGUES_FOR_VISITOR_ID, nativeQuery = true)
-    public List<League> findLeaguesForVisitorWithPage(
+    @Query(value = FIND_LEAGUES_FOR_VISITOR_ID, countQuery = COUNT_LEAGUES_FOR_VISITOR_ID, nativeQuery = true) List<League> findLeaguesForVisitorWithPage(
             @Param("visitorId") long visitorId,
             Pageable pageable);
-    public List<League> findLeaguesByVisitor(
+    List<League> findLeaguesByVisitor(
             Visitor visitor);
 }

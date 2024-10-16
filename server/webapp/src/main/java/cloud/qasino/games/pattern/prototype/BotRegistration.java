@@ -1,12 +1,8 @@
 package cloud.qasino.games.pattern.prototype;
 
-import cloud.qasino.games.database.entity.Game;
-import cloud.qasino.games.database.entity.League;
-import cloud.qasino.games.database.entity.Player;
 import cloud.qasino.games.database.entity.enums.player.AiLevel;
 import cloud.qasino.games.database.entity.enums.player.Avatar;
 import cloud.qasino.games.database.entity.enums.player.PlayerType;
-import cloud.qasino.games.database.security.Visitor;
 import cloud.qasino.games.pattern.prototype.creational.AverageBot;
 import cloud.qasino.games.pattern.prototype.creational.DumbBot;
 import cloud.qasino.games.pattern.prototype.creational.SmartBot;

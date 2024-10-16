@@ -14,7 +14,6 @@ import cloud.qasino.games.database.entity.enums.game.style.RoundsToWin;
 import cloud.qasino.games.database.entity.enums.game.style.TurnsToWin;
 import cloud.qasino.games.dto.model.CardDto;
 import cloud.qasino.games.dto.model.GameDto;
-import cloud.qasino.games.dto.model.LeagueDto;
 import cloud.qasino.games.dto.model.LeagueShortDto;
 import cloud.qasino.games.dto.model.PlayerDto;
 import org.mapstruct.Context;

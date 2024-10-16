@@ -1,10 +1,7 @@
 package cloud.qasino.games.controller;
 
-import cloud.qasino.games.database.entity.Card;
 import cloud.qasino.games.database.entity.Game;
 import cloud.qasino.games.database.entity.Player;
-import cloud.qasino.games.database.entity.enums.player.AiLevel;
-import cloud.qasino.games.database.entity.enums.player.Avatar;
 import cloud.qasino.games.database.repository.CardRepository;
 import cloud.qasino.games.database.repository.GameRepository;
 import cloud.qasino.games.database.repository.PlayerRepository;
@@ -16,12 +13,10 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -30,16 +25,15 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
 import java.util.Arrays;
-import java.util.List;
 import java.util.Optional;
 
 @Slf4j
 @RestController
 public class CardsAndPlayerController {
 
-    private GameRepository gameRepository;
-    private PlayerRepository playerRepository;
-    private CardRepository cardRepository;
+    private final GameRepository gameRepository;
+    private final PlayerRepository playerRepository;
+    private final CardRepository cardRepository;
 
     @Autowired
     public CardsAndPlayerController(
@@ -88,21 +82,19 @@ public class CardsAndPlayerController {
         // logic get player
         Optional<Player> foundPlayer = playerRepository.findById(playerId);
 
-        if (!foundPlayer.isPresent()) {
+        if (foundPlayer.isEmpty()) {
             // 404
             return ResponseEntity.status(HttpStatus.NOT_FOUND).headers(headers).build();
         }
         Optional<Game> updatedGame = gameRepository.findById(foundPlayer.get().getGame().getGameId());
-        if (order == "up") {
+        if (order.equals("up")) {
             // todo LOW ordering does not work
             updatedGame.get().switchPlayers(-1, -1);
-            gameRepository.save(updatedGame.get());
-            return ResponseEntity.ok(updatedGame.get());
         } else {
             updatedGame.get().switchPlayers(1, 1);
-            gameRepository.save(updatedGame.get());
-            return ResponseEntity.ok(updatedGame.get());
         }
+        gameRepository.save(updatedGame.get());
+        return ResponseEntity.ok(updatedGame.get());
         //return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).headers(headers).build();
     }
 

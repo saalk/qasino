@@ -96,7 +96,7 @@ public class GameStyleSelector {
         REPRICING_23_INTEREST_TO_124(CREDITCARD, MEMBER, LimitType.EQUAL_OR_MORE, null, "RINTGD"),
         REPRICING_24_INTEREST_TO_124(PLATINUMCARD, MEMBER, LimitType.EQUAL_OR_MORE, null, "RINTGD");
 
-        private static int LIMIT_BOUNDARY = 5000;
+        private static final int LIMIT_BOUNDARY = 5000;
 
         private ProductType productType;
         private AccountType accountType;
@@ -129,7 +129,7 @@ public class GameStyleSelector {
                 return true;
             }
             if (newCreditLimit == null) {
-                return matchPricingProgram.getCreditLimit() == null;
+                return false;
             }
             if (matchPricingProgram.getCreditLimit() == LimitType.EQUAL_OR_MORE) {
                 return newCreditLimit >= LIMIT_BOUNDARY;
@@ -144,7 +144,7 @@ public class GameStyleSelector {
                 return true;
             }
             if (newPortfolioCode == null) {
-                return matchPricingProgram.getPortfolioCode() == null;
+                return false;
             }
             return matchPricingProgram.getPortfolioCode().equals(newPortfolioCode);
         }

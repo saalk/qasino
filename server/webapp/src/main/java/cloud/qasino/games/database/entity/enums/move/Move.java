@@ -59,7 +59,7 @@ public enum Move implements LabeledEnum {
 
     static {
         for (Move move : EnumSet.allOf(Move.class))
-            if (!move.getLabel().toLowerCase().equals("error"))
+            if (!move.getLabel().equalsIgnoreCase("error"))
                 moveMapNoError.put(move.getLabel(), move);
     }
 

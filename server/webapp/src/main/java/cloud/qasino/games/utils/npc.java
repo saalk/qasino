@@ -1,11 +1,5 @@
 package cloud.qasino.games.utils;
 
-/**
- * Class to retrieve and print data to describe NPCs
- *
- * Jaison Eccleston
- * 2.0
- */
 import java.io.*;
 import java.util.*;
 public class npc{
@@ -13,7 +7,7 @@ public class npc{
         Scanner input= new Scanner(System.in);
         List<NPC_Object> npcList = new ArrayList<>();
         String sentinel;
-        int npcs=0;
+        int npcs;
         int homeland;
 
         do{
@@ -36,14 +30,14 @@ public class npc{
                     } catch(ArrayIndexOutOfBoundsException ex) {
                     	System.out.println(ex.getMessage());
                     }
-                    System.out.println(where.toString());
+                    System.out.println(where);
                     try {
                     who.randomize(npc, npc.getRace());
                     }catch (NullPointerException ex) {
                     	System.out.println(ex.getMessage());
                     }
                     who.profession(npc);
-                    System.out.println(npc.toString());
+                    System.out.println(npc);
                     System.out.println("\n");
 
                     npcList.add(npc);

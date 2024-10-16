@@ -10,8 +10,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static java.util.EnumSet.of;
-
 @Getter
 public enum GameEvent implements Event {
 
@@ -45,11 +43,11 @@ public enum GameEvent implements Event {
             lookup.put(String.valueOf(gameEvent).toLowerCase(), gameEvent);
     }
 
-    public static final List<GameEvent> START_GAME_EVENTS = Arrays.asList(START);
+    public static final List<GameEvent> START_GAME_EVENTS = List.of(START);
     public static final List<GameEvent> SETUP_GAME_EVENTS = Arrays.asList(ADD_INVITEE, VALIDATE);
     public static final List<GameEvent> PREPARED_GAME_EVENTS = List.of(SHUFFLE);
     public static final List<GameEvent> PLAYING_GAME_EVENTS = List.of(PLAY);
-    public static final List<GameEvent> STOP_GAMES_EVENTS = Arrays.asList(STOP);
+    public static final List<GameEvent> STOP_GAMES_EVENTS = List.of(STOP);
     public static final List<GameEvent> ERROR_GAME_EVENTS = Arrays.asList(WINNER, ABANDON, ERROR);
     public static final List<GameEvent> ALL_GAME_EVENTS =
             Arrays.asList(START, ADD_INVITEE, VALIDATE, SHUFFLE, PLAY, STOP, WINNER, ABANDON, ERROR);

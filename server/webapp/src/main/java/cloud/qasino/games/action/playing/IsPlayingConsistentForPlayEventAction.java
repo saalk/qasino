@@ -1,10 +1,8 @@
 package cloud.qasino.games.action.playing;
 
 import cloud.qasino.games.action.common.GenericLookupsAction;
-import cloud.qasino.games.database.security.VisitorRepository;
 import cloud.qasino.games.dto.Qasino;
 import cloud.qasino.games.pattern.statemachine.event.EventOutput;
-import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 

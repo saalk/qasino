@@ -1,7 +1,5 @@
 package cloud.qasino.games.dto.model;
 
-import cloud.qasino.games.database.entity.League;
-import cloud.qasino.games.database.entity.Result;
 import lombok.Data;
 
 import java.util.List;

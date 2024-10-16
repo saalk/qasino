@@ -4,11 +4,9 @@ import cloud.qasino.games.database.entity.Player;
 import cloud.qasino.games.database.entity.enums.game.GameState;
 import cloud.qasino.games.database.entity.Game;
 import cloud.qasino.games.database.entity.League;
-import cloud.qasino.games.database.security.Visitor;
 import jakarta.transaction.Transactional;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
@@ -45,8 +43,7 @@ public interface GameRepository extends JpaRepository<Game, Long> {
 
     // special finds
     List<Game> findGamesByLeague(League league);
-    @Query(value = FIND_ALL_BY_INITIATOR_ID, countQuery = COUNT_ALL_BY_INITIATOR_ID, nativeQuery = true)
-    public List<Game> findAllGamesForInitiatorWithPage(
+    @Query(value = FIND_ALL_BY_INITIATOR_ID, countQuery = COUNT_ALL_BY_INITIATOR_ID, nativeQuery = true) List<Game> findAllGamesForInitiatorWithPage(
             @Param("initiator") long initiator,
             Pageable pageable);
     List<Game> findByInitiator(long initiator);
@@ -58,29 +55,23 @@ public interface GameRepository extends JpaRepository<Game, Long> {
     List<Game> findGameNodeStates(
             @Param(value = "states") List<GameState> states,
             Pageable pageable);
-    @Query(value = FIND_NEWGAMES_BY_VISITOR_ID, countQuery = COUNT_NEWGAMES_BY_VISITOR_ID, nativeQuery = true)
-    public List<Game> findAllNewGamesForVisitorWithPage(
+    @Query(value = FIND_NEWGAMES_BY_VISITOR_ID, countQuery = COUNT_NEWGAMES_BY_VISITOR_ID, nativeQuery = true) List<Game> findAllNewGamesForVisitorWithPage(
             @Param("visitorId") long visitorId,
             Pageable pageable);
-    @Query(value = FIND_STARTEDGAMES_BY_VISITOR_ID, countQuery = COUNT_STARTEDGAMES_BY_VISITOR_ID, nativeQuery = true)
-    public List<Game> findAllStartedGamesForVisitorWithPage(
+    @Query(value = FIND_STARTEDGAMES_BY_VISITOR_ID, countQuery = COUNT_STARTEDGAMES_BY_VISITOR_ID, nativeQuery = true) List<Game> findAllStartedGamesForVisitorWithPage(
             @Param("visitorId") long visitorId,
             Pageable pageable);
-    @Query(value = FIND_FINISHEDGAMES_BY_VISITOR_ID, countQuery = COUNT_FINISHEDGAMES_BY_VISITOR_ID, nativeQuery = true)
-    public List<Game> findAllFinishedGamesForVisitorWithPage(
+    @Query(value = FIND_FINISHEDGAMES_BY_VISITOR_ID, countQuery = COUNT_FINISHEDGAMES_BY_VISITOR_ID, nativeQuery = true) List<Game> findAllFinishedGamesForVisitorWithPage(
             @Param("visitorId") long visitorId,
             Pageable pageable);
-    @Query(value = FIND_ALL_INVITED_FOR_VISITOR_ID, countQuery = COUNT_ALL_INVITED_FOR_VISITOR_ID, nativeQuery = true)
-    public List<Player> findAllInvitedPlayersForVisitorWithPage(
+    @Query(value = FIND_ALL_INVITED_FOR_VISITOR_ID, countQuery = COUNT_ALL_INVITED_FOR_VISITOR_ID, nativeQuery = true) List<Player> findAllInvitedPlayersForVisitorWithPage(
             @Param("visitorId") long visitorId,
             Pageable pageable);
     // TODO - FIX ME
-    @Query(value = FIND_ALL_INITIATED_BY_VISITOR_ID, countQuery = COUNT_ALL_INITIATED_BY_VISITOR_ID, nativeQuery = true)
-    public List<Game> findAllInitiatedGamesForVisitorWithPage(
+    @Query(value = FIND_ALL_INITIATED_BY_VISITOR_ID, countQuery = COUNT_ALL_INITIATED_BY_VISITOR_ID, nativeQuery = true) List<Game> findAllInitiatedGamesForVisitorWithPage(
             @Param("visitorId") long visitorId,
             Pageable pageable);
-    @Query(value = FIND_ALL_INVITED_BY_VISITOR_ID, countQuery = COUNT_ALL_INVITED_BY_VISITOR_ID, nativeQuery = true)
-    public List<Game> findAllInvitedGamesForVisitorWithPage(
+    @Query(value = FIND_ALL_INVITED_BY_VISITOR_ID, countQuery = COUNT_ALL_INVITED_BY_VISITOR_ID, nativeQuery = true) List<Game> findAllInvitedGamesForVisitorWithPage(
             @Param("visitorId") long visitorId,
             Pageable pageable);
 
@@ -177,6 +168,6 @@ public interface GameRepository extends JpaRepository<Game, Long> {
     }
     default String getWeek() {
         DateTimeFormatter week = DateTimeFormatter.ofPattern("w");
-        return String.valueOf(LocalDate.now().format(week));
+        return LocalDate.now().format(week);
     }
 }

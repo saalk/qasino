@@ -50,7 +50,7 @@ public enum Suit implements LabeledEnum {
         while (suit == Suit.JOKERS) {
             // we dont want the suit joker
             suit = suits[SUIT.nextInt(suits.length)];
-        };
+        }
         return suit;
     }
 
@@ -62,7 +62,7 @@ public enum Suit implements LabeledEnum {
     }
     static {
         for (Suit suit : EnumSet.allOf(Suit.class))
-            if (!suit.getLabel().toLowerCase().equals("error"))
+            if (!suit.getLabel().equalsIgnoreCase("error"))
                 suitMapNoError.put(suit.getLabel(), suit);
     }
 

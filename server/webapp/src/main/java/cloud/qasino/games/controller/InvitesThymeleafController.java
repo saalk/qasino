@@ -23,8 +23,6 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.security.Principal;
 
-import static cloud.qasino.games.pattern.statemachine.event.EventOutput.Result.FAILURE;
-
 @Controller
 @ControllerAdvice
 //@Api(tags = {WebConfiguration.QASINO_TAG})
@@ -36,8 +34,8 @@ public class InvitesThymeleafController extends AbstractThymeleafController {
     private static final String ERROR_VIEW_LOCATION = "pages/error";
 
     EventOutput.Result output;
-    private PlayerRepository playerRepository;
-    private PlayerService playerService;
+    private final PlayerRepository playerRepository;
+    private final PlayerService playerService;
     @Autowired LoadPrincipalDtoAction loadVisitor;
     // @formatter:on
 

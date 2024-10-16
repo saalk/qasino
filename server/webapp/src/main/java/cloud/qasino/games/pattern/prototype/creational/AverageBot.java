@@ -22,7 +22,7 @@ public class AverageBot extends Bot<AverageBot> {
     @Override
     public AverageBot clone() throws CloneNotSupportedException {
         // Cast to DumbBot as super returns Object
-        AverageBot cloned = (AverageBot) super.clone();
+        AverageBot cloned = super.clone();
 //        cloned.hobbies = new ArrayList<>(this.hobbies); // Deep copying of mutable fields.
         aiLevel = AiLevel.AVERAGE;
         return cloned;

@@ -3,7 +3,6 @@ package cloud.qasino.games.pattern_statemachine.trigger;
 import cloud.qasino.games.pattern.statemachine.event.GameEvent;
 import org.junit.jupiter.api.Test;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class GameEventTest {

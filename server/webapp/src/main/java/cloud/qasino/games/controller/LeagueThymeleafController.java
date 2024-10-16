@@ -35,7 +35,7 @@ public class LeagueThymeleafController extends AbstractThymeleafController {
     private static final String ERROR_VIEW_LOCATION = "pages/error";
 
     EventOutput.Result output;
-    private LeagueRepository leagueRepository;
+    private final LeagueRepository leagueRepository;
 
     @Autowired LoadPrincipalDtoAction loadVisitor;
     @Autowired CreateNewLeagueAction createNewLeagueAction;

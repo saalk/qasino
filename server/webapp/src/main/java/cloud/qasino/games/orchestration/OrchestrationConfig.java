@@ -24,11 +24,11 @@ public class OrchestrationConfig {
     private static int actionIdCount = 0;
     //@Getter
     //private final RetryCriteria retryCriteria = new RetryCriteria();
-    private Map<GameState, StateConfig> stateConfigMap = new LinkedHashMap<GameState, StateConfig>();
-    private Map<Event, List<GameState>> statesPermittingEvent = new HashMap<>();
-    private List<Class<? extends GenericLookupsAction>> actionsBeforeEvent = new ArrayList<>();
-    private List<Class<? extends GenericLookupsAction>> actionsAfterEvent = new ArrayList<>();
-    private Map<Class<? extends Exception>, Transition> exceptionToTransitionMap = new LinkedHashMap<>();
+    private final Map<GameState, StateConfig> stateConfigMap = new LinkedHashMap<>();
+    private final Map<Event, List<GameState>> statesPermittingEvent = new HashMap<>();
+    private final List<Class<? extends GenericLookupsAction>> actionsBeforeEvent = new ArrayList<>();
+    private final List<Class<? extends GenericLookupsAction>> actionsAfterEvent = new ArrayList<>();
+    private final Map<Class<? extends Exception>, Transition> exceptionToTransitionMap = new LinkedHashMap<>();
     private boolean rethrowExceptions = false;
     private EventHandlingResponse defaultResponse;
     //private List<Class<? extends Action>> actionsBeforeRetryEvent = new ArrayList<>();
@@ -64,23 +64,16 @@ public class OrchestrationConfig {
     }
 
     /**
-     * @param event
      * @return List<GameState>
      */
     List<GameState> getStatesPermittingEvent(Event event) {
-        return statesPermittingEvent.containsKey(event) ? statesPermittingEvent.get(event) : new ArrayList<GameState>();
+        return statesPermittingEvent.containsKey(event) ? statesPermittingEvent.get(event) : new ArrayList<>();
     }
 
     /**
-     * @param event
-     * @param state
      */
     private void addStatePermittingEvent(Event event, GameState state) {
-        List<GameState> states = statesPermittingEvent.get(event);
-        if (states == null) {
-            states = new ArrayList<>();
-            statesPermittingEvent.put(event, states);
-        }
+        List<GameState> states = statesPermittingEvent.computeIfAbsent(event, k -> new ArrayList<>());
         if (states.contains(state)) {
             throw new IllegalStateException("event " + event + " cannot be handled twice by for state " + state);
         }
@@ -88,7 +81,6 @@ public class OrchestrationConfig {
     }
 
     /**
-     * @param state
      * @return StateConfig
      */
     StateConfig getStateConfig(GameState state) {
@@ -96,8 +88,6 @@ public class OrchestrationConfig {
     }
 
     /**
-     * @param state
-     * @param event
      * @return list of actions to be carried out in order
      */
     Collection<ActionConfig> getActionsForEvent(final GameState state, final Event event) {
@@ -120,7 +110,6 @@ public class OrchestrationConfig {
     /**
      * Adds an action to be performed before any other actions.
      *
-     * @param action
      * @return OrchestrationConfig
      */
     public OrchestrationConfig beforeEventPerform(final Class<? extends GenericLookupsAction> action) {
@@ -131,7 +120,6 @@ public class OrchestrationConfig {
     /**
      * Adds an action to be performed after the event has been handled.
      *
-     * @param action
      * @return OrchestrationConfig
      */
     public OrchestrationConfig afterEventPerform(final Class<? extends GenericLookupsAction> action) {
@@ -172,10 +160,6 @@ public class OrchestrationConfig {
      * Configures a transition to a next state if a certain exception type (or supertype) is caught while performing an action
      * Sets (frontend) response on Dto
      *
-     * @param exceptionClass
-     * @param nextState
-     * @param response
-     * @return
      */
     public OrchestrationConfig onResult(final Class<? extends Exception> exceptionClass, final GameState nextState,
                                         EventHandlingResponse response) {
@@ -205,7 +189,6 @@ public class OrchestrationConfig {
     /**
      * Configures Exceptions on actions to be rethrown instead of resulting in transitions
      *
-     * @return
      */
     public OrchestrationConfig rethrowExceptions() {
         rethrowExceptions = true;
@@ -217,7 +200,6 @@ public class OrchestrationConfig {
     }
 
     /**
-     * @param exception
      * @return Transition
      */
     Transition getTransitionForException(Exception exception) {
@@ -227,8 +209,6 @@ public class OrchestrationConfig {
     /**
      * Configures a default response to be set on Dto in case flow does not result in other specific response
      *
-     * @param defaultResponse
-     * @return
      */
     public OrchestrationConfig respondDefault(final EventHandlingResponse defaultResponse) {
         this.defaultResponse = defaultResponse;
@@ -236,8 +216,6 @@ public class OrchestrationConfig {
     }
 
     /**
-     * @param state
-     * @param event
      * @return true if state is configured to handle event
      */
     public boolean statePermitsEvent(final GameState state, final GameEvent event) {
@@ -249,14 +227,13 @@ public class OrchestrationConfig {
      * Is used to facilitate gradual refactoring of Trigger-based controller configuration.
      */
     static class Transition {
-        private GameState nextState;
-        private EventHandlingResponse response;
-        private Event nextEvent;
+        private final GameState nextState;
+        private final EventHandlingResponse response;
+        private final Event nextEvent;
 
         /**
          * One of the parameters may be null, depending on how transitions are configured.
          *
-         * @param nextState
          */
         Transition(final GameState nextState, final EventHandlingResponse response, Event nextEvent) {
             this.nextState = nextState;
@@ -285,18 +262,16 @@ public class OrchestrationConfig {
      */
     public class StateConfig {
 
-        private GameState state;
-        private Map<Event, EventConfig> eventConfigMap = new HashMap<>();
+        private final GameState state;
+        private final Map<Event, EventConfig> eventConfigMap = new HashMap<>();
 
         /**
-         * @param state
          */
         StateConfig(GameState state) {
             this.state = state;
         }
 
         /**
-         * @param event
          * @return EventConfig
          */
         EventConfig getEventConfig(Event event) {
@@ -306,7 +281,6 @@ public class OrchestrationConfig {
         /**
          * Adds an event that can be handled by this state.
          *
-         * @param event
          * @return EventConfig
          */
         public EventConfig onEvent(Event event) {
@@ -341,7 +315,6 @@ public class OrchestrationConfig {
         /**
          * Performs an action after a transition to this particular state has been performed.
          *
-         * @param action
          * @return ActionConfig
          */
         public ActionConfig onEntryPerform(Class<? extends GenericLookupsAction> action) {
@@ -353,7 +326,6 @@ public class OrchestrationConfig {
         }
 
         /**
-         * @param event
          * @return EventConfig
          */
         EventConfig getEvent(final Event event) {
@@ -384,15 +356,13 @@ public class OrchestrationConfig {
     }
 
     public class EventConfig {
-        private Event event;
-        private List<ActionConfig> actions = new ArrayList<>();
-        private StateConfig state;
+        private final Event event;
+        private final List<ActionConfig> actions = new ArrayList<>();
+        private final StateConfig state;
         private boolean eventRethrowsExceptions = false;
         private EventHandlingResponse defaultEventResponse;
 
         /**
-         * @param state
-         * @param event
          */
         EventConfig(StateConfig state, Event event) {
             this.event = event;
@@ -403,7 +373,6 @@ public class OrchestrationConfig {
         /**
          * Adds an action to be carried out during event handling.
          *
-         * @param action
          * @return ActionConfig
          */
         public ActionConfig perform(Class<? extends GenericLookupsAction> action) {
@@ -446,17 +415,16 @@ public class OrchestrationConfig {
         /**
          * Performs a transition to nextState regardless of the outcome of an action.
          *
-         * @param nextState
          * @return EventConfig
          */
         public EventConfig transition(GameState nextState) {
             onState(nextState);
-            perform((Class<? extends GenericLookupsAction>) OkAction.class).onResult(SUCCESS, nextState);
+            perform(OkAction.class).onResult(SUCCESS, nextState);
             return this;
         }
 
         public void transition(final GameState nextState, final Event nextEvent) {
-            perform((Class<? extends GenericLookupsAction>) OkAction.class).onResult(SUCCESS, nextState, nextEvent);
+            perform(OkAction.class).onResult(SUCCESS, nextState, nextEvent);
         }
 
         /**
@@ -485,18 +453,16 @@ public class OrchestrationConfig {
      */
     public class ActionConfig {
 
-        private EventConfig event;
-        private Class<? extends GenericLookupsAction> action;
+        private final EventConfig event;
+        private final Class<? extends GenericLookupsAction> action;
         //TODO  unchecked call
-        private Map<Object, Transition> resultTransitionMap = new HashMap();
-        private Map<Class<? extends Exception>, Transition> exceptionToTransitionMap = new LinkedHashMap<>();
+        private final Map<Object, Transition> resultTransitionMap = new HashMap<>();
+        private final Map<Class<? extends Exception>, Transition> exceptionToTransitionMap = new LinkedHashMap<>();
         private Transition defaultTransition;
         private Class resultType;
-        private int actionId = actionIdCount++;
+        private final int actionId = actionIdCount++;
 
         /**
-         * @param event
-         * @param action
          */
         ActionConfig(EventConfig event, Class<? extends GenericLookupsAction> action) {
             this.event = event;
@@ -510,7 +476,6 @@ public class OrchestrationConfig {
         /**
          * Adds an action to be performed during event handling
          *
-         * @param action
          * @return ActionConfig
          */
         public ActionConfig perform(Class<? extends GenericLookupsAction> action) {
@@ -535,8 +500,6 @@ public class OrchestrationConfig {
         /**
          * Ties the action to a transition that is to be performed if the action produces a certain result.
          *
-         * @param expectedResult
-         * @param nextState
          * @return ActionConfig
          */
         public ActionConfig onResult(final Object expectedResult, final GameState nextState) {
@@ -544,10 +507,7 @@ public class OrchestrationConfig {
         }
 
         /**
-         * @param expectedResult
-         * @param nextState
          * @param nextEvent      to be fired immidiately after transition
-         * @return
          */
         public ActionConfig onResult(final Object expectedResult, final GameState nextState, final Event nextEvent) {
             return onResult(expectedResult, nextState, null, nextEvent);
@@ -562,11 +522,8 @@ public class OrchestrationConfig {
         }
 
         /**
-         * @param expectedResult
-         * @param nextState
          * @param response       to be set on Dto
          * @param nextEvent      to be fired immidiately after transition
-         * @return
          */
         public ActionConfig onResult(final Object expectedResult, final GameState nextState, final EventHandlingResponse
                 response, final Event nextEvent) {
@@ -581,8 +538,6 @@ public class OrchestrationConfig {
          * Ties the action to a transition that is to be performed if the action encounters a specific exception.
          * The configured transition takes precedence over behaviour defined at a higher level.
          *
-         * @param expectedExceptionClass
-         * @param nextState
          * @return ActionConfig
          */
         public ActionConfig onResult(final Class<? extends Exception> expectedExceptionClass, final GameState nextState) {
@@ -595,10 +550,6 @@ public class OrchestrationConfig {
         /**
          * Specifies that event must be fired right after transition.
          *
-         * @param expectedExceptionClass
-         * @param nextState
-         * @param nextEvent
-         * @return
          */
         public ActionConfig onResult(final Class<? extends Exception> expectedExceptionClass, final GameState nextState, final Event
                 nextEvent) {
@@ -608,7 +559,6 @@ public class OrchestrationConfig {
         }
 
         /**
-         * @param expectedResult
          */
         private void assertResultType(final Object expectedResult) {
             if (resultType != null) {
@@ -626,7 +576,6 @@ public class OrchestrationConfig {
         }
 
         /**
-         * @param exception
          * @return Transition
          */
         Transition getTransitionForException(Exception exception) {
@@ -635,7 +584,6 @@ public class OrchestrationConfig {
 
 
         /**
-         * @param result
          * @return Transition
          */
         Transition getTransitionForResult(final Object result) {
@@ -650,7 +598,6 @@ public class OrchestrationConfig {
         /**
          * Perform a transaction for a certain trigger if no other transition can be found for a result.
          *
-         * @param nextState
          * @deprecated
          */
         public void byDefault(final GameState nextState) {

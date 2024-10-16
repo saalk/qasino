@@ -3,7 +3,6 @@ package cloud.qasino.games.dto.mapper;
 import cloud.qasino.games.database.entity.Card;
 import cloud.qasino.games.database.entity.enums.card.Location;
 import cloud.qasino.games.simulator.QasinoSimulator;
-import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -12,7 +11,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @ExtendWith(MockitoExtension.class)

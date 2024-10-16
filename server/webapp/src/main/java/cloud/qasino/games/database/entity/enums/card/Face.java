@@ -41,7 +41,7 @@ public enum Face implements LabeledEnum {
 			= new HashMap<>();
 	static {
 		for(Face face : EnumSet.allOf(Face.class))
-			if (!face.getLabel().toLowerCase().equals("error"))
+			if (!face.getLabel().equalsIgnoreCase("error"))
 				faceMapNoError.put(face.getLabel(), face);
 	}
 

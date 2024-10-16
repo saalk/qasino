@@ -56,8 +56,8 @@ common beans with ApplicationContext:
 2. Prototype - you will get a new instance of the spring bean 
 
 3. for web aware applications with WebApplicationContext:
-3. Request - each http request has its own bean
-4. Session - each session has its own bean
-5. Global-session
+4. Request - each http request has its own bean
+5. Session - each session has its own bean
+6. Global-session
 
 

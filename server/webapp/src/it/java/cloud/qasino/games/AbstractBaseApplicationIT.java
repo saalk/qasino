@@ -11,7 +11,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.TestPropertySources;
-import org.springframework.test.context.web.WebAppConfiguration;
 
 import jakarta.annotation.Resource;
 import java.util.Collections;

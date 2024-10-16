@@ -34,7 +34,7 @@ public enum PlayerType implements LabeledEnum {
             = new HashMap<>();
     static {
         for(PlayerType playerType : EnumSet.allOf(PlayerType.class))
-            if (!playerType.getLabel().toLowerCase().equals("error"))
+            if (!playerType.getLabel().equalsIgnoreCase("error"))
                 roleMapNoError.put(playerType.getLabel(), playerType);
     }
 

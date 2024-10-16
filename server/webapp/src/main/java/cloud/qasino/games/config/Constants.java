@@ -21,16 +21,16 @@ import java.util.List;
 
 public interface Constants {
 
-    public static final String BASE_PATH = "/qasino/api";
-    public static final String ENDPOINT_VISITOR = "/visitor";
-    public static final String ENDPOINT_GAME = "/game";
-    public static final String ENDPOINT_PLAYER = "/player";
-    public static final String ENDPOINT_CARD = "/card";
-    public static final String ENDPOINT_PLAY = "/play";
+    String BASE_PATH = "/qasino/api";
+    String ENDPOINT_VISITOR = "/visitor";
+    String ENDPOINT_GAME = "/game";
+    String ENDPOINT_PLAYER = "/player";
+    String ENDPOINT_CARD = "/card";
+    String ENDPOINT_PLAY = "/play";
 
-    public static final String NUMERIC_REGEX = "^([\\p{N}]+)$";
-    public static final String ALPHANUMERIC_REGEX = "^([\\p{N}\\p{L}]+)$";
-    public static final String UUID_REGEX = "^([\\p{N}\\p{L}\\-]+)$";
+    String NUMERIC_REGEX = "^([\\p{N}]+)$";
+    String ALPHANUMERIC_REGEX = "^([\\p{N}\\p{L}]+)$";
+    String UUID_REGEX = "^([\\p{N}\\p{L}\\-]+)$";
 
     // TODO move to properties
     int DEFAULT_PAWN_SHIP_HUMAN = 1000;
@@ -88,37 +88,32 @@ public interface Constants {
 
     static <E> boolean isNoValidEnum(String e) {
         if (isNullOrEmpty(e)) return true;
-        if (
-                EnumUtils.isValidEnum(GameState.class, e) ||
-                        GameState.fromLabelWithDefault(e) != GameState.ERROR ||
-                        EnumUtils.isValidEnum(GameEvent.class, e) ||
-                        EnumUtils.isValidEnum(BettingStrategy.class, e) ||
-                        EnumUtils.isValidEnum(DeckConfiguration.class, e) ||
-                        EnumUtils.isValidEnum(OneTimeInsurance.class, e) ||
-                        EnumUtils.isValidEnum(AnteToWin.class, e) ||
-                        EnumUtils.isValidEnum(RoundsToWin.class, e) ||
-                        EnumUtils.isValidEnum(TurnsToWin.class, e) ||
-                        EnumUtils.isValidEnum(Move.class, e) ||
-                        Move.fromLabelWithDefault(e) != Move.ERROR ||
-                        EnumUtils.isValidEnum(Type.class, e) ||
-                        Type.fromLabelWithDefault(e) != Type.ERROR ||
-                        EnumUtils.isValidEnum(AiLevel.class, e) ||
-                        AiLevel.fromLabelWithDefault(e) != AiLevel.ERROR ||
-                        EnumUtils.isValidEnum(Avatar.class, e) ||
-                        Avatar.fromLabelWithDefault(e) != Avatar.ERROR ||
-                        EnumUtils.isValidEnum(PlayerType.class, e) ||
-                        PlayerType.fromLabelWithDefault(e) != PlayerType.ERROR ||
-                        EnumUtils.isValidEnum(Face.class, e) ||
-                        Face.fromLabelWithDefault(e) != Face.ERROR ||
-                        EnumUtils.isValidEnum(Location.class, e) ||
-                        Location.fromLabelWithDefault(e) != Location.ERROR ||
-                        EnumUtils.isValidEnum(Position.class, e) ||
-                        Position.fromLabelWithDefault(e) != Position.ERROR ||
-                        EnumUtils.isValidEnum(Rank.class, e) ||
-                        EnumUtils.isValidEnum(Suit.class, e)
-        ) {
-            return false; // its actual a valid and meaning full enum
-        }
-        return true;
+        return !EnumUtils.isValidEnum(GameState.class, e) &&
+                GameState.fromLabelWithDefault(e) == GameState.ERROR &&
+                !EnumUtils.isValidEnum(GameEvent.class, e) &&
+                !EnumUtils.isValidEnum(BettingStrategy.class, e) &&
+                !EnumUtils.isValidEnum(DeckConfiguration.class, e) &&
+                !EnumUtils.isValidEnum(OneTimeInsurance.class, e) &&
+                !EnumUtils.isValidEnum(AnteToWin.class, e) &&
+                !EnumUtils.isValidEnum(RoundsToWin.class, e) &&
+                !EnumUtils.isValidEnum(TurnsToWin.class, e) &&
+                !EnumUtils.isValidEnum(Move.class, e) &&
+                Move.fromLabelWithDefault(e) == Move.ERROR &&
+                !EnumUtils.isValidEnum(Type.class, e) &&
+                Type.fromLabelWithDefault(e) == Type.ERROR &&
+                !EnumUtils.isValidEnum(AiLevel.class, e) &&
+                AiLevel.fromLabelWithDefault(e) == AiLevel.ERROR &&
+                !EnumUtils.isValidEnum(Avatar.class, e) &&
+                Avatar.fromLabelWithDefault(e) == Avatar.ERROR &&
+                !EnumUtils.isValidEnum(PlayerType.class, e) &&
+                PlayerType.fromLabelWithDefault(e) == PlayerType.ERROR &&
+                !EnumUtils.isValidEnum(Face.class, e) &&
+                Face.fromLabelWithDefault(e) == Face.ERROR &&
+                !EnumUtils.isValidEnum(Location.class, e) &&
+                Location.fromLabelWithDefault(e) == Location.ERROR &&
+                !EnumUtils.isValidEnum(Position.class, e) &&
+                Position.fromLabelWithDefault(e) == Position.ERROR &&
+                !EnumUtils.isValidEnum(Rank.class, e) &&
+                !EnumUtils.isValidEnum(Suit.class, e); // its actual a valid and meaning full enum
     }
 }

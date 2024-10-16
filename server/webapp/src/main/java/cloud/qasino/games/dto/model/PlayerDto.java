@@ -6,11 +6,6 @@ import cloud.qasino.games.database.entity.enums.player.PlayerType;
 import lombok.Data;
 
 @Data
-/**
- * The purpose of using this Dto is to separate the internal representation of user data
- * (e.g., in the database or business logic) from the data exposed to
- * external clients or systems.
- * */
 public class PlayerDto {
 
     // core

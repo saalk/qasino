@@ -4,15 +4,9 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.time.Month;
-import java.util.List;
 
 @Getter
 @Setter
-/**
- * The purpose of using this Dto is to separate the internal representation of visitor data
- * (e.g., in the database or business logic) from the data exposed to
- * external clients or systems.
- * */
 public class VisitorShortDto {
 
     private static final String NOT_BLANK_MESSAGE = "{notBlank.message}";

@@ -483,8 +483,7 @@ public class namesAndOrigins {
 	            String[] fields = line.split(" ");
 	            lines.add(fields);
 	        }
-	        String[][] strings = (String[][]) lines.toArray(new String[lines.size()][]);
-	        return strings;
+            return (String[][]) lines.toArray(new String[lines.size()][]);
 		
 	    }
 	} 

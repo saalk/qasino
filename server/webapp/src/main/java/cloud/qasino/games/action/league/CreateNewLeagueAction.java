@@ -5,7 +5,6 @@ import cloud.qasino.games.database.service.LeaguesService;
 import cloud.qasino.games.dto.Qasino;
 import cloud.qasino.games.database.entity.League;
 import cloud.qasino.games.database.security.Visitor;
-import cloud.qasino.games.database.repository.LeagueRepository;
 import cloud.qasino.games.dto.mapper.VisitorMapper;
 import cloud.qasino.games.dto.model.LeagueDto;
 import cloud.qasino.games.pattern.statemachine.event.EventOutput;
@@ -28,7 +27,7 @@ public class CreateNewLeagueAction extends GenericLookupsAction<EventOutput.Resu
         if (!(StringUtils.isEmpty(qasino.getCreation().getSuppliedLeagueName()))) {
             int sequence = Math.toIntExact(leaguesService.countByName(qasino.getCreation().getSuppliedLeagueName()));
             if (sequence != 0) {
-                qasino.getMessage().setConflictErrorMessage("leagueName",String.valueOf(qasino.getCreation().getSuppliedLeagueName()),"leagueName [" + String.valueOf(qasino.getCreation().getSuppliedLeagueName()) + "] not available any more");
+                qasino.getMessage().setConflictErrorMessage("leagueName",String.valueOf(qasino.getCreation().getSuppliedLeagueName()),"leagueName [" + qasino.getCreation().getSuppliedLeagueName() + "] not available any more");
                 return EventOutput.Result.FAILURE;
             }
             Visitor visitor = VisitorMapper.INSTANCE.fromDto(qasino.getVisitor());

@@ -24,10 +24,9 @@ public interface ResultsRepository extends JpaRepository<Result, Long> {
     List<Result> findByGameId(Long gameId);
 
     // SPECIAL FINDS
-    public final static String FIND_ACTIVE_RESULT_BY_LEAGUE_ID  =        "SELECT r.* FROM \"result\" as r JOIN \"league\" as l JOIN \"game\" as g WHERE r.\"game_id\" = g.\"game_id\" AND l.\"league_id\" = g.\"league_id\" AND l.\"league_id\" = :leagueId ";
-    public final static String COUNT_ACTIVE_RESULT_BY_LEAGUE_ID = "SELECT count(*) FROM \"result\" as r JOIN \"league\" as l JOIN \"game\" as g WHERE r.\"game_id\" = g.\"game_id\" AND l.\"league_id\" = g.\"league_id\" AND l.\"league_id\" = :leagueId ";
-    @Query(value = FIND_ACTIVE_RESULT_BY_LEAGUE_ID, countQuery = COUNT_ACTIVE_RESULT_BY_LEAGUE_ID, nativeQuery = true)
-    public List<Result> findAllResultForLeagueWithPage(@Param("leagueId") long leagueId, Pageable pageable);
+    String FIND_ACTIVE_RESULT_BY_LEAGUE_ID  =        "SELECT r.* FROM \"result\" as r JOIN \"league\" as l JOIN \"game\" as g WHERE r.\"game_id\" = g.\"game_id\" AND l.\"league_id\" = g.\"league_id\" AND l.\"league_id\" = :leagueId ";
+    String COUNT_ACTIVE_RESULT_BY_LEAGUE_ID = "SELECT count(*) FROM \"result\" as r JOIN \"league\" as l JOIN \"game\" as g WHERE r.\"game_id\" = g.\"game_id\" AND l.\"league_id\" = g.\"league_id\" AND l.\"league_id\" = :leagueId ";
+    @Query(value = FIND_ACTIVE_RESULT_BY_LEAGUE_ID, countQuery = COUNT_ACTIVE_RESULT_BY_LEAGUE_ID, nativeQuery = true) List<Result> findAllResultForLeagueWithPage(@Param("leagueId") long leagueId, Pageable pageable);
 
 //    public List<Result> findAllByGame(Game game);
 }

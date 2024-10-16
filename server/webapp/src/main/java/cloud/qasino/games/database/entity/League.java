@@ -121,7 +121,7 @@ public class League {
 
     public boolean endLeagueThisMonth() {
         if (!this.isActive()) return false;
-        LocalDateTime localDateAndTime = LocalDateTime.now().with(lastDayOfMonth());;
+        LocalDateTime localDateAndTime = LocalDateTime.now().with(lastDayOfMonth());
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd-HH:mm-ssSSS-nnnnnnnnn");
         String result = localDateAndTime.format(formatter);
         this.ended = result.substring(0, 20);

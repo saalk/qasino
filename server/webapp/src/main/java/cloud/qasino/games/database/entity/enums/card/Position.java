@@ -29,7 +29,7 @@ public enum Position implements LabeledEnum {
 
     static {
         for (Position position : EnumSet.allOf(Position.class))
-            if (!position.getLabel().toLowerCase().equals("error"))
+            if (!position.getLabel().equalsIgnoreCase("error"))
                 positionMapNoError.put(position.getLabel(), position);
     }
 

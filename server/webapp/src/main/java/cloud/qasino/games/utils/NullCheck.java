@@ -6,7 +6,7 @@ import java.util.function.Function;
 // if (new NullCheck<>(person).with(Person::getAddress).with(Address::getZipCode).isNull())
 
 public class NullCheck<T> {
-    private T root;
+    private final T root;
 
     public NullCheck(T root) {
         this.root = root;

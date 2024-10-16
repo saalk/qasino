@@ -17,8 +17,8 @@ import static cloud.qasino.games.pattern.statemachine.event.GameEvent.START;
 @Slf4j
 public class QasinoEventHandler {
 
-    private OrchestrationConfig orchestrationConfig;
-    private ApplicationContext applicationContext;
+    private final OrchestrationConfig orchestrationConfig;
+    private final ApplicationContext applicationContext;
     private String label;
 
 
@@ -115,19 +115,12 @@ public class QasinoEventHandler {
     OrchestrationConfig.ActionConfig actionConfig) {
 
         GenericLookupsAction action = applicationContext.getBean(actionConfig.getAction());
-        if (action == null) {
-            throw new IllegalStateException("No bean present for event " + actionConfig.getEvent() + ", make " +
-                    "sure it's annotated with @Component");
-        }
         log.info("performing event " + action.getClass().getSimpleName());
         OrchestrationConfig.Transition resultingTransition;
         RuntimeException resultingException = null;
         try {
             //TODO  unchecked call
             Object output = action.perform((Qasino) flowDto);
-            if (output instanceof ActionOutput) {
-                output = ((ActionOutput) output).getResult();
-            }
             log.info("output of event " + action.getClass().getSimpleName() + " is " + output);
             resultingTransition = actionConfig.getTransitionForResult(output);
         } catch (RuntimeException e) {
@@ -169,8 +162,8 @@ public class QasinoEventHandler {
     }
 
     private class ActionResult {
-        private OrchestrationConfig.Transition transition;
-        private RuntimeException exception;
+        private final OrchestrationConfig.Transition transition;
+        private final RuntimeException exception;
 
         ActionResult(final OrchestrationConfig.Transition transition, final RuntimeException exception) {
             this.transition = transition;

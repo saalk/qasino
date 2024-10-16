@@ -2,10 +2,8 @@ package cloud.qasino.games.dto.mapper;
 
 import cloud.qasino.games.database.entity.Game;
 import cloud.qasino.games.database.entity.League;
-import cloud.qasino.games.dto.model.GameDto;
 import cloud.qasino.games.dto.model.GameShortDto;
 import cloud.qasino.games.dto.model.LeagueDto;
-import cloud.qasino.games.dto.model.VisitorDto;
 import cloud.qasino.games.dto.model.VisitorShortDto;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;

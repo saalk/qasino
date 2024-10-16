@@ -30,7 +30,7 @@ public enum GameStateGroup {
             = new HashMap<>();
     static {
         for(GameStateGroup gameStateGroup : EnumSet.allOf(GameStateGroup.class))
-            if (!gameStateGroup.getLabel().toLowerCase().equals("error"))
+            if (!gameStateGroup.getLabel().equalsIgnoreCase("error"))
                 gameStateGroupMapNoError.put(gameStateGroup.getLabel(), gameStateGroup);
     }
 
@@ -51,9 +51,7 @@ public enum GameStateGroup {
     public  static List<GameState> listGameStatesForGameStateGroups(List<GameStateGroup> gameStateGroups) {
         List<GameState> gameStates = new ArrayList<>();
         for (GameStateGroup gameStateGroup : gameStateGroups) {
-            for (GameState gameState : listGameStatesForGameStateGroup(gameStateGroup)) {
-                gameStates.add(gameState);
-            }
+            gameStates.addAll(listGameStatesForGameStateGroup(gameStateGroup));
         }
         return gameStates;
     }

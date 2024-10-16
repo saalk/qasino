@@ -31,7 +31,7 @@ public enum Rank implements LabeledEnum {
 
     static {
         for (Rank rank : EnumSet.allOf(Rank.class))
-            if (!rank.getLabel().toLowerCase().equals("error"))
+            if (!rank.getLabel().equalsIgnoreCase("error"))
                 rankMapNoError.put(rank.getLabel(), rank);
     }
 
@@ -61,14 +61,7 @@ public enum Rank implements LabeledEnum {
             default:
             case HIGHLOW:
                 //@formatter:off
-                switch (Objects.requireNonNull(fromLabel(this.label))) {
-                    case JOKER: return 0;
-                    case ACE: return 1;
-                    case KING: return 13;
-                    case QUEEN: return 12;
-                    case JACK: return 11;
-                    default: return Integer.parseInt(label);
-                }
+                return switch (Objects.requireNonNull(fromLabel(this.label))) {case JOKER->0;case ACE->1;case KING->13;case QUEEN->12;case JACK->11;default->Integer.parseInt(label);};
                 //@formatter: off
         }
     }

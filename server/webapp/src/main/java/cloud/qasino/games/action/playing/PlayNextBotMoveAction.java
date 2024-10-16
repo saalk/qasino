@@ -36,7 +36,7 @@ public class PlayNextBotMoveAction extends GenericLookupsAction<EventOutput.Resu
         }
 
         // Next move in HIGHLOW = a given move from location STOCK to location HAND with face UP
-        Move nextMove = null;
+        Move nextMove;
         Location fromLocation = Location.STOCK;
         Location toLocation = Location.HAND;
         Face face = Face.UP;
@@ -52,12 +52,8 @@ public class PlayNextBotMoveAction extends GenericLookupsAction<EventOutput.Resu
 
         nextMove = NextMoveCalculator.next(qasino.getGame(), currentPlayer, playing);
         switch (nextMove) {
-            case PASS, NEXT -> {
-                qasino.getParams().setSuppliedPlayEvent(PlayEvent.PASS);
-            }
-            default -> {
-                qasino.getParams().setSuppliedPlayEvent(PlayEvent.BOT);
-            }
+            case PASS, NEXT -> qasino.getParams().setSuppliedPlayEvent(PlayEvent.PASS);
+            default -> qasino.getParams().setSuppliedPlayEvent(PlayEvent.BOT);
         }
 
         log.info("PlayNextBotMoveAction StrategyMove {}", nextMove);

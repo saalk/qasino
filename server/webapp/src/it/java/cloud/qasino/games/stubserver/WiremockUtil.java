@@ -4,12 +4,6 @@ import com.github.tomakehurst.wiremock.WireMockServer;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
-import jakarta.annotation.Resource;
-
-import static com.github.tomakehurst.wiremock.client.WireMock.get;
-import static com.github.tomakehurst.wiremock.client.WireMock.ok;
-import static com.github.tomakehurst.wiremock.client.WireMock.post;
-
 
 @Slf4j
 @Component
@@ -27,7 +21,6 @@ public class WiremockUtil {
 
     /**
      * Put any initialization code for each mock or stub.
-     * @param wireMockServer
      */
     public void loadStubs(WireMockServer wireMockServer) {
         this.wireMockServer = wireMockServer;

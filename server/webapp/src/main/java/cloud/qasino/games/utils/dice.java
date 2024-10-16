@@ -2,7 +2,7 @@ package cloud.qasino.games.utils;
 
 /**
  * dice objects.
- *
+ * <p>
  * Jaison Eccleston
  * 14APR2022
  */
@@ -32,10 +32,9 @@ public class dice{
     }
     public static int getDiceRoll(int sides,int rolls){
         int sum=0;
-        int faces=sides;
         Random gen=new Random();
         for(int i=0; i<rolls; i++)
-            sum+=(1+gen.nextInt(1+faces));
+            sum+=(1+gen.nextInt(1+ sides));
         return sum;
     }
 

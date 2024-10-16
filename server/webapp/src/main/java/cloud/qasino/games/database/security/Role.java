@@ -8,7 +8,6 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.Index;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
@@ -62,10 +61,7 @@ public class Role {
             return false;
         }
         Role role = (Role) obj;
-        if (!role.equals(role.name)) {
-            return false;
-        }
-        return true;
+        return role.equals(role.name);
     }
 
     @Override

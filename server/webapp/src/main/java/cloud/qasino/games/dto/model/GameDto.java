@@ -9,7 +9,6 @@ import cloud.qasino.games.database.entity.enums.game.style.DeckConfiguration;
 import cloud.qasino.games.database.entity.enums.game.style.OneTimeInsurance;
 import cloud.qasino.games.database.entity.enums.game.style.RoundsToWin;
 import cloud.qasino.games.database.entity.enums.game.style.TurnsToWin;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 
 import java.time.Month;

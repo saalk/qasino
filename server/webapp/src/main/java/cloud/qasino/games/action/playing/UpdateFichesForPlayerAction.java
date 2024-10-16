@@ -44,7 +44,7 @@ public class UpdateFichesForPlayerAction extends GenericLookupsAction<EventOutpu
                     if (cardMove.getBet() == 0) {
                         // calculation needed
                         if (previousCardMoveCard.isEmpty()) {
-                            qasino.getMessage().setConflictErrorMessage("Move",String.valueOf(cardMove.getMove()), "Action [" + String.valueOf(cardMove.getMove()) + "] invalid, no previous card dealt");
+                            qasino.getMessage().setConflictErrorMessage("Move",String.valueOf(cardMove.getMove()), "Action [" + cardMove.getMove() + "] invalid, no previous card dealt");
                             return EventOutput.Result.FAILURE;
                         }
                         updateWinOfLoss(qasino, cardMove, previousCardMoveCard.orElse(null));

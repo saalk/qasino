@@ -86,9 +86,7 @@ public class StreamUtil {
     }
     public static Optional<CardDto> findLastCardInSortedList(List<CardDto> sortedCardList) {
         return sortedCardList.
-                stream().
-                sorted(ComparatorUtil.cardSequenceComparator().reversed()).
-                findFirst(); // can be replaced with max() ?????
+                stream().max(ComparatorUtil.cardSequenceComparator()); // can be replaced with max() ?????
     }
     public static List<CardDto> findFirstNCards(List<CardDto> sortedCardList, int howMany) {
         return sortedCardList.stream().limit(howMany).collect(Collectors.toList());

@@ -3,7 +3,6 @@ package cloud.qasino.games.database.entity;
 import cloud.qasino.games.simulator.QasinoSimulator;
 import org.junit.jupiter.api.Test;
 
-import static java.util.EnumSet.of;
 import static org.assertj.core.api.Assertions.assertThat;
 
 

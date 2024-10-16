@@ -38,8 +38,8 @@ to implement them.
 
 To create a new OIDC app on Okta:
 1. Log in to your developer account, navigate to **Applications**, and click on **Add Application**.
-3. Select **Single-Page App** and click **Next**.
-4. Give the application a name and click **Done**.
+2. Select **Single-Page App** and click **Next**.
+3. Give the application a name and click **Done**.
 
 #### Server Configuration
 Set your domain and copy the `clientId` into `server/src/main/resources/application.yml`.

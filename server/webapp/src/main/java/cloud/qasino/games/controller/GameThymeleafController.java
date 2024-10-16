@@ -6,7 +6,6 @@ import cloud.qasino.games.action.game.IsGameConsistentForGameEventAction;
 import cloud.qasino.games.action.game.PrepareGameAction;
 import cloud.qasino.games.action.game.UpdateStyleForGame;
 import cloud.qasino.games.database.repository.GameRepository;
-import cloud.qasino.games.database.repository.PlayerRepository;
 import cloud.qasino.games.database.service.PlayerService;
 import cloud.qasino.games.dto.Qasino;
 import cloud.qasino.games.dto.validation.GameBasic;

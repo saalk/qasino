@@ -6,7 +6,7 @@ import java.util.Objects;
 
 public class Not implements Expression {
 
-    private Object input;
+    private final Object input;
 
     private Not(Object input) {
         this.input = input;

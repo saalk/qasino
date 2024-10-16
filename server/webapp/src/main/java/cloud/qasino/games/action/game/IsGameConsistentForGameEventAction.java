@@ -16,14 +16,6 @@ import java.util.Optional;
 
 @Slf4j
 @Component
-/**
- * @param actionDto Validate game for supplied GameEvent
- * 1) getSuppliedGameEvent
- *
- * Business rules:
- * BR1)
- * @return Result.SUCCESS or FAILURE (404) when not found
- */
 public class IsGameConsistentForGameEventAction extends GenericLookupsAction<EventOutput.Result> {
 
     @Override
@@ -35,9 +27,7 @@ public class IsGameConsistentForGameEventAction extends GenericLookupsAction<Eve
         boolean noError = true;
         switch (qasino.getParams().getSuppliedGameEvent()) {
 
-            case START -> {
-                noError = noGameInSetupOrPlayingShouldAlreadyExist(qasino);
-            }
+            case START -> noError = noGameInSetupOrPlayingShouldAlreadyExist(qasino);
             case VALIDATE -> {
                 noError = gameShouldHaveStateInCorrectGameStateGroup(qasino,
                         List.of(GameStateGroup.SETUP, GameStateGroup.PREPARED));

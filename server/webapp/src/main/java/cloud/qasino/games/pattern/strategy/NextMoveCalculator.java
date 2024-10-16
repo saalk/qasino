@@ -37,14 +37,12 @@ public class NextMoveCalculator {
                 if (playing.getCurrentMoveNumber() == 1) {
                     next = NextMove.StupidMove;
                 } else if (playing.getCurrentMoveNumber() == 2) {
-                    next = NextMove.RandomMove;
                 } else {
                     next = NextMove.PassMove;
                 }
             }
             case AVERAGE -> {
                 if (playing.getCurrentMoveNumber() == 1) {
-                    next = NextMove.RandomMove;
                 } else if (playing.getCurrentMoveNumber() == 2) {
                     next = NextMove.NormalMove;
                 } else {

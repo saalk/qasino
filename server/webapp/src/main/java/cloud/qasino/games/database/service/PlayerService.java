@@ -11,10 +11,7 @@ import cloud.qasino.games.database.security.Visitor;
 import cloud.qasino.games.database.security.VisitorRepository;
 import cloud.qasino.games.dto.model.GameDto;
 import cloud.qasino.games.dto.model.PlayerDto;
-import cloud.qasino.games.dto.model.VisitorDto;
-import cloud.qasino.games.dto.mapper.GameMapper;
 import cloud.qasino.games.dto.mapper.PlayerMapper;
-import cloud.qasino.games.dto.mapper.VisitorMapper;
 import cloud.qasino.games.dto.request.ParamsDto;
 import cloud.qasino.games.exception.MyBusinessException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -132,7 +129,7 @@ public class PlayerService {
         // sort Players based on seat using the Comparator
         allPlayersForTheGame.stream()
                 .sorted(playerSeatComparator())
-                .collect(Collectors.toList());
+                .toList();
         int currentSeat = allPlayersForTheGame.indexOf(seatUp) + 1;
         if (currentSeat == allPlayersForTheGame.size()) {
             // just swap first and last

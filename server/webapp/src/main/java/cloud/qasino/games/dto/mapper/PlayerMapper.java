@@ -44,7 +44,7 @@ public interface PlayerMapper {
         // too much details for a playerDto
         if (player.getVisitor() != null && player.getVisitor().getRoles() != null) player.getVisitor().setRoles(null);
         return VisitorMapper.INSTANCE.toDto(player.getVisitor());
-    };
+    }
 
     @Named("cardsInHand")
     default String cardsInHand(Player player, @Context List<Card> cards) {

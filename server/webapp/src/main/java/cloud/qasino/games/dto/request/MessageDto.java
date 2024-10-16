@@ -2,7 +2,6 @@ package cloud.qasino.games.dto.request;
 
 import cloud.qasino.games.database.entity.enums.card.Face;
 import cloud.qasino.games.database.entity.enums.card.Location;
-import cloud.qasino.games.database.entity.enums.card.PlayingCard;
 import cloud.qasino.games.database.entity.enums.card.Position;
 import cloud.qasino.games.database.entity.enums.game.Style;
 import cloud.qasino.games.database.entity.enums.game.Type;
@@ -13,17 +12,8 @@ import cloud.qasino.games.database.entity.enums.player.Avatar;
 import cloud.qasino.games.database.entity.enums.player.PlayerType;
 import cloud.qasino.games.pattern.singleton.OnlineVisitorsPerDay;
 import cloud.qasino.games.pattern.statemachine.event.GameEvent;
-import cloud.qasino.games.pattern.statemachine.event.QasinoEvent;
 import cloud.qasino.games.pattern.statemachine.event.PlayEvent;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.AccessLevel;
 import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 
 @Data
 public class MessageDto {
@@ -142,10 +132,8 @@ public class MessageDto {
                 break;
             case "style":
                 // TODO never in error due to a default
-                if (!Style.fromLabelWithDefault(value).equals(null)) {
-                    return true;
-                }
-                break;
+                Style.fromLabelWithDefault(value);
+                return true;
         }
         return false;
     }

@@ -42,9 +42,8 @@ public class MyUserDetailService implements UserDetailsService {
             OnlineVisitorsPerDay.getInstance().newLogon();
 
         }
-        MyUserPrincipal principal = new MyUserPrincipal(visitor);
-//        log.info("Principal found: {}", principal.toString());
-        return principal;
+        //        log.info("Principal found: {}", principal.toString());
+        return new MyUserPrincipal(visitor);
     }
 
     public UserDetails loadUserByUsername(VisitorDto visitorDto) throws UsernameNotFoundException {
@@ -53,9 +52,8 @@ public class MyUserDetailService implements UserDetailsService {
         if (visitor == null) {
             throw new UsernameNotFoundException("Visitor [" + visitorDto.getUsername() + "] not found");
         }
-        MyUserPrincipal principal = new MyUserPrincipal(visitor);
-//        log.info("Principal found: {}", principal.toString());
-        return principal;
+        //        log.info("Principal found: {}", principal.toString());
+        return new MyUserPrincipal(visitor);
     }
 
     public void signin(Visitor visitor) {

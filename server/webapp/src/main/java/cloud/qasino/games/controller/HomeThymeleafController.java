@@ -38,6 +38,7 @@ import java.text.MessageFormat;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 // basic path /qasino
@@ -190,7 +191,6 @@ public class HomeThymeleafController extends AbstractThymeleafController {
             prepareQasino(response, qasino);
 
             qasino.getParams().setSuppliedQasinoEvent(QasinoEvent.LOGON);
-            principal = null;
             qasino.getMessage().setBadRequestErrorMessage(
                     "GameEvent",
                     qasino.getParams().getSuppliedQasinoEvent().getLabel(),
@@ -245,7 +245,7 @@ public class HomeThymeleafController extends AbstractThymeleafController {
 
     private Collection<String> getUserRoles(Principal principal) {
         if (principal == null) {
-            return Arrays.asList("none");
+            return List.of("none");
         } else {
             Set<String> roles = new HashSet<>();
             final MyUserPrincipal visitor = (MyUserPrincipal) ((Authentication) principal).getPrincipal();

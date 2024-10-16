@@ -6,7 +6,6 @@ import cloud.qasino.games.database.entity.enums.card.Face;
 import cloud.qasino.games.database.entity.enums.card.Location;
 import cloud.qasino.games.database.entity.enums.game.Type;
 import cloud.qasino.games.database.entity.enums.move.Move;
-import cloud.qasino.games.database.repository.PlayingRepository;
 import cloud.qasino.games.database.service.PlayingService;
 import cloud.qasino.games.dto.model.GameDto;
 import cloud.qasino.games.dto.model.PlayerDto;

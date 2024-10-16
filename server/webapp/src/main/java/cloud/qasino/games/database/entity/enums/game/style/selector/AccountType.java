@@ -24,7 +24,7 @@ public enum AccountType {
     }
 
     boolean isFamily() {
-        return (!(this.name() == "REGULAR"));
+        return (!(this.name().equals("REGULAR")));
     }
 }
 

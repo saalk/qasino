@@ -66,7 +66,6 @@ public interface VisitorMapper {
     @Named("roles")
     default String roles(Visitor visitor){
         if (visitor.getRoles() == null) return "";
-        String string = Arrays.toString(visitor.getRoles().stream().map(Role::getName).toArray());
-        return string;
+        return Arrays.toString(visitor.getRoles().stream().map(Role::getName).toArray());
     }
 }

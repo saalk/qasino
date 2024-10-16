@@ -13,10 +13,10 @@ import java.util.List;
 @Repository
 public interface CardRepository extends JpaRepository<Card, Long> {
 
-    public final static String FIND_CARDS_BY_GAME_ID =
+    String FIND_CARDS_BY_GAME_ID =
             "SELECT * FROM \"card\" " +
                     "WHERE \"game_id\" = :gameId ";
-    public final static String COUNT_CARDS_BY_GAME_ID =
+    String COUNT_CARDS_BY_GAME_ID =
             "SELECT count(*) FROM \"card\"  " +
                     "WHERE \"game_id\" = :gameId ";
 

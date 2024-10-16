@@ -45,21 +45,21 @@ public class VisitorService {
     public VisitorDto findByUsername(String username){
         Visitor retrievedVisitor = visitorRepository.findByUsername(username);
         return VisitorMapper.INSTANCE.toDto(retrievedVisitor);
-    };
+    }
     public VisitorDto findOneByVisitorId(ParamsDto paramsDto) {
         Visitor retrievedVisitor = visitorRepository.getReferenceById(paramsDto.getSuppliedVisitorId());
         return VisitorMapper.INSTANCE.toDto(retrievedVisitor);
-    };
+    }
     public Optional<VisitorDto> findVisitorByAliasAndAliasSequence(String alias, int aliasSeq){
         Optional<Visitor> retrievedVisitor = visitorRepository.findVisitorByAliasAndAliasSequence(alias,aliasSeq);
         return Optional.ofNullable(retrievedVisitor)
                 .filter(Optional::isPresent) // lambda is => visitor -> visitor.isPresent()
                 .map(visitor -> VisitorMapper.INSTANCE.toDto(visitor.get()));
-    };
+    }
     public Page<VisitorDto> findAllVisitorsWithPage(Pageable pageable){
         Page<Visitor> visitorPage = visitorRepository.findAllVisitorsWithPage(pageable);
         return visitorPage.map(VisitorMapper.INSTANCE::toDto);
-    };
+    }
     public Optional<String> substringUserFromEmail(String emailId) {
         return Optional.ofNullable(emailId)
                 .filter(email -> email.contains("@"))
@@ -84,11 +84,11 @@ public class VisitorService {
     }
     public void removeUserByUsername(String username) {
         visitorRepository.removeUserByUsername(username);
-    };
+    }
 
     public Long countByAlias(String alias) {
         return visitorRepository.countByAlias(alias);
-    };
+    }
 
     @PostConstruct
     public void initialize() {
@@ -162,14 +162,14 @@ public class VisitorService {
         Visitor user = visitorRepository.findByUsername(search.getUsername());
         if (user == null) {
             saveNewUser(search);
-            log.info("createUserIfNotFound: {}",user);
+            log.info("createUserIfNotFound: {}",(Object)null);
         }
     }
     void createAdminIfNotFound(Visitor search) {
         Visitor admin = visitorRepository.findByUsername(search.getUsername());
         if (admin == null) {
             saveNewAdmin(search);
-            log.info("createAdminIfNotFound: {}",admin);
+            log.info("createAdminIfNotFound: {}",(Object)null);
         }
     }
 }

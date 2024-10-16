@@ -1,7 +1,6 @@
 package cloud.qasino.games.pattern.comparator;
 
 import cloud.qasino.games.database.entity.CardMove;
-import cloud.qasino.games.database.entity.Game;
 import cloud.qasino.games.database.entity.Player;
 import cloud.qasino.games.dto.model.CardDto;
 import cloud.qasino.games.dto.model.GameDto;

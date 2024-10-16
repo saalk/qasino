@@ -57,9 +57,8 @@ public abstract class GenericLookupsAction<OUTPUT> {
         qasino.setInvitations(new InvitationsDto());
         if (qasino.getParams().getSuppliedVisitorId() > 0) {
             qasino.getInvitations().setGameInvitations(gameService.findInvitedGamesShortForVisitorId(qasino.getParams()));
-            if (qasino.getInvitations() == null) return false; // 200 no invitations yet
-            return true;
-        }
+            return qasino.getInvitations()!=null; // 200 no invitations yet
+}
         return true; // 200 playing found and id set
     }
     protected boolean refreshOrFindLatestGame(Qasino qasino) {
